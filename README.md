@@ -1,5 +1,3 @@
-# André Nicolau Darcie
-
 André Nicolau Darcie é um desenvolvedor de software e cientista da computação com um foco especializado em desenvolvimento web backend e criação de jogos. Ele é apaixonado pela fusão de disciplinas humanísticas com ciências exatas, e de arte com tecnologia.
 
 Atualmente, ele ocupa o cargo de desenvolvedor sênior na startup [Exato Digital](https://exato.digital/), que se especializa em verificações de antecedentes e soluções "Know Your Customer". Trabalha remotamente em grandes projetos para clientes renomados como Grupo Globo, GetNinjas, Quinto Andar, B3, Stone, Heinz e Huawei, o que lhe permite manter um estilo de vida nômade digital.
