@@ -28,4 +28,6 @@ Entusiasta de realidade virtual e realidade mista, e compartilha sua paixão atr
 
 Ele é um apaixonado por diversas formas de arte e, ao longo de sua vida, catalogou meticulosamente todos os livros, filmes, séries, documentários e jogos que consumiu. Criando o repositorio de dados [My Life Data](https://github.com/andredarcie/my-life-data).
 
+Jogos que está jogando atualmente, seu perfil no [OpenVideoGameData](https://www.openvideogamedata.com/users/darcie)
+
 Tem um pequeno [site](https://andredarcie.blogspot.com/) onde publica contos e poemas autorais.
