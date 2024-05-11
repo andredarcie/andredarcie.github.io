@@ -28,6 +28,6 @@ Entusiasta de realidade virtual e realidade mista, e compartilha sua paixão atr
 
 Ele é um apaixonado por diversas formas de arte e, ao longo de sua vida, catalogou meticulosamente todos os livros, filmes, séries, documentários e jogos que consumiu. Criando o repositorio de dados [My Life Data](https://github.com/andredarcie/my-life-data).
 
-Jogos que está jogando atualmente no [OpenVideoGameData](https://www.openvideogamedata.com/users/darcie), e filmes no [Letterboxd](https://letterboxd.com/andredarcie/).
+Jogos que está jogando atualmente no [OpenVideoGameData - tracker](https://www.openvideogamedata.com/users/darcie), e filmes no [Letterboxd](https://letterboxd.com/andredarcie/films/).
 
-Tem um pequeno [site](https://andredarcie.blogspot.com/) onde publica contos e poemas autorais.
+Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e poemas autorais.
