@@ -21,6 +21,18 @@ Essas são as áreas do conhecimento humano nas quais tenho mais interesse e bus
 - Cinema
     - [Filmes que assisti](https://github.com/andredarcie/my-life-data/blob/master/data/movies/movies_watched.csv)
     - [Letterboxd](https://letterboxd.com/andredarcie/films/)
+    - Diretores
+        - Stanley Kubrick
+        - David Cronenberg
+        - Quentin Tarantino
+        - David Fincher
+        - David Lynch
+        - Hayao Miyazaki
+        - Denis Villeneuve
+        - Ridley Scott
+        - Ingmar Bergman
+        - Kleber Mendonça Filho
+        - Andrei Tarkovsky
 - Artes Visuais
 - Música
     - Anos 80
