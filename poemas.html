@@ -32,20 +32,14 @@
             color: gray;
         }
         .copy-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            margin-top: 10px;
             padding: 5px 10px;
             font-size: 0.8em;
             cursor: pointer;
-            background-color: #007BFF;
-            color: white;
+            background-color: #d3d3d3;
+            color: rgb(255, 255, 255);
             border: none;
             border-radius: 5px;
-            display: none;
-        }
-        .poem-container:hover .copy-button {
-            display: block;
         }
         @media (max-width: 600px) {
             .copy-button {
@@ -56,9 +50,9 @@
 </head>
 <body>
     <div class="poem-container">
-        <button class="copy-button" id="copyButton">Copiar</button>
         <div class="poem" id="poem"></div>
         <div class="author" id="author"></div>
+        <button class="copy-button" id="copyButton">Copiar</button>
     </div>
 
     <script>
