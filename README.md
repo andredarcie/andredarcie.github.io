@@ -31,3 +31,5 @@ Ele é um apaixonado por diversas formas de arte e, ao longo de sua vida, catalo
 Jogos que está jogando atualmente no [OpenVideoGameData - tracker](https://www.openvideogamedata.com/users/darcie), e filmes no [Letterboxd](https://letterboxd.com/andredarcie/films/).
 
 Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e poemas autorais.
+
+[Poemas Aleatórios](/poemas.html)
