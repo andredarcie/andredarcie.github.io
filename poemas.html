@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poemas Aleatórios</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .poem-container {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            position: relative;
+        }
+        .poem {
+            margin: 0;
+        }
+        .author {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: gray;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            display: none;
+        }
+        .poem-container:hover .copy-button {
+            display: block;
+        }
+        @media (max-width: 600px) {
+            .copy-button {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="poem-container">
+        <button class="copy-button" id="copyButton">Copiar</button>
+        <div class="poem" id="poem"></div>
+        <div class="author" id="author"></div>
+    </div>
+
+    <script>
+        const poems = [
+            {
+                text: "Navegar é preciso; viver não é preciso.",
+                author: "Fernando Pessoa"
+            },
+            {
+                text: "Tudo vale a pena quando a alma não é pequena.",
+                author: "Fernando Pessoa"
+            },
+            {
+                text: "O poeta é um fingidor. Finge tão completamente\nQue chega a fingir que é dor\nA dor que deveras sente.",
+                author: "Fernando Pessoa"
+            },
+            {
+                text: "Sinto-me nascido a cada momento\nPara a eterna novidade do Mundo.",
+                author: "Fernando Pessoa"
+            },
+            {
+                text: "Tenho em mim todos os sonhos do mundo.",
+                author: "Fernando Pessoa"
+            },
+            {
+                text: "No meio do caminho tinha uma pedra\nTinha uma pedra no meio do caminho\nTinha uma pedra\nNo meio do caminho tinha uma pedra.",
+                author: "Carlos Drummond de Andrade"
+            },
+            {
+                text: "Tenho apenas duas mãos e o sentimento do mundo.",
+                author: "Carlos Drummond de Andrade"
+            },
+            {
+                text: "Eu canto porque o instante existe e a minha vida está completa.",
+                author: "Cecília Meireles"
+            },
+            {
+                text: "Soneto de fidelidade\nDe tudo, ao meu amor serei atento\nAntes, e com tal zelo, e sempre, e tanto\nQue mesmo em face do maior encanto\nDele se encante mais meu pensamento.",
+                author: "Vinicius de Moraes"
+            },
+            {
+                text: "E quando mais tarde me procure\nQuem sabe a morte, angústia de quem vive\nQuem sabe a solidão, fim de quem ama\nEu possa me dizer do amor (que tive):\nQue não seja imortal, posto que é chama\nMas que seja infinito enquanto dure.",
+                author: "Vinicius de Moraes"
+            },
+            {
+                text: "Vou-me embora pra Pasárgada\nLá sou amigo do rei\nLá tenho a mulher que eu quero\nNa cama que escolherei.",
+                author: "Manuel Bandeira"
+            },
+            {
+                text: "Quero a delícia de poder sentir as coisas mais simples.",
+                author: "Manuel Bandeira"
+            },
+            {
+                text: "A esperança é a coisa com penas\nQue pousa na alma,\nE canta a melodia sem as palavras,\nE nunca para.",
+                author: "Emily Dickinson"
+            },
+            {
+                text: "Fui para os bosques porque queria viver deliberadamente, enfrentar apenas os fatos essenciais da vida, e ver se eu não poderia aprender o que ela tinha a ensinar, e não, quando eu viesse a morrer, descobrir que não tinha vivido.",
+                author: "Henry David Thoreau"
+            },
+            {
+                text: "Eu celebro a mim mesmo, e canto a mim mesmo,\nE o que eu assumo, você deve assumir,\nPois cada átomo que pertence a mim também pertence a você.",
+                author: "Walt Whitman"
+            },
+            {
+                text: "Eu vi os melhores cérebros da minha geração destruídos pela loucura, famintos histéricos nus,\nArrastando-se de madrugada pelas ruas dos bairros negros procurando um pico furioso.",
+                author: "Allen Ginsberg"
+            },
+            {
+                text: "Não ande apenas por onde o caminho pode levar. Vá, em vez disso, onde não há caminho e deixe um rastro.",
+                author: "Ralph Waldo Emerson"
+            },
+            {
+                text: "Somos feitos de poeira de estrelas. \nNós somos uma maneira de o cosmos se autoconhecer.",
+                author: "Carl Sagan"
+            },
+            {
+                text: "Nunca olhe para trás, a menos que esteja planejando ir para lá.",
+                author: "Henry David Thoreau"
+            }
+        ];
+
+        function getRandomPoem() {
+            return poems[Math.floor(Math.random() * poems.length)];
+        }
+
+        function displayRandomPoem() {
+            const poemElement = document.getElementById('poem');
+            const authorElement = document.getElementById('author');
+            const randomPoem = getRandomPoem();
+            poemElement.innerText = randomPoem.text;
+            authorElement.innerText = randomPoem.author;
+        }
+
+        function copyToClipboard() {
+            const poemText = document.getElementById('poem').innerText;
+            navigator.clipboard.writeText(poemText).then(() => {
+                alert('Poema copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar o poema: ', err);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', displayRandomPoem);
+        document.getElementById('copyButton').addEventListener('click', copyToClipboard);
+        document.addEventListener('click', displayRandomPoem);
+    </script>
+</body>
+</html>
