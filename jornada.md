@@ -4,18 +4,19 @@
 
 - Pelourinho ✅
 - Igreja e Convento de São Francisco ✅
-- Museu do Carnaval
-- Basilica do Senhor do Bonfim e Sorveteria do Ribeira
-- Igreja Nossa Senhora do Rosário dos Pretos
-- Museu Nautico da Bahia (Forte do Farol) ✅
-- Museu Afro-Brasileiro ✅
+- Museu do Carnaval (Pelourinho)
+- Basilica do Senhor do Bonfim (Bonfim)
+- Sorveteria do Ribeira (Ribeira)
+- Igreja Nossa Senhora do Rosário dos Pretos (Pelourinho)
+- Museu Náutico da Bahia (Forte do Farol) ✅
+- Museu Afro-Brasileiro (MAFRO) ✅
 - Casa do Rio Vermelho (Jorge Amado) ✅
-- Fundação Casa de Jorge Amado
+- Fundação Casa de Jorge Amado (Pelourinho)
 - Praça da Sé ✅
-- Mercado Modelo
+- Mercado Modelo (Pelourinho)
 - Igreja da Ordem Terceira de São Francisco ✅
 - Ilha dos Frades
-- MAM Museu de Arte Moderna
+- MAM Museu de Arte Moderna (Comercio) ✅ 
 - Praia Farol da Barra ✅
 - Farol da Barra ✅
 - Praia do Porto da Barra ✅
@@ -23,22 +24,24 @@
 - Praia da Boa Viagem (Boa para se banhar)
 - Praia do Flamengo
 - Praia Stella Maris
-- Praia do Forte
+- Praia do Forte - Distante
 - Acarajé da Cira - Rio Vermelho ✅
-- Ponta de Humaita
+- Ponta de Humaita - Tem um pequeno farol vermelho
 - Elevador Lacerda
 - Salvador Shopping ✅
 - Shopping Barra
 - Dique do Tororó
 - Memorial Irmã Dulce
 - Catedral Basílica
-- Museu da Misericórdia
-- Palacete Das Artes Rodin Bahia
+- Museu da Misericórdia (Temporariamente Fechado) 🚫
+- Museu de Arte Contemporânea da Bahia - MAC Bahia (Perto da Barra)
 - Teatro Castro Alves
 - Igreja de Nossa Senhora da Conceição da Praia
 - Mosteiro de São Bento
 - Parque Zoobotanico Do Salvador Da Bahia
-- Restaurante "Ô pai ô" no Pelourinho
+- Restaurante "Ô pai ô" (Pelourinho)
 - Praia Vermelha tem melhores restaurantes (casa da lemanjá) (restaurante casa de tereza)
 - Moqueca do Kimoqueka
 - Museu Geológico da Bahia
+- Museu de Arte da Bahia (MAB) (Perto da Barra)
+- Museu do Ritmo
