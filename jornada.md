@@ -2,18 +2,23 @@
 
 ## Salvador - BA
 
-- Pelourinho ✅
+- Pelourinho 
 - Igreja e Convento de São Francisco ✅
 - Museu do Carnaval (Pelourinho)
+- Igreja Nossa Senhora do Rosário dos Pretos (Pelourinho)
+- Fundação Casa de Jorge Amado (Pelourinho)
+- Museu da Gastronomia Baiana (Pelourinho) - Do lado da fundação
+- Restaurante "Ô pai ô" (Pelourinho) - Almoçar
+- Museu da Energia  (Pelourinho)
+- Catedral Basílica de Salvador (Pelourinho)
+- Museu da Misericórdia  (Pelourinho) (Temporariamente Fechado) 🚫
+- Mercado Modelo (Pelourinho) - Galeria Mercado
 - Basilica do Senhor do Bonfim (Bonfim)
 - Sorveteria do Ribeira (Ribeira)
-- Igreja Nossa Senhora do Rosário dos Pretos (Pelourinho)
 - Museu Náutico da Bahia (Forte do Farol) ✅
 - Museu Afro-Brasileiro (MAFRO) ✅
 - Casa do Rio Vermelho (Jorge Amado) ✅
-- Fundação Casa de Jorge Amado (Pelourinho)
 - Praça da Sé ✅
-- Mercado Modelo (Pelourinho)
 - Igreja da Ordem Terceira de São Francisco ✅
 - Ilha dos Frades
 - MAM Museu de Arte Moderna (Comercio) ✅ 
@@ -33,15 +38,15 @@
 - Dique do Tororó
 - Memorial Irmã Dulce
 - Catedral Basílica
-- Museu da Misericórdia (Temporariamente Fechado) 🚫
 - Museu de Arte Contemporânea da Bahia - MAC Bahia (Perto da Barra)
 - Teatro Castro Alves
 - Igreja de Nossa Senhora da Conceição da Praia
 - Mosteiro de São Bento
 - Parque Zoobotanico Do Salvador Da Bahia
-- Restaurante "Ô pai ô" (Pelourinho)
 - Praia Vermelha tem melhores restaurantes (casa da lemanjá) (restaurante casa de tereza)
 - Moqueca do Kimoqueka
-- Museu Geológico da Bahia
+- Museu Geológico da Bahia (Vitoria) - Tem mamute
 - Museu de Arte da Bahia (MAB) (Perto da Barra)
-- Museu do Ritmo
+- Museu do Ritmo (Comercio)
+- Aliança Francesa na Barra (Barra)
+- Museu do Mar (Santo Antonio Alem do Carmo)
