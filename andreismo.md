@@ -23,4 +23,4 @@ v0.1 - alpha
 11. **Cultive o autocontrole**: Mantenha a compostura em situações estressantes ou desafiadoras, evitando reações impulsivas.
 12. **Pratique a autoconsciência**: Tenha um bom entendimento de suas emoções e saiba como gerenciá-las de forma eficaz.
 13. **Busque o equilíbrio**: Equilibre trabalho, lazer e descanso, mantendo uma vida harmoniosa.
-14. **Adote práticas de meditação ou relaxamento**: Incorpore práticas que promovem a calma, como meditação, yoga ou outras técnicas de relaxamento, na sua rotina.
+14. **Adote práticas de meditação ou relaxamento**: Incorpore atividades que promovem a calma, como caminhar na natureza, ir à praia, fazer uma fogueira, ou até fumar e beber álcool com moderação.
