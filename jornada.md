@@ -2,51 +2,92 @@
 
 ## Salvador - BA
 
-- Pelourinho
-- Igreja e Convento de São Francisco ✅
+### Pelourinho:
 - Museu do Carnaval (Pelourinho) ✅
 - Igreja Nossa Senhora do Rosário dos Pretos (Pelourinho)
 - Fundação Casa de Jorge Amado (Pelourinho)
 - Museu da Gastronomia Baiana (Pelourinho) - Do lado da fundação
 - Restaurante "Ô pai ô" (Pelourinho) - Almoçar ✅
-- Museu da Energia  (Pelourinho)
+- Museu da Energia (Pelourinho)
 - Catedral Basílica de Salvador (Pelourinho)
-- Museu da Misericórdia  (Pelourinho) (Temporariamente Fechado) 🚫
+- Museu da Misericórdia (Pelourinho) (Temporariamente Fechado) 🚫
 - Mercado Modelo (Pelourinho) - Galeria Mercado ✅
-- Basilica do Senhor do Bonfim (Bonfim)
-- Sorveteria do Ribeira (Ribeira)
-- Museu Náutico da Bahia (Forte do Farol) ✅
-- Museu Afro-Brasileiro (MAFRO) ✅
-- Casa do Rio Vermelho (Jorge Amado) ✅
 - Praça da Sé ✅
 - Igreja da Ordem Terceira de São Francisco ✅
-- Ilha dos Frades ✅
-- MAM Museu de Arte Moderna (Comercio) ✅ 
+- Igreja e Convento de São Francisco ✅
+
+### Bonfim:
+- Basilica do Senhor do Bonfim
+- Ponta de Humaita - Tem um pequeno farol vermelho
+
+### Ribeira:
+- Sorveteria do Ribeira
+
+### Forte do Farol:
+- Museu Náutico da Bahia (Forte do Farol) ✅
+
+### Rio Vermelho:
+- Casa do Rio Vermelho (Jorge Amado) ✅
+- Acarajé da Cira - Rio Vermelho ✅
+- Praia Vermelha tem melhores restaurantes (casa da lemanjá) (restaurante casa de tereza)
+
+### Comércio:
+- MAM Museu de Arte Moderna (Comercio) ✅
+- Museu do Ritmo (Comercio)
+
+### Barra:
+- Museu Náutico da Bahia ✅
 - Praia Farol da Barra ✅
 - Farol da Barra ✅
 - Praia do Porto da Barra ✅
-- Praia Itapuã
-- Praia da Boa Viagem (Boa para se banhar)
-- Praia do Flamengo
-- Praia Stella Maris
-- Praia do Forte - Distante
-- Acarajé da Cira - Rio Vermelho ✅
-- Ponta de Humaita - Tem um pequeno farol vermelho
-- Elevador Lacerda - (Temporariamente Fechado) 🚫
-- Salvador Shopping ✅
-- Shopping Barra
-- Dique do Tororó
-- Memorial Irmã Dulce
-- Catedral Basílica
 - Museu de Arte Contemporânea da Bahia - MAC Bahia (Perto da Barra)
-- Teatro Castro Alves
-- Igreja de Nossa Senhora da Conceição da Praia
-- Mosteiro de São Bento
-- Parque Zoobotanico Do Salvador Da Bahia
-- Praia Vermelha tem melhores restaurantes (casa da lemanjá) (restaurante casa de tereza)
-- Moqueca do Kimoqueka
-- Museu Geológico da Bahia (Vitoria) - Tem mamute
 - Museu de Arte da Bahia (MAB) (Perto da Barra)
-- Museu do Ritmo (Comercio)
 - Aliança Francesa na Barra (Barra)
-- Museu do Mar (Santo Antonio Alem do Carmo)
+- Shopping Barra
+
+### Caminho das Árvores:
+- Salvador Shopping ✅
+
+### Ilha dos Frades:
+- Ilha dos Frades ✅
+
+### Ondina:
+- Parque Zoobotanico Do Salvador Da Bahia
+
+### Itapuã:
+- Praia Itapuã
+
+### Stella Maris:
+- Praia Stella Maris
+
+### Flamengo:
+- Praia do Flamengo
+
+### Forte:
+- Praia do Forte - Distante
+
+### Boa Viagem:
+- Praia da Boa Viagem (Boa para se banhar)
+
+### Nazaré:
+- Mosteiro de São Bento
+
+### Vitoria:
+- Museu Geológico da Bahia (Vitoria) - Tem mamute
+
+### Campo Grande:
+- Teatro Castro Alves
+
+### Santo Antônio Além do Carmo:
+- Museu do Mar
+
+### Cidade Baixa:
+- Elevador Lacerda - (Temporariamente Fechado) 🚫
+- Memorial Irmã Dulce
+- Igreja de Nossa Senhora da Conceição da Praia
+
+### Dique do Tororó:
+- Dique do Tororó
+
+### Outras Localizações:
+- Moqueca do Kimoqueka
