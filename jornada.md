@@ -91,3 +91,16 @@
 
 ### Outras Localizações:
 - Moqueca do Kimoqueka
+
+## Aracaju - SE
+
+- Orla de Atalaia
+- Praia de Aruana
+- Mercado Municipal Antônio Franco
+- Museu da Gente Sergipana
+- Parque da Sementeira
+- Centro Histórico de Aracaju
+- Crôa do Goré
+- Ilha dos Namorados
+- Oceanário de Aracaju (Projeto Tamar)
+- Feira do Turista
