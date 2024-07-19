@@ -105,3 +105,15 @@
 - Oceanário de Aracaju (Projeto Tamar)
 - Feira do Turista
 - Cariri Restaurante e Casa de Forró ✅
+
+## Maceió - AL
+
+- Praia de Pajuçara
+- Museu Théo Brandão 
+- Parque Municipal de Maceió
+- Piscinas Naturais de Pajuçara
+- Feira de Artesanato da Pajuçara
+- Mirante São Gonçalo
+- Catedral Metropolitana de Maceió
+- Centro Cultural Ruth Cardoso
+- Museu da Imagem e do Som de Alagoas (MISA)
