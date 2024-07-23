@@ -2,7 +2,6 @@
 
 ## Salvador - BA
 
-### Pelourinho:
 - Museu do Carnaval (Pelourinho) ✅
 - Igreja Nossa Senhora do Rosário dos Pretos (Pelourinho)
 - Fundação Casa de Jorge Amado (Pelourinho)
@@ -15,27 +14,16 @@
 - Praça da Sé ✅
 - Igreja da Ordem Terceira de São Francisco ✅
 - Igreja e Convento de São Francisco ✅
-
-### Bonfim:
 - Basilica do Senhor do Bonfim
 - Ponta de Humaita - Tem um pequeno farol vermelho
-
-### Ribeira:
-- Sorveteria do Ribeira
-
-### Forte do Farol:
+- Sorveteria do Ribeira ✅
 - Museu Náutico da Bahia (Forte do Farol) ✅
-
-### Rio Vermelho:
 - Casa do Rio Vermelho (Jorge Amado) ✅
 - Acarajé da Cira - Rio Vermelho ✅
-- Praia Vermelha tem melhores restaurantes (casa da lemanjá) (restaurante casa de tereza)
-
-### Comércio:
+- Casa de Tereza ✅
+- Casa de Lemanjá
 - MAM Museu de Arte Moderna (Comercio) ✅
 - Museu do Ritmo (Comercio)
-
-### Barra:
 - Museu Náutico da Bahia ✅
 - Praia Farol da Barra ✅
 - Farol da Barra ✅
@@ -43,53 +31,22 @@
 - Museu de Arte Contemporânea da Bahia - MAC Bahia (Perto da Barra)
 - Museu de Arte da Bahia (MAB) (Perto da Barra)
 - Aliança Francesa na Barra (Barra)
-- Shopping Barra
-
-### Caminho das Árvores:
 - Salvador Shopping ✅
-
-### Ilha dos Frades:
 - Ilha dos Frades ✅
-
-### Ondina:
 - Parque Zoobotanico Do Salvador Da Bahia
-
-### Itapuã:
 - Praia Itapuã
-
-### Stella Maris:
 - Praia Stella Maris
-
-### Flamengo:
 - Praia do Flamengo
-
-### Forte:
-- Praia do Forte - Distante
-
-### Boa Viagem:
+- Praia do Forte ✅
 - Praia da Boa Viagem (Boa para se banhar)
-
-### Nazaré:
 - Mosteiro de São Bento
-
-### Vitoria:
-- Museu Geológico da Bahia (Vitoria) - Tem mamute
-
-### Campo Grande:
+- Museu Geológico da Bahia (Vitoria)
 - Teatro Castro Alves
-
-### Santo Antônio Além do Carmo:
 - Museu do Mar
-
-### Cidade Baixa:
 - Elevador Lacerda - (Temporariamente Fechado) 🚫
 - Memorial Irmã Dulce
 - Igreja de Nossa Senhora da Conceição da Praia
-
-### Dique do Tororó:
 - Dique do Tororó
-
-### Outras Localizações:
 - Moqueca do Kimoqueka
 
 ## Aracaju - SE
@@ -108,12 +65,27 @@
 
 ## Maceió - AL
 
-- Praia de Pajuçara
-- Museu Théo Brandão 
-- Parque Municipal de Maceió
-- Piscinas Naturais de Pajuçara
-- Feira de Artesanato da Pajuçara
-- Mirante São Gonçalo
-- Catedral Metropolitana de Maceió
-- Centro Cultural Ruth Cardoso
-- Museu da Imagem e do Som de Alagoas (MISA)
+- Praia de Pajuçara ✅
+- Passeio às 9 Ilhas ✅
+- Piscinas Naturais de Pajuçara ✅
+- Bodega do Sertão ✅
+- Passeio de Jangada ✅
+- Mercado de Artes 31 ✅
+- Restaurante da Praia ✅
+- Praia de Ponta Verde ✅
+- Piscinas Naturais de Ponta Verde ✅
+- Praia de Jatiúca ✅
+- Evento Desafio do BOPE ✅
+
+## Recife - PE
+
+- Praia de Boa Viagem
+- Marco Zero - Praça Rio Branco
+- Parque das Esculturas Francisco Brennand (Marco Zero)
+- Instituto Ricardo Brennand - Castelo 
+- Oficina Cerâmica Francisco Brennand
+- Capela Dourada
+- Rua do Bom Jesus
+- Mercado de São José
+- Museu do Homem do Nordeste
+- Casa da Cultura de Pernambuco
