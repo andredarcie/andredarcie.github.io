@@ -1,5 +1,20 @@
 # Jornada
 
+Um passeio pelas capitais do Brasil
+
+## Vitória - ES
+
+- Convento da Penha
+- Catedral Metropolitana de Vitória
+- Parque Pedra da Cebola
+- Praia de Camburi
+- Ilha do Boi
+- Praça dos Namorados
+- Museu Solar Monjardim
+- Palácio Anchieta
+- Parque Estadual da Fonte Grande
+- Projeto Tamar Vitória
+
 ## Salvador - BA
 
 - Museu do Carnaval (Pelourinho) ✅
@@ -89,3 +104,7 @@
 - Mercado de São José
 - Museu do Homem do Nordeste
 - Casa da Cultura de Pernambuco
+- Restaurante Ilha dos Navegantes
+- Restaurante Bode Do Nô
+- Cidade Vizinha Olinda
+- Praia de Boa Viagem
