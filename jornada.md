@@ -1,21 +1,78 @@
 # Jornada
 
-Um passeio pelas capitais do Brasil
+Vivendo nas capitais do Brasil
 
-## Vitória - ES
+## Regiões e Capitais do Brasil
 
-- Convento da Penha
-- Catedral Metropolitana de Vitória
-- Parque Pedra da Cebola
-- Praia de Camburi
-- Ilha do Boi
-- Praça dos Namorados
-- Museu Solar Monjardim
-- Palácio Anchieta
-- Parque Estadual da Fonte Grande
-- Projeto Tamar Vitória
+### Região Norte
+- Belém (Pará)
+- Boa Vista (Roraima)
+- Macapá (Amapá)
+- Manaus (Amazonas)
+- Palmas (Tocantins)
+- Porto Velho (Rondônia)
+- Rio Branco (Acre)
 
-## Salvador - BA
+### Região Nordeste
+- Aracaju (Sergipe) ✅
+- Fortaleza (Ceará)
+- João Pessoa (Paraíba)
+- Maceió (Alagoas) ✅
+- Natal (Rio Grande do Norte)
+- Recife (Pernambuco) ✅
+- Salvador (Bahia) ✅
+- São Luís (Maranhão)
+- Teresina (Piauí)
+
+### Região Centro-Oeste
+- Brasília (Distrito Federal) ✅
+- Campo Grande (Mato Grosso do Sul)
+- Cuiabá (Mato Grosso)
+- Goiânia (Goiás)
+
+### Região Sudeste
+- Belo Horizonte (Minas Gerais) ✅
+- Rio de Janeiro (Rio de Janeiro)
+- São Paulo (São Paulo) ✅
+- Vitória (Espírito Santo) ✅
+
+### Região Sul
+- Curitiba (Paraná)
+- Florianópolis (Santa Catarina)
+- Porto Alegre (Rio Grande do Sul)
+
+## Lugares
+
+### Vitória - ES
+ 
+- Convento da Penha (Vila Velha) ✅
+- Praia de Camburi ✅
+- Jardim Camburi ✅
+- Pier da Enseada do Sua ✅
+- Monumento à  Yemanjá ✅
+- Rua da Lama ✅
+- Shopping Praia da Costa ✅
+- Substance Party ✅
+- Museu de Arte Do Espírito Santo ✅
+- Curva da Jurema ✅
+- Praia do Canto ✅
+- Di Medeiros Tabacaria ✅
+
+### Restaurante/Bar
+
+- Quiosque Praieiro K12 ✅
+- Vitoria Pub ✅
+- Ilha do Carangueijo ✅
+- Mandacaru ✅
+- Bar do Urso ✅
+- Zattar ✅
+- Bonta Forno e Cucina ✅
+- Terobrasa e Vinho ✅
+- American Beer ✅
+- La Rustica Cantina Italiana ✅
+- A Oca ✅
+
+### Salvador - BA
 
 - Museu do Carnaval (Pelourinho) ✅
 - Igreja Nossa Senhora do Rosário dos Pretos (Pelourinho)
@@ -64,7 +121,7 @@ Um passeio pelas capitais do Brasil
 - Dique do Tororó
 - Moqueca do Kimoqueka
 
-## Aracaju - SE
+### Aracaju - SE
 
 - Orla de Atalaia ✅
 - Praia de Aruana
@@ -78,7 +135,7 @@ Um passeio pelas capitais do Brasil
 - Feira do Turista
 - Cariri Restaurante e Casa de Forró ✅
 
-## Maceió - AL
+### Maceió - AL
 
 - Praia de Pajuçara ✅
 - Passeio às 9 Ilhas ✅
@@ -92,7 +149,7 @@ Um passeio pelas capitais do Brasil
 - Praia de Jatiúca ✅
 - Evento Desafio do BOPE ✅
 
-## Recife - PE
+### Recife - PE
 
 - Praia de Boa Viagem
 - Marco Zero - Praça Rio Branco
