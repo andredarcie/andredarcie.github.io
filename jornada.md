@@ -97,7 +97,6 @@ Salvador é conhecida por sua vibrante cultura afro-brasileira, pelo famoso acar
 - Ponta de Humaita - Tem um pequeno farol vermelho
 - Museu Náutico da Bahia (Forte do Farol) ✅
 - Casa do Rio Vermelho (Jorge Amado) ✅
-- Acarajé da Cira - Rio Vermelho ✅
 - Casa de Tereza ✅
 - Casa de Lemanjá
 - MAM Museu de Arte Moderna (Comercio) ✅
@@ -128,9 +127,27 @@ Salvador é conhecida por sua vibrante cultura afro-brasileira, pelo famoso acar
 - Moqueca do Kimoqueka
 
 #### Restaurante/Bar
-
+- Sorveteria A Cubana ✅
+- Acarajé da Cira - Rio Vermelho ✅
 - Sorveteria do Ribeira ✅
 - Restaurante "Ô pai ô" (Pelourinho) ✅
+- Preto Bar ✅
+- Amsterdam Rio Vermelho ✅
+- Boteco RV ✅ 
+- Restaurante Donana ✅
+- Quiosque do Xuxu ✅
+- Purgatorio Bar ✅
+- Bar Farol da Barra ✅
+- Zacaria Bar ✅
+- Nachos Mexican Bar ✅
+- Atarah Roof Top ✅
+- Restaurante Manguezal ✅
+- Vini Figueira Gastronimia ✅
+- Sarapatel Mussurunga ✅
+- Oxente Bar e Petiscaria ✅
+- Coa Restaurante ✅
+- Cau Botequim ✅
+- Casa de Tereza ✅
 
 ### Aracaju - SE
 
