@@ -13,7 +13,7 @@ Vivendo nas capitais do Brasil
 - Porto Velho (Rondônia)
 - Rio Branco (Acre)
 
-### Região Nordeste
+### Região Nordeste (Foco atual )
 - Aracaju (Sergipe) ✅
 - Fortaleza (Ceará)
 - João Pessoa (Paraíba)
