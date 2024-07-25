@@ -2,6 +2,8 @@
 
 Vivendo nas capitais do Brasil
 
+Atualmente estou em: 🏠 Recife - PE 
+
 ## Regiões e Capitais do Brasil
 
 ### Região Norte
