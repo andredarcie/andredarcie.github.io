@@ -137,9 +137,9 @@ Salvador é conhecida por sua vibrante cultura afro-brasileira, pelo famoso acar
 - Salvador Shopping ✅
 - Ilha dos Frades ✅
 - Parque Zoobotanico Do Salvador Da Bahia
-- Praia Itapuã
-- Praia Stella Maris
-- Praia do Flamengo
+- Praia Itapuã ✅
+- Praia Stella Maris ✅
+- Praia do Flamengo ✅
 - Praia do Forte ✅
 - Praia da Boa Viagem (Boa para se banhar)
 - Mosteiro de São Bento
@@ -150,7 +150,7 @@ Salvador é conhecida por sua vibrante cultura afro-brasileira, pelo famoso acar
 - Memorial Irmã Dulce
 - Igreja de Nossa Senhora da Conceição da Praia
 - Dique do Tororó
-- Moqueca do Kimoqueka
+- Moqueca do Kimoqueka ✅
 
 #### Restaurante/Bar
 - Sorveteria A Cubana ✅
