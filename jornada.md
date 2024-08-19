@@ -20,7 +20,7 @@ Atualmente estou em: 🏠 João Pessoa - PB
 - Aracaju (Sergipe) ✅
 - Maceió (Alagoas) ✅
 - Recife (Pernambuco) ✅
-- João Pessoa (Paraíba) [18 de agosto a 25 de agosto]
+- João Pessoa (Paraíba) [18 de agosto a 25 de agosto] 🎯
 - Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro]
 - Fortaleza (Ceará) [1 de setembro a 29 de setembro]
 - Teresina (Piauí) [29 de setembro a 6 de outubro]
@@ -239,7 +239,7 @@ Recife é conhecida por seus rios e pontes que lhe conferem o apelido de "Veneza
 
 ## João Pessoa - PB
 
-João Pessoa, a capital mais oriental das Américas, é conhecida por suas belas praias, pôr do sol deslumbrante ao som do Bolero de Ravel na Praia do Jacaré, e por ser uma das cidades mais arborizadas do mundo. A cidade também é famosa por sua rica herança cultural e histórica.
+João Pessoa, a capital mais oriental das Américas, é conhecida por suas belas praias, pôr do sol deslumbrante ao som do Bolero de Ravel na Praia do Jacaré, e por ser uma das cidades mais arborizadas do mundo.
 
 ### Pontos Turísticos
 
