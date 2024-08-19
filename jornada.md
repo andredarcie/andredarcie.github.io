@@ -2,7 +2,7 @@
 
 Vivendo nas capitais do Brasil
 
-Atualmente estou em: 🏠 Recife - PE 
+Atualmente estou em: 🏠 João Pessoa - PB
 
 ## Regiões e Capitais do Brasil
 
@@ -225,17 +225,34 @@ Maceió é famosa por suas praias de águas cristalinas, piscinas naturais em Pa
 
 Recife é conhecida por seus rios e pontes que lhe conferem o apelido de "Veneza Brasileira", pelo vibrante Carnaval com frevo e maracatu, e pelo histórico bairro de Olinda, um Patrimônio Mundial da UNESCO.
 
-- Praia de Boa Viagem
-- Marco Zero - Praça Rio Branco
+- Praia de Boa Viagem ✅
+- Recife Antigo (Marco Zero) ✅
 - Parque das Esculturas Francisco Brennand (Marco Zero)
-- Instituto Ricardo Brennand - Castelo 
-- Oficina Cerâmica Francisco Brennand
-- Capela Dourada
-- Rua do Bom Jesus
+- Instituto Ricardo Brennand - Museu e Capela ✅
+- Rua do Bom Jesus ✅
 - Mercado de São José
 - Museu do Homem do Nordeste
 - Casa da Cultura de Pernambuco
 - Restaurante Ilha dos Navegantes
-- Restaurante Bode Do Nô
-- Cidade Vizinha Olinda
-- Praia de Boa Viagem
+- Restaurante Bode Do Nô ✅
+- Cidade Vizinha Olinda 
+
+## João Pessoa - PB
+
+João Pessoa, a capital mais oriental das Américas, é conhecida por suas belas praias, pôr do sol deslumbrante ao som do Bolero de Ravel na Praia do Jacaré, e por ser uma das cidades mais arborizadas do mundo. A cidade também é famosa por sua rica herança cultural e histórica.
+
+### Pontos Turísticos
+
+- Praia de Tambaú
+- Farol do Cabo Branco
+- Ponta do Seixas (Ponto mais oriental das Américas)
+- Estação Cabo Branco – Ciência, Cultura & Artes
+- Praia do Jacaré (Pôr do Sol)
+- Mercado de Artesanato Paraibano
+- Fundação Casa de José Américo
+- Igreja de São Francisco e Centro Cultural São Francisco
+
+### Restaurantes
+
+- Restaurante Mangai
+- Restaurante Tio Armênio
