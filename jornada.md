@@ -22,9 +22,9 @@ Atualmente estou em: 🏠 João Pessoa - PB
 - Recife (Pernambuco) ✅
 - João Pessoa (Paraíba) [18 de agosto a 25 de agosto] 🎯
 - Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro]
-- Fortaleza (Ceará) [1 de setembro a 29 de setembro]
-- Teresina (Piauí) [29 de setembro a 6 de outubro]
-- São Luís (Maranhão) [6 de outubro a 13 de outubro]
+- Fortaleza (Ceará) [1 de setembro a 8 de setembro]
+- Teresina (Piauí) [8 de setembro a 15 de setembro]
+- São Luís (Maranhão) [15 de setembro a 15 de novembro]
 
 ### Região Centro-Oeste
 - Brasília (Distrito Federal) ✅
