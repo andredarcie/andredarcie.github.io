@@ -2,7 +2,7 @@
 
 Vivendo nas capitais do Brasil
 
-Atualmente estou em: 🏠 João Pessoa - PB
+Atualmente estou em: 🏠 Natal - RN
 
 ## Regiões e Capitais do Brasil
 
