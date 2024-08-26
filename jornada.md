@@ -20,8 +20,8 @@ Atualmente estou em: 🏠 Natal - RN
 - Aracaju (Sergipe) ✅
 - Maceió (Alagoas) ✅
 - Recife (Pernambuco) ✅
-- João Pessoa (Paraíba) [18 de agosto a 25 de agosto] 🎯
-- Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro]
+- João Pessoa (Paraíba) [18 de agosto a 25 de agosto] ✅
+- Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro] 🎯
 - Fortaleza (Ceará) [1 de setembro a 8 de setembro]
 - Teresina (Piauí) [8 de setembro a 15 de setembro]
 - São Luís (Maranhão) [15 de setembro a 15 de novembro]
@@ -256,3 +256,24 @@ João Pessoa, a capital mais oriental das Américas, é conhecida por suas belas
 
 - Restaurante Mangai
 - Restaurante Tio Armênio
+
+## Natal - RN
+
+Natal, a capital do Rio Grande do Norte, é conhecida por suas belas praias, dunas impressionantes, e pelo icônico Morro do Careca, além de ser chamada de "Cidade do Sol" devido ao seu clima ensolarado durante todo o ano.
+
+### Pontos Turísticos
+
+- Praia de Ponta Negra (com o Morro do Careca)
+- Forte dos Reis Magos
+- Parque das Dunas
+- Praia de Genipabu (famosa pelos passeios de buggy nas dunas)
+- Lagoa de Pitangui
+- Museu Câmara Cascudo
+- Praia da Redinha e Mercado Público da Redinha
+- Centro de Turismo de Natal
+
+### Restaurantes
+
+- Restaurante Camarões
+- Mangai Natal  
+- Tábua de Carne
