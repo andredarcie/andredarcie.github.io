@@ -2,7 +2,7 @@
 
 Vivendo nas capitais do Brasil
 
-Atualmente estou em: 🏠 Natal - RN
+Atualmente estou em: 🏠 Fortaleza - CE
 
 ## Regiões e Capitais do Brasil
 
@@ -21,8 +21,8 @@ Atualmente estou em: 🏠 Natal - RN
 - Maceió (Alagoas) ✅
 - Recife (Pernambuco) ✅
 - João Pessoa (Paraíba) [18 de agosto a 25 de agosto] ✅
-- Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro] 🎯
-- Fortaleza (Ceará) [1 de setembro a 8 de setembro]
+- Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro] ✅
+- Fortaleza (Ceará) [1 de setembro a 8 de setembro] 🎯
 - Teresina (Piauí) [8 de setembro a 15 de setembro]
 - São Luís (Maranhão) [15 de setembro a 15 de novembro]
 
@@ -277,3 +277,26 @@ Natal, a capital do Rio Grande do Norte, é conhecida por suas belas praias, dun
 - Restaurante Camarões
 - Mangai Natal  
 - Tábua de Carne
+
+## Fortaleza - CE
+
+Fortaleza, a capital do Ceará, é uma cidade vibrante e ensolarada, conhecida por suas belas praias, vida noturna animada e rica cultura nordestina. A cidade oferece uma variedade de atrações turísticas para todos os gostos, desde praias paradisíacas até centros culturais e mercados de artesanato.
+
+### Pontos Turísticos
+
+- Praia do Futuro
+- Centro Dragão do Mar de Arte e Cultura
+- Praia de Iracema
+- Mercado Central de Fortaleza
+- Cumbuco
+- Praia de Mucuripe
+- Jardim Japonês
+- Feirinha Beira Mar
+- Museu Ceará
+- Beach Park
+
+### Restaurantes
+
+- Coco Bambu
+- Colher de Pau
+- Zena Gourmet
