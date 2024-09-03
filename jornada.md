@@ -286,17 +286,14 @@ Fortaleza, a capital do Ceará, é uma cidade vibrante e ensolarada, conhecida p
 
 - Praia do Futuro
 - Centro Dragão do Mar de Arte e Cultura
-- Praia de Iracema
-- Mercado Central de Fortaleza
-- Cumbuco
-- Praia de Mucuripe
-- Jardim Japonês
-- Feirinha Beira Mar
-- Museu Ceará
-- Beach Park
+- Praia de Iracema ✅
+- Mercado Central de Fortaleza (horario comercial)
+- Cumbuco (uma hora de carro)
+- Praia de Mucuripe (ao lado de Praia de Iracema)
+- Jardim Japonês (ao lado da Praia de Mucuripe) ✅
+- Feirinha Beira Mar (perto do Jardim Japonês)
+- Museu Ceará (horario comercial)
 
 ### Restaurantes
 
-- Coco Bambu
-- Colher de Pau
-- Zena Gourmet
+- Villa Restaurante
