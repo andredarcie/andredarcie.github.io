@@ -293,6 +293,8 @@ Fortaleza, a capital do Ceará, é uma cidade vibrante e ensolarada, conhecida p
 - Jardim Japonês (ao lado da Praia de Mucuripe) ✅
 - Feirinha Beira Mar (perto do Jardim Japonês)
 - Museu Ceará (horario comercial)
+- Estátua de Iracema Guardiã (Praia de Iracema)
+- Estátua da Escritora Rachel de Queiroz
 
 ### Restaurantes
 
