@@ -299,3 +299,19 @@ Fortaleza, a capital do Ceará, é uma cidade vibrante e ensolarada, conhecida p
 ### Restaurantes
 
 - Villa Restaurante
+
+## Teresina - PI
+
+Teresina, a capital do Piauí, também conhecida como a "Cidade Verde", destaca-se por suas muitas árvores e vastas áreas verdes. A cidade serve como um importante centro cultural e histórico no Nordeste do Brasil, oferecendo uma fascinante mistura de tradições e modernidade.
+
+### Pontos Turísticos
+
+- Parque Ambiental Encontro dos Rios (Monumento Cabeça de Cuia) (20 min)
+- Ponte Estaiada João Isidoro França - Mirante da Ponte Estaiada (17 min)
+- Palácio de Karnak (horário comercial)
+- Igreja São Benedito
+- Parque da Cidade (9 min)
+- Museu do Piauí (horário comercial)
+- Central de Artesanato Mestre Dezinho (3 min)
+- Teatro 4 de Setembro (4 min)
+- Parque Zoobotânico de Teresina (22 min)
