@@ -32,4 +32,6 @@ Jogos que está jogando atualmente no [OpenVideoGameData - tracker](https://www.
 
 Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e poemas autorais.
 
-[Poemas Aleatórios](/poemas.html)
+## Estudos
+
+Essas são as coisas que estou estudando atualmente: [estudos](estudos/principal.md)
