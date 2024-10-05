@@ -332,6 +332,6 @@ São Luís, a capital do Maranhão, é conhecida por seu rico patrimônio histó
 - Fonte do Ribeirão
 - Feira da Praia Grande
 - Lagoa da Jansen
-- Praia do Calhau
+- Praia do Calhau ✅
 - Praia de Ponta d'Areia
 - Espigão Costeiro
