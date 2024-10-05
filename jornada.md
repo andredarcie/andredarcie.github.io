@@ -2,7 +2,7 @@
 
 Vivendo nas capitais do Brasil
 
-Atualmente estou em: 🏠 Fortaleza - CE
+Atualmente estou em: 🏠 São Luis - MA
 
 ## Regiões e Capitais do Brasil
 
@@ -22,9 +22,9 @@ Atualmente estou em: 🏠 Fortaleza - CE
 - Recife (Pernambuco) ✅
 - João Pessoa (Paraíba) [18 de agosto a 25 de agosto] ✅
 - Natal (Rio Grande do Norte) [25 de agosto a 1 de setembro] ✅
-- Fortaleza (Ceará) [1 de setembro a 8 de setembro] 🎯
-- Teresina (Piauí) [8 de setembro a 15 de setembro]
-- São Luís (Maranhão) [15 de setembro a 15 de novembro]
+- Fortaleza (Ceará) [1 de setembro a 8 de setembro] ✅
+- Teresina (Piauí) [8 de setembro a 15 de setembro] ✅
+- São Luís (Maranhão) [15 de setembro a 10 de novembro] 🎯
 
 ### Região Centro-Oeste
 - Brasília (Distrito Federal) ✅
@@ -315,3 +315,23 @@ Teresina, a capital do Piauí, também conhecida como a "Cidade Verde", destaca-
 - Central de Artesanato Mestre Dezinho (3 min)
 - Teatro 4 de Setembro (4 min)
 - Parque Zoobotânico de Teresina (22 min)
+
+## São Luís - MA
+
+São Luís, a capital do Maranhão, é conhecida por seu rico patrimônio histórico e cultural, com seu centro histórico reconhecido como Patrimônio Mundial da UNESCO. A cidade é famosa pela arquitetura colonial, pelos azulejos portugueses que adornam seus edifícios e pela vibrante cena cultural.
+
+### Pontos Turísticos
+
+- Centro Histórico de São Luís (Patrimônio Mundial da UNESCO) ✅
+- Palácio dos Leões (horário comercial)
+- Teatro Arthur Azevedo (horário comercial) ✅
+- Igreja da Sé (Catedral de São Luís)
+- Convento das Mercês (horário comercial)
+- Museu Histórico e Artístico do Maranhão (horário comercial)
+- Casa do Maranhão (horário comercial)
+- Fonte do Ribeirão
+- Feira da Praia Grande
+- Lagoa da Jansen
+- Praia do Calhau
+- Praia de Ponta d'Areia
+- Espigão Costeiro
