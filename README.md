@@ -6,7 +6,7 @@ Atualmente, ele ocupa o cargo de desenvolvedor sênior na startup [Exato Digital
 
 Possui bacharelado em Ciência da Computação e uma pós-graduação em Ciência de Dados Aplicada pela PUC Minas, onde estudou tópicos avançados como Inteligência Artificial e Machine Learning. Durante três anos, atuou no campo da iniciação científica, apoiado pelo CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico).
 
-Ele é um grande contribuidor para o open-source, destacando-se com o [C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide), o [Curso Pragmático de ASP.NET](https://github.com/andredarcie/curso-pragmatico-de-csharp) e o [Awesome GTFS](https://github.com/andredarcie/awesome-gtfs), todos projetos bastante populares no GitHub.
+Ele é contribuidor para o open-source, destacando-se com o [C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide), o [Curso Pragmático de ASP.NET](https://github.com/andredarcie/curso-pragmatico-de-csharp) e o [Awesome GTFS](https://github.com/andredarcie/awesome-gtfs), todos projetos populares no GitHub.
 
 É escritor no seu [blog](https://dev.to/andredarcie) onde aborda temas como tecnologia, realidade virtual, ciência, carreira, filosofia e arte, oferecendo insights e análises aprofundadas nessas áreas.
 
@@ -22,7 +22,7 @@ Formas de entrar em contato comigo: [e-mail](andrendarcie@gmail.com), [Linkedin]
 
 Adotou um estilo de vida nômade digital e compartilha suas experiências e descobertas pelo mundo em seu perfil no [Instagram](https://www.instagram.com/andre.darcie/) e na página [nomade](nomade).
 
-Como desenvolvedor de jogos, tem como os exemplos mais notaveis [Brian's Mansion](https://github.com/andredarcie/brians-mansion), [Insomnia](https://andredarcie.github.io/insomnia.html), [Life is Undefined](https://andredarcie.github.io/life-is-undefined/), [Get Out](https://andredarcie.github.io/get-out-game/), [Zero to One](https://andredarcie.itch.io/zero-to-one) e [Zero The Hero](https://andredarcie.itch.io/zero-the-hero).
+Como desenvolvedor de jogos, tem como os exemplos mais notaveis [Brian's Mansion](https://github.com/andredarcie/brians-mansion), [Insomnia](https://andredarcie.github.io/insomnia.html), [Life is Undefined](https://andredarcie.github.io/life-is-undefined/), [Get Out](https://andredarcie.github.io/get-out), [Zero to One](https://andredarcie.itch.io/zero-to-one) e [Zero The Hero](https://andredarcie.itch.io/zero-the-hero).
 
 Entusiasta de realidade virtual e realidade mista, e compartilha sua paixão através do seu [canal no TikTok](https://www.tiktok.com/@andre_do_vr), onde seus vídeos alcançaram milhões de visualizações. Ele já participou de uma campanha promocional do TikTok Brasil.
 

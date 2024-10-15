@@ -9,7 +9,7 @@ Essas são as áreas do conhecimento humano nas quais tenho mais interesse e bus
 - Realidade Virtual / Aumentada / Mista
     - Meta Quest 2 e 3
 - Inteligencia Artificial
-    - ChatGPT (GPT 3, 4, 4o)
+    - ChatGPT
 - Ciencia de Dados
     - [My Life Data](https://github.com/andredarcie/my-life-data)
 - Desenvolvimento de Jogos Digitais

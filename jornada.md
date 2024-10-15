@@ -227,15 +227,15 @@ Recife é conhecida por seus rios e pontes que lhe conferem o apelido de "Veneza
 
 - Praia de Boa Viagem ✅
 - Recife Antigo (Marco Zero) ✅
-- Parque das Esculturas Francisco Brennand (Marco Zero)
+- Parque das Esculturas Francisco Brennand (Marco Zero) ✅
 - Instituto Ricardo Brennand - Museu e Capela ✅
 - Rua do Bom Jesus ✅
 - Mercado de São José
-- Museu do Homem do Nordeste
+- Museu do Homem do Nordeste ✅
 - Casa da Cultura de Pernambuco
 - Restaurante Ilha dos Navegantes
 - Restaurante Bode Do Nô ✅
-- Cidade Vizinha Olinda 
+- Cidade Vizinha Olinda ✅
 
 ## João Pessoa - PB
 
@@ -263,7 +263,7 @@ Natal, a capital do Rio Grande do Norte, é conhecida por suas belas praias, dun
 
 ### Pontos Turísticos
 
-- Praia de Ponta Negra (com o Morro do Careca)
+- Praia de Ponta Negra (com o Morro do Careca) ✅
 - Forte dos Reis Magos
 - Parque das Dunas
 - Praia de Genipabu (famosa pelos passeios de buggy nas dunas)
@@ -284,17 +284,17 @@ Fortaleza, a capital do Ceará, é uma cidade vibrante e ensolarada, conhecida p
 
 ### Pontos Turísticos
 
-- Praia do Futuro
-- Centro Dragão do Mar de Arte e Cultura
+- Praia do Futuro ✅
+- Centro Dragão do Mar de Arte e Cultura 
 - Praia de Iracema ✅
-- Mercado Central de Fortaleza (horario comercial)
+- Mercado Central de Fortaleza (horario comercial) ✅
 - Cumbuco (uma hora de carro)
 - Praia de Mucuripe (ao lado de Praia de Iracema)
 - Jardim Japonês (ao lado da Praia de Mucuripe) ✅
-- Feirinha Beira Mar (perto do Jardim Japonês)
-- Museu Ceará (horario comercial)
-- Estátua de Iracema Guardiã (Praia de Iracema)
-- Estátua da Escritora Rachel de Queiroz
+- Feirinha Beira Mar (perto do Jardim Japonês) ✅
+- Museu Ceará (horario comercial) 
+- Estátua de Iracema Guardiã (Praia de Iracema) ✅
+- Estátua da Escritora Rachel de Queiroz ✅
 
 ### Restaurantes
 
@@ -306,14 +306,14 @@ Teresina, a capital do Piauí, também conhecida como a "Cidade Verde", destaca-
 
 ### Pontos Turísticos
 
-- Parque Ambiental Encontro dos Rios (Monumento Cabeça de Cuia) (20 min)
-- Ponte Estaiada João Isidoro França - Mirante da Ponte Estaiada (17 min)
-- Palácio de Karnak (horário comercial)
-- Igreja São Benedito
-- Parque da Cidade (9 min)
-- Museu do Piauí (horário comercial)
-- Central de Artesanato Mestre Dezinho (3 min)
-- Teatro 4 de Setembro (4 min)
+- Parque Ambiental Encontro dos Rios (Monumento Cabeça de Cuia) (20 min) ✅
+- Ponte Estaiada João Isidoro França - Mirante da Ponte Estaiada (17 min) ✅
+- Palácio de Karnak (horário comercial) ✅
+- Igreja São Benedito 
+- Parque da Cidade (9 min) ✅
+- Museu do Piauí (horário comercial) 
+- Central de Artesanato Mestre Dezinho (3 min) ✅
+- Teatro 4 de Setembro (4 min) 
 - Parque Zoobotânico de Teresina (22 min)
 
 ## São Luís - MA
