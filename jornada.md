@@ -333,5 +333,8 @@ São Luís, a capital do Maranhão, é conhecida por seu rico patrimônio histó
 - Feira da Praia Grande
 - Lagoa da Jansen
 - Praia do Calhau ✅
-- Praia de Ponta d'Areia
-- Espigão Costeiro
+- Praia de Ponta d'Areia ✅
+- Espigão Costeiro ✅
+- Praças do Poetas
+- Serperte da Litorania
+- Borboletário
