@@ -10,7 +10,7 @@ v0.2 - alpha
 4. **Mantenha a positividade**: Mesmo que de modo irracional. Adote uma atitude positiva e otimista, focando no lado bom das situações e das pessoas.
 5. **Percepção da realidade**: Entenda que o cérebro humano não é um dispositivo confiável para perceber a realidade. Ele monta uma versão do mundo com base nos sentidos, mas esta não é exata; não existem fatos, apenas interpretações.
 6. **Igualdade e Valor Humano**: Não existe meritocracia nem justiça as infinitas variáveis da vida não são iguais para todos, e fatores fora de nosso controle afetam profundamente nossas trajetórias. Acredite que ninguém é melhor que ninguém.
-7. **Experiência pessoal não é regra geral**: Reconheça que sua experiência pessoal, o "eu vivi isso", não representa uma percepção geral da realidade. O que você viveu pode ser único e não reflete necessariamente a visão ampla da realidade. Busque base na estatística e nos dados, além da experiência pessoal.
+7. **Experiência pessoal não é regra geral**: Reconheça que sua experiência pessoal, o “eu vivi isso”, não representa uma verdade universal. Deixe de lado o egoísmo de achar que o que você viveu é regra. O que você experimentou pode ser único e não reflete necessariamente a realidade como um todo. Em vez disso, busque uma base em estatísticas e dados, ampliando a compreensão para além do que foi vivido pessoalmente.
 
 ## Interação Social
 
