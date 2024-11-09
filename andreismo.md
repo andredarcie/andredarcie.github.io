@@ -11,6 +11,7 @@ v0.2 - alpha
 5. **Desenvolva a resiliência**: Aprenda a lidar com adversidades e desafios sem se abalar profundamente, recuperando-se rapidamente.
 6. **Percepção da realidade**: Entenda que o cérebro humano não é um dispositivo confiável para perceber a realidade. Ele monta uma versão do mundo com base nos sentidos, mas esta não é exata; não existem fatos, apenas interpretações.
 7. **Igualdade e Valor Humano**: Acredite que ninguém é melhor que ninguém. Todos têm o mesmo valor e potencial, independentemente da origem, situação econômica ou genética.
+8. **Experiência pessoal não é regra geral**: Reconheça que sua experiência pessoal, o "eu vivi isso", não representa uma percepção geral da realidade. O que você viveu pode ser único e não reflete necessariamente a visão ampla da realidade. Busque base na estatística e nos dados, além da experiência pessoal.
 
 ## Interação Social
 
