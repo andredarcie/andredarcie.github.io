@@ -5,12 +5,11 @@ v0.2 - alpha
 ## Mentalidade e Atitude
 
 1. **Humildade**: Reconhecer suas limitações e estar aberto a aprender com os outros. Admita que você não sabe de tudo e nunca saberá.
-2. **Não busque sentido**: Aceite que nem tudo na vida precisa ter um significado profundo ou um propósito claro.
-3. **A vida é uma busca por experiências e conhecimento**: Esteja sempre aberto a aprender e a vivenciar novas situações.
-4. **Mantenha a positividade**: Mesmo que de modo irracional. Adote uma atitude positiva e otimista, focando no lado bom das situações e das pessoas.
-5. **Percepção da realidade**: Entenda que o cérebro humano não é um dispositivo confiável para perceber a realidade. Ele monta uma versão do mundo com base nos estímulos sensoriais e nas capacidades cognitivas do cérebro, mas esta não é exata.
-6. **Igualdade e Valor Humano**: Não existe meritocracia nem justiça as infinitas variáveis da vida não são iguais para todos, e fatores fora de nosso controle afetam profundamente nossas trajetórias. Acredite que ninguém é melhor que ninguém.
-7. **Experiência pessoal não é regra geral**: Reconheça que sua experiência pessoal, o “eu vivi isso”, não representa uma verdade universal. Deixe de lado o egoísmo de achar que o que você viveu é regra. O que você experimentou pode ser único e não reflete necessariamente a realidade como um todo. Em vez disso, busque uma base em estatísticas e dados, ampliando a compreensão para além do que foi vivido pessoalmente.
+2. **Não busque sentido geral**: Aceite que nem tudo na vida precisa ter um significado profundo ou um propósito claro.
+3. **Mantenha a positividade**: Mesmo que de modo irracional. Adote uma atitude positiva e otimista, focando no lado bom das situações e das pessoas.
+4. **Percepção da realidade**: Entenda que o cérebro humano não é um dispositivo confiável para perceber a realidade. Ele monta uma versão do mundo com base nos estímulos sensoriais e nas capacidades cognitivas do cérebro, mas esta não é exata.
+5. **Igualdade e Valor Humano**: Não existe meritocracia nem justiça as infinitas variáveis da vida não são iguais para todos, e fatores fora de nosso controle afetam profundamente nossas trajetórias. Acredite que ninguém é melhor que ninguém.
+6. **Experiência pessoal não é regra geral**: Reconheça que sua experiência pessoal, o “eu vivi isso”, não representa uma verdade universal. Deixe de lado o egoísmo de achar que o que você viveu é regra. O que você experimentou pode ser único e não reflete necessariamente a realidade como um todo. Em vez disso, busque uma base em estatísticas e dados, ampliando a compreensão para além do que foi vivido pessoalmente.
 
 ## Interação Social
 
