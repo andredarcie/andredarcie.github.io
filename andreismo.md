@@ -14,7 +14,7 @@ v0.2 - alpha
 
 ## Interação Social
 
-8. **Sempre diga sim para rolês e seja inimigo do fim**: Esteja aberto a novas experiências e aproveite ao máximo cada momento.
+8. **Esteja aberto ao novo e prolongue os bons momentos**: Diga "sim" para as oportunidades que surgem, aproveitando cada experiência sem pressa de encerrar. Viva o presente com intensidade, sabendo que cada instante é único e merece ser vivido ao máximo.
 9. **Comunique-se de forma clara e tranquila**: Expresse-se sempre com clareza e calma, mesmo ao abordar assuntos delicados ou resolver conflitos.
 10. **Seja um bom ouvinte**: Ouça atentamente, transmitindo respeito e consideração pelos outros.
 11. **Pratique a compreensão**: Seja empático e tente entender o ponto de vista dos outros, ajudando a evitar conflitos desnecessários.
