@@ -20,6 +20,7 @@ v0.2 - alpha
 11. **Pratique a compreensão**: Seja empático e tente entender o ponto de vista dos outros, ajudando a evitar conflitos desnecessários.
 12. **Seja paciente**: Desenvolva a capacidade de esperar sem se frustrar ou irritar, mantendo a serenidade.
 13. **Evite debates exaustivos em tópicos sensíveis**: Política, religião, moral, valores culturais e gostos pessoais são campos que geralmente não têm fim definitivo e tendem a gerar estresse; aborde-os apenas de forma leve, se necessário.
+14. **Não julgue a profundidade alheia com base em superficialidades**: Evite a ignorância de medir a inteligência, o caráter ou o valor de alguém pelo gênero musical que ouve, pelas roupas que veste, pelas opiniões ou hobbies que cultiva. Achar que seus gostos são superiores aos dos outros é apenas uma forma de alimentar o próprio ego. Curtir filmes de arte ou ler clássicos da literatura não torna ninguém mais sábio ou evoluído do que quem prefere um filme de ação ou um best-seller.
 
 ## Autocontrole e Bem-estar
 
