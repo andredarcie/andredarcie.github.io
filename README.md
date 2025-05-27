@@ -2,7 +2,7 @@ André Nicolau Darcie é um desenvolvedor de software e cientista da computaçã
 
 ## Carreira Profissional
 
-Atualmente, ele ocupa o cargo de desenvolvedor sênior na startup [Exato Digital](https://exato.digital/), que se especializa em verificações de antecedentes e soluções "Know Your Customer". Trabalha remotamente em grandes projetos para clientes renomados como Grupo Globo, GetNinjas, Quinto Andar, B3, Stone, Heinz e Huawei.
+Atualmente, é desenvolvedor sênior na NTT Data, uma das maiores consultorias de tecnologia do mundo, presente em mais de 50 países e listada entre as top 10 do setor global. Está alocado na XP Investimentos, a maior corretora do Brasil, onde atua na área de benefícios do cartão, contribuindo para a evolução de produtos financeiros de alto impacto. Anteriormente, trabalhou na startup Exato Digital, especializada em verificações de antecedentes e soluções "Know Your Customer", onde atuou remotamente em grandes projetos para clientes como Grupo Globo, GetNinjas, Quinto Andar, B3, Stone e Huawei.
 
 Possui bacharelado em Ciência da Computação e uma pós-graduação em Ciência de Dados Aplicada pela PUC Minas, onde estudou tópicos avançados como Inteligência Artificial e Machine Learning. Durante três anos, atuou no campo da iniciação científica, apoiado pelo CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico).
 
