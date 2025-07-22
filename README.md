@@ -32,6 +32,10 @@ Jogos que está jogando atualmente no [OpenVideoGameData - tracker](https://www.
 
 Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e poemas autorais.
 
-## Estudos
+## Meus Posts
 
-Essas são as coisas que estou estudando atualmente: [estudos](estudos/principal.md)
+- [Primeiros Meses como Nômade Digital [PT-BR]](https://dev.to/andredarcie/primeiros-meses-como-nomade-digital-pt-br-42g) 1.5k views
+- [Python in one page
+](https://dev.to/andredarcie/python-in-one-page-40bl) - 1k views
+
+

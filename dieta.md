@@ -1,28 +1,30 @@
 🕗 08:30 – Café da manhã
-- 1 scoop de whey (batido com água ou leite desnatado)
-- 2 ovos cozidos ou mexidos
-- 1 fatia de pão integral ou 2 colheres de aveia
-- 1 banana
+- 1 scoop whey (25g proteína)
+- 2 ovos mexidos (12g proteína)
+- 1 fatia pão integral (15–20g carbo)
+- 1 banana (20g carbo)
+- 1 creatina 3g/dia
 
 🕗 11:30 – Pré-treino
 - 1 fatia de pão integral ou 1 banana
 - 1 colher de pasta de amendoim (ou um ovo cozido)
-- Café preto puro (opcional pra dar energia)
 
 🕐 13:30 – Pós-treino / Almoço
-- 1 scoop de whey (imediato se quiser)
-- 150g de frango grelhado (ou atum, sardinha, carne magra)
-- 100g de arroz integral ou batata-doce (pode fazer tudo num dia e guardar)
-Legumes (brócolis, cenoura, tomate cru etc – pode ser do vapor, congelado ou cru mesmo)
-- 1 ovo cozido (extra se quiser reforçar proteína)
+- 150g de frango grelhado (ou atum/carne magra)
+- 100g de arroz integral
+- Legumes variados
 
 🕕 18:00 – Lanche da tarde
-- 1 iogurte grego zero ou
-- 1 fatia de queijo branco + 1 fatia de pão integral ou
 - 1 scoop de whey com água
+- 1 fruta leve (maçã ou banana pequena)
+- 1 punhado de castanhas (gordura e calorias extras)
 
 🕘 21:30–22:00 – Jantar / Ceia
 - 2 ovos cozidos ou mexidos + 1 lata de atum light escorrido
-- 1 fatia de pão integral ou 2 colheres de aveia
-Pepino/tomate/salada simples
-- (opcional): 1 colher de azeite
+- 1 fatia de pão integral Pepino/tomate/salada simples
+
+✅ Já chegou como clássico, um dos maiores jogos de todos os tempos. (Masterpiece)
+✅ Mostra de vez do que essa geração é capaz, o maior salto.
+✅ Os melhores gráficos até agora, fotorealismo, um absurdo técnico.
+✅ Kojima subiu mais um nível na genialidade.
+✅ É um privilégio sem tamanho viver isso ao vivo.
