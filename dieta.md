@@ -22,9 +22,3 @@
 🕘 21:30–22:00 – Jantar / Ceia
 - 2 ovos cozidos ou mexidos + 1 lata de atum light escorrido
 - 1 fatia de pão integral Pepino/tomate/salada simples
-
-✅ Já chegou como clássico, um dos maiores jogos de todos os tempos. (Masterpiece)
-✅ Mostra de vez do que essa geração é capaz, o maior salto.
-✅ Os melhores gráficos até agora, fotorealismo, um absurdo técnico.
-✅ Kojima subiu mais um nível na genialidade.
-✅ É um privilégio sem tamanho viver isso ao vivo.
