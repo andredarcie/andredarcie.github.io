@@ -39,4 +39,8 @@ Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e p
 ](https://dev.to/andredarcie/python-in-one-page-40bl) - 1k views
 - [Kafka](https://docs.google.com/presentation/d/e/2PACX-1vTIoni0A_M7Y06QSIDia4mocayuLTgsj7cuewz1oas84eabDvaLutNeeyRrOUxhhe8AhWFIPI6qhv_t/pub?start=false&loop=false&delayms=60000&slide=id.p)
 
+## Meus talks
+
+[Kafka](https://docs.google.com/presentation/d/e/2PACX-1vTIoni0A_M7Y06QSIDia4mocayuLTgsj7cuewz1oas84eabDvaLutNeeyRrOUxhhe8AhWFIPI6qhv_t/pub?start=true&loop=false&delayms=60000)
+
 
