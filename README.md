@@ -1,4 +1,4 @@
-André Nicolau Darcie é um desenvolvedor de software e cientista da computação com um foco especializado em desenvolvimento web backend e criação de jogos. Ele é apaixonado pela fusão de disciplinas humanísticas com ciências exatas, e de arte com tecnologia.
+André Nicolau Darcie é um desenvolvedor de software e cientista da computação com interesse em desenvolvimento web backend e criação de jogos. Ele é apaixonado pela fusão de disciplinas humanísticas com ciências exatas, e de arte com tecnologia.
 
 ## Carreira Profissional
 
@@ -6,9 +6,9 @@ Atualmente, é desenvolvedor sênior na NTT Data, uma das maiores consultorias d
 
 Possui bacharelado em Ciência da Computação e uma pós-graduação em Ciência de Dados Aplicada pela PUC Minas, onde estudou tópicos avançados como Inteligência Artificial e Machine Learning. Durante três anos, atuou no campo da iniciação científica, apoiado pelo CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico).
 
-Ele é contribuidor para o open-source, destacando-se com o [C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide), o [Curso Pragmático de ASP.NET](https://github.com/andredarcie/curso-pragmatico-de-csharp) e o [Awesome GTFS](https://github.com/andredarcie/awesome-gtfs), todos projetos populares no GitHub.
+Contribui para o open-source com projetos como o [C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide), o [Curso Pragmático de ASP.NET](https://github.com/andredarcie/curso-pragmatico-de-csharp) e o [Awesome GTFS](https://github.com/andredarcie/awesome-gtfs), que tiveram boa recepção no GitHub.
 
-É escritor no seu [blog](https://dev.to/andredarcie) onde aborda temas como tecnologia, realidade virtual, ciência, carreira, filosofia e arte, oferecendo insights e análises aprofundadas nessas áreas.
+Escreve no seu [blog](https://dev.to/andredarcie) sobre temas como tecnologia, realidade virtual, ciência, carreira, filosofia e arte.
 
 Organizador e fundador do [Clube de Leitura nas Montanhas](https://github.com/clube-de-leitura-nas-montanhas/agenda), uma iniciativa focada na leitura coletiva de livros técnicos e científicos. O clube tem como objetivo o desenvolvimento e aprimoramento profissional dos seus membros em suas respectivas carreiras.
 
@@ -24,9 +24,9 @@ Adotou um estilo de vida nômade digital e compartilha suas experiências e desc
 
 Como desenvolvedor de jogos, tem como os exemplos mais notaveis [Brian's Mansion](https://github.com/andredarcie/brians-mansion), [Insomnia](https://andredarcie.github.io/insomnia.html), [Life is Undefined](https://andredarcie.github.io/life-is-undefined/), [Get Out](https://andredarcie.github.io/get-out), [Zero to One](https://andredarcie.itch.io/zero-to-one) e [Zero The Hero](https://andredarcie.itch.io/zero-the-hero).
 
-Entusiasta de realidade virtual e realidade mista, e compartilha sua paixão através do seu [canal no TikTok](https://www.tiktok.com/@andre_do_vr), onde seus vídeos alcançaram milhões de visualizações. Ele já participou de uma campanha promocional do TikTok Brasil.
+Entusiasta de realidade virtual e realidade mista, compartilha sua paixão através do seu [canal no TikTok](https://www.tiktok.com/@andre_do_vr). Já participou de uma campanha promocional do TikTok Brasil.
 
-Ele é um apaixonado por diversas formas de arte e, ao longo de sua vida, catalogou meticulosamente todos os livros, filmes, séries, documentários e jogos que consumiu. Criando o repositorio de dados [My Life Data](https://github.com/andredarcie/my-life-data).
+Apaixonado por diversas formas de arte, ao longo da vida foi catalogando os livros, filmes, séries, documentários e jogos que consumiu, reunindo tudo no repositório [My Life Data](https://github.com/andredarcie/my-life-data).
 
 Jogos que está jogando atualmente no [OpenVideoGameData - tracker](https://www.openvideogamedata.com/users/darcie), e filmes no [Letterboxd](https://letterboxd.com/andredarcie/films/).
 
