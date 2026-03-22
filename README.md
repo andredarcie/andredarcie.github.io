@@ -36,16 +36,16 @@ Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e p
 
 Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 
-- **[Tiny RPG Studio](https://github.com/andredarcie/tiny-rpg-studio)** — Editor de RPG que roda no navegador, permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.
-- **[C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide)** — Guia de referência de C# que cobre conceitos do básico ao avançado por meio de exemplos de código.
-- **[Get Out](https://github.com/andredarcie/get-out)** — Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.
-- **[Zero The Hero](https://github.com/andredarcie/zero-the-hero-game)** — Jogo feito na engine open source Godot, inspirado em Zelda, com uma mecânica em que o personagem só pode carregar um item por vez.
-- **[Evo Sim](https://github.com/andredarcie/evo-sim)** — Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações e competindo pela sobrevivência.
-- **[Tiny Evolution](https://github.com/andredarcie/tiny-evolution)** — Simulador da vida no planeta Terra, do seu início até os dias de hoje.
-- **[Dev Match](https://github.com/andredarcie/dev-match)** — Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
-- **[My Life Data](https://github.com/andredarcie/my-life-data)** — Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
-- **[Clean Arch CQRS DDD Template](https://github.com/andredarcie/cleanarch-cqrs-ddd-template)** — Template de aplicação demonstrando Clean Architecture, Domain-Driven Design e CQRS com princípios SOLID.
-- **[My Code Codex](https://github.com/andredarcie/my-code-codex)** — Guia pessoal de desenvolvimento cobrindo boas práticas, arquitetura, padrões e tópicos de desenvolvimento profissional em .NET.
+- **[Tiny RPG Studio](https://github.com/andredarcie/tiny-rpg-studio)**:Editor de RPG que roda no navegador, permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.
+- **[C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide)**:Guia de referência de C# que cobre conceitos do básico ao avançado por meio de exemplos de código.
+- **[Get Out](https://github.com/andredarcie/get-out)**:Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.
+- **[Zero The Hero](https://github.com/andredarcie/zero-the-hero-game)**:Jogo feito na engine open source Godot, inspirado em Zelda, com uma mecânica em que o personagem só pode carregar um item por vez.
+- **[Evo Sim](https://github.com/andredarcie/evo-sim)**:Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações e competindo pela sobrevivência.
+- **[Tiny Evolution](https://github.com/andredarcie/tiny-evolution)**:Simulador da vida no planeta Terra, do seu início até os dias de hoje.
+- **[Dev Match](https://github.com/andredarcie/dev-match)**:Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
+- **[My Life Data](https://github.com/andredarcie/my-life-data)**:Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
+- **[Clean Arch CQRS DDD Template](https://github.com/andredarcie/cleanarch-cqrs-ddd-template)**:Template de aplicação demonstrando Clean Architecture, Domain-Driven Design e CQRS com princípios SOLID.
+- **[My Code Codex](https://github.com/andredarcie/my-code-codex)**:Guia pessoal de desenvolvimento cobrindo boas práticas, arquitetura, padrões e tópicos de desenvolvimento profissional em .NET.
 
 ## Meus Posts
 
