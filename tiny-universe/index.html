@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Solar</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body { background: #000; overflow: hidden; }
+    canvas { display: block; }
+
+    /* ── Header ── */
+    #header {
+      position: fixed; top: 26px; left: 28px;
+      pointer-events: none; z-index: 10;
+    }
+    #header h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: 17px; font-weight: 700; color: #fff;
+      letter-spacing: 0.1em; line-height: 1;
+    }
+    #header p {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; color: rgba(255,255,255,0.28);
+      letter-spacing: 0.22em; text-transform: uppercase; margin-top: 5px;
+    }
+
+    /* ── Controls ── */
+    #controls {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 12px 22px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      backdrop-filter: blur(12px); z-index: 10;
+    }
+
+    .ctrl-row {
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .ctrl-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; color: rgba(255,255,255,0.3);
+      letter-spacing: 0.18em; text-transform: uppercase; user-select: none;
+    }
+
+    #speed-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100px; height: 2px;
+      background: rgba(255,255,255,0.15); border-radius: 1px;
+      outline: none; cursor: pointer;
+    }
+    #speed-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 11px; height: 11px;
+      border-radius: 50%; background: rgba(255,255,255,0.85); cursor: pointer;
+    }
+
+    #speed-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: rgba(255,255,255,0.55); min-width: 40px;
+    }
+
+    .sep { width: 1px; height: 16px; background: rgba(255,255,255,0.07); }
+
+    .ctrl-btn {
+      font-family: 'Space Mono', monospace; font-size: 9px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 5px 13px; border-radius: 20px; cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .ctrl-btn:hover { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.22); }
+    .ctrl-btn.on { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.04); }
+    .ctrl-btn.pbd-active {
+      color: #a8d8f0; border-color: rgba(168,216,240,0.4);
+      background: rgba(168,216,240,0.06);
+    }
+    .ctrl-btn.scale-active {
+      color: #f0d890; border-color: rgba(240,216,144,0.4);
+      background: rgba(240,216,144,0.06);
+    }
+
+    /* ── Tooltip ── */
+    #tooltip {
+      position: fixed; pointer-events: none; z-index: 20;
+      background: rgba(4,7,18,0.94);
+      border: 1px solid rgba(255,255,255,0.09);
+      padding: 13px 16px; border-radius: 10px;
+      backdrop-filter: blur(12px);
+      opacity: 0; transition: opacity 0.12s ease;
+      transform: translate(18px,-50%); min-width: 185px;
+    }
+    #tooltip.show { opacity: 1; }
+    #tt-name {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 9px;
+    }
+    #tt-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .tt-row {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; color: rgba(255,255,255,0.38);
+      line-height: 1.9; letter-spacing: 0.02em;
+    }
+
+    /* ── Pale Blue Dot overlay ── */
+    #pbd-overlay {
+      position: fixed; inset: 0;
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: 130px;
+      pointer-events: none; z-index: 15;
+      opacity: 0; transition: opacity 1.2s ease;
+    }
+    #pbd-overlay.show { opacity: 1; }
+
+    #pbd-quote {
+      text-align: center; max-width: 520px; padding: 0 40px;
+    }
+    #pbd-quote p {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px; line-height: 2.1;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: 0.04em; font-style: italic;
+    }
+    #pbd-quote cite {
+      display: block; margin-top: 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; color: rgba(255,255,255,0.28);
+      letter-spacing: 0.22em; font-style: normal; text-transform: uppercase;
+    }
+
+    /* ── True Scale overlay ── */
+    #scale-overlay {
+      position: fixed; top: 26px; right: 28px;
+      pointer-events: none; z-index: 15; text-align: right;
+      opacity: 0; transition: opacity 0.8s ease;
+    }
+    #scale-overlay.show { opacity: 1; }
+
+    .scale-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; font-weight: 700; color: #f0d890;
+      letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .scale-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: rgba(255,255,255,0.6);
+      letter-spacing: 0.06em; margin-bottom: 12px; line-height: 1.5;
+    }
+    .scale-row {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; color: rgba(255,255,255,0.32);
+      line-height: 2.0; letter-spacing: 0.03em;
+    }
+    .scale-row span {
+      color: rgba(255,255,255,0.65);
+    }
+    .scale-note {
+      margin-top: 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; color: rgba(255,255,255,0.22);
+      letter-spacing: 0.08em; line-height: 1.7; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header">
+    <h1>SISTEMA SOLAR</h1>
+    <p>Simulação Interativa · 8 Planetas</p>
+  </div>
+
+  <div id="tooltip">
+    <div id="tt-name">
+      <div id="tt-dot"></div>
+      <span id="tt-name-text"></span>
+    </div>
+    <div id="tt-data"></div>
+  </div>
+
+  <!-- Pale Blue Dot overlay -->
+  <div id="pbd-overlay">
+    <div id="pbd-quote">
+      <p>"Olhe novamente para esse ponto.<br>
+      É aqui. É o lar. É nós.<br>
+      Nele, todos que você ama, todos que você conhece,<br>
+      cada ser humano que já existiu, viveu suas vidas."</p>
+      <cite>— Carl Sagan · Pale Blue Dot, 1994</cite>
+    </div>
+  </div>
+
+  <!-- True Scale overlay -->
+  <div id="scale-overlay">
+    <div class="scale-title">Escala Real</div>
+    <div class="scale-sub">Se o Sol tivesse<br>1 metro de diâmetro...</div>
+    <div class="scale-row">Terra orbitaria a <span>107 metros</span></div>
+    <div class="scale-row">Marte orbitaria a <span>163 metros</span></div>
+    <div class="scale-row">Júpiter orbitaria a <span>556 metros</span></div>
+    <div class="scale-row">Netuno orbitaria a <span>3,2 km</span></div>
+    <div class="scale-row">Próxima Centauri a <span>28.000 km</span></div>
+    <div class="scale-note">Nessa tela, todos os planetas<br>são menores que 1 pixel.</div>
+  </div>
+
+  <div id="controls">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Vel.</span>
+      <input type="range" id="speed-slider" min="1" max="300" value="40">
+      <span id="speed-val">40×</span>
+      <div class="sep"></div>
+      <button id="btn-orbits" class="ctrl-btn on">Órbitas</button>
+    </div>
+    <div class="ctrl-row">
+      <button id="btn-pbd"   class="ctrl-btn">● Pale Blue Dot</button>
+      <div class="sep"></div>
+      <button id="btn-scale" class="ctrl-btn">⬡ Escala Real</button>
+    </div>
+  </div>
+
+  <script>
+    // ── UI State ──────────────────────────────────────────────
+    let timeScale    = 40;
+    let showOrbits   = true;
+    let trueScaleMode = false;
+    let trueScaleT    = 0;      // 0 = artistic, 1 = true scale
+    let pbdMode       = false;
+    let pbdZoom       = 1.0;    // 1 = normal, →0.1 when active
+    let pbdOverlayOn  = false;
+    let scaleOverlayOn = false;
+
+    const sliderEl    = document.getElementById('speed-slider');
+    const speedValEl  = document.getElementById('speed-val');
+    const btnOrbits   = document.getElementById('btn-orbits');
+    const btnPbd      = document.getElementById('btn-pbd');
+    const btnScale    = document.getElementById('btn-scale');
+    const tooltipEl   = document.getElementById('tooltip');
+    const ttNameEl    = document.getElementById('tt-name-text');
+    const ttDotEl     = document.getElementById('tt-dot');
+    const ttDataEl    = document.getElementById('tt-data');
+    const pbdOverlay  = document.getElementById('pbd-overlay');
+    const scaleOverlay = document.getElementById('scale-overlay');
+
+    sliderEl.addEventListener('input', () => {
+      timeScale = +sliderEl.value;
+      speedValEl.textContent = timeScale + '×';
+    });
+
+    btnOrbits.addEventListener('click', () => {
+      showOrbits = !showOrbits;
+      btnOrbits.classList.toggle('on', showOrbits);
+    });
+
+    btnPbd.addEventListener('click', () => {
+      pbdMode = !pbdMode;
+      btnPbd.classList.toggle('pbd-active', pbdMode);
+      if (pbdMode) {
+        // Deactivate true scale
+        trueScaleMode = false;
+        btnScale.classList.remove('scale-active');
+      }
+    });
+
+    btnScale.addEventListener('click', () => {
+      trueScaleMode = !trueScaleMode;
+      btnScale.classList.toggle('scale-active', trueScaleMode);
+      if (trueScaleMode) {
+        // Deactivate PBD
+        pbdMode = false;
+        btnPbd.classList.remove('pbd-active');
+        pbdZoom = 1.0;
+        setOverlay(pbdOverlay, false);
+      }
+    });
+
+    function setOverlay(el, show) {
+      if (show) el.classList.add('show');
+      else      el.classList.remove('show');
+    }
+
+    // ── p5.js Sketch ──────────────────────────────────────────
+    let planets   = [];
+    let stars     = [];
+    let asteroids = [];
+    let hoveredPlanet = null;
+
+    // True scale: pixels per AU
+    let AU_PX = 10;
+    const SUN_RADIUS_KM = 696340;
+    const SUN_RADIUS_AU = SUN_RADIUS_KM / 149597870;
+    const MIN_TRUE_SUN_RADIUS_PX = 12;
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      generateStars();
+      initPlanets();
+      generateAsteroids();
+    }
+
+    // ── Stars ─────────────────────────────────────────────────
+    function generateStars() {
+      stars = [];
+      for (let i = 0; i < 580; i++) {
+        stars.push({
+          x: random(width), y: random(height),
+          sz: random(0.4, 2.1),
+          baseA: random(55, 195),
+          phase: random(TWO_PI),
+          freq:  random(0.004, 0.024)
+        });
+      }
+    }
+
+    // ── Planets ───────────────────────────────────────────────
+    function initPlanets() {
+      const sc = min(width, height) / 1150;
+
+      // True scale: Neptune at 43% of half-screen
+      AU_PX = min(width, height) * 0.43 / 30.07;
+
+      // Real AU distances and km radii
+      const realAU  = [0.387, 0.723, 1.0,  1.524, 5.203, 9.537, 19.19, 30.07];
+      const realKm  = [2440,  6051,  6371, 3390,  69911, 58232, 25362, 24622];
+
+      const data = [
+        { name:'Mercúrio', orbit:78,  rad:3.8,  cr:188,cg:183,cb:175, hex:'#bcb7af', period:88,
+          facts:['0.39 UA do Sol','Período: 88 dias','Diâm: 4.879 km','Sem atmosfera'] },
+        { name:'Vênus',    orbit:125, rad:7.2,  cr:234,cg:190,cb:100, hex:'#eabf64', period:225,
+          facts:['0.72 UA do Sol','Período: 225 dias','Diâm: 12.104 km','CO₂ — 462 °C na superfície'] },
+        { name:'Terra',    orbit:175, rad:7.8,  cr:62,cg:172,cb:248,  hex:'#3eacf8', period:365,
+          facts:['1.00 UA do Sol','Período: 365 dias','Diâm: 12.742 km','Única com vida conhecida'],
+          hasMoon:true, moonOrbit:20, moonRad:2.2, moonPeriod:27.3 },
+        { name:'Marte',    orbit:228, rad:5.2,  cr:213,cg:76,cb:50,   hex:'#d54c32', period:687,
+          facts:['1.52 UA do Sol','Período: 687 dias','Diâm: 6.779 km','2 luas: Fobos e Deimos'] },
+        { name:'Júpiter',  orbit:322, rad:22,   cr:216,cg:157,cb:94,  hex:'#d89d5e', period:4333,
+          facts:['5.20 UA do Sol','Período: 11.9 anos','Diâm: 139.820 km','95 satélites conhecidos'] },
+        { name:'Saturno',  orbit:415, rad:17.5, cr:228,cg:208,cb:132, hex:'#e4d084', period:10759,
+          facts:['9.58 UA do Sol','Período: 29.5 anos','Diâm: 116.460 km','Sistema de anéis único'],
+          hasRings:true },
+        { name:'Urano',    orbit:495, rad:12.5, cr:125,cg:213,cb:218, hex:'#7dd5da', period:30687,
+          facts:['19.2 UA do Sol','Período: 84 anos','Diâm: 50.724 km','Eixo de rotação: 98°'] },
+        { name:'Netuno',   orbit:562, rad:12,   cr:52,cg:85,cb:220,   hex:'#3455dc', period:60190,
+          facts:['30.1 UA do Sol','Período: 165 anos','Diâm: 49.244 km','Ventos de até 2.100 km/h'] }
+      ];
+
+      const sunTrueRadiusPx = AU_PX * SUN_RADIUS_AU;
+      const trueSizeBoost = max(1, MIN_TRUE_SUN_RADIUS_PX / sunTrueRadiusPx);
+
+      planets = data.map((d, i) => {
+        const p = Object.assign({}, d);
+        p.orbitPx    = d.orbit * sc;
+        p.radPx      = d.rad   * sc;
+        p.angle      = random(TWO_PI);
+        p.angSpeed   = TWO_PI / d.period;
+        p.x = 0; p.y = 0;
+        p.dispOrb = p.orbitPx;
+        p.dispRad = p.radPx;
+
+        // True scale values
+        p.trueOrbitPx = realAU[i] * AU_PX;
+        p.trueRadPx = (realKm[i] / SUN_RADIUS_KM) * sunTrueRadiusPx * trueSizeBoost;
+
+        if (d.hasMoon) {
+          p.moonOrbitPx   = d.moonOrbit * sc;
+          p.moonRadPx     = d.moonRad   * sc;
+          p.moonAngle     = random(TWO_PI);
+          p.moonAngSpeed  = TWO_PI / d.moonPeriod;
+        }
+        return p;
+      });
+    }
+
+    // ── Asteroid belt ─────────────────────────────────────────
+    function generateAsteroids() {
+      asteroids = [];
+      const sc = min(width, height) / 1150;
+      // Artistic belt: 248-302 * sc px → ~2.2–3.2 AU
+      for (let i = 0; i < 320; i++) {
+        const artR = random(248, 302) * sc;
+        const au   = 2.2 + (artR - 248 * sc) / (54 * sc) * 1.0; // ~2.2–3.2 AU
+        asteroids.push({
+          angle:    random(TWO_PI),
+          orbitR:   artR,
+          trueOrbitR: au * AU_PX,
+          sz:       random(0.5, 1.9),
+          speed:    TWO_PI / random(900, 1850),
+          alpha:    random(22, 72)
+        });
+      }
+    }
+
+    // ── draw ──────────────────────────────────────────────────
+    function draw() {
+      background(4, 7, 16);
+
+      const cx = width / 2, cy = height / 2;
+      const sc = min(width, height) / 1150;
+      const dt = min(deltaTime / 1000, 0.1);
+
+      // ── Animate mode transitions ──
+      if (trueScaleMode) trueScaleT = min(1, trueScaleT + dt * 0.65);
+      else               trueScaleT = max(0, trueScaleT - dt * 0.65);
+
+      if (pbdMode)  pbdZoom = max(0.10, pbdZoom - dt * 0.45);
+      else          pbdZoom = min(1.0,  pbdZoom + dt * 0.7);
+
+      // Show/hide PBD overlay
+      const shouldShowPbd = pbdMode && pbdZoom <= 0.14;
+      if (shouldShowPbd !== pbdOverlayOn) {
+        pbdOverlayOn = shouldShowPbd;
+        setOverlay(pbdOverlay, pbdOverlayOn);
+      }
+
+      // Show/hide scale overlay
+      const shouldShowScale = trueScaleT > 0.5;
+      if (shouldShowScale !== scaleOverlayOn) {
+        scaleOverlayOn = shouldShowScale;
+        setOverlay(scaleOverlay, scaleOverlayOn);
+      }
+
+      // ── Compute sun display radius ──
+      const sunArtRad  = 34 * sc;
+      const sunTrueRad = max(AU_PX * SUN_RADIUS_AU, MIN_TRUE_SUN_RADIUS_PX);
+      const sunDispRad = pbdMode
+        ? max(1.5, lerp(sunArtRad, sunTrueRad, trueScaleT) * pbdZoom)
+        : lerp(sunArtRad, sunTrueRad, trueScaleT) * pbdZoom;
+
+      // ── Compute display values for each planet ──
+      planets.forEach(p => {
+        p.dispOrb = lerp(p.orbitPx, p.trueOrbitPx, trueScaleT) * pbdZoom;
+        p.dispRad = lerp(p.radPx, p.trueRadPx, trueScaleT) * pbdZoom;
+        if (p.hasMoon) {
+          p.moonDispOrb = p.moonOrbitPx * pbdZoom;
+          p.moonDispRad = max(0.8, p.moonRadPx * pbdZoom);
+        }
+      });
+
+      // ── Draw layers ──
+      drawStars();
+      drawNebulaGlow(cx, cy);
+      if (showOrbits && !pbdMode) drawOrbits(cx, cy);
+
+      // Asteroid belt
+      if (!pbdMode) {
+        noStroke();
+        asteroids.forEach(a => {
+          a.angle += a.speed * timeScale * dt;
+          const r = lerp(a.orbitR, a.trueOrbitR, trueScaleT) * pbdZoom;
+          const ax = cx + cos(a.angle) * r;
+          const ay = cy + sin(a.angle) * r;
+          fill(152, 144, 132, a.alpha * (1 - trueScaleT * 0.8));
+          ellipse(ax, ay, a.sz);
+        });
+
+        drawSun(cx, cy, sunDispRad);
+      }
+
+      // ── Update planet positions & hover ──
+      hoveredPlanet = null;
+      planets.forEach(p => {
+        p.angle += p.angSpeed * timeScale * dt;
+        if (p.hasMoon) p.moonAngle += p.moonAngSpeed * timeScale * dt;
+
+        if (pbdMode && p.name === 'Terra') {
+          p.x = cx;
+          p.y = cy;
+        } else {
+          p.x = cx + cos(p.angle) * p.dispOrb;
+          p.y = cy + sin(p.angle) * p.dispOrb;
+        }
+
+        if (!pbdMode && dist(mouseX, mouseY, p.x, p.y) < max(p.dispRad + 8, 12)) {
+          hoveredPlanet = p;
+        }
+      });
+
+      // ── Render planets ──
+      planets.forEach(p => {
+        if (pbdMode && p.name !== 'Terra') return;
+
+        const hov = hoveredPlanet === p;
+
+        // Moon
+        if (p.hasMoon && !pbdMode) {
+          const mx = p.x + cos(p.moonAngle) * p.moonDispOrb;
+          const my = p.y + sin(p.moonAngle) * p.moonDispOrb;
+          if (showOrbits) {
+            noFill(); stroke(255,255,255,16); strokeWeight(0.5);
+            ellipse(p.x, p.y, p.moonDispOrb * 2);
+          }
+          drawingContext.shadowBlur  = 8;
+          drawingContext.shadowColor = 'rgba(200,200,215,0.55)';
+          noStroke(); fill(192, 192, 208, 220);
+          ellipse(mx, my, max(0.8, p.moonDispRad) * 2);
+          drawingContext.shadowBlur = 0;
+        }
+
+        if (pbdMode) {
+          drawPaleBlueDot(p);
+          return;
+        }
+
+        if (p.hasRings && sin(p.angle) < 0) drawRings(p);
+        drawPlanet(p, hov);
+        if (p.hasRings && sin(p.angle) >= 0) drawRings(p);
+
+        // Label in true scale mode OR hover
+        const showLabel = hov || (trueScaleT > 0.6 && p.dispRad < 4);
+        if (showLabel) {
+          noStroke();
+          fill(255, 255, 255, hov ? 185 : 110 * trueScaleT);
+          textAlign(CENTER); textFont('Space Mono'); textSize(9);
+          text(p.name.toUpperCase(), p.x, p.y - p.dispRad - 9);
+        }
+      });
+
+      // ── PBD Earth indicator ──
+      // ── HTML tooltip ──
+      if (hoveredPlanet && !pbdMode) {
+        const p = hoveredPlanet;
+        tooltipEl.style.left = p.x + 'px';
+        tooltipEl.style.top  = p.y + 'px';
+        ttNameEl.textContent     = p.name;
+        ttDotEl.style.background = p.hex;
+        ttDataEl.innerHTML = p.facts.map(f => `<div class="tt-row">${f}</div>`).join('');
+        tooltipEl.classList.add('show');
+      } else {
+        tooltipEl.classList.remove('show');
+      }
+    }
+
+    // ── Draw helpers ──────────────────────────────────────────
+
+    function drawStars() {
+      noStroke();
+      stars.forEach(s => {
+        const tw = sin(frameCount * s.freq + s.phase);
+        const a  = constrain(s.baseA + tw * 38, 0, 255);
+        const sz = s.sz * (1 + tw * 0.14);
+        fill(255, 255, 255, a);
+        ellipse(s.x, s.y, sz);
+      });
+    }
+
+    function drawNebulaGlow(cx, cy) {
+      noStroke();
+      fill(14, 20, 52, 10); ellipse(cx,       cy,       820, 620);
+      fill(9,  14, 42, 7);  ellipse(cx + 110, cy - 90,  600, 390);
+      fill(7,  11, 36, 5);  ellipse(cx - 130, cy + 70,  500, 340);
+    }
+
+    function drawOrbits(cx, cy) {
+      noFill(); strokeWeight(0.7);
+      planets.forEach(p => {
+        stroke(255, 255, 255, 45);
+        ellipse(cx, cy, p.dispOrb * 2);
+      });
+    }
+
+    function drawSun(cx, cy, r) {
+      noStroke();
+      // Corona halos (scale with r)
+      fill(255, 95,  10,  3); ellipse(cx, cy, r * 20);
+      fill(255, 108, 14,  5); ellipse(cx, cy, r * 15);
+      fill(255, 120, 17,  8); ellipse(cx, cy, r * 11);
+      fill(255, 135, 22, 13); ellipse(cx, cy, r *  8);
+      fill(255, 150, 28, 20); ellipse(cx, cy, r *  5.5);
+      fill(255, 162, 33, 32); ellipse(cx, cy, r *  3.8);
+      fill(255, 172, 40, 48); ellipse(cx, cy, r *  2.7);
+
+      drawingContext.shadowBlur  = max(8, 55 * pbdZoom);
+      drawingContext.shadowColor = 'rgba(255,152,22,0.78)';
+
+      fill(255, 255, 215); ellipse(cx, cy, r * 2.0);
+      fill(255, 234, 128); ellipse(cx, cy, r * 1.7);
+      fill(255, 196,  52); ellipse(cx, cy, r * 1.3);
+      fill(255, 214,  82); ellipse(cx, cy, r * 0.88);
+      fill(255, 252, 185); ellipse(cx, cy, r * 0.40);
+
+      drawingContext.shadowBlur = 0;
+    }
+
+    function drawPlanet(p, hovered) {
+      noStroke();
+      drawingContext.shadowBlur  = hovered ? 30 : 16;
+      drawingContext.shadowColor = `rgba(${p.cr},${p.cg},${p.cb},0.88)`;
+
+      fill(p.cr, p.cg, p.cb);
+      ellipse(p.x, p.y, p.dispRad * 2);
+
+      // Specular highlight (only when large enough)
+      if (p.dispRad > 3) {
+        fill(255, 255, 255, hovered ? 85 : 58);
+        ellipse(p.x - p.dispRad * 0.27, p.y - p.dispRad * 0.28, p.dispRad * 0.62);
+      }
+      drawingContext.shadowBlur = 0;
+
+      // Earth atmosphere
+      if (p.name === 'Terra' && p.dispRad > 2) {
+        fill(p.cr, p.cg, p.cb, 30);
+        ellipse(p.x, p.y, p.dispRad * 2.7);
+      }
+    }
+
+    function drawPaleBlueDot(earth) {
+      const dotRadius = max(0.8, min(1.35, earth.dispRad * 0.16));
+      const t = map(pbdZoom, 0.25, 0.10, 0, 1, true);
+
+      drawingContext.shadowBlur  = 10 * t;
+      drawingContext.shadowColor = `rgba(62,172,248,${0.45 * t})`;
+      noStroke();
+      fill(62, 172, 248, 235);
+      ellipse(earth.x, earth.y, dotRadius * 2);
+      drawingContext.shadowBlur = 0;
+
+      if (pbdZoom < 0.25) {
+        const lx = earth.x + 32;
+        const ly = earth.y - 16;
+        stroke(255, 255, 255, 70 * t);
+        strokeWeight(0.6);
+        line(earth.x, earth.y, lx - 4, ly + 4);
+        noStroke();
+        fill(255, 255, 255, 100 * t);
+        textFont('Space Mono');
+        textSize(8);
+        textAlign(LEFT);
+        text('TERRA', lx, ly);
+      }
+    }
+
+    function drawRings(p) {
+      noFill();
+      const inner = p.dispRad * 1.35;
+      const outer = p.dispRad * 2.45;
+      const step  = 1.4;
+      for (let r = inner; r <= outer; r += step) {
+        const t    = (r - inner) / (outer - inner);
+        const a    = sin(t * PI) * 92 + 14;
+        const warm = 1 - t * 0.28;
+        stroke(228 * warm, 206 * warm, 118 * warm, a);
+        strokeWeight(step * 0.85);
+        ellipse(p.x, p.y, r * 2, r * 0.38);
+      }
+      noStroke();
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+      generateStars();
+      initPlanets();
+      generateAsteroids();
+    }
+  </script>
+</body>
+</html>
