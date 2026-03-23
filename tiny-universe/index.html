@@ -87,6 +87,10 @@
       color: #f0d890; border-color: rgba(240,216,144,0.4);
       background: rgba(240,216,144,0.06);
     }
+    .ctrl-btn.realtime-active {
+      color: #9ee0b2; border-color: rgba(158,224,178,0.42);
+      background: rgba(158,224,178,0.08);
+    }
 
     /* ── Tooltip ── */
     #tooltip {
@@ -169,6 +173,30 @@
       font-size: 9px; color: rgba(255,255,255,0.22);
       letter-spacing: 0.08em; line-height: 1.7; text-transform: uppercase;
     }
+    #realtime-overlay {
+      position: fixed; top: 150px; right: 28px;
+      pointer-events: none; z-index: 15; text-align: right;
+      opacity: 0; transition: opacity 0.35s ease;
+      max-width: 280px;
+    }
+    #realtime-overlay.show { opacity: 1; }
+    .rt-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; font-weight: 700; color: #9ee0b2;
+      letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .rt-line {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; color: rgba(255,255,255,0.54);
+      letter-spacing: 0.03em; line-height: 1.8;
+    }
+    .rt-line strong {
+      color: rgba(255,255,255,0.82);
+      font-weight: 700;
+    }
+    .rt-line.error {
+      color: rgba(255,148,148,0.78);
+    }
   </style>
 </head>
 <body>
@@ -194,6 +222,8 @@
       Nele, todos que você ama, todos que você conhece,<br>
       cada ser humano que já existiu, viveu suas vidas."</p>
       <cite>— Carl Sagan · Pale Blue Dot, 1994</cite>
+      <div class="sep"></div>
+      <button id="btn-realtime" class="ctrl-btn">â— Real Time</button>
     </div>
   </div>
 
@@ -207,6 +237,13 @@
     <div class="scale-row">Netuno orbitaria a <span>3,2 km</span></div>
     <div class="scale-row">Próxima Centauri a <span>28.000 km</span></div>
     <div class="scale-note">Nessa tela, todos os planetas<br>são menores que 1 pixel.</div>
+  </div>
+
+  <div id="realtime-overlay">
+    <div class="rt-title">Real Time</div>
+    <div id="rt-local" class="rt-line"></div>
+    <div id="rt-status" class="rt-line"></div>
+    <div id="rt-updated" class="rt-line"></div>
   </div>
 
   <div id="controls">
@@ -234,18 +271,44 @@
     let pbdZoom       = 1.0;    // 1 = normal, →0.1 when active
     let pbdOverlayOn  = false;
     let scaleOverlayOn = false;
+    let realTimeMode   = false;
+    let realTimeLoading = false;
+    let realTimeError   = '';
+    let realTimeFetchedAt = '';
+    let realTimeLastFetchMs = 0;
+    let realTimeOverlayOn = false;
 
     const sliderEl    = document.getElementById('speed-slider');
     const speedValEl  = document.getElementById('speed-val');
+    const controlsEl  = document.getElementById('controls');
     const btnOrbits   = document.getElementById('btn-orbits');
     const btnPbd      = document.getElementById('btn-pbd');
     const btnScale    = document.getElementById('btn-scale');
+    const btnRealTime = document.getElementById('btn-realtime');
     const tooltipEl   = document.getElementById('tooltip');
     const ttNameEl    = document.getElementById('tt-name-text');
     const ttDotEl     = document.getElementById('tt-dot');
     const ttDataEl    = document.getElementById('tt-data');
     const pbdOverlay  = document.getElementById('pbd-overlay');
     const scaleOverlay = document.getElementById('scale-overlay');
+    const realTimeOverlay = document.getElementById('realtime-overlay');
+    const rtLocalEl = document.getElementById('rt-local');
+    const rtStatusEl = document.getElementById('rt-status');
+    const rtUpdatedEl = document.getElementById('rt-updated');
+
+    if (btnRealTime && controlsEl) {
+      const straySep = btnRealTime.previousElementSibling;
+      if (straySep && straySep.classList.contains('sep')) straySep.remove();
+      const rows = controlsEl.querySelectorAll('.ctrl-row');
+      const buttonRow = rows[1];
+      if (buttonRow && btnRealTime.parentElement !== buttonRow) {
+        const sepEl = document.createElement('div');
+        sepEl.className = 'sep';
+        buttonRow.appendChild(sepEl);
+        buttonRow.appendChild(btnRealTime);
+      }
+      btnRealTime.textContent = 'Real Time';
+    }
 
     sliderEl.addEventListener('input', () => {
       timeScale = +sliderEl.value;
@@ -279,6 +342,21 @@
       }
     });
 
+    if (btnRealTime) {
+      btnRealTime.addEventListener('click', async () => {
+        realTimeMode = !realTimeMode;
+        btnRealTime.classList.toggle('realtime-active', realTimeMode);
+
+        if (realTimeMode) {
+          pbdMode = false;
+          btnPbd.classList.remove('pbd-active');
+          pbdZoom = 1.0;
+          setOverlay(pbdOverlay, false);
+          await fetchRealTimePositions();
+        }
+      });
+    }
+
     function setOverlay(el, show) {
       if (show) el.classList.add('show');
       else      el.classList.remove('show');
@@ -292,9 +370,22 @@
 
     // True scale: pixels per AU
     let AU_PX = 10;
+    let REALTIME_AU_PX = 10;
     const SUN_RADIUS_KM = 696340;
     const SUN_RADIUS_AU = SUN_RADIUS_KM / 149597870;
     const MIN_TRUE_SUN_RADIUS_PX = 12;
+    const REALTIME_REFRESH_MS = 5 * 60 * 1000;
+    const J2000_MS = Date.UTC(2000, 0, 1, 12, 0, 0);
+    const REALTIME_ELEMENTS = [
+      { a:0.38709927, e:0.20563593, i:7.00497902, L0:252.25032350, longPeri:77.45779628, node:48.33076593, periodDays:87.9691 },
+      { a:0.72333566, e:0.00677672, i:3.39467605, L0:181.97909950, longPeri:131.60246718, node:76.67984255, periodDays:224.70069 },
+      { a:1.00000261, e:0.01671123, i:0.00001531, L0:100.46457166, longPeri:102.93768193, node:0.0, periodDays:365.25636 },
+      { a:1.52371034, e:0.09339410, i:1.84969142, L0:-4.55343205, longPeri:-23.94362959, node:49.55953891, periodDays:686.97959 },
+      { a:5.20288700, e:0.04838624, i:1.30439695, L0:34.39644051, longPeri:14.72847983, node:100.47390909, periodDays:4332.8201 },
+      { a:9.53667594, e:0.05386179, i:2.48599187, L0:49.95424423, longPeri:92.59887831, node:113.66242448, periodDays:10755.699 },
+      { a:19.18916464, e:0.04725744, i:0.77263783, L0:313.23810451, longPeri:170.95427630, node:74.01692503, periodDays:30687.153 },
+      { a:30.06992276, e:0.00859048, i:1.77004347, L0:-55.12002969, longPeri:44.96476227, node:131.78422574, periodDays:60190.03 }
+    ];
 
     function setup() {
       createCanvas(windowWidth, windowHeight);
@@ -323,6 +414,8 @@
 
       // True scale: Neptune at 43% of half-screen
       AU_PX = min(width, height) * 0.43 / 30.07;
+      // Real Time: zoom focused on the inner solar system, with Mars near the frame edge
+      REALTIME_AU_PX = min(width, height) * 0.30 / 1.524;
 
       // Real AU distances and km radii
       const realAU  = [0.387, 0.723, 1.0,  1.524, 5.203, 9.537, 19.19, 30.07];
@@ -361,6 +454,9 @@
         p.x = 0; p.y = 0;
         p.dispOrb = p.orbitPx;
         p.dispRad = p.radPx;
+        p.realXAu = null;
+        p.realYAu = null;
+        p.realZAu = null;
 
         // True scale values
         p.trueOrbitPx = realAU[i] * AU_PX;
@@ -402,6 +498,7 @@
       const cx = width / 2, cy = height / 2;
       const sc = min(width, height) / 1150;
       const dt = min(deltaTime / 1000, 0.1);
+      const renderAuPx = realTimeMode ? REALTIME_AU_PX : AU_PX;
 
       // ── Animate mode transitions ──
       if (trueScaleMode) trueScaleT = min(1, trueScaleT + dt * 0.65);
@@ -424,17 +521,32 @@
         setOverlay(scaleOverlay, scaleOverlayOn);
       }
 
+      if (realTimeMode && !realTimeLoading && millis() - realTimeLastFetchMs > REALTIME_REFRESH_MS) {
+        fetchRealTimePositions();
+      }
+
+      const shouldShowRealTime = realTimeMode || realTimeLoading || !!realTimeError;
+      if (shouldShowRealTime !== realTimeOverlayOn) {
+        realTimeOverlayOn = shouldShowRealTime;
+        setOverlay(realTimeOverlay, realTimeOverlayOn);
+      }
+      updateRealTimeOverlay();
+
       // ── Compute sun display radius ──
       const sunArtRad  = 34 * sc;
       const sunTrueRad = max(AU_PX * SUN_RADIUS_AU, MIN_TRUE_SUN_RADIUS_PX);
-      const sunDispRad = pbdMode
-        ? max(1.5, lerp(sunArtRad, sunTrueRad, trueScaleT) * pbdZoom)
-        : lerp(sunArtRad, sunTrueRad, trueScaleT) * pbdZoom;
+      const sunDispRad = realTimeMode
+        ? sunArtRad
+        : (pbdMode
+          ? max(1.5, lerp(sunArtRad, sunTrueRad, trueScaleT) * pbdZoom)
+          : lerp(sunArtRad, sunTrueRad, trueScaleT) * pbdZoom);
 
       // ── Compute display values for each planet ──
       planets.forEach(p => {
         p.dispOrb = lerp(p.orbitPx, p.trueOrbitPx, trueScaleT) * pbdZoom;
-        p.dispRad = lerp(p.radPx, p.trueRadPx, trueScaleT) * pbdZoom;
+        p.dispRad = realTimeMode
+          ? p.radPx
+          : lerp(p.radPx, p.trueRadPx, trueScaleT) * pbdZoom;
         if (p.hasMoon) {
           p.moonDispOrb = p.moonOrbitPx * pbdZoom;
           p.moonDispRad = max(0.8, p.moonRadPx * pbdZoom);
@@ -444,7 +556,7 @@
       // ── Draw layers ──
       drawStars();
       drawNebulaGlow(cx, cy);
-      if (showOrbits && !pbdMode) drawOrbits(cx, cy);
+      if (showOrbits && !pbdMode && !realTimeMode) drawOrbits(cx, cy);
 
       // Asteroid belt
       if (!pbdMode) {
@@ -458,18 +570,26 @@
           ellipse(ax, ay, a.sz);
         });
 
-        drawSun(cx, cy, sunDispRad);
+        if (!realTimeMode) drawSun(cx, cy, sunDispRad);
       }
 
       // ── Update planet positions & hover ──
       hoveredPlanet = null;
       planets.forEach(p => {
-        p.angle += p.angSpeed * timeScale * dt;
-        if (p.hasMoon) p.moonAngle += p.moonAngSpeed * timeScale * dt;
+        const hasRealTimePosition = realTimeMode && Number.isFinite(p.realXAu) && Number.isFinite(p.realYAu);
+
+        if (!hasRealTimePosition) {
+          p.angle += p.angSpeed * timeScale * dt;
+          if (p.hasMoon) p.moonAngle += p.moonAngSpeed * timeScale * dt;
+        }
 
         if (pbdMode && p.name === 'Terra') {
           p.x = cx;
           p.y = cy;
+        } else if (hasRealTimePosition) {
+          p.angle = atan2(-p.realYAu, p.realXAu);
+          p.x = cx + p.realXAu * renderAuPx;
+          p.y = cy - p.realYAu * renderAuPx;
         } else {
           p.x = cx + cos(p.angle) * p.dispOrb;
           p.y = cy + sin(p.angle) * p.dispOrb;
@@ -487,7 +607,7 @@
         const hov = hoveredPlanet === p;
 
         // Moon
-        if (p.hasMoon && !pbdMode) {
+        if (p.hasMoon && !pbdMode && !realTimeMode) {
           const mx = p.x + cos(p.moonAngle) * p.moonDispOrb;
           const my = p.y + sin(p.moonAngle) * p.moonDispOrb;
           if (showOrbits) {
@@ -511,10 +631,10 @@
         if (p.hasRings && sin(p.angle) >= 0) drawRings(p);
 
         // Label in true scale mode OR hover
-        const showLabel = hov || (trueScaleT > 0.6 && p.dispRad < 4);
+        const showLabel = realTimeMode || hov || (trueScaleT > 0.6 && p.dispRad < 4);
         if (showLabel) {
           noStroke();
-          fill(255, 255, 255, hov ? 185 : 110 * trueScaleT);
+          fill(255, 255, 255, realTimeMode ? 145 : (hov ? 185 : 110 * trueScaleT));
           textAlign(CENTER); textFont('Space Mono'); textSize(9);
           text(p.name.toUpperCase(), p.x, p.y - p.dispRad - 9);
         }
@@ -522,6 +642,10 @@
 
       // ── PBD Earth indicator ──
       // ── HTML tooltip ──
+      if (!pbdMode && realTimeMode) {
+        drawSun(cx, cy, sunDispRad);
+      }
+
       if (hoveredPlanet && !pbdMode) {
         const p = hoveredPlanet;
         tooltipEl.style.left = p.x + 'px';
@@ -632,6 +756,124 @@
         textAlign(LEFT);
         text('TERRA', lx, ly);
       }
+    }
+
+    function formatUtcLabel(date) {
+      return date.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+    }
+
+    function formatLocalDateTime(date) {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
+      const formatted = new Intl.DateTimeFormat(undefined, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(date);
+      return `${formatted} (${timeZone})`;
+    }
+
+    function degToRad(deg) {
+      return deg * PI / 180;
+    }
+
+    function normalizeDegrees(deg) {
+      return ((deg % 360) + 360) % 360;
+    }
+
+    function solveEccentricAnomaly(meanAnomalyRad, eccentricity) {
+      let E = meanAnomalyRad;
+      for (let i = 0; i < 7; i++) {
+        E -= (E - eccentricity * sin(E) - meanAnomalyRad) / (1 - eccentricity * cos(E));
+      }
+      return E;
+    }
+
+    function computeHeliocentricPosition(elements, date) {
+      const daysSinceJ2000 = (date.getTime() - J2000_MS) / 86400000;
+      const meanLongitude = elements.L0 + (360 / elements.periodDays) * daysSinceJ2000;
+      const meanAnomaly = normalizeDegrees(meanLongitude - elements.longPeri);
+      const meanAnomalyRad = degToRad(meanAnomaly);
+      const eccentricAnomaly = solveEccentricAnomaly(meanAnomalyRad, elements.e);
+
+      const xv = elements.a * (cos(eccentricAnomaly) - elements.e);
+      const yv = elements.a * sqrt(1 - elements.e * elements.e) * sin(eccentricAnomaly);
+      const trueAnomaly = atan2(yv, xv);
+      const radius = sqrt(xv * xv + yv * yv);
+
+      const inclination = degToRad(elements.i);
+      const ascendingNode = degToRad(elements.node);
+      const argumentPerihelion = degToRad(elements.longPeri - elements.node);
+      const angle = trueAnomaly + argumentPerihelion;
+
+      return {
+        x: radius * (cos(ascendingNode) * cos(angle) - sin(ascendingNode) * sin(angle) * cos(inclination)),
+        y: radius * (sin(ascendingNode) * cos(angle) + cos(ascendingNode) * sin(angle) * cos(inclination)),
+        z: radius * sin(angle) * sin(inclination)
+      };
+    }
+
+    async function fetchRealTimePositions() {
+      if (realTimeLoading) return;
+
+      realTimeLoading = true;
+      realTimeError = '';
+      updateRealTimeOverlay();
+
+      const now = new Date();
+
+      try {
+        planets.forEach((p, index) => {
+          const vector = computeHeliocentricPosition(REALTIME_ELEMENTS[index], now);
+          if (!vector) return;
+          p.realXAu = vector.x;
+          p.realYAu = vector.y;
+          p.realZAu = vector.z;
+        });
+
+        realTimeFetchedAt = formatUtcLabel(now);
+        realTimeLastFetchMs = millis();
+      } catch (error) {
+        realTimeError = error.message || 'Falha ao buscar efemerides.';
+      } finally {
+        realTimeLoading = false;
+        updateRealTimeOverlay();
+      }
+    }
+
+    function updateRealTimeOverlay() {
+      if (!rtLocalEl || !rtStatusEl || !rtUpdatedEl) return;
+
+      rtLocalEl.innerHTML = `Agora: <strong>${formatLocalDateTime(new Date())}</strong>`;
+
+      if (realTimeLoading) {
+        rtStatusEl.textContent = 'Calculando posicoes heliocentricas atuais...';
+        rtStatusEl.classList.remove('error');
+        rtUpdatedEl.textContent = '';
+        return;
+      }
+
+      if (realTimeError) {
+        rtStatusEl.textContent = `Falha no calculo: ${realTimeError}`;
+        rtStatusEl.classList.add('error');
+        rtUpdatedEl.textContent = 'Voltando para a simulacao local.';
+        return;
+      }
+
+      if (realTimeMode) {
+        rtStatusEl.textContent = 'Posicoes heliocentricas atuais com zoom no sistema interno.';
+        rtStatusEl.classList.remove('error');
+        rtUpdatedEl.innerHTML = realTimeFetchedAt
+          ? `Atualizado em <strong>${realTimeFetchedAt}</strong>`
+          : '';
+        return;
+      }
+
+      rtStatusEl.textContent = '';
+      rtStatusEl.classList.remove('error');
+      rtUpdatedEl.textContent = '';
     }
 
     function drawRings(p) {
