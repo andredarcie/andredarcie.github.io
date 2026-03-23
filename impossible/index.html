@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projeto Impossivel</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <p class="eyebrow">Projeto Impossivel</p>
+        <h1>Projeto Impossivel</h1>
+        <div class="hero-story">
+          <p class="lede">
+            Este projeto usa algoritmo genetico e rede neural para aprender a jogar
+            o mini jogo Nur, de Diego Penha, mantendo o restante da estrutura do
+            projeto voltado para treino, observacao e experimentacao.
+          </p>
+          <img
+            class="hero-message"
+            src="./message.png"
+            alt="Mensagem visual de apoio do projeto"
+          />
+        </div>
+      </section>
+
+      <section class="layout">
+        <div class="stage-stack">
+          <div class="network-card">
+            <div class="network-card-header">
+              <h2>Network View</h2>
+              <p class="hint">
+                Inputs, hidden layer and outputs are updated for the current agent.
+              </p>
+            </div>
+            <canvas
+              id="networkCanvas"
+              class="network-canvas"
+              width="960"
+              height="240"
+              aria-label="Neural network visualization"
+            ></canvas>
+          </div>
+
+          <div class="stage-card">
+            <canvas id="game" width="960" height="360" aria-label="Game canvas"></canvas>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-group">
+            <h2>Status</h2>
+            <dl class="stats">
+              <div><dt>Mode</dt><dd id="modeLabel">Training</dd></div>
+              <div><dt>Generation</dt><dd id="generationLabel">0</dd></div>
+              <div><dt>Agent</dt><dd id="agentLabel">0 / 0</dd></div>
+              <div><dt>Frames</dt><dd id="frameLabel">0</dd></div>
+              <div><dt>Best Fitness</dt><dd id="bestFitnessLabel">0</dd></div>
+              <div><dt>Best Finish</dt><dd id="bestCompletionLabel">0%</dd></div>
+              <div><dt>Gen Best</dt><dd id="generationBestLabel">0</dd></div>
+              <div><dt>Current Fitness</dt><dd id="currentFitnessLabel">0</dd></div>
+              <div><dt>Completion</dt><dd id="completionLabel">0%</dd></div>
+            </dl>
+          </div>
+
+          <div class="panel-group">
+            <h2>History</h2>
+            <div class="history-card">
+              <svg
+                id="historyChart"
+                class="history-chart"
+                viewBox="0 0 320 140"
+                preserveAspectRatio="none"
+                aria-label="Generation fitness chart"
+              >
+                <path id="historyArea" d="" />
+                <path id="historyLine" d="" />
+              </svg>
+              <div class="history-scale">
+                <span id="historyMinLabel">0</span>
+                <span id="historyMaxLabel">0</span>
+              </div>
+            </div>
+            <p class="hint">
+              O grafico mostra o melhor fitness de cada geracao ja concluida.
+            </p>
+          </div>
+
+          <div class="panel-group">
+            <h2>Live Brain</h2>
+            <dl class="stats compact-stats">
+              <div><dt>Gap Distance</dt><dd id="sensorGapDistanceLabel">0</dd></div>
+              <div><dt>Gap Width</dt><dd id="sensorGapWidthLabel">0</dd></div>
+              <div><dt>Goal Distance</dt><dd id="sensorGoalDistanceLabel">0</dd></div>
+              <div><dt>Grounded</dt><dd id="sensorGroundedLabel">No</dd></div>
+              <div><dt>Velocity X</dt><dd id="sensorVelocityXLabel">0</dd></div>
+              <div><dt>Velocity Y</dt><dd id="sensorVelocityYLabel">0</dd></div>
+              <div><dt>Output Left</dt><dd id="outputLeftLabel">0</dd></div>
+              <div><dt>Output Right</dt><dd id="outputRightLabel">0</dd></div>
+              <div><dt>Output Jump</dt><dd id="outputJumpLabel">0</dd></div>
+              <div><dt>Action</dt><dd id="actionLabel">Idle</dd></div>
+            </dl>
+          </div>
+
+          <div class="panel-group">
+            <h2>Controls</h2>
+            <div class="controls">
+              <button id="toggleTrainingButton" type="button">Pause Training</button>
+              <button id="toggleTurboButton" type="button">Turbo Off</button>
+              <button id="watchBestButton" type="button">Watch Best</button>
+              <button id="manualModeButton" type="button">Manual Play</button>
+              <button id="restartRunButton" type="button">Restart Run</button>
+              <button id="resumeTrainingButton" type="button">Resume Training</button>
+              <button id="resetTrainingButton" type="button">Reset Population</button>
+              <button id="clearSavedButton" type="button">Clear Saved Best</button>
+            </div>
+          </div>
+
+          <div class="panel-group">
+            <h2>Training Speed</h2>
+            <label class="slider-label" for="speedRange">
+              Simulation steps per render
+            </label>
+            <input id="speedRange" type="range" min="1" max="200" value="40" />
+            <p id="speedValue" class="hint">40 steps</p>
+            <p class="hint">
+              Turbo mode ignores the slider and runs headless training much faster.
+            </p>
+          </div>
+
+          <div class="panel-group">
+            <h2>How It Works</h2>
+            <p class="hint">
+              Inputs: next gap distance, gap width, goal distance, grounded,
+              velocity X and velocity Y. Outputs: move left, move right, jump.
+            </p>
+            <p class="hint">
+              In manual mode, use <strong>Left</strong>, <strong>Right</strong>
+              and <strong>Space</strong>. Press <strong>R</strong> to restart.
+            </p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <div id="victoryModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="victoryTitle">
+        <p class="modal-eyebrow">Treino Concluido</p>
+        <h2 id="victoryTitle">A IA chegou na bandeira</h2>
+        <p id="victorySummary" class="modal-copy"></p>
+        <div class="modal-stats">
+          <div><span>Geracao</span><strong id="victoryGeneration">0</strong></div>
+          <div><span>Personagens testados</span><strong id="victoryAgents">0</strong></div>
+        </div>
+        <button id="closeVictoryButton" type="button">Fechar</button>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
