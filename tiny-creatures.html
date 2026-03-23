@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiny Creatures — Algoritmo Genético</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── PICO-8 PALETTE ── */
+:root {
+  --p-black:    #000000;
+  --p-darkblue: #1d2b53;
+  --p-purple:   #7e2553;
+  --p-dkgreen:  #008751;
+  --p-brown:    #ab5236;
+  --p-dkgrey:   #5f574f;
+  --p-ltgrey:   #c2c3c7;
+  --p-white:    #fff1e8;
+  --p-red:      #ff004d;
+  --p-orange:   #ffa300;
+  --p-yellow:   #ffec27;
+  --p-green:    #00e436;
+  --p-blue:     #29adff;
+  --p-lavender: #83769c;
+  --p-pink:     #ff77a8;
+  --p-peach:    #ffccaa;
+
+  /* Semantic tokens */
+  --bg:         #fff5dc;
+  --panel:      #ffe0bd;
+  --panel-2:    #ffd2a1;
+  --border:     #ab5236;
+  --text:       #13203f;
+  --muted:      #5f574f;
+  --bright:     #000000;
+  --accent:     #ff004d;
+  --gold:       #ffa300;
+  --sky:        #ffd55f;
+  --sword-col:  #ffa300;
+
+  /* Grid forest cells */
+  --cell-a:     #1c5718;
+  --cell-b:     #28731f;
+  --grid-line:  #0d3a0a;
+  --trail-col:  #7a4a18;
+
+  /* Type */
+  --fs-xs:   10px;
+  --fs-sm:   11px;
+  --fs-base: 12px;
+  --cell:    clamp(14px, calc((100vw - 84px) / 19), 40px);
+  --chrome:  18px;
+  --shell:   min(100%, 1120px);
+}
+
+body {
+  background:
+    radial-gradient(circle at top, rgba(255,236,39,0.22), transparent 30%),
+    radial-gradient(circle at 20% 20%, rgba(41,173,255,0.16), transparent 22%),
+    linear-gradient(180deg, #fff7dd 0%, #ffdca8 40%, #ffc37e 100%);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 18px 12px 28px;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -999px; left: 8px;
+  background: var(--accent);
+  color: var(--p-white);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 8px 14px;
+  z-index: 9999;
+  text-decoration: none;
+}
+.skip-link:focus { top: 8px; }
+
+/* ── HEADER ── */
+.header {
+  width: var(--shell);
+  text-align: center;
+  margin-bottom: 16px;
+  padding: 16px 14px 12px;
+  border: 3px solid rgba(171,82,54,0.8);
+  background: linear-gradient(180deg, rgba(255,241,232,0.95), rgba(255,214,147,0.86));
+  box-shadow: 0 0 0 4px rgba(255,241,232,0.55), 6px 6px 0 rgba(95,87,79,0.7);
+}
+
+h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(13px, 2.9vw, 18px);
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+h1 .ico { color: var(--gold); }
+
+.sub {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(6px, 1.8vw, 8px);
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+
+/* ── LAYOUT ── */
+.app {
+  width: var(--shell);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* ── GRID ── */
+.grid-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.grid-wrap {
+  position: relative;
+  border: 3px solid var(--border);
+  background: rgba(255,241,232,0.55);
+  box-shadow: 5px 5px 0 rgba(95,87,79,0.75);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(19, var(--cell));
+  grid-template-rows: repeat(19, var(--cell));
+}
+
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  border-right: 1px solid var(--grid-line);
+  border-bottom: 1px solid var(--grid-line);
+  position: relative;
+  transition: background 0.3s;
+}
+
+.cell-a { background: var(--cell-a); }
+.cell-b { background: var(--cell-b); }
+
+/* ── COORDINATE LABELS ── */
+.coord-wrap {
+  display: inline-grid;
+  grid-template-columns: var(--chrome) auto;
+  grid-template-rows: var(--chrome) auto;
+  width: fit-content;
+  max-width: 100%;
+}
+.coord-corner { background: var(--bg); }
+.coord-cols { display: flex; background: var(--bg); }
+.coord-rows { display: flex; flex-direction: column; background: var(--bg); }
+.coord-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 1.5vw, 6px);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.coord-cols .coord-num { width: var(--cell); height: var(--chrome); }
+.coord-rows .coord-num { width: var(--chrome); height: var(--cell); }
+
+.cell.trail { background: var(--trail-col) !important; opacity: 0.6; }
+
+.cell.goal-cell { background: #3a7800 !important; box-shadow: inset 0 0 14px rgba(255,220,0,0.5); }
+
+.sword-mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  filter: drop-shadow(0 0 5px var(--p-yellow));
+  animation: sword-glow 2s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes sword-glow {
+  0%,100% { filter: drop-shadow(0 0 4px var(--p-yellow)); }
+  50%      { filter: drop-shadow(0 0 12px var(--p-yellow)) drop-shadow(0 0 20px var(--p-orange)); }
+}
+
+.start-mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--p-green);
+  opacity: 0.55;
+  z-index: 2;
+}
+
+.tree-mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Agents layer */
+.agents { position: absolute; inset: 0; pointer-events: none; }
+
+.agent {
+  position: absolute;
+  z-index: 10;
+  transform: translateX(-50%);
+  transition: left 0.09s linear, top 0.09s linear;
+}
+
+.dot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  filter: drop-shadow(0 0 1px rgba(0,0,0,0.9));
+}
+
+.dot-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 3px);
+  transform: translateX(-50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 1.5vw, 6px);
+  line-height: 1;
+  color: var(--p-white);
+  background: rgba(29,43,83,0.88);
+  border: 1px solid rgba(0,0,0,0.45);
+  padding: 3px 4px 2px;
+  white-space: nowrap;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  pointer-events: none;
+}
+
+.dot.best {
+  z-index: 12;
+  filter: drop-shadow(0 0 1px rgba(0,0,0,0.9)) drop-shadow(0 0 4px #fffb) drop-shadow(0 0 8px #fff7);
+  animation: dot-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.25); }
+}
+
+.dot.reached {
+  z-index: 15;
+  animation: dot-win 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes dot-win {
+  from { transform: scale(1);   filter: drop-shadow(0 0 1px rgba(0,0,0,0.9)); }
+  to   { transform: scale(1.6); filter: drop-shadow(0 0 1px rgba(0,0,0,0.9)) drop-shadow(0 0 8px #ffec27); }
+}
+
+/* Phase bar */
+.phase-wrap {
+  width: 100%;
+  max-width: calc(var(--chrome) + 19 * var(--cell) + 6px);
+  height: 6px;
+  background: var(--p-ltgrey);
+  border: 1px solid var(--border);
+  box-shadow: 2px 2px 0 rgba(95,87,79,0.6);
+}
+
+.phase-fill {
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  transition: width 0.08s linear;
+}
+
+/* Status */
+.status-line {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(7px, 2vw, 8px);
+  letter-spacing: 1px;
+  text-align: center;
+  min-height: 18px;
+  color: var(--muted);
+  padding-top: 4px;
+  line-height: 1.6;
+}
+
+.status-line.running  { color: var(--p-dkgreen); }
+.status-line.evolving { color: var(--p-purple); }
+.status-line.success  { color: var(--gold); }
+
+/* ── STATS PANEL ── */
+.panel {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-self: stretch;
+}
+
+.card {
+  border: 2px solid var(--border);
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  padding: 10px 12px;
+  box-shadow: 4px 4px 0 rgba(95,87,79,0.75);
+  min-height: 82px;
+}
+
+.card-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.card-val {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 20px;
+  color: var(--bright);
+  line-height: 1.2;
+}
+
+.card-val.orange { color: var(--gold); }
+.card-val.small  { font-size: 13px; }
+
+/* Population list */
+.pop-list {
+  grid-column: 1 / -1;
+  border: 2px solid var(--border);
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  padding: 8px 10px;
+  min-height: 180px;
+  max-height: 280px;
+  overflow-y: auto;
+  box-shadow: 4px 4px 0 rgba(95,87,79,0.75);
+}
+
+.pop-list::-webkit-scrollbar { width: 5px; }
+.pop-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+.list-hdr {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.list-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+
+.list-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.25);
+  flex-shrink: 0;
+}
+
+.list-bar-bg {
+  flex: 1;
+  height: 5px;
+  background: var(--p-ltgrey);
+  border: 1px solid var(--muted);
+}
+
+.list-bar { height: 100%; transition: width 0.3s ease; }
+
+.list-dist {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  width: 20px;
+  text-align: right;
+  color: var(--muted);
+}
+
+.list-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--text);
+  width: 74px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Controls */
+.controls {
+  grid-column: 1 / -1;
+  border: 2px solid var(--border);
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 4px 4px 0 rgba(95,87,79,0.75);
+}
+
+.speed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.sdot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--p-ltgrey);
+  border: 2px solid var(--muted);
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+  padding: 6px;
+  margin: -6px;
+  box-sizing: content-box;
+}
+
+.sdot.on {
+  background: var(--gold);
+  border-color: var(--border);
+}
+
+.btn {
+  background: linear-gradient(180deg, var(--p-white), #ffd38a);
+  border: 2px solid var(--border);
+  color: var(--bright);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 9px 10px;
+  min-height: 36px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: background 0.1s, transform 0.08s, box-shadow 0.08s;
+  text-align: center;
+  width: 100%;
+  box-shadow: 3px 3px 0 rgba(95,87,79,0.75);
+  line-height: 1.6;
+}
+
+.btn:hover {
+  background: linear-gradient(180deg, #fff7e8, var(--p-peach));
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(95,87,79,0.75);
+}
+
+.btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--muted);
+}
+
+.btn.active {
+  background: var(--muted);
+  color: var(--p-white);
+  border-color: var(--p-black);
+}
+
+/* ── RANKING OVERLAY ── */
+.rank-overlay {
+  position: fixed; inset: 0;
+  background: rgba(255,241,232,0.93);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  animation: fade-in 0.3s ease;
+  padding: 20px;
+  overflow: auto;
+}
+
+.rank-box {
+  width: min(940px, 100%);
+  max-width: calc(100vw - 24px);
+  max-height: 92vh;
+  overflow: auto;
+  border: 3px solid var(--border);
+  background: var(--p-white);
+  padding: 16px 14px;
+  box-shadow: 6px 6px 0 var(--muted);
+}
+
+.rank-box::-webkit-scrollbar { width: 6px; }
+.rank-box::-webkit-scrollbar-thumb { background: var(--border); }
+
+.rank-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.rank-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--text);
+  letter-spacing: 2px;
+  line-height: 1.8;
+}
+
+.rank-phase {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--p-purple);
+  letter-spacing: 2px;
+  min-height: 18px;
+  margin-bottom: 14px;
+  transition: color 0.3s;
+}
+
+.rank-phase.selecting { color: var(--gold); }
+.rank-phase.done      { color: var(--p-dkgreen); }
+
+/* Column headers */
+.rank-cols-hdr {
+  display: grid;
+  grid-template-columns: 28px 12px 80px 54px 28px 1fr 100px;
+  gap: 8px;
+  padding: 0 6px 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 6px;
+  min-width: 520px;
+}
+
+.rank-table { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
+
+.rank-row {
+  display: grid;
+  grid-template-columns: 28px 12px 80px 54px 28px 1fr 100px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.3s, background 0.3s;
+  min-width: 520px;
+}
+
+.rank-row.visible    { opacity: 1; transform: translateX(0); }
+.rank-row.survivor   { border-color: var(--p-dkgreen); background: rgba(0,135,81,0.07); }
+.rank-row.eliminated { opacity: 0.3; }
+
+.rank-num {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.rank-dot-sm {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  flex-shrink: 0;
+}
+
+.rank-pos {
+  font-size: var(--fs-xs);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.rank-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-dist {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--bright);
+  text-align: center;
+}
+
+.rank-genes {
+  font-size: var(--fs-xs);
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* Gene colours — semantic: ↑ good (toward sword), ↓ bad */
+.gU { color: var(--p-dkgreen); }
+.gD { color: var(--p-red);     }
+.gR { color: var(--p-blue);    }
+.gL { color: var(--p-lavender);}
+
+.rank-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 4px 5px;
+  border: 1.5px solid transparent;
+  min-height: 22px;
+  transition: all 0.3s ease;
+  line-height: 1.6;
+}
+
+.badge-waiting  { color: var(--muted); }
+.badge-elite    { color: var(--p-black);    border-color: var(--gold);      background: rgba(255,163,0,0.15); }
+.badge-survive  { color: var(--p-dkgreen);  border-color: var(--p-dkgreen); background: rgba(0,135,81,0.08); }
+.badge-dead     { color: var(--p-red);      border-color: var(--p-red);     background: rgba(255,0,77,0.05); }
+
+.rank-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid var(--border);
+  padding-top: 14px;
+  margin-top: 4px;
+  gap: 12px;
+}
+
+.rank-summary {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--text);
+  letter-spacing: 1px;
+  line-height: 2;
+}
+
+#rank-continue {
+  display: none;
+  font-size: 8px;
+  padding: 9px 16px;
+  min-height: 36px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.evo-table { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+.evo-row {
+  display: grid;
+  grid-template-columns: 34px 72px 1.1fr 1.4fr 92px;
+  gap: 8px;
+  align-items: start;
+  padding: 8px 6px;
+  border: 1px solid transparent;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.3s, background 0.3s;
+  min-width: 620px;
+}
+
+.evo-row.visible { opacity: 1; transform: translateX(0); }
+.evo-row.elite-row { border-color: var(--gold); background: rgba(255,163,0,0.08); }
+.evo-row.offspring-row { border-color: rgba(126,37,83,0.2); background: rgba(126,37,83,0.04); }
+
+.evo-type,
+.evo-result-name,
+.evo-note {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  line-height: 1.8;
+}
+
+.evo-type { color: var(--text); }
+.evo-result-name { color: var(--bright); margin-bottom: 4px; }
+.evo-note { color: var(--muted); }
+
+.evo-parents,
+.evo-process,
+.evo-result {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.evo-parent-line,
+.evo-process-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.evo-tag {
+  min-width: 34px;
+  padding: 2px 4px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--panel);
+}
+
+.tag-a { background: rgba(41,173,255,0.18); }
+.tag-b { background: rgba(255,0,77,0.12); }
+.tag-r { background: rgba(255,163,0,0.14); }
+
+.evo-gene-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ev-gene {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  height: 16px;
+  padding: 0 2px;
+  border: 1px solid transparent;
+  background: rgba(255,241,232,0.85);
+}
+
+.ev-gene.ev-a { border-color: rgba(41,173,255,0.4); }
+.ev-gene.ev-b { border-color: rgba(255,0,77,0.35); }
+.ev-gene.ev-mut {
+  background: rgba(255,236,39,0.22);
+  border-color: var(--gold);
+  box-shadow: inset 0 -2px 0 rgba(255,163,0,0.35);
+}
+
+.evo-summary {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--text);
+  letter-spacing: 1px;
+  line-height: 2;
+}
+
+/* ── SUCCESS OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(255,241,232,0.94);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 200;
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.overlay-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  color: var(--p-black);
+  text-align: center;
+  line-height: 2.2;
+  border: 3px solid var(--border);
+  padding: 20px 28px;
+  background: var(--p-white);
+  box-shadow: 5px 5px 0 var(--muted);
+  animation: title-pulse 1.4s ease-in-out infinite;
+}
+
+.overlay-title .ico { color: var(--gold); }
+
+@keyframes title-pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.015); }
+}
+
+.overlay-sub {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--text);
+  letter-spacing: 2px;
+  text-align: center;
+  line-height: 2.2;
+}
+
+/* ── REDUCED MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .dot { transition: none !important; }
+  .phase-fill { transition: none !important; }
+}
+
+@media (min-width: 900px) {
+  body {
+    padding: 24px 18px 32px;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    align-items: start;
+    gap: 22px;
+  }
+
+  .grid-area {
+    align-items: flex-start;
+  }
+
+  .panel {
+    position: sticky;
+    top: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  .pop-list,
+  .controls {
+    grid-column: auto;
+  }
+
+  .card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 899px) {
+  .rank-overlay {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .rank-box {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    padding: 12px 10px;
+  }
+
+  .rank-title {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .rank-phase,
+  .rank-summary,
+  .evo-summary {
+    font-size: 6px;
+    letter-spacing: 1px;
+  }
+
+  .rank-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rank-cols-hdr {
+    display: none;
+  }
+
+  .rank-row,
+  .evo-row {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .rank-genes,
+  .evo-gene-line {
+    white-space: normal;
+    overflow: visible;
+  }
+
+  .rank-badge,
+  .evo-result {
+    align-self: flex-start;
+  }
+
+  .rank-row .rank-num,
+  .rank-row .rank-dist,
+  .rank-row .rank-pos {
+    text-align: left;
+  }
+
+  .evo-parent-line,
+  .evo-process-line {
+    flex-wrap: wrap;
+  }
+
+  #rank-continue,
+  #evo-continue {
+    width: 100%;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
+<header class="header">
+  <h1><span class="ico" aria-hidden="true">⚔</span> TINY CREATURES</h1>
+  <p class="sub">Quest: Chegar à Espada Sagrada</p>
+</header>
+
+<main id="main-content">
+<div class="app">
+
+  <!-- GRID -->
+  <section class="grid-area" aria-label="Grade de simulação">
+    <div class="coord-wrap">
+      <div class="coord-corner"></div>
+      <div class="coord-cols" id="coord-cols"></div>
+      <div class="coord-rows" id="coord-rows"></div>
+      <div class="grid-wrap">
+        <div id="grid" class="grid"
+             role="img"
+             aria-label="Grade 19×19 com criaturas navegando pela floresta em direção à espada no centro do topo">
+        </div>
+        <div id="agents" class="agents" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="phase-wrap" role="progressbar" aria-label="Progresso da geração" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" id="phase-bar">
+      <div id="phase" class="phase-fill"></div>
+    </div>
+    <div id="status" class="status-line running" role="status" aria-live="polite" aria-atomic="true">INICIALIZANDO...</div>
+  </section>
+
+  <!-- PANEL -->
+  <aside class="panel" aria-label="Painel de estatísticas">
+
+    <div class="card" aria-label="Geração atual">
+      <div class="card-label" id="lbl-gen">Geração</div>
+      <div id="gen-val" class="card-val orange" aria-labelledby="lbl-gen" aria-live="polite">001</div>
+    </div>
+
+    <div class="card" aria-label="Melhor distância até a espada">
+      <div class="card-label" id="lbl-dist">Melhor distância</div>
+      <div id="dist-val" class="card-val" aria-labelledby="lbl-dist" aria-live="polite">18</div>
+    </div>
+
+    <div class="card" aria-label="Passo atual">
+      <div class="card-label" id="lbl-step">Passo</div>
+      <div id="step-val" class="card-val small" aria-labelledby="lbl-step" aria-live="polite">0 / 50</div>
+    </div>
+
+    <div id="pop-list" class="pop-list" role="list" aria-label="Ranking de agentes por distância">
+      <div class="list-hdr" role="heading" aria-level="2">Agentes</div>
+    </div>
+
+    <div class="controls" role="group" aria-label="Controles de simulação">
+      <div class="speed-row" role="group" aria-label="Velocidade da simulação">
+        <span aria-hidden="true">VEL</span>
+        <button class="sdot" onclick="setSpeed(0)" id="s0" aria-label="Velocidade 1 — muito lenta" aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(1)" id="s1" aria-label="Velocidade 2 — lenta"       aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(2)" id="s2" aria-label="Velocidade 3 — média"       aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(3)" id="s3" aria-label="Velocidade 4 — rápida"      aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(4)" id="s4" aria-label="Velocidade 5 — muito rápida" aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(5)" id="s5" aria-label="Velocidade 6 — máxima"      aria-pressed="false"></button>
+      </div>
+      <button class="btn" id="pause-btn" onclick="togglePause()" aria-pressed="false">⏸ PAUSAR</button>
+      <button class="btn" onclick="reset()">↺ REINICIAR</button>
+    </div>
+
+  </aside>
+</div>
+</main>
+
+<!-- RANKING OVERLAY -->
+<div class="rank-overlay" id="rank-overlay"
+     role="dialog" aria-modal="true" aria-labelledby="rk-title" aria-describedby="rk-phase">
+  <div class="rank-box">
+    <div class="rank-header">
+      <h2 class="rank-title" id="rk-title">GERAÇÃO <span id="rk-gen">?</span> — RESULTADO</h2>
+    </div>
+    <div class="rank-phase" id="rk-phase" role="status" aria-live="polite">CALCULANDO POSIÇÕES FINAIS...</div>
+    <div class="rank-cols-hdr" role="row" aria-hidden="true">
+      <span>RANK</span>
+      <span></span>
+      <span>NOME</span>
+      <span>POS</span>
+      <span>DIST</span>
+      <span>GENES (50 movimentos)</span>
+      <span>STATUS</span>
+    </div>
+    <div class="rank-table" id="rank-table" role="list" aria-label="Ranking de criaturas"></div>
+    <div class="rank-footer">
+      <div class="rank-summary" id="rk-summary" aria-live="polite"></div>
+      <button class="btn" id="rank-continue">▶ PRÓXIMA GERAÇÃO</button>
+    </div>
+  </div>
+</div>
+
+<!-- EVOLUTION OVERLAY -->
+<div class="rank-overlay" id="evo-overlay"
+     role="dialog" aria-modal="true" aria-labelledby="evo-title" aria-describedby="evo-phase">
+  <div class="rank-box">
+    <div class="rank-header">
+      <h2 class="rank-title" id="evo-title">GERAÇÃO <span id="evo-gen">?</span> · CROSSOVER + MUTAÇÃO</h2>
+    </div>
+    <div class="rank-phase" id="evo-phase" role="status" aria-live="polite">PREPARANDO PRÓXIMA GERAÇÃO...</div>
+    <div class="rank-cols-hdr" style="grid-template-columns:34px 72px 1.1fr 1.4fr 92px" role="row" aria-hidden="true">
+      <span>SLOT</span>
+      <span>TIPO</span>
+      <span>PAIS</span>
+      <span>PROCESSO</span>
+      <span>RESULTADO</span>
+    </div>
+    <div class="evo-table" id="evo-table" role="list" aria-label="Processo visual de crossover e mutação"></div>
+    <div class="rank-footer">
+      <div class="evo-summary" id="evo-summary" aria-live="polite"></div>
+      <button class="btn" id="evo-continue">▶ INICIAR GERAÇÃO</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="overlay" id="overlay"
+     role="alertdialog" aria-modal="true" aria-labelledby="ov-title" aria-describedby="ov-desc">
+  <div class="overlay-title" id="ov-title"><span class="ico" aria-hidden="true">⚔</span><br>ESPADA<br>ENCONTRADA!</div>
+  <div class="overlay-sub" id="ov-desc">Geração <span id="ov-gen">?</span> — <span id="ov-steps">?</span> passos</div>
+  <button class="btn" onclick="reset(); document.getElementById('overlay').style.display='none'">↺ JOGAR NOVAMENTE</button>
+</div>
+
+<script src="sprites.js"></script>
+<script>
+'use strict';
+
+// ══ CONFIG ══════════════════════════════════════
+const POP    = 20;
+const GLEN   = 50;   // genome length (moves per generation)
+const MUT    = 0.13; // mutation rate per gene
+const ELITE  = 2;    // top agents copied unchanged
+const CSIZ   = 40;   // cell size px
+const SPRITES = window.TinyCreaturesSprites;
+const GOAL   = {x:9, y:0};   // top center — sword  (col 9 of 0-18)
+const START  = {x:9, y:18};  // bottom center — start
+const DIRS   = ['U','D','L','R'];
+const SPEEDS = [220, 120, 70, 35, 12, 2]; // ms per step
+
+// ── PIXEL ART SPRITES (8×8) ──────────────────────
+// 0=transparent  1=body  2=shadow  3=eye-white  4=pupil
+const SPRITE = SPRITES.getCreatureSprite();
+const createCreatureColor = SPRITES.createCreatureColor;
+const createCreatureName = SPRITES.createCreatureName;
+const getEvolutionPreviewEntry = SPRITES.getEvolutionPreviewEntry;
+const getOffspringIdentity = SPRITES.getOffspringIdentity;
+const getResponsiveRenderMetrics = SPRITES.getResponsiveRenderMetrics;
+
+function darkenHex(hex, f) {
+  const n = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.round(((n>>16)&0xff)*f));
+  const g = Math.min(255, Math.round(((n>>8)&0xff)*f));
+  const b = Math.min(255, Math.round((n&0xff)*f));
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+
+function spriteBoxShadow(bodyCol) {
+  const scale = getRenderMetrics().spriteScale;
+  const darkCol = darkenHex(bodyCol, 0.55);
+  const cm = { 1: bodyCol, 2: darkCol, 3: '#ffffff', 4: '#000000' };
+  const parts = [];
+  SPRITE.forEach((row, y) => row.forEach((px, x) => {
+    if (px && cm[px]) parts.push(`${x * scale}px ${y * scale}px 0 ${cm[px]}`);
+  }));
+  return parts.join(',');
+}
+
+// PICO-8 colour spectrum: dull grey (worst) → gold (best)
+const COLS = [
+  '#5f574f','#5f574f',             // dark grey  (0-1)
+  '#ab5236','#ab5236',             // brown      (2-3)
+  '#7e2553',                       // dark purple(4)
+  '#ff004d','#ff004d','#ff004d',   // red        (5-7)
+  '#ffa300','#ffa300','#ffa300',   // orange     (8-10)
+  '#ffec27','#ffec27',             // yellow     (11-12)
+  '#00e436','#00e436',             // green      (13-14)
+  '#29adff','#29adff',             // sky blue   (15-16)
+  '#83769c',                       // lavender   (17)
+  '#ff77a8',                       // pink       (18)
+  '#fff1e8',                       // cream/gold (19 — best)
+];
+
+// Sub-cell offsets for 20 dots (4 cols × 5 rows)
+function getCellSize() {
+  const sampleCell = gridEl.querySelector('.cell');
+  return sampleCell ? sampleCell.getBoundingClientRect().width : CSIZ;
+}
+
+function getRenderMetrics() {
+  const metrics = getResponsiveRenderMetrics({
+    cellSize: getCellSize(),
+    population: POP
+  });
+  return {
+    cellSize: getCellSize(),
+    spriteScale: metrics.spriteScale,
+    spriteInset: metrics.spriteInset,
+    subPositions: metrics.subPositions,
+  };
+}
+
+// ══ STATE ════════════════════════════════════════
+let pop      = [];
+let gen      = 1;
+let stepN    = 0;
+let handle   = null;
+let delay    = SPEEDS[0];
+let paused   = false;
+let trail    = [];   // previous best path
+let evolutionPreview = [];
+
+// ══ DOM REFS ════════════════════════════════════
+const gridEl   = document.getElementById('grid');
+const agEl     = document.getElementById('agents');
+const genEl    = document.getElementById('gen-val');
+const distEl   = document.getElementById('dist-val');
+const stepEl   = document.getElementById('step-val');
+const statusEl = document.getElementById('status');
+const phaseEl  = document.getElementById('phase');
+const listEl   = document.getElementById('pop-list');
+const overlayEl= document.getElementById('overlay');
+const pauseBtn = document.getElementById('pause-btn');
+
+// ══ BUILD DOM ════════════════════════════════════
+function buildGrid() {
+  // Coordinate labels
+  const colsEl = document.getElementById('coord-cols');
+  const rowsEl = document.getElementById('coord-rows');
+  if (colsEl) {
+    colsEl.innerHTML = '';
+    for (let x=0; x<19; x++) {
+      const n = document.createElement('div');
+      n.className = 'coord-num';
+      n.textContent = x+1;
+      colsEl.appendChild(n);
+    }
+  }
+  if (rowsEl) {
+    rowsEl.innerHTML = '';
+    for (let y=0; y<19; y++) {
+      const n = document.createElement('div');
+      n.className = 'coord-num';
+      n.textContent = y+1;
+      rowsEl.appendChild(n);
+    }
+  }
+
+  gridEl.innerHTML = '';
+  for (let y=0; y<19; y++) {
+    for (let x=0; x<19; x++) {
+      const c = document.createElement('div');
+      c.className = 'cell ' + ((x+y)%2===0 ? 'cell-a' : 'cell-b');
+      c.id = `c${x}_${y}`;
+      if (x===GOAL.x && y===GOAL.y) {
+        c.classList.add('goal-cell');
+        c.innerHTML = '<span class="sword-mark" aria-label="Espada Sagrada — objetivo">⚔</span>';
+      } else if (x===START.x && y===START.y) {
+        c.innerHTML = '<span class="start-mark" aria-label="Ponto de partida">▼</span>';
+      } else {
+        // Sparse forest trees — deterministic pseudo-random per cell
+        const seed = (x * 17 + y * 31 + x * y * 7) % 100;
+        if (seed < 15) {
+          c.innerHTML = '<span class="tree-mark" aria-hidden="true">🌲</span>';
+        }
+      }
+      gridEl.appendChild(c);
+    }
+  }
+}
+
+function buildDots() {
+  agEl.innerHTML = '';
+  const metrics = getRenderMetrics();
+  for (let i=0; i<POP; i++) {
+    const agent = document.createElement('div');
+    agent.className = 'agent';
+    agent.id = `a${i}`;
+
+    const label = document.createElement('div');
+    label.className = 'dot-label';
+    label.id = `n${i}`;
+
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.id = `d${i}`;
+    d.style.width = metrics.spriteScale + 'px';
+    d.style.height = metrics.spriteScale + 'px';
+
+    agent.appendChild(label);
+    agent.appendChild(d);
+    agEl.appendChild(agent);
+  }
+}
+
+// ══ GA PRIMITIVES ════════════════════════════════
+function rndGenome() {
+  return Array.from({length:GLEN}, () => DIRS[Math.random()*4|0]);
+}
+
+function mv(pos, dir) {
+  let {x,y} = pos;
+  if (dir==='U') y = Math.max(0, y-1);
+  if (dir==='D') y = Math.min(18, y+1);
+  if (dir==='L') x = Math.max(0, x-1);
+  if (dir==='R') x = Math.min(18, x+1);
+  return {x,y};
+}
+
+function dist(pos) {
+  return Math.abs(pos.x - GOAL.x) + Math.abs(pos.y - GOAL.y);
+}
+
+function crossover(g1, g2) {
+  const pt = Math.random() * g1.length | 0;
+  return {
+    genome: [...g1.slice(0,pt), ...g2.slice(pt)],
+    crossoverPoint: pt
+  };
+}
+
+function mutate(g) {
+  return g.map(d => Math.random() < MUT ? DIRS[Math.random()*4|0] : d);
+}
+
+function makeAgent(genome, name, color) {
+  return {
+    genome,
+    name,
+    color,
+    pos: {...START},
+    reached: false,
+    path: [{...START}]
+  };
+}
+
+// ══ EVOLVE ═══════════════════════════════════════
+function evolve() {
+  // rank by distance (closer = better)
+  pop.sort((a,b) => dist(a.pos) - dist(b.pos));
+
+  // save best agent's path for trail
+  trail = pop[0].path.slice();
+
+  const survivors = pop.slice(0, 10);
+  const next = [];
+  const usedColors = [];
+  evolutionPreview = [];
+
+  // Elitism
+  for (let i=0; i<ELITE; i++) {
+    const genome = [...survivors[i].genome];
+    const identity = getOffspringIdentity({
+      genome,
+      parentGenome: survivors[i].genome,
+      parentName: survivors[i].name,
+      parentColor: survivors[i].color,
+      createName: createCreatureName,
+      createColor: createCreatureColor,
+      usedColors
+    });
+    usedColors.push(identity.color);
+    evolutionPreview.push(getEvolutionPreviewEntry({
+      type: 'elite',
+      childName: identity.name,
+      childGenome: identity.genome,
+      parentA: { name: survivors[i].name, genome: survivors[i].genome }
+    }));
+    next.push(makeAgent(identity.genome, identity.name, identity.color));
+  }
+
+  // Offspring
+  while (next.length < POP) {
+    const p1 = survivors[Math.random()*survivors.length|0];
+    const p2 = survivors[Math.random()*survivors.length|0];
+    const crossed = crossover(p1.genome, p2.genome);
+    const genome = mutate(crossed.genome);
+    const identity = getOffspringIdentity({
+      genome,
+      parents: [
+        { genome: p1.genome, name: p1.name, color: p1.color },
+        { genome: p2.genome, name: p2.name, color: p2.color }
+      ],
+      createName: createCreatureName,
+      createColor: createCreatureColor,
+      usedColors
+    });
+    usedColors.push(identity.color);
+    evolutionPreview.push(getEvolutionPreviewEntry({
+      type: 'offspring',
+      childName: identity.name,
+      childGenome: identity.genome,
+      parentA: { name: p1.name, genome: p1.genome },
+      parentB: { name: p2.name, genome: p2.genome },
+      crossoverPoint: crossed.crossoverPoint
+    }));
+    next.push(makeAgent(identity.genome, identity.name, identity.color));
+  }
+
+  pop = next;
+}
+
+// ══ SIMULATION ═══════════════════════════════════
+function initPop() {
+  const usedColors = [];
+  pop = Array.from({length:POP}, () => {
+    const color = createCreatureColor({ usedColors });
+    usedColors.push(color);
+    return makeAgent(rndGenome(), createCreatureName(), color);
+  });
+}
+
+function startGen() {
+  stepN = 0;
+  pop.forEach(a => {
+    a.pos = {...START};
+    a.reached = false;
+    a.path = [{...START}];
+  });
+  render();
+  if (handle) clearInterval(handle);
+  handle = setInterval(tick, delay);
+}
+
+function tick() {
+  if (paused) return;
+
+  pop.forEach(a => {
+    if (!a.reached && stepN < GLEN) {
+      a.pos = mv(a.pos, a.genome[stepN]);
+      a.path.push({...a.pos});
+      if (a.pos.x===GOAL.x && a.pos.y===GOAL.y) a.reached = true;
+    }
+  });
+  stepN++;
+
+  phaseEl.style.width = (stepN/GLEN*100) + '%';
+  stepEl.textContent  = `${stepN} / ${GLEN}`;
+  document.getElementById('phase-bar').setAttribute('aria-valuenow', stepN);
+
+  render();
+
+  const winner = pop.find(a => a.reached);
+  if (winner) { clearInterval(handle); onSuccess(); return; }
+  if (stepN >= GLEN) { clearInterval(handle); onGenEnd(); }
+}
+
+function onGenEnd() {
+  const ranked = pop
+    .map((a,i) => ({a, i, d: dist(a.pos)}))
+    .sort((x,y) => x.d - y.d);
+
+  const bestD = ranked[0].d;
+  setStatus(`GEN ${gen} CONCLUÍDA  ·  MELHOR: ${bestD} ▲`, 'evolving');
+
+  setTimeout(() => showRankingOverlay(ranked), 300);
+}
+
+// ══ RANKING OVERLAY ════════════════════════════════
+const ARROWS = {U:'↑', D:'↓', L:'←', R:'→'};
+const GENE_CLS = {U:'gU', D:'gD', L:'gL', R:'gR'};
+
+function genesHtml(genome) {
+  return genome.map(g => `<span class="${GENE_CLS[g]}">${ARROWS[g]}</span>`).join('');
+}
+
+function evoGenesHtml(genome, sourceMap, mutationIndices) {
+  return genome.map((gene, index) => {
+    const sourceCls = sourceMap && sourceMap[index] === 'B' ? 'ev-b' : 'ev-a';
+    const mutationCls = mutationIndices && mutationIndices.includes(index) ? 'ev-mut' : '';
+    return `<span class="ev-gene ${GENE_CLS[gene]} ${sourceCls} ${mutationCls}">${ARROWS[gene]}</span>`;
+  }).join('');
+}
+
+function continueToNextGeneration() {
+  gen++;
+  genEl.textContent = String(gen).padStart(3,'0');
+  setStatus(`GEN ${gen}  ·  RUNNING`, 'running');
+  startGen();
+}
+
+function showEvolutionOverlay() {
+  const overlay = document.getElementById('evo-overlay');
+  const table = document.getElementById('evo-table');
+  const phase = document.getElementById('evo-phase');
+  const summary = document.getElementById('evo-summary');
+  const contBtn = document.getElementById('evo-continue');
+
+  document.getElementById('evo-gen').textContent = gen + 1;
+  phase.textContent = 'MONTANDO CRUZAMENTOS...';
+  phase.className = 'rank-phase';
+  summary.textContent = '';
+  contBtn.style.display = 'none';
+  contBtn.onclick = null;
+  table.innerHTML = '';
+
+  evolutionPreview.forEach((entry, index) => {
+    const row = document.createElement('div');
+    row.className = `evo-row ${entry.type === 'elite' ? 'elite-row' : 'offspring-row'}`;
+
+    const mutationCount = entry.mutationIndices.length;
+    const processLabel = entry.type === 'elite'
+      ? 'CLONE DIRETO'
+      : `CUT ${entry.crossoverPoint} · MUT ${mutationCount}`;
+    const resultLabel = mutationCount
+      ? `${mutationCount} mutação${mutationCount > 1 ? 'ões' : ''}`
+      : 'sem mutação';
+
+    row.innerHTML = `
+      <div class="rank-num">#${String(index + 1).padStart(2, '0')}</div>
+      <div class="evo-type">${entry.type === 'elite' ? 'ELITE' : 'FILHO'}</div>
+      <div class="evo-parents">
+        <div class="evo-parent-line"><span class="evo-tag tag-a">A</span><span class="rank-name">${entry.parentA.name}</span></div>
+        ${entry.parentB ? `<div class="evo-parent-line"><span class="evo-tag tag-b">B</span><span class="rank-name">${entry.parentB.name}</span></div>` : `<div class="evo-parent-line"><span class="evo-tag tag-b">B</span><span class="rank-name">-</span></div>`}
+      </div>
+      <div class="evo-process">
+        <div class="evo-note">${processLabel}</div>
+        <div class="evo-process-line"><span class="evo-tag tag-r">DNA</span><div class="evo-gene-line">${evoGenesHtml(entry.childGenome, entry.sourceMap, entry.mutationIndices)}</div></div>
+      </div>
+      <div class="evo-result">
+        <div class="evo-result-name">${entry.childName}</div>
+        <div class="evo-note">${resultLabel}</div>
+      </div>`;
+    table.appendChild(row);
+  });
+
+  overlay.style.display = 'flex';
+  const rows = table.querySelectorAll('.evo-row');
+  rows.forEach((row, index) => {
+    setTimeout(() => row.classList.add('visible'), index * 45);
+  });
+
+  setTimeout(() => {
+    phase.textContent = 'CROSSOVER E MUTAÇÃO FINALIZADOS';
+    phase.className = 'rank-phase done';
+    const mutationTotal = evolutionPreview.reduce((sum, entry) => sum + entry.mutationIndices.length, 0);
+    summary.textContent = `${ELITE} clones elite  ·  ${POP - ELITE} filhos cruzados  ·  ${mutationTotal} mutações`;
+    contBtn.style.display = 'block';
+    contBtn.onclick = () => {
+      overlay.style.display = 'none';
+      continueToNextGeneration();
+    };
+  }, evolutionPreview.length * 45 + 350);
+}
+
+function showRankingOverlay(ranked) {
+  const rkOverlay = document.getElementById('rank-overlay');
+  const table     = document.getElementById('rank-table');
+  const phase     = document.getElementById('rk-phase');
+  const summary   = document.getElementById('rk-summary');
+  const contBtn   = document.getElementById('rank-continue');
+
+  document.getElementById('rk-gen').textContent = gen;
+  phase.textContent = 'CALCULANDO POSIÇÕES FINAIS...';
+  phase.className   = 'rank-phase';
+  summary.textContent = '';
+  contBtn.style.display = 'none';
+  contBtn.onclick = null;
+
+  // Build rows
+  table.innerHTML = '';
+  ranked.forEach(({a, i, d}, rank) => {
+    const color  = a.color;
+
+    const row = document.createElement('div');
+    row.className = 'rank-row';
+    row.id = `rrow-${rank}`;
+    row.innerHTML = `
+      <div class="rank-num">#${rank+1}</div>
+      <div class="rank-dot-sm" style="background:${color};box-shadow:0 0 5px ${color}88"></div>
+      <div class="rank-name">${a.name}</div>
+      <div class="rank-pos">(${a.pos.x},${a.pos.y})</div>
+      <div class="rank-dist">${d}</div>
+      <div class="rank-genes">${genesHtml(a.genome)}</div>
+      <div class="rank-badge badge-waiting" id="badge-${rank}"></div>`;
+    table.appendChild(row);
+  });
+
+  rkOverlay.style.display = 'flex';
+
+  // Phase 1 — animate rows in staggered
+  const rows = table.querySelectorAll('.rank-row');
+  rows.forEach((row, i) => {
+    setTimeout(() => row.classList.add('visible'), i * 55);
+  });
+
+  const afterRows = ranked.length * 55 + 300;
+
+  // Phase 2 — reveal survivors
+  setTimeout(() => {
+    phase.textContent = 'SELECIONANDO SOBREVIVENTES...';
+    phase.className   = 'rank-phase selecting';
+
+    rows.forEach((row, rank) => {
+      setTimeout(() => {
+        const badge = document.getElementById(`badge-${rank}`);
+        if (rank < ELITE) {
+          row.classList.add('survivor');
+          badge.className   = 'rank-badge badge-elite';
+          badge.textContent = '★ ELITE';
+        } else if (rank < 10) {
+          row.classList.add('survivor');
+          badge.className   = 'rank-badge badge-survive';
+          badge.textContent = '✓ SOBREVIVE';
+        } else {
+          row.classList.add('eliminated');
+          badge.className   = 'rank-badge badge-dead';
+          badge.textContent = '✗ ELIMINADO';
+        }
+      }, rank * 75);
+    });
+
+    // Phase 3 — show continue button
+    setTimeout(() => {
+      phase.textContent = '10 SOBREVIVENTES SELECIONADOS';
+      phase.className   = 'rank-phase done';
+      summary.textContent = `${ELITE} elite  ·  ${10-ELITE} seleção  ·  10 eliminados`;
+      contBtn.style.display = 'block';
+contBtn.onclick = () => {
+        rkOverlay.style.display = 'none';
+        // Sort pop to match ranking, then evolve
+        pop.sort((a,b) => dist(a.pos) - dist(b.pos));
+        evolve();
+        showEvolutionOverlay();
+      };
+    }, ranked.length * 75 + 600);
+
+  }, afterRows);
+}
+
+function onSuccess() {
+  render();
+  setStatus('⚔  ESPADA ENCONTRADA!', 'success');
+  document.getElementById('ov-gen').textContent   = gen;
+  document.getElementById('ov-steps').textContent = stepN;
+  setTimeout(() => { overlayEl.style.display = 'flex'; }, 600);
+}
+
+// ══ RENDER ═══════════════════════════════════════
+function render() {
+  const metrics = getRenderMetrics();
+  // Trail
+  document.querySelectorAll('.cell.trail').forEach(c => c.classList.remove('trail'));
+  trail.forEach(({x,y}) => {
+    const c = document.getElementById(`c${x}_${y}`);
+    if (c && !(x===GOAL.x&&y===GOAL.y) && !(x===START.x&&y===START.y)) c.classList.add('trail');
+  });
+
+  // Rank agents by current distance
+  const ranked = pop
+    .map((a,i) => ({a,i,d:dist(a.pos)}))
+    .sort((x,y) => x.d - y.d); // closest first
+
+  // Update dots
+  ranked.forEach(({a,i,d}, rank) => {
+    const color  = a.color;
+    const sub    = metrics.subPositions[i];
+    const agent  = document.getElementById(`a${i}`);
+    const dot    = document.getElementById(`d${i}`);
+    const label  = document.getElementById(`n${i}`);
+
+    dot.style.width     = metrics.spriteScale + 'px';
+    dot.style.height    = metrics.spriteScale + 'px';
+    agent.style.left    = (a.pos.x * metrics.cellSize + sub.x + metrics.spriteScale / 2) + 'px';
+    agent.style.top     = (a.pos.y * metrics.cellSize + sub.y) + 'px';
+    dot.style.boxShadow = spriteBoxShadow(color);
+    label.textContent   = a.name;
+    dot.classList.toggle('best',    rank === 0 && !a.reached);
+    dot.classList.toggle('reached', a.reached);
+  });
+
+  // Best distance
+  const bestD = ranked[0].d;
+  distEl.textContent = bestD;
+
+  // Population list
+  renderList(ranked);
+}
+
+function renderList(ranked) {
+  listEl.innerHTML = '<div class="list-hdr">Agentes</div>';
+  ranked.forEach(({a,i,d}, rank) => {
+    const color  = a.color;
+    const pct    = Math.round(Math.max(0, (27-d)/27*100));
+    const row    = document.createElement('div');
+    row.className = 'list-row';
+    row.innerHTML = `
+      <div class="list-dot" style="background:${color};box-shadow:0 0 4px ${color}88"></div>
+      <div class="list-name">${a.name}</div>
+      <div class="list-bar-bg">
+        <div class="list-bar" style="width:${pct}%;background:${color}44;border-right:2px solid ${color}"></div>
+      </div>
+      <div class="list-dist">${d}</div>`;
+    listEl.appendChild(row);
+  });
+}
+
+// ══ CONTROLS ═════════════════════════════════════
+function setStatus(msg, cls) {
+  statusEl.textContent = msg;
+  statusEl.className   = 'status-line ' + cls;
+}
+
+function togglePause() {
+  paused = !paused;
+  pauseBtn.textContent = paused ? '▶ CONTINUAR' : '⏸ PAUSAR';
+  pauseBtn.classList.toggle('active', paused);
+  pauseBtn.setAttribute('aria-pressed', String(paused));
+}
+
+function setSpeed(level) {
+  delay = SPEEDS[level];
+  if (handle) { clearInterval(handle); handle = setInterval(tick, delay); }
+  for (let i=0; i<SPEEDS.length; i++) {
+    const btn = document.getElementById(`s${i}`);
+    const on = i <= level;
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', String(on));
+  }
+}
+
+function reset() {
+  if (handle) clearInterval(handle);
+  paused = false;
+  gen = 1;
+  trail = [];
+  evolutionPreview = [];
+  pauseBtn.textContent = '⏸ PAUSAR';
+  pauseBtn.classList.remove('active');
+  phaseEl.style.width  = '0%';
+  overlayEl.style.display = 'none';
+  document.getElementById('rank-overlay').style.display = 'none';
+  document.getElementById('evo-overlay').style.display = 'none';
+  genEl.textContent  = '001';
+  distEl.textContent = '18';
+  stepEl.textContent = '0 / ' + GLEN;
+  initPop();
+  setStatus('GEN 1  ·  RUNNING', 'running');
+  startGen();
+}
+
+// ══ BOOT ═════════════════════════════════════════
+buildGrid();
+buildDots();
+setSpeed(0); // default: minimum speed
+initPop();
+setStatus('GEN 1  ·  RUNNING', 'running');
+startGen();
+</script>
+</body>
+</html>
