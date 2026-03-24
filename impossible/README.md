@@ -57,3 +57,5 @@ http://127.0.0.1:8000/index.html
 ## Observacao
 
 Esta e uma versao simplificada do conceito original. Ela preserva a ideia central de treinar uma IA para jogar, mas nao implementa leitura de memoria de emulador nem NEAT completo com topologia mutavel.
+
+Nesta versao, os inputs da rede usam uma grade local de sensores ao redor do jogador, inspirada na observacao espacial do MarI/O. A topologia, porem, continua fixa: a rede nao adiciona ou remove neuronios ao longo da evolucao.

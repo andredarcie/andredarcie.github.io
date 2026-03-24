@@ -1,28 +1,12 @@
-function randomWeight() {
-  return Math.random() * 2 - 1;
-}
-
-export function createNetwork(inputCount, hiddenCount, outputCount) {
-  return {
-    inputCount,
-    hiddenCount,
-    outputCount,
-    inputHidden: createMatrix(hiddenCount, inputCount, randomWeight),
-    hiddenBias: createArray(hiddenCount, randomWeight),
-    hiddenOutput: createMatrix(outputCount, hiddenCount, randomWeight),
-    outputBias: createArray(outputCount, randomWeight),
-  };
-}
-
 export function cloneNetwork(network) {
   return {
     inputCount: network.inputCount,
-    hiddenCount: network.hiddenCount,
     outputCount: network.outputCount,
-    inputHidden: network.inputHidden.map((row) => [...row]),
-    hiddenBias: [...network.hiddenBias],
-    hiddenOutput: network.hiddenOutput.map((row) => [...row]),
-    outputBias: [...network.outputBias],
+    biasNodeId: network.biasNodeId,
+    outputNodeIds: [...network.outputNodeIds],
+    nodeOrder: { ...network.nodeOrder },
+    genes: network.genes.map((gene) => ({ ...gene })),
+    mutationRates: { ...network.mutationRates },
   };
 }
 
@@ -31,75 +15,120 @@ export function evaluateNetwork(network, inputs) {
 }
 
 export function evaluateNetworkDetailed(network, inputs) {
-  const hidden = network.inputHidden.map((row, index) =>
-    tanh(dot(row, inputs) + network.hiddenBias[index]),
-  );
-
-  const outputs = network.hiddenOutput.map((row, index) =>
-    tanh(dot(row, hidden) + network.outputBias[index]),
-  );
-
-  return {
-    hidden,
-    outputs,
-  };
-}
-
-export function crossoverNetworks(primary, secondary) {
-  return {
-    inputCount: primary.inputCount,
-    hiddenCount: primary.hiddenCount,
-    outputCount: primary.outputCount,
-    inputHidden: mixMatrices(primary.inputHidden, secondary.inputHidden),
-    hiddenBias: mixArrays(primary.hiddenBias, secondary.hiddenBias),
-    hiddenOutput: mixMatrices(primary.hiddenOutput, secondary.hiddenOutput),
-    outputBias: mixArrays(primary.outputBias, secondary.outputBias),
-  };
-}
-
-export function mutateNetwork(network, mutationRate, mutationStrength) {
-  mutateMatrix(network.inputHidden, mutationRate, mutationStrength);
-  mutateMatrix(network.hiddenOutput, mutationRate, mutationStrength);
-  mutateArray(network.hiddenBias, mutationRate, mutationStrength);
-  mutateArray(network.outputBias, mutationRate, mutationStrength);
-}
-
-function createMatrix(rows, cols, factory) {
-  return Array.from({ length: rows }, () => createArray(cols, factory));
-}
-
-function createArray(length, factory) {
-  return Array.from({ length }, () => factory());
-}
-
-function dot(weights, values) {
-  let total = 0;
-  for (let index = 0; index < weights.length; index += 1) {
-    total += weights[index] * values[index];
+  if (inputs.length !== network.inputCount) {
+    console.error("Incorrect number of neural network inputs.");
+    return {
+      hidden: [],
+      outputs: Array.from({ length: network.outputCount }, () => 0),
+      hiddenNodeIds: [],
+      nodeValues: {},
+    };
   }
-  return total;
+
+  const values = {};
+  for (let index = 0; index < network.inputCount; index += 1) {
+    values[index] = inputs[index];
+  }
+  values[network.biasNodeId] = 1;
+
+  const incomingByNode = new Map();
+  for (const gene of network.genes) {
+    if (!gene.enabled) {
+      continue;
+    }
+    if (!incomingByNode.has(gene.out)) {
+      incomingByNode.set(gene.out, []);
+    }
+    incomingByNode.get(gene.out).push(gene);
+  }
+
+  const hiddenNodeIds = getHiddenNodeIds(network);
+  const orderedNodeIds = [...hiddenNodeIds, ...network.outputNodeIds].sort(
+    (a, b) => network.nodeOrder[a] - network.nodeOrder[b] || a - b,
+  );
+
+  for (const nodeId of orderedNodeIds) {
+    const incoming = incomingByNode.get(nodeId) ?? [];
+    let sum = 0;
+    for (const gene of incoming) {
+      sum += gene.weight * (values[gene.into] ?? 0);
+    }
+    values[nodeId] = sigmoid(sum);
+  }
+
+  return {
+    hidden: hiddenNodeIds.map((nodeId) => values[nodeId] ?? 0),
+    outputs: network.outputNodeIds.map((nodeId) => values[nodeId] ?? 0),
+    hiddenNodeIds,
+    nodeValues: values,
+  };
 }
 
-function tanh(value) {
-  return Math.tanh(value);
+export function createNetworkVisualization(network, evaluation, inputLabels, outputLabels) {
+  const inputNodes = [];
+  for (let index = 0; index < network.inputCount; index += 1) {
+    inputNodes.push({
+      id: index,
+      label: inputLabels[index] ?? `I${index + 1}`,
+      value: evaluation.sensors.normalizedInputs[index] ?? 0,
+      column: "input",
+    });
+  }
+
+  inputNodes.push({
+    id: network.biasNodeId,
+    label: "Bias",
+    value: 1,
+    column: "input",
+  });
+
+  const hiddenNodeIds = evaluation.hiddenNodeIds ?? getHiddenNodeIds(network);
+  const hiddenNodes = hiddenNodeIds.map((nodeId) => ({
+    id: nodeId,
+    label: `H${nodeId}`,
+    value: evaluation.nodeValues[nodeId] ?? 0,
+    column: "hidden",
+  }));
+
+  const outputNodes = network.outputNodeIds.map((nodeId, index) => ({
+    id: nodeId,
+    label: outputLabels[index] ?? `O${index + 1}`,
+    value: evaluation.outputs[index] ?? 0,
+    column: "output",
+  }));
+
+  return {
+    nodes: {
+      input: inputNodes,
+      hidden: hiddenNodes,
+      output: outputNodes,
+    },
+    connections: network.genes
+      .filter((gene) => gene.enabled)
+      .map((gene) => ({
+        from: gene.into,
+        to: gene.out,
+        weight: gene.weight,
+      })),
+  };
 }
 
-function mixMatrices(a, b) {
-  return a.map((row, rowIndex) => mixArrays(row, b[rowIndex]));
-}
+export function getHiddenNodeIds(network) {
+  const hiddenIds = new Set();
+  const outputIds = new Set(network.outputNodeIds);
 
-function mixArrays(a, b) {
-  return a.map((value, index) => (Math.random() < 0.5 ? value : b[index]));
-}
-
-function mutateMatrix(matrix, mutationRate, mutationStrength) {
-  matrix.forEach((row) => mutateArray(row, mutationRate, mutationStrength));
-}
-
-function mutateArray(values, mutationRate, mutationStrength) {
-  for (let index = 0; index < values.length; index += 1) {
-    if (Math.random() < mutationRate) {
-      values[index] += (Math.random() * 2 - 1) * mutationStrength;
+  for (const gene of network.genes) {
+    if (gene.into >= network.inputCount + 1 && !outputIds.has(gene.into)) {
+      hiddenIds.add(gene.into);
+    }
+    if (gene.out >= network.inputCount + 1 && !outputIds.has(gene.out)) {
+      hiddenIds.add(gene.out);
     }
   }
+
+  return [...hiddenIds].sort((a, b) => network.nodeOrder[a] - network.nodeOrder[b] || a - b);
+}
+
+function sigmoid(value) {
+  return 2 / (1 + Math.exp(-4.9 * value)) - 1;
 }

@@ -90,9 +90,9 @@
           <div class="panel-group">
             <h2>Live Brain</h2>
             <dl class="stats compact-stats">
-              <div><dt>Gap Distance</dt><dd id="sensorGapDistanceLabel">0</dd></div>
-              <div><dt>Gap Width</dt><dd id="sensorGapWidthLabel">0</dd></div>
-              <div><dt>Goal Distance</dt><dd id="sensorGoalDistanceLabel">0</dd></div>
+              <div><dt>Solid Cells</dt><dd id="sensorGapDistanceLabel">0</dd></div>
+              <div><dt>Danger Cells</dt><dd id="sensorGapWidthLabel">0</dd></div>
+              <div><dt>Player Tile</dt><dd id="sensorGoalDistanceLabel">0</dd></div>
               <div><dt>Grounded</dt><dd id="sensorGroundedLabel">No</dd></div>
               <div><dt>Velocity X</dt><dd id="sensorVelocityXLabel">0</dd></div>
               <div><dt>Velocity Y</dt><dd id="sensorVelocityYLabel">0</dd></div>
@@ -132,8 +132,9 @@
           <div class="panel-group">
             <h2>How It Works</h2>
             <p class="hint">
-              Inputs: next gap distance, gap width, goal distance, grounded,
-              velocity X and velocity Y. Outputs: move left, move right, jump.
+              Inputs: uma grade local 9x9 ao redor do jogador, marcada com
+              blocos solidos e vazio perigoso. Outputs: move left, move right,
+              jump.
             </p>
             <p class="hint">
               In manual mode, use <strong>Left</strong>, <strong>Right</strong>

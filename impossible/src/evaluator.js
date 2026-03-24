@@ -1,9 +1,11 @@
 import { createGame, resetGame, stepGame } from "./game.js";
+import { isSolidAt } from "./level.js";
 import { evaluateNetworkDetailed } from "./nn.js";
 
 export const MAX_FRAMES = 900;
 export const MAX_IDLE_FRAMES = 120;
-export const INPUT_LABELS = ["Gap", "Width", "FinalGap", "FinalWidth", "Goal", "Ground", "VX", "VY"];
+export const SENSOR_RADIUS = 4;
+export const INPUT_LABELS = createInputLabels(SENSOR_RADIUS);
 export const OUTPUT_LABELS = ["Left", "Right", "Jump"];
 
 export function evaluateGenome(level, genome) {
@@ -24,33 +26,43 @@ export function getInputs(game) {
 
 export function getSensorSnapshot(game) {
   const { player, level } = game;
-  const upcomingGap = findUpcomingGap(level, player.x + player.width * 0.5);
-  const finalGap = findFinalGap(level, player.x + player.width * 0.5);
-  const goalDistance = Math.max(level.goalX - player.x, 0);
+  const originX = player.x + player.width * 0.5;
+  const originY = player.y + player.height * 0.5;
+  const normalizedInputs = [];
+  let solidTiles = 0;
+  let dangerTiles = 0;
+
+  for (let dy = -SENSOR_RADIUS; dy <= SENSOR_RADIUS; dy += 1) {
+    for (let dx = -SENSOR_RADIUS; dx <= SENSOR_RADIUS; dx += 1) {
+      const worldX = originX + dx * level.tileSize;
+      const worldY = originY + dy * level.tileSize;
+      const tileCol = Math.floor(worldX / level.tileSize);
+      const tileRow = Math.floor(worldY / level.tileSize);
+      let value = 0;
+
+      if (isSolidAt(level, tileCol, tileRow)) {
+        value = 1;
+        solidTiles += 1;
+      } else if (tileRow >= level.groundRow) {
+        value = -1;
+        dangerTiles += 1;
+      }
+
+      normalizedInputs.push(value);
+    }
+  }
 
   return {
-    upcomingGap,
-    finalGap,
     raw: {
-      gapDistance: upcomingGap.distance,
-      gapWidth: upcomingGap.width,
-      finalGapDistance: finalGap.distance,
-      finalGapWidth: finalGap.width,
-      goalDistance,
+      solidTiles,
+      dangerTiles,
+      originTileX: Math.floor(originX / level.tileSize),
+      originTileY: Math.floor(originY / level.tileSize),
       grounded: player.grounded,
       velocityX: player.vx,
       velocityY: player.vy,
     },
-    normalizedInputs: [
-      normalize(upcomingGap.distance, level.width),
-      normalize(upcomingGap.width, level.width),
-      normalize(finalGap.distance, level.width),
-      normalize(finalGap.width, level.width),
-      normalize(goalDistance, level.width),
-      player.grounded ? 1 : -1,
-      normalizeSigned(player.vx, 6),
-      normalizeSigned(player.vy, 14),
-    ],
+    normalizedInputs,
   };
 }
 
@@ -63,16 +75,28 @@ export function getDecisionSnapshot(game, network) {
     sensors,
     hidden: evaluation.hidden,
     outputs: evaluation.outputs,
+    hiddenNodeIds: evaluation.hiddenNodeIds,
+    nodeValues: evaluation.nodeValues,
     action,
   };
 }
 
 export function toAction(outputs) {
-  return {
+  const action = {
     left: outputs[0] > 0.35,
     right: outputs[1] > 0.35,
     jump: outputs[2] > 0.45,
   };
+
+  if (action.left && action.right) {
+    if (outputs[0] >= outputs[1]) {
+      action.right = false;
+    } else {
+      action.left = false;
+    }
+  }
+
+  return action;
 }
 
 export function computeFitness(game) {
@@ -101,50 +125,12 @@ export function computeFitness(game) {
   return Math.max(fitness, 1);
 }
 
-function findUpcomingGap(level, fromX) {
-  const margin = level.tileSize * 0.5;
-  for (const gap of level.gapRanges) {
-    if (gap.endX < fromX - margin) {
-      continue;
+function createInputLabels(radius) {
+  const labels = [];
+  for (let dy = -radius; dy <= radius; dy += 1) {
+    for (let dx = -radius; dx <= radius; dx += 1) {
+      labels.push(`${dx},${dy}`);
     }
-
-    const distance = Math.max(gap.startX - fromX, 0);
-    return {
-      startX: gap.startX,
-      endX: gap.endX,
-      distance,
-      width: gap.width,
-    };
   }
-
-  return {
-    startX: level.goalX,
-    endX: level.goalX,
-    distance: Math.max(level.goalX - fromX, 0),
-    width: 0,
-  };
-}
-
-function findFinalGap(level, fromX) {
-  const gap = level.gapRanges[level.gapRanges.length - 1];
-  return {
-    startX: gap.startX,
-    endX: gap.endX,
-    distance: Math.max(gap.startX - fromX, 0),
-    width: gap.width,
-  };
-}
-
-function normalize(value, max) {
-  if (max === 0) {
-    return 0;
-  }
-  return Math.max(0, Math.min(1, value / max));
-}
-
-function normalizeSigned(value, max) {
-  if (max === 0) {
-    return 0;
-  }
-  return Math.max(-1, Math.min(1, value / max));
+  return labels;
 }

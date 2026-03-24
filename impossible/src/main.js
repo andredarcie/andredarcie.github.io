@@ -14,6 +14,7 @@ import {
   OUTPUT_LABELS,
 } from "./evaluator.js";
 import { createLevel } from "./level.js";
+import { createNetworkVisualization } from "./nn.js";
 import { createRenderer, renderGame } from "./renderer.js";
 import { clearBestGenome, loadBestGenome, saveBestGenome } from "./storage.js";
 import { createUI, updateUI } from "./ui.js";
@@ -446,14 +447,7 @@ function getNetworkVisualization() {
     return null;
   }
 
-  return {
-    network: watchedGenome.network,
-    inputs: latestDebug.sensors.normalizedInputs,
-    hidden: latestDebug.hidden,
-    outputs: latestDebug.outputs,
-    inputLabels: INPUT_LABELS,
-    outputLabels: OUTPUT_LABELS,
-  };
+  return createNetworkVisualization(watchedGenome.network, latestDebug, INPUT_LABELS, OUTPUT_LABELS);
 }
 
 function handleTrainingVictory() {

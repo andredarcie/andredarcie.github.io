@@ -1,3 +1,4 @@
+import { SENSOR_RADIUS } from "./evaluator.js";
 import { PLAYER_SIZE } from "./physics.js";
 
 export function createRenderer(canvas, level) {
@@ -263,38 +264,30 @@ function drawSensors(context, game, debug) {
   }
 
   const playerCenterX = game.player.x + game.player.width * 0.5;
+  const playerCenterY = game.player.y + game.player.height * 0.5;
   const playerTopY = game.player.y + 2;
   const playerMidY = game.player.y + game.player.height * 0.5;
-  const playerBottomY = game.player.y + game.player.height + 20;
-  const gap = debug.sensors.upcomingGap;
+  const sensorSize = game.level.tileSize;
 
   context.save();
-  context.setLineDash([8, 6]);
-  context.strokeStyle = "rgba(29, 42, 43, 0.75)";
-  context.lineWidth = 2;
-  context.beginPath();
-  context.moveTo(playerCenterX, playerBottomY);
-  context.lineTo(gap.startX, playerBottomY);
-  context.stroke();
-  context.setLineDash([]);
 
-  if (gap.width > 0) {
-    context.fillStyle = "rgba(198, 84, 47, 0.16)";
-    context.fillRect(
-      gap.startX,
-      game.level.groundRow * game.level.tileSize,
-      gap.width,
-      game.level.height - game.level.groundRow * game.level.tileSize,
-    );
+  let sensorIndex = 0;
+  for (let dy = -SENSOR_RADIUS; dy <= SENSOR_RADIUS; dy += 1) {
+    for (let dx = -SENSOR_RADIUS; dx <= SENSOR_RADIUS; dx += 1) {
+      const value = debug.sensors.normalizedInputs[sensorIndex] ?? 0;
+      const cellX = playerCenterX + dx * sensorSize - sensorSize * 0.5;
+      const cellY = playerCenterY + dy * sensorSize - sensorSize * 0.5;
 
-    context.strokeStyle = "rgba(198, 84, 47, 0.86)";
-    context.lineWidth = 3;
-    context.strokeRect(
-      gap.startX,
-      game.level.groundRow * game.level.tileSize + 2,
-      gap.width,
-      game.level.height - game.level.groundRow * game.level.tileSize - 4,
-    );
+      if (value !== 0) {
+        context.fillStyle = value > 0 ? "rgba(213, 160, 33, 0.22)" : "rgba(95, 150, 210, 0.22)";
+        context.fillRect(cellX, cellY, sensorSize, sensorSize);
+      }
+
+      context.strokeStyle = "rgba(255, 247, 235, 0.12)";
+      context.lineWidth = 1;
+      context.strokeRect(cellX, cellY, sensorSize, sensorSize);
+      sensorIndex += 1;
+    }
   }
 
   drawOutputBar(context, playerCenterX - 34, playerTopY - 42, 18, 36, debug.outputs[0], debug.action.left, "#c6542f");
@@ -305,7 +298,7 @@ function drawSensors(context, game, debug) {
   context.fillRect(playerCenterX + 18, playerMidY - 26, 110, 52);
   context.fillStyle = "#fff7eb";
   context.font = "12px Georgia";
-  context.fillText(`gap ${debug.sensors.raw.gapDistance.toFixed(0)}px`, playerCenterX + 28, playerMidY - 6);
+  context.fillText(`solid ${debug.sensors.raw.solidTiles}`, playerCenterX + 28, playerMidY - 6);
   context.fillText(`vx ${debug.sensors.raw.velocityX.toFixed(2)}`, playerCenterX + 28, playerMidY + 12);
   context.fillText(`vy ${debug.sensors.raw.velocityY.toFixed(2)}`, playerCenterX + 28, playerMidY + 30);
   context.restore();

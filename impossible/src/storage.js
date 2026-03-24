@@ -1,4 +1,4 @@
-const STORAGE_KEY = "impossible-cube-best-v1";
+const STORAGE_KEY = "impossible-cube-best-v2-neat";
 
 export function saveBestGenome(snapshot) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));

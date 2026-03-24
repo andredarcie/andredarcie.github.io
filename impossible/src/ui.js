@@ -109,9 +109,9 @@ function renderBrain(ui, debug) {
     return;
   }
 
-  ui.sensorGapDistanceLabel.textContent = debug.sensors.raw.gapDistance.toFixed(1);
-  ui.sensorGapWidthLabel.textContent = debug.sensors.raw.gapWidth.toFixed(1);
-  ui.sensorGoalDistanceLabel.textContent = `${debug.sensors.raw.goalDistance.toFixed(1)} | F:${debug.sensors.raw.finalGapDistance.toFixed(1)}`;
+  ui.sensorGapDistanceLabel.textContent = String(debug.sensors.raw.solidTiles);
+  ui.sensorGapWidthLabel.textContent = String(debug.sensors.raw.dangerTiles);
+  ui.sensorGoalDistanceLabel.textContent = `${debug.sensors.raw.originTileX}, ${debug.sensors.raw.originTileY}`;
   ui.sensorGroundedLabel.textContent = debug.sensors.raw.grounded ? "Yes" : "No";
   ui.sensorVelocityXLabel.textContent = debug.sensors.raw.velocityX.toFixed(2);
   ui.sensorVelocityYLabel.textContent = debug.sensors.raw.velocityY.toFixed(2);
@@ -148,26 +148,23 @@ function renderNetwork(ui, networkViz) {
     return;
   }
 
-  const inputNodes = createColumn(38, networkViz.inputLabels.length, canvas.height);
-  const hiddenNodes = createColumn(canvas.width / 2, networkViz.hidden.length, canvas.height);
-  const outputNodes = createColumn(canvas.width - 42, networkViz.outputLabels.length, canvas.height);
+  const columns = {
+    input: createColumn(44, networkViz.nodes.input.length, canvas.height),
+    hidden: createColumn(canvas.width / 2, networkViz.nodes.hidden.length, canvas.height),
+    output: createColumn(canvas.width - 44, networkViz.nodes.output.length, canvas.height),
+  };
+  const nodePositions = new Map();
 
-  drawConnections(
-    context,
-    inputNodes,
-    hiddenNodes,
-    networkViz.network.inputHidden,
-  );
-  drawConnections(
-    context,
-    hiddenNodes,
-    outputNodes,
-    networkViz.network.hiddenOutput,
-  );
+  for (const [columnKey, nodes] of Object.entries(networkViz.nodes)) {
+    nodes.forEach((node, index) => {
+      nodePositions.set(node.id, { ...columns[columnKey][index], column: columnKey });
+    });
+  }
 
-  drawNodeColumn(context, inputNodes, networkViz.inputs, networkViz.inputLabels);
-  drawNodeColumn(context, hiddenNodes, networkViz.hidden, null);
-  drawNodeColumn(context, outputNodes, networkViz.outputs, networkViz.outputLabels);
+  drawConnections(context, networkViz.connections, nodePositions);
+  drawNodeColumn(context, networkViz.nodes.input, nodePositions, true);
+  drawNodeColumn(context, networkViz.nodes.hidden, nodePositions, false);
+  drawNodeColumn(context, networkViz.nodes.output, nodePositions, true);
 }
 
 function drawNetworkBackground(context, canvas) {
@@ -180,7 +177,8 @@ function drawNetworkBackground(context, canvas) {
 
 function createColumn(x, count, height) {
   const nodes = [];
-  const spacing = height / (count + 1);
+  const safeCount = Math.max(count, 1);
+  const spacing = height / (safeCount + 1);
   for (let index = 0; index < count; index += 1) {
     nodes.push({
       x,
@@ -190,31 +188,36 @@ function createColumn(x, count, height) {
   return nodes;
 }
 
-function drawConnections(context, fromNodes, toNodes, weights) {
-  for (let row = 0; row < weights.length; row += 1) {
-    for (let column = 0; column < weights[row].length; column += 1) {
-      const weight = weights[row][column];
-      context.strokeStyle = weight >= 0
-        ? `rgba(213, 160, 33, ${0.14 + Math.abs(weight) * 0.24})`
-        : `rgba(198, 84, 47, ${0.14 + Math.abs(weight) * 0.24})`;
-      context.lineWidth = 1 + Math.min(Math.abs(weight) * 1.8, 2.6);
-      context.beginPath();
-      context.moveTo(fromNodes[column].x, fromNodes[column].y);
-      context.lineTo(toNodes[row].x, toNodes[row].y);
-      context.stroke();
+function drawConnections(context, connections, nodePositions) {
+  for (const connection of connections) {
+    const fromNode = nodePositions.get(connection.from);
+    const toNode = nodePositions.get(connection.to);
+    if (!fromNode || !toNode) {
+      continue;
     }
+
+    context.strokeStyle = connection.weight >= 0
+      ? `rgba(213, 160, 33, ${0.14 + Math.abs(connection.weight) * 0.24})`
+      : `rgba(198, 84, 47, ${0.14 + Math.abs(connection.weight) * 0.24})`;
+    context.lineWidth = 1 + Math.min(Math.abs(connection.weight) * 1.8, 2.6);
+    context.beginPath();
+    context.moveTo(fromNode.x, fromNode.y);
+    context.lineTo(toNode.x, toNode.y);
+    context.stroke();
   }
 }
 
-function drawNodeColumn(context, nodes, values, labels) {
-  nodes.forEach((node, index) => {
-    const value = values[index] ?? 0;
+function drawNodeColumn(context, nodes, nodePositions, showLabels) {
+  const shouldShowLabels = showLabels && nodes.length <= 24;
+  nodes.forEach((node) => {
+    const position = nodePositions.get(node.id);
+    const value = node.value ?? 0;
     const intensity = Math.min(Math.abs(value), 1);
     context.fillStyle = value >= 0
       ? `rgba(213, 160, 33, ${0.18 + intensity * 0.7})`
       : `rgba(95, 150, 210, ${0.18 + intensity * 0.7})`;
     context.beginPath();
-    context.arc(node.x, node.y, 13, 0, Math.PI * 2);
+    context.arc(position.x, position.y, 13, 0, Math.PI * 2);
     context.fill();
 
     context.strokeStyle = "rgba(255, 247, 235, 0.85)";
@@ -223,13 +226,13 @@ function drawNodeColumn(context, nodes, values, labels) {
 
     context.fillStyle = "#fff7eb";
     context.font = "11px Georgia";
-    context.textAlign = node.x < 60 ? "left" : node.x > 260 ? "right" : "center";
+    context.textAlign = position.x < 60 ? "left" : position.x > 260 ? "right" : "center";
 
-    if (labels) {
-      const labelX = node.x < 60 ? node.x + 18 : node.x > 260 ? node.x - 18 : node.x;
-      context.fillText(labels[index], labelX, node.y + 4);
+    if (shouldShowLabels) {
+      const labelX = position.x < 60 ? position.x + 18 : position.x > 260 ? position.x - 18 : position.x;
+      context.fillText(node.label, labelX, position.y + 4);
     } else {
-      context.fillText(value.toFixed(2), node.x, node.y + 28);
+      context.fillText(value.toFixed(2), position.x, position.y + 28);
     }
   });
   context.textAlign = "left";
