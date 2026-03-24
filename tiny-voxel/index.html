@@ -139,10 +139,19 @@ body {
 
 #load-input { display: none; }
 
-/* ── Camera rotate buttons ── */
-.cam-rotate-btn {
+/* ── Canvas overlay button group ── */
+#canvas-btns {
   position: absolute;
   bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  pointer-events: none; /* let clicks pass through gaps */
+}
+.canvas-btn {
+  pointer-events: all;
   width: 36px; height: 36px;
   border-radius: 50%;
   background: rgba(10, 22, 40, 0.82);
@@ -153,18 +162,13 @@ body {
   cursor: pointer;
   outline: none;
   display: flex; align-items: center; justify-content: center;
-  z-index: 10;
   transition: background 0.08s, transform 0.08s;
-  /* keep touch events from drawing */
   touch-action: none;
 }
-.cam-rotate-btn:hover  { background: var(--p12); color: var(--p0); }
-.cam-rotate-btn:active { transform: scale(0.88); }
-
-#cam-left  { left:  50%; transform: translateX(calc(-50% - 26px)); }
-#cam-right { left:  50%; transform: translateX(calc(-50% + 26px)); }
-#cam-left:active  { transform: translateX(calc(-50% - 26px)) scale(0.88); }
-#cam-right:active { transform: translateX(calc(-50% + 26px)) scale(0.88); }
+.canvas-btn:hover  { background: var(--p12); color: var(--p0); }
+.canvas-btn:active { transform: scale(0.88); }
+#btn-undo, #btn-redo { color: var(--p9); border-color: var(--p9); }
+#btn-undo:hover, #btn-redo:hover { background: var(--p9); color: var(--p0); }
 
 /* ════════════════════════════════════════
    MOBILE OVERRIDES  (< 700 px)
@@ -419,9 +423,13 @@ body {
       <canvas id="voxel-canvas"></canvas>
       <div id="view-mode-banner">👁 VIEW MODE · 2 FINGERS = ZOOM</div>
 
-      <!-- Rotate camera buttons -->
-      <button id="cam-left"  class="cam-rotate-btn" title="Rotate left">◀</button>
-      <button id="cam-right" class="cam-rotate-btn" title="Rotate right">▶</button>
+      <!-- Canvas overlay buttons -->
+      <div id="canvas-btns">
+        <button id="btn-undo"  class="canvas-btn" title="Undo">↩</button>
+        <button id="btn-redo"  class="canvas-btn" title="Redo">↪</button>
+        <button id="cam-left"  class="canvas-btn" title="Rotate left">◀</button>
+        <button id="cam-right" class="canvas-btn" title="Rotate right">▶</button>
+      </div>
     </div>
 
     <!-- ── DESKTOP RIGHT PANEL ────────────────────── -->
@@ -576,6 +584,7 @@ let currentColor = 1;
 let viewMode     = false;
 const voxelMap   = new Map();
 let history      = [];
+let redoHistory  = [];
 
 // ─── THREE SETUP ──────────────────────────────────────────────────────────
 const canvas   = document.getElementById('voxel-canvas');
@@ -657,13 +666,22 @@ function clearAll() { saveHistory(); for(const k of voxelMap.keys()) removeVoxel
 function saveHistory() {
   if(history.length>30) history.shift();
   history.push(new Map(voxelMap));
+  redoHistory = []; // nova ação limpa o redo
+}
+function restoreSnapshot(snapshot) {
+  for(const k of voxelMap.keys()) removeVoxelMesh(k); voxelMap.clear();
+  for(const[k,ci] of snapshot){ voxelMap.set(k,ci); const[x,y,z]=k.split(',').map(Number); addVoxelMesh(x,y,z,ci); }
+  updateStats();
 }
 function undo() {
   if(!history.length) return;
-  const prev=history.pop();
-  for(const k of voxelMap.keys()) removeVoxelMesh(k); voxelMap.clear();
-  for(const[k,ci] of prev){ voxelMap.set(k,ci); const[x,y,z]=k.split(',').map(Number); addVoxelMesh(x,y,z,ci); }
-  updateStats();
+  redoHistory.push(new Map(voxelMap));
+  restoreSnapshot(history.pop());
+}
+function redo() {
+  if(!redoHistory.length) return;
+  history.push(new Map(voxelMap));
+  restoreSnapshot(redoHistory.pop());
 }
 
 // ─── GHOST + ERASE OUTLINE ────────────────────────────────────────────────
@@ -841,6 +859,7 @@ document.addEventListener('keydown', e=>{
     case 'p': setTool('paint'); break; case 'e': setTool('erase'); break;
     case 'f': setTool('fill'); break;
     case 'z': if(e.ctrlKey||e.metaKey){ e.preventDefault(); undo(); } break;
+    case 'y': if(e.ctrlKey||e.metaKey){ e.preventDefault(); redo(); } break;
     case 'pageup':   e.preventDefault(); changeLayer(+1); break;
     case 'pagedown': e.preventDefault(); changeLayer(-1); break;
   }
@@ -900,6 +919,8 @@ document.getElementById('layer-down').addEventListener('click', ()=>changeLayer(
 document.getElementById('btn-reset-cam').addEventListener('click', resetCamera);
 document.getElementById('cam-left').addEventListener('click',  ()=>rotateCamera(+Math.PI/8));
 document.getElementById('cam-right').addEventListener('click', ()=>rotateCamera(-Math.PI/8));
+document.getElementById('btn-undo').addEventListener('click', undo);
+document.getElementById('btn-redo').addEventListener('click', redo);
 document.getElementById('btn-top-view').addEventListener('click',  topView);
 document.getElementById('btn-iso-view').addEventListener('click',  isoView);
 
