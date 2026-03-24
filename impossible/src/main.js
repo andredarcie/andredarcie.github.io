@@ -19,7 +19,9 @@ import { createRenderer, renderGame } from "./renderer.js";
 import { clearBestGenome, loadBestGenome, saveBestGenome } from "./storage.js";
 import { createUI, updateUI } from "./ui.js";
 
-const level = createLevel();
+const PREPARATION_FRAMES = 120;
+
+let level = createLevel();
 const canvas = document.querySelector("#game");
 const renderer = createRenderer(canvas, level);
 const ui = createUI();
@@ -27,6 +29,9 @@ const ui = createUI();
 let trainingState = createTrainingState(DEFAULT_TRAINING_CONFIG);
 let watchedGame = createGame(level);
 let watchedGenome = trainingState.population[0];
+let pendingLevel = null;
+let preparationFrames = 0;
+let levelReadyVisible = false;
 let mode = "training";
 let trainingPaused = false;
 let simulationSpeed = Number(ui.speedRange.value);
@@ -51,12 +56,16 @@ const manualInput = {
 };
 
 wireUi();
-applyHistoricalBest(trainingState, loadBestGenome());
-resetWatchedGame(trainingState.population[0]);
+startRandomLevelGeneration();
 requestAnimationFrame(frame);
 
 function frame() {
-  if (mode === "training" && !trainingPaused) {
+  if (preparationFrames > 0) {
+    preparationFrames -= 1;
+    if (preparationFrames === 0) {
+      initializeSimulationWithPendingLevel();
+    }
+  } else if (mode === "training" && !trainingPaused && !levelReadyVisible) {
     const steps = turboEnabled ? TURBO_STEPS : simulationSpeed;
     for (let step = 0; step < steps; step += 1) {
       runTrainingStep();
@@ -151,40 +160,46 @@ function resetWatchedGame(genome) {
 }
 
 function render() {
-  const currentFitness = mode === "training"
-    ? computeFitness(watchedGame)
-    : watchedGame.maxX;
-  const currentCompletion = Math.min((watchedGame.maxX / level.goalX) * 100, 100);
-  const generationBest = getGenerationBest();
+  const preparing = preparationFrames > 0;
+  const currentFitness = preparing
+    ? 0
+    : mode === "training"
+      ? computeFitness(watchedGame)
+      : watchedGame.maxX;
+  const currentCompletion = preparing
+    ? 0
+    : Math.min((watchedGame.maxX / level.goalX) * 100, 100);
+  const generationBest = preparing ? 0 : getGenerationBest();
 
   renderGame(renderer, watchedGame, {
     mode: getModeLabel(),
-    generation: trainingState.generation,
+    generation: preparing ? 0 : trainingState.generation,
     agent: getAgentLabel(),
-    bestFitness: trainingState.bestFitness.toFixed(1),
+    bestFitness: preparing ? "0.0" : trainingState.bestFitness.toFixed(1),
     generationBest: generationBest.toFixed(1),
     message: getStatusMessage(),
     submessage: getSubmessage(),
-    debug: mode === "manual" ? null : latestDebug,
+    debug: preparing || mode === "manual" ? null : latestDebug,
     centerCard: getCenterCard(),
   });
 
   updateUI(ui, {
     mode: getModeLabel(),
-    generation: trainingState.generation,
+    generation: preparing ? 0 : trainingState.generation,
     agent: getAgentLabel(),
-    frame: watchedGame.frame,
-    bestFitness: trainingState.bestFitness,
-    bestCompletion: trainingState.bestCompletion,
+    frame: preparing ? 0 : watchedGame.frame,
+    bestFitness: preparing ? 0 : trainingState.bestFitness,
+    bestCompletion: preparing ? 0 : trainingState.bestCompletion,
     generationBest,
     currentFitness,
     completion: currentCompletion,
     speed: turboEnabled ? TURBO_STEPS : simulationSpeed,
     turboEnabled,
-    generationHistory: trainingState.generationHistory,
-    debug: mode === "manual" ? null : latestDebug,
+    generationHistory: preparing ? [] : trainingState.generationHistory,
+    debug: preparing || mode === "manual" ? null : latestDebug,
     networkViz: getNetworkVisualization(),
     victory: victoryState,
+    levelReadyVisible,
   });
 }
 
@@ -208,10 +223,19 @@ function updateUiOnly() {
     debug: null,
     networkViz: null,
     victory: victoryState,
+    levelReadyVisible,
   });
 }
 
 function getModeLabel() {
+  if (preparationFrames > 0) {
+    return "Gerando Level Random";
+  }
+
+  if (levelReadyVisible) {
+    return "Mapa Randomico Pronto";
+  }
+
   if (mode === "training") {
     if (trainingPaused) {
       return "Training Paused";
@@ -280,13 +304,7 @@ function wireUi() {
   });
 
   ui.resetTrainingButton.addEventListener("click", () => {
-    trainingState = createTrainingState(DEFAULT_TRAINING_CONFIG);
-    mode = "training";
-    trainingPaused = false;
-    ui.toggleTrainingButton.textContent = "Pause Training";
-    totalEvaluatedAgents = 0;
-    victoryState.visible = false;
-    resetWatchedGame(trainingState.population[0]);
+    resetTrainingSimulation();
   });
 
   ui.clearSavedButton.addEventListener("click", () => {
@@ -298,6 +316,15 @@ function wireUi() {
 
   ui.closeVictoryButton.addEventListener("click", () => {
     victoryState.visible = false;
+  });
+
+  ui.restartVictoryButton.addEventListener("click", () => {
+    resetTrainingSimulation();
+  });
+
+  ui.startSimulationButton.addEventListener("click", () => {
+    levelReadyVisible = false;
+    trainingPaused = false;
   });
 
   ui.speedRange.addEventListener("input", (event) => {
@@ -349,6 +376,7 @@ function persistBestGenome() {
     bestFitness: trainingState.bestFitness,
     bestCompletion: trainingState.bestCompletion,
     generationHistory: trainingState.generationHistory,
+    levelSeed: level.seed,
   });
   bestGenomeDirty = false;
 }
@@ -377,6 +405,10 @@ function restartManualRun() {
 }
 
 function getAgentLabel() {
+  if (preparationFrames > 0) {
+    return "0 / 0";
+  }
+
   if (mode === "manual") {
     return "Player";
   }
@@ -385,6 +417,14 @@ function getAgentLabel() {
 }
 
 function getStatusMessage() {
+  if (preparationFrames > 0) {
+    return "Preparando";
+  }
+
+  if (levelReadyVisible) {
+    return "Mapa pronto";
+  }
+
   if (mode === "manual") {
     if (watchedGame.finished) {
       return "You win";
@@ -399,6 +439,15 @@ function getStatusMessage() {
 }
 
 function getSubmessage() {
+  if (preparationFrames > 0) {
+    const nextSeed = pendingLevel?.seed ?? level.seed;
+    return `Seed ${nextSeed} | montando buracos aleatorios`;
+  }
+
+  if (levelReadyVisible) {
+    return `Seed ${level.seed} | aguardando inicio da simulacao`;
+  }
+
   if (mode === "manual") {
     return manualMessage;
   }
@@ -411,6 +460,14 @@ function getSubmessage() {
 }
 
 function getCenterCard() {
+  if (preparationFrames > 0) {
+    return {
+      title: "Gerando Level Random",
+      text: "Criando um novo mapa com buracos aleatorios antes de iniciar a simulacao.",
+      tone: "neutral",
+    };
+  }
+
   if (mode !== "manual") {
     return null;
   }
@@ -443,7 +500,7 @@ function getCenterCard() {
 }
 
 function getNetworkVisualization() {
-  if (mode === "manual" || !watchedGenome || !latestDebug) {
+  if (preparationFrames > 0 || mode === "manual" || !watchedGenome || !latestDebug) {
     return null;
   }
 
@@ -461,4 +518,44 @@ function handleTrainingVictory() {
     agentsTested: totalEvaluatedAgents,
     summary: "O treino foi interrompido no exato momento em que a primeira execucao vencedora alcancou a bandeira.",
   };
+}
+
+function resetTrainingSimulation() {
+  startRandomLevelGeneration();
+}
+
+function startRandomLevelGeneration() {
+  pendingLevel = createLevel();
+  preparationFrames = PREPARATION_FRAMES;
+  renderer.level = pendingLevel;
+  watchedGame = createGame(pendingLevel);
+  watchedGenome = null;
+  levelReadyVisible = false;
+  mode = "training";
+  trainingPaused = true;
+  turboEnabled = false;
+  bestGenomeDirty = false;
+  totalEvaluatedAgents = 0;
+  victoryState.visible = false;
+  latestDebug = null;
+  ui.toggleTrainingButton.textContent = "Pause Training";
+  ui.toggleTurboButton.textContent = "Turbo Off";
+}
+
+function initializeSimulationWithPendingLevel() {
+  level = pendingLevel ?? createLevel();
+  pendingLevel = null;
+  renderer.level = level;
+  watchedGame = createGame(level);
+  trainingState = createTrainingState(DEFAULT_TRAINING_CONFIG);
+
+  const snapshot = loadBestGenome();
+  if (snapshot?.levelSeed === level.seed) {
+    applyHistoricalBest(trainingState, snapshot);
+  }
+
+  watchedGenome = trainingState.population[0];
+  trainingPaused = true;
+  levelReadyVisible = true;
+  resetWatchedGame(trainingState.population[0]);
 }

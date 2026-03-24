@@ -154,7 +154,23 @@
           <div><span>Geracao</span><strong id="victoryGeneration">0</strong></div>
           <div><span>Personagens testados</span><strong id="victoryAgents">0</strong></div>
         </div>
-        <button id="closeVictoryButton" type="button">Fechar</button>
+        <div class="modal-actions">
+          <button id="restartVictoryButton" type="button">Reiniciar Simulacao</button>
+          <button id="closeVictoryButton" type="button">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="levelReadyModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="levelReadyTitle">
+        <p class="modal-eyebrow">Preparacao Concluida</p>
+        <h2 id="levelReadyTitle">Mapa randomico gerado com sucesso</h2>
+        <p class="modal-copy">
+          Agora vamos ver se a rede neural e capaz de resolver.
+        </p>
+        <div class="modal-actions single-action">
+          <button id="startSimulationButton" type="button">Iniciar Simulacao</button>
+        </div>
       </div>
     </div>
 

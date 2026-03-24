@@ -38,7 +38,10 @@ export function createUI() {
     victorySummary: document.querySelector("#victorySummary"),
     victoryGeneration: document.querySelector("#victoryGeneration"),
     victoryAgents: document.querySelector("#victoryAgents"),
+    restartVictoryButton: document.querySelector("#restartVictoryButton"),
     closeVictoryButton: document.querySelector("#closeVictoryButton"),
+    levelReadyModal: document.querySelector("#levelReadyModal"),
+    startSimulationButton: document.querySelector("#startSimulationButton"),
   };
 }
 
@@ -59,6 +62,7 @@ export function updateUI(ui, snapshot) {
   renderBrain(ui, snapshot.debug);
   renderNetwork(ui, snapshot.networkViz);
   renderVictory(ui, snapshot.victory);
+  renderLevelReady(ui, snapshot.levelReadyVisible);
 }
 
 function renderHistory(ui, history) {
@@ -250,4 +254,15 @@ function renderVictory(ui, victory) {
   ui.victoryAgents.textContent = String(victory.agentsTested);
   ui.victoryModal.classList.remove("hidden");
   ui.victoryModal.setAttribute("aria-hidden", "false");
+}
+
+function renderLevelReady(ui, visible) {
+  if (!visible) {
+    ui.levelReadyModal.classList.add("hidden");
+    ui.levelReadyModal.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  ui.levelReadyModal.classList.remove("hidden");
+  ui.levelReadyModal.setAttribute("aria-hidden", "false");
 }
