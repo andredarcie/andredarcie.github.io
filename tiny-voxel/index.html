@@ -738,6 +738,7 @@ let touchDrawing = false;
 canvas.addEventListener('touchstart', e=>{
   e.preventDefault();
   if(viewMode||e.touches.length>=2){ touchDrawing=false; controls.enabled=true; ghostMesh.visible=false; eraseOutline.visible=false; return; }
+  // Single finger: place exactly one voxel on tap, then block further placement during drag
   controls.enabled=false; touchDrawing=true; lastPlaced=null;
   doPlace(e.touches[0].clientX, e.touches[0].clientY);
 },{ passive:false });
@@ -745,9 +746,8 @@ canvas.addEventListener('touchstart', e=>{
 canvas.addEventListener('touchmove', e=>{
   e.preventDefault();
   if(e.touches.length>=2){ touchDrawing=false; controls.enabled=true; ghostMesh.visible=false; eraseOutline.visible=false; return; }
-  if(!touchDrawing&&!viewMode) return;
-  if(viewMode){ controls.enabled=true; return; }
-  doPlace(e.touches[0].clientX, e.touches[0].clientY);
+  // Single finger drag: orbit in view mode, do nothing (no drag-paint) in draw mode
+  if(viewMode) controls.enabled=true;
 },{ passive:false });
 
 canvas.addEventListener('touchend', e=>{
