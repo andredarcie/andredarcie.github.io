@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TINY VOXEL</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --p0:#000000; --p1:#1D2B53; --p2:#7E2553; --p3:#008751;
+  --p4:#AB5236; --p5:#5F574F; --p6:#C2C3C7; --p7:#FFF1E8;
+  --p8:#FF004D; --p9:#FFA300; --p10:#FFEC27; --p11:#00E436;
+  --p12:#29ADFF; --p13:#83769C; --p14:#FF77A8; --p15:#FFCCAA;
+}
+
+body {
+  font-family: 'Press Start 2P', monospace;
+  background: #060e1c;
+  color: var(--p7);
+  overflow: hidden;
+  height: 100vh; height: 100dvh;
+  image-rendering: pixelated;
+}
+
+#voxel-canvas { touch-action: none; display: block; }
+
+/* ════════════════════════════════════════
+   DESKTOP LAYOUT
+════════════════════════════════════════ */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#topbar {
+  height: 44px;
+  background: var(--p0);
+  border-bottom: 2px solid var(--p12);
+  display: flex; align-items: center;
+  padding: 0 10px; gap: 8px;
+  flex-shrink: 0; z-index: 10;
+}
+#title {
+  color: var(--p10); font-size: 10px; letter-spacing: 2px;
+  text-shadow: 2px 2px var(--p8); flex-shrink: 0;
+}
+.btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; padding: 5px 8px;
+  background: var(--p1); color: var(--p7);
+  border: 2px solid var(--p6); cursor: pointer;
+  letter-spacing: 1px; outline: none; flex-shrink: 0;
+}
+.btn:hover  { background: var(--p12); color: var(--p0); border-color: var(--p12); }
+.btn:active { background: var(--p7);  color: var(--p0); }
+.btn.danger:hover { background: var(--p8); border-color: var(--p8); color: var(--p0); }
+
+#middle { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+
+/* Side panels */
+.panel {
+  width: 160px; background: #0a1628;
+  border-right: 2px solid #0d1f3c;
+  display: flex; flex-direction: column;
+  flex-shrink: 0; overflow-y: auto; z-index: 5;
+  touch-action: pan-y;
+}
+#rightpanel { border-right: none; border-left: 2px solid #0d1f3c; }
+.panel-section { padding: 8px; border-bottom: 2px solid #0d1f3c; }
+.panel-title { font-size: 6px; color: var(--p13); letter-spacing: 1px; margin-bottom: 8px; display: block; }
+
+.tool-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; width: 100%; padding: 7px 6px; margin-bottom: 4px;
+  background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+  cursor: pointer; text-align: left; display: flex; align-items: center; gap: 6px; outline: none;
+}
+.tool-btn:hover { background: var(--p12); color: var(--p0); border-color: var(--p12); }
+.tool-btn.active { background: var(--p10); color: var(--p0); border-color: var(--p10); }
+
+.layer-ctrl { display: flex; align-items: center; gap: 4px; }
+.layer-display {
+  flex: 1; text-align: center; font-size: 14px; color: var(--p11);
+  background: var(--p0); border: 2px solid var(--p3); padding: 4px 0;
+}
+.layer-btn {
+  font-family: 'Press Start 2P', monospace; font-size: 10px;
+  width: 28px; height: 28px; background: var(--p1); color: var(--p7);
+  border: 2px solid var(--p5); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; outline: none;
+}
+.layer-btn:hover { background: var(--p11); color: var(--p0); border-color: var(--p11); }
+
+.hotkey-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 6px; color: var(--p6); }
+.key-badge { background: var(--p5); color: var(--p7); padding: 2px 4px; border: 1px solid var(--p6); font-size: 5px; }
+
+#palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+.color-swatch { aspect-ratio: 1; border: 2px solid #333; cursor: pointer; }
+.color-swatch:hover { border-color: var(--p7); transform: scale(1.1); z-index: 2; }
+.color-swatch.selected { border-color: var(--p10); border-width: 3px; transform: scale(1.15); z-index: 3; box-shadow: 0 0 0 1px var(--p0); }
+#selected-color-display { margin-top: 8px; height: 32px; border: 2px solid var(--p7); }
+#selected-color-preview { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 6px; }
+
+.grid-btn {
+  font-family: 'Press Start 2P', monospace; font-size: 6px; padding: 4px 5px;
+  background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+  cursor: pointer; margin-bottom: 3px; width: 100%; text-align: center; outline: none;
+}
+.grid-btn:hover  { background: var(--p12); color: var(--p0); border-color: var(--p12); }
+.grid-btn.active { background: var(--p2);  border-color: var(--p14); color: var(--p7); }
+
+.panel::-webkit-scrollbar       { width: 6px; }
+.panel::-webkit-scrollbar-track { background: var(--p0); }
+.panel::-webkit-scrollbar-thumb { background: var(--p5); }
+
+/* Canvas wrap */
+#canvas-wrap { flex: 1; position: relative; overflow: hidden; background: #060e1c; }
+#canvas-wrap canvas { width: 100% !important; height: 100% !important; }
+
+/* Status bar */
+#statusbar {
+  height: 28px; background: var(--p0); border-top: 2px solid var(--p12);
+  display: flex; align-items: center; padding: 0 12px; gap: 20px;
+  font-size: 6px; color: var(--p13); flex-shrink: 0;
+}
+.status-item span { color: var(--p7); }
+
+/* View mode banner */
+#view-mode-banner {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  background: var(--p12); color: var(--p0); font-size: 7px; padding: 4px 10px;
+  border: 2px solid var(--p7); pointer-events: none;
+  opacity: 0; transition: opacity 0.2s; z-index: 10; white-space: nowrap;
+}
+#view-mode-banner.show { opacity: 1; }
+
+#load-input { display: none; }
+
+/* ── Camera rotate buttons ── */
+.cam-rotate-btn {
+  position: absolute;
+  bottom: 16px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(10, 22, 40, 0.82);
+  color: var(--p12);
+  border: 2px solid var(--p12);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  outline: none;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+  transition: background 0.08s, transform 0.08s;
+  /* keep touch events from drawing */
+  touch-action: none;
+}
+.cam-rotate-btn:hover  { background: var(--p12); color: var(--p0); }
+.cam-rotate-btn:active { transform: scale(0.88); }
+
+#cam-left  { left:  50%; transform: translateX(calc(-50% - 26px)); }
+#cam-right { left:  50%; transform: translateX(calc(-50% + 26px)); }
+#cam-left:active  { transform: translateX(calc(-50% - 26px)) scale(0.88); }
+#cam-right:active { transform: translateX(calc(-50% + 26px)) scale(0.88); }
+
+/* ════════════════════════════════════════
+   MOBILE OVERRIDES  (< 700 px)
+════════════════════════════════════════ */
+@media (max-width: 699px) {
+
+  /* Topbar hidden on mobile */
+  #topbar   { display: none; }
+  #statusbar { display: none; }
+  .panel    { display: none; }
+
+  /* Canvas fills the whole screen */
+  #app { position: fixed; inset: 0; }
+  #middle { position: fixed; inset: 0; }
+  #canvas-wrap { position: fixed; inset: 0; }
+
+  /* ── Two FAB buttons at bottom corners ── */
+  #mob-btn-tools,
+  #mob-btn-palette {
+    position: fixed;
+    bottom: 18px;
+    z-index: 50;
+    width: 56px; height: 56px;
+    border: 3px solid var(--p7);
+    cursor: pointer; outline: none;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    /* pixel-shadow */
+    box-shadow: 4px 4px 0 var(--p0);
+    transition: transform 0.08s;
+  }
+  #mob-btn-tools:active,
+  #mob-btn-palette:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--p0); }
+
+  #mob-btn-tools   { left: 18px;  background: var(--p1); color: var(--p10); border-color: var(--p10); }
+  #mob-btn-palette { right: 18px; background: var(--p1); color: var(--p7);  border-color: var(--p7); }
+
+  /* active tool indicator dot on tools button */
+  #mob-btn-tools::after {
+    content: '';
+    position: absolute; bottom: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--p10);
+  }
+
+  /* ── Backdrop ── */
+  #mob-backdrop {
+    position: fixed; inset: 0; z-index: 55;
+    background: rgba(0,0,0,0.6);
+    display: none; touch-action: none;
+  }
+  #mob-backdrop.active { display: block; }
+
+  /* ── Modals ── */
+  .mob-modal {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 60;
+    background: #0a1628;
+    border-top: 3px solid var(--p12);
+    max-height: 80vh;
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.2s ease-out;
+    touch-action: pan-y;
+  }
+  .mob-modal.open { transform: translateY(0); }
+
+  .mob-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-bottom: 2px solid #0d1f3c;
+    flex-shrink: 0;
+  }
+  .mob-modal-title { font-size: 8px; color: var(--p10); letter-spacing: 1px; }
+  .mob-modal-close {
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    background: var(--p8); color: var(--p7); border: 2px solid var(--p8);
+    cursor: pointer; padding: 4px 8px; outline: none; line-height: 1;
+  }
+
+  .mob-modal-body {
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    touch-action: pan-y; flex: 1; min-height: 0;
+    padding: 12px;
+  }
+
+  /* ── Tools modal content ── */
+  .mob-section { margin-bottom: 16px; }
+  .mob-section-title {
+    font-size: 6px; color: var(--p13); letter-spacing: 1px;
+    margin-bottom: 8px; display: block;
+  }
+
+  /* Tool row */
+  .mob-tool-row { display: flex; gap: 6px; }
+  .mob-tool-pill {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    flex: 1; padding: 12px 6px; text-align: center;
+    background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+    cursor: pointer; outline: none;
+  }
+  .mob-tool-pill:active { background: var(--p7); color: var(--p0); }
+  .mob-tool-pill.active { background: var(--p10); color: var(--p0); border-color: var(--p10); }
+
+  /* Layer row */
+  .mob-layer-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mob-layer-big-btn {
+    font-family: 'Press Start 2P', monospace; font-size: 16px;
+    width: 52px; height: 52px; flex-shrink: 0;
+    background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; outline: none;
+  }
+  .mob-layer-big-btn:active { background: var(--p11); color: var(--p0); }
+  .mob-layer-num-big {
+    flex: 1; text-align: center; font-size: 28px; color: var(--p11);
+    background: var(--p0); border: 2px solid var(--p3); padding: 8px 0;
+  }
+
+  /* Grid size row */
+  .mob-grid-row { display: flex; gap: 6px; }
+  .mob-grid-pill {
+    font-family: 'Press Start 2P', monospace; font-size: 7px;
+    flex: 1; padding: 10px 4px; text-align: center;
+    background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+    cursor: pointer; outline: none;
+  }
+  .mob-grid-pill:active  { background: var(--p12); color: var(--p0); }
+  .mob-grid-pill.active  { background: var(--p2); border-color: var(--p14); }
+
+  /* View row */
+  .mob-view-row { display: flex; gap: 6px; }
+  .mob-view-pill {
+    font-family: 'Press Start 2P', monospace; font-size: 7px;
+    flex: 1; padding: 10px 4px; text-align: center;
+    background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+    cursor: pointer; outline: none;
+  }
+  .mob-view-pill:active { background: var(--p12); color: var(--p0); }
+  .mob-view-pill.active { background: var(--p12); color: var(--p0); border-color: var(--p12); }
+
+  /* File row */
+  .mob-file-row { display: flex; gap: 6px; }
+  .mob-file-btn {
+    font-family: 'Press Start 2P', monospace; font-size: 7px;
+    flex: 1; padding: 12px 4px; text-align: center;
+    background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+    cursor: pointer; outline: none;
+  }
+  .mob-file-btn:active { background: var(--p7); color: var(--p0); }
+  .mob-file-btn.danger { border-color: var(--p8); color: var(--p8); }
+  .mob-file-btn.danger:active { background: var(--p8); color: var(--p0); }
+
+  /* Hotkeys hint */
+  .mob-hint { font-size: 6px; color: var(--p5); line-height: 2.2; }
+
+  /* Undo row */
+  .mob-undo-btn {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    width: 100%; padding: 12px; text-align: center;
+    background: var(--p1); color: var(--p7); border: 2px solid var(--p5);
+    cursor: pointer; outline: none;
+  }
+  .mob-undo-btn:active { background: var(--p7); color: var(--p0); }
+
+  /* ── Palette modal content ── */
+  #mob-palette-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .mob-swatch {
+    aspect-ratio: 1; border: 3px solid #333; cursor: pointer;
+    min-height: 52px;
+  }
+  .mob-swatch:active  { transform: scale(0.92); }
+  .mob-swatch.selected {
+    border-color: var(--p10); border-width: 4px;
+    box-shadow: 0 0 0 2px var(--p0);
+  }
+
+  /* Color indicator strip below palette */
+  #mob-color-strip {
+    margin-top: 12px; height: 40px;
+    border: 2px solid var(--p7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 7px; flex-shrink: 0;
+  }
+}
+
+/* Desktop: hide mobile elements */
+@media (min-width: 700px) {
+  #mob-btn-tools, #mob-btn-palette,
+  #mob-backdrop,
+  #modal-tools, #modal-palette { display: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── DESKTOP TOP BAR ─────────────────────────── -->
+  <div id="topbar">
+    <div id="title">■ TINY VOXEL</div>
+    <button class="btn danger" id="btn-new">NEW</button>
+    <button class="btn" id="btn-save">SAVE</button>
+    <button class="btn" id="btn-load-trigger">LOAD</button>
+    <input type="file" id="load-input" accept=".json">
+    <div style="margin-left:auto;font-size:6px;color:var(--p13);">PICO-8 PALETTE</div>
+  </div>
+
+  <div id="middle">
+
+    <!-- ── DESKTOP LEFT PANEL ─────────────────────── -->
+    <div class="panel" id="leftpanel">
+      <div class="panel-section">
+        <span class="panel-title">▶ TOOLS</span>
+        <button class="tool-btn active" id="tool-paint"><span style="font-size:10px">✏</span> PAINT</button>
+        <button class="tool-btn" id="tool-erase"><span style="font-size:10px">◻</span> ERASE</button>
+        <button class="tool-btn" id="tool-fill"><span style="font-size:10px">▣</span> FILL</button>
+      </div>
+      <div class="panel-section">
+        <span class="panel-title">▶ LAYER (Y)</span>
+        <div class="layer-ctrl">
+          <button class="layer-btn" id="layer-up">▲</button>
+          <div class="layer-display" id="layer-display">0</div>
+          <button class="layer-btn" id="layer-down">▼</button>
+        </div>
+        <div style="margin-top:6px;font-size:6px;color:var(--p13);text-align:center;">PGUP / PGDN</div>
+      </div>
+      <div class="panel-section">
+        <span class="panel-title">▶ VIEW</span>
+        <button class="btn" id="btn-reset-cam" style="width:100%;margin-bottom:4px;font-size:6px;">RESET CAM</button>
+        <button class="btn" id="btn-top-view"  style="width:100%;margin-bottom:4px;font-size:6px;">TOP VIEW</button>
+        <button class="btn" id="btn-iso-view"  style="width:100%;font-size:6px;">ISO VIEW</button>
+      </div>
+      <div class="panel-section">
+        <span class="panel-title">▶ KEYS</span>
+        <div class="hotkey-row"><span>PAINT</span><span class="key-badge">P</span></div>
+        <div class="hotkey-row"><span>ERASE</span><span class="key-badge">E</span></div>
+        <div class="hotkey-row"><span>FILL</span><span class="key-badge">F</span></div>
+        <div class="hotkey-row"><span>LAYER ▲</span><span class="key-badge">PGUP</span></div>
+        <div class="hotkey-row"><span>LAYER ▼</span><span class="key-badge">PGDN</span></div>
+        <div class="hotkey-row"><span>UNDO</span><span class="key-badge">Z</span></div>
+      </div>
+    </div>
+
+    <!-- ── CANVAS ──────────────────────────────────── -->
+    <div id="canvas-wrap">
+      <canvas id="voxel-canvas"></canvas>
+      <div id="view-mode-banner">👁 VIEW MODE · 2 FINGERS = ZOOM</div>
+
+      <!-- Rotate camera buttons -->
+      <button id="cam-left"  class="cam-rotate-btn" title="Rotate left">◀</button>
+      <button id="cam-right" class="cam-rotate-btn" title="Rotate right">▶</button>
+    </div>
+
+    <!-- ── DESKTOP RIGHT PANEL ────────────────────── -->
+    <div class="panel" id="rightpanel">
+      <div class="panel-section">
+        <span class="panel-title">▶ PICO-8 COLORS</span>
+        <div id="palette-grid"></div>
+        <div id="selected-color-display">
+          <div id="selected-color-preview">1</div>
+        </div>
+      </div>
+      <div class="panel-section">
+        <span class="panel-title">▶ COLOR INFO</span>
+        <div id="color-hex"  style="font-size:7px;color:var(--p11);margin-bottom:4px;">#1D2B53</div>
+        <div id="color-name" style="font-size:6px;color:var(--p13);">DARK BLUE</div>
+      </div>
+      <div class="panel-section">
+        <span class="panel-title">▶ STATS</span>
+        <div class="hotkey-row"><span>VOXELS</span><span id="stat-voxels" style="color:var(--p10)">0</span></div>
+        <div class="hotkey-row"><span>LAYER</span><span id="stat-layer"  style="color:var(--p11)">0</span></div>
+        <div class="hotkey-row"><span>GRID</span><span id="stat-grid"   style="color:var(--p12)">8</span></div>
+      </div>
+    </div>
+  </div><!-- #middle -->
+
+  <!-- ── DESKTOP STATUS BAR ─────────────────────── -->
+  <div id="statusbar">
+    <div class="status-item">TOOL: <span id="st-tool">PAINT</span></div>
+    <div class="status-item">COLOR: <span id="st-color">■ #1D2B53</span></div>
+    <div class="status-item">LAYER: <span id="st-layer">0</span></div>
+    <div class="status-item">VOXELS: <span id="st-voxels">0</span></div>
+    <div class="status-item" style="margin-left:auto;color:var(--p5)">LMB=DRAW · RMB=PAN · SCROLL=ZOOM</div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ════════════════════════════════════════════════
+     MOBILE — Two FAB buttons
+════════════════════════════════════════════════ -->
+<button id="mob-btn-tools"   aria-label="Tools">⚙</button>
+<button id="mob-btn-palette" aria-label="Palette">■</button>
+
+<!-- Backdrop -->
+<div id="mob-backdrop"></div>
+
+<!-- ── MODAL: TOOLS ──────────────────────────── -->
+<div class="mob-modal" id="modal-tools">
+  <div class="mob-modal-header">
+    <span class="mob-modal-title">■ TOOLS</span>
+    <button class="mob-modal-close" id="close-tools">✕</button>
+  </div>
+  <div class="mob-modal-body">
+
+    <div class="mob-section">
+      <span class="mob-section-title">▶ TOOL</span>
+      <div class="mob-tool-row">
+        <button class="mob-tool-pill active" id="mob-paint">✏ PAINT</button>
+        <button class="mob-tool-pill" id="mob-erase">◻ ERASE</button>
+        <button class="mob-tool-pill" id="mob-fill">▣ FILL</button>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <span class="mob-section-title">▶ LAYER (Y)</span>
+      <div class="mob-layer-row">
+        <button class="mob-layer-big-btn" id="mob-layer-down">▼</button>
+        <div class="mob-layer-num-big" id="mob-layer-num">0</div>
+        <button class="mob-layer-big-btn" id="mob-layer-up">▲</button>
+      </div>
+    </div>
+
+
+    <div class="mob-section">
+      <span class="mob-section-title">▶ VIEW</span>
+      <div class="mob-view-row">
+        <button class="mob-view-pill" id="mob-reset-cam">RESET</button>
+        <button class="mob-view-pill" id="mob-top-view">TOP</button>
+        <button class="mob-view-pill" id="mob-iso-view">ISO</button>
+        <button class="mob-view-pill" id="mob-view-toggle">👁 VIEW</button>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <span class="mob-section-title">▶ FILE</span>
+      <div class="mob-file-row">
+        <button class="mob-file-btn danger" id="mob-btn-new">NEW</button>
+        <button class="mob-file-btn" id="mob-btn-save">SAVE</button>
+        <button class="mob-file-btn" id="mob-btn-load">LOAD</button>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <button class="mob-undo-btn" id="mob-undo">↩ UNDO</button>
+    </div>
+
+    <div class="mob-section">
+      <span class="mob-section-title">▶ HOW TO DRAW</span>
+      <div class="mob-hint">
+        1 FINGER → DRAW<br>
+        2 FINGERS → ORBIT / ZOOM<br>
+        TAP 👁 VIEW → 1 FINGER ORBITS
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── MODAL: PALETTE ────────────────────────── -->
+<div class="mob-modal" id="modal-palette">
+  <div class="mob-modal-header">
+    <span class="mob-modal-title">■ PICO-8 COLORS</span>
+    <button class="mob-modal-close" id="close-palette">✕</button>
+  </div>
+  <div class="mob-modal-body">
+    <div id="mob-palette-grid"></div>
+    <div id="mob-color-strip">
+      <span id="mob-color-label">COLOR 1 · #1D2B53</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ─── PALETTE ──────────────────────────────────────────────────────────────
+const PALETTE = [
+  { hex:'#000000', name:'BLACK' },    { hex:'#1D2B53', name:'DARK BLUE' },
+  { hex:'#7E2553', name:'DARK PURPLE'},{ hex:'#008751', name:'DARK GREEN' },
+  { hex:'#AB5236', name:'BROWN' },    { hex:'#5F574F', name:'DARK GREY' },
+  { hex:'#C2C3C7', name:'LIGHT GREY'},{ hex:'#FFF1E8', name:'WHITE' },
+  { hex:'#FF004D', name:'RED' },      { hex:'#FFA300', name:'ORANGE' },
+  { hex:'#FFEC27', name:'YELLOW' },   { hex:'#00E436', name:'GREEN' },
+  { hex:'#29ADFF', name:'BLUE' },     { hex:'#83769C', name:'LAVENDER' },
+  { hex:'#FF77A8', name:'PINK' },     { hex:'#FFCCAA', name:'PEACH' },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────
+let gridSize    = 8;
+let currentLayer = 0;
+let currentTool  = 'paint';
+let currentColor = 1;
+let viewMode     = false;
+const voxelMap   = new Map();
+let history      = [];
+
+// ─── THREE SETUP ──────────────────────────────────────────────────────────
+const canvas   = document.getElementById('voxel-canvas');
+const wrap     = document.getElementById('canvas-wrap');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x060e1c);
+
+const scene  = new THREE.Scene();
+scene.fog    = new THREE.Fog(0x060e1c, 40, 100);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.1;
+controls.mouseButtons  = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+controls.touches       = { ONE: null, TWO: THREE.TOUCH.DOLLY_ROTATE };
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+const dl = new THREE.DirectionalLight(0xfff1e8, 1.2);
+dl.position.set(10, 20, 10);
+scene.add(dl);
+const fl = new THREE.DirectionalLight(0x29adff, 0.3);
+fl.position.set(-10, 5, -10);
+scene.add(fl);
+
+// ─── GRID ─────────────────────────────────────────────────────────────────
+let gridHelper = null, gridPlaneMesh = null;
+
+function buildGrid() {
+  if (gridHelper)    scene.remove(gridHelper);
+  if (gridPlaneMesh) scene.remove(gridPlaneMesh);
+  const gh = new THREE.GridHelper(gridSize, gridSize, 0x29adff, 0x1d2b53);
+  gh.position.set(gridSize/2 - 0.5, -0.5, gridSize/2 - 0.5);
+  scene.add(gh); gridHelper = gh;
+  const lpm = new THREE.MeshBasicMaterial({ color:0x29adff, transparent:true, opacity:0.08, side:THREE.DoubleSide, depthWrite:false });
+  gridPlaneMesh = new THREE.Mesh(new THREE.PlaneGeometry(gridSize, gridSize), lpm);
+  gridPlaneMesh.rotation.x = -Math.PI/2;
+  gridPlaneMesh.position.set(gridSize/2-0.5, currentLayer-0.499, gridSize/2-0.5);
+  scene.add(gridPlaneMesh);
+}
+
+// ─── VOXELS ───────────────────────────────────────────────────────────────
+const voxelMeshes = new Map();
+const voxelGeo    = new THREE.BoxGeometry(1,1,1);
+
+function addVoxelMesh(x, y, z, ci) {
+  const key = `${x},${y},${z}`;
+  if (voxelMeshes.has(key)) scene.remove(voxelMeshes.get(key));
+  const mesh = new THREE.Mesh(voxelGeo,
+    new THREE.MeshLambertMaterial({ color: new THREE.Color(PALETTE[ci].hex), flatShading:true }));
+  mesh.position.set(x, y, z);
+  mesh.userData = { x, y, z };
+  scene.add(mesh);
+  voxelMeshes.set(key, mesh);
+}
+function removeVoxelMesh(key) {
+  if (voxelMeshes.has(key)) { scene.remove(voxelMeshes.get(key)); voxelMeshes.delete(key); }
+}
+function placeVoxel(x, y, z, ci) {
+  if (x<0||x>=gridSize||y<0||y>=gridSize||z<0||z>=gridSize) return;
+  voxelMap.set(`${x},${y},${z}`, ci); addVoxelMesh(x,y,z,ci); updateStats();
+}
+function eraseVoxel(x, y, z) {
+  const k=`${x},${y},${z}`;
+  if (voxelMap.has(k)) { voxelMap.delete(k); removeVoxelMesh(k); updateStats(); }
+}
+function floodFill(sx,sz,y,ci) {
+  const visited=new Set(), stack=[[sx,sz]];
+  while(stack.length){ const[cx,cz]=stack.pop();
+    if(cx<0||cx>=gridSize||cz<0||cz>=gridSize) continue;
+    const k=`${cx},${y},${cz}`; if(visited.has(k)) continue; visited.add(k);
+    placeVoxel(cx,y,cz,ci); stack.push([cx+1,cz],[cx-1,cz],[cx,cz+1],[cx,cz-1]);
+  }
+}
+function clearAll() { saveHistory(); for(const k of voxelMap.keys()) removeVoxelMesh(k); voxelMap.clear(); updateStats(); }
+
+// ─── UNDO ─────────────────────────────────────────────────────────────────
+function saveHistory() {
+  if(history.length>30) history.shift();
+  history.push(new Map(voxelMap));
+}
+function undo() {
+  if(!history.length) return;
+  const prev=history.pop();
+  for(const k of voxelMap.keys()) removeVoxelMesh(k); voxelMap.clear();
+  for(const[k,ci] of prev){ voxelMap.set(k,ci); const[x,y,z]=k.split(',').map(Number); addVoxelMesh(x,y,z,ci); }
+  updateStats();
+}
+
+// ─── GHOST + ERASE OUTLINE ────────────────────────────────────────────────
+const ghostMat  = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.35, depthWrite:false });
+const ghostMesh = new THREE.Mesh(voxelGeo, ghostMat);
+ghostMesh.visible = false; scene.add(ghostMesh);
+
+const eraseOutline = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(1.04,1.04,1.04)),
+  new THREE.LineBasicMaterial({ color:0xff004d, linewidth:2, depthTest:false }));
+eraseOutline.visible=false; eraseOutline.renderOrder=999; scene.add(eraseOutline);
+
+// ─── RAYCASTING ───────────────────────────────────────────────────────────
+const raycaster = new THREE.Raycaster();
+const mouse     = new THREE.Vector2();
+
+function getIntersects(cx, cy) {
+  const r = wrap.getBoundingClientRect();
+  mouse.x =  ((cx - r.left) / r.width)  * 2 - 1;
+  mouse.y = -((cy - r.top)  / r.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(Array.from(voxelMeshes.values()));
+  if (hits.length) return { type:'voxel', hit:hits[0] };
+  const plane = new THREE.Plane(new THREE.Vector3(0,1,0), -currentLayer);
+  const tgt   = new THREE.Vector3();
+  if (raycaster.ray.intersectPlane(plane, tgt)) return { type:'floor', hit:{ point:tgt } };
+  return null;
+}
+function getTarget(res) {
+  if (!res) return null;
+  if (res.type==='floor') { const p=res.hit.point; return { x:Math.round(p.x), y:currentLayer, z:Math.round(p.z) }; }
+  if (res.type==='voxel') {
+    const vd=res.hit.object.userData, n=res.hit.face.normal.clone().round();
+    if (currentTool==='erase') return { x:vd.x, y:vd.y, z:vd.z, erase:true };
+    return { x:vd.x+n.x, y:vd.y+n.y, z:vd.z+n.z };
+  }
+  return null;
+}
+
+let lastPlaced = null;
+function doPlace(cx, cy) {
+  const t = getTarget(getIntersects(cx,cy));
+  if (!t) return;
+  const key=`${t.x},${t.y},${t.z}`;
+  if(lastPlaced===key) return; lastPlaced=key; saveHistory();
+  if(t.erase||currentTool==='erase') eraseVoxel(t.x,t.y,t.z);
+  else if(currentTool==='fill') floodFill(t.x,t.z,currentLayer,currentColor);
+  else placeVoxel(t.x,t.y,t.z,currentColor);
+}
+function doHover(cx, cy) {
+  ghostMesh.visible=false; eraseOutline.visible=false;
+  const t=getTarget(getIntersects(cx,cy)); if(!t) return;
+  if(currentTool==='erase') {
+    if(t.erase&&voxelMap.has(`${t.x},${t.y},${t.z}`)) { eraseOutline.position.set(t.x,t.y,t.z); eraseOutline.visible=true; }
+    return;
+  }
+  if(t.erase) return;
+  if(t.x<0||t.x>=gridSize||t.y<0||t.y>=gridSize||t.z<0||t.z>=gridSize) return;
+  ghostMesh.position.set(t.x,t.y,t.z); ghostMesh.visible=true;
+  ghostMat.color.set(new THREE.Color(PALETTE[currentColor].hex));
+}
+
+// ─── MOUSE ────────────────────────────────────────────────────────────────
+let mouseDown = false;
+canvas.addEventListener('mousemove', e=>{ doHover(e.clientX,e.clientY); if(mouseDown) doPlace(e.clientX,e.clientY); });
+canvas.addEventListener('mousedown', e=>{ if(e.button!==0) return; controls.enabled=false; mouseDown=true; lastPlaced=null; doPlace(e.clientX,e.clientY); });
+canvas.addEventListener('mouseup',   e=>{ if(e.button!==0) return; controls.enabled=true; mouseDown=false; lastPlaced=null; });
+canvas.addEventListener('mouseleave',()=>{ ghostMesh.visible=false; eraseOutline.visible=false; controls.enabled=true; mouseDown=false; });
+
+// ─── TOUCH ────────────────────────────────────────────────────────────────
+let touchDrawing = false;
+canvas.addEventListener('touchstart', e=>{
+  e.preventDefault();
+  if(viewMode||e.touches.length>=2){ touchDrawing=false; controls.enabled=true; ghostMesh.visible=false; eraseOutline.visible=false; return; }
+  controls.enabled=false; touchDrawing=true; lastPlaced=null;
+  doPlace(e.touches[0].clientX, e.touches[0].clientY);
+},{ passive:false });
+
+canvas.addEventListener('touchmove', e=>{
+  e.preventDefault();
+  if(e.touches.length>=2){ touchDrawing=false; controls.enabled=true; ghostMesh.visible=false; eraseOutline.visible=false; return; }
+  if(!touchDrawing&&!viewMode) return;
+  if(viewMode){ controls.enabled=true; return; }
+  doPlace(e.touches[0].clientX, e.touches[0].clientY);
+},{ passive:false });
+
+canvas.addEventListener('touchend', e=>{
+  e.preventDefault();
+  if(e.touches.length===0){ touchDrawing=false; controls.enabled=true; lastPlaced=null; ghostMesh.visible=false; eraseOutline.visible=false; }
+},{ passive:false });
+
+// ─── LAYER ────────────────────────────────────────────────────────────────
+function updateLayerPlane() {
+  if(gridPlaneMesh) gridPlaneMesh.position.y=currentLayer-0.499;
+  ['layer-display','mob-layer-num','st-layer','stat-layer'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=currentLayer; });
+}
+function changeLayer(d) { currentLayer=Math.max(0,Math.min(currentLayer+d,gridSize-1)); updateLayerPlane(); }
+
+// ─── UI STATE ─────────────────────────────────────────────────────────────
+function updateStats() {
+  const n=voxelMap.size;
+  ['st-voxels','stat-voxels'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=n; });
+}
+
+function setTool(t) {
+  currentTool=t;
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mob-tool-pill').forEach(b=>b.classList.remove('active'));
+  const dt=document.getElementById(`tool-${t}`); if(dt) dt.classList.add('active');
+  const mt=document.getElementById(`mob-${t}`);  if(mt) mt.classList.add('active');
+  const st=document.getElementById('st-tool');   if(st) st.textContent=t.toUpperCase();
+  // update FAB indicator color
+  const fab=document.getElementById('mob-btn-tools');
+  if(fab) fab.style.borderColor = t==='erase'?'#FF004D': t==='fill'?'#00E436':'#FFEC27';
+}
+
+function setColor(idx) {
+  currentColor=idx;
+  const p=PALETTE[idx];
+  document.querySelectorAll('.color-swatch').forEach((s,i)=>s.classList.toggle('selected',i===idx));
+  document.querySelectorAll('.mob-swatch').forEach((s,i)=>s.classList.toggle('selected',i===idx));
+  const mbtn=document.getElementById('mob-btn-palette');
+  if(mbtn){
+    mbtn.style.background   = p.hex;
+    mbtn.style.color        = idx < 6 ? '#FFF1E8' : '#000000';
+    mbtn.style.borderColor  = idx < 6 ? '#FFF1E8' : '#000000';
+  }
+  const prev=document.getElementById('selected-color-preview'); if(prev){ prev.style.background=p.hex; prev.style.color=idx<6?'#fff1e8':'#000'; prev.textContent=idx; }
+  const ch=document.getElementById('color-hex');   if(ch) ch.textContent=p.hex;
+  const cn=document.getElementById('color-name');  if(cn) cn.textContent=p.name;
+  const sc=document.getElementById('st-color');    if(sc){ sc.textContent=`■ ${p.hex}`; sc.style.color=p.hex; }
+  const cs=document.getElementById('mob-color-strip'); if(cs) cs.style.background=p.hex;
+  const cl=document.getElementById('mob-color-label');
+  if(cl){ cl.textContent=`${idx}: ${p.name} · ${p.hex}`; cl.style.color=idx<6?'#fff1e8':'#000'; }
+}
+
+
+function resetCamera() { const c=gridSize/2-0.5; controls.target.set(c,2,c); camera.position.set(c+gridSize*1.4,gridSize*1.4,c+gridSize*1.4); controls.update(); }
+
+function rotateCamera(angle) {
+  const offset = camera.position.clone().sub(controls.target);
+  const cos = Math.cos(angle), sin = Math.sin(angle);
+  const x = offset.x * cos - offset.z * sin;
+  const z = offset.x * sin + offset.z * cos;
+  offset.x = x; offset.z = z;
+  camera.position.copy(controls.target).add(offset);
+  controls.update();
+}
+function topView()    { const c=gridSize/2-0.5; controls.target.set(c,0,c); camera.position.set(c,gridSize*2.5,c); controls.update(); }
+function isoView()    { const c=gridSize/2-0.5; controls.target.set(c,2,c); camera.position.set(c-gridSize,gridSize,c+gridSize); controls.update(); }
+
+const viewBanner = document.getElementById('view-mode-banner');
+function toggleViewMode() {
+  viewMode=!viewMode;
+  const btn=document.getElementById('mob-view-toggle'); if(btn) btn.classList.toggle('active',viewMode);
+  if(viewBanner) viewBanner.classList.toggle('show',viewMode);
+  controls.enabled=true; ghostMesh.visible=false; eraseOutline.visible=false;
+  controls.touches = viewMode ? { ONE:THREE.TOUCH.ROTATE, TWO:THREE.TOUCH.DOLLY_ROTATE }
+                               : { ONE:null,               TWO:THREE.TOUCH.DOLLY_ROTATE };
+}
+
+// ─── SAVE / LOAD ──────────────────────────────────────────────────────────
+function saveJSON() {
+  const data={ version:1, gridSize, voxels:[...voxelMap.entries()].map(([k,c])=>{ const[x,y,z]=k.split(',').map(Number); return{x,y,z,c}; }) };
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})); a.download='tiny-voxel.json'; a.click();
+}
+function loadJSON(file) {
+  const r=new FileReader(); r.onload=e=>{ try{ const d=JSON.parse(e.target.result); clearAll(); if(d.gridSize) setGridSize(d.gridSize); if(d.voxels) for(const v of d.voxels){ voxelMap.set(`${v.x},${v.y},${v.z}`,v.c); addVoxelMesh(v.x,v.y,v.z,v.c); } updateStats(); }catch{ alert('Invalid file'); } }; r.readAsText(file);
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e=>{
+  if(e.target.tagName==='INPUT') return;
+  switch(e.key.toLowerCase()){
+    case 'p': setTool('paint'); break; case 'e': setTool('erase'); break;
+    case 'f': setTool('fill'); break;
+    case 'z': if(e.ctrlKey||e.metaKey){ e.preventDefault(); undo(); } break;
+    case 'pageup':   e.preventDefault(); changeLayer(+1); break;
+    case 'pagedown': e.preventDefault(); changeLayer(-1); break;
+  }
+});
+
+// ─── BUILD PALETTES ───────────────────────────────────────────────────────
+['palette-grid','mob-palette-grid'].forEach(gridId => {
+  const isMob = gridId.startsWith('mob');
+  const cls   = isMob ? 'mob-swatch' : 'color-swatch';
+  const grid  = document.getElementById(gridId);
+  PALETTE.forEach((p,i)=>{
+    const sw=document.createElement('div');
+    sw.className=cls+(i===currentColor?' selected':'');
+    sw.style.background=p.hex;
+    sw.title=`${i}: ${p.name}`;
+    sw.addEventListener('click',()=>{ setColor(i); if(isMob) closeModal('modal-palette'); });
+    grid.appendChild(sw);
+  });
+});
+
+// ─── MOBILE MODALS ────────────────────────────────────────────────────────
+const backdrop = document.getElementById('mob-backdrop');
+
+function openModal(id) {
+  document.querySelectorAll('.mob-modal').forEach(m=>m.classList.remove('open'));
+  document.getElementById(id).classList.add('open');
+  backdrop.classList.add('active');
+  controls.enabled=false;
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  backdrop.classList.remove('active');
+  controls.enabled=true;
+}
+backdrop.addEventListener('click',()=>{
+  document.querySelectorAll('.mob-modal').forEach(m=>m.classList.remove('open'));
+  backdrop.classList.remove('active');
+  controls.enabled=true;
+});
+
+document.getElementById('mob-btn-tools').addEventListener('click',   ()=>openModal('modal-tools'));
+document.getElementById('mob-btn-palette').addEventListener('click', ()=>openModal('modal-palette'));
+document.getElementById('close-tools').addEventListener('click',   ()=>closeModal('modal-tools'));
+document.getElementById('close-palette').addEventListener('click', ()=>closeModal('modal-palette'));
+
+// ─── WIRE UP BUTTONS ──────────────────────────────────────────────────────
+// Desktop
+document.getElementById('btn-new').addEventListener('click', ()=>{ if(confirm('Clear all voxels?')) clearAll(); });
+document.getElementById('btn-save').addEventListener('click', saveJSON);
+document.getElementById('btn-load-trigger').addEventListener('click', ()=>document.getElementById('load-input').click());
+document.getElementById('load-input').addEventListener('change', e=>{ if(e.target.files[0]) loadJSON(e.target.files[0]); e.target.value=''; });
+document.getElementById('tool-paint').addEventListener('click', ()=>setTool('paint'));
+document.getElementById('tool-erase').addEventListener('click', ()=>setTool('erase'));
+document.getElementById('tool-fill').addEventListener('click',  ()=>setTool('fill'));
+document.getElementById('layer-up').addEventListener('click',   ()=>changeLayer(+1));
+document.getElementById('layer-down').addEventListener('click', ()=>changeLayer(-1));
+document.getElementById('btn-reset-cam').addEventListener('click', resetCamera);
+document.getElementById('cam-left').addEventListener('click',  ()=>rotateCamera(+Math.PI/8));
+document.getElementById('cam-right').addEventListener('click', ()=>rotateCamera(-Math.PI/8));
+document.getElementById('btn-top-view').addEventListener('click',  topView);
+document.getElementById('btn-iso-view').addEventListener('click',  isoView);
+
+// Mobile
+document.getElementById('mob-paint').addEventListener('click', ()=>setTool('paint'));
+document.getElementById('mob-erase').addEventListener('click', ()=>setTool('erase'));
+document.getElementById('mob-fill').addEventListener('click',  ()=>setTool('fill'));
+document.getElementById('mob-layer-up').addEventListener('click',   ()=>changeLayer(+1));
+document.getElementById('mob-layer-down').addEventListener('click', ()=>changeLayer(-1));
+document.getElementById('mob-undo').addEventListener('click',        undo);
+document.getElementById('mob-view-toggle').addEventListener('click', toggleViewMode);
+document.getElementById('mob-reset-cam').addEventListener('click', ()=>{ resetCamera(); closeModal('modal-tools'); });
+document.getElementById('mob-top-view').addEventListener('click',  ()=>{ topView();     closeModal('modal-tools'); });
+document.getElementById('mob-iso-view').addEventListener('click',  ()=>{ isoView();     closeModal('modal-tools'); });
+document.getElementById('mob-btn-new').addEventListener('click',  ()=>{ closeModal('modal-tools'); if(confirm('Clear all voxels?')) clearAll(); });
+document.getElementById('mob-btn-save').addEventListener('click', ()=>{ closeModal('modal-tools'); saveJSON(); });
+document.getElementById('mob-btn-load').addEventListener('click', ()=>{ closeModal('modal-tools'); document.getElementById('load-input').click(); });
+
+// ─── RESIZE ───────────────────────────────────────────────────────────────
+function resize() { const w=wrap.clientWidth,h=wrap.clientHeight; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize', resize);
+
+// ─── RENDER LOOP ──────────────────────────────────────────────────────────
+(function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); })();
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+buildGrid(); setColor(currentColor); setTool('paint');
+resize(); resetCamera(); updateLayerPlane(); updateStats();
+const sg=document.getElementById('stat-grid'); if(sg) sg.textContent=gridSize;
+
+// Starter voxels
+placeVoxel(3,0,3,8); placeVoxel(4,0,3,9);  placeVoxel(5,0,3,10);
+placeVoxel(3,0,4,11); placeVoxel(4,1,4,12); placeVoxel(5,0,4,14);
+history=[];
+</script>
+</body>
+</html>
