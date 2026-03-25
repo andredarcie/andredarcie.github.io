@@ -847,116 +847,246 @@
             letter-spacing: 1px;
         }
 
+        /* ── MANUAL FLOAT BUTTON ─────────────────────────────── */
+        .manual-fab {
+            display: block;
+            margin-left: auto;
+            margin-bottom: 8px;
+            background: transparent;
+            border: 1px solid var(--green-dim);
+            color: var(--green-dim);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            padding: 10px 18px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.1s;
+        }
+
+        .manual-fab::before { content: '[ '; color: #335533; }
+        .manual-fab::after  { content: ' ]'; color: #335533; }
+
+        .manual-fab:hover {
+            border-color: var(--green);
+            color: var(--green);
+            box-shadow: 0 0 14px rgba(0,255,65,0.2);
+            background: var(--green-dark);
+        }
+
+
+        /* ── MANUAL MODAL ─────────────────────────────────────── */
+        #manual-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 19000;
+            background: rgba(0,0,0,0.88);
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+
+        #manual-modal-box {
+            background: #000;
+            border: 1px solid var(--green-dim);
+            box-shadow: 0 0 40px rgba(0,255,65,0.2), inset 0 0 30px rgba(0,20,0,0.5);
+            padding: 28px 32px;
+            width: 100%;
+            max-width: 620px;
+            position: relative;
+        }
+
+        .manual-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: transparent;
+            border: 1px solid #1a3d1a;
+            color: var(--green-dim);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            padding: 6px 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.1s;
+        }
+
+        .manual-modal-close:hover {
+            border-color: var(--green-dim);
+            color: var(--green);
+        }
+
         /* ── FOOTER ──────────────────────────────────────────── */
         .footer {
             text-align: center;
-            margin-top: 48px;
-            padding-top: 16px;
+            padding-top: 10px;
             border-top: 1px solid var(--border);
             font-size: 10px;
             color: #1a5c1a;
             letter-spacing: 2px;
+            flex-shrink: 0;
+        }
+
+        /* ── APP SPLIT LAYOUT (desktop) ──────────────────────── */
+        @media (min-width: 701px) {
+            body { overflow: hidden; height: 100vh; }
+
+            .crt-frame {
+                max-width: 1200px;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 16px 24px 10px;
+                overflow: hidden;
+            }
+
+            .header { margin-bottom: 10px; padding-bottom: 10px; }
+            .header h1 { font-size: 18px; }
+
+            .manual-fab { margin-bottom: 6px; }
+
+            .app-layout {
+                flex: 1;
+                min-height: 0;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                overflow: hidden;
+            }
+
+            .col-editor {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                overflow: hidden;
+            }
+
+            .col-editor > .panel {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                overflow: hidden;
+                margin-bottom: 0;
+            }
+
+            .col-editor .input-area {
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+                gap: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .col-editor .prompt-line {
+                flex: 1;
+                min-height: 0;
+                max-width: none;
+                display: flex;
+                align-items: stretch;
+            }
+
+            .col-editor .editor-container {
+                flex: 1;
+                min-height: 0;
+                align-items: stretch;
+            }
+
+            .col-editor textarea {
+                flex: 1;
+                min-height: 0;
+                height: 100%;
+                overflow-y: auto;
+            }
+
+            .col-editor textarea::-webkit-scrollbar { width: 6px; }
+            .col-editor textarea::-webkit-scrollbar-track {
+                background: #000;
+                border-left: 1px solid var(--border);
+            }
+            .col-editor textarea::-webkit-scrollbar-thumb {
+                background: var(--green-dark);
+                border: 1px solid #1a3d1a;
+            }
+            .col-editor textarea::-webkit-scrollbar-thumb:hover {
+                background: #005a00;
+            }
+
+            .col-editor .line-numbers {
+                overflow-y: hidden;
+            }
+
+            .col-results {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                overflow-y: auto;
+                min-height: 0;
+                padding-right: 2px;
+            }
+
+            .col-results .panel { margin-bottom: 0; }
+
+            .col-results::-webkit-scrollbar {
+                width: 6px;
+            }
+            .col-results::-webkit-scrollbar-track {
+                background: #000;
+                border-left: 1px solid var(--border);
+            }
+            .col-results::-webkit-scrollbar-thumb {
+                background: var(--green-dark);
+                border: 1px solid #1a3d1a;
+            }
+            .col-results::-webkit-scrollbar-thumb:hover {
+                background: #005a00;
+            }
+        }
+
+        /* ── MOBILE TABS ─────────────────────────────────────── */
+        .mobile-tabs { display: none; }
+
+        @media (max-width: 700px) {
+            .mobile-tabs {
+                display: flex;
+                margin-bottom: 12px;
+                border: 1px solid var(--green-dim);
+            }
+
+            .tab-btn {
+                flex: 1;
+                font-family: 'Press Start 2P', cursive;
+                font-size: 10px;
+                background: transparent;
+                color: var(--green-dim);
+                border: none;
+                padding: 12px 6px;
+                cursor: pointer;
+                letter-spacing: 2px;
+                transition: all 0.1s;
+            }
+
+            .tab-btn:first-child { border-right: 1px solid var(--green-dim); }
+
+            .tab-btn.tab-active {
+                background: var(--green-dark);
+                color: var(--green);
+            }
+
+            .col-hidden { display: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="crt-frame">
-
-        <!-- HEADER -->
-        <header class="header">
-            <h1>SUPER TINY COMPUTER<span class="cursor"></span></h1>
-            <p class="header-sub">v1.0 &nbsp;·&nbsp; 4-register virtual machine</p>
-        </header>
-
-        <!-- INPUT PANEL -->
-        <div class="panel">
-            <p class="panel-title">program input</p>
-            <div class="input-area">
-                <div class="prompt-line">
-                    <span class="prompt-symbol">$</span>
-                    <div class="editor-container" id="editor-wrap">
-                        <div class="line-numbers" id="line-numbers"><span>1</span></div>
-                        <textarea id="input-box" spellcheck="false" autocomplete="off"
-                            placeholder="WRITE P0 5&#10;WRITE P1 3&#10;ADD P2 P0 P1&#10;READ P2"></textarea>
-                        <div class="ac-dropdown" id="ac-dropdown"></div>
-                    </div>
-                </div>
-                <!-- normal mode -->
-                <div id="run-bar">
-                    <button class="run-btn" onclick="myFunction()">RUN</button>
-                    <button class="debug-start-btn" onclick="startDebug()">DEBUG</button>
-                </div>
-
-                <!-- debug mode -->
-                <div id="debug-bar" style="display:none">
-                    <button class="dbg-btn" id="debug-back" onclick="stepBack()" disabled>&#9664; BACK</button>
-                    <button class="dbg-btn dbg-btn-next" id="debug-next" onclick="stepForward()">NEXT &#9654;</button>
-                    <button class="dbg-btn dbg-btn-stop" onclick="stopDebug()">&#9632; STOP</button>
-                </div>
-                <p id="debug-info"></p>
-
-                <div class="file-btn-row">
-                    <button class="file-btn" onclick="exportCode()">EXPORT .TINY</button>
-                    <button class="file-btn" onclick="importCode()">IMPORT .TINY</button>
-                </div>
-                <p id="file-message" class="file-message"></p>
-                <input type="file" id="file-import-input" accept=".tiny"
-                       style="display:none" onchange="onFileSelected(event)">
-            </div>
-        </div>
-
-        <!-- INPUT MODAL -->
-        <div id="input-modal">
-            <div id="input-modal-box">
-                <span id="input-label">INPUT</span>
-                <div class="input-prompt-row">
-                    <span class="input-prompt-sym">$</span>
-                    <input id="input-field" type="text" autocomplete="off" spellcheck="false">
-                </div>
-                <button class="run-btn" id="input-confirm">ENTER</button>
-            </div>
-        </div>
-
-        <!-- ERROR PANEL -->
-        <div class="panel panel-error" id="error-panel" style="display:none">
-            <p class="panel-title">compile error</p>
-            <div id="error-content"></div>
-        </div>
-
-        <!-- OUTPUT PANEL -->
-        <div class="panel">
-            <p class="panel-title">output</p>
-            <p id="read-output"></p>
-        </div>
-
-        <!-- MEMORY LOG PANEL -->
-        <div class="panel">
-            <p class="panel-title">memory log</p>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>IP</th>
-                            <th>P0</th>
-                            <th>P1</th>
-                            <th>P2</th>
-                            <th>P3</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- CPU DIAGRAM PANEL -->
-        <div class="panel">
-            <p class="panel-title">cpu internals</p>
-            <div id="diagram-container"></div>
-        </div>
-
-        <!-- MANUAL PANEL -->
-        <div class="panel">
-            <p class="panel-title">instruction set manual</p>
+    <!-- MANUAL MODAL -->
+    <div id="manual-modal" onclick="closeManualOnBackdrop(event)">
+        <div id="manual-modal-box">
+            <button class="manual-modal-close" onclick="closeManual()">X</button>
+            <p class="panel-title" style="margin-bottom:20px;">instruction set manual</p>
 
             <div style="margin-bottom:20px;">
                 <p class="params-note">
@@ -1005,6 +1135,111 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="crt-frame">
+
+        <!-- HEADER -->
+        <header class="header">
+            <h1>SUPER TINY COMPUTER<span class="cursor"></span></h1>
+            <p class="header-sub">v1.0 &nbsp;·&nbsp; 4-register virtual machine</p>
+        </header>
+
+        <!-- TOP BAR -->
+        <div style="display:flex; justify-content:flex-end;">
+            <button class="manual-fab" onclick="openManual()">MANUAL</button>
+        </div>
+
+        <!-- MOBILE TABS -->
+        <div class="mobile-tabs">
+            <button class="tab-btn tab-active" id="tab-editor" onclick="switchTab('editor')">EDITOR</button>
+            <button class="tab-btn" id="tab-results" onclick="switchTab('results')">OUTPUT</button>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="app-layout">
+
+            <!-- LEFT: Editor -->
+            <div class="col-editor" id="col-editor">
+                <div class="panel">
+                    <p class="panel-title">program input</p>
+                    <div class="input-area">
+                        <div class="prompt-line">
+                            <span class="prompt-symbol">$</span>
+                            <div class="editor-container" id="editor-wrap">
+                                <div class="line-numbers" id="line-numbers"><span>1</span></div>
+                                <textarea id="input-box" spellcheck="false" autocomplete="off"
+                                    placeholder="WRITE P0 5&#10;WRITE P1 3&#10;ADD P2 P0 P1&#10;READ P2"></textarea>
+                                <div class="ac-dropdown" id="ac-dropdown"></div>
+                            </div>
+                        </div>
+                        <div id="run-bar">
+                            <button class="run-btn" onclick="myFunction(); switchTab('results')">RUN</button>
+                            <button class="debug-start-btn" onclick="startDebug(); switchTab('results')">DEBUG</button>
+                        </div>
+                        <div id="debug-bar" style="display:none">
+                            <button class="dbg-btn" id="debug-back" onclick="stepBack()" disabled>&#9664; BACK</button>
+                            <button class="dbg-btn dbg-btn-next" id="debug-next" onclick="stepForward()">NEXT &#9654;</button>
+                            <button class="dbg-btn dbg-btn-stop" onclick="stopDebug()">&#9632; STOP</button>
+                        </div>
+                        <p id="debug-info"></p>
+                        <div class="file-btn-row">
+                            <button class="file-btn" onclick="exportCode()">EXPORT .TINY</button>
+                            <button class="file-btn" onclick="importCode()">IMPORT .TINY</button>
+                        </div>
+                        <p id="file-message" class="file-message"></p>
+                        <input type="file" id="file-import-input" accept=".tiny"
+                               style="display:none" onchange="onFileSelected(event)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Results -->
+            <div class="col-results" id="col-results">
+                <div class="panel panel-error" id="error-panel" style="display:none">
+                    <p class="panel-title">compile error</p>
+                    <div id="error-content"></div>
+                </div>
+                <div class="panel">
+                    <p class="panel-title">output</p>
+                    <p id="read-output"></p>
+                </div>
+                <div class="panel">
+                    <p class="panel-title">memory log</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>P0</th>
+                                    <th>P1</th>
+                                    <th>P2</th>
+                                    <th>P3</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <p class="panel-title">cpu internals</p>
+                    <div id="diagram-container"></div>
+                </div>
+            </div>
+
+        </div><!-- /.app-layout -->
+
+        <!-- INPUT MODAL -->
+        <div id="input-modal">
+            <div id="input-modal-box">
+                <span id="input-label">INPUT</span>
+                <div class="input-prompt-row">
+                    <span class="input-prompt-sym">$</span>
+                    <input id="input-field" type="text" autocomplete="off" spellcheck="false">
+                </div>
+                <button class="run-btn" id="input-confirm">ENTER</button>
+            </div>
+        </div>
 
         <p class="footer">READY.</p>
     </div>
@@ -1032,5 +1267,56 @@
     <script src="editor.js"></script>
     <!-- UI / main loop (depends on cpu.js + memory.js) -->
     <script src="ui.js"></script>
+    <script>
+        var mq = window.matchMedia('(max-width: 700px)');
+
+        function switchTab(tab) {
+            var editor  = document.getElementById('col-editor');
+            var results = document.getElementById('col-results');
+            var tEd     = document.getElementById('tab-editor');
+            var tRe     = document.getElementById('tab-results');
+            if (tab === 'editor') {
+                editor.classList.remove('col-hidden');
+                results.classList.add('col-hidden');
+                tEd.classList.add('tab-active');
+                tRe.classList.remove('tab-active');
+            } else {
+                editor.classList.add('col-hidden');
+                results.classList.remove('col-hidden');
+                tEd.classList.remove('tab-active');
+                tRe.classList.add('tab-active');
+            }
+        }
+
+        function handleBreakpoint(e) {
+            var editor  = document.getElementById('col-editor');
+            var results = document.getElementById('col-results');
+            if (e.matches) {
+                // Entrou no mobile: mostra editor por padrão
+                switchTab('editor');
+            } else {
+                // Entrou no desktop: remove classes de tab, mostra ambas as colunas
+                editor.classList.remove('col-hidden');
+                results.classList.remove('col-hidden');
+            }
+        }
+
+        mq.addEventListener('change', handleBreakpoint);
+        handleBreakpoint(mq);
+
+        function openManual() {
+            const m = document.getElementById('manual-modal');
+            m.style.display = 'flex';
+        }
+        function closeManual() {
+            document.getElementById('manual-modal').style.display = 'none';
+        }
+        function closeManualOnBackdrop(e) {
+            if (e.target === document.getElementById('manual-modal')) closeManual();
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeManual();
+        });
+    </script>
 </body>
 </html>
