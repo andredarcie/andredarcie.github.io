@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Tiny Computer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #00ff41;
+            --green-dim:   #00c832;
+            --green-dark:  #003b00;
+            --green-glow:  rgba(0, 255, 65, 0.18);
+            --amber:       #ffb300;
+            --bg:          #000000;
+            --border:      #1a3d1a;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { height: 100%; }
+
+        body {
+            min-height: 100%;
+            background-color: var(--bg);
+            color: var(--green);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            line-height: 2;
+            overflow-x: hidden;
+            /* subtle phosphor vignette */
+            background-image:
+                radial-gradient(ellipse at center, #001400 0%, #000000 80%);
+        }
+
+        /* ── CRT OVERLAY ─────────────────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            /* scanlines */
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 4px,
+                rgba(0, 0, 0, 0.12) 4px,
+                rgba(0, 0, 0, 0.12) 5px
+            );
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+            /* inner glow / curvature illusion */
+            background: radial-gradient(ellipse at center,
+                transparent 60%,
+                rgba(0, 0, 0, 0.55) 100%);
+        }
+
+        /* ── LAYOUT ──────────────────────────────────────────── */
+        .crt-frame {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* ── HEADER ──────────────────────────────────────────── */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--green);
+            text-shadow:
+                0 0 8px var(--green),
+                0 0 20px rgba(0,255,65,0.4);
+            letter-spacing: 2px;
+            animation: flicker 8s infinite;
+        }
+
+        .header-sub {
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--green-dim);
+            letter-spacing: 2px;
+        }
+
+        /* blinking cursor after title */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            background: var(--green);
+            vertical-align: middle;
+            margin-left: 6px;
+            animation: blink 1s step-end infinite;
+            box-shadow: 0 0 6px var(--green);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
+        }
+
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            96%           { opacity: 0.85; }
+            97%           { opacity: 1; }
+            98%           { opacity: 0.9; }
+        }
+
+        /* ── TERMINAL PANEL ──────────────────────────────────── */
+        .panel {
+            background: #000;
+            border: 1px solid var(--green-dim);
+            box-shadow:
+                0 0 0 1px #000,
+                0 0 12px rgba(0,255,65,0.12),
+                inset 0 0 30px rgba(0,40,0,0.6);
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .panel-title {
+            font-size: 11px;
+            color: var(--green-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .panel-title::before {
+            content: '>> ';
+            color: var(--amber);
+        }
+
+        /* ── INPUT AREA ──────────────────────────────────────── */
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .prompt-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .prompt-symbol {
+            color: var(--amber);
+            font-size: 16px;
+            line-height: 1;
+            padding-top: 4px;
+            flex-shrink: 0;
+            text-shadow: 0 0 6px var(--amber);
+        }
+
+        /* ── EDITOR CONTAINER ───────────────────────────────── */
+        .editor-container {
+            position: relative;
+            display: flex;
+            flex: 1;
+            border-left: 2px solid var(--green-dim);
+            overflow: hidden;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .editor-container:focus-within {
+            border-left-color: var(--green);
+            box-shadow: -2px 0 10px rgba(0,255,65,0.3);
+        }
+
+        .line-numbers {
+            padding: 8px 10px 8px 6px;
+            color: #2a5a2a;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 9px;
+            line-height: 26px;
+            text-align: right;
+            user-select: none;
+            overflow: hidden;
+            border-right: 1px solid #0d2b0d;
+            min-width: 38px;
+            flex-shrink: 0;
+        }
+
+        .line-numbers span { display: block; }
+
+        textarea {
+            flex: 1;
+            text-transform: uppercase;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            line-height: 26px;
+            background: transparent;
+            color: var(--green);
+            border: none;
+            outline: none;
+            resize: none;
+            min-height: 286px;
+            padding: 8px 12px;
+            caret-color: var(--green);
+            text-shadow: 0 0 4px rgba(0,255,65,0.5);
+            overflow-y: auto;
+        }
+
+        textarea::placeholder {
+            color: #1a5c1a;
+            font-size: 11px;
+        }
+
+        /* ── AUTOCOMPLETE ────────────────────────────────────── */
+        .ac-dropdown {
+            display: none;
+            position: absolute;
+            left: 38px;
+            background: #000e00;
+            border: 1px solid var(--green-dim);
+            box-shadow: 0 6px 24px rgba(0,255,65,0.15), 0 0 0 1px #000;
+            z-index: 1000;
+            min-width: 260px;
+        }
+
+        .ac-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 14px;
+            cursor: pointer;
+            gap: 16px;
+            border-left: 2px solid transparent;
+            transition: background 0.05s;
+        }
+
+        .ac-item + .ac-item {
+            border-top: 1px solid #0d200d;
+        }
+
+        .ac-item:hover,
+        .ac-item.ac-active {
+            background: var(--green-dark);
+            border-left-color: var(--green-dim);
+        }
+
+        .ac-item.ac-active {
+            border-left-color: var(--green);
+        }
+
+        .ac-word {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 11px;
+            color: var(--green-dim);
+        }
+
+        .ac-item:hover .ac-word,
+        .ac-item.ac-active .ac-word {
+            color: var(--green);
+            text-shadow: 0 0 6px rgba(0,255,65,0.5);
+        }
+
+        .ac-hint {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 9px;
+            color: #2a4a2a;
+        }
+
+        .ac-item:hover .ac-hint,
+        .ac-item.ac-active .ac-hint {
+            color: #557755;
+        }
+
+        /* ── RUN BUTTON ──────────────────────────────────────── */
+        .run-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            background: transparent;
+            color: var(--green);
+            border: 1px solid var(--green-dim);
+            padding: 12px 28px;
+            cursor: pointer;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+            transition: all 0.1s;
+            text-shadow: 0 0 6px rgba(0,255,65,0.5);
+        }
+
+        .run-btn::before {
+            content: '[ ';
+            color: var(--amber);
+        }
+
+        .run-btn::after {
+            content: ' ]';
+            color: var(--amber);
+        }
+
+        .run-btn:hover {
+            background: var(--green-dark);
+            border-color: var(--green);
+            color: var(--green);
+            box-shadow: 0 0 14px rgba(0,255,65,0.25);
+        }
+
+        .run-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 4px rgba(0,255,65,0.4);
+        }
+
+        /* ── OUTPUT ──────────────────────────────────────────── */
+        #read-output {
+            font-size: 16px;
+            min-height: 24px;
+            color: var(--amber);
+            text-shadow: 0 0 8px var(--amber);
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        #read-output:not(:empty)::before {
+            content: '>> ';
+            color: var(--green-dim);
+        }
+
+        /* ── MEMORY LOG TABLE ────────────────────────────────── */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        thead tr {
+            background: var(--green-dark);
+        }
+
+        th {
+            color: var(--green);
+            text-align: center;
+            padding: 12px 20px;
+            border: 1px solid var(--green-dim);
+            letter-spacing: 2px;
+            text-shadow: 0 0 4px rgba(0,255,65,0.4);
+        }
+
+        th:first-child {
+            color: var(--amber);
+            min-width: 48px;
+        }
+
+        td {
+            text-align: center;
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            color: #00cc33;
+            transition: background 0.15s;
+        }
+
+        td:first-child {
+            color: #555;
+            font-size: 10px;
+            min-width: 48px;
+        }
+
+        tbody tr:hover td {
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        tbody tr:last-child td {
+            color: var(--green);
+            text-shadow: 0 0 4px rgba(0,255,65,0.5);
+            background: rgba(0,255,65,0.04);
+        }
+
+        /* ── MANUAL ──────────────────────────────────────────── */
+        .manual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 560px) {
+            .manual-grid { grid-template-columns: 1fr; }
+        }
+
+        .manual-section h3 {
+            font-size: 12px;
+            color: var(--amber);
+            text-shadow: 0 0 6px rgba(255,179,0,0.4);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #1a2e00;
+            letter-spacing: 2px;
+        }
+
+        .cmd-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cmd-list li {
+            font-size: 12px;
+            color: var(--green-dim);
+            padding: 4px 0;
+        }
+
+        .cmd {
+            color: var(--green);
+            text-shadow: 0 0 4px rgba(0,255,65,0.35);
+        }
+
+        .param {
+            color: #557755;
+        }
+
+        .params-note {
+            font-size: 11px;
+            color: #557755;
+            line-height: 2.2;
+        }
+
+        .params-note strong {
+            color: var(--green-dim);
+        }
+
+        /* ── CPU DIAGRAM ────────────────────────────────────── */
+        #diagram-container { overflow-x: auto; }
+
+        #cpu-svg {
+            width: 100%;
+            max-width: 720px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .dblock rect {
+            fill: #000;
+            stroke: #1a3d1a;
+            stroke-width: 1;
+        }
+        .dblock-label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 7px;
+            fill: #2a5a2a;
+            letter-spacing: 1px;
+        }
+        .dfield-key {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 7px;
+            fill: #2a5a2a;
+        }
+        .dfield-box {
+            fill: #000d00;
+            stroke: #1a3d1a;
+            stroke-width: 1;
+        }
+        .dfield-val {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            fill: var(--green-dim);
+        }
+        .dcpu-status-run  { fill: var(--green) !important; filter: url(#glow-green); }
+        .dcpu-status-done { fill: var(--amber) !important; }
+
+        /* Registers */
+        .dreg-rect {
+            fill: #000d00;
+            stroke: #1a3d1a;
+            stroke-width: 1;
+            transition: fill 0.15s, stroke 0.15s;
+        }
+        .dreg-label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 7px;
+            fill: #2a5a2a;
+        }
+        .dreg-val {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            fill: #447744;
+            transition: fill 0.15s;
+        }
+        .dreg-group.dreg-src  .dreg-rect { fill: #1a1000; stroke: var(--amber); stroke-width: 2; filter: url(#glow-amber); }
+        .dreg-group.dreg-dest .dreg-rect { fill: #001800; stroke: var(--green); stroke-width: 2; filter: url(#glow-green); }
+        .dreg-group.dreg-src  .dreg-val,
+        .dreg-group.dreg-dest .dreg-val  { fill: var(--green); }
+
+        /* Buses */
+        .dbus-vert, .dbus-horiz {
+            stroke: #1a3d1a;
+            stroke-width: 1.5;
+        }
+        .dbus-arrow { fill: #1a3d1a; }
+        .dbus-vert.dbus-active,
+        .dbus-horiz.dbus-active {
+            stroke: #00882a;
+            stroke-width: 2;
+            stroke-dasharray: 7 4;
+            animation: dashflow 0.4s linear infinite;
+        }
+        .dbus-arrow.dbus-arrow-active { fill: #00882a; }
+        @keyframes dashflow { to { stroke-dashoffset: -11; } }
+
+        /* Gates */
+        .dgate-shape {
+            fill: #000d00;
+            stroke: #1a3d1a;
+            stroke-width: 1;
+            transition: fill 0.15s, stroke 0.15s;
+        }
+        .dgate-bubble { fill: #000d00; }
+        .dgate-wire   { stroke: #1a3d1a; stroke-width: 1; }
+        .dgate-label  { font-family: 'Press Start 2P', cursive; font-size: 7px; fill: #2a5a2a; }
+        .dgate-sym    { font-family: 'Press Start 2P', cursive; font-size: 12px; fill: #2a5a2a; }
+        .dgate-desc   { font-family: 'Press Start 2P', cursive; font-size: 6px; fill: #1a3d1a; }
+        .dgate-divider { stroke: #0d2b0d; stroke-width: 1; stroke-dasharray: 3 3; }
+        .dalu-zone     { font-family: 'Press Start 2P', cursive; font-size: 6px; fill: #1a3d1a; letter-spacing: 2px; }
+
+        .dgate.dgate-active .dgate-shape  { fill: #001800; stroke: var(--green); stroke-width: 2; filter: url(#glow-green); }
+        .dgate.dgate-active .dgate-bubble { fill: #001800; }
+        .dgate.dgate-active .dgate-wire   { stroke: var(--green-dim); }
+        .dgate.dgate-active .dgate-label,
+        .dgate.dgate-active .dgate-sym    { fill: var(--green); }
+
+        /* ── DEBUG CONTROLS ─────────────────────────────────── */
+        #run-bar, #debug-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .debug-start-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            background: transparent;
+            color: var(--amber);
+            border: 1px solid #3d2d00;
+            padding: 12px 20px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.1s;
+        }
+        .debug-start-btn::before { content: '[ '; color: #664400; }
+        .debug-start-btn::after  { content: ' ]'; color: #664400; }
+        .debug-start-btn:hover {
+            background: #1a0e00;
+            border-color: var(--amber);
+            box-shadow: 0 0 12px rgba(255,179,0,0.2);
+        }
+
+        .dbg-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 11px;
+            background: transparent;
+            border: 1px solid #1a3d1a;
+            color: var(--green-dim);
+            padding: 10px 18px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.1s;
+        }
+        .dbg-btn:hover:not(:disabled) {
+            border-color: var(--green-dim);
+            color: var(--green);
+            box-shadow: 0 0 10px rgba(0,255,65,0.15);
+        }
+        .dbg-btn:disabled { opacity: 0.3; cursor: default; }
+        .dbg-btn:active:not(:disabled) { transform: scale(0.97); }
+
+        .dbg-btn-next {
+            color: var(--green);
+            border-color: var(--green-dim);
+        }
+        .dbg-btn-next:hover:not(:disabled) {
+            background: #001800;
+            box-shadow: 0 0 14px rgba(0,255,65,0.25);
+        }
+        .dbg-btn-stop {
+            color: #ff4400;
+            border-color: #3d1000;
+        }
+        .dbg-btn-stop:hover {
+            background: #1a0000;
+            border-color: #cc3300;
+            box-shadow: 0 0 10px rgba(255,68,0,0.2);
+        }
+
+        #debug-info {
+            font-size: 9px;
+            color: var(--amber);
+            letter-spacing: 2px;
+            text-shadow: 0 0 6px rgba(255,179,0,0.4);
+            min-height: 16px;
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .line-numbers span.line-current {
+            color: var(--green) !important;
+            background: rgba(0,255,65,0.1);
+            text-shadow: 0 0 6px rgba(0,255,65,0.5);
+            border-right: 2px solid var(--green);
+            margin-right: -2px;
+        }
+        .line-numbers span.line-current::before {
+            content: '\25b6';
+            color: var(--amber);
+            margin-right: 3px;
+            font-size: 7px;
+        }
+
+        /* ── FILE BUTTONS ───────────────────────────────────── */
+        .file-btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .file-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            background: transparent;
+            color: var(--green-dim);
+            border: 1px solid #1a3d1a;
+            padding: 8px 16px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.1s;
+        }
+
+        .file-btn:hover {
+            border-color: var(--green-dim);
+            color: var(--green);
+            box-shadow: 0 0 10px rgba(0,255,65,0.15);
+        }
+
+        .file-btn:active { transform: scale(0.97); }
+
+        .file-btn::before { content: '[ '; color: #335533; }
+        .file-btn::after  { content: ' ]'; color: #335533; }
+
+        .file-message {
+            display: none;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .file-message-ok    { color: var(--green); text-shadow: 0 0 6px rgba(0,255,65,0.4); }
+        .file-message-error { color: #ff4400;      text-shadow: 0 0 6px rgba(255,68,0,0.4); }
+
+        /* ── INPUT MODAL ────────────────────────────────────── */
+        #input-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            background: rgba(0, 0, 0, 0.88);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #input-modal-box {
+            background: #000;
+            border: 1px solid var(--green-dim);
+            box-shadow: 0 0 40px rgba(0,255,65,0.2), inset 0 0 30px rgba(0,20,0,0.5);
+            padding: 32px 40px;
+            min-width: 420px;
+            text-align: center;
+        }
+
+        #input-label {
+            font-size: 11px;
+            color: var(--amber);
+            text-shadow: 0 0 8px rgba(255,179,0,0.4);
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        #input-label::before { content: '>> '; color: var(--green-dim); }
+
+        .input-prompt-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--green-dim);
+            margin-bottom: 24px;
+            padding-bottom: 4px;
+        }
+
+        .input-prompt-row:focus-within {
+            border-bottom-color: var(--green);
+            box-shadow: 0 2px 8px rgba(0,255,65,0.2);
+        }
+
+        .input-prompt-sym {
+            color: var(--amber);
+            font-size: 14px;
+            text-shadow: 0 0 6px var(--amber);
+            flex-shrink: 0;
+        }
+
+        #input-field {
+            flex: 1;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            background: transparent;
+            color: var(--green);
+            border: none;
+            outline: none;
+            caret-color: var(--green);
+            text-shadow: 0 0 4px rgba(0,255,65,0.4);
+            padding: 6px 0;
+            min-width: 0;
+        }
+
+        /* ── ERROR PANEL ────────────────────────────────────── */
+        .panel-error {
+            border-color: #cc3300;
+            box-shadow:
+                0 0 0 1px #000,
+                0 0 20px rgba(200, 50, 0, 0.2),
+                inset 0 0 30px rgba(40, 0, 0, 0.6);
+        }
+
+        .panel-error .panel-title {
+            color: #ff4400;
+            border-bottom-color: #3d1000;
+        }
+
+        .panel-error .panel-title::before {
+            content: '!! ';
+            color: #ff4400;
+            text-shadow: 0 0 8px rgba(255,68,0,0.7);
+        }
+
+        .error-count {
+            font-size: 12px;
+            color: #ff4400;
+            text-shadow: 0 0 10px rgba(255,68,0,0.5);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .error-count-icon {
+            color: #ff4400;
+        }
+
+        .code-listing {
+            text-align: left;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .code-line {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            padding: 5px 6px;
+            border-left: 2px solid transparent;
+        }
+
+        .code-line-error {
+            background: rgba(255, 60, 0, 0.07);
+            border-left-color: #ff4400;
+            animation: errpulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes errpulse {
+            0%, 100% { background: rgba(255, 60, 0, 0.07); }
+            50%       { background: rgba(255, 60, 0, 0.13); }
+        }
+
+        .line-arrow {
+            width: 16px;
+            flex-shrink: 0;
+            color: #ff4400;
+            text-shadow: 0 0 6px rgba(255,68,0,0.7);
+        }
+
+        .line-num {
+            width: 20px;
+            text-align: right;
+            flex-shrink: 0;
+            font-size: 10px;
+            color: #444;
+        }
+
+        .line-sep {
+            flex-shrink: 0;
+            color: #2a2a2a;
+        }
+
+        .line-code {
+            color: #447744;
+        }
+
+        .line-code-error {
+            color: #ff6633;
+            text-shadow: 0 0 5px rgba(255,68,0,0.35);
+        }
+
+        .error-msg-row {
+            display: flex;
+            padding: 3px 0 10px 54px;
+            font-size: 11px;
+            gap: 0;
+        }
+
+        .error-msg-indent {
+            color: #882200;
+            flex-shrink: 0;
+            white-space: pre;
+        }
+
+        .error-msg-text {
+            color: #ffaa33;
+            text-shadow: 0 0 6px rgba(255,160,0,0.4);
+            letter-spacing: 1px;
+        }
+
+        /* ── FOOTER ──────────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 10px;
+            color: #1a5c1a;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-frame">
+
+        <!-- HEADER -->
+        <header class="header">
+            <h1>SUPER TINY COMPUTER<span class="cursor"></span></h1>
+            <p class="header-sub">v1.0 &nbsp;·&nbsp; 4-register virtual machine</p>
+        </header>
+
+        <!-- INPUT PANEL -->
+        <div class="panel">
+            <p class="panel-title">program input</p>
+            <div class="input-area">
+                <div class="prompt-line">
+                    <span class="prompt-symbol">$</span>
+                    <div class="editor-container" id="editor-wrap">
+                        <div class="line-numbers" id="line-numbers"><span>1</span></div>
+                        <textarea id="input-box" spellcheck="false" autocomplete="off"
+                            placeholder="WRITE P0 5&#10;WRITE P1 3&#10;ADD P2 P0 P1&#10;READ P2"></textarea>
+                        <div class="ac-dropdown" id="ac-dropdown"></div>
+                    </div>
+                </div>
+                <!-- normal mode -->
+                <div id="run-bar">
+                    <button class="run-btn" onclick="myFunction()">RUN</button>
+                    <button class="debug-start-btn" onclick="startDebug()">DEBUG</button>
+                </div>
+
+                <!-- debug mode -->
+                <div id="debug-bar" style="display:none">
+                    <button class="dbg-btn" id="debug-back" onclick="stepBack()" disabled>&#9664; BACK</button>
+                    <button class="dbg-btn dbg-btn-next" id="debug-next" onclick="stepForward()">NEXT &#9654;</button>
+                    <button class="dbg-btn dbg-btn-stop" onclick="stopDebug()">&#9632; STOP</button>
+                </div>
+                <p id="debug-info"></p>
+
+                <div class="file-btn-row">
+                    <button class="file-btn" onclick="exportCode()">EXPORT .TINY</button>
+                    <button class="file-btn" onclick="importCode()">IMPORT .TINY</button>
+                </div>
+                <p id="file-message" class="file-message"></p>
+                <input type="file" id="file-import-input" accept=".tiny"
+                       style="display:none" onchange="onFileSelected(event)">
+            </div>
+        </div>
+
+        <!-- INPUT MODAL -->
+        <div id="input-modal">
+            <div id="input-modal-box">
+                <span id="input-label">INPUT</span>
+                <div class="input-prompt-row">
+                    <span class="input-prompt-sym">$</span>
+                    <input id="input-field" type="text" autocomplete="off" spellcheck="false">
+                </div>
+                <button class="run-btn" id="input-confirm">ENTER</button>
+            </div>
+        </div>
+
+        <!-- ERROR PANEL -->
+        <div class="panel panel-error" id="error-panel" style="display:none">
+            <p class="panel-title">compile error</p>
+            <div id="error-content"></div>
+        </div>
+
+        <!-- OUTPUT PANEL -->
+        <div class="panel">
+            <p class="panel-title">output</p>
+            <p id="read-output"></p>
+        </div>
+
+        <!-- MEMORY LOG PANEL -->
+        <div class="panel">
+            <p class="panel-title">memory log</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>P0</th>
+                            <th>P1</th>
+                            <th>P2</th>
+                            <th>P3</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CPU DIAGRAM PANEL -->
+        <div class="panel">
+            <p class="panel-title">cpu internals</p>
+            <div id="diagram-container"></div>
+        </div>
+
+        <!-- MANUAL PANEL -->
+        <div class="panel">
+            <p class="panel-title">instruction set manual</p>
+
+            <div style="margin-bottom:20px;">
+                <p class="params-note">
+                    <strong>[MP]</strong> &nbsp;Memory Position &nbsp;· &nbsp;P0 P1 P2 P3<br>
+                    <strong>[V]</strong> &nbsp;&nbsp;Value &nbsp;· &nbsp;0-9 &nbsp;|&nbsp; "a-z" &nbsp;|&nbsp; TRUE &nbsp;FALSE
+                </p>
+            </div>
+
+            <div class="manual-grid">
+                <div class="manual-section">
+                    <h3>Data &amp; Memory</h3>
+                    <ul class="cmd-list">
+                        <li><span class="cmd">READ</span> <span class="param">[MP]</span></li>
+                        <li><span class="cmd">PRINT</span> <span class="param">[MP]</span></li>
+                        <li><span class="cmd">INPUT</span> <span class="param">[MP]</span></li>
+                        <li><span class="cmd">WRITE</span> <span class="param">[MP] [V]</span></li>
+                        <li><span class="cmd">MOVE</span> <span class="param">[MP] [MP]</span></li>
+                    </ul>
+                </div>
+                <div class="manual-section">
+                    <h3>Arithmetic</h3>
+                    <ul class="cmd-list">
+                        <li><span class="cmd">ADD</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">SUB</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">MULT</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">DIV</span> <span class="param">[MP] [MP] [MP]</span></li>
+                    </ul>
+                </div>
+                <div class="manual-section">
+                    <h3>Logic</h3>
+                    <ul class="cmd-list">
+                        <li><span class="cmd">AND</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">OR</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">NOT</span> <span class="param">[MP]</span></li>
+                        <li><span class="cmd">BT</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">ST</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">EQUAL</span> <span class="param">[MP] [MP] [MP]</span></li>
+                    </ul>
+                </div>
+                <div class="manual-section">
+                    <h3>Control Flow</h3>
+                    <ul class="cmd-list">
+                        <li><span class="cmd">JUMP</span> <span class="param">[MP]</span></li>
+                        <li><span class="cmd">JUMPC</span> <span class="param">[MP] [MP]</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer">READY.</p>
+    </div>
+
+    <!-- state + helpers -->
+    <script src="memory.js"></script>
+    <!-- validator (depends on memory.js for VALID_MEMORY_POSITIONS) -->
+    <script src="validator.js"></script>
+    <!-- input modal handler -->
+    <script src="input-handler.js"></script>
+    <!-- file export / import -->
+    <script src="file-handler.js"></script>
+    <!-- cpu diagram -->
+    <script src="cpu-diagram.js"></script>
+    <!-- debugger -->
+    <script src="debugger.js"></script>
+    <!-- instruction sets (depend on memory.js) -->
+    <script src="arithmetic.js"></script>
+    <script src="logic.js"></script>
+    <script src="control-flow.js"></script>
+    <script src="data.js"></script>
+    <!-- dispatcher (depends on instruction sets) -->
+    <script src="cpu.js"></script>
+    <!-- editor: line numbers + autocomplete -->
+    <script src="editor.js"></script>
+    <!-- UI / main loop (depends on cpu.js + memory.js) -->
+    <script src="ui.js"></script>
+</body>
+</html>
