@@ -435,6 +435,15 @@
             color: #557755;
         }
 
+        .cmd-desc {
+            display: block;
+            font-size: 8px;
+            color: #4a7a4a;
+            letter-spacing: 1px;
+            margin-top: 3px;
+            line-height: 1.6;
+        }
+
         .params-note {
             font-size: 11px;
             color: #557755;
@@ -1099,38 +1108,53 @@
                 <div class="manual-section">
                     <h3>Data &amp; Memory</h3>
                     <ul class="cmd-list">
-                        <li><span class="cmd">READ</span> <span class="param">[MP]</span></li>
-                        <li><span class="cmd">PRINT</span> <span class="param">[MP]</span></li>
-                        <li><span class="cmd">INPUT</span> <span class="param">[MP]</span></li>
-                        <li><span class="cmd">WRITE</span> <span class="param">[MP] [V]</span></li>
-                        <li><span class="cmd">MOVE</span> <span class="param">[MP] [MP]</span></li>
+                        <li><span class="cmd">READ</span> <span class="param">[MP]</span><span class="cmd-desc">display register value</span></li>
+                        <li><span class="cmd">PRINT</span> <span class="param">[MP]</span><span class="cmd-desc">display register value</span></li>
+                        <li><span class="cmd">INPUT</span> <span class="param">[MP]</span><span class="cmd-desc">read user input into register</span></li>
+                        <li><span class="cmd">WRITE</span> <span class="param">[MP] [V]</span><span class="cmd-desc">store value into register</span></li>
+                        <li><span class="cmd">MOVE</span> <span class="param">[MP] [MP]</span><span class="cmd-desc">copy value between registers</span></li>
                     </ul>
                 </div>
                 <div class="manual-section">
                     <h3>Arithmetic</h3>
                     <ul class="cmd-list">
-                        <li><span class="cmd">ADD</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">SUB</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">MULT</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">DIV</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">ADD</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a + b</span></li>
+                        <li><span class="cmd">SUB</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a - b</span></li>
+                        <li><span class="cmd">MULT</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a * b</span></li>
+                        <li><span class="cmd">DIV</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a / b</span></li>
+                        <li><span class="cmd">INC</span> <span class="param">[MP]</span><span class="cmd-desc">increment by 1</span></li>
+                        <li><span class="cmd">DEC</span> <span class="param">[MP]</span><span class="cmd-desc">decrement by 1</span></li>
+                        <li><span class="cmd">SHL</span> <span class="param">[MP] [MP]</span><span class="cmd-desc">shift left — multiply by 2</span></li>
+                        <li><span class="cmd">SHR</span> <span class="param">[MP] [MP]</span><span class="cmd-desc">shift right — divide by 2</span></li>
                     </ul>
                 </div>
                 <div class="manual-section">
                     <h3>Logic</h3>
                     <ul class="cmd-list">
-                        <li><span class="cmd">AND</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">OR</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">NOT</span> <span class="param">[MP]</span></li>
-                        <li><span class="cmd">BT</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">ST</span> <span class="param">[MP] [MP] [MP]</span></li>
-                        <li><span class="cmd">EQUAL</span> <span class="param">[MP] [MP] [MP]</span></li>
+                        <li><span class="cmd">AND</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">true if both are true</span></li>
+                        <li><span class="cmd">OR</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">true if at least one is true</span></li>
+                        <li><span class="cmd">NOT</span> <span class="param">[MP]</span><span class="cmd-desc">inverts the logical value</span></li>
+                        <li><span class="cmd">XOR</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">true if exactly one is true</span></li>
+                        <li><span class="cmd">BT</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a &gt; b</span></li>
+                        <li><span class="cmd">ST</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a &lt; b</span></li>
+                        <li><span class="cmd">EQUAL</span> <span class="param">[MP] [MP] [MP]</span><span class="cmd-desc">dest = a == b</span></li>
                     </ul>
                 </div>
                 <div class="manual-section">
                     <h3>Control Flow</h3>
                     <ul class="cmd-list">
-                        <li><span class="cmd">JUMP</span> <span class="param">[MP]</span></li>
-                        <li><span class="cmd">JUMPC</span> <span class="param">[MP] [MP]</span></li>
+                        <li><span class="cmd">JUMP</span> <span class="param">[MP]</span><span class="cmd-desc">jump to line stored in register</span></li>
+                        <li><span class="cmd">JUMPC</span> <span class="param">[MP] [MP]</span><span class="cmd-desc">jump if condition is true</span></li>
+                        <li><span class="cmd">CALL</span> <span class="param">[V]</span><span class="cmd-desc">call subroutine at line V</span></li>
+                        <li><span class="cmd">RET</span><span class="cmd-desc">return from subroutine</span></li>
+                        <li><span class="cmd">NOP</span><span class="cmd-desc">no operation</span></li>
+                    </ul>
+                </div>
+                <div class="manual-section">
+                    <h3>Stack</h3>
+                    <ul class="cmd-list">
+                        <li><span class="cmd">PUSH</span> <span class="param">[MP]</span><span class="cmd-desc">push register value onto stack</span></li>
+                        <li><span class="cmd">POP</span> <span class="param">[MP]</span><span class="cmd-desc">pop stack value into register</span></li>
                     </ul>
                 </div>
             </div>
@@ -1169,7 +1193,7 @@
                             <div class="editor-container" id="editor-wrap">
                                 <div class="line-numbers" id="line-numbers"><span>1</span></div>
                                 <textarea id="input-box" spellcheck="false" autocomplete="off"
-                                    placeholder="WRITE P0 5&#10;WRITE P1 3&#10;ADD P2 P0 P1&#10;READ P2"></textarea>
+                                    placeholder="WRITE P0 8&#10;WRITE P1 2&#10;WRITE P2 5&#10;ADD P3 P0 P1&#10;SUB P3 P0 P1&#10;MULT P3 P0 P1&#10;DIV P3 P0 P1&#10;INC P0&#10;DEC P1&#10;SHL P2 P0&#10;SHR P3 P0&#10;MOVE P1 P0&#10;AND P2 P0 P1&#10;OR P2 P0 P1&#10;NOT P2&#10;XOR P2 P0 P1&#10;BT P3 P0 P1&#10;ST P3 P1 P0&#10;EQUAL P3 P0 P1&#10;PUSH P0&#10;PUSH P1&#10;POP P2&#10;POP P3&#10;NOP&#10;CALL 32&#10;READ P0&#10;WRITE P2 0&#10;WRITE P3 1&#10;JUMPC P2 P3&#10;WRITE P0 34&#10;JUMP P0&#10;INC P0&#10;RET&#10;PRINT P3"></textarea>
                                 <div class="ac-dropdown" id="ac-dropdown"></div>
                             </div>
                         </div>
@@ -1252,6 +1276,8 @@
     <script src="input-handler.js"></script>
     <!-- file export / import -->
     <script src="file-handler.js"></script>
+    <!-- stack operations -->
+    <script src="stack.js"></script>
     <!-- cpu diagram -->
     <script src="cpu-diagram.js"></script>
     <!-- debugger -->

@@ -5,6 +5,7 @@ var errorContent = document.getElementById('error-content');
 
 async function myFunction() {
     memory = [0, 0, 0, 0];
+    stack  = [];
     tableBody.innerHTML  = '';
     readOutput.innerHTML = '';
 

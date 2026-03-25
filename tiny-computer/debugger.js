@@ -16,6 +16,7 @@ function startDebug() {
     hideErrors();
 
     memory = [0, 0, 0, 0];
+    stack  = [];
     document.getElementById('table-body').innerHTML    = '';
     document.getElementById('read-output').textContent = '';
 

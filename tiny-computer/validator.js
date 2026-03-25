@@ -1,17 +1,25 @@
 var VALID_OPERATIONS = [
     'READ', 'PRINT', 'WRITE', 'MOVE', 'INPUT',
-    'ADD', 'SUB', 'MULT', 'DIV',
-    'AND', 'OR', 'NOT', 'BT', 'ST', 'EQUAL',
-    'JUMP', 'JUMPC'
+    'ADD', 'SUB', 'MULT', 'DIV', 'INC', 'DEC', 'SHL', 'SHR',
+    'AND', 'OR', 'NOT', 'BT', 'ST', 'EQUAL', 'XOR',
+    'JUMP', 'JUMPC',
+    'PUSH', 'POP', 'CALL', 'RET', 'NOP'
 ];
 
 // Expected total token count (operation + params)
 var PARAM_COUNT = {
-    'READ':  2, 'PRINT': 2, 'NOT':   2, 'JUMP':  2, 'INPUT': 2,
-    'WRITE': 3, 'MOVE':  3, 'JUMPC': 3,
+    'READ':  2, 'PRINT': 2, 'NOT': 2, 'JUMP': 2, 'INPUT': 2,
+    'INC':   2, 'DEC':   2, 'PUSH': 2, 'POP': 2,
+    'WRITE': 3, 'MOVE':  3, 'JUMPC': 3, 'SHL': 3, 'SHR': 3,
     'ADD':   4, 'SUB':   4, 'MULT':  4, 'DIV':   4,
-    'AND':   4, 'OR':    4, 'BT':    4, 'ST':    4, 'EQUAL': 4
+    'AND':   4, 'OR':    4, 'BT':    4, 'ST':    4, 'EQUAL': 4, 'XOR': 4,
+    'CALL':  2, 'RET':   1, 'NOP':   1
 };
+
+// Operations with no memory position params
+var NO_PARAM_OPS = ['NOP', 'RET'];
+// Operations whose first param is a value, not a memory position
+var VALUE_PARAM_OPS = ['CALL'];
 
 var VALID_MEMORY_POSITIONS = ['P0', 'P1', 'P2', 'P3'];
 
@@ -56,6 +64,17 @@ function validateProgram(instructions) {
             var got = tokens.length - 1;
             var exp = expected - 1;
             errors.push({ line: lineNum, message: op + ' EXPECTS ' + exp + ' PARAM' + (exp !== 1 ? 'S' : '') + ', GOT ' + got });
+            continue;
+        }
+
+        // Operations with no params
+        if (NO_PARAM_OPS.indexOf(op) !== -1) continue;
+
+        // CALL: first param is a line number value
+        if (VALUE_PARAM_OPS.indexOf(op) !== -1) {
+            if (!isValidValue(tokens[1])) {
+                errors.push({ line: lineNum, message: 'INVALID LINE NUMBER: "' + tokens[1] + '"' });
+            }
             continue;
         }
 

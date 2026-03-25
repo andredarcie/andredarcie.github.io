@@ -10,4 +10,5 @@ function logicOperations(instructions) {
     if (op === 'BT')    memory[dest] = a > b;
     if (op === 'ST')    memory[dest] = a < b;
     if (op === 'EQUAL') memory[dest] = a == b;
+    if (op === 'XOR')   memory[dest] = a ^ b;
 }
