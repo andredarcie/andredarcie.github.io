@@ -42,6 +42,7 @@ function stopDebug() {
     dbState.history = [];
     _dbShowControls(false);
     _dbHighlightLine(-1);
+    document.getElementById('debug-info').textContent = '';
     if (typeof resetDiagram === 'function') resetDiagram();
 }
 
