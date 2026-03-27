@@ -2,21 +2,17 @@
 
 ## Carreira Profissional
 
-Atualmente, é desenvolvedor sênior na NTT Data, uma das maiores consultorias de tecnologia do mundo, presente em mais de 50 países e listada entre as top 10 do setor global. Está alocado na XP Investimentos, a maior corretora do Brasil, onde atua na área de benefícios do cartão, contribuindo para a evolução de produtos financeiros de alto impacto. Anteriormente, trabalhou na startup Exato Digital, especializada em verificações de antecedentes e soluções "Know Your Customer", onde atuou remotamente em grandes projetos para clientes como Grupo Globo, GetNinjas, Quinto Andar, B3, Stone e Huawei.
+Atualmente, é desenvolvedor sênior na NTT Data, uma das maiores consultorias de tecnologia do mundo. Está alocado na XP Investimentos, a maior corretora do Brasil, onde atua na área de benefícios do cartão. Trabalha na evolução de produtos financeiros de alto impacto com arquitetura de microserviços, APIs distribuídas e integrações entre sistemas, lidando com regras de negócio críticas e com foco em escalabilidade, observabilidade, resiliência e qualidade de software em ambiente de alta demanda. Também atua na definição de soluções técnicas, revisão de código, evolução de arquitetura e suporte a entregas complexas em contexto corporativo. Anteriormente, trabalhou na startup Exato Digital, especializada em verificações de antecedentes e soluções "Know Your Customer", onde atuou remotamente em grandes projetos para clientes como Grupo Globo, GetNinjas, Quinto Andar, B3, Stone e Huawei.
 
 Possui bacharelado em Ciência da Computação e uma pós-graduação em Ciência de Dados Aplicada pela PUC Minas, onde estudou tópicos avançados como Inteligência Artificial e Machine Learning. Durante três anos, atuou no campo da iniciação científica, apoiado pelo CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico).
-
-Contribui para o open-source com projetos como o [C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide), o [Curso Pragmático de ASP.NET](https://github.com/andredarcie/curso-pragmatico-de-csharp) e o [Awesome GTFS](https://github.com/andredarcie/awesome-gtfs), que tiveram boa recepção no GitHub.
 
 Escreve no seu [blog](https://dev.to/andredarcie) sobre temas como tecnologia, realidade virtual, ciência, carreira, filosofia e arte.
 
 Organizador e fundador do [Clube de Leitura nas Montanhas](https://github.com/clube-de-leitura-nas-montanhas/agenda), uma iniciativa focada na leitura coletiva de livros técnicos e científicos. O clube tem como objetivo o desenvolvimento e aprimoramento profissional dos seus membros em suas respectivas carreiras.
 
-É co-fundador com Diego Penha em um projeto dedicado à organização e disponibilidade de dados de forma completamente aberta e acessível. O projeto, chamado [OpenVideoGameData](https://www.openvideogamedata.com/), é uma iniciativa sem fins lucrativos que alcançou aproximadamente meio milhão de visualizações em redes sociais como o Reddit.
-
 Nas horas vagas, ele atua como professor e consultor especializado em C# e .NET, oferecendo consultoria nessas tecnologias.
 
-Formas de entrar em contato comigo: [e-mail](andrendarcie@gmail.com), [Linkedin](https://www.linkedin.com/in/andré-n-darcie-8b64817b/), [Kaggle](https://www.kaggle.com/andredarcie), [Medium](https://medium.com/@andrendarcie), [itch.io](https://andredarcie.itch.io/), [Dev.to](https://dev.to/andredarcie) and [Codepen](https://codepen.io/andredarcie)
+Formas de entrar em contato comigo: [e-mail](andrendarcie@gmail.com), [Linkedin](https://www.linkedin.com/in/andré-n-darcie-8b64817b/), [GitHub](https://github.com/andredarcie), [Kaggle](https://www.kaggle.com/andredarcie), [Medium](https://medium.com/@andrendarcie), [itch.io](https://andredarcie.itch.io/), [Dev.to](https://dev.to/andredarcie) and [Codepen](https://codepen.io/andredarcie)
 
 ## Vida Pessoal
 
@@ -56,7 +52,7 @@ Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 
 - **[Dev Match](https://github.com/andredarcie/dev-match)**: Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
 - **[My Life Data](https://github.com/andredarcie/my-life-data)**: Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
-- **[OpenVideoGameData](https://www.openvideogamedata.com/)**: Plataforma aberta para organização, enriquecimento e consulta de dados sobre jogos, combinando catálogo, descoberta e acompanhamento.
+- **[OpenVideoGameData](https://www.openvideogamedata.com/)**: Plataforma aberta para organização, enriquecimento e consulta de dados sobre jogos, combinando catálogo, descoberta e acompanhamento. É uma iniciativa sem fins lucrativos que alcançou aproximadamente meio milhão de visualizações em redes sociais como o Reddit.
 
 ### Guias e Templates
 
