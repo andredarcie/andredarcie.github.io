@@ -1,91 +1,86 @@
 # ArchCard
 
-ArchCard é um protótipo de jogo web em uma única página no qual o jogador monta uma estratégia de arquitetura de software usando cartas como `Monolítico`, `Microsserviços`, `Mensageria`, `CQRS` e `Event Sourcing`.
+ArchCard e um prototipo de card game web sobre arquitetura de software. Cada rodada apresenta uma meta simples, um limite de custo e agora uma economia de risco baseada em `Poder` e `Divida`.
 
-A proposta combina um visual retro de terminal/CRT com uma mecânica simples de decisão: a cada turno, você recebe um objetivo arquitetural, joga cartas na mesa, ativa sinergias e tenta bater os requisitos de métricas como escalabilidade, disponibilidade, custo operacional e simplicidade.
+A ideia central do jogo passou a ser:
 
-## Demo do conceito
+- voce comeca o turno com `0P`
+- cartas boas gastam `Poder`
+- cartas ruins geram `Poder`, mas tambem trazem `Divida`
+- voce precisa decidir quanta gambiarra aceita para montar uma mesa forte
 
-- Objetivos dinâmicos por turno, como alta disponibilidade, baixo custo operacional, escalabilidade máxima e velocidade de entrega.
-- Cartas com atributos positivos e negativos.
-- Sinergias entre padrões arquiteturais.
-- Pontuação, vidas e progressão por turnos.
-- Interface standalone em `HTML + CSS + JavaScript`, sem build step.
+## Loop atual
+
+1. Leia a meta, o bonus e o custo maximo.
+2. Veja seu `Poder` e sua `Divida` atual.
+3. Use cartas `boost` para gerar poder.
+4. Use cartas `core` para transformar esse poder em arquitetura forte.
+5. Use cartas `mitigation` para limpar parte da bagunca.
+6. Encerre o turno e receba pontos, penalidade de divida e possivel upgrade.
+
+## Regras principais
+
+- `Poder`: recurso do turno usado para baixar cartas fortes.
+- `Divida`: penalidade acumulada da run causada por atalhos.
+- `Custo Maximo`: limite operacional do objetivo atual.
+- `Boost`: cartas ruins ou arriscadas que geram poder.
+- `Core`: cartas fortes que consomem poder.
+- `Mitigation`: cartas que reduzem divida e estabilizam a mesa.
+
+## Exemplos de carta
+
+- `Go Horse`: gera muito `Poder`, mas adiciona `Divida`.
+- `Script Magico`: gera pouco poder com risco leve.
+- `Event Sourcing`: carta forte, cara e travada sem poder suficiente.
+- `Observabilidade`: nao gera poder, mas reduz divida.
 
 ## Stack
 
-- `HTML` para estrutura da interface
-- `CSS` embutido para identidade visual e animações base
-- `JavaScript` puro para estado, regras e renderização
-- `GSAP` via CDN para animações
+- `index.html` para estrutura
+- `style.css` para visual e layout
+- `game-rules.js` para regras puras do jogo
+- `script.js` para estado, renderizacao e interacoes
+- `GSAP` via CDN para animacoes
 - `Phosphor Icons` via CDN para arte das cartas
-- Google Fonts via CDN
 
 ## Como executar
-
-Como o projeto é estático, você pode abrir o arquivo diretamente no navegador:
 
 ```powershell
 start index.html
 ```
 
-Se preferir servir localmente com um servidor HTTP simples:
+Ou por HTTP:
 
 ```powershell
 npx serve .
 ```
 
-Depois, abra a URL exibida no terminal.
-
-## Como jogar
-
-1. O jogo inicia com 5 cartas na mão e um objetivo aleatório.
-2. Cada carta altera as métricas da rodada.
-3. Ao selecionar uma carta, ela é jogada automaticamente no primeiro slot vazio da mesa.
-4. Você pode descartar uma carta selecionada.
-5. Quando a mesa refletir sua estratégia, clique em `Encerrar Turno`.
-6. Se a métrica-alvo do objetivo atingir o valor exigido, você ganha pontos.
-7. Se falhar, perde uma vida e segue para o próximo turno.
-
-## Mecânicas principais
-
-### Métricas avaliadas
-
-- `Escalabilidade`
-- `Disponibilidade`
-- `Custo`
-- `Simplicidade`
-
-### Exemplos de sinergia
-
-- `Mensageria × Microsserviços`
-- `CQRS × Event Sourcing`
-- `API Gateway × Microsserviços`
-- `Cache Distribuído × Monolítico`
-
-### Regras de pontuação
-
-- O turno avalia a métrica-alvo do objetivo atual.
-- Há bônus quando a métrica secundária também atinge o valor exigido.
-- Combinar tipos diferentes de cartas adiciona pontuação extra.
-- Ao zerar as vidas, o jogo reinicia.
-
-## Estrutura do projeto
+## Estrutura
 
 ```text
 .
-├── index.html   # aplicação completa: layout, estilos, dados e lógica
-└── README.md
+|-- index.html
+|-- style.css
+|-- game-rules.js
+|-- script.js
+|-- rules-smoke-test.js
+|-- IMPROVEMENT_PLAN.md
+|-- RISK_ECONOMY_PLAN.md
+|-- progress.md
+`-- README.md
 ```
 
-## Estado atual
+## Validacao
 
-Este repositório contém um protótipo funcional e autocontido. Toda a lógica do jogo, os dados das cartas, os objetivos, a interface e as animações estão centralizados em `index.html`.
+```powershell
+node --check game-rules.js
+node --check script.js
+node rules-smoke-test.js
+```
 
-## Próximos passos possíveis
+## Proximos passos naturais
 
-- Separar `HTML`, `CSS` e `JavaScript` em arquivos próprios
-- Adicionar sistema de rounds/fases com dificuldade progressiva
-- Persistir pontuação máxima em `localStorage`
-- Incluir novos objetivos, cartas e sinergias
-- Criar testes para a lógica de pontuação e avaliação de turno
+- balancear melhor a relacao entre `Poder`, `Divida` e pontuacao
+- adicionar mais cartas `boost` e `mitigation`
+- criar objetivos que punem mais risco ou premiam jogo limpo
+- introduzir upgrades focados em economia de risco

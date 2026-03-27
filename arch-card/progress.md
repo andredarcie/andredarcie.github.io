@@ -11,3 +11,16 @@ Original prompt: fazendo uma analise profunda do jogo, deixe ele mais facil de e
 - Redesign completo: loop novo inspirado em pedra-papel-tesoura com 3 escolhas, sinal do rival e rounds curtos.
 - Correcao de direcao: loop continua simples, mas voltou a ser card game com mao de 3 cartas e carta rival fechada.
 - Restaurado o loop de card game com mao, mesa, objetivo, metricas e modal de resultado.
+- Novo pacote aplicado: regras extraidas para `game-rules.js`, custo validado no turno, HUD com meta/bonus/custo, mao reduzida para 4 cartas e persistencia de recordes.
+- Novo loop de retencao: streak com multiplicador real, estado `quase la` sem dano e escolha de 1 entre 2 upgrades apos vitoria.
+- Sustentacao: smoke test em `rules-smoke-test.js` e README atualizado para refletir o jogo atual.
+- Validacao pendente no browser apos ajustar qualquer erro de integracao HTML/CSS/JS restante.
+- Validacao final: `node --check script.js`, `node --check game-rules.js` e `node rules-smoke-test.js` passaram.
+- Validacao no browser: fluxo de derrota, vitoria, escolha de upgrade e proximo turno executados via Playwright em `http://127.0.0.1:8123/index.html`.
+- Limpeza final: erro de `favicon.ico` removido com favicon inline no HTML.
+- Economia de risco implementada: `Poder` por turno, `Divida` acumulada, cartas `boost/core/mitigation` e bloqueio de cartas fortes sem poder suficiente.
+- UI ajustada: HUD mostra poder/divida, cartas exibem `P`, `C` e `D`, e preview explica a troca imediata entre recurso, risco e meta.
+- Validacao: `node --check game-rules.js`, `node --check script.js` e `node rules-smoke-test.js` passaram; Playwright confirmou carta core travada sem poder e liberada apos `Go Horse`.
+- Atributos trocados para a nova triade: `Performance`, `Confiabilidade` e `Evolucao`.
+- Objetivos, labels do HUD, cartas e regras internas foram alinhados a esses tres eixos.
+- Validacao final: sintaxe e smoke test passaram; browser confirmou render com os novos nomes nas cartas e no objetivo.

@@ -1,66 +1,582 @@
-const CARDS = [
-  {id:'messaging',name:'Mensageria',t:'messaging',r:'rare',cost:3,art:'ph-envelope-simple',st:{ca:3,ve:1,es:2}},
-  {id:'monolithic',name:'Monolitico',t:'monolithic',r:'common',cost:1,art:'ph-buildings',st:{ca:1,ve:2,es:1}},
-  {id:'microservices',name:'Microsservicos',t:'microservices',r:'legendary',cost:5,art:'ph-share-network',st:{ca:3,ve:1,es:3}},
-  {id:'event',name:'Event Sourcing',t:'event',r:'legendary',cost:4,art:'ph-lightning',st:{ca:2,ve:1,es:3}},
-  {id:'cqrs',name:'CQRS',t:'cqrs',r:'rare',cost:3,art:'ph-arrows-split',st:{ca:2,ve:2,es:2}},
-  {id:'gateway',name:'API Gateway',t:'gateway',r:'rare',cost:2,art:'ph-door-open',st:{ca:1,ve:1,es:2}},
-  {id:'cache',name:'Cache Distribuido',t:'cache',r:'common',cost:2,art:'ph-database',st:{ca:2,ve:3,es:1}},
-  {id:'serverless',name:'Serverless',t:'serverless',r:'rare',cost:2,art:'ph-cloud',st:{ca:3,ve:2,es:1}},
-];
+const {
+  CARDS,
+  OBJECTIVES,
+  METRIC_LABELS,
+  UPGRADES,
+  zeroScores,
+  shuffle,
+  getPlayedCards,
+  getSwapLimit,
+  applyUpgradeModifiers,
+  evaluateBoard,
+  calculateTurnScore,
+  buildRewardChoices,
+} = window.ArchCardRules;
 
-const OBJECTIVES = [
-  {title:'Capacidade de Pico',target:'ca',req:6,maxCost:8,bonus:{k:'es',v:5},ok:['A stack aguenta mais carga.','Ha throughput para o pico esperado.'],fail:['A capacidade ficou curta.','Mensageria, Cache e Microsservicos ajudam aqui.']},
-  {title:'Latencia Baixa',target:'ve',req:5,maxCost:7,bonus:{k:'es',v:4},ok:['A resposta ficou veloz.','O caminho critico esta eficiente.'],fail:['A latencia ainda esta alta.','Cache e CQRS empurram essa meta para cima.']},
-  {title:'Alta Estabilidade',target:'es',req:5,maxCost:8,bonus:{k:'ca',v:4},ok:['A stack suporta falhas melhor.','Boa continuidade operacional.'],fail:['A estabilidade ainda esta fragil.','Mensageria e Event Sourcing ajudam a isolar falhas.']},
-];
+const STORAGE_KEYS = {
+  bestScore: "archcard.best-score",
+  bestStreak: "archcard.best-streak",
+};
 
-const METRIC_KEYS=['ca','ve','es'];
-const METRIC_LABELS={ca:'Capacidade',ve:'Velocidade',es:'Estabilidade'};
-let G={};
+const MAX_HAND_SIZE = 4;
+let G = {};
 
-function freshState(){return{turn:1,score:0,hp:3,streak:0,swapsLeft:1,hand:[],board:[null,null,null],sel:null,obj:null,sc:zeroScores(),deck:[]};}
-function zeroScores(){return{ca:0,ve:0,es:0};}
-function shuffle(items){return[...items].sort(()=>Math.random()-0.5);}
-function ensureDeck(){if(!G.deck.length)G.deck=shuffle(CARDS);} 
-function drawCard(){ensureDeck();return G.deck.pop();}
-function metricFmt(v){return String(v);} 
-function scorePct(v){return Math.max(0,Math.min(100,(v/9)*100));}
-function getObjectiveReq(obj=G.obj,turn=G.turn){const easing=turn<=1?1:0;return Math.max(3,obj.req-easing);} 
-function getPlayedCards(board=G.board){return board.filter(Boolean);} 
-function getEmptySlots(board=G.board){return board.map((c,i)=>c?null:i).filter(i=>i!==null);} 
-function getSynergyDetails(types){const details=[];if(types.includes('messaging')&&types.includes('microservices'))details.push({delta:{ca:1,ve:0,es:1}});if(types.includes('cqrs')&&types.includes('event'))details.push({delta:{ca:1,ve:1,es:1}});if(types.includes('gateway')&&types.includes('microservices'))details.push({delta:{ca:0,ve:0,es:1}});if(types.includes('cache')&&types.includes('monolithic'))details.push({delta:{ca:1,ve:1,es:0}});if(types.includes('serverless')&&types.includes('gateway'))details.push({delta:{ca:1,ve:1,es:0}});return details;}
-function computeScores(board){const scores=zeroScores();getPlayedCards(board).forEach(card=>{scores.ca+=card.st.ca;scores.ve+=card.st.ve;scores.es+=card.st.es;});const details=getSynergyDetails(getPlayedCards(board).map(c=>c.t));details.forEach(detail=>{METRIC_KEYS.forEach(k=>scores[k]+=detail.delta[k]);});return{scores,synergies:details};}
-function dots(value){return Array.from({length:3},(_,index)=>`<span class="card-dot${index<value?' on':''}"></span>`).join('');}
-function liveDots(value){return Array.from({length:9},(_,index)=>`<span class="live-dot${index<value?' on':''}"></span>`).join('');}
+function freshState() {
+  return {
+    turn: 1,
+    score: 0,
+    hp: 3,
+    streak: 0,
+    bestScore: readNumber(STORAGE_KEYS.bestScore),
+    bestStreak: readNumber(STORAGE_KEYS.bestStreak),
+    swapsLeft: 1,
+    hand: [],
+    board: [null, null, null],
+    sel: null,
+    obj: OBJECTIVES[0],
+    sc: zeroScores(),
+    power: 0,
+    debt: 0,
+    turnDebt: 0,
+    synergies: [],
+    deck: [],
+    upgrades: [],
+    pendingRewards: [],
+    rewardLocked: false,
+  };
+}
 
-function init(){G=freshState();G.deck=shuffle(CARDS);G.hand=Array.from({length:5},()=>drawCard());G.obj=OBJECTIVES[Math.floor(Math.random()*OBJECTIVES.length)];recalc();renderAll(true);toast('Selecione uma carta e jogue em um slot vazio.');}
-function renderAll(animateHand=false){renderObj();renderBoard();renderHand(animateHand);updateHdr();updateBars();renderPreview();updateActionState();}
-function renderObj(){document.getElementById('obj-title').textContent=G.obj.title;document.getElementById('obj-cost-max').textContent=G.obj.maxCost;document.getElementById('live-ca').innerHTML=liveDots(G.sc.ca);document.getElementById('live-ve').innerHTML=liveDots(G.sc.ve);document.getElementById('live-es').innerHTML=liveDots(G.sc.es);}
-function renderHand(animate){const handEl=document.getElementById('hand');handEl.innerHTML='';G.hand.forEach((card,index)=>{if(!card)return;const cardEl=mkCard(card,index,false);if(animate){cardEl.style.opacity='0';cardEl.style.transform='translateY(60px) scale(0.85)';}handEl.appendChild(cardEl);if(animate){gsap.to(cardEl,{opacity:1,y:0,scale:1,duration:.45,delay:index*.07,ease:'back.out(1.5)'});}});} 
-function renderBoard(){G.board.forEach((card,index)=>{const slot=document.getElementById(`sl-${index}`);if(card){const ripple=document.getElementById(`rip-${index}`);slot.innerHTML='';slot.classList.add('has-card');slot.classList.remove('ready');slot.appendChild(mkCard(card,index,true));if(ripple)slot.appendChild(ripple);slot.onclick=null;return;}slot.classList.remove('has-card');slot.classList.toggle('ready',G.sel!==null);slot.innerHTML=`<span>Vazio</span><div class="slot-ripple" id="rip-${index}"></div>`;slot.onclick=()=>{if(G.sel===null){toast('Selecione uma carta primeiro.','warn');return;}playSelectedCard(index);};});renderFX();}
-function mkCard(card,index,onBoard){const el=document.createElement('div');el.className='card';el.dataset.idx=index;el.dataset.t=card.t;el.dataset.r=card.r;if(!onBoard){el.onclick=()=>selectCard(index);el.addEventListener('mousemove',tilt3D);el.addEventListener('mouseleave',resetTilt);el.classList.toggle('selected',G.sel===index);el.classList.toggle('playable',G.sel!==null&&G.sel!==index);}else{el.onclick=()=>returnBoardCard(index);}el.innerHTML=`<div class="card-shell"><div class="card-cost">${card.cost}</div><div class="card-body"><div class="card-art"><i class="ph-thin ${card.art}"></i></div><div class="card-divider"></div><div class="card-name">${card.name}</div><div class="card-stats"><div class="card-stat ca"><span class="card-stat-lbl">Capacidade</span><span class="card-dots">${dots(card.st.ca)}</span></div><div class="card-stat ve"><span class="card-stat-lbl">Velocidade</span><span class="card-dots">${dots(card.st.ve)}</span></div><div class="card-stat es"><span class="card-stat-lbl">Estabilidade</span><span class="card-dots">${dots(card.st.es)}</span></div></div></div></div>`;return el;}
-function renderFX(){document.getElementById('bfx').innerHTML='';}
-function renderPreview(){const statusline=document.getElementById('statusline');const currentReq=getObjectiveReq();const currentValue=G.sc[G.obj.target];const remaining=currentReq-currentValue;const emptySlots=getEmptySlots();if(G.sel===null){statusline.textContent=emptySlots.length?`${G.obj.title} // ${METRIC_LABELS[G.obj.target]} ${metricFmt(currentValue)} / ${currentReq} // faltam ${Math.max(0,remaining)}`:'Mesa cheia. Encerre o turno para pontuar.';return;}const card=G.hand[G.sel];const slotIndex=emptySlots[0];const previewBoard=[...G.board];previewBoard[slotIndex]=card;const preview=computeScores(previewBoard);const previewValue=preview.scores[G.obj.target];const delta=previewValue-currentValue;const hitsTarget=previewValue>=currentReq;const bonusReady=preview.scores[G.obj.bonus.k]>=G.obj.bonus.v;statusline.textContent=hitsTarget?`${card.name} // ${METRIC_LABELS[G.obj.target]} ${metricFmt(currentValue)} -> ${metricFmt(previewValue)} // fecha meta${bonusReady?' + bonus':''}`:`${card.name} // ${METRIC_LABELS[G.obj.target]} ${metricFmt(currentValue)} -> ${metricFmt(previewValue)} (+${delta}) // faltam ${currentReq-previewValue}`;}
-function updateHdr(){}
-function updateBars(){}
-function updateActionState(){const hasSelection=G.sel!==null;const hasPlayedCards=getPlayedCards().length>0;const swapButton=document.getElementById('btn-swap');const endButton=document.getElementById('btn-end');swapButton.disabled=!hasSelection||G.swapsLeft<=0;swapButton.textContent=G.swapsLeft>0?`Trocar Carta (${G.swapsLeft})`:'Troca gasta';endButton.disabled=!hasPlayedCards;}
-function recalc(){G.sc=computeScores(G.board).scores;}
-function selectCard(index){if(!G.hand[index])return;G.sel=G.sel===index?null:index;renderBoard();renderHand(false);renderPreview();updateActionState();}
-function playSelectedCard(slotIndex){if(G.sel===null||G.board[slotIndex])return;const card=G.hand[G.sel];if(!card)return;const handCards=Array.from(document.querySelectorAll('#hand .card'));const srcEl=handCards.find(el=>Number(el.dataset.idx)===G.sel);const destSlot=document.getElementById(`sl-${slotIndex}`);if(!srcEl||!destSlot){commitPlay(card,slotIndex);return;}const srcRect=srcEl.getBoundingClientRect();const destRect=destSlot.getBoundingClientRect();const ghost=srcEl.cloneNode(true);ghost.className='ghost-card';ghost.style.cssText=`width:${srcRect.width}px;height:${srcRect.height}px;top:${srcRect.top}px;left:${srcRect.left}px;`;document.body.appendChild(ghost);gsap.to(srcEl,{opacity:0,scale:.7,duration:.18,ease:'power2.in'});const targetX=destRect.left+(destRect.width-srcRect.width)/2-srcRect.left;const targetY=destRect.top+(destRect.height-srcRect.height)/2-srcRect.top;gsap.timeline().to(ghost,{x:targetX*.5,y:targetY*.5-40,rotation:(slotIndex-1)*5,scale:1.12,duration:.2,ease:'power2.out'}).to(ghost,{x:targetX,y:targetY,rotation:0,scale:.88,duration:.26,ease:'power3.in',onComplete:()=>{ghost.remove();commitPlay(card,slotIndex);slotReceive(slotIndex);}});} 
-function slotReceive(index){const ripple=document.getElementById(`rip-${index}`);if(!ripple)return;gsap.timeline().fromTo(ripple,{opacity:0,scale:.85},{opacity:1,scale:1.08,duration:.15,ease:'power2.out'}).to(ripple,{opacity:0,scale:1.2,duration:.3,ease:'power2.in'});} 
-function commitPlay(card,slotIndex){G.board[slotIndex]=card;G.hand[G.sel]=null;G.sel=null;recalc();renderAll(false);flashSynergies();toast(`${card.name} entrou na mesa.`);} 
-function returnBoardCard(slotIndex){const card=G.board[slotIndex];if(!card)return;const handIndex=G.hand.findIndex(entry=>entry===null);if(handIndex===-1){toast('Sua mao esta cheia.','warn');return;}const boardEl=document.querySelector(`#sl-${slotIndex} .card`);const handEl=document.getElementById('hand');if(!boardEl||!handEl){G.board[slotIndex]=null;G.hand[handIndex]=card;recalc();renderAll(false);toast(`${card.name} voltou para a mao.`);return;}const srcRect=boardEl.getBoundingClientRect();const handRect=handEl.getBoundingClientRect();const ghost=boardEl.cloneNode(true);ghost.className='ghost-card';ghost.style.cssText=`width:${srcRect.width}px;height:${srcRect.height}px;top:${srcRect.top}px;left:${srcRect.left}px;`;document.body.appendChild(ghost);boardEl.style.opacity='0';const targetLeft=handRect.left+Math.max(0,(handRect.width-srcRect.width)/2);const targetTop=handRect.top+Math.max(0,handRect.height-srcRect.height);const targetX=targetLeft-srcRect.left;const targetY=targetTop-srcRect.top;gsap.timeline().to(ghost,{x:targetX*.45,y:targetY*.45+24,rotation:(1-slotIndex)*5,scale:1.04,duration:.2,ease:'power2.out'}).to(ghost,{x:targetX,y:targetY,rotation:0,scale:1,duration:.24,ease:'power3.in',onComplete:()=>{ghost.remove();G.board[slotIndex]=null;G.hand[handIndex]=card;recalc();renderAll(false);toast(`${card.name} voltou para a mao.`);}});}
-function flashSynergies(){const details=computeScores(G.board).synergies;if(!details.length)return;gsap.fromTo('.board-wrap',{boxShadow:'0 0 0 rgba(51,255,102,0)'},{boxShadow:'0 0 40px rgba(51,255,102,0.35)',duration:.35,yoyo:true,repeat:1});}
-function swapCard(){if(G.sel===null){toast('Selecione uma carta para trocar.','warn');return;}if(G.swapsLeft<=0){toast('Voce ja usou a troca deste turno.','warn');return;}const oldName=G.hand[G.sel].name;G.hand[G.sel]=drawCard();G.swapsLeft-=1;G.sel=null;renderAll(false);toast(`${oldName} saiu. Nova carta comprada.`);} 
-function buildScoreSummary(success,achieved,req,bonusReady,typeCount){const positiveScore=METRIC_KEYS.reduce((sum,key)=>sum+Math.max(0,G.sc[key]),0);const diversityBonus=typeCount>=3?20:typeCount>=2?10:0;const completionBonus=success?50:0;const objectiveBonus=success&&bonusReady?25:0;const clutchBonus=success&&achieved>=req+2?15:0;const efficiencyBonus=success&&getPlayedCards().length<=2?12:0;const streakBonus=success?G.streak*10:0;const total=success?positiveScore+diversityBonus+completionBonus+objectiveBonus+clutchBonus+efficiencyBonus+streakBonus:Math.floor((positiveScore+diversityBonus)*.35);return{total,objectiveBonus,lines:[`Base positiva da mesa: ${positiveScore} pts.`,diversityBonus?`Diversidade de padroes: +${diversityBonus} pts.`:'Pouca diversidade, sem combo de variedade.',success?`Meta principal concluida: +${completionBonus} pts.`:'Meta principal nao foi alcancada.',objectiveBonus?`Bonus do objetivo ativado: +${objectiveBonus} pts.`:'Bonus secundario ainda nao ativado.',clutchBonus?`Folga confortavel no alvo: +${clutchBonus} pts.`:'Sem bonus de folga.',efficiencyBonus?`Solucao enxuta com poucas cartas: +${efficiencyBonus} pts.`:'Mesa mais pesada desta vez.',streakBonus?`Sequencia em alta: +${streakBonus} pts.`:'Sem bonus de streak neste turno.']};}
-function endTurn(){const played=getPlayedCards();if(!played.length){toast('Jogue ao menos uma carta antes de encerrar.','warn');return;}gsap.to('#btn-end',{scale:.92,duration:.1,yoyo:true,repeat:1,ease:'power2.inOut'});const req=getObjectiveReq();const achieved=G.sc[G.obj.target];const bonusReady=G.sc[G.obj.bonus.k]>=G.obj.bonus.v;const success=achieved>=req;if(success){G.streak+=1;}else{G.streak=0;G.hp-=1;}const summary=buildScoreSummary(success,achieved,req,bonusReady,new Set(played.map(card=>card.t)).size);G.score+=summary.total;updateHdr();showResult(success,summary,achieved,req,bonusReady);} 
-function showResult(success,summary,achieved,req,bonusReady){const overlay=document.getElementById('overlay');const modal=document.getElementById('modal');const efficiency=Math.max(0,Math.min(999,Math.round((achieved/req)*100)));modal.className=`modal ${success?'ok':'fail'}`;document.getElementById('m-icon').textContent=success?'OK':'FALHA';document.getElementById('m-title').textContent=success?'Estrategia aprovada':'Objetivo nao atingido';document.getElementById('m-sub').textContent=G.obj.title.toUpperCase();document.getElementById('m-pts').textContent=summary.total;document.getElementById('m-pts').className=`mscore-val ${success?'ok':'fail'}`;document.getElementById('m-eff').textContent=`${efficiency}%`;document.getElementById('m-eff').className=`mscore-val ${efficiency>=100?'ok':'fail'}`;document.getElementById('m-bon').textContent=`+${summary.objectiveBonus}`;document.getElementById('m-chain').textContent=`x${G.streak}`;const insights=[...(success?G.obj.ok:G.obj.fail),...summary.lines,bonusReady?`O bonus secundario em ${METRIC_LABELS[G.obj.bonus.k]} tambem foi alcancado.`:`O bonus secundario em ${METRIC_LABELS[G.obj.bonus.k]} ainda ficou abaixo de ${G.obj.bonus.v}.`,`Resultado final do alvo: ${metricFmt(achieved)} / meta ${req}.`];document.getElementById('m-analysis').innerHTML=`<div class="ma-head">Analise Estrategica</div>${insights.map(item=>`<div class="ma-item"><span class="ma-ico">></span><span>${item}</span></div>`).join('')}`;overlay.classList.add('on');gsap.fromTo(modal,{y:50,opacity:0,scale:.9},{y:0,opacity:1,scale:1,duration:.45,ease:'back.out(1.6)'});} 
-function nextTurn(){document.getElementById('overlay').classList.remove('on');if(G.hp<=0){setTimeout(()=>{init();toast('Game over. Nova rodada iniciada.','err');},250);return;}G.turn+=1;G.swapsLeft=1;G.board=[null,null,null];G.sc=zeroScores();G.sel=null;const needed=5-G.hand.filter(Boolean).length;for(let i=0;i<needed;i+=1){const emptyIndex=G.hand.findIndex(card=>card===null);const newCard=drawCard();if(emptyIndex!==-1)G.hand[emptyIndex]=newCard;else G.hand.push(newCard);}if(G.hand.length>5)G.hand=G.hand.slice(-5);const pool=OBJECTIVES.filter(objective=>objective.title!==G.obj.title);G.obj=pool[Math.floor(Math.random()*pool.length)];renderAll(true);toast(G.streak>0?`Streak x${G.streak} mantida. Monte a proxima solucao.`:'Novo turno. Reavalie o objetivo antes de jogar.');}
-function tilt3D(event){const card=event.currentTarget;const rect=card.getBoundingClientRect();const x=event.clientX-rect.left;const y=event.clientY-rect.top;const cx=rect.width/2;const cy=rect.height/2;const rotateX=-((y-cy)/cy)*10;const rotateY=((x-cx)/cx)*12;gsap.to(card,{rotateX,rotateY,translateY:card.classList.contains('selected')?-28:-18,scale:card.classList.contains('selected')?1.08:1.05,duration:.22,ease:'power2.out',overwrite:true});}
-function resetTilt(event){const card=event.currentTarget;const selected=card.classList.contains('selected');gsap.to(card,{rotateX:0,rotateY:0,translateY:selected?-28:0,scale:selected?1.08:1,duration:.28,ease:'power2.out',overwrite:true});}
-function toast(message,type=''){const toastEl=document.getElementById('toast');toastEl.textContent=message;toastEl.className=`toast ${type} on`;clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('on'),2600);} 
-function renderGameToText(){const objective=G.obj||OBJECTIVES[0];return JSON.stringify({mode:document.getElementById('overlay').classList.contains('on')?'result':'playing',turn:G.turn,score:G.score,hp:G.hp,streak:G.streak,swapsLeft:G.swapsLeft,objective:{title:objective.title,target:objective.target,req:getObjectiveReq(objective),bonus:objective.bonus},selectedCard:G.sel!==null&&G.hand[G.sel]?G.hand[G.sel].id:null,hand:G.hand.filter(Boolean).map(card=>({id:card.id,type:card.t,cost:card.cost,stats:card.st})),board:G.board.map(card=>card?card.id:null),scores:G.sc,coord_note:'board slots ordered left-to-right from index 0 to 2'});} 
-async function tryLockLandscape(){try{if(window.innerWidth<=900&&window.innerHeight>window.innerWidth&&screen.orientation?.lock){await screen.orientation.lock('landscape');}}catch{}}
-window.render_game_to_text=renderGameToText;window.advanceTime=()=>{};window.swapCard=swapCard;window.endTurn=endTurn;window.nextTurn=nextTurn;window.addEventListener('load',()=>{init();tryLockLandscape();gsap.fromTo('.objective',{opacity:0,y:-12},{opacity:1,y:0,duration:.45,delay:.06,ease:'power2.out'});gsap.fromTo('.statusline',{opacity:0,y:-8},{opacity:1,y:0,duration:.35,delay:.18,ease:'power2.out'});gsap.fromTo('.board-wrap',{opacity:0,scale:.97},{opacity:1,scale:1,duration:.5,delay:.24,ease:'power2.out'});gsap.fromTo('.actions',{opacity:0,y:14},{opacity:1,y:0,duration:.35,delay:.32,ease:'power2.out'});});
-window.addEventListener('orientationchange',tryLockLandscape);
+function readNumber(key) {
+  const raw = window.localStorage.getItem(key);
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function saveMeta() {
+  window.localStorage.setItem(STORAGE_KEYS.bestScore, String(G.bestScore));
+  window.localStorage.setItem(STORAGE_KEYS.bestStreak, String(G.bestStreak));
+}
+
+function ensureDeck() {
+  if (!G.deck.length) G.deck = shuffle(CARDS);
+}
+
+function drawCard() {
+  ensureDeck();
+  return G.deck.pop();
+}
+
+function drawUpToHandSize() {
+  while (G.hand.filter(Boolean).length < MAX_HAND_SIZE) {
+    const emptyIndex = G.hand.findIndex((card) => !card);
+    const newCard = drawCard();
+    if (emptyIndex === -1) G.hand.push(newCard);
+    else G.hand[emptyIndex] = newCard;
+  }
+  if (G.hand.length > MAX_HAND_SIZE) G.hand = G.hand.slice(0, MAX_HAND_SIZE);
+}
+
+function pickNextObjective() {
+  const pool = OBJECTIVES.filter((objective) => objective.title !== G.obj.title);
+  G.obj = shuffle(pool)[0] || OBJECTIVES[0];
+}
+
+function getUpgradeById(upgradeId) {
+  return UPGRADES.find((upgrade) => upgrade.id === upgradeId);
+}
+
+function getBoardEvaluation(board) {
+  return evaluateBoard(board, G.obj, G.upgrades, G.turn, G.debt);
+}
+
+function recalc() {
+  const evaluation = getBoardEvaluation(G.board);
+  G.sc = evaluation.boardState.scores;
+  G.power = evaluation.boardState.power;
+  G.turnDebt = evaluation.boardState.debt;
+  G.synergies = evaluation.boardState.synergies;
+  return evaluation;
+}
+
+function getEmptySlots(board) {
+  return board.map((card, index) => (card ? null : index)).filter((index) => index !== null);
+}
+
+function dots(value) {
+  const total = 4;
+  const active = Math.max(0, Math.min(total, value));
+  return Array.from({ length: total }, (_, index) => `<span class="card-dot${index < active ? " on" : ""}"></span>`).join("");
+}
+
+function liveDots(value) {
+  return Array.from({ length: 9 }, (_, index) => `<span class="live-dot${index < value ? " on" : ""}"></span>`).join("");
+}
+
+function fmtSigned(value) {
+  return value > 0 ? `+${value}` : String(value);
+}
+
+function isCardLocked(card) {
+  const view = applyUpgradeModifiers(card, G.upgrades);
+  return G.power + view.power < 0;
+}
+
+function updateMetaPanel() {
+  document.getElementById("meta-turn").textContent = G.turn;
+  document.getElementById("meta-score").textContent = G.score;
+  document.getElementById("meta-best").textContent = G.bestScore;
+  document.getElementById("meta-hp").textContent = G.hp;
+  document.getElementById("meta-streak").textContent = `x${G.streak}`;
+  document.getElementById("meta-upgrades").textContent = G.upgrades.length;
+}
+
+function renderUpgradeStrip() {
+  const holder = document.getElementById("upgrade-strip");
+  if (!G.upgrades.length) {
+    holder.innerHTML = '<span class="upgrade-pill muted">Sem upgrades ainda</span>';
+    return;
+  }
+  holder.innerHTML = G.upgrades.map((upgradeId) => `<span class="upgrade-pill">${getUpgradeById(upgradeId).title}</span>`).join("");
+}
+
+function renderObjective(evaluation) {
+  const current = evaluation || recalc();
+  document.getElementById("obj-title").textContent = G.obj.title;
+  document.getElementById("obj-target-line").textContent = `${METRIC_LABELS[G.obj.target]} ${current.targetValue}/${current.req}`;
+  document.getElementById("obj-power-line").textContent = fmtSigned(G.power);
+  document.getElementById("obj-debt-line").textContent = `${G.debt} -> ${current.debtAfter}`;
+  document.getElementById("live-ca").innerHTML = liveDots(Math.max(0, G.sc.pf));
+  document.getElementById("live-ve").innerHTML = liveDots(Math.max(0, G.sc.cf));
+  document.getElementById("live-es").innerHTML = liveDots(Math.max(0, G.sc.ev));
+  updateMetaPanel();
+  renderUpgradeStrip();
+}
+
+function makeCard(card, index, onBoard) {
+  const cardView = applyUpgradeModifiers(card, G.upgrades);
+  const powerClass = cardView.power >= 0 ? "gain" : "spend";
+  const debtClass = cardView.debt > 0 ? "bad" : cardView.debt < 0 ? "good" : "neutral";
+  const locked = !onBoard && isCardLocked(card);
+  const el = document.createElement("div");
+  el.className = "card";
+  el.dataset.idx = index;
+
+  if (!onBoard) {
+    el.onclick = function () { selectCard(index); };
+    el.addEventListener("mousemove", tilt3D);
+    el.addEventListener("mouseleave", resetTilt);
+    el.classList.toggle("selected", G.sel === index);
+    el.classList.toggle("playable", G.sel !== null && G.sel !== index);
+    el.classList.toggle("locked", locked);
+  } else {
+    el.onclick = function () { returnBoardCard(index); };
+  }
+
+  el.innerHTML = `
+    <div class="card-shell ${cardView.kind}">
+      <div class="card-cost ${powerClass}">${fmtSigned(cardView.power)}P</div>
+      <div class="card-body">
+        <div class="card-art"><i class="ph-thin ${cardView.art}"></i></div>
+        <div class="card-divider"></div>
+        <div class="card-name">${cardView.name}</div>
+        <div class="card-tags"><span>${cardView.kind}</span><span class="${debtClass}">${fmtSigned(cardView.debt)}D</span></div>
+        <div class="card-stats">
+          <div class="card-stat ca"><span class="card-stat-lbl">Perf.</span><span class="card-dots">${dots(cardView.st.pf)}</span></div>
+          <div class="card-stat ve"><span class="card-stat-lbl">Conf.</span><span class="card-dots">${dots(cardView.st.cf)}</span></div>
+          <div class="card-stat es"><span class="card-stat-lbl">Evo.</span><span class="card-dots">${dots(cardView.st.ev)}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+  return el;
+}
+
+function renderHand(animate) {
+  const handEl = document.getElementById("hand");
+  handEl.innerHTML = "";
+  G.hand.forEach((card, index) => {
+    if (!card) return;
+    const cardEl = makeCard(card, index, false);
+    if (animate) {
+      cardEl.style.opacity = "0";
+      cardEl.style.transform = "translateY(60px) scale(0.85)";
+    }
+    handEl.appendChild(cardEl);
+    if (animate) gsap.to(cardEl, { opacity: 1, y: 0, scale: 1, duration: 0.42, delay: index * 0.06, ease: "back.out(1.5)" });
+  });
+}
+
+function renderBoard() {
+  G.board.forEach((card, index) => {
+    const slot = document.getElementById(`sl-${index}`);
+    if (card) {
+      const ripple = document.getElementById(`rip-${index}`);
+      slot.innerHTML = "";
+      slot.classList.add("has-card");
+      slot.classList.remove("ready");
+      slot.appendChild(makeCard(card, index, true));
+      if (ripple) slot.appendChild(ripple);
+      slot.onclick = null;
+      return;
+    }
+    slot.classList.remove("has-card");
+    slot.classList.toggle("ready", G.sel !== null);
+    slot.innerHTML = `<span>Slot ${index + 1}</span><div class="slot-ripple" id="rip-${index}"></div>`;
+    slot.onclick = function () {
+      if (G.sel === null) {
+        toast("Selecione uma carta primeiro.", "warn");
+        return;
+      }
+      playSelectedCard(index);
+    };
+  });
+}
+
+function renderEffects() {
+  const holder = document.getElementById("bfx");
+  if (!G.synergies.length) {
+    holder.innerHTML = "";
+    holder.classList.remove("on");
+    return;
+  }
+  holder.classList.add("on");
+  holder.innerHTML = G.synergies.map((synergy) => `<span class="effect-pill">${synergy.label}</span>`).join("");
+}
+
+function buildSelectedPreview() {
+  if (G.sel === null || !G.hand[G.sel]) return null;
+  const emptySlots = getEmptySlots(G.board);
+  if (!emptySlots.length) return null;
+  const nextBoard = G.board.slice();
+  nextBoard[emptySlots[0]] = G.hand[G.sel];
+  return getBoardEvaluation(nextBoard);
+}
+
+function renderStatusline(evaluation) {
+  const current = evaluation || recalc();
+  const preview = buildSelectedPreview();
+  const statusline = document.getElementById("statusline");
+
+  if (!getEmptySlots(G.board).length) {
+    statusline.textContent = "Mesa cheia. Encerrar turno para pontuar.";
+    return;
+  }
+
+  if (!preview) {
+    statusline.textContent = `${G.obj.title}: ${METRIC_LABELS[G.obj.target]} ${current.targetValue}/${current.req}, poder ${fmtSigned(G.power)}, divida ${G.debt}.`;
+    return;
+  }
+
+  const card = applyUpgradeModifiers(G.hand[G.sel], G.upgrades);
+  const parts = [
+    `${card.name}: poder ${fmtSigned(G.power)} -> ${fmtSigned(preview.boardState.power)}`,
+    `divida ${G.debt} -> ${preview.debtAfter}`,
+    `${METRIC_LABELS[G.obj.target]} ${current.targetValue} -> ${preview.targetValue}/${preview.req}`,
+  ];
+  if (preview.targetValue >= preview.req) parts.push("fecha meta");
+  else if (preview.missing === 1) parts.push("fica quase la");
+  else parts.push(`faltam ${preview.missing}`);
+  statusline.textContent = parts.join(" // ");
+}
+
+function updateActionState() {
+  const swapButton = document.getElementById("btn-swap");
+  const endButton = document.getElementById("btn-end");
+  const nextButton = document.getElementById("btn-next");
+  swapButton.disabled = G.sel === null || G.swapsLeft <= 0;
+  swapButton.textContent = G.swapsLeft > 0 ? `Trocar Carta (${G.swapsLeft})` : "Trocas zeradas";
+  endButton.disabled = getPlayedCards(G.board).length === 0;
+  if (nextButton) nextButton.disabled = G.rewardLocked;
+}
+
+function renderAll(animateHand) {
+  const evaluation = recalc();
+  renderObjective(evaluation);
+  renderBoard();
+  renderEffects();
+  renderHand(Boolean(animateHand));
+  renderStatusline(evaluation);
+  updateActionState();
+}
+
+function selectCard(index) {
+  if (!G.hand[index]) return;
+  G.sel = G.sel === index ? null : index;
+  renderAll(false);
+}
+
+function canPlaySelectedCard(slotIndex) {
+  const nextBoard = G.board.slice();
+  nextBoard[slotIndex] = G.hand[G.sel];
+  const preview = getBoardEvaluation(nextBoard);
+  if (preview.boardState.power < 0) {
+    toast(`Voce precisa de ${Math.abs(preview.boardState.power)}P antes dessa carta.`, "warn");
+    return false;
+  }
+  return true;
+}
+
+function playSelectedCard(slotIndex) {
+  if (G.sel === null || G.board[slotIndex]) return;
+  if (!canPlaySelectedCard(slotIndex)) return;
+  const card = G.hand[G.sel];
+  G.board[slotIndex] = card;
+  G.hand[G.sel] = null;
+  G.sel = null;
+  renderAll(false);
+  const view = applyUpgradeModifiers(card, G.upgrades);
+  if (view.kind === "boost") toast(`${card.name}: ${fmtSigned(view.power)}P e ${fmtSigned(view.debt)}D.`);
+  else if (view.kind === "mitigation") toast(`${card.name}: limpa ${Math.abs(view.debt)}D.`);
+  else toast(`${card.name} entrou na mesa.`);
+}
+
+function returnBoardCard(slotIndex) {
+  const card = G.board[slotIndex];
+  if (!card) return;
+  const handIndex = G.hand.findIndex((entry) => entry === null);
+  if (handIndex === -1) {
+    toast("Sua mao esta cheia.", "warn");
+    return;
+  }
+  G.board[slotIndex] = null;
+  G.hand[handIndex] = card;
+  renderAll(false);
+  toast(`${card.name} voltou para a mao.`);
+}
+
+function swapCard() {
+  if (G.sel === null) {
+    toast("Selecione uma carta para trocar.", "warn");
+    return;
+  }
+  if (G.swapsLeft <= 0) {
+    toast("Voce ja usou todas as trocas deste turno.", "warn");
+    return;
+  }
+  const oldName = G.hand[G.sel].name;
+  G.hand[G.sel] = drawCard();
+  G.swapsLeft -= 1;
+  G.sel = null;
+  renderAll(false);
+  toast(`${oldName} saiu. Nova carta comprada.`);
+}
+
+function buildResultLines(result, summary, nextDebt) {
+  if (result.success) {
+    return [
+      `Meta batida com ${METRIC_LABELS[G.obj.target]} ${result.targetValue}/${result.req}.`,
+      `Divida ${G.debt} -> ${nextDebt}.`,
+      `+${summary.total} pts apos penalidade de divida ${summary.debtPenalty}.`,
+    ];
+  }
+  if (result.nearMiss) {
+    return [
+      `Quase la. Faltou 1 ponto em ${METRIC_LABELS[G.obj.target]}.`,
+      `Divida ${G.debt} -> ${nextDebt}.`,
+      `Consolacao: +${summary.total} pts.`,
+    ];
+  }
+  return [
+    `Falha direta. ${METRIC_LABELS[G.obj.target]} ${result.targetValue}/${result.req}.`,
+    `Divida ${G.debt} -> ${nextDebt}.`,
+    `Voce perde ${summary.hpLoss} vida e a streak reinicia.`,
+  ];
+}
+
+function renderRewardChoices() {
+  const rewardWrap = document.getElementById("reward-wrap");
+  const rewardChoices = document.getElementById("reward-choices");
+  const rewardHelp = document.getElementById("reward-help");
+  const nextButton = document.getElementById("btn-next");
+  if (!G.pendingRewards.length) {
+    rewardWrap.classList.remove("on");
+    rewardChoices.innerHTML = "";
+    rewardHelp.textContent = "";
+    G.rewardLocked = false;
+    nextButton.textContent = G.hp <= 0 ? "Reiniciar" : "Proximo Turno ->";
+    updateActionState();
+    return;
+  }
+  rewardWrap.classList.add("on");
+  rewardHelp.textContent = "Escolha 1 bonus para a run.";
+  rewardChoices.innerHTML = G.pendingRewards.map((upgrade) => `<button class="reward-btn" onclick="chooseReward('${upgrade.id}')"><strong>${upgrade.title}</strong><span>${upgrade.desc}</span></button>`).join("");
+  G.rewardLocked = true;
+  nextButton.textContent = "Escolha um bonus";
+  updateActionState();
+}
+
+function showResult(result, summary, nextDebt) {
+  const overlay = document.getElementById("overlay");
+  const lines = buildResultLines(result, summary, nextDebt);
+  const efficiency = Math.max(0, Math.min(999, Math.round((result.targetValue / result.req) * 100)));
+  document.getElementById("m-icon").textContent = result.success ? "OK" : result.nearMiss ? "ALMOST" : "FALHA";
+  document.getElementById("m-title").textContent = result.success ? "Rodada vencida" : result.nearMiss ? "Quase la" : "Rodada perdida";
+  document.getElementById("m-sub").textContent = G.obj.title.toUpperCase();
+  document.getElementById("m-pts").textContent = summary.total;
+  document.getElementById("m-pts").className = `mscore-val ${result.success ? "ok" : result.nearMiss ? "neu" : "fail"}`;
+  document.getElementById("m-eff").textContent = `${efficiency}%`;
+  document.getElementById("m-eff").className = `mscore-val ${efficiency >= 100 ? "ok" : result.nearMiss ? "neu" : "fail"}`;
+  document.getElementById("m-bon").textContent = `-${summary.debtPenalty}`;
+  document.getElementById("m-chain").textContent = `x${G.streak}`;
+  document.getElementById("m-analysis").innerHTML = `<div class="ma-head">Resumo</div>${lines.map((item) => `<div class="ma-item"><span class="ma-ico">></span><span>${item}</span></div>`).join("")}`;
+  renderRewardChoices();
+  overlay.classList.add("on");
+}
+
+function applyTurnResult(result, summary) {
+  const nextDebt = Math.max(0, G.debt + result.boardState.debt);
+  G.score += summary.total;
+  G.hp = Math.max(0, G.hp - summary.hpLoss);
+  G.debt = nextDebt;
+  G.streak = result.success ? G.streak + 1 : 0;
+  G.bestScore = Math.max(G.bestScore, G.score);
+  G.bestStreak = Math.max(G.bestStreak, G.streak);
+  saveMeta();
+  G.pendingRewards = result.success ? buildRewardChoices(G.upgrades, 2) : [];
+  return nextDebt;
+}
+
+function endTurn() {
+  const played = getPlayedCards(G.board);
+  if (!played.length) {
+    toast("Jogue ao menos uma carta antes de encerrar.", "warn");
+    return;
+  }
+  const result = getBoardEvaluation(G.board);
+  const summary = calculateTurnScore({
+    success: result.success,
+    nearMiss: result.nearMiss,
+    playedCount: played.length,
+    typeCount: new Set(played.map((card) => card.kind)).size,
+    streak: result.success ? G.streak + 1 : 0,
+    evaluation: result,
+    newDebt: result.debtAfter,
+  });
+  const nextDebt = applyTurnResult(result, summary);
+  renderAll(false);
+  showResult(result, summary, nextDebt);
+}
+
+function chooseReward(upgradeId) {
+  if (!G.pendingRewards.length) return;
+  G.upgrades.push(upgradeId);
+  G.pendingRewards = [];
+  G.rewardLocked = false;
+  renderRewardChoices();
+  renderAll(false);
+  toast(`${getUpgradeById(upgradeId).title} ativado.`);
+}
+
+function nextTurn() {
+  if (G.rewardLocked) {
+    toast("Escolha um bonus antes de seguir.", "warn");
+    return;
+  }
+  document.getElementById("overlay").classList.remove("on");
+  if (G.hp <= 0) {
+    setTimeout(function () {
+      init();
+      toast("Nova run iniciada.", "err");
+    }, 200);
+    return;
+  }
+  G.turn += 1;
+  G.swapsLeft = getSwapLimit(G.upgrades);
+  G.board = [null, null, null];
+  G.sc = zeroScores();
+  G.power = 0;
+  G.turnDebt = 0;
+  G.sel = null;
+  G.synergies = [];
+  drawUpToHandSize();
+  pickNextObjective();
+  renderAll(true);
+  toast(G.streak > 0 ? `Streak x${G.streak} mantida. Divida atual ${G.debt}.` : "Novo turno. Gere poder e feche a meta.");
+}
+
+function init() {
+  G = freshState();
+  G.deck = shuffle(CARDS);
+  drawUpToHandSize();
+  G.swapsLeft = getSwapLimit(G.upgrades);
+  G.obj = shuffle(OBJECTIVES)[0];
+  renderAll(true);
+  renderRewardChoices();
+  toast("Voce comeca com 0P. Use cartas ruins para liberar as boas.");
+}
+
+function tilt3D(event) {
+  const card = event.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  const cx = rect.width / 2;
+  const cy = rect.height / 2;
+  const rotateX = -((y - cy) / cy) * 10;
+  const rotateY = ((x - cx) / cx) * 12;
+  gsap.to(card, { rotateX, rotateY, translateY: card.classList.contains("selected") ? -28 : -18, scale: card.classList.contains("selected") ? 1.08 : 1.05, duration: 0.22, ease: "power2.out", overwrite: true });
+}
+
+function resetTilt(event) {
+  const card = event.currentTarget;
+  const selected = card.classList.contains("selected");
+  gsap.to(card, { rotateX: 0, rotateY: 0, translateY: selected ? -28 : 0, scale: selected ? 1.08 : 1, duration: 0.28, ease: "power2.out", overwrite: true });
+}
+
+function toast(message, type) {
+  const toastEl = document.getElementById("toast");
+  toastEl.textContent = message;
+  toastEl.className = `toast ${type || ""} on`;
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(function () { toastEl.classList.remove("on"); }, 2400);
+}
+
+function renderGameToText() {
+  const evaluation = getBoardEvaluation(G.board);
+  return JSON.stringify({
+    mode: document.getElementById("overlay").classList.contains("on") ? "result" : "playing",
+    turn: G.turn,
+    score: G.score,
+    hp: G.hp,
+    streak: G.streak,
+    debt: G.debt,
+    power: G.power,
+    objective: { title: G.obj.title, target: G.obj.target, req: evaluation.req },
+    hand: G.hand.filter(Boolean).map((card) => {
+      const view = applyUpgradeModifiers(card, G.upgrades);
+      return { id: card.id, kind: view.kind, power: view.power, debt: view.debt, stats: view.st };
+    }),
+    board: G.board.map((card) => (card ? card.id : null)),
+    scores: G.sc,
+    rewardChoices: G.pendingRewards.map((upgrade) => upgrade.id),
+    coord_note: "board slots ordered left-to-right from index 0 to 2",
+  });
+}
+
+async function tryLockLandscape() {
+  try {
+    if (window.innerWidth <= 900 && window.innerHeight > window.innerWidth && screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock("landscape");
+    }
+  } catch (error) {
+    return;
+  }
+}
+
+window.render_game_to_text = renderGameToText;
+window.advanceTime = function () {};
+window.swapCard = swapCard;
+window.endTurn = endTurn;
+window.nextTurn = nextTurn;
+window.chooseReward = chooseReward;
+
+window.addEventListener("load", function () {
+  init();
+  tryLockLandscape();
+  gsap.fromTo(".objective", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.45, delay: 0.06, ease: "power2.out" });
+  gsap.fromTo(".statusline", { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35, delay: 0.18, ease: "power2.out" });
+  gsap.fromTo(".board-wrap", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.5, delay: 0.24, ease: "power2.out" });
+  gsap.fromTo(".actions", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, delay: 0.32, ease: "power2.out" });
+});
+
+window.addEventListener("orientationchange", tryLockLandscape);
