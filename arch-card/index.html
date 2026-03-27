@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArchCard</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="objective" id="obj-panel">
+  <span class="obj-tag">Missao Atual</span>
+  <span class="obj-title" id="obj-title">-</span>
+  <span class="obj-sep">-</span>
+  <span class="obj-cost">Custo Maximo <strong id="obj-cost-max">0</strong></span>
+  <div class="obj-live">
+    <div class="obj-live-stat ca">
+      <span class="obj-live-lbl">Capacidade</span>
+      <span class="obj-live-dots" id="live-ca"></span>
+    </div>
+    <div class="obj-live-stat ve">
+      <span class="obj-live-lbl">Velocidade</span>
+      <span class="obj-live-dots" id="live-ve"></span>
+    </div>
+    <div class="obj-live-stat es">
+      <span class="obj-live-lbl">Estabilidade</span>
+      <span class="obj-live-dots" id="live-es"></span>
+    </div>
+  </div>
+</div>
+
+<div class="board-wrap">
+  <div class="board-felt"></div>
+  <div class="board-inner">
+    <div class="slots">
+      <div class="slot" id="sl-0"><span>Vazio</span><div class="slot-ripple" id="rip-0"></div></div>
+      <div class="slot" id="sl-1"><span>Vazio</span><div class="slot-ripple" id="rip-1"></div></div>
+      <div class="slot" id="sl-2"><span>Vazio</span><div class="slot-ripple" id="rip-2"></div></div>
+    </div>
+    <div class="board-effects" id="bfx"></div>
+    <div class="statusline board-status" id="statusline">Selecione uma carta para ver o impacto da jogada.</div>
+    <div class="actions board-actions">
+      <button class="btn-discard" id="btn-swap" onclick="swapCard()">Trocar Carta</button>
+      <button class="btn-end" id="btn-end" onclick="endTurn()">Encerrar Turno</button>
+    </div>
+    <div class="hand" id="hand"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-glow"></div>
+    <div class="modal-icon" id="m-icon">OK</div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-sub" id="m-sub"></div>
+    <div class="modal-scores">
+      <div class="modal-score"><div class="mscore-label">Pontuacao</div><div class="mscore-val neu" id="m-pts">0</div></div>
+      <div class="modal-score"><div class="mscore-label">Eficiencia</div><div class="mscore-val neu" id="m-eff">0%</div></div>
+      <div class="modal-score"><div class="mscore-label">Bonus</div><div class="mscore-val ok" id="m-bon">+0</div></div>
+      <div class="modal-score"><div class="mscore-label">Streak</div><div class="mscore-val neu" id="m-chain">x0</div></div>
+    </div>
+    <div class="modal-analysis" id="m-analysis">
+      <div class="ma-head">Analise Estrategica</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-next" onclick="nextTurn()">Proximo Turno -></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="rotate-lock" id="rotate-lock" aria-hidden="true">
+  <div class="rotate-lock-card">
+    <div class="rotate-lock-icon">ROTATE</div>
+    <div class="rotate-lock-text">Gire o aparelho para jogar em modo paisagem.</div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
