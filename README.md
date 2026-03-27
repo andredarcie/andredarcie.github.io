@@ -2,13 +2,21 @@
 
 ## Carreira Profissional
 
+### Atuação Atual
+
 Atualmente, é desenvolvedor sênior na NTT Data, uma das maiores consultorias de tecnologia do mundo. Está alocado na XP Investimentos, a maior corretora do Brasil, onde atua na área de benefícios do cartão. Trabalha na evolução de produtos financeiros de alto impacto com arquitetura de microserviços, APIs distribuídas e integrações entre sistemas, lidando com regras de negócio críticas e com foco em escalabilidade, observabilidade, resiliência e qualidade de software em ambiente de alta demanda. Também atua na definição de soluções técnicas, revisão de código, evolução de arquitetura e suporte a entregas complexas em contexto corporativo. Anteriormente, trabalhou na startup Exato Digital, especializada em verificações de antecedentes e soluções "Know Your Customer", onde atuou remotamente em grandes projetos para clientes como Grupo Globo, GetNinjas, Quinto Andar, B3, Stone e Huawei.
 
+### Formação e Pesquisa
+
 Possui bacharelado em Ciência da Computação e uma pós-graduação em Ciência de Dados Aplicada pela PUC Minas, onde estudou tópicos avançados como Inteligência Artificial e Machine Learning. Durante três anos, atuou no campo da iniciação científica, apoiado pelo CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico).
+
+### Escrita e Comunidade
 
 Escreve no seu [blog](https://dev.to/andredarcie) sobre temas como tecnologia, realidade virtual, ciência, carreira, filosofia e arte.
 
 Organizador e fundador do [Clube de Leitura nas Montanhas](https://github.com/clube-de-leitura-nas-montanhas/agenda), uma iniciativa focada na leitura coletiva de livros técnicos e científicos. O clube tem como objetivo o desenvolvimento e aprimoramento profissional dos seus membros em suas respectivas carreiras.
+
+### Consultoria
 
 Nas horas vagas, ele atua como professor e consultor especializado em C# e .NET, oferecendo consultoria nessas tecnologias.
 
