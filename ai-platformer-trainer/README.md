@@ -1,13 +1,15 @@
-# Projeto Impossivel
+# AI Platformer Trainer
 
-Projeto em `HTML`, `CSS` e `JavaScript` que usa algoritmo genetico e rede neural para aprender a jogar o mini jogo Nur, de Diego Penha.
+App web que usa `NEAT` (`NeuroEvolution of Augmenting Topologies`) para treinar uma IA a jogar um mini platformer.
+
+No projeto, o NEAT comeca com redes pequenas e evolui a populacao ao longo das geracoes por meio de selecao, crossover e mutacao. Alem de ajustar pesos, ele tambem pode alterar a estrutura da rede, adicionando novas conexoes e novos nos quando isso melhora o comportamento do agente.
 
 ## O que tem nesta versao
 
 - fase fixa e curta em `canvas`
 - controle manual com teclado
-- rede neural pequena de topologia fixa
-- treino por populacao, elitismo, crossover e mutacao
+- treino com `NEAT`, incluindo mutacao de pesos e mudancas estruturais na rede
+- especiacao, crossover por genes e selecao por fitness
 - modo para assistir ao melhor agente encontrado
 - persistencia do melhor agente em `localStorage`
 - modo turbo sem renderizacao para acelerar o treino
@@ -56,6 +58,6 @@ http://127.0.0.1:8000/index.html
 
 ## Observacao
 
-Esta e uma versao simplificada do conceito original. Ela preserva a ideia central de treinar uma IA para jogar, mas nao implementa leitura de memoria de emulador nem NEAT completo com topologia mutavel.
+Esta e uma versao web simplificada, focada no treino e na observacao da evolucao dos agentes dentro de uma fase curta.
 
-Nesta versao, os inputs da rede usam uma grade local de sensores ao redor do jogador, inspirada na observacao espacial do MarI/O. A topologia, porem, continua fixa: a rede nao adiciona ou remove neuronios ao longo da evolucao.
+Os inputs da rede usam uma grade local de sensores ao redor do jogador, permitindo que o agente leia o espaco proximo antes de decidir andar, pular ou mudar de direcao. A partir disso, o NEAT evolui tanto os pesos quanto a topologia da rede ao longo do tempo, buscando agentes cada vez mais competentes.

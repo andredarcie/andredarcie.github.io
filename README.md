@@ -1,4 +1,4 @@
-André Nicolau Darcie é um desenvolvedor de software e cientista da computação com interesse em desenvolvimento web backend e criação de jogos. Ele é apaixonado pela fusão de disciplinas humanísticas com ciências exatas, e de arte com tecnologia.
+﻿André Nicolau Darcie é um desenvolvedor de software e cientista da computação com interesse em desenvolvimento web backend e criação de jogos. Ele é apaixonado pela fusão de disciplinas humanísticas com ciências exatas, e de arte com tecnologia.
 
 ## Carreira Profissional
 
@@ -16,7 +16,7 @@ Organizador e fundador do [Clube de Leitura nas Montanhas](https://github.com/cl
 
 Nas horas vagas, ele atua como professor e consultor especializado em C# e .NET, oferecendo consultoria nessas tecnologias.
 
-Formas de entrar em contato comigo: [e-mail](andrendarcie@gmail.com), [Linkedin](https://www.linkedin.com/in/andr%C3%A9-n-darcie-8b64817b/), [Kaggle](https://www.kaggle.com/andredarcie), [Medium](https://medium.com/@andrendarcie), [itch.io](https://andredarcie.itch.io/), [Dev.to](https://dev.to/andredarcie) and [Codepen](https://codepen.io/andredarcie)
+Formas de entrar em contato comigo: [e-mail](andrendarcie@gmail.com), [Linkedin](https://www.linkedin.com/in/andré-n-darcie-8b64817b/), [Kaggle](https://www.kaggle.com/andredarcie), [Medium](https://medium.com/@andrendarcie), [itch.io](https://andredarcie.itch.io/), [Dev.to](https://dev.to/andredarcie) and [Codepen](https://codepen.io/andredarcie)
 
 ## Vida Pessoal
 
@@ -36,26 +36,45 @@ Tem um pequeno [blog](https://andredarcie.blogspot.com/) onde publica contos e p
 
 Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 
-- **[Tiny RPG Studio](https://github.com/andredarcie/tiny-rpg-studio)**:Editor de RPG que roda no navegador, permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.
-- **[C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide)**:Guia de referência de C# que cobre conceitos do básico ao avançado por meio de exemplos de código.
-- **[Get Out](https://github.com/andredarcie/get-out)**:Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.
-- **[Zero The Hero](https://github.com/andredarcie/zero-the-hero-game)**:Jogo feito na engine open source Godot, inspirado em Zelda, com uma mecânica em que o personagem só pode carregar um item por vez.
-- **[Evo Sim](https://github.com/andredarcie/evo-sim)**:Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações e competindo pela sobrevivência.
-- **[Tiny Evolution](https://github.com/andredarcie/tiny-evolution)**:Simulador da vida no planeta Terra, do seu início até os dias de hoje.
-- **[Dev Match](https://github.com/andredarcie/dev-match)**:Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
-- **[My Life Data](https://github.com/andredarcie/my-life-data)**:Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
-- **[Clean Arch CQRS DDD Template](https://github.com/andredarcie/cleanarch-cqrs-ddd-template)**:Template de aplicação demonstrando Clean Architecture, Domain-Driven Design e CQRS com princípios SOLID.
-- **[My Code Codex](https://github.com/andredarcie/my-code-codex)**:Guia pessoal de desenvolvimento cobrindo boas práticas, arquitetura, padrões e tópicos de desenvolvimento profissional em .NET.
+### Experiências Interativas
+
+- **[Tiny RPG Studio](https://github.com/andredarcie/tiny-rpg-studio)**: Game engine de RPG que roda no navegador, permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.
+- **[Evo Sim](https://github.com/andredarcie/evo-sim)**: Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações e competindo pela sobrevivência.
+- **[AI Platformer Trainer](./ai-platformer-trainer/)**: App web interativo que usa NEAT para evoluir redes neurais ao longo de gerações, ajustando conexões, pesos e estrutura para treinar uma IA a jogar um mini platformer.
+- **[Tiny Computer](./tiny-computer/)**: Pequeno computador virtual no navegador com visual retrô, editor de código e componentes para explorar conceitos básicos de CPU, memória e lógica.
+- **[Tiny Voxel](./tiny-voxel/)**: Editor voxel minimalista no navegador com estética pixel-art para montar cenários e experimentar construções em 3D.
+- **[Tiny Evolution](https://github.com/andredarcie/tiny-evolution)**: Simulador da vida no planeta Terra, do seu início até os dias de hoje.
+
+### Jogos
+
+- **[Get Out](https://github.com/andredarcie/get-out)**: Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.
+- **[Zero To One](https://andredarcie.itch.io/zero-to-one)**: Jogo existencial feito em Bitsy para a game jam One Room, focado em narrativa, atmosfera e uma experiência curta.
+- **[Zero The Hero](https://github.com/andredarcie/zero-the-hero-game)**: Jogo feito na engine open source Godot, inspirado em Zelda, com uma mecânica em que o personagem só pode carregar um item por vez.
+
+### Ferramentas e Aplicações
+
+- **[Dev Match](https://github.com/andredarcie/dev-match)**: Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
+- **[My Life Data](https://github.com/andredarcie/my-life-data)**: Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
+
+### Guias e Templates
+
+- **[C# Quick Reference Guide](https://github.com/andredarcie/csharp-quick-reference-guide)**: Guia de referência de C# que cobre conceitos do básico ao avançado por meio de exemplos de código.
+- **[Clean Arch CQRS DDD Template](https://github.com/andredarcie/cleanarch-cqrs-ddd-template)**: Template de aplicação demonstrando Clean Architecture, Domain-Driven Design e CQRS com princípios SOLID.
+- **[My Code Codex](https://github.com/andredarcie/my-code-codex)**: Guia pessoal de desenvolvimento cobrindo boas práticas, arquitetura, padrões e tópicos de desenvolvimento profissional em .NET.
 
 ## Meus Posts
 
-- [Primeiros Meses como Nômade Digital [PT-BR]](https://dev.to/andredarcie/primeiros-meses-como-nomade-digital-pt-br-42g) 1.5k views
-- [Python in one page
-](https://dev.to/andredarcie/python-in-one-page-40bl) - 1k views
-- [Kafka](https://docs.google.com/presentation/d/e/2PACX-1vTIoni0A_M7Y06QSIDia4mocayuLTgsj7cuewz1oas84eabDvaLutNeeyRrOUxhhe8AhWFIPI6qhv_t/pub?start=false&loop=false&delayms=60000&slide=id.p)
+- [Primeiros Meses como Nômade Digital [PT-BR]](https://dev.to/andredarcie/primeiros-meses-como-nomade-digital-pt-br-42g) - 1685 views
+- [Python in one page](https://dev.to/andredarcie/python-in-one-page-40bl) - 1638 views
+- [Blazor United o futuro do .NET [PT-BR]](https://dev.to/andredarcie/blazor-united-o-futuro-do-net-303l) - 794 views
+- [Agentes de IA exigem TDD: o passo a passo necessário para aplicar na prática [PT-BR]](https://dev.to/andredarcie/agentes-de-ia-exigem-tdd-o-passo-a-passo-necessario-para-aplicar-na-pratica-pt-br-p21) - 641 views
+- [Como ter um console de jogos trabalhando home-office mudou minha vida [PT-BR]](https://dev.to/andredarcie/como-ter-um-console-de-jogos-mudou-minha-vida-pt-br-3ehl) - 496 views
+- [A diferença entre desenvolvedor júnior, pleno e sênior na minha opinião [PT-BR]](https://dev.to/andredarcie/a-diferenca-entre-desenvolvedor-junior-pleno-e-senior-na-minha-opiniao-pt-br-659) - 439 views
+- [Aplicações que podem ser criadas com .NET [PT-BR]](https://dev.to/andredarcie/aplicacoes-que-podem-ser-criadas-com-net-pt-br-300i) - 436 views
+- [O Futuro do Blazor](https://dev.to/andredarcie/o-futuro-do-blazor-15d2) - 415 views
+- [Introducing Open Video Game Data: A new approach to evaluating games.](https://dev.to/andredarcie/introducing-open-video-game-data-a-new-approach-to-evaluating-games-1ak5) - 329 views
+- [Como realizar o deploy de uma aplicação ASP.NET no Heroku [PT-BR]](https://dev.to/andredarcie/como-realizar-o-deploy-de-uma-aplicacao-aspnet-no-heroku-pt-br-5cd7) - 314 views
 
 ## Meus talks
 
 [Kafka](https://docs.google.com/presentation/d/e/2PACX-1vTIoni0A_M7Y06QSIDia4mocayuLTgsj7cuewz1oas84eabDvaLutNeeyRrOUxhhe8AhWFIPI6qhv_t/pub?start=true&loop=false&delayms=60000)
-
-

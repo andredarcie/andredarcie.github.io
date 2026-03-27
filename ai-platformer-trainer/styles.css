@@ -26,8 +26,8 @@ body {
   font-family: "Courier New", monospace;
   color: var(--ink);
   background:
+    radial-gradient(circle at top, rgba(86, 103, 159, 0.18), transparent 32%),
     linear-gradient(rgba(9, 10, 15, 0.88), rgba(9, 10, 15, 0.94)),
-    url("./nur.png") center top / cover no-repeat fixed,
     linear-gradient(180deg, #0a0c13 0%, #121624 100%);
 }
 

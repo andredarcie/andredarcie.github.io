@@ -1,4 +1,4 @@
-const STORAGE_KEY = "impossible-cube-best-v2-neat";
+const STORAGE_KEY = "ai-platformer-trainer-best-v1";
 
 export function saveBestGenome(snapshot) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
