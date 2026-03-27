@@ -85,5 +85,54 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;b
 .rotate-lock-card{border:1px solid var(--border2);border-radius:18px;background:rgba(6,15,7,.92);padding:24px 20px;text-align:center;max-width:320px;box-shadow:0 0 30px rgba(51,255,102,.12)}
 .rotate-lock-icon{font-family:'VT323',monospace;font-size:2rem;letter-spacing:3px;color:var(--p-bright);margin-bottom:10px}
 .rotate-lock-text{font-size:.95rem;color:var(--text-mid);line-height:1.4}
-@media(max-width:680px){:root{--card-w:118px;--card-h:168px}body{padding:10px}.objective{flex-wrap:wrap}.board-inner{padding:10px}.slots{gap:10px;align-items:flex-start;padding-top:24px}.slot.has-card{z-index:4}.board-status{left:14px;right:14px;bottom:144px}.board-actions{left:14px;right:14px;bottom:104px;justify-content:center}.hand{bottom:8px;width:100%;padding:0 8px;z-index:10}.card{margin-left:-34px}.card:first-child{margin-left:0}.modal-scores{flex-wrap:wrap}}
+@media(max-width:1024px) and (max-height:640px){
+  :root{--card-w:64px;--card-h:92px}
+  body{padding:4px}
+  .objective{padding:4px 6px;gap:4px;border-radius:7px}
+  .obj-tag{font-size:.42rem;letter-spacing:.4px}
+  .obj-title{font-size:.72rem}
+  .obj-sep{font-size:.5rem}
+  .obj-cost{font-size:.48rem}
+  .obj-live{gap:5px}
+  .obj-live-stat{gap:3px}
+  .obj-live-lbl{font-size:.4rem}
+  .live-dot{width:4px;height:4px}
+  .board-wrap{margin-top:4px;border-radius:10px}
+  .board-inner{padding:3px}
+  .slots{gap:5px;align-items:flex-start;padding-top:4px}
+  .slot{border-radius:8px;font-size:.34rem;letter-spacing:.8px}
+  .slot.ready::after{bottom:3px;font-size:.3rem;letter-spacing:.8px}
+  .slot.has-card{z-index:4}
+  .slot-ripple{border-radius:8px}
+  .board-status{left:6px;right:6px;bottom:78px;min-height:16px;padding:3px 5px;font-size:.42rem;border-radius:6px}
+  .board-actions{left:6px;right:6px;bottom:52px;justify-content:center;gap:5px}
+  .hand{bottom:3px;width:100%;padding:0 2px;z-index:10}
+  .card{margin-left:-16px}
+  .card:first-child{margin-left:0}
+  .card-shell{border-radius:8px}
+  .card-shell::before{inset:2px;border-radius:6px}
+  .card-body{padding:8px 5px 4px;gap:2px}
+  .card-cost{top:3px;left:4px;font-size:.4rem}
+  .card-art{font-size:1.5rem}
+  .card-name{font-size:.58rem;letter-spacing:.3px}
+  .card-stats{padding-top:2px;gap:1px}
+  .card-stat{padding:0;gap:2px}
+  .card-stat-lbl{font-size:.3rem}
+  .card-dots{gap:1px}
+  .card-dot{width:4px;height:4px}
+  .slot .card{transform:scale(.96)!important}
+  .btn-discard,.btn-end,.btn-next{padding:4px 6px;font-size:.42rem}
+  .modal{width:min(94vw,320px);padding:10px;border-radius:8px}
+  .modal-icon{font-size:1.15rem;margin-bottom:2px}
+  .modal-title{font-size:1rem}
+  .modal-sub{font-size:.44rem;letter-spacing:.8px;margin-bottom:6px}
+  .modal-scores{flex-wrap:wrap;margin-bottom:8px}
+  .modal-score{padding:6px 4px}
+  .mscore-label{font-size:.36rem}
+  .mscore-val{font-size:.78rem}
+  .modal-analysis{padding:6px;margin-bottom:8px}
+  .ma-head{font-size:.4rem;letter-spacing:.8px;margin-bottom:5px}
+  .ma-item{gap:5px;padding:3px 0;font-size:.54rem}
+  .toast{top:6px;right:6px;padding:5px 8px;font-size:.46rem;border-radius:7px}
+}
 @media(max-width:900px) and (orientation:portrait){.rotate-lock{display:flex}.objective,.board-wrap,.overlay,.toast{display:none !important}}
