@@ -59,7 +59,6 @@ Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 ### Ferramentas e Aplicações
 
 - **[OpenVideoGameData](https://www.openvideogamedata.com/)**: Plataforma aberta para organização, enriquecimento e consulta de dados sobre jogos, combinando catálogo, descoberta e acompanhamento. É uma iniciativa sem fins lucrativos que alcançou aproximadamente meio milhão de visualizações em redes sociais como o Reddit.
-- **[Dev Match](https://github.com/andredarcie/dev-match)**: Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
 - **[My Life Data](https://github.com/andredarcie/my-life-data)**: Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
 
 ### Guias e Templates
