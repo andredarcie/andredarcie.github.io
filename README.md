@@ -47,6 +47,7 @@ Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 
 ### Jogos
 
+- **[Brian's Mansion](https://github.com/andredarcie/brians-mansion)**: Jogo de terror e aventura com atmosfera inspirada em mansões assombradas, explorando ambientação, puzzle e suspense.
 - **[Get Out](https://github.com/andredarcie/get-out)**: Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.
 - **[Zero To One](https://andredarcie.itch.io/zero-to-one)**: Jogo existencial feito em Bitsy para a game jam One Room, focado em narrativa, atmosfera e uma experiência curta.
 - **[Zero The Hero](https://github.com/andredarcie/zero-the-hero-game)**: Jogo feito na engine open source Godot, inspirado em Zelda, com uma mecânica em que o personagem só pode carregar um item por vez.
@@ -55,6 +56,7 @@ Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 
 - **[Dev Match](https://github.com/andredarcie/dev-match)**: Web app para testar conhecimentos e aprender sobre conceitos de arquitetura de software e system design.
 - **[My Life Data](https://github.com/andredarcie/my-life-data)**: Sistema pessoal de rastreamento de consumo de entretenimento (livros, filmes, jogos) com scripts de automação.
+- **[OpenVideoGameData](https://www.openvideogamedata.com/)**: Plataforma aberta para organização, enriquecimento e consulta de dados sobre jogos, combinando catálogo, descoberta e acompanhamento.
 
 ### Guias e Templates
 
