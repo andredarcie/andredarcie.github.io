@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Polygon-7 Defense Unit</title>
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hud-card">
+        <div>
+          <p class="eyebrow">Defense Computer // Sector Red</p>
+          <h1>POLYGON-7</h1>
+        </div>
+        <div class="stats" aria-live="polite">
+          <div class="stat-pill">
+            <span>Credits</span>
+            <strong id="creditsValue">0</strong>
+          </div>
+          <div class="stat-pill">
+            <span>Core</span>
+            <strong id="healthValue">0</strong>
+          </div>
+          <div class="stat-pill">
+            <span>Wave</span>
+            <strong id="waveValue">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="game-card">
+        <div id="gameCanvas" class="canvas-frame" aria-label="Jogo tower defense"></div>
+        <div class="overlay" id="overlay">
+          <div class="overlay-panel">
+            <p class="eyebrow">Boot Sequence Ready</p>
+            <h2>Defenda o nucleo</h2>
+            <p>
+              Selecione uma torre e toque em um slot hexagonal. O sistema dispara ondas
+              automaticamente.
+            </p>
+            <ul>
+              <li><span class="dot dot-bolt"></span>Bolt: rajada rapida de precisao</li>
+              <li><span class="dot dot-pulse"></span>Pulse: choque circular de area</li>
+              <li><span class="dot dot-focus"></span>F alterna fullscreen</li>
+            </ul>
+            <button id="startButton" type="button">Ativar console</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls-card" aria-label="Selecao de torres">
+        <button class="tower-chip active" id="boltButton" data-tower="bolt" type="button">
+          <span>Bolt</span>
+          <strong>35</strong>
+        </button>
+        <button class="tower-chip" id="pulseButton" data-tower="pulse" type="button">
+          <span>Pulse</span>
+          <strong>55</strong>
+        </button>
+        <button class="tower-chip ghost" id="restartButton" type="button">Reset</button>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+    <script src="./game-p5.js"></script>
+  </body>
+</html>

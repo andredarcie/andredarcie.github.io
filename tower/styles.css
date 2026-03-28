@@ -1,0 +1,320 @@
+:root {
+  color-scheme: dark;
+  --bg: #090d08;
+  --panel: rgba(26, 18, 12, 0.84);
+  --panel-2: rgba(48, 28, 16, 0.92);
+  --screen: #120d08;
+  --line: rgba(255, 144, 71, 0.22);
+  --line-strong: rgba(255, 181, 112, 0.4);
+  --text: #ffcf8f;
+  --muted: #b38a60;
+  --glow: #ff8a3d;
+  --bolt: #ff6d3a;
+  --pulse: #ffd166;
+  --focus: #ff3d2e;
+  --green: #9fef9d;
+  --shadow: 0 0 0 1px rgba(255, 161, 89, 0.16), 0 22px 80px rgba(0, 0, 0, 0.58);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "IBM Plex Mono", monospace;
+  background:
+    radial-gradient(circle at top, rgba(255, 116, 51, 0.16), transparent 24%),
+    linear-gradient(180deg, #15110b 0%, #080b08 56%, #050605 100%);
+  color: var(--text);
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 156, 83, 0.03) 0,
+      rgba(255, 156, 83, 0.03) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  mix-blend-mode: screen;
+}
+
+body::after {
+  background: radial-gradient(circle at center, transparent 45%, rgba(0, 0, 0, 0.52) 100%);
+}
+
+.app-shell {
+  width: min(100%, 34rem);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  display: grid;
+  gap: 0.9rem;
+}
+
+.hud-card,
+.controls-card,
+.game-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(48, 28, 16, 0.95), rgba(21, 14, 10, 0.92));
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.hud-card::before,
+.controls-card::before,
+.game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 196, 128, 0.08);
+  pointer-events: none;
+}
+
+.hud-card {
+  border-radius: 0.8rem;
+  padding: 1rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.66rem;
+  color: var(--muted);
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 7vw, 2.5rem);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 12px rgba(255, 117, 48, 0.3);
+}
+
+h2 {
+  font-size: clamp(1.7rem, 6vw, 2.3rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+}
+
+.stat-pill {
+  min-height: 4rem;
+  border-radius: 0.45rem;
+  padding: 0.65rem 0.75rem;
+  background:
+    linear-gradient(180deg, rgba(255, 158, 89, 0.09), rgba(255, 158, 89, 0.04)),
+    rgba(11, 10, 8, 0.72);
+  border: 1px solid var(--line);
+  display: grid;
+  align-content: center;
+  gap: 0.12rem;
+}
+
+.stat-pill span {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stat-pill strong {
+  font-size: 1.1rem;
+  color: var(--green);
+  text-shadow: 0 0 10px rgba(159, 239, 157, 0.28);
+}
+
+.game-card {
+  border-radius: 1rem;
+  padding: 0.6rem;
+  overflow: hidden;
+}
+
+.canvas-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 14;
+  border-radius: 0.7rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(255, 111, 55, 0.12), transparent 36%),
+    linear-gradient(180deg, #160f0b 0%, #0c0b08 100%);
+  border: 1px solid rgba(255, 151, 77, 0.22);
+}
+
+.canvas-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+  filter: saturate(1.08) contrast(1.06);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.3rem;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.24), rgba(10, 8, 7, 0.82));
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.overlay-panel {
+  width: min(100%, 24rem);
+  padding: 1.2rem;
+  border-radius: 0.7rem;
+  background:
+    linear-gradient(180deg, rgba(56, 31, 17, 0.96), rgba(21, 15, 10, 0.96));
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 0 30px rgba(255, 112, 48, 0.18);
+  display: grid;
+  gap: 0.9rem;
+}
+
+.overlay-panel p,
+.overlay-panel li {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.overlay-panel ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.dot {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.55rem;
+  transform: translateY(1px);
+}
+
+.dot-bolt {
+  background: var(--bolt);
+  box-shadow: 0 0 12px rgba(255, 109, 58, 0.45);
+}
+
+.dot-pulse {
+  background: var(--pulse);
+  box-shadow: 0 0 12px rgba(255, 209, 102, 0.4);
+}
+
+.dot-focus {
+  background: var(--focus);
+  box-shadow: 0 0 12px rgba(255, 61, 46, 0.45);
+}
+
+button {
+  border: 0;
+  font: inherit;
+  color: inherit;
+}
+
+#startButton,
+.tower-chip {
+  cursor: pointer;
+}
+
+#startButton {
+  padding: 0.95rem 1rem;
+  border-radius: 0.45rem;
+  background:
+    linear-gradient(180deg, rgba(255, 132, 67, 0.32), rgba(255, 92, 38, 0.16)),
+    rgba(17, 12, 9, 0.92);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.controls-card {
+  border-radius: 0.8rem;
+  padding: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.tower-chip {
+  min-height: 4.25rem;
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 148, 82, 0.08), rgba(255, 148, 82, 0.02)),
+    rgba(11, 10, 8, 0.76);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  gap: 0.12rem;
+  padding: 0.65rem 0.4rem;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.tower-chip span {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.tower-chip strong {
+  font-size: 1rem;
+  color: var(--green);
+}
+
+.tower-chip.active {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  box-shadow: inset 0 0 20px rgba(255, 111, 55, 0.08), 0 0 16px rgba(255, 111, 55, 0.1);
+}
+
+.tower-chip.ghost {
+  color: var(--muted);
+}
+
+@media (min-width: 720px) {
+  .app-shell {
+    width: min(100%, 38rem);
+    padding-top: 1.2rem;
+  }
+
+  .hud-card {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+  }
+}

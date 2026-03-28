@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andre OS</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ===== BOOT SCREEN (removido) ===== */
+#boot-screen-unused {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+#boot-screen.fade-out {
+  animation: bootFadeOut 0.8s ease-in forwards;
+}
+
+@keyframes bootFadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+.boot-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 52px;
+  position: relative;
+}
+
+.boot-flag {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 12px rgba(80,160,255,0.35));
+}
+.boot-flag-q {
+  border-radius: 2px;
+}
+.boot-flag-q:nth-child(1) { background: radial-gradient(circle at 70% 70%, #f05030, #c81808); }
+.boot-flag-q:nth-child(2) { background: radial-gradient(circle at 30% 70%, #50d850, #18a018); }
+.boot-flag-q:nth-child(3) { background: radial-gradient(circle at 70% 30%, #3090f8, #0850d0); }
+.boot-flag-q:nth-child(4) { background: radial-gradient(circle at 30% 30%, #f8d820, #d0a000); }
+
+.boot-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.boot-brand-name {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: -1px;
+  text-shadow: 0 0 24px rgba(80,160,255,0.5);
+  font-style: italic;
+}
+
+.boot-brand-sub {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: #7ab8e8;
+  letter-spacing: 2px;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.boot-edition {
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  color: #888;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* Progress bar — identical to XP */
+.boot-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: absolute;
+  bottom: 60px;
+  left: 0; right: 0;
+}
+
+.boot-progress-bar {
+  width: 236px;
+  height: 10px;
+  border: 1px solid #444;
+  border-radius: 1px;
+  overflow: hidden;
+  background: #111;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+}
+
+.boot-progress-track {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  display: flex;
+  gap: 3px;
+  /* Each block is 12px wide + 3px gap = 15px per segment */
+  /* We have enough blocks to fill 2x the visible width for seamless loop */
+  animation: xpScroll 1.4s linear infinite;
+}
+
+@keyframes xpScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-90px); /* 6 blocks × 15px = 90px */ }
+}
+
+.boot-progress-block {
+  width: 12px;
+  height: 100%;
+  flex-shrink: 0;
+  border-radius: 1px;
+  background: linear-gradient(180deg,
+    #a8d8f8 0%,
+    #58a8e8 20%,
+    #2888d8 50%,
+    #1868c0 51%,
+    #0848a8 100%
+  );
+  box-shadow: 0 0 3px rgba(80,160,255,0.6);
+}
+
+.boot-copyright {
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 10px;
+  color: #555;
+  letter-spacing: 0.3px;
+}
+
+/* ===== WELCOME SCREEN ===== */
+#welcome-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, #1040a0 0%, #0830a0 40%, #0828a0 60%, #082898 100%);
+  z-index: 99998;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 0;
+}
+#welcome-screen.active { display: flex; }
+#welcome-screen.fade-out { animation: bootFadeOut 0.6s ease-in forwards; }
+
+.welcome-header {
+  text-align: center;
+}
+.welcome-title {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: #fff;
+  font-style: italic;
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px rgba(100,160,255,0.6);
+}
+.welcome-subtitle {
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 12px;
+  color: #9ac4f0;
+  margin-top: 4px;
+}
+
+.welcome-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+.welcome-user-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.welcome-user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  padding: 12px 24px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.welcome-user-card:hover {
+  background: rgba(255,255,255,0.12);
+}
+.welcome-avatar {
+  width: 64px;
+  height: 64px;
+  border: 3px solid #7ab8f0;
+  border-radius: 4px;
+  background: #d0e8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.welcome-user-name {
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 16px;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+.welcome-user-hint {
+  font-size: 11px;
+  color: #9ac4f0;
+  margin-top: 2px;
+}
+
+.welcome-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.welcome-footer-text {
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  color: #7090c0;
+}
+.welcome-loading-dots span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #5090d8;
+  margin: 0 3px;
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+.welcome-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.welcome-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Tahoma, 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  user-select: none;
+  cursor: default;
+}
+
+/* ===== BLISS WALLPAPER ===== */
+#desktop {
+  width: 100%;
+  height: calc(100vh - 30px);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    #1148a0 0%, #1e60b8 10%, #3480d0 22%,
+    #50a0e4 38%, #6abcf0 50%, #82ccf8 56%, #90d4fa 60%
+  );
+}
+
+#bliss-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 62%;
+  pointer-events: none;
+}
+
+/* ===== DESKTOP ICONS ===== */
+.desktop-icon {
+  position: absolute;
+  width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 3px;
+  border-radius: 2px;
+  cursor: pointer;
+  z-index: 10;
+}
+.desktop-icon .icon-label {
+  color: white;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.3;
+  text-shadow: 1px 1px 1px #000, -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000;
+  padding: 1px 3px;
+  border-radius: 2px;
+  max-width: 74px;
+  word-break: break-word;
+}
+.desktop-icon.selected .icon-label {
+  background: #0A246A;
+  border: 1px dotted #fff;
+}
+.desktop-icon.selected svg.icon-img {
+  filter: brightness(0.7) saturate(1.5) sepia(0.3) hue-rotate(180deg) invert(0.15);
+  opacity: 0.85;
+}
+.desktop-icon svg.icon-img {
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+}
+
+/* ===== TASKBAR ===== */
+#taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  display: flex;
+  align-items: stretch;
+  z-index: 900;
+  background: linear-gradient(180deg,
+    #245EDC 0%, #3C6CD4 3%, #2A58C8 7%,
+    #2454C4 50%, #1E4EC0 51%, #1848B8 100%
+  );
+  border-top: 1px solid #0A2CAA;
+  box-shadow: 0 -1px 0 #4080D8 inset;
+}
+
+/* Start Button */
+#start-btn {
+  height: 100%;
+  min-width: 95px;
+  padding: 0 14px 0 6px;
+  border: none;
+  border-right: 1px solid #0A2CAA;
+  border-radius: 0 14px 14px 0;
+  color: white;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  font-style: italic;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg,
+    #68C840 0%, #4AAE28 4%, #3CA020 50%,
+    #318018 51%, #286814 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 2px 0 4px rgba(0,0,0,0.3);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  letter-spacing: 0.5px;
+  transition: filter 0.1s;
+}
+#start-btn:hover {
+  filter: brightness(1.12);
+}
+#start-btn:active {
+  filter: brightness(0.9);
+}
+#start-btn .win-flag {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* Quick Launch */
+#quick-launch {
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 1px;
+  border-left: 1px solid #3868D0;
+  border-right: 1px solid #0A2CAA;
+}
+#quick-launch::before {
+  content: '';
+  position: absolute;
+  /* separator shine */
+}
+.ql-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.1s;
+}
+.ql-btn:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.35);
+}
+.ql-btn svg { width: 16px; height: 16px; }
+
+/* Taskbar tasks area */
+#taskbar-tasks {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 2px 3px;
+  gap: 2px;
+  overflow: hidden;
+  min-width: 0;
+}
+.task-btn {
+  height: 22px;
+  min-width: 30px;
+  max-width: 160px;
+  flex: 0 1 auto;
+  padding: 0 6px;
+  background: linear-gradient(180deg, #3468C4 0%, #1C50B0 50%, #1848A8 51%, #1040A4 100%);
+  border: 1px solid #0830A0;
+  border-radius: 3px;
+  color: white;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+  transition: all 0.1s;
+}
+.task-btn:hover {
+  background: linear-gradient(180deg, #4878D4 0%, #2860C0 100%);
+}
+.task-btn.active {
+  background: linear-gradient(180deg, #1444A0 0%, #0C38A0 100%);
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(0,0,0,0.2);
+  border-color: #0828A0;
+}
+.task-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* System Tray */
+#system-tray {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 4px;
+  background: linear-gradient(180deg, #1050B0 0%, #0840A0 50%, #0638A0 51%, #0430A0 100%);
+  border-left: 1px solid #3868D0;
+  box-shadow: inset 1px 0 0 #0A2CAA;
+}
+.tray-icon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+.tray-icon:hover { opacity: 1; }
+#clock {
+  color: white;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  white-space: nowrap;
+  padding: 0 2px;
+  cursor: default;
+}
+
+/* ===== WINDOWS ===== */
+.xp-window {
+  position: fixed;
+  min-width: 320px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid #0054E3;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.55), 0 0 0 1px #3880F0;
+  z-index: 200;
+  overflow: hidden;
+}
+.xp-window.inactive {
+  border-color: #7090C0;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.35), 0 0 0 1px #9090C0;
+}
+.xp-window.minimized { display: none !important; }
+
+/* Title Bar */
+.win-titlebar {
+  height: 28px;
+  background: linear-gradient(180deg,
+    #4A90DC 0%, #1A64D8 8%, #0E58D0 12%, #0858D0 50%,
+    #0450CC 51%, #0048C8 100%
+  );
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 4px;
+  cursor: move;
+  flex-shrink: 0;
+  border-radius: 6px 6px 0 0;
+}
+.xp-window.inactive .win-titlebar {
+  background: linear-gradient(180deg,
+    #80A4C8 0%, #6090B8 8%, #5888B0 12%,
+    #5080A8 50%, #4878A0 51%, #4070A0 100%
+  );
+}
+.win-titlebar-icon { width: 16px; height: 16px; flex-shrink: 0; }
+.win-titlebar-text {
+  flex: 1;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.win-controls {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.wc-btn {
+  width: 21px;
+  height: 21px;
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  font-family: 'Marlett', 'Wingdings', Arial, sans-serif;
+  transition: filter 0.1s;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 2px rgba(0,0,0,0.3);
+}
+.wc-btn:hover { filter: brightness(1.15); }
+.wc-btn:active { filter: brightness(0.85); box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3); }
+.wc-minimize {
+  background: linear-gradient(180deg, #FAD860 0%, #F0C430 50%, #E8B820 100%);
+  color: #5A3A00;
+}
+.wc-maximize {
+  background: linear-gradient(180deg, #78D858 0%, #54C434 50%, #44B824 100%);
+  color: #1A3A00;
+}
+.wc-close {
+  background: linear-gradient(180deg, #FC8060 0%, #F04030 50%, #E02818 100%);
+  color: white;
+}
+
+/* Toolbar */
+.win-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 2px;
+  background: #ECE9D8;
+  border-bottom: 1px solid #ACA899;
+  flex-shrink: 0;
+}
+.tb-btn {
+  height: 24px;
+  padding: 0 8px;
+  background: linear-gradient(180deg, #F4F0E8 0%, #DEDAD0 100%);
+  border: 1px solid #ACA899;
+  border-radius: 3px;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.tb-btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #FFFCE8 0%, #EEE8D8 100%);
+  border-color: #9090A0;
+}
+.tb-btn:disabled { opacity: 0.5; cursor: default; }
+.tb-btn svg { width: 14px; height: 14px; }
+.tb-separator {
+  width: 1px;
+  height: 20px;
+  background: #ACA899;
+  margin: 0 2px;
+}
+
+/* Address Bar */
+.win-addressbar {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 4px;
+  background: #ECE9D8;
+  border-bottom: 1px solid #ACA899;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.addr-label { color: #444; white-space: nowrap; }
+.addr-input {
+  flex: 1;
+  height: 20px;
+  border: 1px solid #7F9DB9;
+  padding: 0 4px;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  background: white;
+  color: #333;
+  outline: none;
+}
+.addr-input:focus { border-color: #316AC5; }
+.addr-go-btn {
+  height: 20px;
+  padding: 0 6px;
+  background: linear-gradient(180deg, #F4F0E8, #DEDAD0);
+  border: 1px solid #ACA899;
+  border-radius: 2px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Window Body */
+.win-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: white;
+}
+
+/* Explorer Sidebar */
+.win-sidebar {
+  width: 158px;
+  background: linear-gradient(180deg, #70A8E0 0%, #4888D0 15%, #3070C4 100%);
+  border-right: 1px solid #2060B8;
+  overflow-y: auto;
+  flex-shrink: 0;
+  padding: 6px 4px;
+}
+.sidebar-section { margin-bottom: 6px; }
+.sidebar-section-title {
+  background: linear-gradient(180deg, #3C78C8, #2868B8);
+  color: white;
+  font-weight: bold;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px 3px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sidebar-section-body {
+  background: rgba(255,255,255,0.08);
+  border-radius: 0 0 3px 3px;
+  padding: 4px;
+}
+.sidebar-link {
+  color: white;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.sidebar-link:hover { background: rgba(255,255,255,0.2); text-decoration: underline; }
+.sidebar-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* File Grid */
+.win-filelist {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  overflow-y: auto;
+  background: white;
+}
+.file-item {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 2px;
+  border-radius: 2px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.file-item:hover { background: #CDD6EC; border-color: #7090D0; }
+.file-item.selected { background: #CDD6EC; border: 1px dotted #0A246A; }
+.file-item svg { width: 32px; height: 32px; }
+.file-item-label {
+  text-align: center;
+  font-size: 11px;
+  color: #000080;
+  max-width: 78px;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+/* Status Bar */
+.win-statusbar {
+  height: 18px;
+  background: #ECE9D8;
+  border-top: 1px solid #ACA899;
+  padding: 1px 8px;
+  font-size: 11px;
+  color: #444;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.win-statusbar span:not(:last-child) {
+  border-right: 1px solid #ACA899;
+  padding-right: 16px;
+}
+
+/* Resize handle */
+.win-resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  cursor: se-resize;
+}
+
+/* ===== START MENU ===== */
+#start-menu {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 390px;
+  background: white;
+  border: 1px solid #0054E3;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 4px -2px 12px rgba(0,0,0,0.45);
+  z-index: 950;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+#start-menu.open { display: flex; }
+
+.sm-header {
+  background: linear-gradient(135deg, #1A5CC8 0%, #0840B0 60%, #2868D0 100%);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+}
+.sm-avatar {
+  width: 48px;
+  height: 48px;
+  border: 3px solid white;
+  border-radius: 4px;
+  background: #d0e8f8;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.sm-username {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.sm-body { display: flex; flex: 1; }
+
+.sm-left {
+  flex: 1;
+  background: white;
+  border-right: 1px solid #d4d0c8;
+  padding: 4px 0;
+  min-width: 0;
+}
+.sm-right {
+  width: 158px;
+  background: #D8E4F8;
+  padding: 4px 0;
+}
+
+.sm-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: Tahoma, Arial, sans-serif;
+  white-space: nowrap;
+  position: relative;
+}
+.sm-item:hover { background: #316AC5; color: white; }
+.sm-item:hover .sm-item-sub { color: rgba(255,255,255,0.8); }
+.sm-item svg { width: 24px; height: 24px; flex-shrink: 0; }
+.sm-item-sub { font-size: 10px; color: #666; display: block; }
+.sm-item-text { line-height: 1.2; }
+
+.sm-right .sm-item { font-size: 11px; padding: 4px 10px; gap: 6px; }
+.sm-right .sm-item svg { width: 20px; height: 20px; }
+
+.sm-divider { height: 1px; background: #d4d0c8; margin: 4px 0; }
+
+.sm-pinned-label {
+  font-size: 10px;
+  color: #666;
+  padding: 2px 10px;
+  font-style: italic;
+}
+
+.sm-footer {
+  background: #D8E4F8;
+  border-top: 1px solid #ACA899;
+  padding: 5px 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.sm-footer-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 12px;
+  background: linear-gradient(180deg, #F4F0E8, #DEDAD0);
+  border: 1px solid #ACA899;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: Tahoma, Arial, sans-serif;
+  cursor: pointer;
+}
+.sm-footer-btn:hover {
+  background: linear-gradient(180deg, #FFFCE8, #EEE8D8);
+}
+.sm-footer-btn svg { width: 16px; height: 16px; }
+
+/* ===== CONTEXT MENU ===== */
+#context-menu {
+  position: fixed;
+  background: #F4F0E8;
+  border: 1px solid #9090A0;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  padding: 3px 0;
+  z-index: 9999;
+  display: none;
+  min-width: 190px;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 12px;
+}
+.cm-item {
+  padding: 4px 24px 4px 28px;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+.cm-item:hover { background: #316AC5; color: white; }
+.cm-item.bold { font-weight: bold; }
+.cm-item.gray { color: #888; cursor: default; }
+.cm-item.gray:hover { background: transparent; color: #888; }
+.cm-divider { height: 1px; background: #d4d0c8; margin: 3px 0; }
+
+/* ===== TOOLTIP ===== */
+.xp-tooltip {
+  position: fixed;
+  background: #FFFFE1;
+  border: 1px solid #888;
+  padding: 2px 6px;
+  font-size: 11px;
+  z-index: 9998;
+  pointer-events: none;
+  display: none;
+  white-space: nowrap;
+}
+
+/* ===== NOTIFICATION BUBBLE ===== */
+.tray-bubble {
+  position: fixed;
+  bottom: 35px;
+  right: 10px;
+  background: #FFFFE1;
+  border: 1px solid #888;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 11px;
+  z-index: 980;
+  max-width: 220px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+  display: none;
+}
+.tray-bubble-title { font-weight: bold; font-size: 11px; margin-bottom: 2px; }
+.tray-bubble-body { font-size: 11px; color: #333; }
+
+/* Notepad menu */
+.notepad-menu-item:hover { background: #316AC5; color: white; }
+.notepad-menu-item:hover .notepad-dropdown { display: block !important; }
+.notepad-dropdown .cm-item:hover { background: #316AC5; color: white; }
+
+/* Scrollbar styling (XP-like) */
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-track { background: #C8C0B8; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #E0DCD0 0%, #C0BCB0 40%, #B0ACA0 100%);
+  border: 1px solid #888;
+}
+::-webkit-scrollbar-button { background: #D4D0C4; border: 1px solid #888; display: block; height: 16px; }
+::-webkit-scrollbar-corner { background: #C8C0B8; }
+</style>
+</head>
+<body>
+
+<!-- ===== DESKTOP ===== -->
+<div id="desktop" oncontextmenu="showContextMenu(event)" onclick="handleDesktopClick(event)">
+
+  <!-- Bliss SVG Wallpaper Hills -->
+  <svg id="bliss-svg" viewBox="0 0 1600 480" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="hillGrad1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#4aaa38"/>
+        <stop offset="40%" stop-color="#389030"/>
+        <stop offset="100%" stop-color="#266020"/>
+      </linearGradient>
+      <linearGradient id="hillGrad2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#58c040"/>
+        <stop offset="35%" stop-color="#46aa30"/>
+        <stop offset="100%" stop-color="#2e7820"/>
+      </linearGradient>
+      <linearGradient id="hillGrad3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#70d050"/>
+        <stop offset="30%" stop-color="#56ba3c"/>
+        <stop offset="100%" stop-color="#348028"/>
+      </linearGradient>
+      <radialGradient id="cloudGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.92)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+    <!-- Back hills (dark) -->
+    <path d="M-50,320 C100,180 250,260 400,220 C550,180 650,100 800,140 C950,180 1100,80 1300,160 C1450,220 1550,180 1650,160 L1650,480 L-50,480 Z" fill="url(#hillGrad1)"/>
+    <!-- Mid hills -->
+    <path d="M-50,380 C80,280 200,340 380,300 C520,268 640,200 780,250 C920,300 1060,180 1250,260 C1380,310 1500,260 1650,240 L1650,480 L-50,480 Z" fill="url(#hillGrad2)"/>
+    <!-- Front hills (bright) -->
+    <path d="M-50,440 C100,360 260,400 430,370 C580,342 700,280 850,330 C1000,380 1150,290 1320,350 C1440,390 1550,355 1650,340 L1650,480 L-50,480 Z" fill="url(#hillGrad3)"/>
+    <!-- Clouds -->
+    <ellipse cx="180" cy="100" rx="130" ry="55" fill="rgba(255,255,255,0.75)"/>
+    <ellipse cx="250" cy="85" rx="90" ry="45" fill="rgba(255,255,255,0.9)"/>
+    <ellipse cx="130" cy="110" rx="80" ry="38" fill="rgba(255,255,255,0.7)"/>
+    <ellipse cx="900" cy="130" rx="110" ry="48" fill="rgba(255,255,255,0.65)"/>
+    <ellipse cx="970" cy="115" rx="80" ry="40" fill="rgba(255,255,255,0.8)"/>
+    <ellipse cx="840" cy="138" rx="70" ry="35" fill="rgba(255,255,255,0.6)"/>
+    <ellipse cx="1400" cy="90" rx="100" ry="45" fill="rgba(255,255,255,0.6)"/>
+    <ellipse cx="1460" cy="78" rx="75" ry="38" fill="rgba(255,255,255,0.75)"/>
+    <ellipse cx="550" cy="70" rx="85" ry="38" fill="rgba(255,255,255,0.5)"/>
+  </svg>
+
+  <!-- Desktop Icons -->
+  <div class="desktop-icon" style="left:12px;top:12px" ondblclick="openWindow('mycomputer')" onclick="selectIcon(event,this)" title="My Computer">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="26" height="18" rx="2" fill="#1a4fa0" stroke="#0a3080" stroke-width="1"/>
+      <rect x="5" y="5" width="22" height="14" fill="#c8e4f8"/>
+      <rect x="5" y="5" width="22" height="14" fill="url(#screenGrad)"/>
+      <defs><linearGradient id="screenGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ecfc"/><stop offset="100%" stop-color="#60a8e0"/></linearGradient></defs>
+      <!-- Windows flag on screen -->
+      <rect x="11" y="8" width="4" height="4" fill="#e83020"/>
+      <rect x="15" y="8" width="4" height="4" fill="#20a830"/>
+      <rect x="11" y="12" width="4" height="4" fill="#1868d8"/>
+      <rect x="15" y="12" width="4" height="4" fill="#f8c800"/>
+      <rect x="12" y="21" width="8" height="2" fill="#8090a8"/>
+      <rect x="8" y="23" width="16" height="2" rx="1" fill="#506888"/>
+    </svg>
+    <span class="icon-label">My Computer</span>
+  </div>
+
+  <div class="desktop-icon" style="left:12px;top:106px" ondblclick="openWindow('mydocuments')" onclick="selectIcon(event,this)" title="My Documents">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4,4 L20,4 L28,12 L28,30 L4,30 Z" fill="#f0d040" stroke="#c0a000" stroke-width="1"/>
+      <path d="M20,4 L20,12 L28,12 Z" fill="#c0a000"/>
+      <path d="M6,4 L6,2 Q6,1 8,1 L22,1 Q24,1 24,3 L24,5" fill="none" stroke="#e8c820" stroke-width="0.5"/>
+      <line x1="8" y1="15" x2="24" y2="15" stroke="#a08000" stroke-width="1.5"/>
+      <line x1="8" y1="18" x2="24" y2="18" stroke="#a08000" stroke-width="1.5"/>
+      <line x1="8" y1="21" x2="20" y2="21" stroke="#a08000" stroke-width="1.5"/>
+      <!-- Pencil decoration -->
+      <rect x="18" y="22" width="3" height="9" rx="0.5" fill="#f0c030" stroke="#c09000" stroke-width="0.5" transform="rotate(-30,19.5,26.5)"/>
+    </svg>
+    <span class="icon-label">My Documents</span>
+  </div>
+
+  <div class="desktop-icon" style="left:12px;top:200px" ondblclick="openWindow('ie')" onclick="selectIcon(event,this)" title="Internet Explorer">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="#1a70c8" stroke="#0a5098" stroke-width="1"/>
+      <ellipse cx="16" cy="16" rx="6" ry="12" fill="none" stroke="#80c8f8" stroke-width="1.5"/>
+      <ellipse cx="16" cy="16" rx="12" ry="6" fill="none" stroke="#80c8f8" stroke-width="1.5"/>
+      <line x1="4" y1="16" x2="28" y2="16" stroke="#80c8f8" stroke-width="1"/>
+      <line x1="16" y1="4" x2="16" y2="28" stroke="#80c8f8" stroke-width="1"/>
+      <circle cx="16" cy="16" r="4" fill="#4090e0"/>
+      <!-- Gold ring -->
+      <ellipse cx="20" cy="10" rx="8" ry="4" fill="none" stroke="#f8c000" stroke-width="2.5" transform="rotate(-30 20 10)"/>
+    </svg>
+    <span class="icon-label">Internet Explorer</span>
+  </div>
+
+  <div class="desktop-icon" style="left:12px;top:300px" ondblclick="openWindow('recycle')" onclick="selectIcon(event,this)" title="Recycle Bin">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="9" y="12" width="14" height="17" rx="1" fill="#c8d8f0" stroke="#6888c0" stroke-width="1"/>
+      <rect x="7" y="10" width="18" height="3" rx="1" fill="#88a8d8" stroke="#5080b8" stroke-width="0.8"/>
+      <rect x="13" y="7" width="6" height="3" rx="1" fill="#7098c8" stroke="#4070a8" stroke-width="0.8"/>
+      <!-- Lines on bin -->
+      <line x1="13" y1="15" x2="13" y2="26" stroke="#8090b8" stroke-width="1.2"/>
+      <line x1="16" y1="15" x2="16" y2="26" stroke="#8090b8" stroke-width="1.2"/>
+      <line x1="19" y1="15" x2="19" y2="26" stroke="#8090b8" stroke-width="1.2"/>
+      <!-- Sheen -->
+      <path d="M10,13 L11,28 L21,28 L22,13" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+    </svg>
+    <span class="icon-label">Recycle Bin</span>
+  </div>
+
+  <div class="desktop-icon" style="left:12px;top:394px" ondblclick="openWindow('network')" onclick="selectIcon(event,this)" title="My Network Places">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <!-- Left monitor -->
+      <rect x="1" y="10" width="12" height="9" rx="1" fill="#3868b8" stroke="#1848a0" stroke-width="0.8"/>
+      <rect x="2" y="11" width="10" height="7" fill="#90c8f0"/>
+      <rect x="5" y="19" width="4" height="2" fill="#5080a8"/>
+      <rect x="3" y="21" width="8" height="1" fill="#3060a0"/>
+      <!-- Right monitor -->
+      <rect x="19" y="10" width="12" height="9" rx="1" fill="#3868b8" stroke="#1848a0" stroke-width="0.8"/>
+      <rect x="20" y="11" width="10" height="7" fill="#90c8f0"/>
+      <rect x="23" y="19" width="4" height="2" fill="#5080a8"/>
+      <rect x="21" y="21" width="8" height="1" fill="#3060a0"/>
+      <!-- Network cables -->
+      <line x1="13" y1="15" x2="16" y2="15" stroke="#888" stroke-width="1.5"/>
+      <line x1="16" y1="15" x2="19" y2="15" stroke="#888" stroke-width="1.5"/>
+      <circle cx="16" cy="15" r="2.5" fill="#68c840" stroke="#38a820" stroke-width="0.8"/>
+    </svg>
+    <span class="icon-label">My Network Places</span>
+  </div>
+
+  <div class="desktop-icon" style="left:12px;top:488px" ondblclick="openWindow('sobreMim')" onclick="selectIcon(event,this)" title="Sobre mim.txt">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="1" width="20" height="26" rx="1" fill="white" stroke="#aaa" stroke-width="1"/>
+      <path d="M20,1 L24,5 L20,5 Z" fill="#ddd" stroke="#aaa" stroke-width="0.8"/>
+      <rect x="20" y="1" width="4" height="4" fill="#eee" stroke="#aaa" stroke-width="0.8"/>
+      <line x1="7" y1="9"  x2="21" y2="9"  stroke="#aaa" stroke-width="1"/>
+      <line x1="7" y1="12" x2="21" y2="12" stroke="#aaa" stroke-width="1"/>
+      <line x1="7" y1="15" x2="21" y2="15" stroke="#aaa" stroke-width="1"/>
+      <line x1="7" y1="18" x2="18" y2="18" stroke="#aaa" stroke-width="1"/>
+      <line x1="7" y1="21" x2="21" y2="21" stroke="#aaa" stroke-width="1"/>
+      <rect x="2" y="25" width="8" height="6" rx="1" fill="#316AC5"/>
+      <text x="6" y="30" text-anchor="middle" font-size="4" fill="white" font-family="Tahoma" font-weight="bold">TXT</text>
+    </svg>
+    <span class="icon-label">Sobre mim.txt</span>
+  </div>
+
+  <!-- ===== PROJECT ICONS ===== -->
+  <!-- Column label helpers via tiny SVG badges -->
+
+  <!-- INTERACTIVE EXPERIENCES — col x=100 -->
+  <div class="desktop-icon" style="left:100px;top:12px" ondblclick="openProject('tiny-rpg')" onclick="selectIcon(event,this)" title="Tiny RPG Studio">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="6" width="28" height="20" rx="3" fill="#3050a0" stroke="#1030a0"/>
+      <rect x="4" y="8" width="24" height="16" fill="#6090e0"/>
+      <rect x="5" y="9" width="10" height="7" fill="#2040a0"/>
+      <rect x="6" y="10" width="3" height="3" fill="#50d050"/>
+      <rect x="9" y="10" width="3" height="3" fill="#e04030"/>
+      <rect x="6" y="13" width="3" height="3" fill="#d0c020"/>
+      <rect x="9" y="13" width="3" height="3" fill="#4080e0"/>
+      <circle cx="21" cy="13" r="4" fill="#1030a0" stroke="#8080ff"/>
+      <text x="21" y="16" text-anchor="middle" font-size="5" fill="#d0d0ff" font-family="monospace">RPG</text>
+      <rect x="16" y="18" width="12" height="4" rx="1" fill="#1030a0"/>
+      <rect x="17" y="19" width="10" height="2" fill="#3050d0" rx="1"/>
+    </svg>
+    <span class="icon-label">Tiny RPG Studio</span>
+  </div>
+
+  <div class="desktop-icon" style="left:100px;top:102px" ondblclick="openProject('ai-platformer')" onclick="selectIcon(event,this)" title="AI Platformer Trainer">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="10" r="7" fill="#1a1a2e" stroke="#7070ff"/>
+      <circle cx="11" cy="8" r="1.2" fill="#00d4ff"/>
+      <circle cx="16" cy="6" r="1.2" fill="#00d4ff"/>
+      <circle cx="21" cy="8" r="1.2" fill="#00d4ff"/>
+      <circle cx="21" cy="13" r="1.2" fill="#ff7070"/>
+      <circle cx="16" cy="15" r="1.2" fill="#ff7070"/>
+      <circle cx="11" cy="13" r="1.2" fill="#ff7070"/>
+      <line x1="11" y1="8" x2="16" y2="6" stroke="#7070ff" stroke-width="0.7"/>
+      <line x1="16" y1="6" x2="21" y2="8" stroke="#7070ff" stroke-width="0.7"/>
+      <line x1="11" y1="8" x2="11" y2="13" stroke="#7070ff" stroke-width="0.7"/>
+      <line x1="21" y1="8" x2="21" y2="13" stroke="#7070ff" stroke-width="0.7"/>
+      <line x1="11" y1="13" x2="16" y2="15" stroke="#ff7070" stroke-width="0.7"/>
+      <line x1="21" y1="13" x2="16" y2="15" stroke="#ff7070" stroke-width="0.7"/>
+      <rect x="3" y="22" width="26" height="8" rx="1" fill="#2a2a3e" stroke="#5050a0"/>
+      <rect x="5" y="24" width="4" height="4" rx="1" fill="#404090"/>
+      <rect x="7" y="26" width="8" height="3" rx="1" fill="#50d050"/>
+      <circle cx="25" cy="26" r="2.5" fill="#e03020"/>
+    </svg>
+    <span class="icon-label">AI Platformer</span>
+  </div>
+
+  <div class="desktop-icon" style="left:100px;top:192px" ondblclick="openProject('evo-sim')" onclick="selectIcon(event,this)" title="Evo Sim">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="13" fill="#0a2010" stroke="#20a040"/>
+      <circle cx="11" cy="13" r="3" fill="#40c860" stroke="#20a040"/>
+      <circle cx="21" cy="11" r="2.5" fill="#30b850"/>
+      <circle cx="20" cy="22" r="3.5" fill="#28a048"/>
+      <circle cx="9" cy="22" r="2" fill="#20c040"/>
+      <path d="M11,13 Q16,8 21,11" fill="none" stroke="#60e870" stroke-width="0.8" stroke-dasharray="2,1"/>
+      <path d="M21,11 Q24,17 20,22" fill="none" stroke="#60e870" stroke-width="0.8" stroke-dasharray="2,1"/>
+      <path d="M11,13 Q8,18 9,22" fill="none" stroke="#60e870" stroke-width="0.8" stroke-dasharray="2,1"/>
+    </svg>
+    <span class="icon-label">Evo Sim</span>
+  </div>
+
+  <div class="desktop-icon" style="left:100px;top:282px" ondblclick="openProject('tiny-computer')" onclick="selectIcon(event,this)" title="Tiny Computer">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="26" height="26" rx="2" fill="#1a1a1a" stroke="#555"/>
+      <rect x="5" y="5" width="22" height="15" fill="#0a0a0a" stroke="#333"/>
+      <text x="16" y="15" text-anchor="middle" font-size="7" fill="#00ff00" font-family="monospace">&gt;_</text>
+      <rect x="5" y="22" width="5" height="5" rx="0.5" fill="#333"/>
+      <rect x="11" y="22" width="5" height="5" rx="0.5" fill="#333"/>
+      <rect x="17" y="22" width="5" height="5" rx="0.5" fill="#444"/>
+      <rect x="23" y="22" width="4" height="5" rx="0.5" fill="#2a2a2a"/>
+      <circle cx="8" cy="4" r="0.8" fill="#50ff50"/>
+      <circle cx="11" cy="4" r="0.8" fill="#ffaa00"/>
+    </svg>
+    <span class="icon-label">Tiny Computer</span>
+  </div>
+
+  <div class="desktop-icon" style="left:100px;top:372px" ondblclick="openProject('tiny-voxel')" onclick="selectIcon(event,this)" title="Tiny Voxel">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="16,4 28,10 28,22 16,28 4,22 4,10" fill="none" stroke="#60a0e0" stroke-width="1"/>
+      <polygon points="16,4 28,10 16,16 4,10" fill="#3060b0"/>
+      <polygon points="4,10 16,16 16,28 4,22" fill="#1a3878"/>
+      <polygon points="28,10 16,16 16,28 28,22" fill="#2050a0"/>
+      <line x1="16" y1="4" x2="16" y2="16" stroke="#80c0ff" stroke-width="0.8"/>
+      <line x1="4" y1="10" x2="16" y2="16" stroke="#80c0ff" stroke-width="0.8"/>
+      <line x1="28" y1="10" x2="16" y2="16" stroke="#80c0ff" stroke-width="0.8"/>
+    </svg>
+    <span class="icon-label">Tiny Voxel</span>
+  </div>
+
+  <div class="desktop-icon" style="left:100px;top:462px" ondblclick="openProject('tiny-evolution')" onclick="selectIcon(event,this)" title="Tiny Evolution">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="13" fill="#1a4fa0" stroke="#3070d0"/>
+      <ellipse cx="16" cy="16" rx="5" ry="13" fill="#1a8040" opacity="0.6"/>
+      <ellipse cx="16" cy="16" rx="13" ry="5" fill="none" stroke="#70c8f8" stroke-width="0.8" opacity="0.7"/>
+      <ellipse cx="16" cy="16" rx="9" ry="2" fill="none" stroke="#70c8f8" stroke-width="0.6" opacity="0.5" transform="rotate(45 16 16)"/>
+      <circle cx="16" cy="16" r="3" fill="#f8e030"/>
+      <path d="M10,10 Q13,7 16,10 Q19,7 22,10" fill="none" stroke="#70d050" stroke-width="1"/>
+    </svg>
+    <span class="icon-label">Tiny Evolution</span>
+  </div>
+
+  <!-- GAMES — col x=188 -->
+  <div class="desktop-icon" style="left:188px;top:12px" ondblclick="openProject('get-out')" onclick="selectIcon(event,this)" title="Get Out">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="1" fill="#0d0d0d" stroke="#333"/>
+      <rect x="6" y="4" width="20" height="24" rx="1" fill="#1a0a08" stroke="#8B0000"/>
+      <rect x="14" y="10" width="2" height="12" fill="#3a0000"/>
+      <rect x="8" y="14" width="8" height="1.5" fill="#8B0000"/>
+      <polygon points="16,12 20,16 16,20" fill="#8B0000"/>
+      <circle cx="20" cy="16" r="2" fill="#cc0000"/>
+      <text x="16" y="30" text-anchor="middle" font-size="4" fill="#8B0000" font-family="serif" font-style="italic">GET OUT</text>
+    </svg>
+    <span class="icon-label">Get Out</span>
+  </div>
+
+  <div class="desktop-icon" style="left:188px;top:102px" ondblclick="openProject('zero-the-hero')" onclick="selectIcon(event,this)" title="Zero The Hero">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="1" fill="#1a1008" stroke="#806030"/>
+      <line x1="9" y1="23" x2="23" y2="9" stroke="#c8a040" stroke-width="3" stroke-linecap="round"/>
+      <rect x="7" y="21" width="6" height="4" rx="1" fill="#806030" transform="rotate(45 10 23)"/>
+      <polygon points="21,7 25,7 25,11" fill="#e8c040"/>
+      <polygon points="21,7 23,5 25,7" fill="#f8e060"/>
+      <circle cx="9" cy="24" r="2" fill="#a08040"/>
+    </svg>
+    <span class="icon-label">Zero The Hero</span>
+  </div>
+
+  <div class="desktop-icon" style="left:188px;top:192px" ondblclick="openProject('brians-mansion')" onclick="selectIcon(event,this)" title="Brian's Mansion">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="0" fill="#0a0810" stroke="#302040"/>
+      <polygon points="16,6 4,14 4,30 28,30 28,14" fill="#1a1428" stroke="#302040"/>
+      <polygon points="16,4 3,13 29,13" fill="#251e3a"/>
+      <rect x="13" y="20" width="6" height="10" fill="#0a0810"/>
+      <rect x="7" y="16" width="5" height="5" fill="#302040"/>
+      <rect x="20" y="16" width="5" height="5" fill="#302040"/>
+      <rect x="8" y="17" width="3" height="3" fill="#f8c000" opacity="0.7"/>
+      <rect x="21" y="17" width="3" height="3" fill="#f8c000" opacity="0.3"/>
+      <circle cx="16" cy="10" r="3" fill="none" stroke="#9060d0" stroke-width="0.8"/>
+      <path d="M14,8 Q16,6 18,8" fill="none" stroke="#9060d0" stroke-width="0.8"/>
+    </svg>
+    <span class="icon-label">Brian's Mansion</span>
+  </div>
+
+  <div class="desktop-icon" style="left:188px;top:282px" ondblclick="openProject('zero-to-one')" onclick="selectIcon(event,this)" title="Zero To One">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="1" fill="#10102a" stroke="#4040a0"/>
+      <text x="9" y="20" font-size="13" fill="#4060c0" font-family="monospace" font-weight="bold">0</text>
+      <text x="20" y="20" font-size="13" fill="#e0e0ff" font-family="monospace" font-weight="bold">1</text>
+      <line x1="14" y1="16" x2="19" y2="16" stroke="#7070d0" stroke-width="1.5"/>
+      <polygon points="18,14 21,16 18,18" fill="#7070d0"/>
+    </svg>
+    <span class="icon-label">Zero To One</span>
+  </div>
+
+  <div class="desktop-icon" style="left:188px;top:372px" ondblclick="openProject('insomnia')" onclick="selectIcon(event,this)" title="Insomnia">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="1" fill="#06060e" stroke="#1a1a40"/>
+      <path d="M22,8 Q28,14 22,22 Q14,28 8,22 Q2,16 8,10 Q14,4 22,8 Z" fill="#1a1840"/>
+      <path d="M20,7 Q28,13 22,22 Q14,28 8,22 Q16,24 20,16 Q24,10 20,7 Z" fill="#08082a"/>
+      <circle cx="20" cy="12" r="1.5" fill="#ffe060"/>
+      <circle cx="16" cy="8" r="1" fill="#ffe060" opacity="0.6"/>
+      <circle cx="24" cy="16" r="0.8" fill="#ffe060" opacity="0.4"/>
+      <text x="16" y="28" text-anchor="middle" font-size="4" fill="#4040a0" font-family="serif" font-style="italic">insomnia</text>
+    </svg>
+    <span class="icon-label">Insomnia</span>
+  </div>
+
+  <div class="desktop-icon" style="left:188px;top:462px" ondblclick="openProject('life-undefined')" onclick="selectIcon(event,this)" title="Life is Undefined">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="1" fill="#f8f4e8" stroke="#ccc"/>
+      <text x="16" y="19" text-anchor="middle" font-size="18" fill="#333" font-family="serif">?</text>
+      <text x="16" y="28" text-anchor="middle" font-size="4" fill="#888" font-family="Tahoma,sans-serif">undefined</text>
+    </svg>
+    <span class="icon-label">Life is Undefined</span>
+  </div>
+
+  <!-- TOOLS & GUIDES — col x=276 -->
+  <div class="desktop-icon" style="left:276px;top:12px" ondblclick="openProject('openvideogamedata')" onclick="selectIcon(event,this)" title="OpenVideoGameData">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="2" fill="#0d1b2a" stroke="#1e3a5f"/>
+      <rect x="5" y="20" width="4" height="9" fill="#4090e0"/>
+      <rect x="10" y="15" width="4" height="14" fill="#50c8a0"/>
+      <rect x="15" y="11" width="4" height="18" fill="#f8a020"/>
+      <rect x="20" y="7" width="4" height="22" fill="#e04060"/>
+      <rect x="4" y="4" width="5" height="5" rx="1" fill="none" stroke="#60c8ff" stroke-width="0.8"/>
+      <circle cx="6.5" cy="6.5" r="1.5" fill="#60c8ff"/>
+      <polygon points="14,4 16,2 18,4 16,6" fill="#60c8ff"/>
+    </svg>
+    <span class="icon-label">OpenVideoGameData</span>
+  </div>
+
+  <div class="desktop-icon" style="left:276px;top:102px" ondblclick="openProject('my-life-data')" onclick="selectIcon(event,this)" title="My Life Data">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="16" cy="8" rx="12" ry="4" fill="#4060c8" stroke="#2040a8"/>
+      <rect x="4" y="8" width="24" height="14" fill="#3050b8"/>
+      <ellipse cx="16" cy="22" rx="12" ry="4" fill="#3050b8" stroke="#2040a8"/>
+      <ellipse cx="16" cy="8" rx="12" ry="4" fill="none" stroke="#7090e0"/>
+      <ellipse cx="16" cy="15" rx="12" ry="4" fill="none" stroke="#5070c8" stroke-dasharray="3,2"/>
+      <polygon points="21,8 23,6 25,8 23,10" fill="#f8e030"/>
+    </svg>
+    <span class="icon-label">My Life Data</span>
+  </div>
+
+  <div class="desktop-icon" style="left:276px;top:192px" ondblclick="openProject('csharp-guide')" onclick="selectIcon(event,this)" title="C# Quick Reference">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="2" width="22" height="28" rx="1" fill="#6820a0" stroke="#4810a0"/>
+      <rect x="5" y="4" width="18" height="24" fill="#7830c0"/>
+      <text x="14" y="20" text-anchor="middle" font-size="14" fill="white" font-family="Arial" font-weight="bold">C#</text>
+      <rect x="25" y="4" width="4" height="24" fill="#501090"/>
+    </svg>
+    <span class="icon-label">C# Guide</span>
+  </div>
+
+  <div class="desktop-icon" style="left:276px;top:282px" ondblclick="openProject('my-code-codex')" onclick="selectIcon(event,this)" title="My Code Codex">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="2" width="22" height="28" rx="1" fill="#1a3868" stroke="#0a2858"/>
+      <rect x="5" y="4" width="18" height="24" fill="#2a4878"/>
+      <line x1="7" y1="9" x2="21" y2="9" stroke="#4a78c8" stroke-width="1"/>
+      <line x1="7" y1="12" x2="21" y2="12" stroke="#4a78c8" stroke-width="1"/>
+      <line x1="7" y1="15" x2="18" y2="15" stroke="#4a78c8" stroke-width="1"/>
+      <line x1="7" y1="18" x2="21" y2="18" stroke="#4a78c8" stroke-width="1"/>
+      <line x1="7" y1="21" x2="15" y2="21" stroke="#4a78c8" stroke-width="1"/>
+      <text x="14" y="27" text-anchor="middle" font-size="4" fill="#80a8e8" font-family="monospace">{codex}</text>
+      <rect x="25" y="4" width="4" height="24" fill="#0a2858"/>
+    </svg>
+    <span class="icon-label">My Code Codex</span>
+  </div>
+
+  <div class="desktop-icon" style="left:276px;top:372px" ondblclick="openProject('clean-arch')" onclick="selectIcon(event,this)" title="Clean Arch Template">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="4" width="24" height="6" rx="1" fill="#e04040" stroke="#b02020"/>
+      <rect x="6" y="12" width="20" height="6" rx="1" fill="#e08020" stroke="#b05010"/>
+      <rect x="8" y="20" width="16" height="6" rx="1" fill="#40a040" stroke="#208020"/>
+      <line x1="16" y1="10" x2="16" y2="12" stroke="#888" stroke-width="1"/>
+      <line x1="16" y1="18" x2="16" y2="20" stroke="#888" stroke-width="1"/>
+      <text x="16" y="8.5" text-anchor="middle" font-size="4" fill="white" font-family="Tahoma">Domain</text>
+      <text x="16" y="16.5" text-anchor="middle" font-size="4" fill="white" font-family="Tahoma">Application</text>
+      <text x="16" y="24.5" text-anchor="middle" font-size="3.5" fill="white" font-family="Tahoma">Infrastructure</text>
+    </svg>
+    <span class="icon-label">Clean Arch</span>
+  </div>
+
+  <div class="desktop-icon" style="left:276px;top:462px" ondblclick="openProject('clube-leitura')" onclick="selectIcon(event,this)" title="Clube de Leitura nas Montanhas">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="5" width="17" height="22" rx="1" fill="#c84020" stroke="#a02010"/>
+      <rect x="5" y="7" width="13" height="18" fill="#d85030"/>
+      <rect x="20" y="5" width="2" height="22" fill="#a02010"/>
+      <line x1="7" y1="11" x2="17" y2="11" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+      <line x1="7" y1="14" x2="17" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+      <line x1="7" y1="17" x2="14" y2="17" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+      <!-- Mountain silhouette -->
+      <polygon points="22,24 27,14 32,24" fill="#2d6a2d" stroke="#1a4a1a" stroke-width="0.5"/>
+      <polygon points="19,24 25,12 31,24" fill="#3d7a3d" stroke="#1a4a1a" stroke-width="0.5"/>
+      <polygon points="0,24 6,16 12,24" fill="#2d6a2d" stroke="#1a4a1a" stroke-width="0.5"/>
+    </svg>
+    <span class="icon-label">Clube de Leitura</span>
+  </div>
+
+  <!-- BLOG / LINKS — col x=276 -->
+  <div class="desktop-icon" style="left:276px;top:552px" ondblclick="openProject('blog')" onclick="selectIcon(event,this)" title="Blog - dev.to">
+    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="3" fill="#08080a"/>
+      <text x="16" y="22" text-anchor="middle" font-size="13" fill="white" font-family="Arial" font-weight="bold">DEV</text>
+    </svg>
+    <span class="icon-label">Blog (dev.to)</span>
+  </div>
+
+</div><!-- #desktop -->
+
+<!-- ===== TASKBAR ===== -->
+<div id="taskbar">
+  <button id="start-btn" onclick="toggleStartMenu(event)">
+    <svg class="win-flag" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="9" height="9" fill="#e83020"/>
+      <rect x="12" y="1" width="9" height="9" fill="#20a830"/>
+      <rect x="1" y="12" width="9" height="9" fill="#1868d8"/>
+      <rect x="12" y="12" width="9" height="9" fill="#f8c800"/>
+    </svg>
+    start
+  </button>
+
+  <div id="quick-launch">
+    <div class="ql-btn" onclick="showDesktop()" title="Show the desktop">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="14" height="10" rx="1" fill="#3068b8" stroke="#1848a0" stroke-width="0.8"/>
+        <rect x="2" y="2" width="12" height="8" fill="#80c0f0"/>
+        <rect x="4" y="11" width="8" height="1.5" rx="0.5" fill="#5080a0"/>
+        <rect x="2" y="12.5" width="12" height="1.5" rx="0.5" fill="#3060a0"/>
+      </svg>
+    </div>
+    <div class="ql-btn" onclick="openWindow('ie')" title="Launch Internet Explorer Browser">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="6" fill="#1a70c8"/>
+        <ellipse cx="8" cy="8" rx="3" ry="6" fill="none" stroke="#90d0f8" stroke-width="0.8"/>
+        <ellipse cx="8" cy="8" rx="6" ry="3" fill="none" stroke="#90d0f8" stroke-width="0.8"/>
+        <ellipse cx="11" cy="5" rx="4" ry="2" fill="none" stroke="#f8c000" stroke-width="1.5" transform="rotate(-30 11 5)"/>
+      </svg>
+    </div>
+    <div class="ql-btn" title="Windows Media Player">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="6" fill="#1050a0"/>
+        <circle cx="8" cy="8" r="4" fill="#1870c8"/>
+        <circle cx="8" cy="8" r="2" fill="#80c0f0"/>
+        <polygon points="6.5,5.5 11,8 6.5,10.5" fill="white"/>
+      </svg>
+    </div>
+  </div>
+
+  <div id="taskbar-tasks"></div>
+
+  <div id="system-tray">
+    <svg class="tray-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" title="Volume">
+      <path d="M2,6 L5,6 L9,3 L9,13 L5,10 L2,10 Z" fill="white" opacity="0.8"/>
+      <path d="M11,5 Q13,8 11,11" fill="none" stroke="white" stroke-width="1.2" opacity="0.8"/>
+      <path d="M12.5,3.5 Q15.5,8 12.5,12.5" fill="none" stroke="white" stroke-width="1.2" opacity="0.6"/>
+    </svg>
+    <svg class="tray-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" title="Network connection">
+      <rect x="1" y="2" width="6" height="5" rx="0.5" fill="white" opacity="0.7"/>
+      <rect x="2" y="3" width="4" height="3" fill="#90c8f0" opacity="0.8"/>
+      <rect x="9" y="2" width="6" height="5" rx="0.5" fill="white" opacity="0.7"/>
+      <rect x="10" y="3" width="4" height="3" fill="#90c8f0" opacity="0.8"/>
+      <line x1="7" y1="4.5" x2="9" y2="4.5" stroke="white" stroke-width="1" opacity="0.8"/>
+      <circle cx="8" cy="12" r="2.5" fill="#60c840" opacity="0.9"/>
+    </svg>
+    <span id="clock"></span>
+  </div>
+</div>
+
+<!-- ===== START MENU ===== -->
+<div id="start-menu">
+  <div class="sm-header">
+    <div class="sm-avatar">
+      <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="15" r="9" fill="#f8c878"/>
+        <circle cx="20" cy="15" r="9" fill="none" stroke="#d09040" stroke-width="0.8"/>
+        <path d="M5,38 Q5,26 20,26 Q35,26 35,38" fill="#4080c8"/>
+        <circle cx="17" cy="13" r="1.5" fill="#604020"/>
+        <circle cx="23" cy="13" r="1.5" fill="#604020"/>
+        <path d="M16,19 Q20,22 24,19" fill="none" stroke="#d09040" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <span class="sm-username">User</span>
+  </div>
+  <div class="sm-body">
+    <div class="sm-left">
+      <!-- Pinned apps -->
+      <div class="sm-item" ondblclick="openWindow('ie'); toggleStartMenu()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#1a70c8"/><ellipse cx="12" cy="12" rx="4.5" ry="9" fill="none" stroke="#90d0f8" stroke-width="1.2"/><ellipse cx="12" cy="12" rx="9" ry="4.5" fill="none" stroke="#90d0f8" stroke-width="1.2"/><ellipse cx="16" cy="7" rx="5" ry="2.5" fill="none" stroke="#f8c000" stroke-width="2" transform="rotate(-30 16 7)"/></svg>
+        <div class="sm-item-text">Internet Explorer<span class="sm-item-sub">Web browser</span></div>
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#1050a0"/><circle cx="12" cy="12" r="6" fill="#1870c8"/><circle cx="12" cy="12" r="3" fill="#80c0f0"/><polygon points="9.5,8 17,12 9.5,16" fill="white"/></svg>
+        <div class="sm-item-text">Windows Media Player<span class="sm-item-sub">Media player</span></div>
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="1" fill="#e0e0e0" stroke="#aaa"/><rect x="5" y="5" width="14" height="10" fill="#f0f8ff" stroke="#aaa" stroke-width="0.5"/><line x1="5" y1="18" x2="8" y2="15" stroke="#aaa"/><line x1="19" y1="18" x2="16" y2="15" stroke="#aaa"/><line x1="8" y1="18" x2="16" y2="18" stroke="#bbb"/></svg>
+        <div class="sm-item-text">Windows Movie Maker<span class="sm-item-sub">Video editor</span></div>
+      </div>
+      <div class="sm-divider"></div>
+      <div class="sm-pinned-label">Recently opened:</div>
+      <div class="sm-item">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="13" height="20" rx="1" fill="white" stroke="#aaa"/><line x1="6" y1="7" x2="14" y2="7" stroke="#888" stroke-width="1"/><line x1="6" y1="10" x2="14" y2="10" stroke="#888" stroke-width="1"/><line x1="6" y1="13" x2="11" y2="13" stroke="#888" stroke-width="1"/><rect x="13" y="2" width="8" height="8" rx="0" fill="#f0d040" stroke="#c0a000"/></svg>
+        <div class="sm-item-text">Notepad</div>
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="1" fill="#f0f0f0" stroke="#aaa"/><rect x="2" y="2" width="20" height="4" fill="#316AC5"/><text x="12" y="5.5" text-anchor="middle" fill="white" font-size="4" font-family="Tahoma">= ÷ × −</text><rect x="4" y="8" width="3.5" height="3" fill="#e0e0e0" stroke="#aaa" stroke-width="0.5"/><rect x="9" y="8" width="3.5" height="3" fill="#e0e0e0" stroke="#aaa" stroke-width="0.5"/><rect x="14" y="8" width="3.5" height="3" fill="#e0e0e0" stroke="#aaa" stroke-width="0.5"/><rect x="4" y="13" width="3.5" height="3" fill="#e0e0e0" stroke="#aaa" stroke-width="0.5"/><rect x="9" y="13" width="3.5" height="3" fill="#e0e0e0" stroke="#aaa" stroke-width="0.5"/><rect x="14" y="13" width="3.5" height="3" fill="#316AC5" stroke="#1050a0" stroke-width="0.5"/></svg>
+        <div class="sm-item-text">Calculator</div>
+      </div>
+      <div class="sm-divider"></div>
+      <div class="sm-item" style="font-weight:bold; color:#316AC5">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="14" rx="1" fill="#316AC5"/><line x1="3" y1="17" x2="21" y2="17" stroke="#888"/><rect x="8" y="17" width="8" height="4" fill="#888"/><rect x="5" y="21" width="14" height="1" fill="#666"/></svg>
+        <div class="sm-item-text">All Programs</div>
+        <svg style="margin-left:auto" width="8" height="16" viewBox="0 0 8 16"><path d="M2,4 L6,8 L2,12" stroke="#316AC5" stroke-width="1.5" fill="none"/></svg>
+      </div>
+    </div>
+    <div class="sm-right">
+      <div class="sm-item" ondblclick="openWindow('mydocuments'); toggleStartMenu()">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2,3 L13,3 L18,8 L18,19 L2,19 Z" fill="#f0d040" stroke="#c0a000" stroke-width="0.8"/><path d="M13,3 L13,8 L18,8 Z" fill="#c0a000"/></svg>
+        My Documents
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="7" fill="#e8a820" stroke="#c08010" stroke-width="0.8"/><path d="M6,12 L8,8 L10,12 L12,8 L14,12" fill="none" stroke="white" stroke-width="1.2"/></svg>
+        My Pictures
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="8" width="16" height="10" rx="1" fill="#1060a8"/><path d="M6,8 L6,5 Q10,2 14,5 L14,8" fill="none" stroke="#1060a8" stroke-width="2"/><path d="M8,13 L10,11 L12,13" fill="white" stroke="white" stroke-width="0.5"/><line x1="10" y1="11" x2="10" y2="16" stroke="white" stroke-width="1.2"/></svg>
+        My Music
+      </div>
+      <div class="sm-item" ondblclick="openWindow('mycomputer'); toggleStartMenu()">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="16" height="11" rx="1" fill="#1a4fa0"/><rect x="3" y="3" width="14" height="9" fill="#90c8f0"/><rect x="6" y="13" width="8" height="1.5" fill="#6888a8"/><rect x="4" y="14.5" width="12" height="1.5" fill="#4870a0"/></svg>
+        My Computer
+      </div>
+      <div class="sm-divider"></div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="16" height="16" rx="2" fill="#e8e0d0"/><circle cx="10" cy="10" r="4" fill="#316AC5"/><path d="M8,9 Q10,7 12,9 Q12,12 10,13 Q8,12 8,9" fill="white" opacity="0.5"/></svg>
+        Control Panel
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="16" height="12" rx="1" fill="#d0c0b0"/><circle cx="10" cy="11" r="3" fill="#f0d060" stroke="#c0a040"/><rect x="9" y="2" width="2" height="3" fill="#c0c0c0"/></svg>
+        Printers and Faxes
+      </div>
+      <div class="sm-divider"></div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="7" fill="#f0c040"/><text x="10" y="14" text-anchor="middle" fill="#804000" font-size="10" font-weight="bold" font-family="Times">?</text></svg>
+        Help and Support
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="5" fill="none" stroke="#316AC5" stroke-width="2"/><line x1="14" y1="14" x2="18" y2="18" stroke="#316AC5" stroke-width="2.5" stroke-linecap="round"/></svg>
+        Search
+      </div>
+      <div class="sm-item">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="16" height="10" rx="1" fill="#d0d0d0" stroke="#a0a0a0"/><rect x="4" y="8" width="12" height="6" fill="white"/></svg>
+        Run...
+      </div>
+    </div>
+  </div>
+  <div class="sm-footer">
+    <div class="sm-footer-btn" onclick="showLogOffDialog()">
+      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="5" r="3" fill="#f8a840"/><path d="M2,15 Q2,9 8,9 Q14,9 14,15" fill="#f8a840"/></svg>
+      Log Off
+    </div>
+    <div class="sm-footer-btn" onclick="showShutDownDialog()">
+      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9" r="5" fill="none" stroke="#e04020" stroke-width="1.5"/><line x1="8" y1="4" x2="8" y2="9" stroke="#e04020" stroke-width="1.5"/></svg>
+      Turn Off Computer
+    </div>
+  </div>
+</div>
+
+<!-- ===== WINDOWS ===== -->
+
+<!-- My Computer Window -->
+<div id="win-mycomputer" class="xp-window" style="left:160px;top:60px;width:580px;height:400px;display:none;">
+  <div class="win-titlebar" onmousedown="startDrag(event,'win-mycomputer')" ondblclick="toggleMaximize('win-mycomputer')">
+    <svg class="win-titlebar-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="14" height="9" rx="1" fill="#1a4fa0"/><rect x="2" y="2" width="12" height="7" fill="#90c8f0"/><rect x="5" y="10" width="6" height="1.5" fill="#5080a8"/><rect x="3" y="11.5" width="10" height="1.5" fill="#3060a0"/></svg>
+    <span class="win-titlebar-text">My Computer</span>
+    <div class="win-controls">
+      <button class="wc-btn wc-minimize" onclick="minimizeWindow('mycomputer')" title="Minimize">&#x2013;</button>
+      <button class="wc-btn wc-maximize" onclick="toggleMaximize('win-mycomputer')" title="Maximize/Restore">&#9633;</button>
+      <button class="wc-btn wc-close" onclick="closeWindow('mycomputer')" title="Close">&#x2715;</button>
+    </div>
+  </div>
+  <div class="win-toolbar">
+    <button class="tb-btn" disabled title="Back">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M8,2 L3,7 L8,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+      Back
+    </button>
+    <button class="tb-btn" disabled title="Forward">
+      Forward
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M6,2 L11,7 L6,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+    </button>
+    <button class="tb-btn" disabled title="Up">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M3,9 L7,4 L11,9" fill="none" stroke="#333" stroke-width="1.5"/><line x1="7" y1="4" x2="7" y2="12" stroke="#333" stroke-width="1.5"/></svg>
+      Up
+    </button>
+    <div class="tb-separator"></div>
+    <button class="tb-btn" title="Folders">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M1,4 L5,4 L7,2 L13,2 L13,12 L1,12 Z" fill="#f0d040" stroke="#c0a000" stroke-width="0.8"/></svg>
+      Folders
+    </button>
+    <button class="tb-btn" title="Search">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="4" fill="none" stroke="#333" stroke-width="1.5"/><line x1="9" y1="9" x2="13" y2="13" stroke="#333" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Search
+    </button>
+  </div>
+  <div class="win-addressbar">
+    <span class="addr-label">Address</span>
+    <input class="addr-input" type="text" value="My Computer" readonly/>
+    <button class="addr-go-btn">Go</button>
+  </div>
+  <div class="win-body">
+    <div class="win-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="white" opacity="0.7"/><text x="6" y="9" text-anchor="middle" font-size="7" fill="#2060B0">i</text></svg>
+          System Tasks
+        </div>
+        <div class="sidebar-section-body">
+          <a class="sidebar-link"><svg viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" rx="1" fill="white" opacity="0.5"/></svg>View system information</a>
+          <a class="sidebar-link"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="white" opacity="0.4"/></svg>Add or remove programs</a>
+          <a class="sidebar-link"><svg viewBox="0 0 14 14"><rect x="2" y="2" width="10" height="10" rx="5" fill="white" opacity="0.4"/></svg>Change a setting</a>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Other Places</div>
+        <div class="sidebar-section-body">
+          <a class="sidebar-link">My Network Places</a>
+          <a class="sidebar-link">My Documents</a>
+          <a class="sidebar-link">Control Panel</a>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Details</div>
+        <div class="sidebar-section-body">
+          <div style="color:white;font-size:10px;padding:2px 4px;">
+            <strong>My Computer</strong><br/>
+            System Folder
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="win-filelist" id="mc-filelist">
+      <!-- Drives and folders injected by JS -->
+    </div>
+  </div>
+  <div class="win-statusbar">
+    <span>5 objects</span>
+    <span>Disk space available</span>
+  </div>
+  <div class="win-resize" onmousedown="startResize(event,'win-mycomputer')"></div>
+</div>
+
+<!-- My Documents Window -->
+<div id="win-mydocuments" class="xp-window" style="left:200px;top:80px;width:560px;height:380px;display:none;">
+  <div class="win-titlebar" onmousedown="startDrag(event,'win-mydocuments')" ondblclick="toggleMaximize('win-mydocuments')">
+    <svg class="win-titlebar-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M2,2 L10,2 L14,6 L14,15 L2,15 Z" fill="#f0d040" stroke="#c0a000" stroke-width="0.8"/><path d="M10,2 L10,6 L14,6 Z" fill="#c0a000"/></svg>
+    <span class="win-titlebar-text">My Documents</span>
+    <div class="win-controls">
+      <button class="wc-btn wc-minimize" onclick="minimizeWindow('mydocuments')">&#x2013;</button>
+      <button class="wc-btn wc-maximize" onclick="toggleMaximize('win-mydocuments')">&#9633;</button>
+      <button class="wc-btn wc-close" onclick="closeWindow('mydocuments')">&#x2715;</button>
+    </div>
+  </div>
+  <div class="win-toolbar">
+    <button class="tb-btn" disabled>
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M8,2 L3,7 L8,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+      Back
+    </button>
+    <button class="tb-btn" disabled>
+      Forward
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M6,2 L11,7 L6,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+    </button>
+    <div class="tb-separator"></div>
+    <button class="tb-btn">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="4" fill="none" stroke="#333" stroke-width="1.5"/><line x1="9" y1="9" x2="13" y2="13" stroke="#333" stroke-width="1.5"/></svg>
+      Search
+    </button>
+  </div>
+  <div class="win-addressbar">
+    <span class="addr-label">Address</span>
+    <input class="addr-input" type="text" value="C:\Documents and Settings\User\My Documents" readonly/>
+    <button class="addr-go-btn">Go</button>
+  </div>
+  <div class="win-body">
+    <div class="win-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">File and Folder Tasks</div>
+        <div class="sidebar-section-body">
+          <a class="sidebar-link">Make a new folder</a>
+          <a class="sidebar-link">Publish this folder</a>
+          <a class="sidebar-link">Share this folder</a>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Other Places</div>
+        <div class="sidebar-section-body">
+          <a class="sidebar-link">Desktop</a>
+          <a class="sidebar-link">My Computer</a>
+          <a class="sidebar-link">My Network Places</a>
+        </div>
+      </div>
+    </div>
+    <div class="win-filelist">
+      <div class="file-item" onclick="this.classList.toggle('selected')">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M2,4 L16,4 L22,10 L22,28 L2,28 Z" fill="#90c4f8" stroke="#5090d0" stroke-width="1"/><path d="M16,4 L16,10 L22,10 Z" fill="#5090d0"/><line x1="5" y1="14" x2="19" y2="14" stroke="#3878c0" stroke-width="1.2"/><line x1="5" y1="17" x2="19" y2="17" stroke="#3878c0" stroke-width="1.2"/><line x1="5" y1="20" x2="14" y2="20" stroke="#3878c0" stroke-width="1.2"/></svg>
+        <span class="file-item-label">Resume.doc</span>
+      </div>
+      <div class="file-item" onclick="this.classList.toggle('selected')">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M2,4 L18,4 L26,12 L26,28 L2,28 Z" fill="#e8f890" stroke="#b0c040" stroke-width="1"/><path d="M18,4 L18,12 L26,12 Z" fill="#b0c040"/><line x1="5" y1="16" x2="23" y2="16" stroke="#808820" stroke-width="1.2"/><line x1="5" y1="19" x2="23" y2="19" stroke="#808820" stroke-width="1.2"/></svg>
+        <span class="file-item-label">notes.txt</span>
+      </div>
+      <div class="file-item" onclick="this.classList.toggle('selected')">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="28" height="28" rx="1" fill="#f0c0c0" stroke="#c05858" stroke-width="1"/><rect x="4" y="4" width="24" height="18" fill="#f8e8e8"/><ellipse cx="16" cy="26" rx="4" ry="3" fill="#c05858" opacity="0.5"/></svg>
+        <span class="file-item-label">photo.jpg</span>
+      </div>
+      <div class="file-item" onclick="this.classList.toggle('selected')">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M4,4 L20,4 L28,12 L28,30 L4,30 Z" fill="#f0d040" stroke="#c0a000" stroke-width="1"/><path d="M20,4 L20,12 L28,12 Z" fill="#c0a000"/></svg>
+        <span class="file-item-label">My Pictures</span>
+      </div>
+      <div class="file-item" onclick="this.classList.toggle('selected')">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M4,4 L20,4 L28,12 L28,30 L4,30 Z" fill="#f0d040" stroke="#c0a000" stroke-width="1"/><path d="M20,4 L20,12 L28,12 Z" fill="#c0a000"/></svg>
+        <span class="file-item-label">My Music</span>
+      </div>
+    </div>
+  </div>
+  <div class="win-statusbar">
+    <span>5 objects</span>
+  </div>
+  <div class="win-resize" onmousedown="startResize(event,'win-mydocuments')"></div>
+</div>
+
+<!-- Internet Explorer Window -->
+<div id="win-ie" class="xp-window" style="left:120px;top:50px;width:700px;height:500px;display:none;">
+  <div class="win-titlebar" onmousedown="startDrag(event,'win-ie')" ondblclick="toggleMaximize('win-ie')">
+    <svg class="win-titlebar-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" fill="#1a70c8"/><ellipse cx="8" cy="8" rx="3" ry="6" fill="none" stroke="#90d0f8" stroke-width="0.8"/><ellipse cx="8" cy="8" rx="6" ry="3" fill="none" stroke="#90d0f8" stroke-width="0.8"/><ellipse cx="11" cy="5" rx="4" ry="2" fill="none" stroke="#f8c000" stroke-width="1.5" transform="rotate(-30 11 5)"/></svg>
+    <span class="win-titlebar-text" id="ie-title">MSN.com - Microsoft Internet Explorer</span>
+    <div class="win-controls">
+      <button class="wc-btn wc-minimize" onclick="minimizeWindow('ie')">&#x2013;</button>
+      <button class="wc-btn wc-maximize" onclick="toggleMaximize('win-ie')">&#9633;</button>
+      <button class="wc-btn wc-close" onclick="closeWindow('ie')">&#x2715;</button>
+    </div>
+  </div>
+  <div class="win-toolbar">
+    <button class="tb-btn" id="ie-back-btn" disabled onclick="ieBack()">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M8,2 L3,7 L8,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+      Back
+    </button>
+    <button class="tb-btn" id="ie-fwd-btn" disabled onclick="ieForward()">
+      Forward
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M6,2 L11,7 L6,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+    </button>
+    <button class="tb-btn" onclick="ieStop()" id="ie-stop-btn">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><line x1="2" y1="2" x2="12" y2="12" stroke="#d03020" stroke-width="1.8"/><line x1="12" y1="2" x2="2" y2="12" stroke="#d03020" stroke-width="1.8"/></svg>
+      Stop
+    </button>
+    <button class="tb-btn" onclick="ieRefresh()">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M3,7 Q3,3 7,3 Q9,3 10,4" fill="none" stroke="#1060a0" stroke-width="1.5"/><path d="M11,7 Q11,11 7,11 Q5,11 4,10" fill="none" stroke="#1060a0" stroke-width="1.5"/><polygon points="10,2 12,5 8,5" fill="#1060a0"/><polygon points="4,9 2,12 6,12" fill="#1060a0"/></svg>
+      Refresh
+    </button>
+    <button class="tb-btn" onclick="ieHome()">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M1,8 L7,2 L13,8" fill="none" stroke="#1060a0" stroke-width="1.5"/><rect x="3" y="8" width="8" height="5" fill="#1060a0"/><rect x="5" y="10" width="4" height="3" fill="#90c0f0"/></svg>
+      Home
+    </button>
+    <div class="tb-separator"></div>
+    <button class="tb-btn">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M2,3 L12,3 L12,11 L2,11 Z" fill="none" stroke="#c04020" stroke-width="1"/><line x1="4" y1="6" x2="10" y2="6" stroke="#c04020"/><line x1="4" y1="8" x2="8" y2="8" stroke="#c04020"/></svg>
+      Favorites
+    </button>
+  </div>
+  <div class="win-addressbar">
+    <span class="addr-label">Address</span>
+    <input class="addr-input" type="text" id="ie-address" value="http://www.msn.com/" onkeydown="if(event.key==='Enter')ieNavigate(this.value)"/>
+    <button class="addr-go-btn" onclick="ieNavigate(document.getElementById('ie-address').value)">Go</button>
+  </div>
+  <div class="win-body" style="flex-direction:column;overflow:hidden;">
+    <div id="ie-content" style="flex:1;overflow:auto;background:#fff;font-family:Times New Roman,serif;font-size:13px;padding:0;"></div>
+  </div>
+  <div class="win-statusbar">
+    <span id="ie-statusbar">Done</span>
+    <span id="ie-zone">Internet</span>
+  </div>
+  <div class="win-resize" onmousedown="startResize(event,'win-ie')"></div>
+</div>
+
+<!-- Recycle Bin Window -->
+<div id="win-recycle" class="xp-window" style="left:180px;top:90px;width:500px;height:320px;display:none;">
+  <div class="win-titlebar" onmousedown="startDrag(event,'win-recycle')" ondblclick="toggleMaximize('win-recycle')">
+    <svg class="win-titlebar-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="8" height="10" rx="0.5" fill="#c8d8f0" stroke="#6888c0" stroke-width="0.8"/><rect x="3" y="4" width="10" height="2" rx="0.5" fill="#88a8d8"/><rect x="6" y="2" width="4" height="2" rx="0.5" fill="#7098c8"/></svg>
+    <span class="win-titlebar-text">Recycle Bin</span>
+    <div class="win-controls">
+      <button class="wc-btn wc-minimize" onclick="minimizeWindow('recycle')">&#x2013;</button>
+      <button class="wc-btn wc-maximize" onclick="toggleMaximize('win-recycle')">&#9633;</button>
+      <button class="wc-btn wc-close" onclick="closeWindow('recycle')">&#x2715;</button>
+    </div>
+  </div>
+  <div class="win-toolbar">
+    <button class="tb-btn" style="color:#d03020;font-weight:bold;">Empty the Recycle Bin</button>
+    <div class="tb-separator"></div>
+    <button class="tb-btn" disabled>Restore all items</button>
+  </div>
+  <div class="win-addressbar">
+    <span class="addr-label">Address</span>
+    <input class="addr-input" type="text" value="Recycle Bin" readonly/>
+    <button class="addr-go-btn">Go</button>
+  </div>
+  <div class="win-body">
+    <div class="win-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Recycle Bin Tasks</div>
+        <div class="sidebar-section-body">
+          <a class="sidebar-link">Empty the Recycle Bin</a>
+          <a class="sidebar-link">Restore all items</a>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Other Places</div>
+        <div class="sidebar-section-body">
+          <a class="sidebar-link">Desktop</a>
+          <a class="sidebar-link">My Documents</a>
+          <a class="sidebar-link">My Computer</a>
+        </div>
+      </div>
+    </div>
+    <div class="win-filelist" style="align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#888;font-size:13px;padding-top:50px;">
+      <svg width="48" height="48" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="12" width="14" height="17" rx="1" fill="#c8d8f0" stroke="#6888c0" stroke-width="1"/><rect x="7" y="10" width="18" height="3" rx="1" fill="#88a8d8" stroke="#5080b8" stroke-width="0.8"/><rect x="13" y="7" width="6" height="3" rx="1" fill="#7098c8" stroke="#4070a8" stroke-width="0.8"/><line x1="13" y1="15" x2="13" y2="26" stroke="#8090b8" stroke-width="1.2"/><line x1="16" y1="15" x2="16" y2="26" stroke="#8090b8" stroke-width="1.2"/><line x1="19" y1="15" x2="19" y2="26" stroke="#8090b8" stroke-width="1.2"/></svg>
+      <span>The Recycle Bin is empty.</span>
+    </div>
+  </div>
+  <div class="win-statusbar"><span>0 objects</span></div>
+  <div class="win-resize" onmousedown="startResize(event,'win-recycle')"></div>
+</div>
+
+<!-- ===== NOTEPAD: SOBRE MIM ===== -->
+<div id="win-sobreMim" class="xp-window inactive" style="left:180px;top:60px;width:560px;height:480px;display:none;">
+  <div class="win-titlebar" onmousedown="startDrag(event,'win-sobreMim')" ondblclick="toggleMaximize('win-sobreMim')">
+    <svg class="win-titlebar-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="1" width="10" height="13" rx="0.5" fill="white" stroke="#aaa" stroke-width="0.8"/>
+      <path d="M9,1 L12,4 L9,4 Z" fill="#ddd"/>
+      <line x1="4" y1="5" x2="10" y2="5" stroke="#aaa" stroke-width="0.8"/>
+      <line x1="4" y1="7" x2="10" y2="7" stroke="#aaa" stroke-width="0.8"/>
+      <line x1="4" y1="9" x2="8"  y2="9" stroke="#aaa" stroke-width="0.8"/>
+    </svg>
+    <span class="win-titlebar-text">Sobre mim.txt - Bloco de Notas</span>
+    <div class="win-controls">
+      <button class="wc-btn wc-minimize" onclick="minimizeWindow('sobreMim')">&#x2013;</button>
+      <button class="wc-btn wc-maximize" onclick="toggleMaximize('win-sobreMim')">&#9633;</button>
+      <button class="wc-btn wc-close" onclick="closeWindow('sobreMim')">&#x2715;</button>
+    </div>
+  </div>
+  <!-- Notepad menu bar -->
+  <div style="background:#ECE9D8;border-bottom:1px solid #ACA899;padding:1px 0;display:flex;font-family:Tahoma,Arial,sans-serif;font-size:12px;flex-shrink:0;">
+    <div class="notepad-menu-item" onclick="this.classList.toggle('open')" style="padding:2px 8px;cursor:default;border-radius:2px;position:relative;">
+      Arquivo
+      <div class="notepad-dropdown" style="display:none;position:absolute;top:100%;left:0;background:#F4F0E8;border:1px solid #9090A0;box-shadow:2px 2px 4px rgba(0,0,0,0.2);min-width:140px;z-index:100;font-size:12px;">
+        <div class="cm-item">Novo</div>
+        <div class="cm-item">Abrir...</div>
+        <div class="cm-item">Salvar</div>
+        <div class="cm-divider"></div>
+        <div class="cm-item" onclick="window.print()">Imprimir...</div>
+        <div class="cm-divider"></div>
+        <div class="cm-item" onclick="closeWindow('sobreMim')">Sair</div>
+      </div>
+    </div>
+    <div style="padding:2px 8px;cursor:default;border-radius:2px;">Editar</div>
+    <div style="padding:2px 8px;cursor:default;border-radius:2px;">Formatar</div>
+    <div style="padding:2px 8px;cursor:default;border-radius:2px;">Exibir</div>
+    <div style="padding:2px 8px;cursor:default;border-radius:2px;">Ajuda</div>
+  </div>
+  <!-- Textarea -->
+  <textarea id="notepad-content" spellcheck="false" style="
+    flex:1;
+    width:100%;
+    padding:6px 8px;
+    font-family:'Courier New',Courier,monospace;
+    font-size:13px;
+    line-height:1.6;
+    border:none;
+    outline:none;
+    resize:none;
+    background:white;
+    color:#000;
+    overflow:auto;
+  ">Sobre mim
+=========
+
+Nome: André Nicolau Darcie
+
+Sou desenvolvedor de software e cientista da computação, com interesse
+em desenvolvimento web backend e criação de jogos. Sou apaixonado pela
+fusão de disciplinas humanísticas com ciências exatas, e de arte com
+tecnologia.
+
+
+CARREIRA
+--------
+
+Atualmente sou desenvolvedor sênior na NTT Data, uma das maiores
+consultorias de tecnologia do mundo. Estou alocado na XP Investimentos,
+a maior corretora do Brasil, atuando na área de benefícios do cartão.
+
+Trabalho com arquitetura de microserviços, APIs distribuídas e
+integrações entre sistemas, com foco em escalabilidade, observabilidade,
+resiliência e qualidade de software em ambiente de alta demanda.
+
+Anteriormente atuei na startup Exato Digital, especializada em
+verificações de antecedentes e soluções Know Your Customer, com
+projetos para Grupo Globo, GetNinjas, Quinto Andar, B3, Stone e Huawei.
+
+
+FORMAÇÃO
+--------
+
+- Bacharelado em Ciência da Computação
+- Pós-graduação em Ciência de Dados Aplicada — PUC Minas
+- 3 anos de iniciação científica com apoio do CNPq
+
+
+ESCRITA & COMUNIDADE
+--------------------
+
+Escrevo em https://dev.to/andredarcie sobre tecnologia, realidade
+virtual, ciência, carreira, filosofia e arte.
+
+Sou organizador e fundador do Clube de Leitura nas Montanhas, uma
+iniciativa de leitura coletiva de livros técnicos e científicos.
+
+Nas horas vagas, atuo como professor e consultor em C# e .NET.
+
+
+VIDA PESSOAL
+------------
+
+Adotei um estilo de vida nômade digital, compartilhando experiências
+pelo mundo no Instagram: @andre.darcie
+
+Desenvolvo jogos — os mais notáveis são Brian's Mansion, Insomnia,
+Get Out, Life is Undefined, Zero to One e Zero The Hero.
+
+Sou entusiasta de realidade virtual e realidade mista, com canal no
+TikTok: @andre_do_vr
+
+Catalogo tudo que consumo (livros, filmes, séries, jogos) no repositório
+My Life Data no GitHub.
+
+
+CONTATO
+-------
+
+E-mail    : andrendarcie@gmail.com
+LinkedIn  : linkedin.com/in/andré-n-darcie-8b64817b
+GitHub    : github.com/andredarcie
+Kaggle    : kaggle.com/andredarcie
+itch.io   : andredarcie.itch.io
+Dev.to    : dev.to/andredarcie
+Codepen   : codepen.io/andredarcie
+Instagram : instagram.com/andre.darcie
+
+
+=========================================
+Andre OS — Professional Edition
+</textarea>
+  <div style="background:#ECE9D8;border-top:1px solid #ACA899;padding:1px 8px;font-family:Tahoma,Arial,sans-serif;font-size:11px;color:#444;flex-shrink:0;">
+    Ln 1, Col 1
+  </div>
+  <div class="win-resize" onmousedown="startResize(event,'win-sobreMim')"></div>
+</div>
+
+<!-- ===== PROJECT IFRAME WINDOW ===== -->
+<div id="win-project" class="xp-window inactive" style="left:140px;top:40px;width:900px;height:580px;display:none;">
+  <div class="win-titlebar" onmousedown="startDrag(event,'win-project')" ondblclick="toggleMaximize('win-project')">
+    <svg id="proj-win-icon" class="win-titlebar-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="14" height="11" rx="1" fill="#3068b8"/><rect x="2" y="2" width="12" height="9" fill="#90c8f0"/>
+    </svg>
+    <span class="win-titlebar-text" id="proj-win-title">Project</span>
+    <div class="win-controls">
+      <button class="wc-btn wc-minimize" onclick="minimizeWindow('project')">&#x2013;</button>
+      <button class="wc-btn wc-maximize" onclick="toggleMaximize('win-project')">&#9633;</button>
+      <button class="wc-btn wc-close" onclick="closeWindow('project')">&#x2715;</button>
+    </div>
+  </div>
+  <div class="win-toolbar">
+    <button class="tb-btn" id="proj-back-btn" disabled onclick="projBack()">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M8,2 L3,7 L8,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+      Back
+    </button>
+    <button class="tb-btn" id="proj-fwd-btn" disabled onclick="projForward()">
+      Forward
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M6,2 L11,7 L6,12" fill="none" stroke="#333" stroke-width="1.5"/></svg>
+    </button>
+    <button class="tb-btn" onclick="projRefresh()">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M3,7 Q3,3 7,3 Q9,3 10,4" fill="none" stroke="#1060a0" stroke-width="1.5"/><path d="M11,7 Q11,11 7,11 Q5,11 4,10" fill="none" stroke="#1060a0" stroke-width="1.5"/><polygon points="10,2 12,5 8,5" fill="#1060a0"/><polygon points="4,9 2,12 6,12" fill="#1060a0"/></svg>
+      Refresh
+    </button>
+    <div class="tb-separator"></div>
+    <button class="tb-btn" onclick="projOpenExternal()" style="color:#0054E3;">
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="3" width="9" height="9" fill="none" stroke="#316AC5" stroke-width="1"/><path d="M7,1 L13,1 L13,7" fill="none" stroke="#316AC5" stroke-width="1.2"/><line x1="6" y1="8" x2="13" y2="1" stroke="#316AC5" stroke-width="1.2"/></svg>
+      Open in New Tab
+    </button>
+  </div>
+  <div class="win-addressbar">
+    <span class="addr-label">Address</span>
+    <input class="addr-input" type="text" id="proj-address" readonly/>
+    <button class="addr-go-btn" onclick="projOpenExternal()">Go</button>
+  </div>
+  <div class="win-body" style="flex-direction:column;overflow:hidden;position:relative;">
+    <iframe id="proj-iframe"
+      style="flex:1;width:100%;height:100%;border:none;background:#fff;"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals"
+      title="Project content">
+    </iframe>
+    <!-- Fallback overlay shown when iframe is blocked -->
+    <div id="proj-fallback" style="display:none;position:absolute;inset:0;background:#ECE9D8;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:Tahoma,Arial,sans-serif;">
+      <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" fill="#f0e8d0" stroke="#c0a060" stroke-width="2"/>
+        <line x1="20" y1="20" x2="44" y2="44" stroke="#c04020" stroke-width="4" stroke-linecap="round"/>
+        <line x1="44" y1="20" x2="20" y2="44" stroke="#c04020" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <div style="font-size:14px;font-weight:bold;color:#333;" id="proj-fallback-title">Este site não pode ser exibido aqui</div>
+      <div style="font-size:11px;color:#666;text-align:center;max-width:320px;" id="proj-fallback-msg">O servidor bloqueou a exibição neste contexto por razões de segurança (X-Frame-Options).</div>
+      <button onclick="projOpenExternal()" style="padding:6px 20px;background:linear-gradient(180deg,#4888e0,#1a5cbf);border:1px solid #0a3090;border-radius:3px;color:white;font-family:Tahoma,Arial,sans-serif;font-size:12px;cursor:pointer;">
+        Abrir no Navegador &#x2197;
+      </button>
+      <div style="font-size:10px;color:#999;" id="proj-fallback-url"></div>
+    </div>
+  </div>
+  <div class="win-statusbar">
+    <span id="proj-statusbar">Pronto</span>
+    <span id="proj-category"></span>
+  </div>
+  <div class="win-resize" onmousedown="startResize(event,'win-project')"></div>
+</div>
+
+<!-- ===== CONTEXT MENU ===== -->
+<div id="context-menu">
+  <div class="cm-item" onclick="sortIcons()">Arrange Icons By</div>
+  <div class="cm-item">Refresh</div>
+  <div class="cm-divider"></div>
+  <div class="cm-item">Paste</div>
+  <div class="cm-item gray">Paste Shortcut</div>
+  <div class="cm-item gray">Undo Delete<span style="float:right;color:#888;font-size:10px;margin-left:24px">Ctrl+Z</span></div>
+  <div class="cm-divider"></div>
+  <div class="cm-item">New</div>
+  <div class="cm-divider"></div>
+  <div class="cm-item bold" onclick="showProperties()">Properties</div>
+</div>
+
+<!-- ===== TOOLTIP ===== -->
+<div class="xp-tooltip" id="tooltip"></div>
+
+<!-- ===== SHUTDOWN DIALOG ===== -->
+<div id="shutdown-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;display:none;align-items:center;justify-content:center;">
+  <div style="width:380px;background:#ECE9D8;border:3px solid #0054E3;border-radius:8px 8px 0 0;box-shadow:4px 4px 16px rgba(0,0,0,0.6);overflow:hidden;">
+    <div style="background:linear-gradient(180deg,#4A90DC 0%,#0858D0 50%,#0048C8 100%);height:28px;display:flex;align-items:center;padding:0 8px;">
+      <span style="color:white;font-weight:bold;font-size:12px;text-shadow:1px 1px 2px rgba(0,0,0,0.6);">Turn Off Computer</span>
+    </div>
+    <div style="padding:20px;display:flex;gap:16px;align-items:center;">
+      <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="28" r="16" fill="#1050a0" stroke="#0040a0"/><circle cx="24" cy="28" r="12" fill="#1870c8"/><circle cx="24" cy="24" r="2" fill="white"/><line x1="24" y1="16" x2="24" y2="24" stroke="white" stroke-width="2"/></svg>
+      <div>
+        <div style="font-weight:bold;margin-bottom:8px;">What do you want the computer to do?</div>
+        <select id="shutdown-option" style="width:200px;height:22px;font-family:Tahoma;font-size:11px;border:1px solid #7F9DB9;">
+          <option>Stand By</option>
+          <option selected>Turn Off</option>
+          <option>Restart</option>
+        </select>
+      </div>
+    </div>
+    <div style="background:#D8E4F8;border-top:1px solid #ACA899;padding:6px 12px;display:flex;justify-content:flex-end;gap:6px;">
+      <button onclick="doShutdown()" style="padding:3px 16px;font-family:Tahoma;font-size:11px;background:linear-gradient(180deg,#F4F0E8,#DEDAD0);border:1px solid #ACA899;cursor:pointer;">OK</button>
+      <button onclick="document.getElementById('shutdown-overlay').style.display='none'" style="padding:3px 16px;font-family:Tahoma;font-size:11px;background:linear-gradient(180deg,#F4F0E8,#DEDAD0);border:1px solid #ACA899;cursor:pointer;">Cancel</button>
+      <button style="padding:3px 16px;font-family:Tahoma;font-size:11px;background:linear-gradient(180deg,#F4F0E8,#DEDAD0);border:1px solid #ACA899;cursor:pointer;">Help</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ===== STATE =====
+const windows = {
+  mycomputer: { id: 'win-mycomputer', title: 'My Computer', open: false, minimized: false, maximized: false, prevRect: null },
+  mydocuments: { id: 'win-mydocuments', title: 'My Documents', open: false, minimized: false, maximized: false, prevRect: null },
+  ie: { id: 'win-ie', title: 'Internet Explorer', open: false, minimized: false, maximized: false, prevRect: null },
+  recycle: { id: 'win-recycle', title: 'Recycle Bin', open: false, minimized: false, maximized: false, prevRect: null },
+  network:   { id: 'win-mycomputer', title: 'My Network Places', open: false, minimized: false, maximized: false, prevRect: null },
+  sobreMim:  { id: 'win-sobreMim',   title: 'Sobre mim.txt - Bloco de Notas', open: false, minimized: false, maximized: false, prevRect: null }
+};
+
+let activeWindow = null;
+let startMenuOpen = false;
+
+// ===== CLOCK =====
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clock').textContent = `${h}:${m.toString().padStart(2,'0')} ${ampm}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ===== WINDOW MANAGEMENT =====
+function openWindow(name) {
+  if (name === 'network') name = 'mycomputer';
+  const win = windows[name];
+  if (!win) return;
+  const el = document.getElementById(win.id);
+  if (!el) return;
+  win.open = true;
+  win.minimized = false;
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+  focusWindow(name);
+  renderTaskbar();
+  if (name === 'mycomputer') populateMyComputer();
+  if (name === 'ie') loadIEHome();
+}
+
+function closeWindow(name) {
+  const win = windows[name];
+  if (!win) return;
+  const el = document.getElementById(win.id);
+  win.open = false;
+  win.minimized = false;
+  win.maximized = false;
+  el.style.display = 'none';
+  if (activeWindow === name) activeWindow = null;
+  renderTaskbar();
+  updateWindowFocus();
+}
+
+function minimizeWindow(name) {
+  const win = windows[name];
+  if (!win) return;
+  win.minimized = true;
+  document.getElementById(win.id).classList.add('minimized');
+  if (activeWindow === name) {
+    activeWindow = null;
+    updateWindowFocus();
+  }
+  renderTaskbar();
+}
+
+function toggleMaximize(elId) {
+  const name = Object.keys(windows).find(k => windows[k].id === elId);
+  if (!name) return;
+  const win = windows[name];
+  const el = document.getElementById(elId);
+  if (win.maximized) {
+    // restore
+    const r = win.prevRect;
+    el.style.left = r.left;
+    el.style.top = r.top;
+    el.style.width = r.width;
+    el.style.height = r.height;
+    el.style.borderRadius = '';
+    win.maximized = false;
+  } else {
+    win.prevRect = { left: el.style.left, top: el.style.top, width: el.style.width, height: el.style.height };
+    el.style.left = '0';
+    el.style.top = '0';
+    el.style.width = '100vw';
+    el.style.height = 'calc(100vh - 30px)';
+    el.style.borderRadius = '0';
+    win.maximized = true;
+  }
+  focusWindow(name);
+}
+
+function focusWindow(name) {
+  if (activeWindow === name) return;
+  // deactivate old
+  if (activeWindow) {
+    document.getElementById(windows[activeWindow].id).classList.add('inactive');
+  }
+  activeWindow = name;
+  const el = document.getElementById(windows[name].id);
+  el.classList.remove('inactive');
+  // bring to front
+  document.querySelectorAll('.xp-window').forEach(w => { if (w.style.zIndex > 200) w.style.zIndex = 200; });
+  el.style.zIndex = '300';
+  windows[name].minimized = false;
+  el.classList.remove('minimized');
+  renderTaskbar();
+}
+
+function updateWindowFocus() {
+  document.querySelectorAll('.xp-window').forEach(el => el.classList.add('inactive'));
+  if (activeWindow) {
+    document.getElementById(windows[activeWindow].id).classList.remove('inactive');
+  }
+}
+
+function clickTaskBtn(name) {
+  const win = windows[name];
+  if (!win || !win.open) return;
+  if (activeWindow === name && !win.minimized) {
+    minimizeWindow(name);
+  } else {
+    win.minimized = false;
+    document.getElementById(win.id).classList.remove('minimized');
+    focusWindow(name);
+  }
+}
+
+function renderTaskbar() {
+  const container = document.getElementById('taskbar-tasks');
+  container.innerHTML = '';
+  Object.entries(windows).forEach(([name, win]) => {
+    if (!win.open) return;
+    const btn = document.createElement('div');
+    btn.className = 'task-btn' + (activeWindow === name && !win.minimized ? ' active' : '');
+    btn.onclick = () => clickTaskBtn(name);
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="11" rx="1" fill="#3068b8"/><rect x="2" y="2" width="12" height="9" fill="#90c8f0"/></svg> ${win.title}`;
+    container.appendChild(btn);
+  });
+}
+
+// ===== DRAGGING =====
+let drag = { active: false, winId: null, startX: 0, startY: 0, origLeft: 0, origTop: 0 };
+let resize = { active: false, winId: null, startX: 0, startY: 0, origW: 0, origH: 0 };
+
+function startDrag(e, winId) {
+  if (e.target.closest('.win-controls')) return;
+  const name = Object.keys(windows).find(k => windows[k].id === winId);
+  if (name) focusWindow(name);
+  const el = document.getElementById(winId);
+  drag = { active: true, winId, startX: e.clientX, startY: e.clientY,
+    origLeft: parseInt(el.style.left)||0, origTop: parseInt(el.style.top)||0 };
+  e.preventDefault();
+}
+
+function startResize(e, winId) {
+  const el = document.getElementById(winId);
+  resize = { active: true, winId, startX: e.clientX, startY: e.clientY,
+    origW: el.offsetWidth, origH: el.offsetHeight };
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+document.addEventListener('mousemove', e => {
+  if (drag.active) {
+    const el = document.getElementById(drag.winId);
+    const dx = e.clientX - drag.startX, dy = e.clientY - drag.startY;
+    const newLeft = Math.max(0, Math.min(drag.origLeft + dx, window.innerWidth - 100));
+    const newTop = Math.max(0, Math.min(drag.origTop + dy, window.innerHeight - 60));
+    el.style.left = newLeft + 'px';
+    el.style.top = newTop + 'px';
+  }
+  if (resize.active) {
+    const el = document.getElementById(resize.winId);
+    const dx = e.clientX - resize.startX, dy = e.clientY - resize.startY;
+    el.style.width = Math.max(300, resize.origW + dx) + 'px';
+    el.style.height = Math.max(200, resize.origH + dy) + 'px';
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  drag.active = false;
+  resize.active = false;
+});
+
+// click on window to focus
+document.querySelectorAll('.xp-window').forEach(el => {
+  el.addEventListener('mousedown', function(e) {
+    const name = Object.keys(windows).find(k => windows[k].id === el.id);
+    if (name) focusWindow(name);
+  });
+});
+
+// ===== DESKTOP ICON SELECTION =====
+function selectIcon(e, el) {
+  e.stopPropagation();
+  document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function handleDesktopClick(e) {
+  if (!e.target.closest('.desktop-icon')) {
+    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+  }
+  closeContextMenu();
+  if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+    closeStartMenu();
+  }
+}
+
+// ===== START MENU =====
+function toggleStartMenu(e) {
+  if (e) e.stopPropagation();
+  startMenuOpen = !startMenuOpen;
+  const sm = document.getElementById('start-menu');
+  sm.classList.toggle('open', startMenuOpen);
+}
+
+function closeStartMenu() {
+  startMenuOpen = false;
+  document.getElementById('start-menu').classList.remove('open');
+}
+
+// ===== CONTEXT MENU =====
+function showContextMenu(e) {
+  e.preventDefault();
+  closeContextMenu();
+  closeStartMenu();
+  const cm = document.getElementById('context-menu');
+  cm.style.display = 'block';
+  const x = Math.min(e.clientX, window.innerWidth - cm.offsetWidth - 5);
+  const y = Math.min(e.clientY, window.innerHeight - 36 - cm.offsetHeight - 5);
+  cm.style.left = x + 'px';
+  cm.style.top = y + 'px';
+}
+
+function closeContextMenu() {
+  document.getElementById('context-menu').style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#context-menu')) closeContextMenu();
+});
+
+// ===== MY COMPUTER CONTENT =====
+function populateMyComputer() {
+  const list = document.getElementById('mc-filelist');
+  if (!list) return;
+  if (list.children.length > 0) return;
+  const items = [
+    { label: '3½ Floppy (A:)', icon: floppy_svg() },
+    { label: 'Local Disk (C:)', icon: harddrive_svg('#e8c040') },
+    { label: 'Local Disk (D:)', icon: harddrive_svg('#4080c8') },
+    { label: 'DVD Drive (E:)', icon: dvd_svg() },
+    { label: 'Shared Docs', icon: shared_docs_svg() },
+    { label: "User's Documents", icon: userdocs_svg() },
+  ];
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'file-item';
+    div.innerHTML = item.icon + `<span class="file-item-label">${item.label}</span>`;
+    div.onclick = () => div.classList.toggle('selected');
+    list.appendChild(div);
+  });
+}
+
+function floppy_svg() {
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="24" height="26" rx="1" fill="#708090" stroke="#404858"/><rect x="6" y="3" width="20" height="10" fill="#c0c8d0" stroke="none"/><rect x="12" y="3" width="6" height="10" fill="#5a6878"/><rect x="8" y="17" width="16" height="10" fill="#c0c8d0" stroke="#909898"/><line x1="11" y1="19" x2="11" y2="26" stroke="#888" stroke-width="0.8"/></svg>`;
+}
+
+function harddrive_svg(color) {
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="8" width="26" height="18" rx="2" fill="${color}" stroke="#8888a0"/><rect x="5" y="10" width="22" height="14" rx="1" fill="${color}" stroke="#aaaacc"/><circle cx="22" cy="17" r="4" fill="rgba(255,255,255,0.15)"/><circle cx="22" cy="17" r="2" fill="rgba(255,255,255,0.2)"/><rect x="6" y="14" width="12" height="1.5" rx="0.5" fill="rgba(255,255,255,0.3)"/><rect x="6" y="17" width="10" height="1.5" rx="0.5" fill="rgba(255,255,255,0.3)"/><rect x="6" y="20" width="8" height="1.5" rx="0.5" fill="rgba(255,255,255,0.3)"/></svg>`;
+}
+
+function dvd_svg() {
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="8" width="26" height="18" rx="2" fill="#c0b0d0" stroke="#9080b0"/><ellipse cx="16" cy="17" rx="7" ry="7" fill="#e0d8f0" stroke="#a090c0"/><ellipse cx="16" cy="17" rx="3" ry="3" fill="white" stroke="#c0b8d0"/><circle cx="16" cy="17" r="1" fill="#b0a8c8"/></svg>`;
+}
+
+function shared_docs_svg() {
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M3,10 L13,10 L16,7 L29,7 L29,27 L3,27 Z" fill="#f0d040" stroke="#c0a000" stroke-width="1"/><path d="M3,10 L13,10 L16,7" fill="none" stroke="#c0a000" stroke-width="1"/><circle cx="12" cy="20" r="4" fill="none" stroke="#c0a000" stroke-width="1"/><circle cx="20" cy="20" r="4" fill="none" stroke="#c0a000" stroke-width="1"/></svg>`;
+}
+
+function userdocs_svg() {
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M3,10 L13,10 L16,7 L29,7 L29,27 L3,27 Z" fill="#f0d040" stroke="#c0a000" stroke-width="1"/><circle cx="16" cy="18" r="4" fill="#f8c878" stroke="#c09040"/><path d="M8,27 Q8,22 16,22 Q24,22 24,27" fill="#4080c8"/></svg>`;
+}
+
+// ===== IE BROWSER =====
+const iePages = {
+  home: `
+    <div style="background:#e8f0fc;min-height:100%;font-family:Arial,sans-serif;font-size:13px;">
+      <div style="background:linear-gradient(180deg,#2050a8,#3060c8);padding:8px 16px;display:flex;align-items:center;gap:16px;">
+        <span style="color:white;font-size:18px;font-weight:bold;">MSN</span>
+        <span style="color:white;font-size:11px;">Hotmail &nbsp;|&nbsp; My MSN &nbsp;|&nbsp; Sign In</span>
+      </div>
+      <div style="display:flex;gap:0;min-height:400px;">
+        <div style="flex:1;padding:12px 16px;">
+          <h2 style="font-size:15px;color:#1a4fa0;border-bottom:2px solid #1a4fa0;padding-bottom:4px;margin-bottom:8px;">Today on MSN</h2>
+          <div style="background:white;border:1px solid #ccc;padding:10px;margin-bottom:8px;border-radius:2px;">
+            <strong style="color:#d03020;">Breaking News:</strong> Welcome to Windows XP!<br>
+            <span style="color:#444;font-size:11px;">The most exciting operating system of 2001 is here.</span>
+          </div>
+          <div style="background:white;border:1px solid #ccc;padding:10px;margin-bottom:8px;border-radius:2px;">
+            <strong>Entertainment:</strong> The Lord of the Rings premieres this year<br>
+            <span style="color:#444;font-size:11px;">Peter Jackson's epic trilogy begins its journey.</span>
+          </div>
+          <div style="background:white;border:1px solid #ccc;padding:10px;border-radius:2px;">
+            <strong>Tech News:</strong> iPod launches — 1000 songs in your pocket<br>
+            <span style="color:#444;font-size:11px;">Apple's new music player changes everything.</span>
+          </div>
+        </div>
+        <div style="width:180px;background:#f8f0e0;border-left:1px solid #ddd;padding:10px;font-size:11px;">
+          <div style="font-weight:bold;color:#1a4fa0;border-bottom:1px solid #1a4fa0;margin-bottom:6px;padding-bottom:2px;">Hotmail</div>
+          <div style="color:#316AC5;cursor:pointer;margin-bottom:3px;">Check email</div>
+          <div style="color:#316AC5;cursor:pointer;margin-bottom:8px;">Sign up FREE</div>
+          <div style="font-weight:bold;color:#1a4fa0;border-bottom:1px solid #1a4fa0;margin-bottom:6px;padding-bottom:2px;margin-top:8px;">Search the Web</div>
+          <input type="text" placeholder="Search..." style="width:100%;border:1px solid #7F9DB9;font-size:11px;padding:2px 4px;margin-bottom:4px;"/>
+          <button style="width:100%;font-size:11px;padding:2px;background:#f0d040;border:1px solid #c0a000;cursor:pointer;">Search</button>
+        </div>
+      </div>
+    </div>`,
+};
+
+function loadIEHome() {
+  const content = document.getElementById('ie-content');
+  if (content) content.innerHTML = iePages.home;
+  const addr = document.getElementById('ie-address');
+  if (addr) addr.value = 'http://www.msn.com/';
+  const title = document.getElementById('ie-title');
+  if (title) title.textContent = 'MSN.com - Microsoft Internet Explorer';
+  const status = document.getElementById('ie-statusbar');
+  if (status) status.textContent = 'Done';
+}
+
+function ieNavigate(url) {
+  const status = document.getElementById('ie-statusbar');
+  if (status) status.textContent = 'Connecting to ' + url + '...';
+  setTimeout(() => {
+    const content = document.getElementById('ie-content');
+    const title = document.getElementById('ie-title');
+    if (url.includes('msn.com') || url === '') {
+      if (content) content.innerHTML = iePages.home;
+      if (title) title.textContent = 'MSN.com - Microsoft Internet Explorer';
+    } else {
+      if (content) content.innerHTML = `
+        <div style="padding:20px;font-family:Times New Roman,serif;">
+          <h1 style="color:#c03020;font-size:18px;">The page cannot be displayed</h1>
+          <p style="margin:10px 0;">The page you are looking for is currently unavailable.<br>
+          The Web site might be experiencing technical difficulties, or you may need to adjust your browser settings.</p>
+          <hr style="border:1px solid #ccc;">
+          <p style="font-size:12px;color:#666;">Please try the following:</p>
+          <ul style="font-size:12px;color:#444;margin:8px 20px;">
+            <li>Click the <b>Refresh</b> button, or try again later.</li>
+            <li>If you typed the page address in the Address bar, make sure that it is spelled correctly.</li>
+            <li>To check your connection settings, click the <b>Tools</b> menu, and then click <b>Internet Options</b>.</li>
+          </ul>
+          <p style="font-size:11px;color:#888;">Cannot find server &bull; Internet Explorer</p>
+        </div>`;
+      if (title) title.textContent = 'The page cannot be displayed - Microsoft Internet Explorer';
+    }
+    if (status) status.textContent = 'Done';
+  }, 800);
+}
+
+function ieBack() {}
+function ieForward() {}
+function ieStop() {}
+function ieRefresh() { loadIEHome(); }
+function ieHome() { document.getElementById('ie-address').value = 'http://www.msn.com/'; loadIEHome(); }
+
+// ===== SHOW DESKTOP =====
+function showDesktop() {
+  Object.entries(windows).forEach(([name, win]) => {
+    if (win.open && !win.minimized) minimizeWindow(name);
+  });
+}
+
+// ===== DIALOGS =====
+function showShutDownDialog() {
+  closeStartMenu();
+  document.getElementById('shutdown-overlay').style.display = 'flex';
+}
+
+function showLogOffDialog() {
+  closeStartMenu();
+  alert('Log Off Windows\n\nAre you sure you want to log off?');
+}
+
+function doShutdown() {
+  const opt = document.getElementById('shutdown-option').value;
+  document.getElementById('shutdown-overlay').style.display = 'none';
+  if (opt === 'Turn Off') {
+    document.body.style.background = '#000';
+    document.body.style.color = '#fff';
+    document.body.style.display = 'flex';
+    document.body.style.alignItems = 'center';
+    document.body.style.justifyContent = 'center';
+    document.body.style.fontSize = '16px';
+    document.body.innerHTML = `<div style="text-align:center;font-family:Tahoma,Arial;color:white;"><svg width="80" height="80" viewBox="0 0 48 48"><rect width="48" height="48" fill="black"/><rect x="8" y="8" width="14" height="14" fill="#e83020"/><rect x="26" y="8" width="14" height="14" fill="#20a830"/><rect x="8" y="26" width="14" height="14" fill="#1868d8"/><rect x="26" y="26" width="14" height="14" fill="#f8c800"/></svg><div style="margin-top:16px;">It is now safe to turn off your computer.</div></div>`;
+  } else if (opt === 'Restart') {
+    location.reload();
+  }
+}
+
+function sortIcons() { closeContextMenu(); }
+function showProperties() {
+  closeContextMenu();
+  alert('Display Properties\n\nTheme: Windows XP\nWallpaper: Bliss\nResolution: ' + window.innerWidth + ' x ' + window.innerHeight);
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeStartMenu(); closeContextMenu(); }
+  if (e.ctrlKey && e.key === 'Escape') toggleStartMenu({ stopPropagation: ()=>{} });
+});
+
+// ===== PROJECTS DATA =====
+const PROJECTS = {
+  'tiny-rpg':        { title: 'Tiny RPG Studio',        url: 'https://andredarcie.github.io/tiny-rpg-studio/',  category: 'Experiência Interativa', fallback: false },
+  'ai-platformer':   { title: 'AI Platformer Trainer',  url: 'https://andredarcie.github.io/ai-platformer-trainer/', category: 'Experiência Interativa', fallback: false },
+  'evo-sim':         { title: 'Evo Sim',                url: 'https://andredarcie.github.io/evo-sim/',          category: 'Experiência Interativa', fallback: false },
+  'tiny-computer':   { title: 'Tiny Computer',          url: 'https://andredarcie.github.io/tiny-computer/',   category: 'Experiência Interativa', fallback: false },
+  'tiny-voxel':      { title: 'Tiny Voxel',             url: 'https://andredarcie.github.io/tiny-voxel/',      category: 'Experiência Interativa', fallback: false },
+  'tiny-evolution':  { title: 'Tiny Evolution',         url: 'https://andredarcie.github.io/tiny-evolution/',  category: 'Experiência Interativa', fallback: false },
+  'get-out':         { title: 'Get Out',                url: 'https://andredarcie.github.io/get-out',          category: 'Jogo',                  fallback: false },
+  'zero-the-hero':   { title: 'Zero The Hero',          url: 'https://andredarcie.itch.io/zero-the-hero',      category: 'Jogo',                  fallback: false },
+  'brians-mansion':  { title: "Brian's Mansion",        url: 'https://andredarcie.github.io/brians-mansion.html', category: 'Jogo',                fallback: false },
+  'zero-to-one':     { title: 'Zero To One',            url: 'https://andredarcie.itch.io/zero-to-one',        category: 'Jogo',                  fallback: false },
+  'insomnia':        { title: 'Insomnia',               url: 'https://andredarcie.github.io/insomnia.html',    category: 'Jogo',                  fallback: false },
+  'life-undefined':  { title: 'Life is Undefined',      url: 'https://andredarcie.github.io/life-is-undefined/', category: 'Jogo',                fallback: false },
+  'openvideogamedata':{ title: 'OpenVideoGameData',     url: 'https://www.openvideogamedata.com/',             category: 'Ferramenta',            fallback: false },
+  'my-life-data':    { title: 'My Life Data',           url: 'https://github.com/andredarcie/my-life-data',    category: 'Ferramenta',            fallback: false },
+  'csharp-guide':    { title: 'C# Quick Reference',     url: 'https://github.com/andredarcie/csharp-quick-reference-guide', category: 'Guia',   fallback: false },
+  'my-code-codex':   { title: 'My Code Codex',          url: 'https://github.com/andredarcie/my-code-codex',   category: 'Guia',                  fallback: false },
+  'clean-arch':      { title: 'Clean Arch Template',    url: 'https://github.com/andredarcie/cleanarch-cqrs-ddd-template', category: 'Template', fallback: false },
+  'clube-leitura':   { title: 'Clube de Leitura nas Montanhas', url: 'https://github.com/clube-de-leitura-nas-montanhas/agenda', category: 'Comunidade', fallback: false },
+  'blog':            { title: 'Blog - dev.to',          url: 'https://dev.to/andredarcie',                     category: 'Blog',                  fallback: false },
+};
+
+// Register project window in the windows map
+windows['project'] = { id: 'win-project', title: 'Project', open: false, minimized: false, maximized: false, prevRect: null };
+
+let currentProjectKey = null;
+const projHistory = [];
+let projHistoryIdx = -1;
+
+function openProject(key) {
+  const proj = PROJECTS[key];
+  if (!proj) return;
+  currentProjectKey = key;
+
+  const el = document.getElementById('win-project');
+  const iframe = document.getElementById('proj-iframe');
+  const fallback = document.getElementById('proj-fallback');
+  const addrInput = document.getElementById('proj-address');
+  const titleEl = document.getElementById('proj-win-title');
+  const statusEl = document.getElementById('proj-statusbar');
+  const catEl = document.getElementById('proj-category');
+
+  // Update title and address
+  titleEl.textContent = proj.title + ' - Andre OS';
+  addrInput.value = proj.url;
+  if (catEl) catEl.textContent = proj.category;
+
+  // Hide fallback, show iframe
+  iframe.style.display = 'block';
+  fallback.style.display = 'none';
+
+  // Status: loading
+  if (statusEl) statusEl.textContent = 'Conectando a ' + new URL(proj.url).hostname + '...';
+
+  // Load iframe
+  iframe.src = '';
+  setTimeout(() => {
+    iframe.src = proj.url;
+  }, 50);
+
+  // Detect iframe block via load + same-origin check
+  iframe.onload = () => {
+    if (statusEl) statusEl.textContent = 'Pronto';
+    try {
+      // If same-origin, this won't throw
+      const _ = iframe.contentWindow.location.href;
+    } catch(e) {
+      // cross-origin is OK — means it loaded but we can't read it
+      // That's fine, content is showing
+    }
+  };
+
+  iframe.onerror = () => showProjFallback(proj);
+
+  // Fallback timer: if blocked by CSP/X-Frame-Options the load event
+  // fires with no content or the browser replaces it. We detect via
+  // a blank page heuristic after a short delay.
+  const fbTimer = setTimeout(() => {
+    try {
+      if (iframe.contentDocument &&
+          (iframe.contentDocument.body === null ||
+           iframe.contentDocument.body.innerHTML === '')) {
+        showProjFallback(proj);
+      }
+    } catch(e) {
+      // cross-origin: content loaded fine, can't read — do nothing
+    }
+  }, 4000);
+
+  iframe.onload = () => {
+    clearTimeout(fbTimer);
+    if (statusEl) statusEl.textContent = 'Pronto';
+    try {
+      if (iframe.contentDocument &&
+          iframe.contentDocument.body &&
+          iframe.contentDocument.body.innerHTML === '') {
+        showProjFallback(proj);
+      }
+    } catch(e) { /* cross-origin = loaded ok */ }
+  };
+
+  // History
+  if (projHistoryIdx < projHistory.length - 1) projHistory.splice(projHistoryIdx + 1);
+  projHistory.push(key);
+  projHistoryIdx = projHistory.length - 1;
+  updateProjNavBtns();
+
+  // Open / focus window
+  windows['project'].title = proj.title;
+  openWindow('project');
+}
+
+function showProjFallback(proj) {
+  const iframe = document.getElementById('proj-iframe');
+  const fallback = document.getElementById('proj-fallback');
+  iframe.style.display = 'none';
+  fallback.style.display = 'flex';
+  document.getElementById('proj-fallback-title').textContent = '"' + proj.title + '" não pode ser exibido aqui';
+  document.getElementById('proj-fallback-url').textContent = proj.url;
+  const statusEl = document.getElementById('proj-statusbar');
+  if (statusEl) statusEl.textContent = 'Não foi possível carregar a página';
+}
+
+function projOpenExternal() {
+  if (!currentProjectKey) return;
+  const proj = PROJECTS[currentProjectKey];
+  if (proj) window.open(proj.url, '_blank');
+}
+
+function projRefresh() {
+  if (!currentProjectKey) return;
+  const iframe = document.getElementById('proj-iframe');
+  const fallback = document.getElementById('proj-fallback');
+  fallback.style.display = 'none';
+  iframe.style.display = 'block';
+  iframe.src = iframe.src;
+}
+
+function projBack() {
+  if (projHistoryIdx <= 0) return;
+  projHistoryIdx--;
+  loadProjSilent(projHistory[projHistoryIdx]);
+}
+
+function projForward() {
+  if (projHistoryIdx >= projHistory.length - 1) return;
+  projHistoryIdx++;
+  loadProjSilent(projHistory[projHistoryIdx]);
+}
+
+function loadProjSilent(key) {
+  const proj = PROJECTS[key];
+  if (!proj) return;
+  currentProjectKey = key;
+  document.getElementById('proj-address').value = proj.url;
+  document.getElementById('proj-win-title').textContent = proj.title + ' - Andre OS';
+  document.getElementById('proj-iframe').src = proj.url;
+  document.getElementById('proj-fallback').style.display = 'none';
+  document.getElementById('proj-iframe').style.display = 'block';
+  updateProjNavBtns();
+}
+
+function updateProjNavBtns() {
+  const back = document.getElementById('proj-back-btn');
+  const fwd  = document.getElementById('proj-fwd-btn');
+  if (back) back.disabled = projHistoryIdx <= 0;
+  if (fwd)  fwd.disabled  = projHistoryIdx >= projHistory.length - 1;
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  updateClock();
+  setTimeout(() => {
+    const bubble = document.createElement('div');
+    bubble.className = 'tray-bubble';
+    bubble.innerHTML = `<div class="tray-bubble-title">Bem-vindo ao Andre OS</div><div class="tray-bubble-body">Dê dois cliques nos ícones para abrir projetos.</div>`;
+    bubble.style.display = 'block';
+    document.body.appendChild(bubble);
+    setTimeout(() => { bubble.style.transition='opacity 0.5s'; bubble.style.opacity='0'; setTimeout(()=>bubble.remove(),500); }, 5000);
+  }, 800);
+});
+</script>
+</body>
+</html>
