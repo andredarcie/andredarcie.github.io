@@ -2064,6 +2064,7 @@ function openWindow(name) {
   renderTaskbar();
   if (name === 'mycomputer') populateMyComputer();
   if (name === 'ie') loadIEHome();
+  if (navigator.maxTouchPoints > 0 && !win.maximized) toggleMaximize(win.id);
 }
 
 function closeWindow(name) {
