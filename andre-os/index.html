@@ -1956,6 +1956,10 @@ Andre OS — Professional Edition
         </div>
         <!-- Card body -->
         <div style="padding:16px 24px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;background:#FFF8E1;border:1px solid #F0C040;border-radius:4px;padding:8px 10px;margin-bottom:14px;">
+            <span style="font-size:14px;flex-shrink:0;">&#9888;</span>
+            <span style="font-size:11px;color:#7a5a00;line-height:1.5;">Este site não pode ser exibido dentro do Andre OS. Você pode abri-lo no navegador ou explorar outros projetos aqui no OS.</span>
+          </div>
           <div id="proj-card-desc" style="font-size:12px;color:#333;line-height:1.6;margin-bottom:16px;"></div>
           <div style="display:flex;gap:8px;align-items:center;">
             <button onclick="projOpenExternal()" style="flex:1;padding:7px 0;background:linear-gradient(180deg,#4888e0,#1a5cbf);border:1px solid #0a3090;border-radius:3px;color:white;font-size:12px;cursor:pointer;font-family:Tahoma,Arial,sans-serif;">
@@ -2633,11 +2637,30 @@ function updateProjNavBtns() {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Double-tap support for mobile
+  let lastTap = 0;
+  let lastTapTarget = null;
+  document.addEventListener('touchend', e => {
+    const icon = e.target.closest('.desktop-icon');
+    if (!icon) return;
+    const now = Date.now();
+    if (lastTapTarget === icon && now - lastTap < 350) {
+      e.preventDefault();
+      icon.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      lastTap = 0;
+      lastTapTarget = null;
+    } else {
+      lastTap = now;
+      lastTapTarget = icon;
+    }
+  }, { passive: false });
+
   updateClock();
   setTimeout(() => {
     const bubble = document.createElement('div');
     bubble.className = 'tray-bubble';
-    bubble.innerHTML = `<div class="tray-bubble-title">Bem-vindo ao Andre OS</div><div class="tray-bubble-body">Dê dois cliques nos ícones para abrir projetos.</div>`;
+    const isTouch = navigator.maxTouchPoints > 0;
+    bubble.innerHTML = `<div class="tray-bubble-title">Bem-vindo ao Andre OS</div><div class="tray-bubble-body">${isTouch ? 'Toque duas vezes nos ícones para abrir projetos.' : 'Dê dois cliques nos ícones para abrir projetos.'}</div>`;
     bubble.style.display = 'block';
     document.body.appendChild(bubble);
     setTimeout(() => { bubble.style.transition='opacity 0.5s'; bubble.style.opacity='0'; setTimeout(()=>bubble.remove(),500); }, 5000);
