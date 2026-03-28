@@ -2076,6 +2076,7 @@ function closeWindow(name) {
   win.maximized = false;
   el.style.display = 'none';
   if (activeWindow === name) activeWindow = null;
+  if (name === 'project') history.replaceState(null, '', location.pathname);
   renderTaskbar();
   updateWindowFocus();
 }
@@ -2526,6 +2527,7 @@ function openProject(key) {
   updateProjNavBtns();
 
   windows['project'].title = proj.title;
+  history.replaceState(null, '', '?app=' + key);
   openWindow('project');
 
   if (isBlockedHost(proj.url)) {
@@ -2657,15 +2659,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: false });
 
   updateClock();
-  setTimeout(() => {
-    const bubble = document.createElement('div');
-    bubble.className = 'tray-bubble';
-    const isTouch = navigator.maxTouchPoints > 0;
-    bubble.innerHTML = `<div class="tray-bubble-title">Bem-vindo ao Andre OS</div><div class="tray-bubble-body">${isTouch ? 'Toque duas vezes nos ícones para abrir projetos.' : 'Dê dois cliques nos ícones para abrir projetos.'}</div>`;
-    bubble.style.display = 'block';
-    document.body.appendChild(bubble);
-    setTimeout(() => { bubble.style.transition='opacity 0.5s'; bubble.style.opacity='0'; setTimeout(()=>bubble.remove(),500); }, 5000);
-  }, 800);
+
+  // Open project from URL param: ?app=tiny-rpg
+  const urlApp = new URLSearchParams(location.search).get('app');
+  if (urlApp && PROJECTS[urlApp]) {
+    openProject(urlApp);
+  } else {
+    setTimeout(() => {
+      const bubble = document.createElement('div');
+      bubble.className = 'tray-bubble';
+      const isTouch = navigator.maxTouchPoints > 0;
+      bubble.innerHTML = `<div class="tray-bubble-title">Bem-vindo ao Andre OS</div><div class="tray-bubble-body">${isTouch ? 'Toque duas vezes nos ícones para abrir projetos.' : 'Dê dois cliques nos ícones para abrir projetos.'}</div>`;
+      bubble.style.display = 'block';
+      document.body.appendChild(bubble);
+      setTimeout(() => { bubble.style.transition='opacity 0.5s'; bubble.style.opacity='0'; setTimeout(()=>bubble.remove(),500); }, 5000);
+    }, 800);
+  }
 });
 </script>
 </body>
