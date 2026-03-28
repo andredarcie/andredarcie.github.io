@@ -1941,19 +1941,33 @@ Andre OS — Professional Edition
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals"
       title="Project content">
     </iframe>
-    <!-- Fallback overlay shown when iframe is blocked -->
-    <div id="proj-fallback" style="display:none;position:absolute;inset:0;background:#ECE9D8;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:Tahoma,Arial,sans-serif;">
-      <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="32" cy="32" r="28" fill="#f0e8d0" stroke="#c0a060" stroke-width="2"/>
-        <line x1="20" y1="20" x2="44" y2="44" stroke="#c04020" stroke-width="4" stroke-linecap="round"/>
-        <line x1="44" y1="20" x2="20" y2="44" stroke="#c04020" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-      <div style="font-size:14px;font-weight:bold;color:#333;" id="proj-fallback-title">Este site não pode ser exibido aqui</div>
-      <div style="font-size:11px;color:#666;text-align:center;max-width:320px;" id="proj-fallback-msg">O servidor bloqueou a exibição neste contexto por razões de segurança (X-Frame-Options).</div>
-      <button onclick="projOpenExternal()" style="padding:6px 20px;background:linear-gradient(180deg,#4888e0,#1a5cbf);border:1px solid #0a3090;border-radius:3px;color:white;font-family:Tahoma,Arial,sans-serif;font-size:12px;cursor:pointer;">
-        Abrir no Navegador &#x2197;
-      </button>
-      <div style="font-size:10px;color:#999;" id="proj-fallback-url"></div>
+    <!-- Fallback card shown for sites that block iframes -->
+    <div id="proj-fallback" style="display:none;position:absolute;inset:0;background:#ECE9D8;align-items:center;justify-content:center;font-family:Tahoma,Arial,sans-serif;">
+      <div style="width:420px;background:white;border:2px solid #0054E3;border-radius:6px;overflow:hidden;box-shadow:3px 3px 10px rgba(0,0,0,0.2);">
+        <!-- Card header -->
+        <div id="proj-card-header" style="padding:20px 24px 16px;background:linear-gradient(135deg,#1a4fa0,#0a3080);color:white;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div id="proj-card-icon" style="width:48px;height:48px;flex-shrink:0;"></div>
+            <div>
+              <div id="proj-card-title" style="font-size:16px;font-weight:bold;margin-bottom:2px;"></div>
+              <div id="proj-card-category" style="font-size:11px;opacity:0.8;background:rgba(255,255,255,0.15);display:inline-block;padding:1px 8px;border-radius:10px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card body -->
+        <div style="padding:16px 24px;">
+          <div id="proj-card-desc" style="font-size:12px;color:#333;line-height:1.6;margin-bottom:16px;"></div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="projOpenExternal()" style="flex:1;padding:7px 0;background:linear-gradient(180deg,#4888e0,#1a5cbf);border:1px solid #0a3090;border-radius:3px;color:white;font-size:12px;cursor:pointer;font-family:Tahoma,Arial,sans-serif;">
+              &#x1F310; Abrir no Navegador
+            </button>
+            <button onclick="projTryIframe()" style="padding:7px 14px;background:linear-gradient(180deg,#F4F0E8,#DEDAD0);border:1px solid #ACA899;border-radius:3px;font-size:12px;cursor:pointer;font-family:Tahoma,Arial,sans-serif;">
+              Tentar carregar aqui
+            </button>
+          </div>
+          <div id="proj-card-url" style="font-size:10px;color:#999;margin-top:10px;word-break:break-all;"></div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="win-statusbar">
@@ -2445,6 +2459,28 @@ const PROJECTS = {
   'blog':            { title: 'Blog - dev.to',          url: 'https://dev.to/andredarcie',                     category: 'Blog',                  fallback: false },
 };
 
+const PROJ_DESCRIPTIONS = {
+  'tiny-rpg':         'Game engine de RPG que roda no navegador. Permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.',
+  'ai-platformer':    'App web interativo que usa NEAT para evoluir redes neurais ao longo de gerações, treinando uma IA a jogar um mini platformer.',
+  'evo-sim':          'Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações.',
+  'tiny-computer':    'Pequeno computador virtual no navegador com visual retrô, editor de código e componentes para explorar conceitos básicos de CPU e memória.',
+  'tiny-voxel':       'Editor voxel minimalista no navegador com estética pixel-art para montar cenários e experimentar construções em 3D.',
+  'tiny-evolution':   'Simulador da vida no planeta Terra, do seu início até os dias de hoje.',
+  'get-out':          'Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.',
+  'zero-the-hero':    'Jogo feito na engine Godot, inspirado em Zelda, com mecânica em que o personagem só pode carregar um item por vez.',
+  'brians-mansion':   'Jogo de terror e aventura com atmosfera inspirada em mansões assombradas, explorando ambientação, puzzle e suspense.',
+  'zero-to-one':      'Jogo existencial feito em Bitsy para a game jam One Room, focado em narrativa, atmosfera e uma experiência curta.',
+  'insomnia':         'Jogo de aventura com atmosfera sombria e narrativa intensa, explorando temas de insônia e pesadelos.',
+  'life-undefined':   'Experiência interativa e reflexiva sobre incerteza, identidade e os momentos não definidos da vida.',
+  'openvideogamedata':'Plataforma aberta para organização e consulta de dados sobre jogos. Iniciativa sem fins lucrativos com ~500k visualizações nas redes sociais.',
+  'my-life-data':     'Sistema pessoal de rastreamento de consumo de entretenimento — livros, filmes e jogos — com scripts de automação.',
+  'csharp-guide':     'Guia de referência de C# que cobre conceitos do básico ao avançado por meio de exemplos de código práticos.',
+  'my-code-codex':    'Guia pessoal de desenvolvimento cobrindo boas práticas, arquitetura, padrões e tópicos de desenvolvimento profissional em .NET.',
+  'clean-arch':       'Template de aplicação demonstrando Clean Architecture, Domain-Driven Design e CQRS com princípios SOLID.',
+  'clube-leitura':    'Iniciativa de leitura coletiva de livros técnicos e científicos focada no desenvolvimento profissional dos membros.',
+  'blog':             'Blog no dev.to com artigos sobre tecnologia, realidade virtual, ciência, carreira, filosofia e arte. Mais de 7k visualizações acumuladas.',
+};
+
 // Register project window in the windows map
 windows['project'] = { id: 'win-project', title: 'Project', open: false, minimized: false, maximized: false, prevRect: null };
 
@@ -2452,12 +2488,21 @@ let currentProjectKey = null;
 const projHistory = [];
 let projHistoryIdx = -1;
 
+// Hosts that always block iframes — show card immediately, don't attempt
+const BLOCKED_HOSTS = ['github.com', 'itch.io', 'dev.to', 'linkedin.com', 'medium.com'];
+
+function isBlockedHost(url) {
+  try {
+    const host = new URL(url).hostname;
+    return BLOCKED_HOSTS.some(h => host === h || host.endsWith('.' + h));
+  } catch(e) { return false; }
+}
+
 function openProject(key) {
   const proj = PROJECTS[key];
   if (!proj) return;
   currentProjectKey = key;
 
-  const el = document.getElementById('win-project');
   const iframe = document.getElementById('proj-iframe');
   const fallback = document.getElementById('proj-fallback');
   const addrInput = document.getElementById('proj-address');
@@ -2465,64 +2510,9 @@ function openProject(key) {
   const statusEl = document.getElementById('proj-statusbar');
   const catEl = document.getElementById('proj-category');
 
-  // Update title and address
   titleEl.textContent = proj.title + ' - Andre OS';
   addrInput.value = proj.url;
   if (catEl) catEl.textContent = proj.category;
-
-  // Hide fallback, show iframe
-  iframe.style.display = 'block';
-  fallback.style.display = 'none';
-
-  // Status: loading
-  if (statusEl) statusEl.textContent = 'Conectando a ' + new URL(proj.url).hostname + '...';
-
-  // Load iframe
-  iframe.src = '';
-  setTimeout(() => {
-    iframe.src = proj.url;
-  }, 50);
-
-  // Detect iframe block via load + same-origin check
-  iframe.onload = () => {
-    if (statusEl) statusEl.textContent = 'Pronto';
-    try {
-      // If same-origin, this won't throw
-      const _ = iframe.contentWindow.location.href;
-    } catch(e) {
-      // cross-origin is OK — means it loaded but we can't read it
-      // That's fine, content is showing
-    }
-  };
-
-  iframe.onerror = () => showProjFallback(proj);
-
-  // Fallback timer: if blocked by CSP/X-Frame-Options the load event
-  // fires with no content or the browser replaces it. We detect via
-  // a blank page heuristic after a short delay.
-  const fbTimer = setTimeout(() => {
-    try {
-      if (iframe.contentDocument &&
-          (iframe.contentDocument.body === null ||
-           iframe.contentDocument.body.innerHTML === '')) {
-        showProjFallback(proj);
-      }
-    } catch(e) {
-      // cross-origin: content loaded fine, can't read — do nothing
-    }
-  }, 4000);
-
-  iframe.onload = () => {
-    clearTimeout(fbTimer);
-    if (statusEl) statusEl.textContent = 'Pronto';
-    try {
-      if (iframe.contentDocument &&
-          iframe.contentDocument.body &&
-          iframe.contentDocument.body.innerHTML === '') {
-        showProjFallback(proj);
-      }
-    } catch(e) { /* cross-origin = loaded ok */ }
-  };
 
   // History
   if (projHistoryIdx < projHistory.length - 1) projHistory.splice(projHistoryIdx + 1);
@@ -2530,20 +2520,68 @@ function openProject(key) {
   projHistoryIdx = projHistory.length - 1;
   updateProjNavBtns();
 
-  // Open / focus window
   windows['project'].title = proj.title;
   openWindow('project');
+
+  if (isBlockedHost(proj.url)) {
+    // Show card immediately — iframe would be blocked anyway
+    showProjCard(proj);
+    if (statusEl) statusEl.textContent = 'Visualização indisponível — clique para abrir externamente';
+  } else {
+    // Try to load in iframe
+    iframe.style.display = 'block';
+    fallback.style.display = 'none';
+    iframe.src = '';
+    if (statusEl) statusEl.textContent = 'Conectando a ' + new URL(proj.url).hostname + '...';
+    setTimeout(() => { iframe.src = proj.url; }, 50);
+    iframe.onload = () => {
+      if (statusEl) statusEl.textContent = 'Pronto';
+    };
+    iframe.onerror = () => showProjCard(proj);
+  }
 }
 
-function showProjFallback(proj) {
+function showProjCard(proj) {
   const iframe = document.getElementById('proj-iframe');
   const fallback = document.getElementById('proj-fallback');
   iframe.style.display = 'none';
+  iframe.src = '';
   fallback.style.display = 'flex';
-  document.getElementById('proj-fallback-title').textContent = '"' + proj.title + '" não pode ser exibido aqui';
-  document.getElementById('proj-fallback-url').textContent = proj.url;
+
+  document.getElementById('proj-card-title').textContent = proj.title;
+  document.getElementById('proj-card-category').textContent = proj.category;
+  document.getElementById('proj-card-url').textContent = proj.url;
+  document.getElementById('proj-card-desc').textContent =
+    PROJ_DESCRIPTIONS[Object.keys(PROJECTS).find(k => PROJECTS[k] === proj)] || '';
+
+  // Swap header color per category
+  const colors = {
+    'Jogo': 'linear-gradient(135deg,#6a1a1a,#3a0808)',
+    'Experiência Interativa': 'linear-gradient(135deg,#1a3a6a,#0a1a40)',
+    'Ferramenta': 'linear-gradient(135deg,#1a5a2a,#0a2a10)',
+    'Guia': 'linear-gradient(135deg,#4a1a6a,#200a40)',
+    'Template': 'linear-gradient(135deg,#5a3a1a,#2a1a08)',
+    'Comunidade': 'linear-gradient(135deg,#1a4a3a,#0a2018)',
+    'Blog': 'linear-gradient(135deg,#0a0a1a,#000)',
+  };
+  document.getElementById('proj-card-header').style.background =
+    colors[proj.category] || 'linear-gradient(135deg,#1a4fa0,#0a3080)';
+
   const statusEl = document.getElementById('proj-statusbar');
-  if (statusEl) statusEl.textContent = 'Não foi possível carregar a página';
+  if (statusEl) statusEl.textContent = 'Clique em "Abrir no Navegador" para visualizar';
+}
+
+function projTryIframe() {
+  const proj = PROJECTS[currentProjectKey];
+  if (!proj) return;
+  const iframe = document.getElementById('proj-iframe');
+  const fallback = document.getElementById('proj-fallback');
+  fallback.style.display = 'none';
+  iframe.style.display = 'block';
+  iframe.src = proj.url;
+  const statusEl = document.getElementById('proj-statusbar');
+  if (statusEl) statusEl.textContent = 'Carregando...';
+  iframe.onload = () => { if (statusEl) statusEl.textContent = 'Pronto'; };
 }
 
 function projOpenExternal() {
@@ -2554,11 +2592,12 @@ function projOpenExternal() {
 
 function projRefresh() {
   if (!currentProjectKey) return;
+  const proj = PROJECTS[currentProjectKey];
+  if (isBlockedHost(proj.url)) { showProjCard(proj); return; }
   const iframe = document.getElementById('proj-iframe');
-  const fallback = document.getElementById('proj-fallback');
-  fallback.style.display = 'none';
+  document.getElementById('proj-fallback').style.display = 'none';
   iframe.style.display = 'block';
-  iframe.src = iframe.src;
+  iframe.src = proj.url;
 }
 
 function projBack() {
