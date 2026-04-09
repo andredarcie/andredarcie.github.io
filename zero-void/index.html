@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Zero Void</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #000;
+      overflow: hidden;
+      touch-action: none;
+      overscroll-behavior: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    canvas { display: block; touch-action: none; }
+  </style>
+</head>
+<body>
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  Zero Void  — Geometric Space Shooter
+//  p5.js — pure black/white — all geometry, no images
+// ═══════════════════════════════════════════════════════════════
+
+const W = 460, H = 700;
+
+// ── Planetas (ordem: Mercúrio → Netuno) ───────────────────────
+const WAVE_DURATION = 1800; // frames por wave (~30s a 60fps)
+
+const PLANETS = [
+  { name: 'MERCURY', r: 180, g: 172, b: 162, types: ['circle',  'tri']              }, // cinza
+  { name: 'VENUS',   r: 235, g: 195, b:  80, types: ['pentagon','ring']             }, // amarelo
+  { name: 'EARTH',   r:  40, g: 120, b: 220, types: ['diamond', 'tri']              }, // azul
+  { name: 'MARS',    r: 210, g:  65, b:  30, types: ['cross',   'diamond']          }, // vermelho
+  { name: 'JUPITER', r: 210, g: 135, b:  70, types: ['hex',     'octagon']          }, // laranja
+  { name: 'SATURN',  r: 215, g: 180, b:  85, types: ['ring',    'square', 'hex']    }, // dourado
+  { name: 'URANUS',  r:  90, g: 205, b: 212, types: ['octagon', 'square']           }, // ciano
+  { name: 'NEPTUNE', r:  45, g:  85, b: 215, types: ['cross',   'hex', 'diamond', 'circle'] }, // azul profundo
+];
+
+// ── State ──────────────────────────────────────────────────────
+let state; // 'menu' | 'play' | 'dead'
+let score, hiScore, lives, wave, combo, comboTimer;
+let shakeAmt, shakeDur, flashAmt;
+let bgPulse;
+let deathTimer;
+let spawnClock, spawnRate, obsClock, obsRate;
+let waveAnnounceTimer, lastWaveAnnounced, waveTimer;
+let escapeTimer; // contagem regressiva da tela de escape
+
+// ── Bullet time ────────────────────────────────────────────────
+let timeScale;       // 1.0 = normal, ~0.15 = slow
+let btActive;        // bool
+let btThreat;        // object causing it
+let btRingPhase;     // animated rings
+const BT_DANGER_R = 100;
+const BT_SAFE_R   = 145;
+
+// ── Layout (responsivo) ────────────────────────────────────────
+let gx, gy, gs;   // offset x, offset y, escala
+let touchX = -1;  // posição do toque em game-space (-1 = sem toque)
+let touchHint = 90; // frames do hint inicial
+
+// ── Objects ────────────────────────────────────────────────────
+let player, bullets, enemies, obstacles, sparks, shrapnel;
+let ball;
+let warpLines;
+
+// ═══════════════════════════════════════════════════════════════
+//  SETUP
+// ═══════════════════════════════════════════════════════════════
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  pixelDensity(min(pixelDensity(), 2));
+  updateLayout();
+  hiScore = 0;
+  warpLines = [];
+  for (let i = 0; i < 45; i++) {
+    warpLines.push({
+      x: random(W), y: random(H),
+      speed: random(4, 16),
+      len: random(15, 65),
+      alpha: random(12, 55),
+    });
+  }
+  state = 'menu';
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  updateLayout();
+}
+
+function updateLayout() {
+  gs = min(windowWidth / W, windowHeight / H);
+  gx = (windowWidth  - W * gs) / 2;
+  gy = (windowHeight - H * gs) / 2;
+}
+
+// Converte coordenada de tela → game-space
+function screenToGame(sx, sy) {
+  return { x: (sx - gx) / gs, y: (sy - gy) / gs };
+}
+
+function initGame() {
+  player = {
+    x: W / 2, y: H - 95,
+    speed: 6.2,
+    fireTimer: 0, fireRate: 9,
+    trail: [],
+    iframes: 0,
+    thrPhase: 0,
+    dead: false,
+  };
+  bullets   = [];
+  enemies   = [];
+  obstacles = [];
+  sparks    = [];
+  shrapnel  = [];
+  score = 0; lives = 3; wave = 1;
+  combo = 0; comboTimer = 0;
+  shakeAmt = 0; shakeDur = 0; flashAmt = 0;
+  bgPulse = 0;
+  spawnClock = 0; spawnRate = 85;
+  obsClock   = 0; obsRate   = 160;
+  timeScale  = 1.0;
+  btActive   = false;
+  btThreat   = null;
+  btRingPhase = 0;
+  touchX     = -1;
+  touchHint  = 90;
+  wave               = 1;
+  waveTimer          = WAVE_DURATION;
+  waveAnnounceTimer  = 180;
+  lastWaveAnnounced  = 1;
+  escapeTimer        = 0;
+
+  ball = {
+    x: W / 2, y: H / 3,
+    vx: random([-1, 1])[floor(random(2))] * 4,
+    vy: 5,
+    r: 9,
+    speed: 6.5,
+    trail: [],
+    dead: false,
+    respawnTimer: 0,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MAIN LOOP
+// ═══════════════════════════════════════════════════════════════
+function draw() {
+  // Preenche toda a janela de preto
+  background(0);
+
+  // ── Transform de layout: centra e escala o jogo ───────────
+  push();
+  translate(gx, gy);
+  scale(gs);
+
+  if (state === 'menu')   { menuFrame();   pop(); return; }
+  if (state === 'dead')   { deadFrame();   pop(); return; }
+  if (state === 'escape') { escapeFrame(); pop(); return; }
+
+  // ── Screen shake ───────────────────────────────────────────
+  let sx = 0, sy = 0;
+  if (shakeDur > 0) {
+    sx = random(-shakeAmt, shakeAmt);
+    sy = random(-shakeAmt, shakeAmt);
+    shakeDur--;
+    shakeAmt *= 0.85;
+  }
+  push(); translate(sx, sy);
+
+  checkBulletTime();
+  scrollBg();
+  tickBullets();
+  tickObstacles();
+  tickEnemies();
+  tickBall();
+  tickSparks();
+  tickShrapnel();
+  drawPlayer();
+
+  pop(); // end shake
+
+  if (btActive) drawBulletTimeEffect();
+
+  // ── Flash overlay ──────────────────────────────────────────
+  if (flashAmt > 0) {
+    noStroke(); fill(255, flashAmt);
+    rect(0, 0, W, H);
+    flashAmt = max(0, flashAmt - 10);
+  }
+
+  drawHUD();
+  drawWaveAnnounce();
+  crtOverlay();
+  drawBorder();
+
+  pop(); // end layout transform
+
+  // ── Timers & wave ──────────────────────────────────────────
+  bgPulse = max(0, bgPulse - 3);
+
+  // ── Progressão de wave por tempo ──────────────────────────
+  waveTimer -= timeScale;
+  if (waveTimer <= 0) {
+    wave++;
+    waveTimer = WAVE_DURATION;
+    if (wave > PLANETS.length) {
+      hiScore = max(hiScore, score);
+      escapeTimer = 420;
+      state = 'escape';
+      return;
+    }
+    lastWaveAnnounced = wave;
+    waveAnnounceTimer = 180;
+  }
+  player.thrPhase += 0.28 * timeScale;
+  player.iframes = max(0, player.iframes - 1);
+  btRingPhase += 0.08;
+  if (touchHint > 0) touchHint--;
+  if (comboTimer > 0) { comboTimer--; if (comboTimer === 0) combo = 0; }
+
+  // ── Input teclado ─────────────────────────────────────────
+  let spd = player.speed + wave * 0.12;
+  if (keyIsDown(LEFT_ARROW)  || keyIsDown(65)) player.x = max(22, player.x - spd);
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) player.x = min(W - 22, player.x + spd);
+
+  // ── Input toque — nave segue o dedo diretamente ───────────
+  if (touchX >= 0) {
+    let tx = constrain(touchX, 22, W - 22);
+    // Lerp rápido para não ser abrupto mas responsivo
+    player.x = lerp(player.x, tx, 0.35);
+  }
+
+  // ── Auto-fire ──────────────────────────────────────────────
+  player.fireTimer++;
+  if (player.fireTimer >= player.fireRate) {
+    player.fireTimer = 0;
+    shoot();
+  }
+
+  // ── Spawn clocks respeitam timeScale ─────────────────────
+  spawnClock += timeScale;
+  let sRate = max(65, spawnRate - wave * 3);
+  if (spawnClock >= sRate) { spawnClock = 0; spawnGroup(); }
+
+  obsClock += timeScale;
+  let oRate = max(110, obsRate - wave * 4);
+  if (obsClock >= oRate) { obsClock = 0; spawnObstacle(); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BACKGROUND
+// ═══════════════════════════════════════════════════════════════
+function scrollBg() {
+  if (bgPulse > 0) {
+    noStroke(); fill(255, map(bgPulse, 0, 60, 0, 18));
+    rect(0, 0, W, H);
+  }
+  for (let l of warpLines) {
+    l.y += l.speed;
+    if (l.y > H + 80) { l.y = -80; l.x = random(W); l.speed = random(4, 16); }
+    stroke(255, l.alpha); strokeWeight(0.5);
+    line(l.x, l.y, l.x, l.y + l.len);
+  }
+}
+
+function scrollBgSlow(factor) {
+  for (let l of warpLines) {
+    l.y += l.speed * factor;
+    if (l.y > H + 80) { l.y = -80; l.x = random(W); }
+    stroke(255, l.alpha); strokeWeight(0.5);
+    line(l.x, l.y, l.x, l.y + l.len);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PLAYER
+// ═══════════════════════════════════════════════════════════════
+function shoot() {
+  let px = player.x, py = player.y;
+  bullets.push({ x: px, y: py - 28, vx: 0, vy: -15, w: 3 });
+  // Muzzle sparks
+  for (let i = 0; i < 5; i++) {
+    addSpark(px, py - 24, random(-1.5, 1.5), random(-4, -0.5), random(1, 3), 0.18);
+  }
+}
+
+function drawPlayer() {
+  let px = player.x, py = player.y;
+
+  // Trail
+  player.trail.push({ x: px, y: py });
+  if (player.trail.length > 18) player.trail.shift();
+  for (let i = 0; i < player.trail.length - 1; i++) {
+    let t = player.trail[i];
+    let a = map(i, 0, player.trail.length, 0, 45);
+    let sc = map(i, 0, player.trail.length, 0.25, 0.85);
+    stroke(255, a); strokeWeight(0.7); noFill();
+    push(); translate(t.x, t.y); scale(sc); shipPath(); pop();
+  }
+
+  // Blink during iframes
+  if (player.iframes > 0 && floor(player.iframes / 5) % 2 === 0) return;
+
+  // Thrusters
+  let th = sin(player.thrPhase) * 5 + 12;
+  stroke(255, 170); strokeWeight(1.4); noFill();
+  push(); translate(px, py);
+  line(-8, 15, -8, 15 + th * 0.8);
+  line( 0, 17,  0, 17 + th);
+  line( 8, 15,  8, 15 + th * 0.8);
+  // Thruster glow dots
+  for (let i = 0; i < 2; i++) {
+    if (random() < 0.4) {
+      addSpark(px + [-8, 0, 8][floor(random(3))], py + 17 + th,
+               random(-0.5,0.5), random(0.5, 2), random(1,2), 0.25);
+    }
+  }
+  pop();
+
+  // Ship body
+  push(); translate(px, py);
+  stroke(255); strokeWeight(1.8); noFill();
+  shipPath();
+  // Cockpit
+  stroke(255, 160); strokeWeight(1.1);
+  beginShape();
+  vertex(0, -18); vertex(-5, -4); vertex(5, -4);
+  endShape(CLOSE);
+  // Wing detail
+  stroke(255, 90); strokeWeight(0.8);
+  line(-16, 6, -10, 11);
+  line( 16, 6,  10, 11);
+  pop();
+}
+
+function shipPath() {
+  beginShape();
+  vertex( 0, -28);
+  vertex(-18, 13); vertex(-9, 7);
+  vertex( 0,  15);
+  vertex( 9,  7); vertex(18, 13);
+  endShape(CLOSE);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BULLETS
+// ═══════════════════════════════════════════════════════════════
+function tickBullets() {
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    let b = bullets[i];
+    b.x += b.vx; b.y += b.vy;
+    if (b.y < -20) { bullets.splice(i, 1); continue; }
+
+    // Draw streak forward (upward) so it exits cleanly from the ship nose
+    stroke(255); strokeWeight(b.w);
+    line(b.x, b.y, b.x + b.vx * 2, b.y + b.vy * 2);
+    stroke(255, 55); strokeWeight(b.w + 3);
+    line(b.x, b.y, b.x + b.vx * 1.5, b.y + b.vy * 1.5);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ENEMIES
+// ═══════════════════════════════════════════════════════════════
+const PATTERNS = ['straight', 'sine', 'zigzag', 'chase', 'bezier'];
+const TYPES    = ['diamond', 'tri', 'cross', 'hex'];
+
+function spawnGroup() {
+  let roll = random();
+  if (roll < 0.28) {
+    // Single
+    spawnEnemy(random(30, W - 30), -30);
+  } else if (roll < 0.55) {
+    // Horizontal line
+    let n = floor(random(2, 5));
+    let gap = (W - 80) / max(1, n - 1);
+    for (let i = 0; i < n; i++) spawnEnemy(40 + gap * i, -30 - i * 15);
+  } else if (roll < 0.75) {
+    // V-formation
+    let cx = random(80, W - 80);
+    spawnEnemy(cx, -30);
+    spawnEnemy(cx - 45, -10); spawnEnemy(cx + 45, -10);
+    if (wave > 4) { spawnEnemy(cx - 90, 10); spawnEnemy(cx + 90, 10); }
+  } else {
+    // Arc sweep
+    let n = min(3 + floor(wave * 0.4), 6);
+    let cx = W / 2;
+    for (let i = 0; i < n; i++) {
+      let a = map(i, 0, n - 1, -PI * 0.4, PI * 0.4) - HALF_PI;
+      spawnEnemy(cx + cos(a) * 140, -50 + (sin(a) + 1) * 50);
+    }
+  }
+}
+
+function spawnEnemy(x, y) {
+  let planet = getPlanet(wave);
+  let ptypes = planet.types;
+  // Heavy (hex) spawna ocasionalmente se o planeta tiver hex
+  let isHeavy = random() < 0.12 && wave > 1 && ptypes.includes('hex');
+  let type = isHeavy ? 'hex' : ptypes[floor(random(ptypes.length))];
+  let spd = random(1.6, 2.8) + wave * 0.18;
+  let pat = PATTERNS[floor(random(PATTERNS.length))];
+  if (type === 'hex') { pat = 'straight'; spd *= 0.7; }
+
+  // Bezier path control points
+  let bx1 = random(W), by1 = random(H * 0.3, H * 0.5);
+  let bx2 = random(W), by2 = random(H * 0.5, H * 0.8);
+
+  enemies.push({
+    x, y,
+    vy: spd, vx: 0,
+    type, pattern: pat,
+    phase: random(TWO_PI),
+    sineAmp: random(35, 90),
+    sineFreq: random(0.022, 0.048),
+    initX: x,
+    t: 0,
+    rot: random(TWO_PI),
+    rotSpd: random(-0.07, 0.07),
+    size: isHeavy ? 22 : random(11, 20),
+    hp: isHeavy ? 3 : 1,
+    maxHp: isHeavy ? 3 : 1,
+    hitFlash: 0,
+    // bezier
+    bx1, by1, bx2, by2,
+    bProgress: 0,
+  });
+}
+
+function tickEnemies() {
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    let e = enemies[i];
+    e.t += timeScale;
+    e.rot += e.rotSpd * timeScale;
+    e.hitFlash = max(0, e.hitFlash - 1);
+
+    // ── Movement (escalado por timeScale) ─────────────────
+    switch (e.pattern) {
+      case 'straight':
+        e.y += e.vy * timeScale; break;
+      case 'sine':
+        e.y += e.vy * timeScale;
+        e.x = e.initX + sin(e.t * e.sineFreq + e.phase) * e.sineAmp;
+        e.x = constrain(e.x, 22, W - 22); break;
+      case 'zigzag':
+        e.y += e.vy * timeScale;
+        e.x += sin(e.t * 0.045 + e.phase) * 3.5 * timeScale;
+        e.x = constrain(e.x, 22, W - 22); break;
+      case 'chase':
+        e.y += e.vy * timeScale;
+        e.x += (player.x - e.x) * 0.014 * timeScale; break;
+      case 'bezier':
+        e.bProgress += (0.008 + wave * 0.001) * timeScale;
+        let bp = min(e.bProgress, 1);
+        let bpos = cubicBezier(e.initX, -30, e.bx1, e.by1, e.bx2, e.by2, W/2, H + 120, bp);
+        e.x = bpos.x; e.y = bpos.y; break;
+    }
+
+    if (e.y > H + 55 || e.bProgress >= 1) { enemies.splice(i, 1); combo = 0; continue; }
+
+    // ── Bullet collisions ────────────────────────────────
+    let killed = false;
+    for (let j = bullets.length - 1; j >= 0; j--) {
+      let b = bullets[j];
+      if (dist(b.x, b.y, e.x, e.y) < e.size + 5) {
+        bullets.splice(j, 1);
+        e.hp--;
+        e.hitFlash = 8;
+        for (let k = 0; k < 7; k++) {
+          let a = random(TWO_PI);
+          addSpark(e.x, e.y, cos(a)*random(2,6), sin(a)*random(2,6), random(1.5,4), random(0.06,0.14));
+        }
+        if (e.hp <= 0) { killEnemy(e, i); killed = true; break; }
+        break;
+      }
+    }
+    if (killed) continue;
+
+    // ── Player collision ──────────────────────────────────
+    if (player.iframes === 0 && dist(player.x, player.y, e.x, e.y) < e.size + 13) {
+      hitPlayer(e.x, e.y);
+      enemies.splice(i, 1);
+      continue;
+    }
+
+    // ── Draw ──────────────────────────────────────────────
+    drawEnemy(e);
+  }
+}
+
+function killEnemy(e, idx) {
+  enemies.splice(idx, 1);
+  combo++;
+  comboTimer = 160;
+  let pts = 10 * wave + (combo > 1 ? combo * 3 : 0);
+  score += pts;
+  bgPulse = 55;
+  shake(4, 7);
+  explode(e.x, e.y, 20);
+
+}
+
+function drawEnemy(e) {
+  push(); translate(e.x, e.y); rotate(e.rot);
+  let p  = getPlanet(wave);
+  let sw = e.hitFlash > 0 ? 3 : 1.6;
+  stroke(p.r, p.g, p.b); strokeWeight(sw); noFill();
+  if (e.hitFlash > 0) fill(p.r, p.g, p.b, 70);
+
+  switch (e.type) {
+    case 'diamond': {
+      let s = e.size;
+      beginShape();
+      vertex(0, -s); vertex(s*0.65, 0); vertex(0, s); vertex(-s*0.65, 0);
+      endShape(CLOSE);
+      noFill(); stroke(p.r, p.g, p.b, 75); strokeWeight(0.8);
+      beginShape();
+      vertex(0, -s*0.5); vertex(s*0.35, 0); vertex(0, s*0.5); vertex(-s*0.35, 0);
+      endShape(CLOSE);
+      break;
+    }
+    case 'tri': {
+      let s = e.size;
+      beginShape(); vertex(0, s); vertex(-s, -s); vertex(s, -s); endShape(CLOSE);
+      noFill(); stroke(p.r, p.g, p.b, 60); strokeWeight(0.8);
+      beginShape(); vertex(0, 0); vertex(-s*0.5, -s*0.5); vertex(s*0.5, -s*0.5); endShape(CLOSE);
+      break;
+    }
+    case 'cross': {
+      let s = e.size;
+      strokeWeight(sw);
+      line(-s, 0, s, 0); line(0, -s, 0, s);
+      line(-s*0.7, -s*0.7, s*0.7, s*0.7);
+      line( s*0.7, -s*0.7,-s*0.7, s*0.7);
+      break;
+    }
+    case 'hex': {
+      poly(0, 0, e.size, 6);
+      noFill(); stroke(p.r, p.g, p.b, 100); strokeWeight(1);
+      poly(0, 0, e.size * 0.55, 3);
+      // HP bar
+      stroke(p.r, p.g, p.b); strokeWeight(1.5);
+      for (let h = 0; h < e.maxHp; h++) {
+        let hx = (h - (e.maxHp - 1) / 2) * 9;
+        if (h < e.hp) fill(p.r, p.g, p.b); else noFill();
+        rect(hx - 3, e.size + 5, 6, 4);
+      }
+      break;
+    }
+    case 'circle': {
+      let s = e.size;
+      ellipse(0, 0, s * 2);
+      noFill(); stroke(p.r, p.g, p.b, 70); strokeWeight(0.8);
+      ellipse(0, 0, s);
+      // inner crosshair
+      stroke(p.r, p.g, p.b, 50); strokeWeight(0.7);
+      line(-s * 0.5, 0, s * 0.5, 0);
+      line(0, -s * 0.5, 0, s * 0.5);
+      break;
+    }
+    case 'pentagon': {
+      poly(0, 0, e.size, 5);
+      noFill(); stroke(p.r, p.g, p.b, 65); strokeWeight(0.8);
+      poly(0, 0, e.size * 0.5, 5);
+      break;
+    }
+    case 'ring': {
+      let s = e.size;
+      ellipse(0, 0, s * 2);
+      noFill(); stroke(p.r, p.g, p.b, 80); strokeWeight(1.2);
+      ellipse(0, 0, s * 1.35);
+      stroke(p.r, p.g, p.b, 40); strokeWeight(0.7);
+      ellipse(0, 0, s * 0.6);
+      break;
+    }
+    case 'square': {
+      poly(0, 0, e.size, 4);
+      noFill(); stroke(p.r, p.g, p.b, 65); strokeWeight(0.8);
+      poly(0, 0, e.size * 0.52, 4);
+      break;
+    }
+    case 'octagon': {
+      poly(0, 0, e.size, 8);
+      noFill(); stroke(p.r, p.g, p.b, 65); strokeWeight(0.8);
+      poly(0, 0, e.size * 0.55, 4);
+      break;
+    }
+  }
+  pop();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  OBSTACLES
+// ═══════════════════════════════════════════════════════════════
+function spawnObstacle() {
+  let sides = floor(random(3, 8));
+  obstacles.push({
+    x: random(35, W - 35), y: -40,
+    vy: random(2.2, 4.2) + wave * 0.12,
+    drift: random(-0.7, 0.7),
+    rot: random(TWO_PI), rotSpd: random(-0.09, 0.09),
+    size: random(14, 32), sides,
+    wobble: random(TWO_PI), wobbleFreq: random(0.03, 0.06),
+    t: 0,
+  });
+}
+
+function tickObstacles() {
+  for (let i = obstacles.length - 1; i >= 0; i--) {
+    let o = obstacles[i];
+    o.t += timeScale;
+    o.y += o.vy * timeScale;
+    o.x += (o.drift + sin(o.t * o.wobbleFreq + o.wobble) * 0.6) * timeScale;
+    o.x = constrain(o.x, 25, W - 25);
+    o.rot += o.rotSpd * timeScale;
+
+    if (o.y > H + 60) { obstacles.splice(i, 1); continue; }
+
+    if (player.iframes === 0 && dist(player.x, player.y, o.x, o.y) < o.size + 11) {
+      hitPlayer(o.x, o.y);
+      explode(o.x, o.y, 14);
+      obstacles.splice(i, 1);
+      continue;
+    }
+
+    push(); translate(o.x, o.y); rotate(o.rot);
+    stroke(255); strokeWeight(1.5); noFill();
+    poly(0, 0, o.size, o.sides);
+    stroke(255, 45); strokeWeight(0.7);
+    poly(0, 0, o.size * 0.48, o.sides);
+    pop();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BREAKOUT BALL
+// ═══════════════════════════════════════════════════════════════
+function tickBall() {
+  // ── Dead: respawn countdown ───────────────────────────────
+  if (ball.dead) {
+    ball.respawnTimer--;
+    // Draw circular countdown arc at ship position
+    let progress = 1 - ball.respawnTimer / 200;
+    stroke(255, 80); strokeWeight(1.4); noFill();
+    arc(player.x, player.y - 48, 28, 28, -HALF_PI, -HALF_PI + TWO_PI * progress);
+    stroke(255, 40); strokeWeight(0.8);
+    ellipse(player.x, player.y - 48, 10, 10);
+    if (ball.respawnTimer <= 0) {
+      // Respawn above ship
+      ball.x = player.x;
+      ball.y = player.y - 55;
+      let a = random(-PI * 0.32, PI * 0.32) - HALF_PI;
+      let spd = ball.speed + wave * 0.12;
+      ball.vx = cos(a) * spd;
+      ball.vy = sin(a) * spd;
+      ball.dead = false;
+      ball.trail = [];
+      shake(3, 5); flashAmt = 28;
+    }
+    return;
+  }
+
+  // ── Trail ─────────────────────────────────────────────────
+  ball.trail.push({ x: ball.x, y: ball.y });
+  if (ball.trail.length > 14) ball.trail.shift();
+
+  // ── Move ──────────────────────────────────────────────────
+  ball.x += ball.vx * timeScale;
+  ball.y += ball.vy * timeScale;
+
+  // ── Normalize speed (prevent drift) ──────────────────────
+  let spd = ball.speed + wave * 0.1;
+  let mag = sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+  if (mag > 0.01) { ball.vx = ball.vx / mag * spd; ball.vy = ball.vy / mag * spd; }
+
+  // ── Wall bounces ──────────────────────────────────────────
+  let margin = 14;
+  if (ball.x - ball.r < margin) {
+    ball.x = margin + ball.r;
+    ball.vx = abs(ball.vx);
+    wallBounceEffect(ball.x, ball.y);
+  }
+  if (ball.x + ball.r > W - margin) {
+    ball.x = W - margin - ball.r;
+    ball.vx = -abs(ball.vx);
+    wallBounceEffect(ball.x, ball.y);
+  }
+  if (ball.y - ball.r < margin) {
+    ball.y = margin + ball.r;
+    ball.vy = abs(ball.vy);
+    wallBounceEffect(ball.x, ball.y);
+  }
+
+  // ── Ship deflection (paddle) ──────────────────────────────
+  let padHalf = 22;
+  let padY    = player.y - 16;
+  if (ball.vy > 0 &&
+      ball.y + ball.r >= padY &&
+      ball.y < player.y + 10 &&
+      abs(ball.x - player.x) < padHalf + ball.r) {
+
+    // Breakout-style angle: depends on where on the paddle it hits
+    let offset = (ball.x - player.x) / padHalf; // -1 to +1
+    let angle  = offset * (PI * 0.38) - HALF_PI; // -PI/2 ± 38°
+    ball.vx = cos(angle) * spd;
+    ball.vy = sin(angle) * spd;
+    ball.y  = padY - ball.r;
+
+    shake(3, 5);
+    for (let i = 0; i < 10; i++) {
+      addSpark(ball.x, padY, random(-3, 3), random(-4, -0.5), random(1, 3), 0.14);
+    }
+  }
+
+  // ── Fell below screen ─────────────────────────────────────
+  if (ball.y > H + 20) {
+    ball.dead = true;
+    ball.respawnTimer = 200;
+    shake(8, 12);
+    flashAmt = 70;
+    explode(ball.x, H - 20, 16);
+    return;
+  }
+
+  // ── Enemy collision ───────────────────────────────────────
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    let e = enemies[i];
+    let d = dist(ball.x, ball.y, e.x, e.y);
+    if (d < ball.r + e.size) {
+      // Reflect ball off enemy surface
+      let nx = (ball.x - e.x) / d, ny = (ball.y - e.y) / d;
+      let dot = ball.vx * nx + ball.vy * ny;
+      ball.vx -= 2 * dot * nx;
+      ball.vy -= 2 * dot * ny;
+      // Push ball out of overlap
+      ball.x = e.x + nx * (ball.r + e.size + 1);
+      ball.y = e.y + ny * (ball.r + e.size + 1);
+
+      // Ball does 2 damage
+      e.hp -= 2; e.hitFlash = 10;
+      shake(5, 8); bgPulse = 40;
+      for (let k = 0; k < 8; k++) {
+        let a = random(TWO_PI);
+        addSpark(e.x, e.y, cos(a)*random(2,6), sin(a)*random(2,6), random(1.5,3.5), 0.1);
+      }
+      if (e.hp <= 0) { killEnemy(e, i); }
+      break;
+    }
+  }
+
+  // ── Obstacle bounce ───────────────────────────────────────
+  for (let o of obstacles) {
+    let d = dist(ball.x, ball.y, o.x, o.y);
+    if (d < ball.r + o.size * 0.72) {
+      let nx = (ball.x - o.x) / d, ny = (ball.y - o.y) / d;
+      let dot = ball.vx * nx + ball.vy * ny;
+      ball.vx -= 2 * dot * nx;
+      ball.vy -= 2 * dot * ny;
+      ball.x = o.x + nx * (ball.r + o.size * 0.72 + 1);
+      ball.y = o.y + ny * (ball.r + o.size * 0.72 + 1);
+      shake(2, 4);
+      wallBounceEffect(ball.x, ball.y);
+      break;
+    }
+  }
+
+  // ── Draw trail ────────────────────────────────────────────
+  for (let i = 0; i < ball.trail.length; i++) {
+    let t = ball.trail[i];
+    let a = map(i, 0, ball.trail.length, 0, 55);
+    let r = map(i, 0, ball.trail.length, 1.5, ball.r * 0.65);
+    stroke(255, a); strokeWeight(1); noFill();
+    ellipse(t.x, t.y, r * 2);
+  }
+
+  // ── Draw ball ─────────────────────────────────────────────
+  stroke(255); strokeWeight(1.8); noFill();
+  ellipse(ball.x, ball.y, ball.r * 2);
+  // Inner cross
+  stroke(255, 130); strokeWeight(1.1);
+  line(ball.x - ball.r * 0.58, ball.y, ball.x + ball.r * 0.58, ball.y);
+  line(ball.x, ball.y - ball.r * 0.58, ball.x, ball.y + ball.r * 0.58);
+  // Diagonal inner
+  stroke(255, 55); strokeWeight(0.8);
+  let ir = ball.r * 0.42;
+  line(ball.x - ir, ball.y - ir, ball.x + ir, ball.y + ir);
+  line(ball.x + ir, ball.y - ir, ball.x - ir, ball.y + ir);
+}
+
+function wallBounceEffect(x, y) {
+  shake(2, 3);
+  for (let i = 0; i < 5; i++) {
+    addSpark(x, y, random(-2, 2), random(-2, 2), random(1, 2.5), 0.18);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PARTICLES — sparks + shrapnel
+// ═══════════════════════════════════════════════════════════════
+function addSpark(x, y, vx, vy, size, decay) {
+  sparks.push({ x, y, vx, vy, life: 1, decay, size, type: 'spark' });
+}
+
+function explode(x, y, count) {
+  for (let i = 0; i < count; i++) {
+    let a = random(TWO_PI), spd = random(2, 10);
+    shrapnel.push({
+      x, y,
+      vx: cos(a) * spd, vy: sin(a) * spd,
+      life: 1, decay: random(0.018, 0.048),
+      rot: random(TWO_PI), rotSpd: random(-0.22, 0.22),
+      size: random(3, 10),
+      sides: random() < 0.5 ? 0 : floor(random(3, 6)),
+    });
+  }
+}
+
+function tickSparks() {
+  for (let i = sparks.length - 1; i >= 0; i--) {
+    let p = sparks[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.91; p.vy *= 0.91;
+    p.life -= p.decay;
+    if (p.life <= 0) { sparks.splice(i, 1); continue; }
+
+    let a = p.life * 255;
+    if (p.type === 'spark') {
+      stroke(255, a); strokeWeight(p.size * 0.5); noFill();
+      line(p.x, p.y, p.x - p.vx * 3, p.y - p.vy * 3);
+    } else if (p.type === 'text') {
+      noStroke(); fill(255, a);
+      textFont('monospace'); textSize(p.size); textAlign(CENTER);
+      text(p.text, p.x, p.y);
+    }
+  }
+}
+
+function tickShrapnel() {
+  for (let i = shrapnel.length - 1; i >= 0; i--) {
+    let s = shrapnel[i];
+    s.x += s.vx; s.y += s.vy;
+    s.vx *= 0.93; s.vy *= 0.93;
+    s.vy += 0.06;
+    s.life -= s.decay;
+    s.rot += s.rotSpd;
+    if (s.life <= 0) { shrapnel.splice(i, 1); continue; }
+
+    let a = s.life * 255;
+    stroke(255, a); strokeWeight(1.2); noFill();
+    push(); translate(s.x, s.y); rotate(s.rot);
+    if (s.sides === 0) line(-s.size, 0, s.size, 0);
+    else poly(0, 0, s.size, s.sides);
+    pop();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HIT & DEATH
+// ═══════════════════════════════════════════════════════════════
+function hitPlayer(ex, ey) {
+  shake(13, 16);
+  flashAmt = 130;
+  lives--;
+  player.iframes = 140;
+  explode(player.x, player.y, 28);
+
+  if (lives <= 0) {
+    hiScore = max(hiScore, score);
+    shake(20, 28);
+    flashAmt = 210;
+    state = 'dead';
+    deathTimer = 0;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HUD
+// ═══════════════════════════════════════════════════════════════
+function drawHUD() {
+  textFont('monospace');
+
+  // Score
+  noStroke(); fill(255);
+  textSize(10); textAlign(LEFT);
+  text('SCORE', 16, 22);
+  textSize(26); text(score, 16, 50);
+
+  // Wave + planeta
+  let wp = getPlanet(wave);
+  fill(wp.r, wp.g, wp.b, 160); textSize(10); textAlign(CENTER);
+  text('WAVE ' + wave, W / 2, 20);
+  fill(wp.r, wp.g, wp.b, 230); textSize(17);
+  text(wp.name, W / 2, 40);
+
+  // Best
+  textAlign(RIGHT); textSize(10); fill(255, 130);
+  text('BEST', W - 16, 22);
+  textSize(14); fill(255); text(max(score, hiScore), W - 16, 38);
+
+  // Lives (mini ship icons)
+  for (let i = 0; i < lives; i++) {
+    push(); translate(18 + i * 22, 68);
+    stroke(255); strokeWeight(1.1); noFill();
+    scale(0.52); shipPath();
+    pop();
+  }
+
+  // Combo burst
+  if (combo > 1 && comboTimer > 0) {
+    let fa = comboTimer > 40 ? 255 : map(comboTimer, 0, 40, 0, 255);
+    let sc = min(2.8, 1 + combo * 0.18);
+    fill(255, fa); noStroke();
+    textAlign(CENTER);
+    textSize(11 * sc); text('×' + combo, W / 2, H / 2 - 65);
+    textSize(8); fill(255, fa * 0.6);
+    text('COMBO', W / 2, H / 2 - 50);
+  }
+
+  // Ball status indicator (bottom-right corner)
+  if (ball.dead) {
+    let progress = 1 - ball.respawnTimer / 200;
+    stroke(255, 80); strokeWeight(1.2); noFill();
+    arc(W - 22, H - 22, 20, 20, -HALF_PI, -HALF_PI + TWO_PI * progress);
+    noStroke(); fill(255, 60); textSize(7); textAlign(CENTER);
+    text('BALL', W - 22, H - 16);
+  } else {
+    stroke(255, 100); strokeWeight(1); noFill();
+    ellipse(W - 22, H - 22, 12, 12);
+  }
+
+  // ── Zonas de toque (apenas tela de toque) ────────────────
+  if (touchHint > 0) {
+    let a = min(touchHint, 40);
+    noStroke(); fill(255, a * 0.3);
+    // Zona esquerda
+    rect(0, H * 0.55, W * 0.45, H * 0.45);
+    // Zona direita
+    rect(W * 0.55, H * 0.55, W * 0.45, H * 0.45);
+    // Setas
+    fill(255, a); textSize(22); textAlign(CENTER);
+    text('←', W * 0.22, H * 0.82);
+    text('→', W * 0.78, H * 0.82);
+  }
+
+  // Indicador do toque atual
+  if (touchX >= 0) {
+    stroke(255, 35); strokeWeight(1); noFill();
+    line(touchX, H - 85, touchX, H - 15);
+  }
+
+  // Low lives warning
+  if (lives === 1 && frameCount % 50 < 25) {
+    noStroke(); fill(255, 12);
+    rect(0, 0, W, H);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CRT + BORDER
+// ═══════════════════════════════════════════════════════════════
+function crtOverlay() {
+  // Scanlines
+  stroke(0, 18); strokeWeight(1);
+  for (let y = 0; y < H; y += 3) line(0, y, W, y);
+
+  // Vignette
+  let vig = drawingContext.createRadialGradient(W/2, H/2, H*0.28, W/2, H/2, H*0.72);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.42)');
+  drawingContext.fillStyle = vig;
+  drawingContext.fillRect(0, 0, W, H);
+}
+
+function drawBorder() {
+  noFill();
+  stroke(255, 65); strokeWeight(1);
+  rect(4, 4, W - 8, H - 8);
+  stroke(255, 28); rect(9, 9, W - 18, H - 18);
+
+  // Corner ticks
+  stroke(255, 115); strokeWeight(1.5);
+  let c = 16;
+  line(4, 4+c, 4, 4); line(4, 4, 4+c, 4);
+  line(W-4, 4+c, W-4, 4); line(W-4, 4, W-4-c, 4);
+  line(4, H-4-c, 4, H-4); line(4, H-4, 4+c, H-4);
+  line(W-4, H-4-c, W-4, H-4); line(W-4, H-4, W-4-c, H-4);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MENU
+// ═══════════════════════════════════════════════════════════════
+function menuFrame() {
+  scrollBgSlow(0.45);
+
+  // Spinning geometry
+  let t = frameCount;
+  stroke(255, 35); strokeWeight(1); noFill();
+  push(); translate(W/2, H/2);
+  rotate(t * 0.004); poly(0, 0, 150, 6);
+  rotate(t * 0.007); poly(0, 0, 105, 4);
+  rotate(-t * 0.011); poly(0, 0, 62, 3);
+  pop();
+
+  // Title
+  fill(255); noStroke(); textFont('monospace'); textAlign(CENTER);
+  textSize(42); text('ZERO', W/2, H/2 - 68);
+  textSize(42); text('VOID', W/2, H/2 - 22);
+
+  stroke(255, 55); strokeWeight(1);
+  line(W/2 - 90, H/2 + 2, W/2 + 90, H/2 + 2);
+
+  noStroke(); textSize(10); fill(255, 150);
+  text('GEOMETRIC  ANNIHILATION', W/2, H/2 + 20);
+
+  textSize(9); fill(255, 90);
+  text('drag  /  ← →  /  A D  —  auto-fire', W/2, H/2 + 44);
+  text('destroy shapes  ·  deflect the ball  ·  survive', W/2, H/2 + 58);
+
+  // Pulsing prompt
+  let p = sin(t * 0.085) * 0.5 + 0.5;
+  fill(255, 100 + p * 155); textSize(13);
+  text('[  SPACE TO START  ]', W/2, H/2 + 104);
+
+  if (hiScore > 0) {
+    fill(255, 90); textSize(9);
+    text('BEST : ' + hiScore, W/2, H/2 + 122);
+  }
+
+  // Demo ship
+  push(); translate(W/2, H/2 + 210);
+  stroke(255, 55 + p * 45); strokeWeight(1.4); noFill();
+  shipPath(); pop();
+
+  crtOverlay(); drawBorder();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DEAD SCREEN
+// ═══════════════════════════════════════════════════════════════
+function deadFrame() {
+  deathTimer++;
+  scrollBgSlow(0.3);
+  tickShrapnel(); // lingering debris
+  crtOverlay(); drawBorder();
+
+  let fi = min(1, deathTimer / 55);
+  fill(255, fi * 255); noStroke(); textFont('monospace'); textAlign(CENTER);
+
+  textSize(28); text('ZERO IS DEAD', W/2, H/2 - 72);
+
+  stroke(255, fi * 70); strokeWeight(1);
+  line(W/2 - 95, H/2 - 50, W/2 + 95, H/2 - 50);
+  noStroke();
+
+  textSize(12); fill(255, fi * 170);
+  text('SCORE   ' + score, W/2, H/2 - 8);
+  text('WAVE    ' + wave,  W/2, H/2 + 14);
+
+  if (score > 0 && score >= hiScore) {
+    fill(255, fi * 190); textSize(10);
+    text('— NEW BEST —', W/2, H/2 + 40);
+  }
+
+  if (deathTimer > 70) {
+    let p = sin(frameCount * 0.09) * 0.5 + 0.5;
+    fill(255, 100 + p * 155); textSize(13);
+    text('[  SPACE TO RESTART  ]', W/2, H/2 + 82);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ESCAPE SCREEN
+// ═══════════════════════════════════════════════════════════════
+function escapeFrame() {
+  escapeTimer--;
+
+  // Warp lines bem rápidas — sensação de fuga
+  for (let l of warpLines) {
+    l.y += l.speed * 3.5;
+    if (l.y > H + 80) { l.y = -80; l.x = random(W); }
+    stroke(255, l.alpha * 0.8); strokeWeight(0.5);
+    line(l.x, l.y, l.x, l.y + l.len * 2.5);
+  }
+
+  crtOverlay(); drawBorder();
+
+  let dur  = 420;
+  let fi   = min(1, (dur - escapeTimer) / 60); // fade in
+  let fade = escapeTimer < 80 ? map(escapeTimer, 0, 80, 0, 1) : 1; // fade out
+  let a    = fi * fade;
+
+  // Nave pequena saindo pela tela — efeito de fuga
+  let shipProgress = min(1, (dur - escapeTimer) / (dur * 0.7));
+  let shipY = lerp(H - 95, -50, shipProgress * shipProgress);
+  push();
+  translate(W / 2, shipY);
+  stroke(255, a * 200); strokeWeight(1.4); noFill();
+  shipPath();
+  // Propulsores
+  let th = sin(frameCount * 0.4) * 6 + 14;
+  line(-8, 15, -8, 15 + th);
+  line( 0, 17,  0, 17 + th * 1.4);
+  line( 8, 15,  8, 15 + th);
+  pop();
+
+  // Mensagem principal
+  noStroke(); textFont('monospace'); textAlign(CENTER);
+
+  fill(255, a * 255);
+  textSize(13);
+  text('YOU MANAGED TO', W / 2, H / 2 - 55);
+  textSize(26);
+  text('ESCAPE THE', W / 2, H / 2 - 22);
+  textSize(26);
+  text('SOLAR SYSTEM', W / 2, H / 2 + 14);
+
+  stroke(255, a * 60); strokeWeight(1);
+  line(W / 2 - 110, H / 2 + 30, W / 2 + 110, H / 2 + 30);
+  noStroke();
+
+  // Score
+  fill(255, a * 130);
+  textSize(11);
+  text('FINAL SCORE', W / 2, H / 2 + 52);
+  fill(255, a * 255);
+  textSize(52);
+  text(score, W / 2, H / 2 + 108);
+
+  if (score >= hiScore && score > 0) {
+    fill(255, a * 160);
+    textSize(10);
+    text('— ALL TIME BEST —', W / 2, H / 2 + 130);
+  }
+
+  // Volta ao menu automaticamente
+  if (escapeTimer <= 0) {
+    state = 'menu';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BULLET TIME
+// ═══════════════════════════════════════════════════════════════
+function checkBulletTime() {
+  if (player.iframes > 0) {
+    // Acabou de levar hit — volta ao normal imediatamente
+    btActive = false; btThreat = null;
+    timeScale = lerp(timeScale, 1.0, 0.06);
+    return;
+  }
+
+  let nearest = null;
+  let nearestDist = Infinity;
+
+  for (let e of enemies) {
+    // Só conta ameaças que ainda estão acima ou na altura do jogador
+    if (e.y < player.y + 30) {
+      let d = dist(player.x, player.y, e.x, e.y);
+      if (d < nearestDist) { nearestDist = d; nearest = e; }
+    }
+  }
+  for (let o of obstacles) {
+    if (o.y < player.y + 30) {
+      let d = dist(player.x, player.y, o.x, o.y);
+      if (d < nearestDist) { nearestDist = d; nearest = o; }
+    }
+  }
+
+  if (nearestDist < BT_DANGER_R) {
+    // Ativa bullet time
+    btActive = true;
+    btThreat = nearest;
+    timeScale = lerp(timeScale, 0.14, 0.09);
+  } else {
+    // Seguro — recupera velocidade gradualmente
+    btThreat = null;
+    if (nearestDist > BT_SAFE_R) btActive = false;
+    timeScale = lerp(timeScale, 1.0, 0.025);
+  }
+  timeScale = constrain(timeScale, 0.12, 1.0);
+}
+
+function drawBulletTimeEffect() {
+  let px = player.x, py = player.y;
+
+  // ── Vinheta radial centrada no jogador ───────────────────
+  let grad = drawingContext.createRadialGradient(px, py, 40, px, py, 260);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.72)');
+  drawingContext.fillStyle = grad;
+  drawingContext.fillRect(0, 0, W, H);
+
+  // ── Anéis pulsantes ao redor do jogador ──────────────────
+  noFill();
+  for (let i = 0; i < 3; i++) {
+    let r  = 38 + i * 22 + sin(btRingPhase + i * 1.2) * 4;
+    let a  = map(i, 0, 2, 80, 25);
+    let sw = map(i, 0, 2, 1.4, 0.7);
+    stroke(255, a); strokeWeight(sw);
+    ellipse(px, py, r * 2);
+  }
+
+  // ── Linha tracejada ao objeto ameaçador ──────────────────
+  if (btThreat) {
+    let tx = btThreat.x, ty = btThreat.y;
+    let pulseA = 50 + sin(btRingPhase * 2) * 30;
+
+    // Linha tracejada (via drawingContext)
+    drawingContext.save();
+    drawingContext.setLineDash([5, 7]);
+    drawingContext.strokeStyle = `rgba(255,255,255,${pulseA / 255})`;
+    drawingContext.lineWidth = 0.8;
+    drawingContext.beginPath();
+    drawingContext.moveTo(px, py);
+    drawingContext.lineTo(tx, ty);
+    drawingContext.stroke();
+    drawingContext.setLineDash([]);
+    drawingContext.restore();
+
+    // Triângulo de aviso apontando para a ameaça
+    let angle = atan2(ty - py, tx - px);
+    let arrowDist = 48;
+    let ax = px + cos(angle) * arrowDist;
+    let ay = py + sin(angle) * arrowDist;
+    push();
+    translate(ax, ay);
+    rotate(angle + HALF_PI);
+    stroke(255, pulseA); strokeWeight(1); noFill();
+    beginShape();
+    vertex(0, -8); vertex(-5, 6); vertex(5, 6);
+    endShape(CLOSE);
+    pop();
+
+    // Highlight da ameaça (anel ao redor dela)
+    stroke(255, 60 + sin(btRingPhase * 3) * 30);
+    strokeWeight(1.2); noFill();
+    ellipse(tx, ty, (btThreat.size || btThreat.r || 20) * 2 + 14);
+  }
+
+  // ── Indicador de velocidade (canto) ──────────────────────
+  noStroke(); fill(255, 100); textFont('monospace');
+  textSize(8); textAlign(LEFT);
+  text('SLOW', 16, H - 10);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════════
+function shake(amt, dur) {
+  shakeAmt = max(shakeAmt, amt);
+  shakeDur = max(shakeDur, dur);
+}
+
+function poly(x, y, r, sides) {
+  beginShape();
+  for (let i = 0; i < sides; i++) {
+    let a = (TWO_PI / sides) * i - HALF_PI;
+    vertex(x + cos(a) * r, y + sin(a) * r);
+  }
+  endShape(CLOSE);
+}
+
+function cubicBezier(x0, y0, x1, y1, x2, y2, x3, y3, t) {
+  let mt = 1 - t;
+  return {
+    x: mt*mt*mt*x0 + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*x3,
+    y: mt*mt*mt*y0 + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*y3,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PLANET HELPERS
+// ═══════════════════════════════════════════════════════════════
+function getPlanet(w) {
+  return PLANETS[min(w - 1, PLANETS.length - 1)];
+}
+
+function planetStroke(p, alpha) {
+  stroke(p.r, p.g, p.b, alpha !== undefined ? alpha : 255);
+}
+
+function planetFill(p, alpha) {
+  fill(p.r, p.g, p.b, alpha !== undefined ? alpha : 255);
+}
+
+function drawWaveAnnounce() {
+  if (waveAnnounceTimer <= 0) return;
+  let p   = getPlanet(wave);
+  let dur = 180;
+  let a   = waveAnnounceTimer > 40
+              ? map(waveAnnounceTimer, dur, dur - 30, 0, 255)
+              : map(waveAnnounceTimer, 0, 40, 0, 255);
+  a = constrain(a, 0, 255);
+
+  noStroke();
+  // Linha decorativa
+  fill(p.r, p.g, p.b, a * 0.35);
+  rect(0, H / 2 - 68, W, 90);
+
+  // WAVE N
+  fill(p.r, p.g, p.b, a * 0.7);
+  textFont('monospace'); textAlign(CENTER);
+  textSize(13);
+  text('WAVE ' + wave, W / 2, H / 2 - 38);
+
+  // Nome do planeta — grande
+  fill(p.r, p.g, p.b, a);
+  textSize(46);
+  text(p.name, W / 2, H / 2 + 8);
+
+  waveAnnounceTimer--;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INPUT
+// ═══════════════════════════════════════════════════════════════
+function keyPressed() {
+  if (keyCode === 32) {
+    if (state === 'menu') { initGame(); state = 'play'; }
+    else if (state === 'dead' && deathTimer > 65) { initGame(); state = 'play'; }
+  }
+}
+
+// Touch
+function touchStarted() {
+  if (!touches.length) return false;
+  let g = screenToGame(touches[0].x, touches[0].y);
+  if (state === 'menu') {
+    initGame(); state = 'play'; touchHint = 90;
+  } else if (state === 'dead' && deathTimer > 65) {
+    initGame(); state = 'play'; touchHint = 90;
+  } else if (state === 'play') {
+    touchX = g.x;
+  }
+  return false;
+}
+
+function touchMoved() {
+  if (state === 'play' && touches.length) {
+    touchX = screenToGame(touches[0].x, touches[0].y).x;
+  }
+  return false;
+}
+
+function touchEnded() {
+  if (!touches.length) touchX = -1;
+  return false;
+}
+</script>
+</body>
+</html>
