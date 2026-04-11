@@ -223,6 +223,83 @@ body{display:flex;flex-direction:column;}
   animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
 }
 
+/* ── TITLE SCREEN ───────────────────── */
+#title-screen{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px;gap:0;
+}
+#title-screen.hidden{display:none;}
+
+#title-diego{
+  animation:titleBounce 1.1s ease-in-out infinite;
+  margin-bottom:12px;
+}
+@keyframes titleBounce{
+  0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-14px) rotate(3deg)}
+}
+
+#title-badge{
+  background:#FF6B35;color:#fff;
+  font-family:'Fredoka One',cursive;font-size:13px;
+  padding:4px 14px;border-radius:20px;
+  margin-bottom:10px;letter-spacing:.5px;
+  animation:fadeSlideIn .6s .1s both;
+}
+#title-name{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(42px,12vw,72px);
+  color:#333;line-height:1;
+  margin-bottom:4px;
+  animation:fadeSlideIn .6s .2s both;
+}
+#title-sub{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(18px,5vw,28px);
+  color:#FF6B35;margin-bottom:28px;
+  animation:fadeSlideIn .6s .3s both;
+}
+
+/* story card */
+#story-card{
+  background:#fff;border-radius:20px;
+  padding:18px 22px;max-width:360px;width:100%;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+  margin-bottom:28px;
+  animation:fadeSlideIn .6s .4s both;
+}
+.story-line{
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;color:#555;
+  padding:7px 0;
+  border-bottom:1px solid #F0E8D8;
+}
+.story-line:last-child{border-bottom:none;}
+.story-line .ico{font-size:26px;flex-shrink:0;}
+.story-line strong{color:#333;}
+
+#play-btn{
+  background:linear-gradient(135deg,#FF6B35,#E83000);
+  color:#fff;border:none;border-radius:30px;
+  padding:16px 52px;
+  font-family:'Fredoka One',cursive;font-size:22px;
+  cursor:pointer;letter-spacing:.5px;
+  box-shadow:0 6px 20px rgba(255,107,53,.5);
+  animation:fadeSlideIn .6s .55s both, btnPulse 2s 1.2s ease-in-out infinite;
+}
+@keyframes fadeSlideIn{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes btnPulse{
+  0%,100%{box-shadow:0 6px 20px rgba(255,107,53,.5)}
+  50%{box-shadow:0 6px 32px rgba(255,107,53,.8)}
+}
+#play-btn:active{transform:scale(.96);}
+
 /* ── CELEBRATE ───────────────────────── */
 .confetti{
   position:fixed;pointer-events:none;z-index:300;
@@ -235,6 +312,59 @@ body{display:flex;flex-direction:column;}
 </style>
 </head>
 <body>
+
+<!-- TITLE SCREEN -->
+<div id="title-screen">
+  <div id="title-diego">
+    <svg width="100" height="110" viewBox="0 0 40 44">
+      <g style="transform-origin:20px 30px">
+        <circle cx="20" cy="30" r="10" fill="#FF6B35"/>
+      </g>
+      <!-- arm left raised -->
+      <line x1="10" y1="26" x2="3" y2="16" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- arm right raised -->
+      <line x1="30" y1="26" x2="37" y2="16" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- backpack on his back -->
+      <rect x="22" y="22" width="10" height="12" rx="2" fill="#8B6914" opacity=".9"/>
+      <rect x="23" y="20" width="2" height="4" rx="1" fill="#6B5010"/>
+      <rect x="27" y="20" width="2" height="4" rx="1" fill="#6B5010"/>
+      <circle cx="27" cy="28" r="1.2" fill="#FFD93D"/>
+      <g style="transform-origin:20px 14px">
+        <circle cx="20" cy="14" r="9" fill="#FFD93D"/>
+        <circle cx="16.5" cy="13" r="1.6" fill="#333"/>
+        <circle cx="23.5" cy="13" r="1.6" fill="#333"/>
+        <path d="M14.5 17 Q20 22 25.5 17" stroke="#333" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <circle cx="14" cy="16" r="2.2" fill="#FF9999" opacity=".5"/>
+        <circle cx="26" cy="16" r="2.2" fill="#FF9999" opacity=".5"/>
+      </g>
+    </svg>
+  </div>
+
+  <div id="title-badge">A MOVING PUZZLE</div>
+  <div id="title-name">Diego's<br>Move</div>
+  <div id="title-sub">🚚 Pack it or leave it!</div>
+
+  <div id="story-card">
+    <div class="story-line">
+      <span class="ico">🏠</span>
+      <span>Diego is moving to a <strong>new home</strong>!</span>
+    </div>
+    <div class="story-line">
+      <span class="ico">📦</span>
+      <span>He has <strong>lots of stuff</strong> to bring along.</span>
+    </div>
+    <div class="story-line">
+      <span class="ico">🎒</span>
+      <span>But only <strong>one tiny backpack</strong>.</span>
+    </div>
+    <div class="story-line">
+      <span class="ico">⛽</span>
+      <span>And the truck has <strong>limited fuel</strong> — plan wisely!</span>
+    </div>
+  </div>
+
+  <button id="play-btn">Let's Go! 🎒</button>
+</div>
 
 <!-- TOP BAR -->
 <div id="topbar">
@@ -764,10 +894,6 @@ function cancelDrag(){
   renderAll();ui();
 }
 document.getElementById('finish-btn').addEventListener('click',finishTurn);
-document.getElementById('play-again').addEventListener('click',()=>{
-  document.getElementById('over-overlay').classList.remove('show');
-  init();
-});
 
 // ══════════════════════════════════════
 //  FINISH TURN
@@ -964,7 +1090,24 @@ window.addEventListener('resize',()=>{refreshSizes();renderAll();ui();});
 // ══════════════════════════════════════
 //  START
 // ══════════════════════════════════════
-window.addEventListener('load',init);
+function startGame(){
+  document.getElementById('title-screen').classList.add('hidden');
+  init();
+}
+
+document.getElementById('play-btn').addEventListener('click',startGame);
+document.getElementById('play-btn').addEventListener('touchend',e=>{e.preventDefault();startGame();});
+
+// On play again, also skip title screen
+document.getElementById('play-again').addEventListener('click',()=>{
+  document.getElementById('over-overlay').classList.remove('show');
+  init();
+});
+
+window.addEventListener('load',()=>{
+  refreshSizes();
+  // don't call init() yet — wait for player to press play
+});
 </script>
 </body>
 </html>
