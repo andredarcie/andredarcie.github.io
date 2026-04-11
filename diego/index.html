@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Diego's Move 🚚</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cell:52px;--gap:3px;
+  --bg:#FFFBF0;--accent:#FF6B35;
+  --house-bg:#DDE8F5;--pack-bg:#EDD9A3;
+  --shadow:0 3px 10px rgba(0,0,0,.18);
+}
+
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Nunito',sans-serif;touch-action:none;}
+body{display:flex;flex-direction:column;}
+
+/* ── TOP BAR ─────────────────────────── */
+#topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 14px;
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);flex-shrink:0;z-index:10;
+}
+#fuel-row{display:flex;gap:5px;align-items:center;}
+.fuel{font-size:20px;transition:.3s;}
+.fuel.empty{opacity:.2;filter:grayscale(1);}
+#score{font-family:'Fredoka One',cursive;font-size:22px;color:var(--accent);}
+#diego-wrap{animation:bounce .9s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* ── MAIN AREA ───────────────────────── */
+#game-area{
+  flex:1;display:flex;gap:8px;padding:8px;
+  justify-content:center;align-items:flex-start;
+  overflow:hidden;
+}
+
+/* ── GRID SECTIONS ───────────────────── */
+.section{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.section-label{
+  font-family:'Fredoka One',cursive;font-size:15px;color:#666;
+  display:flex;align-items:center;gap:4px;
+}
+.section-sub{font-size:12px;color:#aaa;font-family:'Nunito',sans-serif;}
+
+.grid-wrap{
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 4px 18px rgba(0,0,0,.12);
+}
+.grid{
+  display:grid;position:relative;
+  background:var(--grid-color);
+  gap:var(--gap);padding:var(--gap);
+  border-radius:14px;
+}
+#house-grid{
+  --grid-color:var(--house-bg);
+  grid-template-columns:repeat(5,var(--cell));
+  grid-template-rows:repeat(8,var(--cell));
+}
+#pack-grid{
+  --grid-color:var(--pack-bg);
+  grid-template-rows:repeat(5,var(--cell));
+}
+
+.cell{
+  width:var(--cell);height:var(--cell);
+  background:rgba(255,255,255,.4);
+  border-radius:6px;transition:.15s;
+}
+.cell.ok  {background:rgba(80,220,100,.55)!important;}
+.cell.no  {background:rgba(255,70,70,.4)!important;}
+.cell.hint{background:rgba(80,180,255,.25)!important;outline:1px dashed rgba(80,180,255,.6);}
+
+/* ── ITEMS ───────────────────────────── */
+.item{
+  position:absolute;border-radius:9px;
+  cursor:grab;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);border:2.5px solid rgba(255,255,255,.7);
+  user-select:none;-webkit-user-select:none;z-index:5;
+  transition:transform .12s,box-shadow .12s;
+}
+.item:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,0,0,.28);}
+.item.held{
+  position:fixed;z-index:1000;cursor:grabbing;pointer-events:none;
+  transform:scale(1.12) rotate(2deg);
+  box-shadow:0 12px 35px rgba(0,0,0,.38);
+  transition:none;
+}
+.item.snap{animation:snap .25s ease-out;}
+@keyframes snap{0%{transform:scale(1.18)}60%{transform:scale(.94)}100%{transform:scale(1)}}
+.item.broken::after{content:'💥';position:absolute;top:-6px;right:-6px;font-size:13px;}
+.frag-badge{position:absolute;top:2px;right:2px;font-size:9px;pointer-events:none;}
+
+/* ── BOTTOM BAR ──────────────────────── */
+#bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;background:#fff;
+  box-shadow:0 -2px 8px rgba(0,0,0,.07);flex-shrink:0;gap:10px;
+}
+#rotate-btn{
+  width:48px;height:48px;border-radius:50%;
+  background:#8B5CF6;color:#fff;border:none;font-size:22px;
+  cursor:pointer;display:none;align-items:center;justify-content:center;
+  box-shadow:0 3px 12px rgba(139,92,246,.5);flex-shrink:0;
+  transition:transform .2s;
+}
+#rotate-btn.show{display:flex;}
+#rotate-btn:active{transform:rotate(90deg);}
+#finish-btn{
+  flex:1;height:52px;border-radius:30px;
+  background:linear-gradient(135deg,#FF6B35,#E83000);
+  color:#fff;border:none;font-family:'Fredoka One',cursive;font-size:20px;
+  cursor:pointer;letter-spacing:.5px;
+  box-shadow:0 4px 16px rgba(255,107,53,.5);
+  transition:transform .1s,box-shadow .1s;
+}
+#finish-btn:active{transform:scale(.97);box-shadow:0 2px 8px rgba(255,107,53,.4);}
+#finish-btn:disabled{opacity:.5;cursor:default;}
+.stat-box{min-width:38px;text-align:center;flex-shrink:0;}
+.stat-box span{font-family:'Fredoka One',cursive;font-size:20px;display:block;color:#444;}
+.stat-box small{font-size:11px;color:#aaa;}
+
+/* ── TRUCK ───────────────────────────── */
+#truck{
+  position:fixed;bottom:75px;left:-120px;font-size:52px;
+  pointer-events:none;z-index:50;display:none;
+}
+#truck.go{display:block;animation:drive 1.3s cubic-bezier(.3,0,.7,1) forwards;}
+@keyframes drive{0%{left:-120px}100%{left:110vw}}
+
+/* ── UPGRADE MODAL ───────────────────── */
+#upg-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
+  display:none;align-items:flex-end;justify-content:center;
+}
+#upg-overlay.show{display:flex;animation:fdIn .25s;}
+@keyframes fdIn{from{opacity:0}to{opacity:1}}
+#upg-box{
+  background:var(--bg);width:100%;max-width:460px;
+  border-radius:22px 22px 0 0;padding:22px 18px 30px;
+  animation:slideUp .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#upg-box h2{font-family:'Fredoka One',cursive;font-size:26px;text-align:center;margin-bottom:4px;}
+#upg-box .sub{text-align:center;color:#999;font-size:13px;margin-bottom:18px;}
+.upg-list{display:flex;flex-direction:column;gap:10px;}
+.upg-card{
+  background:#fff;border-radius:14px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+  border:2px solid transparent;box-shadow:0 2px 10px rgba(0,0,0,.07);
+  transition:all .18s;
+}
+.upg-card:hover,.upg-card:active{border-color:var(--accent);transform:scale(1.02);}
+.upg-icon{font-size:34px;flex-shrink:0;}
+.upg-info h3{font-family:'Fredoka One',cursive;font-size:17px;color:#333;}
+.upg-info p{font-size:12px;color:#999;margin-top:2px;}
+
+/* ── GAME OVER ───────────────────────── */
+#over-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;
+  display:none;align-items:center;justify-content:center;
+}
+#over-overlay.show{display:flex;}
+#over-box{
+  background:var(--bg);border-radius:24px;padding:32px 24px;
+  text-align:center;max-width:300px;width:90%;
+  animation:pop .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+#over-title{font-family:'Fredoka One',cursive;font-size:32px;margin-bottom:6px;}
+#over-score{font-family:'Fredoka One',cursive;font-size:52px;color:var(--accent);margin:8px 0;}
+#over-msg{color:#777;font-size:14px;margin-bottom:22px;}
+#play-again{
+  background:linear-gradient(135deg,#FF6B35,#E83000);color:#fff;border:none;
+  border-radius:28px;padding:13px 38px;font-family:'Fredoka One',cursive;
+  font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,53,.45);
+}
+
+/* ── DIEGO GAME OVER ─────────────────── */
+#over-diego{display:flex;justify-content:center;margin-bottom:8px;}
+#over-diego svg{width:80px;height:80px;}
+
+/* dance: body sways, arms raise alternately */
+#over-diego.dance .body{animation:bodySwing .5s ease-in-out infinite alternate;}
+#over-diego.dance .arm-l{animation:armUp .5s ease-in-out infinite alternate;}
+#over-diego.dance .arm-r{animation:armDown .5s ease-in-out infinite alternate;}
+#over-diego.dance .head{animation:headBop .5s ease-in-out infinite alternate;}
+@keyframes bodySwing{from{transform:rotate(-8deg) translateX(-3px)}to{transform:rotate(8deg) translateX(3px)}}
+@keyframes armUp   {from{transform:rotate(0deg)}to{transform:rotate(-60deg) translateY(-4px)}}
+@keyframes armDown {from{transform:rotate(0deg)}to{transform:rotate(60deg) translateY(-4px)}}
+@keyframes headBop {from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-4px) rotate(5deg)}}
+
+/* cry: shaking, tears drop */
+#over-diego.cry .head{animation:shake .3s ease-in-out infinite;}
+#over-diego.cry .body{animation:sob .6s ease-in-out infinite;}
+#over-diego.cry .tear-l{animation:tearDrop .8s ease-in infinite;}
+#over-diego.cry .tear-r{animation:tearDrop .8s ease-in .3s infinite;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes sob  {0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+@keyframes tearDrop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(14px)}}
+
+/* ── TOAST ───────────────────────────── */
+@keyframes toastAnim{
+  0%  {opacity:0;transform:translateX(-50%) translateY(10px)}
+  15% {opacity:1;transform:translateX(-50%) translateY(0)}
+  75% {opacity:1;transform:translateX(-50%) translateY(0)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-8px)}
+}
+
+/* ── ACTIVE UPGRADES BAR ─────────────── */
+#active-bar{
+  display:flex;gap:6px;justify-content:center;
+  min-height:22px;padding:0 8px 4px;flex-shrink:0;
+}
+.active-badge{
+  background:#fff;border-radius:12px;padding:2px 8px;
+  font-size:12px;box-shadow:0 1px 4px rgba(0,0,0,.12);
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ── CELEBRATE ───────────────────────── */
+.confetti{
+  position:fixed;pointer-events:none;z-index:300;
+  font-size:28px;animation:confFall 1.4s ease-in forwards;
+}
+@keyframes confFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div id="fuel-row"></div>
+  <div id="diego-wrap">
+    <svg width="38" height="38" viewBox="0 0 40 40">
+      <circle cx="20" cy="28" r="10" fill="#FF6B35"/>
+      <circle cx="20" cy="14" r="9" fill="#FFD93D"/>
+      <circle cx="16.5" cy="13" r="1.6" fill="#333"/>
+      <circle cx="23.5" cy="13" r="1.6" fill="#333"/>
+      <path d="M15.5 17.5 Q20 22 24.5 17.5" stroke="#333" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <line x1="10" y1="26" x2="5" y2="21" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="30" y1="26" x2="35" y2="21" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div id="score">0</div>
+</div>
+
+<!-- GAME AREA -->
+<div id="game-area">
+  <div class="section">
+    <div class="section-label">🏠 House</div>
+    <div class="grid-wrap"><div class="grid" id="house-grid"></div></div>
+    <div class="section-sub"><span id="items-left">12</span> items left</div>
+  </div>
+  <div class="section">
+    <div class="section-label">🎒 Backpack</div>
+    <div class="grid-wrap"><div class="grid" id="pack-grid"></div></div>
+    <div class="section-sub" id="turn-label">Turn 1 of 4</div>
+  </div>
+</div>
+
+<!-- ACTIVE UPGRADES -->
+<div id="active-bar"></div>
+
+<!-- BOTTOM BAR -->
+<div id="bottom">
+  <button id="rotate-btn" title="Rotate item">↻</button>
+  <button id="finish-btn">FINISH MOVE 🚚</button>
+  <div class="stat-box"><span id="pack-count">0</span><small>packed</small></div>
+</div>
+
+<!-- TRUCK -->
+<div id="truck">🚚</div>
+
+<!-- UPGRADE MODAL -->
+<div id="upg-overlay">
+  <div id="upg-box">
+    <h2>⭐ Choose Upgrade</h2>
+    <p class="sub">Pick one perk for the next trip</p>
+    <div class="upg-list" id="upg-list"></div>
+  </div>
+</div>
+
+<!-- GAME OVER -->
+<div id="over-overlay">
+  <div id="over-box">
+    <div id="over-diego">
+      <!-- SVG injected by JS -->
+    </div>
+    <div id="over-title">🎉 Done!</div>
+    <div id="over-score">0</div>
+    <p id="over-msg">Diego loves his new home!</p>
+    <button id="play-again">Play Again</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════
+const DEFS = [
+  {id:'phone',   e:'📱',w:1,h:1,c:'#4A90D9',fragile:false},
+  {id:'book',    e:'📚',w:1,h:2,c:'#E67E22',fragile:false},
+  {id:'clothes', e:'👕',w:2,h:2,c:'#9B59B6',fragile:false},
+  {id:'lamp',    e:'💡',w:1,h:3,c:'#F1C40F',fragile:true },
+  {id:'tv',      e:'📺',w:3,h:2,c:'#7F8C8D',fragile:true },
+  {id:'plant',   e:'🌿',w:2,h:2,c:'#27AE60',fragile:false},
+  {id:'box',     e:'📦',w:2,h:3,c:'#8B6914',fragile:false},
+  {id:'shoes',   e:'👟',w:2,h:1,c:'#E74C3C',fragile:false},
+  {id:'toy',     e:'🧸',w:1,h:1,c:'#FF69B4',fragile:false},
+  {id:'guitar',  e:'🎸',w:1,h:4,c:'#D35400',fragile:false},
+  {id:'pillow',  e:'🛏',w:2,h:2,c:'#5BA4CF',fragile:false},
+  {id:'mug',     e:'☕',w:1,h:1,c:'#00BCD4',fragile:false},
+];
+
+const UPGRADES = [
+  {id:'space', ico:'📐', name:'Extra Space',
+   desc:'+1 coluna na mochila essa viagem',
+   fn:()=>{ PCOLS++; pGrid=mkGrid(PCOLS,PROWS); refreshSizes(); renderAll(); showToast('📐 Mochila +1 coluna!'); }},
+  {id:'arms',  ico:'💪', name:'Braços Fortes',
+   desc:'+1 linha na mochila essa viagem',
+   fn:()=>{ strongArms=true; PROWS++; pGrid=mkGrid(PCOLS,PROWS); refreshSizes(); renderAll(); showToast('💪 Mochila +1 linha!'); }},
+  {id:'wrap',  ico:'🫧', name:'Plástico Bolha',
+   desc:'Itens frágeis não quebram essa viagem',
+   fn:()=>{ bubbleWrap=true; showToast('🫧 Itens frágeis protegidos!'); }},
+  {id:'tet',   ico:'🎮', name:'Modo Tetris',
+   desc:'Mostra onde cada item pode ser encaixado',
+   fn:()=>{ tetris=true; showToast('🎮 Posições válidas visíveis!'); }},
+];
+
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
+const HCOLS=5, HROWS=8;
+let PCOLS=3, PROWS=3;
+
+let hGrid=[], pGrid=[];
+let hItems=[], pItems=[];
+
+let fuel=4, maxFuel=4, score=0, turn=1;
+let bubbleWrap=false, tetris=false, strongArms=false;
+let dead=false;
+let usedUpgrades=new Set();
+
+// Drag
+const D={
+  on:false,      // item is "in hand"
+  dragging:false,// actively following a touch/mouse
+  id:null,src:null,
+  sx:-1,sy:-1,w:1,h:1,rotated:false,
+  px:0,py:0,ox:0,oy:0
+};
+let dragEl=null;
+let tStartX=0,tStartY=0;
+
+// ══════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════
+function mkGrid(c,r){return Array.from({length:r},()=>Array(c).fill(null));}
+
+function canPlace(g,x,y,w,h,cols,rows){
+  if(x<0||y<0||x+w>cols||y+h>rows)return false;
+  for(let dy=0;dy<h;dy++)for(let dx=0;dx<w;dx++)if(g[y+dy][x+dx])return false;
+  return true;
+}
+function stamp(g,id,x,y,w,h){
+  for(let dy=0;dy<h;dy++)for(let dx=0;dx<w;dx++)g[y+dy][x+dx]=id;
+}
+function erase(g,id,x,y,w,h){
+  for(let dy=0;dy<h;dy++)for(let dx=0;dx<w;dx++)if(g[y+dy][x+dx]===id)g[y+dy][x+dx]=null;
+}
+
+function defOf(id){return DEFS.find(d=>d.id===id);}
+
+let CS=52, GS=3;
+function refreshSizes(){
+  const vw=window.innerWidth;
+  GS=vw<=600?2:3;
+  // fill available width: padding(8px each side) + gap between grids(8px)
+  const pad=16, between=8;
+  const gridGaps=(HCOLS+1)*GS+(PCOLS+1)*GS;
+  CS=Math.floor((vw-pad-between-gridGaps)/(HCOLS+PCOLS));
+  CS=Math.min(CS,58); // cap on large screens
+  CS=Math.max(CS,24); // floor for very small screens
+  document.documentElement.style.setProperty('--cell',CS+'px');
+  document.documentElement.style.setProperty('--gap',GS+'px');
+}
+
+function cellPx(n){return n*CS+(n-1)*GS;}
+function gridOffset(n){return n*(CS+GS)+GS;}
+
+// ══════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════
+function init(){
+  refreshSizes();
+  fuel=4;maxFuel=4;score=0;turn=1;PCOLS=3;PROWS=3;dead=false;
+  bubbleWrap=false;tetris=false;strongArms=false;
+  usedUpgrades=new Set();
+  hGrid=mkGrid(HCOLS,HROWS);
+  pGrid=mkGrid(PCOLS,PROWS);
+  hItems=[];pItems=[];
+  placeInitial();
+  renderAll();
+  ui();
+}
+
+function placeInitial(){
+  const todo=[...DEFS].map(d=>({
+    id:'i_'+d.id, defId:d.id,
+    w:d.w,h:d.h,x:-1,y:-1,rotated:false,broken:false
+  })).sort((a,b)=>b.w*b.h-a.w*a.h);
+
+  for(const it of todo){
+    if(tryPlaceHouse(it,it.w,it.h,false))continue;
+    if(it.w!==it.h)tryPlaceHouse(it,it.h,it.w,true);
+  }
+}
+
+function tryPlaceHouse(it,w,h,rot){
+  for(let y=0;y<=HROWS-h;y++){
+    for(let x=0;x<=HCOLS-w;x++){
+      if(canPlace(hGrid,x,y,w,h,HCOLS,HROWS)){
+        stamp(hGrid,it.id,x,y,w,h);
+        it.x=x;it.y=y;it.w=w;it.h=h;it.rotated=rot;
+        hItems.push(it);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ══════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════
+function renderAll(){
+  renderGrid('house');
+  renderGrid('pack');
+}
+
+function renderGrid(name){
+  const isH=name==='house';
+  const el=document.getElementById(isH?'house-grid':'pack-grid');
+  const cols=isH?HCOLS:PCOLS, rows=isH?HROWS:PROWS;
+  const items=isH?hItems:pItems;
+
+  el.style.gridTemplateColumns=`repeat(${cols},${CS}px)`;
+  el.style.gridTemplateRows=`repeat(${rows},${CS}px)`;
+  el.innerHTML='';
+
+  // cells
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const cell=document.createElement('div');
+    cell.className='cell';
+    cell.dataset.g=name;cell.dataset.x=c;cell.dataset.y=r;
+    el.appendChild(cell);
+  }
+
+  // items
+  for(const it of items){
+    const def=defOf(it.defId);if(!def)continue;
+    const el2=document.createElement('div');
+    el2.className='item';
+    el2.dataset.iid=it.id;el2.dataset.g=name;
+
+    const pw=cellPx(it.w), ph=cellPx(it.h);
+    const pl=gridOffset(it.x), pt=gridOffset(it.y);
+    const fs=Math.min(pw,ph)*0.42;
+
+    el2.style.cssText=`left:${pl}px;top:${pt}px;width:${pw}px;height:${ph}px;background:${def.c};font-size:${fs}px;`;
+    el2.textContent=def.e;
+
+    if(def.fragile&&!bubbleWrap){
+      const b=document.createElement('div');
+      b.className='frag-badge';b.textContent='⚠️';
+      el2.appendChild(b);
+    }
+    if(it.broken)el2.classList.add('broken');
+
+    el2.addEventListener('mousedown',onDown);
+    el2.addEventListener('touchstart',onTouch,{passive:false});
+    el.appendChild(el2);
+  }
+}
+
+// ══════════════════════════════════════
+//  DRAG
+// ══════════════════════════════════════
+function startDrag(iid,src,cx,cy,ox,oy){
+  if(D.on)return; // guard: only one drag at a time
+  const items=src==='house'?hItems:pItems;
+  const it=items.find(i=>i.id===iid);
+  if(!it)return;
+  const def=defOf(it.defId);
+
+  D.on=true;D.dragging=true;D.id=iid;D.src=src;
+  D.sx=it.x;D.sy=it.y;D.w=it.w;D.h=it.h;D.rotated=it.rotated;
+  D.ox=ox;D.oy=oy;D.px=cx-ox;D.py=cy-oy;
+
+  const grid=src==='house'?hGrid:pGrid;
+  erase(grid,iid,it.x,it.y,it.w,it.h);
+
+  // floating clone
+  dragEl=document.createElement('div');
+  dragEl.className='item held';
+  const pw=cellPx(it.w),ph=cellPx(it.h);
+  dragEl.style.cssText=`width:${pw}px;height:${ph}px;background:${def.c};font-size:${Math.min(pw,ph)*.42}px;left:${D.px}px;top:${D.py}px;`;
+  dragEl.textContent=def.e;
+  document.body.appendChild(dragEl);
+
+  document.getElementById('rotate-btn').classList.add('show');
+  renderAll();
+  showHints();
+}
+
+function moveDrag(cx,cy){
+  if(!D.on||!dragEl)return;
+  D.px=cx-D.ox;D.py=cy-D.oy;
+  dragEl.style.left=D.px+'px';
+  dragEl.style.top =D.py+'px';
+  if(tetris)highlight(cx,cy);else clearHL();
+}
+
+function endDrag(cx,cy){
+  if(!D.on)return;
+  clearHL();
+
+  const hit=gridAt(cx,cy);
+  let placed=false;
+
+  if(hit){
+    const{name,x,y}=hit;
+    const tGrid=name==='house'?hGrid:pGrid;
+    const tItems=name==='house'?hItems:pItems;
+    const tCols=name==='house'?HCOLS:PCOLS;
+    const tRows=name==='house'?HROWS:PROWS;
+
+    const bx=Math.max(0,Math.min(x,tCols-D.w));
+    const by=Math.max(0,Math.min(y,tRows-D.h));
+
+    if(canPlace(tGrid,bx,by,D.w,D.h,tCols,tRows)){
+      stamp(tGrid,D.id,bx,by,D.w,D.h);
+      const srcArr=D.src==='house'?hItems:pItems;
+      const idx=srcArr.findIndex(i=>i.id===D.id);
+
+      if(name!==D.src){
+        const[moved]=srcArr.splice(idx,1);
+        moved.x=bx;moved.y=by;moved.w=D.w;moved.h=D.h;moved.rotated=D.rotated;
+        tItems.push(moved);
+        if(!bubbleWrap)checkFragile(moved,name,bx,by);
+      }else{
+        const moved=srcArr[idx];
+        moved.x=bx;moved.y=by;moved.w=D.w;moved.h=D.h;moved.rotated=D.rotated;
+      }
+      placed=true;
+    }
+  }
+
+  if(!placed){
+    // return to source
+    const sGrid=D.src==='house'?hGrid:pGrid;
+    const sItems=D.src==='house'?hItems:pItems;
+    const it=sItems.find(i=>i.id===D.id);
+    // use item's original dimensions (not D.w/D.h which may be rotated)
+    if(it){stamp(sGrid,D.id,it.x,it.y,it.w,it.h);}
+  }
+
+  dragEl&&dragEl.remove();dragEl=null;
+  D.on=false;D.dragging=false;
+  document.getElementById('rotate-btn').classList.remove('show');
+  renderAll();ui();
+}
+
+function rotateDrag(){
+  if(!D.on)return;
+  [D.w,D.h]=[D.h,D.w];D.rotated=!D.rotated;
+  if(dragEl){
+    const pw=cellPx(D.w),ph=cellPx(D.h);
+    dragEl.style.width=pw+'px';dragEl.style.height=ph+'px';
+    dragEl.style.fontSize=Math.min(pw,ph)*.42+'px';
+  }
+}
+
+// ══════════════════════════════════════
+//  HIT TEST
+// ══════════════════════════════════════
+function gridAt(cx,cy){
+  for(const name of['pack','house']){
+    const el=document.getElementById(name==='house'?'house-grid':'pack-grid');
+    const r=el.getBoundingClientRect();
+    if(cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom){
+      const lx=cx-r.left-GS, ly=cy-r.top-GS;
+      const x=Math.floor(lx/(CS+GS)), y=Math.floor(ly/(CS+GS));
+      return{name,x,y};
+    }
+  }
+  return null;
+}
+
+function highlight(cx,cy){
+  clearHL();
+  const hit=gridAt(cx,cy);
+  if(!hit||hit.name==='house')return;
+  const{x,y}=hit;
+  const bx=Math.max(0,Math.min(x,PCOLS-D.w));
+  const by=Math.max(0,Math.min(y,PROWS-D.h));
+  const ok=canPlace(pGrid,bx,by,D.w,D.h,PCOLS,PROWS);
+  const el=document.getElementById('pack-grid');
+  for(let dy=0;dy<D.h;dy++)for(let dx=0;dx<D.w;dx++){
+    const idx=(by+dy)*PCOLS+(bx+dx);
+    if(el.children[idx])el.children[idx].classList.add(ok?'ok':'no');
+  }
+}
+
+function clearHL(){
+  document.querySelectorAll('.cell.ok,.cell.no,.cell.hint').forEach(c=>{
+    c.classList.remove('ok','no','hint');
+  });
+}
+
+// ══════════════════════════════════════
+//  FRAGILE
+// ══════════════════════════════════════
+function checkFragile(it,grid,x,y){
+  if(grid!=='pack')return;
+  const def=defOf(it.defId);
+  if(!def||!def.fragile)return;
+  const edge=x===0||x+it.w===PCOLS||y===0||y+it.h===PROWS;
+  if(edge&&Math.random()<.5){
+    it.broken=true;
+    score=Math.max(0,score-15);
+    showToast(`💥 ${def.e} quebrou! -15pts`,'#e74c3c');
+  }
+}
+
+function showToast(msg,color='#333'){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText=`
+    position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(0);
+    background:${color};color:#fff;padding:10px 18px;border-radius:20px;
+    font-family:'Fredoka One',cursive;font-size:15px;z-index:500;
+    white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.25);
+    animation:toastAnim 2s ease forwards;pointer-events:none;
+  `;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2000);
+}
+
+// show all valid positions for current item (Tetris Master)
+function showHints(){
+  if(!tetris)return;
+  const el=document.getElementById('pack-grid');
+  for(let y=0;y<=PROWS-D.h;y++) for(let x=0;x<=PCOLS-D.w;x++){
+    if(canPlace(pGrid,x,y,D.w,D.h,PCOLS,PROWS)){
+      for(let dy=0;dy<D.h;dy++) for(let dx=0;dx<D.w;dx++){
+        const idx=(y+dy)*PCOLS+(x+dx);
+        if(el.children[idx]) el.children[idx].classList.add('hint');
+      }
+    }
+  }
+}
+
+// ══════════════════════════════════════
+//  EVENTS
+// ══════════════════════════════════════
+function onDown(e){
+  e.preventDefault();
+  if(D.on){cancelDrag();return;}
+  const iid=e.currentTarget.dataset.iid;
+  const g=e.currentTarget.dataset.g;
+  const r=e.currentTarget.getBoundingClientRect();
+  startDrag(iid,g,e.clientX,e.clientY,e.clientX-r.left,e.clientY-r.top);
+}
+
+function onTouch(e){
+  e.preventDefault();
+  e.stopPropagation();
+  if(D.on){cancelDrag();return;} // tap same item = cancel
+  const t=e.touches[0];
+  tStartX=t.clientX; tStartY=t.clientY;
+  const iid=e.currentTarget.dataset.iid;
+  const g=e.currentTarget.dataset.g;
+  const r=e.currentTarget.getBoundingClientRect();
+  startDrag(iid,g,t.clientX,t.clientY,t.clientX-r.left,t.clientY-r.top);
+}
+
+// ── Mouse (classic drag) ─────────────
+document.addEventListener('mousemove',e=>{if(D.on&&D.dragging)moveDrag(e.clientX,e.clientY);});
+document.addEventListener('mouseup',  e=>{if(D.on&&D.dragging)endDrag(e.clientX,e.clientY);});
+
+// ── Touch move: follow finger ─────────
+document.addEventListener('touchmove',e=>{
+  if(D.on&&D.dragging){e.preventDefault();moveDrag(e.touches[0].clientX,e.touches[0].clientY);}
+},{passive:false});
+
+// ── Touch end: tap = lock, drag = place ──
+document.addEventListener('touchend',e=>{
+  if(!D.on||!D.dragging)return;
+  D.dragging=false;
+  const t=e.changedTouches[0];
+  const moved=Math.abs(t.clientX-tStartX)>8||Math.abs(t.clientY-tStartY)>8;
+  if(!moved){
+    // TAP: item stays floating, user can rotate then tap a grid to place
+    lockItem();
+    return;
+  }
+  endDrag(t.clientX,t.clientY);
+});
+
+// ── Touch start on grid while item is locked → re-grab ──
+document.addEventListener('touchstart',e=>{
+  if(!D.on||D.dragging)return;
+  if(e.target.closest('#rotate-btn'))return;
+  const t=e.touches[0];
+  const hit=gridAt(t.clientX,t.clientY);
+  if(hit){
+    e.preventDefault();
+    tStartX=t.clientX; tStartY=t.clientY;
+    D.ox=cellPx(D.w)/2; D.oy=cellPx(D.h)/2;
+    moveDrag(t.clientX,t.clientY);
+    D.dragging=true;
+  }
+},{passive:false});
+
+// ── Rotate button ────────────────────
+document.getElementById('rotate-btn').addEventListener('click',()=>{rotateDrag();showHints();});
+document.getElementById('rotate-btn').addEventListener('touchend',e=>{
+  e.preventDefault();
+  e.stopPropagation(); // prevent document touchend from firing endDrag
+  rotateDrag();
+  showHints();
+});
+
+function lockItem(){
+  // Float item in center of screen, ready to be dragged to a grid
+  const cx=window.innerWidth/2;
+  const cy=window.innerHeight*0.44;
+  D.px=cx-cellPx(D.w)/2;
+  D.py=cy-cellPx(D.h)/2;
+  if(dragEl){dragEl.style.left=D.px+'px';dragEl.style.top=D.py+'px';}
+  clearHL();
+  showHints();
+}
+
+function cancelDrag(){
+  clearHL();
+  const sGrid=D.src==='house'?hGrid:pGrid;
+  const sItems=D.src==='house'?hItems:pItems;
+  const it=sItems.find(i=>i.id===D.id);
+  if(it)stamp(sGrid,D.id,it.x,it.y,it.w,it.h);
+  if(dragEl){dragEl.remove();dragEl=null;}
+  D.on=false;D.dragging=false;
+  document.getElementById('rotate-btn').classList.remove('show');
+  renderAll();ui();
+}
+document.getElementById('finish-btn').addEventListener('click',finishTurn);
+document.getElementById('play-again').addEventListener('click',()=>{
+  document.getElementById('over-overlay').classList.remove('show');
+  init();
+});
+
+// ══════════════════════════════════════
+//  FINISH TURN
+// ══════════════════════════════════════
+function finishTurn(){
+  if(dead)return;
+  if(pItems.length===0){
+    // shake button
+    const b=document.getElementById('finish-btn');
+    b.style.animation='none';
+    setTimeout(()=>{b.style.animation='';},10);
+    return;
+  }
+
+  // score packed items
+  let ts=0;
+  for(const it of pItems){
+    if(!it.broken){
+      const def=defOf(it.defId);
+      ts+=def.w*def.h*10;
+    }
+  }
+  // efficiency bonus
+  const used=pItems.reduce((s,i)=>s+i.w*i.h,0);
+  const total=PCOLS*PROWS;
+  if(used/total>=0.7)ts+=50;
+  score+=ts;
+
+  // clear pack
+  pItems=[];pGrid=mkGrid(PCOLS,PROWS);
+
+  fuel--;turn++;
+  if(strongArms){PROWS--;pGrid=mkGrid(PCOLS,PROWS);refreshSizes();}
+  bubbleWrap=false;strongArms=false;tetris=false;
+
+  // truck anim
+  const truck=document.getElementById('truck');
+  truck.classList.add('go');
+  setTimeout(()=>truck.classList.remove('go'),1400);
+
+  renderAll();ui();
+
+  if(hItems.length===0){
+    celebrate();
+    setTimeout(()=>showOver(true),900);
+    return;
+  }
+  if(fuel<=0){
+    setTimeout(()=>showOver(false),900);
+    return;
+  }
+  setTimeout(()=>showUpgrades(),900);
+}
+
+// ══════════════════════════════════════
+//  UPGRADES
+// ══════════════════════════════════════
+function showUpgrades(){
+  const available=UPGRADES.filter(u=>!usedUpgrades.has(u.id));
+  const pool=available.sort(()=>Math.random()-.5).slice(0,2);
+  const list=document.getElementById('upg-list');
+  list.innerHTML='';
+
+  if(pool.length===0){
+    // no upgrades left — just continue
+    return;
+  }
+
+  for(const u of pool){
+    const card=document.createElement('div');
+    card.className='upg-card';
+    card.innerHTML=`<div class="upg-icon">${u.ico}</div><div class="upg-info"><h3>${u.name}</h3><p>${u.desc}</p></div>`;
+    card.addEventListener('click',()=>{
+      usedUpgrades.add(u.id);
+      u.fn();
+      document.getElementById('upg-overlay').classList.remove('show');
+      renderAll();ui();
+    });
+    list.appendChild(card);
+  }
+  document.getElementById('upg-overlay').classList.add('show');
+}
+
+// ══════════════════════════════════════
+//  GAME OVER
+// ══════════════════════════════════════
+function showOver(won){
+  dead=true;
+  document.getElementById('over-title').textContent=won?'🎉 All Moved!':'⛽ Out of Fuel!';
+  document.getElementById('over-score').textContent=score;
+  document.getElementById('over-msg').textContent=won
+    ?'Diego loves his new home!'
+    :`${hItems.length} item${hItems.length!==1?'s':''} left behind...`;
+
+  const diegoEl=document.getElementById('over-diego');
+  diegoEl.className=won?'dance':'cry';
+
+  if(won){
+    // happy dancing Diego — big smile, arms up
+    diegoEl.innerHTML=`<svg viewBox="0 0 40 44" xmlns="http://www.w3.org/2000/svg">
+      <g class="body" style="transform-origin:20px 28px">
+        <circle cx="20" cy="30" r="10" fill="#FF6B35"/>
+      </g>
+      <g class="arm-l" style="transform-origin:12px 26px">
+        <line x1="12" y1="26" x2="5" y2="18" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+      <g class="arm-r" style="transform-origin:28px 26px">
+        <line x1="28" y1="26" x2="35" y2="18" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+      <g class="head" style="transform-origin:20px 14px">
+        <circle cx="20" cy="14" r="9" fill="#FFD93D"/>
+        <circle cx="16.5" cy="13" r="1.6" fill="#333"/>
+        <circle cx="23.5" cy="13" r="1.6" fill="#333"/>
+        <!-- big smile -->
+        <path d="M14 16 Q20 23 26 16" stroke="#333" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- rosy cheeks -->
+        <circle cx="13" cy="16" r="2.5" fill="#FF9999" opacity=".5"/>
+        <circle cx="27" cy="16" r="2.5" fill="#FF9999" opacity=".5"/>
+      </g>
+    </svg>`;
+  } else {
+    // sad crying Diego — frown, tears
+    diegoEl.innerHTML=`<svg viewBox="0 0 40 44" xmlns="http://www.w3.org/2000/svg">
+      <g class="body" style="transform-origin:20px 30px">
+        <circle cx="20" cy="30" r="10" fill="#FF6B35"/>
+        <line x1="10" y1="28" x2="6" y2="33" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="30" y1="28" x2="34" y2="33" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+      <g class="head" style="transform-origin:20px 14px">
+        <circle cx="20" cy="14" r="9" fill="#FFD93D"/>
+        <!-- sad eyes (down curves) -->
+        <path d="M14.5 11.5 Q16.5 13.5 18.5 11.5" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M21.5 11.5 Q23.5 13.5 25.5 11.5" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- frown -->
+        <path d="M14 18 Q20 13 26 18" stroke="#333" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- tears -->
+        <ellipse class="tear-l" cx="15.5" cy="18" rx="1.5" ry="2" fill="#74B9FF" opacity=".9"/>
+        <ellipse class="tear-r" cx="24.5" cy="18" rx="1.5" ry="2" fill="#74B9FF" opacity=".9"/>
+      </g>
+    </svg>`;
+  }
+
+  document.getElementById('over-overlay').classList.add('show');
+}
+
+function celebrate(){
+  const emojis=['🎉','⭐','🎊','✨','🌟'];
+  for(let i=0;i<12;i++){
+    const el=document.createElement('div');
+    el.className='confetti';
+    el.textContent=emojis[i%emojis.length];
+    el.style.cssText=`left:${Math.random()*100}vw;top:${Math.random()*40}vh;animation-delay:${Math.random()*.6}s;font-size:${20+Math.random()*20}px;`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2000);
+  }
+}
+
+// ══════════════════════════════════════
+//  UI
+// ══════════════════════════════════════
+function ui(){
+  // fuel icons
+  const fr=document.getElementById('fuel-row');
+  fr.innerHTML='';
+  for(let i=0;i<maxFuel;i++){
+    const s=document.createElement('span');
+    s.className='fuel'+(i>=fuel?' empty':'');
+    s.textContent='🚛';
+    fr.appendChild(s);
+  }
+  document.getElementById('score').textContent=score;
+  document.getElementById('items-left').textContent=hItems.length;
+  document.getElementById('pack-count').textContent=pItems.length;
+  document.getElementById('turn-label').textContent=`Turn ${Math.min(turn,maxFuel)} of ${maxFuel}`;
+  document.getElementById('finish-btn').disabled=pItems.length===0;
+
+  // active upgrades bar
+  const bar=document.getElementById('active-bar');
+  bar.innerHTML='';
+  if(bubbleWrap){const b=document.createElement('div');b.className='active-badge';b.textContent='🫧 Bubble Wrap';bar.appendChild(b);}
+  if(tetris)    {const b=document.createElement('div');b.className='active-badge';b.textContent='🎮 Tetris Master';bar.appendChild(b);}
+  if(strongArms){const b=document.createElement('div');b.className='active-badge';b.textContent='💪 Strong Arms';bar.appendChild(b);}
+
+  // update pack grid template in case PCOLS changed
+  const pg=document.getElementById('pack-grid');
+  pg.style.gridTemplateColumns=`repeat(${PCOLS},${CS}px)`;
+}
+
+// ══════════════════════════════════════
+//  RESIZE
+// ══════════════════════════════════════
+window.addEventListener('resize',()=>{refreshSizes();renderAll();ui();});
+
+// ══════════════════════════════════════
+//  START
+// ══════════════════════════════════════
+window.addEventListener('load',init);
+</script>
+</body>
+</html>
