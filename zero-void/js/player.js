@@ -8,6 +8,7 @@ function shoot() {
   for (let i = 0; i < 5; i++) {
     addSpark(px, py - 24, random(-1.5, 1.5), random(-4, -0.5), random(1, 3), 0.18);
   }
+  sndShoot();
 }
 
 function drawPlayer() {
@@ -109,12 +110,19 @@ function hitPlayer(ex, ey) {
   lives--;
   player.iframes = 140;
   explode(player.x, player.y, 28);
+  sndPlayerHit();
 
   if (lives <= 0) {
-    hiScore = max(hiScore, score);
+    if (gameMode === 'arcade') {
+      arcadeHiScore = max(arcadeHiScore, score);
+    } else {
+      hiScore = max(hiScore, score);
+    }
+    _saveScores();
     shake(20, 28);
     flashAmt = 210;
     state = 'dead';
     deathTimer = 0;
+    sndGameOver();
   }
 }

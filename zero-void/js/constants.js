@@ -1,12 +1,12 @@
-// ── Dimensões do canvas de jogo ───────────────────────────────
+// ── Canvas dimensions ─────────────────────────────────────────
 const W = 460, H = 700;
 const MAX_LIVES = 4;
 
-// ── Duração de cada wave ──────────────────────────────────────
-const WAVE_DURATION = 1800; // frames (~30s a 60fps)
+// ── Wave duration ─────────────────────────────────────────────
+const WAVE_DURATION = 1800; // frames (~30s at 60fps)
 const INVASION_CHANCE = 0.55;
 
-// ── Planetas (Mercúrio → Netuno) ──────────────────────────────
+// ── Planets (Mercury → Neptune) ───────────────────────────────
 const PLANETS = [
   { name: 'MERCURY', r: 180, g: 172, b: 162, types: ['circle',  'tri']                     },
   { name: 'VENUS',   r: 235, g: 195, b:  80, types: ['pentagon','ring']                    },
@@ -21,6 +21,10 @@ const PLANETS = [
 // ── Bullet time ───────────────────────────────────────────────
 const BT_DANGER_R = 100;
 const BT_SAFE_R   = 145;
+
+// ── Game mode ─────────────────────────────────────────────────
+let gameMode = 'story'; // 'story' | 'arcade'
+let arcadeHiScore = 0;
 
 // ── State ─────────────────────────────────────────────────────
 let state; // 'menu' | 'play' | 'dead' | 'escape' | 'transmission' | 'finale' | 'waveTransition'
@@ -42,12 +46,12 @@ let btActive;
 let btThreat;
 let btRingPhase;
 
-// ── Layout (responsivo) ───────────────────────────────────────
+// ── Layout (responsive) ───────────────────────────────────────
 let gx, gy, gs;
 let touchX  = -1;
 let touchHint = 90;
 
-// ── Objetos do jogo ───────────────────────────────────────────
+// ── Game objects ──────────────────────────────────────────────
 let player, bullets, enemies, obstacles, sparks, shrapnel;
 let lifePods;
 let ball;

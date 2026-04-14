@@ -21,6 +21,7 @@ function tickBall() {
       ball.dead  = false;
       ball.trail = [];
       shake(3, 5); flashAmt = 28;
+      sndBallRespawn();
     }
     return;
   }
@@ -44,16 +45,19 @@ function tickBall() {
     ball.x = margin + ball.r;
     ball.vx = abs(ball.vx);
     wallBounceEffect(ball.x, ball.y);
+    sndBallBounceWall();
   }
   if (ball.x + ball.r > W - margin) {
     ball.x = W - margin - ball.r;
     ball.vx = -abs(ball.vx);
     wallBounceEffect(ball.x, ball.y);
+    sndBallBounceWall();
   }
   if (ball.y - ball.r < margin) {
     ball.y = margin + ball.r;
     ball.vy = abs(ball.vy);
     wallBounceEffect(ball.x, ball.y);
+    sndBallBounceWall();
   }
 
   // Ship deflection (paddle)
@@ -74,6 +78,7 @@ function tickBall() {
     for (let i = 0; i < 10; i++) {
       addSpark(ball.x, padY, random(-3, 3), random(-4, -0.5), random(1, 3), 0.14);
     }
+    sndBallDeflect();
   }
 
   // Fell below screen
@@ -83,6 +88,7 @@ function tickBall() {
     shake(8, 12);
     flashAmt = 70;
     explode(ball.x, H - 20, 16);
+    sndBallLost();
     return;
   }
 
@@ -104,6 +110,7 @@ function tickBall() {
         let a = random(TWO_PI);
         addSpark(e.x, e.y, cos(a)*random(2,6), sin(a)*random(2,6), random(1.5,3.5), 0.1);
       }
+      sndBallHitEnemy();
       if (e.hp <= 0) { killEnemy(e, i); }
       break;
     }
@@ -121,6 +128,7 @@ function tickBall() {
       ball.y = o.y + ny * (ball.r + o.size * 0.72 + 1);
       shake(2, 4);
       wallBounceEffect(ball.x, ball.y);
+      sndBallHitObstacle();
       break;
     }
   }

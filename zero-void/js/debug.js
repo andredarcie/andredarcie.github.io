@@ -31,7 +31,7 @@
   btn.addEventListener('mouseleave', () => btn.style.opacity = '0.75');
 
   btn.addEventListener('click', () => {
-    // Se o jogo não foi iniciado ainda, inicia primeiro
+    // If the game hasn't started yet, initialize it first
     if (typeof state === 'undefined' || state === 'menu') {
       initGame();
     }

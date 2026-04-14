@@ -63,12 +63,16 @@ function tickAstronaut() {
       astY      = INV_OY + astRow * INV_CELL + INV_CELL / 2;
       astMoving = false;
 
+      sndAstStep();
       let eaten = eatCell(astCol, astRow);
-      if (eaten === 'dot')    score += 5 * wave;
-      else if (eaten === 'pellet') {
+      if (eaten === 'dot') {
+        score += 5 * wave;
+        sndDotEat();
+      } else if (eaten === 'pellet') {
         score += 20 * wave;
         activateFrightened();
         shake(4, 6); flashAmt = 40;
+        sndPelletEat();
       }
     }
   }

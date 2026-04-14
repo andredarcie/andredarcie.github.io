@@ -1,9 +1,0 @@
-- generic [active] [ref=e1]:
-  - button "👾 invasão" [ref=e2] [cursor=pointer]
-  - button "finale" [ref=e3] [cursor=pointer]
-  - generic [ref=e4]:
-    - button "📡 transmission 1" [ref=e5] [cursor=pointer]
-    - button "📡 transmission 2" [ref=e6] [cursor=pointer]
-    - button "📡 transmission 3" [ref=e7] [cursor=pointer]
-    - button "📡 transmission 4" [ref=e8] [cursor=pointer]
-  - main [ref=e9]

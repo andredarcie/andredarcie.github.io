@@ -50,11 +50,11 @@ function drawTransitionEcho() {
 }
 
 function beginWaveTransition(nextWave) {
-  captureTransitionEcho('wave');
-
   let roll = random();
   let target = 'play';
-  if (nextWave > PLANETS.length) {
+  if (gameMode === 'arcade') {
+    target = 'play';
+  } else if (nextWave > PLANETS.length) {
     target = 'finale';
   } else if (_shouldTriggerTransmissionForWave(nextWave)) {
     target = 'transmission';
@@ -62,6 +62,23 @@ function beginWaveTransition(nextWave) {
     target = 'invasion';
   }
 
+  // Direct to play: no pause, game continues uninterrupted
+  if (target === 'play') {
+    wave = nextWave;
+    waveTimer = WAVE_DURATION;
+    spawnClock = 0;
+    obsClock  = 0;
+    combo = 0;
+    comboTimer = 0;
+    lastWaveAnnounced = wave;
+    waveAnnounceTimer = 180;
+    sndWaveUp();
+    return;
+  }
+
+  // Story events (transmission, invasion, finale) still use the animated transition
+  sndWaveTransition();
+  captureTransitionEcho('wave');
   waveTransition = {
     frame: 0,
     duration: 78,

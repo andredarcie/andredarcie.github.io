@@ -43,6 +43,7 @@ function tickObstacles() {
     if (player.iframes === 0 && dist(player.x, player.y, o.x, o.y) < o.size + 11) {
       hitPlayer(o.x, o.y);
       explode(o.x, o.y, 14);
+      sndObstacleHit();
       obstacles.splice(i, 1);
       continue;
     }
@@ -78,6 +79,7 @@ function tickLifePods() {
         let a = random(TWO_PI);
         addSpark(pod.x, pod.y, cos(a) * random(1.2, 4.2), sin(a) * random(1.2, 4.2), random(1.2, 2.8), 0.12);
       }
+      sndLifePickup();
       lifePods.splice(i, 1);
       continue;
     }

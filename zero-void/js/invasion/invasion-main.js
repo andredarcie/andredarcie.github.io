@@ -31,6 +31,7 @@ function initInvasion() {
   invTimer     = 130;
   invLives     = 4;
   invTouchHint = 40;
+  sndInvasionAlarm();
 }
 
 // ── Main frame ────────────────────────────────────────────────
@@ -42,7 +43,7 @@ function invasionFrame() {
   if (invPhase === 'intro') {
     _drawInvasionIntro();
     invTimer--;
-    if (invTimer <= 0) invPhase = 'playing';
+    if (invTimer <= 0) { invPhase = 'playing'; sndInvasionStart(); }
     crtOverlay(); drawBorder();
     return;
   }
@@ -87,6 +88,7 @@ function invasionFrame() {
     shake(10, 14);
     flashAmt = 90;
     score += 100 * wave;
+    sndInvasionWin();
   }
 }
 
@@ -229,9 +231,11 @@ function invaderHitPlayer() {
     invTimer = 110;
     shake(20, 26);
     flashAmt = 180;
+    sndInvasionFail();
     return;
   }
 
+  sndAstHit();
   // Still have invasion lives — respawn in place
   initAstronaut();
   astIframes = 120;

@@ -49,11 +49,13 @@ function initAliens() {
 function activateFrightened() {
   frightenedTimer  = INV_FRIGHTENED_DUR;
   frightenedActive = true;
+  sndFrightened();
 }
 
 function tickAliens() {
   if (frightenedTimer > 0) {
     frightenedTimer--;
+    if (frightenedTimer === 89) sndFrightenedWarning();
     if (frightenedTimer <= 0) frightenedActive = false;
   }
 
@@ -136,6 +138,7 @@ function checkAlienCollision(a) {
       addSpark(a.x, a.y, cos(ang)*random(2,6), sin(ang)*random(2,6), random(1.5,3.5), 0.09);
     }
     explode(a.x, a.y, 8);
+    sndAlienKill();
   } else {
     invaderHitPlayer();
   }

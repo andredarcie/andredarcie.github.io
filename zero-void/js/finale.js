@@ -1,6 +1,7 @@
 function initFinale() {
   hiScore = max(hiScore, score);
   captureTransitionEcho('finale');
+  sndFinaleAmbient();
   const mobileLike = windowWidth < 700 || windowHeight < 760 || navigator.maxTouchPoints > 0;
   finaleScene = {
     frame: 0,
@@ -38,6 +39,12 @@ function finaleFrame() {
   drawFinaleMenger(t, alpha, progress);
   drawFinaleTetraOrbit(t, alpha, progress);
   blendMode(BLEND);
+
+  // "Zero Void" title below the cube
+  noStroke(); fill(255, alpha * 160);
+  textFont('monospace'); textAlign(CENTER);
+  textSize(32); text('ZERO', W / 2, H / 2 + 120);
+  textSize(32); text('VOID', W / 2, H / 2 + 158);
 
   crtOverlay();
   drawBorder();

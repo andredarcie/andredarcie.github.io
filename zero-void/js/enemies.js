@@ -103,6 +103,7 @@ function tickEnemies() {
           addSpark(e.x, e.y, cos(a)*random(2,6), sin(a)*random(2,6), random(1.5,4), random(0.06,0.14));
         }
         if (e.hp <= 0) { killEnemy(e, i); killed = true; break; }
+        sndEnemyHit();
         break;
       }
     }
@@ -128,6 +129,8 @@ function killEnemy(e, idx) {
   bgPulse = 55;
   shake(4, 7);
   explode(e.x, e.y, 20);
+  sndEnemyKill();
+  if (combo > 1 && combo % 5 === 0) sndCombo();
 }
 
 function drawEnemy(e) {

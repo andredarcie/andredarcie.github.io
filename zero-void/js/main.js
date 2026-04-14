@@ -2,11 +2,27 @@
 //  SETUP & MAIN LOOP
 // ═══════════════════════════════════════════════════════════════
 
+function _loadScores() {
+  try {
+    hiScore       = parseInt(localStorage.getItem('zv_hiscore'))        || 0;
+    arcadeHiScore = parseInt(localStorage.getItem('zv_arcade_hiscore')) || 0;
+  } catch(e) {
+    hiScore = 0; arcadeHiScore = 0;
+  }
+}
+
+function _saveScores() {
+  try {
+    localStorage.setItem('zv_hiscore',        hiScore);
+    localStorage.setItem('zv_arcade_hiscore', arcadeHiScore);
+  } catch(e) {}
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(min(pixelDensity(), 2));
   updateLayout();
-  hiScore  = 0;
+  _loadScores();
   warpLines = [];
   for (let i = 0; i < 45; i++) {
     warpLines.push({
@@ -16,7 +32,7 @@ function setup() {
       alpha: random(12, 55),
     });
   }
-  state = 'menu';
+  state = 'intro';
 }
 
 function windowResized() {
@@ -36,7 +52,7 @@ function screenToGame(sx, sy) {
 
 function initGame() {
   player = {
-    x: W / 2, y: H - 95,
+    x: W / 2, y: H - 120,
     speed: 6.2,
     fireTimer: 0, fireRate: 9,
     trail: [],
@@ -89,11 +105,11 @@ function initGame() {
 
 function draw() {
   background(0);
-
   push();
   translate(gx, gy);
   scale(gs);
 
+  if (state === 'intro')    { introFrame();    pop(); return; }
   if (state === 'menu')     { menuFrame();     pop(); return; }
   if (state === 'dead')     { deadFrame();     pop(); return; }
   if (state === 'escape')   { escapeFrame();   pop(); return; }
@@ -101,6 +117,7 @@ function draw() {
   if (state === 'finale')   { finaleFrame();   pop(); return; }
   if (state === 'waveTransition') { waveTransitionFrame(); pop(); return; }
   if (state === 'transmission') { transmissionFrame(); pop(); return; }
+  if (state === 'paused')       { pausedFrame();       pop(); return; }
 
   // Screen shake
   let sx = 0, sy = 0;
@@ -192,6 +209,25 @@ function draw() {
   } else {
     lifeClock = 0;
   }
+}
+
+function togglePause() {
+  if (state === 'play')        state = 'paused';
+  else if (state === 'paused') state = 'play';
+}
+
+function _goToMenu() {
+  sndMenuAmbientStart();
+  state = 'menu';
+}
+
+function restartCurrentWave() {
+  let savedWave = wave;
+  initGame();
+  wave              = savedWave;
+  waveTimer         = WAVE_DURATION;
+  waveAnnounceTimer = 180;
+  lastWaveAnnounced = savedWave;
 }
 
 function _shouldTriggerTransmissionForWave(nextWave) {

@@ -31,27 +31,47 @@ function scrollBgSlow(factor) {
 function drawHUD() {
   textFont('monospace');
 
-  // Score
+  // Score (left)
   noStroke(); fill(255);
   textSize(10); textAlign(LEFT);
   text('SCORE', 16, 22);
-  textSize(26); text(score, 16, 50);
+  textSize(22); text(score, 16, 46);
 
-  // Wave + planeta
-  let wp = getPlanet(wave);
-  fill(wp.r, wp.g, wp.b, 160); textSize(10); textAlign(CENTER);
-  text('WAVE ' + wave, W / 2, 20);
-  fill(wp.r, wp.g, wp.b, 230); textSize(17);
-  text(wp.name, W / 2, 40);
+  // Best score (below current score, left side)
+  let bestScore = gameMode === 'arcade' ? arcadeHiScore : hiScore;
+  fill(255, 120); textSize(8);
+  text('BEST', 16, 61);
+  fill(255, 200); textSize(12);
+  text(max(score, bestScore), 16, 74);
 
-  // Best
-  textAlign(RIGHT); textSize(10); fill(255, 130);
-  text('BEST', W - 16, 22);
-  textSize(14); fill(255); text(max(score, hiScore), W - 16, 38);
+  // Wave + planet name (story) or just wave number (arcade)
+  if (gameMode === 'arcade') {
+    fill(255, 140); textSize(10); textAlign(CENTER);
+    text('ARCADE', W / 2, 20);
+    fill(255, 230); textSize(17);
+    text('WAVE ' + wave, W / 2, 40);
+  } else {
+    let wp = getPlanet(wave);
+    fill(wp.r, wp.g, wp.b, 160); textSize(10); textAlign(CENTER);
+    text('WAVE ' + wave, W / 2, 20);
+    fill(wp.r, wp.g, wp.b, 230); textSize(17);
+    text(wp.name, W / 2, 40);
+  }
+
+  // Pause button (top right)
+  let gm = screenToGame(mouseX, mouseY);
+  let hovered = pauseBtnHit(gm.x, gm.y);
+  let isPaused = state === 'paused';
+  let pAlpha = hovered ? 210 : 110;
+  noFill(); stroke(255, pAlpha); strokeWeight(hovered ? 1.5 : 1);
+  rect(PAUSE_BTN_CX - PAUSE_BTN_W / 2, PAUSE_BTN_CY - PAUSE_BTN_H / 2, PAUSE_BTN_W, PAUSE_BTN_H, 3);
+  noStroke(); fill(255, pAlpha);
+  textAlign(CENTER); textFont('monospace'); textSize(13);
+  text(isPaused ? '\u25B6' : 'II', PAUSE_BTN_CX, PAUSE_BTN_CY + 5);
 
   // Lives (mini ship icons)
   for (let i = 0; i < MAX_LIVES; i++) {
-    push(); translate(18 + i * 22, 68);
+    push(); translate(18 + i * 22, 106);
     stroke(255, i < lives ? 255 : 55); strokeWeight(1.1); noFill();
     scale(0.52); shipPath();
     pop();
@@ -110,25 +130,36 @@ function drawHUD() {
 
 function drawWaveAnnounce() {
   if (waveAnnounceTimer <= 0) return;
-  let p   = getPlanet(wave);
   let dur = 180;
   let a   = waveAnnounceTimer > 40
               ? map(waveAnnounceTimer, dur, dur - 30, 0, 255)
               : map(waveAnnounceTimer, 0, 40, 0, 255);
   a = constrain(a, 0, 255);
 
-  noStroke();
-  fill(p.r, p.g, p.b, a * 0.35);
-  rect(0, H / 2 - 68, W, 90);
-
-  fill(p.r, p.g, p.b, a * 0.7);
-  textFont('monospace'); textAlign(CENTER);
-  textSize(13);
-  text('WAVE ' + wave, W / 2, H / 2 - 38);
-
-  fill(p.r, p.g, p.b, a);
-  textSize(46);
-  text(p.name, W / 2, H / 2 + 8);
+  if (gameMode === 'arcade') {
+    noStroke();
+    fill(255, a * 0.25);
+    rect(0, H / 2 - 68, W, 90);
+    fill(255, a * 0.6);
+    textFont('monospace'); textAlign(CENTER);
+    textSize(13);
+    text('INCOMING', W / 2, H / 2 - 38);
+    fill(255, a);
+    textSize(46);
+    text('WAVE ' + wave, W / 2, H / 2 + 8);
+  } else {
+    let p = getPlanet(wave);
+    noStroke();
+    fill(p.r, p.g, p.b, a * 0.35);
+    rect(0, H / 2 - 68, W, 90);
+    fill(p.r, p.g, p.b, a * 0.7);
+    textFont('monospace'); textAlign(CENTER);
+    textSize(13);
+    text('WAVE ' + wave, W / 2, H / 2 - 38);
+    fill(p.r, p.g, p.b, a);
+    textSize(46);
+    text(p.name, W / 2, H / 2 + 8);
+  }
 
   waveAnnounceTimer--;
 }
@@ -166,7 +197,30 @@ function drawBorder() {
 //  MENU
 // ═══════════════════════════════════════════════════════════════
 
+// Button bounds in game-coordinates (used in menuFrame and input)
+const MENU_BTN_W = 260;
+const MENU_BTN_H = 52;
+const MENU_BTN_STORY_CY  = H / 2 + 100;
+const MENU_BTN_ARCADE_CY = H / 2 + 162;
+
+// Pause button bounds in game-coordinates
+const PAUSE_BTN_CX = W - 34;
+const PAUSE_BTN_CY = 26;
+const PAUSE_BTN_W  = 54;
+const PAUSE_BTN_H  = 38;
+
+function pauseBtnHit(gx, gy) {
+  return gx > PAUSE_BTN_CX - PAUSE_BTN_W / 2 && gx < PAUSE_BTN_CX + PAUSE_BTN_W / 2 &&
+         gy > PAUSE_BTN_CY - PAUSE_BTN_H / 2 && gy < PAUSE_BTN_CY + PAUSE_BTN_H / 2;
+}
+
+function menuBtnHit(gx, gy, centerY) {
+  return gx > W / 2 - MENU_BTN_W / 2 && gx < W / 2 + MENU_BTN_W / 2 &&
+         gy > centerY - MENU_BTN_H / 2 && gy < centerY + MENU_BTN_H / 2;
+}
+
 function menuFrame() {
+  sndMenuAmbientTick();
   scrollBgSlow(0.45);
 
   let t = frameCount;
@@ -191,20 +245,84 @@ function menuFrame() {
   text('drag  /  ← →  /  A D  —  auto-fire', W/2, H/2 + 44);
   text('destroy shapes  ·  deflect the ball  ·  survive', W/2, H/2 + 58);
 
+  // --- Mode buttons ---
+  let g = screenToGame(mouseX, mouseY);
   let p = sin(t * 0.085) * 0.5 + 0.5;
-  fill(255, 100 + p * 155); textSize(13);
-  text('[  SPACE TO START  ]', W/2, H/2 + 104);
 
-  if (hiScore > 0) {
-    fill(255, 90); textSize(9);
-    text('BEST : ' + hiScore, W/2, H/2 + 122);
+  _drawMenuButton('STORY MODE',  W/2, MENU_BTN_STORY_CY,  menuBtnHit(g.x, g.y, MENU_BTN_STORY_CY),  p);
+  _drawMenuButton('ARCADE MODE', W/2, MENU_BTN_ARCADE_CY, menuBtnHit(g.x, g.y, MENU_BTN_ARCADE_CY), p);
+
+  // Best scores
+  let hasScore = hiScore > 0 || arcadeHiScore > 0;
+  if (hasScore) {
+    fill(255, 70); textSize(8); noStroke(); textAlign(CENTER);
+    if (hiScore > 0)       text('STORY BEST : '  + hiScore,       W/2, H/2 + 200);
+    if (arcadeHiScore > 0) text('ARCADE BEST : ' + arcadeHiScore, W/2, H/2 + 214);
   }
 
-  push(); translate(W/2, H/2 + 210);
+  push(); translate(W/2, H/2 + 250);
   stroke(255, 55 + p * 45); strokeWeight(1.4); noFill();
   shipPath(); pop();
 
   crtOverlay(); drawBorder();
+}
+
+function _drawMenuButton(label, cx, cy, hovered, pulse) {
+  let bx = cx - MENU_BTN_W / 2;
+  let by = cy - MENU_BTN_H / 2;
+  let alpha = hovered ? 200 + pulse * 55 : 70 + pulse * 40;
+
+  noFill(); stroke(255, alpha); strokeWeight(hovered ? 1.4 : 1);
+  rect(bx, by, MENU_BTN_W, MENU_BTN_H, 3);
+
+  noStroke(); fill(255, hovered ? 255 : 140 + pulse * 60);
+  textFont('monospace'); textAlign(CENTER); textSize(15);
+  text(label, cx, cy + 6);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PAUSE SCREEN
+// ═══════════════════════════════════════════════════════════════
+
+const PAUSE_MENU_BTN_W  = 200;
+const PAUSE_MENU_BTN_H  = 46;
+const PAUSE_MENU_BTN_CY = H / 2 + 72;
+
+function pauseMenuBtnHit(gx, gy) {
+  return gx > W / 2 - PAUSE_MENU_BTN_W / 2 && gx < W / 2 + PAUSE_MENU_BTN_W / 2 &&
+         gy > PAUSE_MENU_BTN_CY - PAUSE_MENU_BTN_H / 2 && gy < PAUSE_MENU_BTN_CY + PAUSE_MENU_BTN_H / 2;
+}
+
+function pausedFrame() {
+  scrollBgSlow(0);
+
+  noStroke(); fill(0, 185);
+  rect(0, 0, W, H);
+
+  fill(255); textFont('monospace'); textAlign(CENTER); noStroke();
+  textSize(34); text('PAUSED', W / 2, H / 2 - 28);
+
+  stroke(255, 38); strokeWeight(1);
+  line(W / 2 - 75, H / 2 - 10, W / 2 + 75, H / 2 - 10);
+  noStroke();
+
+  fill(255, 95); textSize(9);
+  text('P  \u00B7  ESC  \u00B7  TAP  TO  RESUME', W / 2, H / 2 + 14);
+
+  // Back to menu button
+  let g = screenToGame(mouseX, mouseY);
+  let hovered = pauseMenuBtnHit(g.x, g.y);
+  let pulse = sin(frameCount * 0.07) * 0.5 + 0.5;
+  let alpha = hovered ? 210 + pulse * 45 : 80 + pulse * 40;
+  noFill(); stroke(255, alpha); strokeWeight(hovered ? 1.5 : 1);
+  rect(W / 2 - PAUSE_MENU_BTN_W / 2, PAUSE_MENU_BTN_CY - PAUSE_MENU_BTN_H / 2, PAUSE_MENU_BTN_W, PAUSE_MENU_BTN_H, 3);
+  noStroke(); fill(255, hovered ? 255 : 150 + pulse * 60);
+  textFont('monospace'); textAlign(CENTER); textSize(13);
+  text('MAIN MENU', W / 2, PAUSE_MENU_BTN_CY + 5);
+
+  drawHUD();
+  crtOverlay();
+  drawBorder();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -218,6 +336,12 @@ function deadFrame() {
   crtOverlay(); drawBorder();
 
   let fi = min(1, deathTimer / 55);
+
+  if (gameMode === 'arcade') {
+    _arcadeDeadFrame(fi);
+    return;
+  }
+
   fill(255, fi * 255); noStroke(); textFont('monospace'); textAlign(CENTER);
 
   textSize(28); text('ZERO IS DEAD', W/2, H/2 - 72);
@@ -242,6 +366,51 @@ function deadFrame() {
   }
 }
 
+function _arcadeDeadFrame(fi) {
+  noStroke(); textFont('monospace'); textAlign(CENTER);
+
+  fill(255, fi * 220);
+  textSize(22); text('GAME OVER', W/2, H/2 - 115);
+
+  stroke(255, fi * 55); strokeWeight(1);
+  line(W/2 - 100, H/2 - 94, W/2 + 100, H/2 - 94);
+  noStroke();
+
+  fill(255, fi * 120); textSize(10);
+  text('WAVE  ' + wave, W/2, H/2 - 74);
+
+  // Score box
+  fill(0, fi * 150); noStroke();
+  rectMode(CENTER);
+  rect(W/2, H/2 - 12, 224, 82, 6);
+  rectMode(CORNER);
+  stroke(255, fi * 60); strokeWeight(1); noFill();
+  rectMode(CENTER);
+  rect(W/2, H/2 - 12, 224, 82, 6);
+  rectMode(CORNER);
+
+  noStroke(); fill(255, fi * 255);
+  textSize(72); text(score, W/2, H/2 + 16);
+
+  if (score > 0 && score >= arcadeHiScore) {
+    fill(255, fi * 180); textSize(10);
+    text('— NEW BEST —', W/2, H/2 + 48);
+  }
+
+  stroke(255, fi * 35); strokeWeight(1);
+  line(W/2 - 115, H/2 + 66, W/2 + 115, H/2 + 66);
+  noStroke();
+
+  fill(255, fi * 190); textSize(11);
+  text('screenshot and share your score!', W/2, H/2 + 86);
+
+  if (deathTimer > 70) {
+    let p = sin(frameCount * 0.09) * 0.5 + 0.5;
+    fill(255, 100 + p * 155); textSize(13);
+    text('[  SPACE TO RESTART  ]', W/2, H/2 + 130);
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  ESCAPE SCREEN
 // ═══════════════════════════════════════════════════════════════
@@ -251,6 +420,7 @@ function initEscape() {
   escapeDurationMs = 7000;
   escapeTimer = 420;
   state = 'escape';
+  sndEscape();
 }
 
 function escapeFrame() {
@@ -364,6 +534,7 @@ function checkBulletTime() {
     timeScale = lerp(timeScale, 1.0, 0.025);
   }
   timeScale = constrain(timeScale, 0.12, 1.0);
+  sndBulletTimeCheck(btActive);
 }
 
 function drawBulletTimeEffect() {
@@ -420,4 +591,53 @@ function drawBulletTimeEffect() {
   noStroke(); fill(255, 100); textFont('monospace');
   textSize(8); textAlign(LEFT);
   text('SLOW', 16, H - 10);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INTRO SCREEN
+// ═══════════════════════════════════════════════════════════════
+
+let introTimer = 0;
+
+function introFrame() {
+  introTimer++;
+  scrollBgSlow(0.25);
+
+  let t = introTimer;
+
+  // Rotating geometric shape — same language as the menu
+  stroke(255, 22); strokeWeight(1); noFill();
+  push(); translate(W / 2, H / 2);
+  rotate(t * 0.003);  poly(0, 0, 130, 6);
+  rotate(t * 0.005);  poly(0, 0, 88, 3);
+  rotate(-t * 0.009); poly(0, 0, 50, 4);
+  pop();
+
+  // Fade in
+  let fi = constrain(map(t, 0, 90, 0, 1), 0, 1);
+
+  noStroke(); textFont('monospace'); textAlign(CENTER);
+
+  fill(255, fi * 80);
+  textSize(9);
+  text('A GAME BY', W / 2, H / 2 - 28);
+
+  fill(255, fi * 220);
+  textSize(22);
+  text('ANDRÉ N. DARCIE', W / 2, H / 2 + 4);
+
+  stroke(255, fi * 35); strokeWeight(1);
+  line(W / 2 - 105, H / 2 + 18, W / 2 + 105, H / 2 + 18);
+  noStroke();
+
+  // Blinking prompt — only after fade in
+  if (t > 80) {
+    let p = sin(t * 0.07) * 0.5 + 0.5;
+    fill(255, 60 + p * 100);
+    textSize(10);
+    text('PRESS ANY KEY', W / 2, H / 2 + 52);
+  }
+
+  crtOverlay();
+  drawBorder();
 }

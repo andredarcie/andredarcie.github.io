@@ -91,6 +91,8 @@ function _drawTransmissionIncomingSignal() {
   let scene = transmissionScene;
   if (!scene || scene.frame < 26 || scene.frame > scene.shipCenterEnd) return;
 
+  if (scene.frame === 26) sndTransmissionIncoming();
+
   let blinkOn = floor(scene.frame / 10) % 2 === 0;
   if (!blinkOn) return;
 
@@ -137,6 +139,7 @@ function _tickTransmissionApproach() {
 
   if (scene.frame >= scene.shipCenterEnd) {
     scene.phase = 'dialogue';
+    sndTransmissionOpen();
   }
 }
 
@@ -207,7 +210,9 @@ function _tickTransmissionDialogue() {
 
   if (scene.frame % 2 === 0 && scene.typedChars < line.text.length) {
     scene.typedChars++;
+    sndTypewriterTick();
   } else if (scene.typedChars >= line.text.length) {
+    if (!scene.lineReady) sndDialogueReady();
     scene.lineReady = true;
   }
 }
@@ -220,7 +225,7 @@ function _drawTransmissionDialogue() {
   let p = getPlanet(wave);
   let boxT = constrain(map(scene.frame, scene.shipCenterStart, scene.shipCenterEnd + 18, 0, 1), 0, 1);
   let boxW = lerp(0, W - 64, boxT);
-  let boxH = lerp(0, 206, boxT);
+  let boxH = lerp(0, 224, boxT);
   let boxX = W / 2 - boxW / 2;
   let boxY = H - 246;
 
@@ -252,20 +257,20 @@ function _drawTransmissionDialogue() {
   fill(255, 120);
   textFont('monospace');
   textAlign(LEFT);
-  textSize(9);
+  textSize(10);
   text('SECURE CHANNEL', boxX + 18, boxY + 22);
   fill(255);
-  textSize(11);
-  text(current.speaker, boxX + 18, boxY + 110);
-  fill(255, 200);
-  textSize(12);
-  _drawWrappedText(visibleText, boxX + 18, boxY + 132, boxW - 36, 18);
+  textSize(13);
+  text(current.speaker, boxX + 18, boxY + 112);
+  fill(255, 210);
+  textSize(14);
+  _drawWrappedText(visibleText, boxX + 18, boxY + 136, boxW - 36, 20);
 
   if (scene.lineReady) {
     fill(255, 110);
     textAlign(RIGHT);
-    textSize(9);
-    text('PRESS ANY KEY', boxX + boxW - 18, boxY + boxH - 16);
+    textSize(10);
+    text('PRESS ANY KEY', boxX + boxW - 18, boxY + boxH - 14);
   }
 }
 
