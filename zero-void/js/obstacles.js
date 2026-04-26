@@ -3,14 +3,25 @@
 // ═══════════════════════════════════════════════════════════════
 
 function spawnObstacle() {
-  let sides = floor(random(3, 8));
+  let planet  = getPlanet(wave);
+  let fm      = planet.fallMult  || 1.0;
+  let dm      = planet.driftMult || 1.0;
+  let szMin   = (planet.obsSize  || [14, 32])[0];
+  let szMax   = (planet.obsSize  || [14, 32])[1];
+  let sides   = floor(random(3, 8));
+
   obstacles.push({
-    x: random(35, W - 35), y: -40,
-    vy: random(2.2, 4.2) + wave * 0.12,
-    drift: random(-0.7, 0.7),
-    rot: random(TWO_PI), rotSpd: random(-0.09, 0.09),
-    size: random(14, 32), sides,
-    wobble: random(TWO_PI), wobbleFreq: random(0.03, 0.06),
+    x:          random(35, W - 35),
+    y:          -40,
+    vy:         (random(2.2, 4.2) + wave * 0.12) * fm,
+    drift:      random(-0.7, 0.7) * dm,
+    wobbleMult: dm * 0.6,
+    rot:        random(TWO_PI),
+    rotSpd:     random(-0.09, 0.09),
+    size:       random(szMin, szMax),
+    sides,
+    wobble:     random(TWO_PI),
+    wobbleFreq: random(0.03, 0.06),
     t: 0,
   });
 }
@@ -34,7 +45,7 @@ function tickObstacles() {
     let o = obstacles[i];
     o.t += timeScale;
     o.y += o.vy * timeScale;
-    o.x += (o.drift + sin(o.t * o.wobbleFreq + o.wobble) * 0.6) * timeScale;
+    o.x += (o.drift + sin(o.t * o.wobbleFreq + o.wobble) * o.wobbleMult) * timeScale;
     o.x = constrain(o.x, 25, W - 25);
     o.rot += o.rotSpd * timeScale;
 

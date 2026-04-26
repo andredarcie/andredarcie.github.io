@@ -6,20 +6,52 @@ const PATTERNS = ['straight', 'sine', 'zigzag', 'chase', 'bezier'];
 const TYPES    = ['diamond', 'tri', 'cross', 'hex'];
 
 function spawnGroup() {
+  let planet = getPlanet(wave);
+  let gm     = planet.groupMult || 1.0;
+
+  // ── Lateral wave (Uranus / Venus / Neptune) ──────────────────
+  if (planet.lateralEntry > 0 && random() < planet.lateralEntry) {
+    let n = constrain(floor(random(2, 4) * gm), 1, 6);
+    for (let i = 0; i < n; i++) _spawnLateralEnemy();
+    return;
+  }
+
+  // ── Mars: pair bias (Phobos & Deimos) ────────────────────────
+  if (planet.pairBias && random() < 0.5) {
+    let gap = random(50, 130);
+    let cx  = random(70, W - 70);
+    spawnEnemy(cx - gap / 2, -30);
+    spawnEnemy(cx + gap / 2, -22);
+    return;
+  }
+
+  // ── Saturn: arc / ring formation ─────────────────────────────
+  if (planet.ringSpawn && random() < 0.55) {
+    let n  = floor(random(4, 7));
+    let cx = W / 2;
+    let r  = random(100, 150);
+    for (let i = 0; i < n; i++) {
+      let a = map(i, 0, n, -PI * 0.55, PI * 0.55) - HALF_PI;
+      spawnEnemy(cx + cos(a) * r, -20 + (sin(a) + 1) * 30);
+    }
+    return;
+  }
+
+  // ── Standard formations (scaled by groupMult) ─────────────────
   let roll = random();
   if (roll < 0.28) {
     spawnEnemy(random(30, W - 30), -30);
   } else if (roll < 0.55) {
-    let n = floor(random(2, 5));
+    let n   = constrain(floor(random(2, 5) * gm), 2, 8);
     let gap = (W - 80) / max(1, n - 1);
     for (let i = 0; i < n; i++) spawnEnemy(40 + gap * i, -30 - i * 15);
   } else if (roll < 0.75) {
     let cx = random(80, W - 80);
     spawnEnemy(cx, -30);
     spawnEnemy(cx - 45, -10); spawnEnemy(cx + 45, -10);
-    if (wave > 4) { spawnEnemy(cx - 90, 10); spawnEnemy(cx + 90, 10); }
+    if (wave > 4 || gm > 1.3) { spawnEnemy(cx - 90, 10); spawnEnemy(cx + 90, 10); }
   } else {
-    let n = min(3 + floor(wave * 0.4), 6);
+    let n = constrain(floor((3 + floor(wave * 0.4)) * gm), 3, 10);
     let cx = W / 2;
     for (let i = 0; i < n; i++) {
       let a = map(i, 0, n - 1, -PI * 0.4, PI * 0.4) - HALF_PI;
@@ -33,9 +65,15 @@ function spawnEnemy(x, y) {
   let ptypes  = planet.types;
   let isHeavy = random() < 0.12 && wave > 1 && ptypes.includes('hex');
   let type    = isHeavy ? 'hex' : ptypes[floor(random(ptypes.length))];
-  let spd     = random(1.6, 2.8) + wave * 0.18;
-  let pat     = PATTERNS[floor(random(PATTERNS.length))];
+
+  let basespd = random(1.6, 2.8) + wave * 0.18;
+  let spd     = basespd * (planet.speedMult || 1.0);
+
+  let availPat = planet.patterns || PATTERNS;
+  let pat      = availPat[floor(random(availPat.length))];
   if (type === 'hex') { pat = 'straight'; spd *= 0.7; }
+
+  let sineAmp = random(35, 90) * (planet.sineAmpMult || 1.0);
 
   let bx1 = random(W), by1 = random(H * 0.3, H * 0.5);
   let bx2 = random(W), by2 = random(H * 0.5, H * 0.8);
@@ -45,7 +83,7 @@ function spawnEnemy(x, y) {
     vy: spd, vx: 0,
     type, pattern: pat,
     phase: random(TWO_PI),
-    sineAmp: random(35, 90),
+    sineAmp,
     sineFreq: random(0.022, 0.048),
     initX: x,
     t: 0,
@@ -57,6 +95,35 @@ function spawnEnemy(x, y) {
     hitFlash: 0,
     bx1, by1, bx2, by2,
     bProgress: 0,
+  });
+}
+
+// Enemies entering from left / right (Uranus axis tilt, Venus retrograde, Neptune winds)
+function _spawnLateralEnemy() {
+  let planet     = getPlanet(wave);
+  let ptypes     = planet.types;
+  let type       = ptypes[floor(random(ptypes.length))];
+  let basespd    = random(1.6, 2.8) + wave * 0.18;
+  let spd        = basespd * (planet.speedMult || 1.0);
+  let fromLeft   = random() < 0.5;
+
+  enemies.push({
+    x:       fromLeft ? -35 : W + 35,
+    y:       random(60, H * 0.62),
+    vx:      fromLeft ? spd * 1.5 : -spd * 1.5,
+    vy:      spd * 0.22,
+    type,
+    pattern: 'lateral',
+    phase:   random(TWO_PI),
+    sineAmp: 0,
+    sineFreq: 0,
+    initX:   fromLeft ? -35 : W + 35,
+    t: 0,
+    rot:     random(TWO_PI),
+    rotSpd:  random(-0.07, 0.07),
+    size:    random(11, 20),
+    hp: 1, maxHp: 1, hitFlash: 0,
+    bx1: 0, by1: 0, bx2: 0, by2: 0, bProgress: 0,
   });
 }
 
@@ -86,9 +153,14 @@ function tickEnemies() {
         let bp   = min(e.bProgress, 1);
         let bpos = cubicBezier(e.initX, -30, e.bx1, e.by1, e.bx2, e.by2, W/2, H + 120, bp);
         e.x = bpos.x; e.y = bpos.y; break;
+      case 'lateral':
+        e.x += e.vx * timeScale;
+        e.y += e.vy * timeScale; break;
     }
 
-    if (e.y > H + 55 || e.bProgress >= 1) { enemies.splice(i, 1); combo = 0; continue; }
+    if (e.y > H + 55 || e.x < -70 || e.x > W + 70 || e.bProgress >= 1) {
+      enemies.splice(i, 1); combo = 0; continue;
+    }
 
     // Bullet collisions
     let killed = false;
