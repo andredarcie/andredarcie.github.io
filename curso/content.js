@@ -18,6 +18,7 @@ const content = {
   format: {
     heading: "Como é o curso",
     items: [
+      "Atendimento exclusivamente individual, sem turmas ou grade compartilhada",
       "Aulas ao vivo, sem material gravado ou estático",
       "Formato de conversa onde suas dúvidas e necessidades guiam o conteúdo",
       "Ritmo adaptado a você, não a uma grade fixa",
