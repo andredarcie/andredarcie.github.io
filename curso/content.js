@@ -31,6 +31,7 @@ const content = {
   audience: {
     heading: "Para quem é",
     items: [
+      "Desenvolvedores que buscam aprovação em entrevistas técnicas para posições sênior",
       "Estudantes de computação que querem entender os fundamentos na prática",
       "Desenvolvedores júnior e pleno buscando evoluir para sênior",
       "Profissionais que querem se atualizar em arquitetura e sistemas modernos",
@@ -89,6 +90,11 @@ const content = {
       ],
     },
   ],
+
+  enrollment: {
+    heading: "Quero fazer o curso",
+    text: "As vagas são preenchidas exclusivamente por indicação. A agenda é limitada e as aulas acontecem apenas no período noturno.",
+  },
 
   contact: {
     links: [
