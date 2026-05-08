@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curso Dev do André</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --black: #1e1e1e;
+      --gray-mid: #4a4a4a;
+      --gray-light: #7a7a7a;
+      --border: #e8e4df;
+      --bg: #f4f1ec;
+    }
+
+    html {
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--black);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.8;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative;
+      overflow: hidden;
+      padding: 88px 0 64px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-light);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 8vw, 58px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: var(--gray-mid);
+      max-width: 52ch;
+      line-height: 1.8;
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-light);
+      margin-bottom: 32px;
+    }
+
+    /* ── Shared list style ── */
+    .item-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .item-list li {
+      font-size: 17px;
+      color: var(--gray-mid);
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      line-height: 1.7;
+    }
+
+    .item-list li::before {
+      content: "–";
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-light);
+      flex-shrink: 0;
+    }
+
+    .item-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* ── Modules ── */
+    .modules {
+      display: grid;
+      gap: 48px;
+    }
+
+    .module h2 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .module h2 svg {
+      flex-shrink: 0;
+      color: var(--gray-light);
+    }
+
+    .module ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    /* ── Instructor ── */
+    .instructor-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .instructor-role {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--gray-light);
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+
+    .instructor-bio {
+      font-size: 18px;
+      color: var(--gray-mid);
+      line-height: 1.8;
+      max-width: 60ch;
+    }
+
+    /* ── Contact ── */
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contact-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--black);
+      text-decoration: none;
+      padding: 12px 20px;
+      border: 1px solid var(--black);
+      transition: background 0.15s, color 0.15s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .contact-links a:hover {
+      background: var(--black);
+      color: var(--bg);
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 32px 0 48px;
+    }
+
+    footer p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-light);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Flow canvas ── */
+    #flow-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      header {
+        padding: 56px 0 48px;
+      }
+
+      section {
+        padding: 48px 0;
+      }
+
+      .contact-links a {
+        flex: 1;
+        text-align: center;
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="app"></div>
+
+  <script src="content.js"></script>
+  <script>
+    document.title = content.meta.title;
+    document.documentElement.lang = content.meta.lang;
+
+    const app = document.getElementById("app");
+
+    const heading = content.header.heading
+      .split("\n")
+      .join("<br>");
+
+    const moduleIcons = {
+      "Casos Reais": `<svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="0,7 3.5,7 5.5,1 7.5,13 9.5,5 10.5,7 14,7 20,7"/>
+      </svg>`,
+      "Engenharia com IA": `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="8" cy="2.5" r="1.5"/>
+        <line x1="8" y1="4" x2="4" y2="10"/>
+        <line x1="8" y1="4" x2="12" y2="10"/>
+        <line x1="4" y1="10" x2="12" y2="10"/>
+        <circle cx="4" cy="11.5" r="1.5"/>
+        <circle cx="12" cy="11.5" r="1.5"/>
+      </svg>`,
+      "Arquitetura": `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="1" y="11.5" width="14" height="3"/>
+        <rect x="3.5" y="6.5" width="9" height="3"/>
+        <rect x="6" y="1.5" width="4" height="3"/>
+      </svg>`,
+      "Sistemas Distribuídos": `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="8" cy="8" r="2"/>
+        <circle cx="8"   cy="1.5" r="1.2"/>
+        <circle cx="14.5" cy="8"  r="1.2"/>
+        <circle cx="8"   cy="14.5" r="1.2"/>
+        <circle cx="1.5"  cy="8"  r="1.2"/>
+        <line x1="8"    y1="2.7"  x2="8"    y2="6"/>
+        <line x1="13.3" y1="8"    x2="10"   y2="8"/>
+        <line x1="8"    y1="10"   x2="8"    y2="13.3"/>
+        <line x1="2.7"  y1="8"    x2="6"    y2="8"/>
+      </svg>`,
+    };
+
+    const modulesHTML = content.modules.map(m => `
+      <div class="module">
+        <h2>${moduleIcons[m.title] ?? ""}${m.title}</h2>
+        <ul class="item-list">
+          ${m.topics.map(t => `<li>${t}</li>`).join("")}
+        </ul>
+      </div>
+    `).join("");
+
+    const contactHTML = content.contact.links.map(l => `
+      <a href="${l.href}"${l.href.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}>${l.label}</a>
+    `).join("");
+
+    app.innerHTML = `
+      <header id="site-header">
+        <div class="header-content">
+          <p class="label">${content.header.label}</p>
+          <h1>${heading}</h1>
+        </div>
+      </header>
+
+      <section>
+        <p class="section-label">Instrutor</p>
+        <p class="instructor-name">${content.instructor.name}</p>
+        <p class="instructor-role">${content.instructor.role}</p>
+        <p class="instructor-bio">${content.instructor.bio}</p>
+      </section>
+
+      <section>
+        <p class="section-label">${content.format.heading}</p>
+        <ul class="item-list">
+          ${content.format.items.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <p class="section-label">${content.audience.heading}</p>
+        <ul class="item-list">
+          ${content.audience.items.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <p class="section-label">Conteúdo</p>
+        <div class="modules">${modulesHTML}</div>
+      </section>
+
+      <section>
+        <p class="section-label">Contato</p>
+        <div class="contact-links">${contactHTML}</div>
+      </section>
+
+      <footer>
+        <p>${content.footer.text}</p>
+      </footer>
+    `;
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <script>
+    new p5(function (p) {
+      const NUM_NODES   = 18;
+      const CONNECT_DIST = 160;
+      const DRIFT       = 0.18;
+
+      let nodes  = [];
+      let pulses = [];
+      let header;
+
+      p.setup = function () {
+        header = document.getElementById('site-header');
+        const cnv = p.createCanvas(header.offsetWidth, header.offsetHeight);
+        cnv.id('flow-canvas');
+        p.background(244, 241, 236);
+
+        for (let i = 0; i < NUM_NODES; i++) {
+          nodes.push({
+            x:    p.random(p.width  * 0.05, p.width  * 0.95),
+            y:    p.random(p.height * 0.1,  p.height * 0.9),
+            noff: p.random(1000),
+          });
+        }
+      };
+
+      p.draw = function () {
+        p.background(244, 241, 236);
+
+        // drift nodes
+        for (const nd of nodes) {
+          nd.noff += 0.0015;
+          const angle = p.noise(nd.noff) * p.TWO_PI * 2;
+          nd.x += p.cos(angle) * DRIFT;
+          nd.y += p.sin(angle) * DRIFT;
+          const m = 50;
+          if (nd.x < m) nd.x += (m - nd.x) * 0.03;
+          if (nd.x > p.width  - m) nd.x -= (nd.x - (p.width  - m)) * 0.03;
+          if (nd.y < m) nd.y += (m - nd.y) * 0.03;
+          if (nd.y > p.height - m) nd.y -= (nd.y - (p.height - m)) * 0.03;
+        }
+
+        // edges
+        p.strokeWeight(0.6);
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const d = p.dist(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+            if (d < CONNECT_DIST) {
+              const a = p.map(d, 0, CONNECT_DIST, 30, 0);
+              p.stroke(30, 30, 30, a);
+              p.line(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+            }
+          }
+        }
+
+        // pulses
+        p.noStroke();
+        for (let i = pulses.length - 1; i >= 0; i--) {
+          const pu = pulses[i];
+          pu.t += pu.spd;
+          if (pu.t >= 1) { pulses.splice(i, 1); continue; }
+          const x = p.lerp(nodes[pu.a].x, nodes[pu.b].x, pu.t);
+          const y = p.lerp(nodes[pu.a].y, nodes[pu.b].y, pu.t);
+          const a = pu.t < 0.5
+            ? p.map(pu.t, 0, 0.5, 0, 70)
+            : p.map(pu.t, 0.5, 1, 70, 0);
+          p.fill(30, 30, 30, a);
+          p.circle(x, y, 3.5);
+        }
+
+        // nodes
+        p.noStroke();
+        for (const nd of nodes) {
+          p.fill(30, 30, 30, 45);
+          p.circle(nd.x, nd.y, 3.5);
+        }
+
+        // spawn pulse
+        if (p.frameCount % 80 === 0 && p.random() < 0.7) {
+          const i = p.floor(p.random(nodes.length));
+          const nearby = nodes
+            .map((_, j) => j)
+            .filter(j => j !== i && p.dist(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y) < CONNECT_DIST);
+          if (nearby.length) {
+            const j = nearby[p.floor(p.random(nearby.length))];
+            pulses.push({ a: i, b: j, t: 0, spd: 0.007 + p.random(0.005) });
+          }
+        }
+      };
+
+      p.windowResized = function () {
+        if (!header) return;
+        p.resizeCanvas(header.offsetWidth, header.offsetHeight);
+        p.background(244, 241, 236);
+      };
+    }, document.getElementById('site-header'));
+  </script>
+
+</body>
+</html>
