@@ -55,11 +55,11 @@ export function enterCar(){
     traffic.splice(traffic.indexOf(c),1);
     const p=refs.trafficPos({...c,t:c.t});
     cur={g:c.g,heading:Math.atan2(p.dx,p.dz),speed:0,name:c.name,police:false};
-    addWanted(1,'STOLEN CAR!');refs.spawnTraffic?.();
+    addWanted(1,'STOLEN CAR!','vehicle_theft');refs.spawnTraffic?.();
   }else{
     cops.splice(cops.indexOf(c),1);
     cur={g:c.g,heading:c.heading,speed:0,name:'CRUISER 47',police:true};
-    addWanted(2,'STOLEN POLICE CAR!');
+    addWanted(2,'STOLEN POLICE CAR!','police_vehicle_theft');
   }
   state.mode='car';state.weaponHeld=false;player.g.visible=false;
   hudCar.textContent=cur.name;hudSpeedo.style.display='block';

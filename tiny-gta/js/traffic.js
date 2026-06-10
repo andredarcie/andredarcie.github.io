@@ -60,7 +60,7 @@ export function updateTraffic(dt){
       if(d<2.9){
         const push=new THREE.Vector3().subVectors(t.g.position,activeCur.g.position).setY(0).normalize();
         activeCur.g.position.addScaledVector(push,-(2.9-d)*.6);
-        if(Math.abs(activeCur.speed)>8){addWanted(.25);thud(Math.abs(activeCur.speed));state.shake=.3;}
+        if(Math.abs(activeCur.speed)>8){addWanted(.25,null,'pursuit');thud(Math.abs(activeCur.speed));state.shake=.3;}
         activeCur.speed*=.6;t.brakeT=2;
       }
     }else if(state.mode==='foot'&&t.speed>6.5){

@@ -1,6 +1,5 @@
-const radioBox=document.getElementById('police-radio');
-const radioText=document.getElementById('police-radio-text');
-const radioUnit=document.getElementById('police-radio-unit');
+import {refs} from './state.js';
+import {GROUND,CELL,N,nodeX} from './constants.js';
 
 const LINES={
   gunfire:[
@@ -40,54 +39,122 @@ const LINES={
 const queue=[];
 const lastByKind={};
 let current=null;
-let visibleText='';
-let charTimer=0;
-let holdTimer=0;
+let typingTimer=null;
+let hideTimer=null;
+
+function els(){
+  return{
+    box:document.getElementById('police-radio'),
+    text:document.getElementById('police-radio-text'),
+    unit:document.getElementById('police-radio-unit')
+  };
+}
 
 function pickLine(kind){
+  return buildDetailedLine(kind)||pickFallbackLine(kind);
+}
+
+function pickFallbackLine(kind){
   const lines=LINES[kind]||LINES.pursuit;
   return lines[Math.floor(Math.random()*lines.length)];
 }
 
-export function reportPoliceCrime(kind='pursuit',severity=1){
-  const now=performance.now()/1000;
-  const minGap=severity>=1?1.2:5;
-  if(lastByKind[kind]&&now-lastByKind[kind]<minGap)return;
-  lastByKind[kind]=now;
-  const text=pickLine(kind);
-  if(current?.text===text||queue.some(q=>q.text===text))return;
-  queue.push({kind,text});
-  if(queue.length>4)queue.shift();
+function suspect(){
+  return 'a man in a blue shirt';
 }
 
-export function updatePoliceRadio(dt){
-  if(!radioBox||!radioText||!radioUnit)return;
-  if(!current&&queue.length){
-    current=queue.shift();
-    visibleText='';
-    charTimer=0;
-    holdTimer=0;
-    radioText.textContent='';
-    radioUnit.textContent=current.kind.replaceAll('_',' ').toUpperCase();
-    radioBox.classList.add('show','typing');
+function locationText(){
+  const p=refs.playerPos?.();
+  if(!p)return 'in the city';
+  const half=GROUND/2;
+  if(Math.abs(p.x)>half||Math.abs(p.z)>half)return 'near the beachfront';
+  if(Math.hypot(p.x,p.z)<48)return 'near the central plaza';
+  const nearestI=Math.round((p.x+N*CELL/2)/CELL);
+  const nearestJ=Math.round((p.z+N*CELL/2)/CELL);
+  const nx=nodeX(Math.max(0,Math.min(N,nearestI)));
+  const nz=nodeX(Math.max(0,Math.min(N,nearestJ)));
+  if(Math.hypot(p.x-nx,p.z-nz)<16)return 'at a city intersection';
+  return p.z<0?'on the north side of downtown':'on the south side of downtown';
+}
+
+function carDescription(){
+  const cur=refs.getCur?.();
+  const name=(cur?.name||'vehicle').toLowerCase();
+  if(name.includes('pink'))return 'a pink car';
+  if(name.includes('cruiser'))return 'a marked police cruiser';
+  if(name.includes('blue'))return 'a blue car';
+  if(name.includes('gold'))return 'a gold car';
+  if(name.includes('pickup'))return 'a pickup truck';
+  if(name.includes('sedan'))return 'a sedan';
+  return 'a civilian vehicle';
+}
+
+function buildDetailedLine(kind){
+  const who=suspect(),where=locationText(),car=carDescription();
+  switch(kind){
+    case 'gunfire':
+      return `Dispatch, multiple callers report ${who} firing shots ${where}. Suspect is armed.`;
+    case 'ped_shot':
+      return `All units, ${who} shot a civilian ${where}. Victim is down in the street.`;
+    case 'vehicle_shot':
+      return `Dispatch, ${who} is firing at a vehicle ${where}. Keep responding units back.`;
+    case 'vehicle_destroyed':
+      return `All units, ${who} caused a vehicle explosion ${where}. Fire and patrol requested.`;
+    case 'vehicle_theft':
+      return `Dispatch, ${who} just stole ${car} ${where}. Suspect is mobile.`;
+    case 'police_vehicle_theft':
+      return `Emergency traffic only. ${who} stole a marked police cruiser ${where}.`;
+    case 'hit_run':
+      return `Dispatch, ${who} hit a pedestrian with a vehicle ${where} and fled the scene.`;
+    case 'pursuit':
+      return `Control, units are tracking ${who} ${where}. Maintain visual and coordinate.`;
+    default:
+      return '';
   }
-  if(!current){
-    radioBox.classList.remove('show','typing');
-    return;
-  }
-  if(visibleText.length<current.text.length){
-    charTimer+=dt*34;
-    const count=Math.min(current.text.length,Math.floor(charTimer));
-    visibleText=current.text.slice(0,count);
-    radioText.textContent=visibleText;
-    return;
-  }
-  radioBox.classList.remove('typing');
-  holdTimer+=dt;
-  if(holdTimer>2.8){
-    current=null;
-    if(!queue.length)radioBox.classList.remove('show');
-  }
+}
+
+function clearTimers(){
+  if(typingTimer){clearInterval(typingTimer);typingTimer=null;}
+  if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}
+}
+
+function playNext(){
+  const{box,text,unit}=els();
+  if(!box||!text||!unit||current||!queue.length)return;
+  current=queue.shift();
+  clearTimers();
+  let i=0;
+  text.textContent='';
+  unit.textContent=current.kind.replaceAll('_',' ').toUpperCase();
+  box.classList.add('show','typing');
+  typingTimer=setInterval(()=>{
+    i+=2;
+    text.textContent=current.text.slice(0,i);
+    if(i>=current.text.length){
+      clearInterval(typingTimer);
+      typingTimer=null;
+      box.classList.remove('typing');
+      hideTimer=setTimeout(()=>{
+        box.classList.remove('show');
+        current=null;
+        hideTimer=setTimeout(()=>{hideTimer=null;playNext();},180);
+      },3000);
+    }
+  },34);
+}
+
+export function reportPoliceCrime(kind='pursuit',severity=1){
+  const now=performance.now()/1000;
+  const minGap=severity>=1?1.1:2.2;
+  if(lastByKind[kind]&&now-lastByKind[kind]<minGap)return;
+  lastByKind[kind]=now;
+  queue.push({kind,text:pickLine(kind)});
+  if(queue.length>5)queue.shift();
+  playNext();
+}
+
+export function updatePoliceRadio(){
+  playNext();
 }
 
 document.getElementById('buildver')?.insertAdjacentText('beforeend',' ◆ RADIO');

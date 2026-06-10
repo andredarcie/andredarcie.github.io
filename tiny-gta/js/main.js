@@ -14,6 +14,7 @@ import {blinkBar} from './entities.js';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
 import {canPickWeapon,updateWeapons,isWeaponHeld} from './weapons.js';
+import {updatePoliceRadio} from './police-radio.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
 refs.playerPos=playerPos;
@@ -85,6 +86,7 @@ function frame(){
 
   updateCamera(dt);
   updateHUD(dt);
+  updatePoliceRadio(dt);
   updateAudio();
   drawMinimap();
 

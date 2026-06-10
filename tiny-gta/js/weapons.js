@@ -5,6 +5,7 @@ import {rand,irand,nodeX} from './constants.js';
 import {blip,thud} from './audio.js';
 import {message} from './hud.js';
 import {addWanted} from './physics.js';
+import {reportPoliceCrime} from './police-radio.js';
 import {player,playerPos,cameraRig,idleCars,cur} from './player.js';
 import {peds,addBloodPuddle} from './pedestrians.js';
 import {traffic,spawnTraffic} from './traffic.js';
@@ -139,7 +140,7 @@ function killPed(p,dir){
   p.vel.copy(dir).multiplyScalar(9).add(new THREE.Vector3(rand(-1.5,1.5),rand(5,7),rand(-1.5,1.5)));
   addBloodPuddle(p.g.position.x,p.g.position.z);
   spawnDrop(p.g.position.x,p.g.position.z,irand(15,55));
-  addWanted(1,'SHOT FIRED!');
+  addWanted(1,'SHOT FIRED!','ped_shot');
 }
 
 function makeExplosion(pos){
@@ -162,7 +163,7 @@ function explodeCar(car,arr){
   const idx=arr.indexOf(car);
   if(idx>=0)arr.splice(idx,1);
   makeExplosion(pos);
-  addWanted(1.5,'VEHICLE DESTROYED!');
+  addWanted(1.5,'VEHICLE DESTROYED!','vehicle_destroyed');
   state.shake=.7;
   if(arr===traffic)setTimeout(()=>spawnTraffic(),900);
 }
@@ -172,7 +173,7 @@ function damageCar(car,arr){
   const ud=car.g.userData;
   ud.bulletHits=(ud.bulletHits||0)+1;
   state.shake=Math.max(state.shake,.04);
-  addWanted(.35,'SHOT FIRED!');
+  addWanted(.35,'SHOT FIRED!','vehicle_shot');
   if(ud.bulletHits>=4){
     explodeCar(car,arr);
   }else{
@@ -219,7 +220,7 @@ function handleBulletHit(hit,pos,dir){
   addImpact(pos,hit);
   if(hit.kind==='ped')killPed(hit.target,dir);
   else if(hit.kind==='car')damageCar(hit.target,hit.arr);
-  else addWanted(.25,'SHOT FIRED!');
+  else addWanted(.25,'SHOT FIRED!','gunfire');
 }
 
 export function shootWeapon(){
@@ -232,6 +233,7 @@ export function shootWeapon(){
   const{origin,dir}=aimRay();
   makeBullet(origin,dir);
   addTracer(origin,origin.clone().addScaledVector(dir,3.2));
+  reportPoliceCrime('gunfire',1);
   blip([1200],.035,'square',.12);
   state.crosshairKick=1;
   state.shake=Math.max(state.shake,.08);
