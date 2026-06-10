@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {N,nodeX,irand,rand,pick} from './constants.js';
+import {N,CELL,HALF,nodeX,irand,rand,pick,clamp} from './constants.js';
 import {state} from './state.js';
 import {scene} from './engine.js';
 import {makePed,setOpacity,shirtColors} from './entities.js?v=12';
@@ -59,6 +59,26 @@ for(let k=0;k<42;k++){
   const c=pedCorner(p);p.g.position.set(c[0]+rand(-2,2),0,c[1]+rand(-2,2));
 }
 
+// Motorista do carro roubado: reaproveita o pedestre mais distante do jogador
+// (o pool é fixo), coloca-o saindo pela porta do carro e o faz fugir em pânico.
+export function ejectDriver(x,z,heading){
+  const pp=playerPos();
+  let best=null,bd=-1;
+  for(const p of peds){
+    if(p.state==='fly'||p.state==='dead')continue;
+    const d=p.g.position.distanceTo(pp);
+    if(d>bd){bd=d;best=p;}
+  }
+  if(!best)return;
+  const right=new THREE.Vector3(Math.cos(heading),0,-Math.sin(heading));
+  best.g.position.set(x,0,z).addScaledVector(right,1.9);
+  best.g.rotation.set(0,heading,0);
+  best.state='panic';best.panicT=rand(3.5,5);best.t=0;
+  // quarteirão mais próximo, para retomar o passeio quando o pânico passar
+  best.block=[clamp(Math.floor((x+HALF)/CELL),0,N-1),clamp(Math.floor((z+HALF)/CELL),0,N-1)];
+  best.corner=irand(0,3);
+}
+
 export function updatePeds(dt){
   const pp=playerPos();
   const activeCur=cur;
@@ -100,8 +120,12 @@ export function updatePeds(dt){
       thud(Math.abs(activeCur.speed));state.shake=.35;
       continue;
     }
+    if(p.state==='panic'&&(p.panicT-=dt)<=0)p.state='walk';
     let tgt;
-    if(danger&&p.g.position.distanceTo(activeCur.g.position)<11){
+    if(p.state==='panic'){
+      tgt=new THREE.Vector3().subVectors(p.g.position,pp).setY(0).normalize()
+        .multiplyScalar(20).add(p.g.position);
+    }else if(danger&&p.g.position.distanceTo(activeCur.g.position)<11){
       p.state='flee';
       tgt=new THREE.Vector3().subVectors(p.g.position,activeCur.g.position).setY(0).normalize()
         .multiplyScalar(20).add(p.g.position);
@@ -113,7 +137,7 @@ export function updatePeds(dt){
     const dist=d.length();
     if(p.state==='walk'&&dist<1){p.corner=(p.corner+p.dir+4)%4;continue;}
     d.normalize();
-    const spd=p.state==='flee'?5.5:p.speed;
+    const spd=p.state==='flee'?5.5:p.state==='panic'?6.8:p.speed;
     p.g.position.addScaledVector(d,spd*dt);
     collideStatics(p.g.position,.4);
     p.g.rotation.y=Math.atan2(d.x,d.z);

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {rand,clamp} from './constants.js';
 import {scene,renderer,hemi,dlight,sunDir,clouds} from './engine.js';
-import {buildingMats} from './world.js';
+import {buildingMats,lampGlowMat,lampHaloMat,lampBulbMat} from './world.js';
 import {state,refs} from './state.js';
 import {beamMat} from './entities.js?v=12';
 
@@ -139,6 +139,8 @@ let starMat;
 for(const c of clouds)c.userData.op0=c.material.opacity;
 
 const SUNSET_TINT=new THREE.Color(0xff5a28);
+// Bulbo do poste: apagado (cinza) de dia, quente e brilhante à noite
+const BULB_DAY=new THREE.Color(0x9a948e),BULB_NIGHT=new THREE.Color(0xffd9a0);
 
 // Farol do carro do jogador: um único SpotLight real que ilumina a rua à frente
 const headSpot=new THREE.SpotLight(0xffe9b8,0,38,.6,.55,1.4);
@@ -154,6 +156,9 @@ export function updateDayNight(dt){
   drawSky();
 
   scene.fog.color.copy(cur.fog);
+  // Mirante: do alto da montanha o horizonte abre (a névoa recua com a altitude)
+  const ppos=refs.playerPos?.();
+  scene.fog.far=430+(ppos?Math.max(0,ppos.y)*14:0);
   renderer.toneMappingExposure=cur.exp;
   hemi.color.copy(cur.hs);hemi.groundColor.copy(cur.hg);hemi.intensity=cur.hI;
   dlight.color.copy(cur.sun);dlight.intensity=cur.sunI;
@@ -188,6 +193,12 @@ export function updateDayNight(dt){
   const nightF=clamp((.06-sy)/.14,0,1);
   beamMat.visible=nightF>0;
   beamMat.opacity=nightF*.5;
+
+  // Postes: mesma curva dos faróis — poça de luz no chão, halo e bulbo aceso
+  lampGlowMat.visible=lampHaloMat.visible=nightF>0;
+  lampGlowMat.opacity=nightF*.55;
+  lampHaloMat.opacity=nightF*.85;
+  lampBulbMat.color.lerpColors(BULB_DAY,BULB_NIGHT,nightF);
   const c=refs.getCur?.();
   if(nightF>0&&state.mode==='car'&&c){
     _fwd.set(0,0,1).applyQuaternion(c.g.quaternion);

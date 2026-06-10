@@ -53,7 +53,7 @@ export function updateHeli(dt){
   if(!heli)return;
   const pp=playerPos();
   const tgt=new THREE.Vector3(pp.x+Math.sin(state.time*.4)*14,
-    26+Math.sin(state.time*1.3)*1.5,pp.z+Math.cos(state.time*.4)*14);
+    Math.max(0,pp.y)+26+Math.sin(state.time*1.3)*1.5,pp.z+Math.cos(state.time*.4)*14);
   heli.position.lerp(tgt,1-Math.exp(-1.2*dt));
   heli.lookAt(pp.x,heli.position.y-4,pp.z);
   heli.userData.rotor.rotation.y+=28*dt;

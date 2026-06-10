@@ -1,11 +1,12 @@
-import {clamp,BOUND} from './constants.js';
+import {clamp,BOUND,RURAL_X1,RURAL_HALF} from './constants.js';
 import {solids} from './world.js';
 import {state} from './state.js';
 import {blip} from './audio.js';
 import {message} from './hud.js';
 import {reportPoliceCrime} from './police-radio.js';
 
-export function collideStatics(p,r){
+// bound: NPCs param no calção da praia (BOUND); jogador pode nadar até SWIM_BOUND
+export function collideStatics(p,r,bound=BOUND){
   let hit=false;
   for(const b of solids){
     const cx=clamp(p.x,b.x0,b.x1),cz=clamp(p.z,b.z0,b.z1);
@@ -21,8 +22,11 @@ export function collideStatics(p,r){
       hit=true;
     }
   }
-  if(p.x<-BOUND){p.x=-BOUND;hit=true} if(p.x>BOUND){p.x=BOUND;hit=true}
-  if(p.z<-BOUND){p.z=-BOUND;hit=true} if(p.z>BOUND){p.z=BOUND;hit=true}
+  // Jogador (bound>BOUND) pode seguir a península rural para +x até a montanha
+  const ext=Math.max(0,bound-BOUND);
+  const maxX=ext>0&&Math.abs(p.z)<RURAL_HALF+ext?RURAL_X1+ext:bound;
+  if(p.x<-bound){p.x=-bound;hit=true} if(p.x>maxX){p.x=maxX;hit=true}
+  if(p.z<-bound){p.z=-bound;hit=true} if(p.z>bound){p.z=bound;hit=true}
   return hit;
 }
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {clamp,rand,nodeX} from './constants.js';
+import {clamp,rand,nodeX,WATER,SWIM_BOUND,RURAL_X1,RURAL_HALF,groundHeight} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
 import {makeCar,makePed,spinWheels} from './entities.js?v=12';
@@ -56,6 +56,7 @@ export function enterCar(){
     traffic.splice(traffic.indexOf(c),1);
     const p=refs.trafficPos({...c,t:c.t});
     cur={g:c.g,heading:Math.atan2(p.dx,p.dz),speed:0,name:c.name,police:false};
+    refs.ejectDriver?.(c.g.position.x,c.g.position.z,cur.heading);
     addWanted(1,'STOLEN CAR!','vehicle_theft');refs.spawnTraffic?.();
   }else{
     cops.splice(cops.indexOf(c),1);
@@ -72,11 +73,20 @@ export function exitCar(){
   cur.speed=0;
   const right=new THREE.Vector3(Math.cos(cur.heading),0,-Math.sin(cur.heading));
   player.g.position.copy(cur.g.position).addScaledVector(right,-2.2);
-  collideStatics(player.g.position,.5);
-  player.g.position.y=0;player.g.visible=true;player.heading=cur.heading;
-  idleCars.push(cur);cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudCar.style.display='none';
+  collideStatics(player.g.position,.5,SWIM_BOUND);
+  player.g.position.y=groundHeight(player.g.position.x,player.g.position.z);
+  player.g.visible=true;player.heading=cur.heading;
+  // carro abandonado afundando some no mar; os outros viram carro parado
+  if(cur.sinkT)scene.remove(cur.g);else idleCars.push(cur);
+  cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudCar.style.display='none';
   radioOff();
 }
+
+export const inWater=p=>{
+  if(Math.max(Math.abs(p.x),Math.abs(p.z))<=WATER)return false;
+  // península rural a leste é terra firme
+  return !(p.x>WATER&&p.x<=RURAL_X1&&Math.abs(p.z)<=RURAL_HALF);
+};
 
 export function startCut(text,col,fn){
   state.mode='cut';state.cutT=2.6;state.cutFn=fn;bigText(text,col);
@@ -109,6 +119,27 @@ export function getWasted(){
 }
 
 export function updateCar(dt){
+  // No mar o carro perde tração, afunda aos poucos e o jogador escapa nadando
+  if(inWater(cur.g.position)){
+    const p=cur.g.position;
+    if(!cur.sinkT){cur.sinkT=1e-6;message('YOUR CAR IS SINKING!','var(--pink)');thud(8);}
+    cur.sinkT+=dt;
+    cur.speed*=Math.exp(-2.4*dt);
+    p.x+=Math.sin(cur.heading)*cur.speed*dt;
+    p.z+=Math.cos(cur.heading)*cur.speed*dt;
+    p.y=-Math.min(2.6,cur.sinkT);
+    cur.g.rotation.x=Math.min(.22,cur.sinkT*.1);
+    spinWheels(cur.g,cur.speed,dt);
+    if(cur.sinkT>2.1){
+      scene.remove(cur.g);
+      player.g.position.set(p.x,0,p.z);
+      player.g.visible=true;player.heading=cur.heading;
+      cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;
+      hudCar.style.display='none';radioOff();
+      message('SWIM BACK TO SHORE!','var(--cyan)');
+    }
+    return;
+  }
   const th=input.moveY;
   const st=input.moveX;
   const hb=input.brake;
@@ -121,12 +152,18 @@ export function updateCar(dt){
   const p=cur.g.position;
   p.x+=Math.sin(cur.heading)*cur.speed*dt;
   p.z+=Math.cos(cur.heading)*cur.speed*dt;
-  if(collideStatics(p,1.5)){
+  if(collideStatics(p,1.5,SWIM_BOUND)){
     if(Math.abs(cur.speed)>6){thud(Math.abs(cur.speed));state.shake=Math.min(.6,Math.abs(cur.speed)*.02);}
     cur.speed*=-.25;
   }
   cur.g.rotation.y=cur.heading;
   cur.g.rotation.z=THREE.MathUtils.lerp(cur.g.rotation.z,-st*clamp(cur.speed/MAX,0,1)*.06,10*dt);
+  // Terreno: o carro acompanha a altura (dá pra subir a montanha) e inclina no morro
+  const gh=groundHeight(p.x,p.z);
+  p.y+=(gh-p.y)*Math.min(1,8*dt);
+  const fx=Math.sin(cur.heading),fz=Math.cos(cur.heading);
+  const slope=groundHeight(p.x+fx*1.7,p.z+fz*1.7)-groundHeight(p.x-fx*1.7,p.z-fz*1.7);
+  cur.g.rotation.x=THREE.MathUtils.lerp(cur.g.rotation.x,-Math.atan2(slope,3.4),Math.min(1,8*dt));
   spinWheels(cur.g,cur.speed,dt,st);
   const tail=cur.g.userData.tailM;
   if(tail)tail.color.setHex(cur.speed<-.5?0xffd6d6:(th<0||hb)?0xff4444:0xa01515);
@@ -136,6 +173,7 @@ export function updateFoot(dt){
   if(state.dlgActive)return;
   const f=input.moveY;
   const side=input.moveX;
+  const swim=inWater(player.g.position);
   let walkAmount=0;
   if(f||side){
     const camF=new THREE.Vector3(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
@@ -143,14 +181,22 @@ export function updateFoot(dt){
     const analog=Math.min(1,Math.hypot(f,side));
     walkAmount=analog;
     const mv=new THREE.Vector3().addScaledVector(camF,f).addScaledVector(camR,side).normalize();
-    const spd=(input.run?9:5.2)*analog;
+    const spd=(swim?3.2:input.run?9:5.2)*analog;
     player.g.position.addScaledVector(mv,spd*dt);
     player.heading=Math.atan2(mv.x,mv.z);
-    player.bob+=dt*spd*1.8;
-    player.g.position.y=Math.abs(Math.sin(player.bob))*.09;
-  }else player.g.position.y*=.8;
+    player.bob+=dt*spd*(swim?1.3:1.8);
+  }else if(swim)player.bob+=dt*2.2; // boiando: braçadas leves no lugar
+  // Nadando: submerso até o peito; em terra acompanha a altura do terreno (montanha)
+  if(swim){
+    player.g.position.y=-1.5+Math.sin(player.bob*2)*.06;
+    walkAmount=Math.max(walkAmount,.5);
+  }else{
+    const gh=groundHeight(player.g.position.x,player.g.position.z);
+    if(f||side)player.g.position.y=gh+Math.abs(Math.sin(player.bob))*.09;
+    else player.g.position.y=gh+(player.g.position.y-gh)*.8;
+  }
   Entities.animatePed?.(player.g,player.bob,walkAmount);
-  collideStatics(player.g.position,.5);
+  collideStatics(player.g.position,.5,SWIM_BOUND);
   const armed=state.hasGun&&state.weaponHeld&&state.mode==='foot';
   if(armed){
     player.heading=cameraRig.yaw;
