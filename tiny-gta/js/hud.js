@@ -1,4 +1,5 @@
-import {N,ROAD,BLOCK,GROUND,BEACH,nodeX} from './constants.js';
+import {N,ROAD,BLOCK,GROUND,BEACH,nodeX,
+  RURAL_X0,RURAL_X1,RURAL_HALF,MOUNT_X,MOUNT_R} from './constants.js';
 import {state,input,refs} from './state.js';
 import {isPark} from './world.js';
 import {getTod} from './daynight.js';
@@ -28,6 +29,9 @@ export function getInteractAction(){
   if(state.paused||state.mode==='cut'||state.orientationBlocked)return{label:'...',prompt:'',enabled:false};
   if(refs.canPickWeapon?.())return{label:'PICK',prompt:'PICK UP WEAPON',enabled:true};
   if(state.mode==='foot'&&refs.isNearDiego?.())return{label:'TALK',prompt:'TALK TO DIEGO PENHA',enabled:true};
+  if(state.mode==='foot'&&refs.isNearLeo?.())return{label:'TALK',prompt:'TALK TO LEOZINHO',enabled:true};
+  if(state.mode==='foot')for(const n of refs.npcs||[])
+    if(n.isNear())return{label:'TALK',prompt:'TALK TO '+n.name,enabled:true};
   if(state.mode==='foot'&&refs.nearestCar?.(3.6))return{label:'CAR',prompt:'TAKE THE CAR',enabled:true};
   if(state.mode==='car'){
     const speed=Math.abs(refs.getCur?.()?.speed||0);
@@ -56,6 +60,25 @@ const mmStatic=document.createElement('canvas');mmStatic.width=512;mmStatic.heig
   }
 }
 
+// mapa estático da zona rural + montanha (a península fica fora do canvas da cidade)
+const RRW=RURAL_X1-RURAL_X0,RRD=RURAL_HALF*2;
+const mmRural=document.createElement('canvas');mmRural.width=260;mmRural.height=240;
+{
+  const x=mmRural.getContext('2d'),sx=260/RRW,sz=240/RRD;
+  const U=v=>(v-RURAL_X0)*sx,W=v=>(v+RURAL_HALF)*sz;
+  x.fillStyle='#6a9a50';x.fillRect(0,0,260,240);                // pasto
+  x.fillStyle='#8a6a3e';                                        // roças
+  for(const[a,b,d,e]of[[202,250,14,62],[200,244,-64,-22],[262,310,30,86],[258,300,-90,-42]])
+    x.fillRect(U(a),W(d),(b-a)*sx,(e-d)*sz);
+  x.fillStyle='#b08a5e';                                        // estrada de terra
+  x.fillRect(U(RURAL_X0),W(-3.4),(MOUNT_X-MOUNT_R+16-RURAL_X0)*sx,6.8*sz);
+  // montanha em níveis de elevação
+  for(const[r,col]of[[MOUNT_R,'#8d8f99'],[MOUNT_R*.62,'#a9adb8'],[MOUNT_R*.28,'#c9ccd4']]){
+    x.fillStyle=col;x.beginPath();
+    x.ellipse(U(MOUNT_X),W(0),r*sx,r*sz,0,0,Math.PI*2);x.fill();
+  }
+}
+
 // world offset → radar screen offset (north-up), clamped to the rim
 function mmBlip(wx,wz,pp,scale){
   let px=(wx-pp.x)*scale,py=(wz-pp.z)*scale;
@@ -72,7 +95,8 @@ function mmSquare(px,py,size,col){
 export function drawMinimap(){
   const pp=refs.playerPos?.();if(!pp)return;
   const cur=refs.getCur?.();
-  const h=refs.getRadarHeading?.()??cur?.heading??refs.getPlayerHeading?.()??0;
+  // a seta segue para onde o jogador/veículo está virado, não a câmera
+  const h=refs.getPlayerHeading?.()??cur?.heading??0;
   const th=h-Math.PI,scale=MM_R/MM_RANGE;
 
   mm.clearRect(0,0,170,170);
@@ -84,6 +108,7 @@ export function drawMinimap(){
   mm.translate(MM_C,MM_C);mm.scale(scale,scale);
   mm.translate(-pp.x,-pp.z);
   mm.drawImage(mmStatic,-MMW/2,-MMW/2,MMW,MMW);
+  mm.drawImage(mmRural,RURAL_X0,-RURAL_HALF,RRW,RRD);
   // territórios das gangues (círculos coloridos que encolhem conforme você mata)
   const gangsArr=refs.gangs;
   if(gangsArr)for(const g of gangsArr){
@@ -113,6 +138,43 @@ export function drawMinimap(){
       mm.fillStyle='#14091f';mm.font='bold 7px monospace';
       mm.textAlign='center';mm.textBaseline='middle';
       mm.fillText('D',px,py+.5);
+    }
+  }
+
+  // Leozinho: 'L' verde quando disponível, piscando rosa quando é hora de voltar;
+  // durante a missão o blip aponta para o pacote no celeiro
+  const LEO=refs.LEO;
+  if(LEO){
+    if(LEO.state==='active'){
+      const[px,py]=mmBlip(LEO.stashX,LEO.stashZ,pp,scale);
+      mmSquare(px,py,8,'#9dff2e');
+    }else if(LEO.state!=='completing'){
+      const blink=LEO.state==='returning'?Math.floor(state.time*4)%2===0:true;
+      if(blink){
+        const[px,py]=mmBlip(refs.LEO_X,refs.LEO_Z,pp,scale);
+        mmSquare(px,py,9,LEO.state==='returning'?'#ff2e88':'#9dff2e');
+        mm.fillStyle='#14091f';mm.font='bold 7px monospace';
+        mm.textAlign='center';mm.textBaseline='middle';
+        mm.fillText('L',px,py+.5);
+      }
+    }
+  }
+
+  // NPCs de busca (Russo, Rodrigo): letra quando disponíveis, piscando no
+  // retorno; durante a missão o blip aponta para o item
+  for(const npc of refs.npcs||[]){
+    if(npc.state==='active'){
+      const[px,py]=mmBlip(npc.stashX,npc.stashZ,pp,scale);
+      mmSquare(px,py,8,npc.css);
+    }else if(npc.state!=='completing'){
+      const blink=npc.state==='returning'?Math.floor(state.time*4)%2===0:true;
+      if(blink){
+        const[px,py]=mmBlip(npc.X,npc.Z,pp,scale);
+        mmSquare(px,py,9,npc.state==='returning'?'#ff2e88':npc.css);
+        mm.fillStyle='#14091f';mm.font='bold 7px monospace';
+        mm.textAlign='center';mm.textBaseline='middle';
+        mm.fillText(npc.letter,px,py+.5);
+      }
     }
   }
 

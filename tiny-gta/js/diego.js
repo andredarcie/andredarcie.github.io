@@ -65,7 +65,7 @@ const dlg={
   queue:[],full:'',idx:0,typing:false,timer:null,onDone:null,
 };
 
-function dlgOpen(lines,onDone){
+export function dlgOpen(lines,onDone){ // compartilhado com outros NPCs (leozinho.js)
   dlg.queue=lines.slice();dlg.onDone=onDone||null;
   dlg.el.style.display='flex';state.dlgActive=true;
   dlgNext();

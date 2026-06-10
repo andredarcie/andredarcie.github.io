@@ -3,6 +3,8 @@ import {initAudio,AC} from './audio.js';
 import {radioSwitch} from './radio.js';
 import {enterCar,exitCar,cur,player,cameraRig} from './player.js';
 import {dlgPress,isNearDiego,performDiegoInteract} from './diego.js';
+import {isNearLeo,performLeoInteract} from './leozinho.js';
+import {npcs} from './npcs.js';
 import {setMissionHUD} from './missions.js';
 import {message} from './hud.js';
 import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js?v=15';
@@ -77,6 +79,8 @@ export function performInteract(){
   if(state.mode==='foot'){
     if(canPickWeapon()){pickupWeapon();return;}
     if(isNearDiego()){performDiegoInteract();return;}
+    if(isNearLeo()){performLeoInteract();return;}
+    for(const n of npcs)if(n.isNear()){n.interact();return;}
     enterCar();
   }else if(state.mode==='car'&&Math.abs(cur?.speed||0)<6){
     exitCar();
