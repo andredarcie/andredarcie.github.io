@@ -29,6 +29,7 @@ const glowMat=new THREE.MeshBasicMaterial({color:0xffd24a,transparent:true,opaci
 const tracerMat=new THREE.LineBasicMaterial({color:0xfff2b0,transparent:true,opacity:.9});
 const explosions=[];
 const tracers=[];
+const MAX_AMMO=90;
 let lastShot=-99;
 
 export function canPickWeapon(){
@@ -38,7 +39,7 @@ export function canPickWeapon(){
 
 export function pickupWeapon(){
   if(!canPickWeapon())return;
-  state.hasGun=true;state.ammo=90;
+  state.hasGun=true;state.ammo=MAX_AMMO;state.maxAmmo=MAX_AMMO;
   scene.remove(gunGroup);
   message('WEAPON PICKED UP - LEFT CLICK TO SHOOT','var(--gold)');
   blip([440,660,880],.07,'square',.14);

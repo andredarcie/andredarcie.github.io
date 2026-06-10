@@ -6,7 +6,9 @@ const $=id=>document.getElementById(id);
 export const hudMoney=$('money'),hudSub=$('sub'),
   hudStars=[...document.querySelectorAll('#stars .s')],
   hudWanted=$('wantedtag'),hudSpeedo=$('speedo'),hudKmh=$('kmh'),
-  hudCar=$('carname'),hudPrompt=$('prompt'),hudMsg=$('msg'),hudBig=$('bigtext');
+  hudCar=$('carname'),hudPrompt=$('prompt'),hudMsg=$('msg'),hudBig=$('bigtext'),
+  hudWeapon=$('weaponhud'),hudWeaponAmmo=$('weapon-ammo'),
+  hudAmmoNow=$('ammo-now'),hudAmmoMax=$('ammo-max');
 
 let shownMoney=250,msgT=0;
 
@@ -121,6 +123,13 @@ export function updateHUD(dt){
   hudWanted.style.visibility=w>0?'visible':'hidden';
   const cur=refs.getCur?.();
   if(state.mode==='car'&&cur)hudKmh.textContent=Math.abs(Math.round(cur.speed*3.6));
+  if(state.hasGun){
+    const ammo=state.ammo||0,max=state.maxAmmo||0;
+    hudWeapon.style.display='block';
+    hudAmmoNow.textContent=ammo;
+    hudAmmoMax.textContent='/'+max;
+    hudWeaponAmmo.classList.toggle('low',ammo<=Math.max(6,Math.ceil(max*.15)));
+  }else hudWeapon.style.display='none';
   if(msgT>0){msgT-=dt;if(msgT<=0)hudMsg.style.opacity=0;}
   const pp=refs.playerPos?.();
   const DIEGO=refs.DIEGO;
