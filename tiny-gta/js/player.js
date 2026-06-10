@@ -10,6 +10,13 @@ import {message,bigText,hideBig,hudCar,hudSpeedo} from './hud.js';
 
 export const player={g:makePed(0x19e3ff),heading:0,bob:0};
 player.g.position.set(nodeX(4)+9,0,nodeX(4)+9);
+export const cameraRig={
+  yaw:player.heading,
+  pitch:.34,
+  sensitivity:.0024,
+  invertY:false,
+  shoulder:.28,
+};
 
 export const playerCar={g:makeCar(0xff2e88,false),heading:Math.PI/2,speed:0,name:'PINK BANSHEE',police:false};
 playerCar.g.position.set(nodeX(4)+3.5,0,nodeX(4)+16);
@@ -123,11 +130,11 @@ export function updateCar(dt){
 export function updateFoot(dt){
   if(state.dlgActive)return;
   const f=(keys['KeyW']||keys['ArrowUp']?1:0)-(keys['KeyS']||keys['ArrowDown']?1:0);
-  const s=(keys['KeyA']||keys['ArrowLeft']?1:0)-(keys['KeyD']||keys['ArrowRight']?1:0);
-  if(f||s){
-    const camF=new THREE.Vector3();camera.getWorldDirection(camF);camF.y=0;camF.normalize();
-    const camR=new THREE.Vector3(-camF.z,0,camF.x);
-    const mv=new THREE.Vector3().addScaledVector(camF,f).addScaledVector(camR,-s).normalize();
+  const side=(keys['KeyA']||keys['ArrowLeft']?1:0)-(keys['KeyD']||keys['ArrowRight']?1:0);
+  if(f||side){
+    const camF=new THREE.Vector3(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
+    const camR=new THREE.Vector3(Math.cos(cameraRig.yaw),0,-Math.sin(cameraRig.yaw));
+    const mv=new THREE.Vector3().addScaledVector(camF,f).addScaledVector(camR,side).normalize();
     const spd=keys['ShiftLeft']||keys['ShiftRight']?9:5.2;
     player.g.position.addScaledVector(mv,spd*dt);
     player.heading=Math.atan2(mv.x,mv.z);
@@ -139,12 +146,24 @@ export function updateFoot(dt){
 }
 
 export function updateCamera(dt){
-  let tgt,heading,dist,h;
+  let tgt,heading,dist,baseH;
   if(state.mode==='car'||state.mode==='cut'&&cur){
-    tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;dist=9.5;h=4.6;
-  }else{tgt=player.g.position;heading=player.heading;dist=6;h=3.1;}
-  const want=new THREE.Vector3(
-    tgt.x-Math.sin(heading)*dist,tgt.y+h,tgt.z-Math.cos(heading)*dist);
+    tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;dist=9.6;baseH=1.75;
+  }else{tgt=player.g.position;heading=player.heading;dist=6.2;baseH=1.25;}
+  if(!document.pointerLockElement){
+    const diff=THREE.MathUtils.euclideanModulo(heading-cameraRig.yaw+Math.PI,Math.PI*2)-Math.PI;
+    cameraRig.yaw+=diff*Math.min(1,dt*(state.mode==='car'?1.6:.7));
+  }
+  cameraRig.pitch=clamp(cameraRig.pitch,.18,.82);
+  const forward=new THREE.Vector3(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
+  const right=new THREE.Vector3(Math.cos(cameraRig.yaw),0,-Math.sin(cameraRig.yaw));
+  const flat=dist*Math.cos(cameraRig.pitch);
+  const height=baseH+dist*Math.sin(cameraRig.pitch);
+  const shoulder=(state.mode==='car'?0:cameraRig.shoulder);
+  const focus=new THREE.Vector3(tgt.x,tgt.y+1.45,tgt.z).addScaledVector(right,shoulder);
+  const want=new THREE.Vector3(tgt.x,tgt.y+height,tgt.z)
+    .addScaledVector(forward,-flat)
+    .addScaledVector(right,shoulder);
   const k=1-Math.exp(-4.5*dt);
   camera.position.lerp(want,k);
   const tf=state.mode==='car'?62+Math.abs(cur.speed)/32*13:62;
@@ -155,5 +174,5 @@ export function updateCamera(dt){
     camera.position.y+=rand(-1,1)*state.shake*.5;
     state.shake=Math.max(0,state.shake-dt*1.6);
   }
-  camera.lookAt(tgt.x+Math.sin(heading)*3,tgt.y+1.6,tgt.z+Math.cos(heading)*3);
+  camera.lookAt(focus.x+forward.x*2.4,focus.y,focus.z+forward.z*2.4);
 }

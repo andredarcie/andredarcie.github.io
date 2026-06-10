@@ -1,12 +1,27 @@
 import {state,keys} from './state.js';
 import {initAudio,AC} from './audio.js';
 import {radioSwitch} from './radio.js';
-import {enterCar,exitCar,cur,player} from './player.js';
+import {enterCar,exitCar,cur,player,cameraRig} from './player.js';
 import {dlgPress,DIEGO_X,DIEGO_Z,DIEGO} from './diego.js';
 import {setMissionHUD} from './missions.js';
 import {message} from './hud.js';
+import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js';
 
 export function setupInput(){
+  const gameCanvas=document.getElementById('game');
+  const lockPointer=()=>gameCanvas?.requestPointerLock?.();
+  addEventListener('mousemove',e=>{
+    if(document.pointerLockElement!==gameCanvas||!state.started||state.paused||state.dlgActive)return;
+    cameraRig.yaw-=e.movementX*cameraRig.sensitivity;
+    cameraRig.pitch+=(cameraRig.invertY?-1:1)*e.movementY*cameraRig.sensitivity;
+    cameraRig.pitch=Math.max(.18,Math.min(.82,cameraRig.pitch));
+  });
+  gameCanvas?.addEventListener('click',()=>{
+    if(!state.started||state.dlgActive)return;
+    if(document.pointerLockElement!==gameCanvas)lockPointer();
+    else shootWeapon();
+  });
+
   addEventListener('keydown',e=>{
     if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.code))
       e.preventDefault();
@@ -24,6 +39,7 @@ export function setupInput(){
     if(state.paused||state.mode==='cut')return;
     if(e.code==='KeyE'||e.code==='KeyF'){
       if(state.mode==='foot'){
+        if(canPickWeapon()){pickupWeapon();return;}
         const nearD=Math.hypot(player.g.position.x-DIEGO_X,player.g.position.z-DIEGO_Z)<3.5;
         if(nearD&&DIEGO.state!=='active'){}else enterCar();
       }else if(state.mode==='car'&&Math.abs(cur?.speed||0)<6){
@@ -44,6 +60,8 @@ export function setupInput(){
     document.getElementById('title').style.display='none';
     document.getElementById('hud').style.display='block';
     state.started=true;
+    cameraRig.yaw=player.heading;
+    lockPointer();
     setMissionHUD();
     message('TAKE THE PINK CAR - PRESS E','var(--gold)');
   });

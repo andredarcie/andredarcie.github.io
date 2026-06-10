@@ -3,7 +3,7 @@ import {state,refs} from './state.js';
 import {renderer,scene,camera,clouds,dlight,sunDir} from './engine.js';
 import {updateAudio} from './audio.js';
 import {drawMinimap,updateHUD,hideBig} from './hud.js';
-import {player,cur,playerPos,nearestCar,idleCars,updateCar,updateFoot,updateCamera,getBusted,getWasted} from './player.js';
+import {player,cur,playerPos,nearestCar,idleCars,cameraRig,updateCar,updateFoot,updateCamera,getBusted,getWasted} from './player.js';
 import {traffic,trafficPos,spawnTraffic,updateTraffic} from './traffic.js';
 import {updatePeds} from './pedestrians.js';
 import {updateBeach} from './world.js';
@@ -12,11 +12,13 @@ import {delivery,spawnDelivery,updatePickups} from './missions.js';
 import {DIEGO,DIEGO_X,DIEGO_Z,updateDiego} from './diego.js';
 import {blinkBar} from './entities.js';
 import {setupInput} from './input.js';
+import {canPickWeapon,updateWeapons} from './weapons.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
 refs.playerPos=playerPos;
 refs.getCur=()=>cur;
 refs.getPlayerHeading=()=>state.mode==='car'?cur?.heading:player.heading;
+refs.getRadarHeading=()=>cameraRig.yaw;
 refs.traffic=traffic;
 refs.cops=cops;
 refs.trafficPos=trafficPos;
@@ -29,6 +31,7 @@ refs.getBusted=getBusted;
 refs.getWasted=getWasted;
 refs.getHeli=()=>heli;
 refs.nearestCar=nearestCar;
+refs.canPickWeapon=canPickWeapon;
 
 // First delivery spawned here, after refs are set (spawnDelivery needs playerPos)
 spawnDelivery();
@@ -68,6 +71,7 @@ function frame(){
   updateHeli(dt);
   updateDiego(dt);
   updatePickups(dt);
+  updateWeapons(dt);
 
   if(cur)blinkBar(cur.g);
   for(const c of idleCars)blinkBar(c.g);

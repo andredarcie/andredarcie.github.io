@@ -55,7 +55,7 @@ export function updatePeds(dt){
       state.comboN=state.time-state.lastHit<4?state.comboN+1:1;
       state.lastHit=state.time;
       spawnDrop(p.g.position.x,p.g.position.z,irand(20,80)*state.comboN);
-      addWanted(1,'ATROPELAMENTO! ★'+Math.min(5,Math.floor(state.wanted+1)));
+      addWanted(1,'HIT AND RUN! ★'+Math.min(5,Math.floor(state.wanted+1)));
       if(state.comboN>1)message('COMBO x'+state.comboN+'!','var(--pink)');
       thud(Math.abs(activeCur.speed));state.shake=.35;
       continue;

@@ -57,7 +57,7 @@ function mmSquare(px,py,size,col){
 export function drawMinimap(){
   const pp=refs.playerPos?.();if(!pp)return;
   const cur=refs.getCur?.();
-  const h=cur?.heading??refs.getPlayerHeading?.()??0;
+  const h=refs.getRadarHeading?.()??cur?.heading??refs.getPlayerHeading?.()??0;
   const th=h-Math.PI,scale=MM_R/MM_RANGE;
 
   mm.clearRect(0,0,170,170);
@@ -133,6 +133,8 @@ export function updateHUD(dt){
     &&Math.hypot(pp.x-DIEGO_X,pp.z-DIEGO_Z)<3.5;
   if(_nearDiego||_nearDiegoReturn){
     hudPrompt.innerHTML='<b>E</b> - TALK TO DIEGO PENHA';hudPrompt.style.display='block';
+  }else if(refs.canPickWeapon?.()){
+    hudPrompt.innerHTML='<b>E</b> - PICK UP WEAPON';hudPrompt.style.display='block';
   }else if(state.mode==='foot'&&refs.nearestCar?.(3.6)){
     hudPrompt.innerHTML='<b>E</b> - TAKE THE CAR';hudPrompt.style.display='block';
   }else hudPrompt.style.display='none';
