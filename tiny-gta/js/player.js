@@ -147,7 +147,11 @@ export function updateFoot(dt){
     player.g.position.y=Math.abs(Math.sin(player.bob))*.09;
   }else player.g.position.y*=.8;
   collideStatics(player.g.position,.5);
-  player.g.rotation.y=player.heading;
+  const armed=state.hasGun&&state.weaponHeld&&state.mode==='foot';
+  if(armed){
+    player.heading=cameraRig.yaw;
+    player.g.rotation.y=cameraRig.yaw;
+  }else player.g.rotation.y=player.heading;
 }
 
 export function updateCamera(dt){
@@ -163,7 +167,7 @@ export function updateCamera(dt){
     cameraRig.pitch+=(cameraRig.invertY?-1:1)*input.lookY*dt;
     cameraRig.touchLookIdle=0;
   }else cameraRig.touchLookIdle+=dt;
-  const canRecentre=!document.pointerLockElement&&(!input.touchActive||cameraRig.touchLookIdle>1.2);
+  const canRecentre=!document.pointerLockElement&&!input.touchActive;
   if(canRecentre){
     const diff=THREE.MathUtils.euclideanModulo(heading-cameraRig.yaw+Math.PI,Math.PI*2)-Math.PI;
     cameraRig.yaw+=diff*Math.min(1,dt*(state.mode==='car'?1.6:.7));

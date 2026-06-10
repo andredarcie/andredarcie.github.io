@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {N,nodeX,irand,rand,pick} from './constants.js';
 import {state} from './state.js';
+import {scene} from './engine.js';
 import {makePed,setOpacity,shirtColors} from './entities.js';
 import {collideStatics,addWanted} from './physics.js';
 import {thud} from './audio.js';
@@ -15,10 +16,44 @@ export function pedCorner(p){
 }
 
 export const peds=[];
+const bloodPuddles=[];
+const bloodMat=new THREE.MeshBasicMaterial({
+  color:0x5f0018,transparent:true,opacity:.78,depthWrite:false
+});
+const bloodGeo=new THREE.CircleGeometry(1,18);
+
+export function addBloodPuddle(x,z){
+  const puddle=new THREE.Group();
+  const main=new THREE.Mesh(bloodGeo,bloodMat.clone());
+  main.rotation.x=-Math.PI/2;
+  main.scale.set(rand(.55,1.25),rand(.38,.9),1);
+  main.position.y=.018;
+  puddle.add(main);
+  for(let i=0;i<3;i++){
+    const spot=new THREE.Mesh(bloodGeo,bloodMat.clone());
+    spot.rotation.x=-Math.PI/2;
+    spot.scale.set(rand(.12,.34),rand(.08,.24),1);
+    spot.position.set(rand(-.75,.75),.02,rand(-.55,.55));
+    puddle.add(spot);
+  }
+  puddle.position.set(x+rand(-.12,.12),0,z+rand(-.12,.12));
+  puddle.rotation.y=rand(0,Math.PI*2);
+  scene.add(puddle);
+  bloodPuddles.push(puddle);
+  while(bloodPuddles.length>36)scene.remove(bloodPuddles.shift());
+}
+
+function leaveBlood(p){
+  if(p.bloodDropped)return;
+  p.bloodDropped=true;
+  addBloodPuddle(p.g.position.x,p.g.position.z);
+}
+
 for(let k=0;k<42;k++){
   const bi=irand(0,N-1),bj=irand(0,N-1);
   peds.push({g:makePed(pick(shirtColors)),block:[bi,bj],corner:irand(0,3),
-    dir:Math.random()<.5?1:-1,state:'walk',vel:new THREE.Vector3(),t:0,speed:rand(1,1.8)});
+    dir:Math.random()<.5?1:-1,state:'walk',vel:new THREE.Vector3(),t:0,speed:rand(1,1.8),
+    bloodDropped:false});
   const p=peds[k];
   const c=pedCorner(p);p.g.position.set(c[0]+rand(-2,2),0,c[1]+rand(-2,2));
 }
@@ -34,6 +69,7 @@ export function updatePeds(dt){
       if(p.g.position.y<.35&&p.vel.y<0){
         p.g.position.y=.35;p.state='dead';p.t=0;
         p.g.rotation.set(-Math.PI/2,p.g.rotation.y,0);
+        leaveBlood(p);
       }
       continue;
     }
@@ -42,6 +78,7 @@ export function updatePeds(dt){
       if(p.t>3)setOpacity(p.g,Math.max(0,1-(p.t-3)/.8));
       if(p.t>3.8){
         p.block=[irand(0,N-1),irand(0,N-1)];p.corner=irand(0,3);p.state='walk';
+        p.bloodDropped=false;
         p.g.rotation.set(0,0,0);setOpacity(p.g,1);
         const c=pedCorner(p);p.g.position.set(c[0]+rand(-2,2),.0,c[1]+rand(-2,2));
       }
@@ -49,6 +86,7 @@ export function updatePeds(dt){
     }
     if(danger&&p.g.position.distanceTo(activeCur.g.position)<2.3){
       p.state='fly';
+      p.bloodDropped=false;
       const dir=new THREE.Vector3(Math.sin(activeCur.heading),0,Math.cos(activeCur.heading));
       p.vel.copy(dir).multiplyScalar(activeCur.speed*.4)
         .add(new THREE.Vector3(rand(-2,2),rand(5,8),rand(-2,2)));
