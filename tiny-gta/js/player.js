@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {clamp,rand,nodeX,WATER,SWIM_BOUND,RURAL_X1,RURAL_HALF,groundHeight} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makeCar,makePed,spinWheels} from './entities.js?v=12';
+import {makeCar,makePed,makePlane,spinWheels} from './entities.js?v=12';
 import * as Entities from './entities.js?v=12';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff} from './radio.js';
@@ -26,6 +26,16 @@ playerCar.g.position.set(nodeX(4)+3.5,0,nodeX(4)+16);
 playerCar.g.rotation.y=playerCar.heading;
 export const idleCars=[playerCar];
 export let cur=null;
+
+// Avião estacionado na praia oeste; a faixa de areia é a pista de decolagem
+export function spawnPlane(){
+  const pl={g:makePlane(),heading:Math.PI,speed:0,name:'SKY DUSTER',police:false,
+    plane:true,vy:0};
+  pl.g.position.set(-202,0,40);pl.g.rotation.y=pl.heading;
+  idleCars.push(pl);
+  return pl;
+}
+spawnPlane();
 
 export function playerPos(){return state.mode==='car'?cur.g.position:player.g.position;}
 
@@ -70,14 +80,18 @@ export function enterCar(){
 }
 
 export function exitCar(){
+  if(cur.plane&&cur.g.position.y>groundHeight(cur.g.position.x,cur.g.position.z)+1.2){
+    message('LAND BEFORE BAILING OUT!','var(--gold)');return;
+  }
   cur.speed=0;
   const right=new THREE.Vector3(Math.cos(cur.heading),0,-Math.sin(cur.heading));
   player.g.position.copy(cur.g.position).addScaledVector(right,-2.2);
   collideStatics(player.g.position,.5,SWIM_BOUND);
   player.g.position.y=groundHeight(player.g.position.x,player.g.position.z);
   player.g.visible=true;player.heading=cur.heading;
-  // carro abandonado afundando some no mar; os outros viram carro parado
-  if(cur.sinkT)scene.remove(cur.g);else idleCars.push(cur);
+  // veículo abandonado afundando some no mar; os outros viram veículo parado
+  if(cur.sinkT){scene.remove(cur.g);if(cur.plane)spawnPlane();}
+  else idleCars.push(cur);
   cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudCar.style.display='none';
   radioOff();
 }
@@ -118,7 +132,86 @@ export function getWasted(){
   });
 }
 
+const PMAX=55,VTO=22,PCEIL=130; // avião: velocidade máx, decolagem, teto
+
+function wreckPlane(){
+  thud(20);state.shake=.8;
+  scene.remove(cur.g);
+  spawnPlane();
+  getWasted();
+}
+
+function updatePlane(dt){
+  const c=cur,p=c.g.position;
+  const prop=c.g.userData.prop;
+  if(prop)prop.rotation.z+=(6+c.speed)*dt*4;
+  // amerissagem: tocou a água = afunda, jogador sai nadando
+  if(inWater(p)&&p.y<=.05){
+    c.sinkT=(c.sinkT||0)+dt;
+    if(c.sinkT<dt*1.5){message('YOUR PLANE IS SINKING!','var(--pink)');thud(8);}
+    c.speed*=Math.exp(-2.4*dt);
+    p.x+=Math.sin(c.heading)*c.speed*dt;
+    p.z+=Math.cos(c.heading)*c.speed*dt;
+    p.y=-Math.min(2.6,c.sinkT);
+    c.g.rotation.x=Math.min(.22,c.sinkT*.1);
+    if(c.sinkT>2.1){
+      scene.remove(c.g);
+      player.g.position.set(p.x,0,p.z);
+      player.g.visible=true;player.heading=c.heading;
+      cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;
+      hudCar.style.display='none';radioOff();
+      spawnPlane();
+      message('SWIM BACK TO SHORE!','var(--cyan)');
+    }
+    return;
+  }
+  const th=input.moveY,st=input.moveX,hb=input.brake;
+  const gh=groundHeight(p.x,p.z);
+  const onGround=p.y<=gh+.06;
+  // empuxo e arrasto
+  if(th>0)c.speed+=(onGround?16:9)*dt*Math.max(.2,1-c.speed/PMAX);
+  else if(th<0&&onGround)c.speed-=24*dt;
+  // arrasto de solo baixo: a velocidade de equilíbrio fica BEM acima da de decolagem
+  c.speed*=Math.exp(-(onGround?(hb?2.2:.12):.05)*dt);
+  c.speed=clamp(c.speed,onGround?-6:0,PMAX);
+  // guinada: taxi como carro; no ar, curva inclinada
+  const turn=onGround?1.6*clamp(c.speed/11,-1,1):1.05*clamp(c.speed/32,0,1.15);
+  c.heading+=st*turn*dt;
+  // sustentação: só acima da velocidade de decolagem; no ar W sobe / S desce;
+  // sem velocidade o avião estola e cai
+  const lift=clamp((c.speed-VTO)/7,0,1);
+  let vyT;
+  if(onGround)vyT=th>0&&lift>0?12*lift:0;
+  else if(lift>0)vyT=th>0?14*Math.max(lift,.4):th<0?-(7+9*lift):0;
+  else vyT=-10; // estol
+  c.vy+=(vyT-c.vy)*Math.min(1,2.6*dt);
+  p.x+=Math.sin(c.heading)*c.speed*dt;
+  p.z+=Math.cos(c.heading)*c.speed*dt;
+  p.y+=c.vy*dt;
+  if(p.y>PCEIL){p.y=PCEIL;c.vy=Math.min(c.vy,0);}
+  // contato com o chão: pouso suave ou acidente (encosta da montanha conta)
+  const gh2=groundHeight(p.x,p.z);
+  if(p.y<=gh2){
+    if(c.vy<-14||(gh2>1&&c.speed>20))return wreckPlane();
+    p.y=gh2;c.vy=0;
+  }
+  // colisões: prédios têm altura, acima deles o céu é livre
+  if(p.y<50){
+    if(collideStatics(p,2.1,520)){
+      if(c.speed>16)return wreckPlane();
+      c.speed*=-.25;thud(Math.abs(c.speed)+4);
+    }
+  }else{p.x=clamp(p.x,-520,520);p.z=clamp(p.z,-520,520);}
+  // visual: nariz acompanha a subida/descida, asa inclina na curva
+  c.g.rotation.y=c.heading;
+  c.g.rotation.x=THREE.MathUtils.lerp(c.g.rotation.x,
+    -Math.atan2(c.vy,Math.max(c.speed,10)),Math.min(1,6*dt));
+  c.g.rotation.z=THREE.MathUtils.lerp(c.g.rotation.z,
+    -st*(onGround?.06:.55)*clamp(c.speed/PMAX,0,1)*1.5,Math.min(1,5*dt));
+}
+
 export function updateCar(dt){
+  if(cur.plane)return updatePlane(dt);
   // No mar o carro perde tração, afunda aos poucos e o jogador escapa nadando
   if(inWater(cur.g.position)){
     const p=cur.g.position;
@@ -207,7 +300,8 @@ export function updateFoot(dt){
 export function updateCamera(dt){
   let tgt,heading,dist,baseH;
   if(state.mode==='car'||state.mode==='cut'&&cur){
-    tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;dist=9.6;baseH=1.75;
+    tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;
+    dist=cur?.plane?15.5:9.6;baseH=1.75;
   }else{tgt=player.g.position;heading=player.heading;dist=6.2;baseH=1.25;}
   if(input.lookActive&&!state.dlgActive&&!state.paused&&!state.orientationBlocked){
     // Positive lookX means "turn right". In this engine yaw increases to the LEFT

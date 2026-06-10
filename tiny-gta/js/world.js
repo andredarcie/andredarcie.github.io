@@ -97,7 +97,7 @@ function addBuilding(cx,cz,w,d){
   buildingMats.push(side);
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[side,side,roofMat,roofMat,side,side]);
   m.position.set(cx,h/2,cz);m.castShadow=true;m.receiveShadow=true;scene.add(m);
-  solids.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2});
+  solids.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2,h});
   if(h>20&&Math.random()<.45){
     const nh=h*rand(.35,.55);
     const neon=new THREE.Mesh(new THREE.BoxGeometry(.5,nh,.5),
@@ -343,7 +343,7 @@ function addFarmHouse(cx,cz,ry){
   }
   g.position.set(cx,-.02,cz);g.rotation.y=ry;scene.add(g);
   const r=Math.max(bw,bd)/2+.3;
-  solids.push({x0:cx-r,x1:cx+r,z0:cz-r,z1:cz+r});
+  solids.push({x0:cx-r,x1:cx+r,z0:cz-r,z1:cz+r,h:bh+1.7});
 }
 addFarmHouse(212,-12,0);addFarmHouse(236,10,-.4);addFarmHouse(258,12,.3);
 addFarmHouse(282,-12,.2);addFarmHouse(302,10,-.25);addFarmHouse(222,74,2.8);
@@ -360,14 +360,14 @@ addFarmHouse(310,-58,1.3);
   const trim=new THREE.Mesh(new THREE.BoxGeometry(2.2,2.2,.08),
     new THREE.MeshStandardMaterial({color:0xf2ead6,roughness:.9}));
   trim.position.set(250,1.5,-31.45);scene.add(trim);
-  solids.push({x0:246.2,x1:253.8,z0:-36.8,z1:-31.2});
+  solids.push({x0:246.2,x1:253.8,z0:-36.8,z1:-31.2,h:5.5});
   const silo=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,6,10),
     new THREE.MeshStandardMaterial({color:0xc9cdd6,roughness:.6}));
   silo.position.set(257,3,-32);silo.castShadow=true;scene.add(silo);
   const dome=new THREE.Mesh(new THREE.SphereGeometry(1.5,10,6,0,Math.PI*2,0,Math.PI/2),
     new THREE.MeshStandardMaterial({color:0x9aa0ad,roughness:.6}));
   dome.position.set(257,6,-32);scene.add(dome);
-  solids.push({x0:255.4,x1:258.6,z0:-33.6,z1:-30.4});
+  solids.push({x0:255.4,x1:258.6,z0:-33.6,z1:-30.4,h:7.5});
 }
 
 // pinheiros pela zona rural e encostas baixas da montanha

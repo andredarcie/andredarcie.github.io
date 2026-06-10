@@ -200,7 +200,7 @@ export function updateDayNight(dt){
   lampHaloMat.opacity=nightF*.85;
   lampBulbMat.color.lerpColors(BULB_DAY,BULB_NIGHT,nightF);
   const c=refs.getCur?.();
-  if(nightF>0&&state.mode==='car'&&c){
+  if(nightF>0&&state.mode==='car'&&c&&!c.plane){
     _fwd.set(0,0,1).applyQuaternion(c.g.quaternion);
     headSpot.position.set(c.g.position.x+_fwd.x*2.2,1.1,c.g.position.z+_fwd.z*2.2);
     headSpot.target.position.set(c.g.position.x+_fwd.x*16,.4,c.g.position.z+_fwd.z*16);

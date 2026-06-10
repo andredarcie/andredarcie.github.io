@@ -9,6 +9,7 @@ import {reportPoliceCrime} from './police-radio.js';
 export function collideStatics(p,r,bound=BOUND){
   let hit=false;
   for(const b of solids){
+    if(b.h!==undefined&&p.y>b.h)continue; // avião passa por cima dos prédios
     const cx=clamp(p.x,b.x0,b.x1),cz=clamp(p.z,b.z0,b.z1);
     const dx=p.x-cx,dz=p.z-cz,d2=dx*dx+dz*dz;
     if(d2<r*r){
