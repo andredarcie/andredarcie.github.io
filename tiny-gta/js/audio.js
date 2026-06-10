@@ -1,4 +1,4 @@
-import {state,keys,refs} from './state.js';
+import {state,input,refs} from './state.js';
 
 export let AC=null,audioEngine=null,siren=null,hornG=null,master=null,screechG=null,heliG=null;
 
@@ -71,9 +71,9 @@ export function updateAudio(){
     const tgt=cops.length?.045:0;
     siren.g.gain.value+=(tgt-siren.g.gain.value)*.1;
   }
-  if(hornG)hornG.gain.value=(state.mode==='car'&&keys['KeyH'])?.07:0;
+  if(hornG)hornG.gain.value=(state.mode==='car'&&input.horn)?.07:0;
   if(screechG)screechG.gain.value=
-    (state.mode==='car'&&keys['Space']&&Math.abs(cur?.speed||0)>7)?.12:0;
+    (state.mode==='car'&&input.brake&&Math.abs(cur?.speed||0)>7)?.12:0;
   if(heliG){
     const heli=refs.getHeli?.();
     heliG.gain.value=heli?(Math.floor(state.time*13)%2?.07:.015):0;

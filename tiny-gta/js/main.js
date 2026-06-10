@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {state,refs} from './state.js';
+import {state,input,refs} from './state.js';
 import {renderer,scene,camera,clouds,dlight,sunDir} from './engine.js';
 import {updateAudio} from './audio.js';
 import {drawMinimap,updateHUD,hideBig} from './hud.js';
@@ -9,10 +9,11 @@ import {updatePeds} from './pedestrians.js';
 import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
-import {DIEGO,DIEGO_X,DIEGO_Z,updateDiego} from './diego.js';
+import {DIEGO,DIEGO_X,DIEGO_Z,updateDiego,isNearDiego} from './diego.js';
 import {blinkBar} from './entities.js';
-import {setupInput} from './input.js';
-import {canPickWeapon,updateWeapons} from './weapons.js';
+import {setupInput,updateKeyboardInput,performShoot} from './input.js';
+import {setupTouchControls,updateTouchControls} from './touch-controls.js';
+import {canPickWeapon,updateWeapons,isWeaponHeld} from './weapons.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
 refs.playerPos=playerPos;
@@ -27,22 +28,27 @@ refs.getDelivery=()=>delivery;
 refs.DIEGO=DIEGO;
 refs.DIEGO_X=DIEGO_X;
 refs.DIEGO_Z=DIEGO_Z;
+refs.isNearDiego=isNearDiego;
 refs.getBusted=getBusted;
 refs.getWasted=getWasted;
 refs.getHeli=()=>heli;
 refs.nearestCar=nearestCar;
 refs.canPickWeapon=canPickWeapon;
+refs.isWeaponHeld=isWeaponHeld;
 
 // First delivery spawned here, after refs are set (spawnDelivery needs playerPos)
 spawnDelivery();
 
 setupInput();
+setupTouchControls();
 
 const clock=new THREE.Clock();
 function frame(){
   requestAnimationFrame(frame);
   const dt=Math.min(clock.getDelta(),.05);
-  if(state.paused){renderer.render(scene,camera);return;}
+  updateKeyboardInput();
+  updateTouchControls();
+  if(state.paused||state.orientationBlocked){renderer.render(scene,camera);return;}
   state.time+=dt;
 
   for(const c of clouds){
@@ -72,6 +78,7 @@ function frame(){
   updateDiego(dt);
   updatePickups(dt);
   updateWeapons(dt);
+  if(input.shootHeld)performShoot();
 
   if(cur)blinkBar(cur.g);
   for(const c of idleCars)blinkBar(c.g);

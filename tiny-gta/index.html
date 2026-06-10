@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Tiny GTA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +50,16 @@
     <div id="mission-reward">REWARD: <span id="mission-val"></span></div>
   </div>
 </div>
+<div id="touch-controls" aria-hidden="true">
+  <div id="stick-move" class="touch-stick" aria-label="Move"><div class="stick-knob"></div></div>
+  <div id="stick-look" class="touch-stick" aria-label="Camera"><div class="stick-knob"></div></div>
+  <button id="btn-interact" class="touch-btn touch-btn-primary" type="button" aria-label="Interact">...</button>
+  <button id="btn-shoot" class="touch-btn touch-btn-danger" type="button" aria-label="Shoot">FIRE</button>
+  <button id="btn-brake" class="touch-btn" type="button" aria-label="Handbrake">BRAKE</button>
+  <button id="btn-radio" class="touch-btn touch-btn-small" type="button" aria-label="Change radio">RAD</button>
+  <button id="btn-pause" class="touch-btn touch-btn-small" type="button" aria-label="Pause">II</button>
+</div>
+<div id="rotate-device" role="status" aria-live="polite">ROTATE YOUR PHONE</div>
 <div id="pauseov">PAUSED</div>
 
 <div id="dlg" style="display:none;flex-direction:row">

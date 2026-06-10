@@ -33,6 +33,10 @@ const impacts=[];
 const MAX_AMMO=90;
 let lastShot=-99;
 
+export function isWeaponHeld(){
+  return !!(state.hasGun&&state.weaponHeld&&state.mode==='foot');
+}
+
 export function canPickWeapon(){
   if(state.hasGun||state.mode!=='foot')return false;
   return playerPos().distanceTo(gunGroup.position)<3;
@@ -40,7 +44,7 @@ export function canPickWeapon(){
 
 export function pickupWeapon(){
   if(!canPickWeapon())return;
-  state.hasGun=true;state.ammo=MAX_AMMO;state.maxAmmo=MAX_AMMO;
+  state.hasGun=true;state.weaponHeld=true;state.ammo=MAX_AMMO;state.maxAmmo=MAX_AMMO;
   scene.remove(gunGroup);
   message('WEAPON PICKED UP - LEFT CLICK TO SHOOT','var(--gold)');
   blip([440,660,880],.07,'square',.14);
@@ -142,7 +146,7 @@ function addImpact(pos,hit){
 }
 
 export function shootWeapon(){
-  if(!state.hasGun||state.mode!=='foot'||state.time-lastShot<.18)return;
+  if(!isWeaponHeld()||state.time-lastShot<.18)return;
   if(state.ammo<=0){message('OUT OF AMMO','var(--pink)');return;}
   lastShot=state.time;state.ammo--;
   const{origin,dir}=aimRay();
@@ -161,7 +165,7 @@ export function shootWeapon(){
 }
 
 export function updateWeapons(dt){
-  if(state.hasGun&&state.mode==='foot'){
+  if(isWeaponHeld()&&!state.paused&&!state.dlgActive&&!state.orientationBlocked){
     const{origin,dir}=aimRay();
     state.crosshairTarget=findWeaponHit(origin,dir,48).kind!=='miss';
   }else state.crosshairTarget=false;

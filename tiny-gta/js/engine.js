@@ -3,8 +3,15 @@ import {rand,irand} from './constants.js';
 
 export const canvas=document.getElementById('game');
 export const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(innerWidth,innerHeight);
+const isMobileLike=()=>matchMedia('(pointer: coarse)').matches||innerWidth<900;
+const viewportSize=()=>({
+  w:Math.round(window.visualViewport?.width||innerWidth),
+  h:Math.round(window.visualViewport?.height||innerHeight)
+});
+function pixelRatioLimit(){return isMobileLike()?1.5:2;}
+const initialSize=viewportSize();
+renderer.setPixelRatio(Math.min(devicePixelRatio,pixelRatioLimit()));
+renderer.setSize(initialSize.w,initialSize.h);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -12,13 +19,19 @@ renderer.toneMappingExposure=1.25;
 
 export const scene=new THREE.Scene();
 scene.fog=new THREE.Fog(0xcfe2ee,120,430);
-export const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,2000);
+export const camera=new THREE.PerspectiveCamera(62,initialSize.w/initialSize.h,.1,2000);
 camera.position.set(0,60,120);
 
-addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-});
+export function resizeRenderer(){
+  const {w,h}=viewportSize();
+  renderer.setPixelRatio(Math.min(devicePixelRatio,pixelRatioLimit()));
+  camera.aspect=w/h;camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+}
+
+addEventListener('resize',resizeRenderer);
+addEventListener('orientationchange',resizeRenderer);
+window.visualViewport?.addEventListener?.('resize',resizeRenderer);
 
 // Afternoon sky gradient + sun sprite
 {
@@ -48,7 +61,7 @@ export const hemi=new THREE.HemisphereLight(0xbfdfff,0x8a8078,1.05);scene.add(he
 export const sunDir=new THREE.Vector3(-.45,.9,-.55).normalize();
 export const dlight=new THREE.DirectionalLight(0xfff1d6,2.2);
 dlight.castShadow=true;
-dlight.shadow.mapSize.set(2048,2048);
+dlight.shadow.mapSize.set(isMobileLike()?1024:2048,isMobileLike()?1024:2048);
 dlight.shadow.camera.left=-95;dlight.shadow.camera.right=95;
 dlight.shadow.camera.top=95;dlight.shadow.camera.bottom=-95;
 dlight.shadow.camera.far=420;dlight.shadow.bias=-.0015;

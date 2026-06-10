@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {clamp,rand,nodeX} from './constants.js';
-import {state,keys,carNames,carColors,refs} from './state.js';
+import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
 import {makeCar,makePed,spinWheels} from './entities.js';
 import {thud,blip} from './audio.js';
@@ -16,6 +16,7 @@ export const cameraRig={
   sensitivity:.0024,
   invertY:false,
   shoulder:.28,
+  touchLookIdle:0,
 };
 
 export const playerCar={g:makeCar(0xff2e88,false),heading:Math.PI/2,speed:0,name:'PINK BANSHEE',police:false};
@@ -59,7 +60,7 @@ export function enterCar(){
     cur={g:c.g,heading:c.heading,speed:0,name:'CRUISER 47',police:true};
     addWanted(2,'STOLEN POLICE CAR!');
   }
-  state.mode='car';player.g.visible=false;
+  state.mode='car';state.weaponHeld=false;player.g.visible=false;
   hudCar.textContent=cur.name;hudSpeedo.style.display='block';
   blip([330,440],0.07,'triangle',.12);
   radioOn();
@@ -71,7 +72,7 @@ export function exitCar(){
   player.g.position.copy(cur.g.position).addScaledVector(right,-2.2);
   collideStatics(player.g.position,.5);
   player.g.position.y=0;player.g.visible=true;player.heading=cur.heading;
-  idleCars.push(cur);cur=null;state.mode='foot';hudSpeedo.style.display='none';
+  idleCars.push(cur);cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudSpeedo.style.display='none';
   radioOff();
 }
 
@@ -87,6 +88,7 @@ export function getBusted(){
     for(const c of cops)scene.remove(c.g);cops.length=0;
     if(cur){idleCars.push(cur);cur=null;}
     player.g.visible=true;player.g.position.set(nodeX(2)+4,0,nodeX(2)+4);
+    state.weaponHeld=!!state.hasGun;
     state.mode='foot';hudSpeedo.style.display='none';radioOff();
     message('YOU WERE RELEASED. BEHAVE.','var(--cyan)');
   });
@@ -98,15 +100,16 @@ export function getWasted(){
     const cops=refs.cops||[];
     for(const c of cops)scene.remove(c.g);cops.length=0;
     player.g.visible=true;player.g.position.set(nodeX(6)+4,0,nodeX(6)+4);
+    state.weaponHeld=!!state.hasGun;
     state.mode='foot';hudSpeedo.style.display='none';radioOff();
     message('DISCHARGED FROM HOSPITAL. WATCH IT.','var(--cyan)');
   });
 }
 
 export function updateCar(dt){
-  const th=(keys['KeyW']||keys['ArrowUp']?1:0)-(keys['KeyS']||keys['ArrowDown']?1:0);
-  const st=(keys['KeyA']||keys['ArrowLeft']?1:0)-(keys['KeyD']||keys['ArrowRight']?1:0);
-  const hb=keys['Space'];
+  const th=input.moveY;
+  const st=input.moveX;
+  const hb=input.brake;
   const MAX=32;
   if(th>0)cur.speed+=16*dt*Math.max(.15,1-cur.speed/MAX);
   else if(th<0)cur.speed-=(cur.speed>0?30:9)*dt;
@@ -129,13 +132,14 @@ export function updateCar(dt){
 
 export function updateFoot(dt){
   if(state.dlgActive)return;
-  const f=(keys['KeyW']||keys['ArrowUp']?1:0)-(keys['KeyS']||keys['ArrowDown']?1:0);
-  const side=(keys['KeyA']||keys['ArrowLeft']?1:0)-(keys['KeyD']||keys['ArrowRight']?1:0);
+  const f=input.moveY;
+  const side=input.moveX;
   if(f||side){
     const camF=new THREE.Vector3(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
     const camR=new THREE.Vector3(Math.cos(cameraRig.yaw),0,-Math.sin(cameraRig.yaw));
+    const analog=Math.min(1,Math.hypot(f,side));
     const mv=new THREE.Vector3().addScaledVector(camF,f).addScaledVector(camR,side).normalize();
-    const spd=keys['ShiftLeft']||keys['ShiftRight']?9:5.2;
+    const spd=(input.run?9:5.2)*analog;
     player.g.position.addScaledVector(mv,spd*dt);
     player.heading=Math.atan2(mv.x,mv.z);
     player.bob+=dt*spd*1.8;
@@ -150,7 +154,13 @@ export function updateCamera(dt){
   if(state.mode==='car'||state.mode==='cut'&&cur){
     tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;dist=9.6;baseH=1.75;
   }else{tgt=player.g.position;heading=player.heading;dist=6.2;baseH=1.25;}
-  if(!document.pointerLockElement){
+  if(input.lookActive&&!state.dlgActive&&!state.paused&&!state.orientationBlocked){
+    cameraRig.yaw-=input.lookX*dt;
+    cameraRig.pitch+=(cameraRig.invertY?-1:1)*input.lookY*dt;
+    cameraRig.touchLookIdle=0;
+  }else cameraRig.touchLookIdle+=dt;
+  const canRecentre=!document.pointerLockElement&&(!input.touchActive||cameraRig.touchLookIdle>1.2);
+  if(canRecentre){
     const diff=THREE.MathUtils.euclideanModulo(heading-cameraRig.yaw+Math.PI,Math.PI*2)-Math.PI;
     cameraRig.yaw+=diff*Math.min(1,dt*(state.mode==='car'?1.6:.7));
   }

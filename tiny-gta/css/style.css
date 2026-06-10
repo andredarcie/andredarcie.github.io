@@ -3,9 +3,9 @@
   --ink:#14091f; --blue:#3e7bff;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;overflow:hidden;background:var(--ink);
+html,body{height:100%;overflow:hidden;background:var(--ink);touch-action:none;overscroll-behavior:none;
   font-family:'IBM Plex Mono',monospace;color:var(--cream);user-select:none}
-canvas#game{display:block;width:100%;height:100%}
+canvas#game{display:block;width:100%;height:100%;touch-action:none}
 
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:30;opacity:.035;
   background:repeating-linear-gradient(0deg,#000 0 1px,transparent 1px 3px)}
@@ -166,3 +166,93 @@ canvas#game{display:block;width:100%;height:100%}
 #radio-name{font-family:'Bowlby One SC';font-size:15px;letter-spacing:2px;
   line-height:1;text-shadow:2px 2px 0 #000}
 #radio-tag{font-size:10px;letter-spacing:3px;color:var(--cream);opacity:.7;margin-top:4px}
+
+#touch-controls{position:fixed;inset:0;z-index:54;display:none;pointer-events:none;
+  touch-action:none;transition:opacity .18s}
+#touch-controls[aria-hidden="true"]{opacity:0;pointer-events:none}
+body.is-mobile #touch-controls{display:block}
+.touch-stick{position:absolute;width:clamp(104px,18vw,138px);aspect-ratio:1;border-radius:50%;
+  pointer-events:auto;touch-action:none;
+  background:radial-gradient(circle,rgba(255,255,255,.1) 0 28%,rgba(25,227,255,.13) 29% 58%,rgba(20,9,31,.18) 59%);
+  border:2px solid rgba(255,233,201,.28);box-shadow:0 0 18px rgba(25,227,255,.2);
+  opacity:.48;transition:opacity .12s,transform .12s}
+.touch-stick.active{opacity:.82;transform:scale(1.04)}
+.stick-knob{position:absolute;left:50%;top:50%;width:clamp(42px,7vw,56px);aspect-ratio:1;
+  border-radius:50%;transform:translate(-50%,-50%);
+  background:rgba(255,233,201,.22);border:2px solid rgba(255,233,201,.5);
+  box-shadow:0 0 14px rgba(255,210,74,.18);transition:transform .04s linear}
+.touch-stick.active .stick-knob{background:rgba(255,210,74,.32);border-color:rgba(255,210,74,.72)}
+#stick-move{left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom))}
+#stick-look{right:max(112px,calc(env(safe-area-inset-right) + 112px));bottom:max(18px,env(safe-area-inset-bottom))}
+.touch-btn{position:absolute;min-width:clamp(58px,9vw,74px);height:clamp(58px,9vw,74px);
+  border-radius:50%;border:2px solid rgba(255,233,201,.42);pointer-events:auto;touch-action:none;
+  background:rgba(20,9,31,.34);color:var(--cream);font-family:'Bowlby One SC';font-size:clamp(10px,2vw,14px);
+  letter-spacing:1px;text-shadow:1px 1px 0 #000;box-shadow:0 0 18px rgba(255,46,136,.22);
+  opacity:.62;transition:opacity .12s,transform .12s,background .12s}
+.touch-btn.active{opacity:.94;transform:scale(.96);background:rgba(255,210,74,.3)}
+.touch-btn.disabled{opacity:.28}
+.touch-btn:disabled{color:rgba(255,233,201,.55)}
+.touch-btn-primary{border-color:rgba(255,210,74,.72);color:var(--gold)}
+.touch-btn-danger{border-color:rgba(255,46,136,.82);color:#fff;background:rgba(255,46,136,.32)}
+.touch-btn-small{min-width:clamp(44px,7vw,54px);height:clamp(44px,7vw,54px);font-size:clamp(9px,1.7vw,12px)}
+#btn-shoot,#btn-brake,#btn-radio{display:none}
+#btn-shoot.show,#btn-brake.show,#btn-radio.show{display:block}
+#btn-shoot,#btn-brake{right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom))}
+#btn-interact{right:max(24px,calc(env(safe-area-inset-right) + 24px));bottom:max(96px,calc(env(safe-area-inset-bottom) + 96px))}
+#btn-radio{right:max(24px,calc(env(safe-area-inset-right) + 24px));bottom:max(170px,calc(env(safe-area-inset-bottom) + 170px))}
+#btn-pause{right:max(14px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top))}
+#touch-controls.in-dialog .touch-stick,#touch-controls.in-dialog #btn-shoot,
+#touch-controls.in-dialog #btn-brake,#touch-controls.in-dialog #btn-radio{opacity:0;pointer-events:none}
+
+#rotate-device{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;
+  background:rgba(8,3,16,.88);font-family:'Bowlby One SC';font-size:clamp(28px,9vw,58px);
+  color:var(--gold);letter-spacing:4px;text-align:center;text-shadow:3px 3px 0 #000;padding:24px}
+body.is-portrait-blocked #rotate-device{display:flex}
+
+@media (pointer:coarse),(max-width:900px){
+  .scanlines{opacity:.02}.vignette{opacity:.55}
+  .panel{border-width:1px;border-radius:8px;backdrop-filter:none}
+  #topleft{top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));padding:7px 10px}
+  #money{font-size:clamp(20px,4vw,28px)}
+  #sub{font-size:10px;letter-spacing:1px}
+  #topright{top:max(10px,env(safe-area-inset-top));right:max(74px,calc(env(safe-area-inset-right) + 74px));padding:7px 10px}
+  #stars{font-size:clamp(17px,3.6vw,23px);letter-spacing:2px}
+  #wantedtag{font-size:10px;letter-spacing:2px}
+  #weaponhud{top:max(62px,calc(env(safe-area-inset-top) + 62px));right:max(74px,calc(env(safe-area-inset-right) + 74px));
+    min-width:96px;padding:7px 10px}
+  #weapon-name{font-size:10px;letter-spacing:1px}
+  #weapon-ammo{font-size:21px}
+  #speedo{right:max(18px,env(safe-area-inset-right));bottom:max(96px,calc(env(safe-area-inset-bottom) + 96px));
+    padding:7px 10px}
+  #kmh{font-size:clamp(24px,5vw,34px)}
+  #carname{font-size:9px;letter-spacing:1px}
+  #radio-hud{right:max(86px,calc(env(safe-area-inset-right) + 86px));bottom:max(110px,calc(env(safe-area-inset-bottom) + 110px));
+    padding:6px 10px}
+  #mapwrap{left:max(14px,env(safe-area-inset-left));bottom:calc(max(18px,env(safe-area-inset-bottom)) + clamp(112px,18vw,138px) + 8px);
+    padding:3px;border-width:2px}
+  #minimap{width:clamp(108px,18vw,136px);height:clamp(108px,18vw,136px)}
+  #prompt{display:none!important}
+  #missionblock{left:max(10px,env(safe-area-inset-left));top:max(62px,calc(env(safe-area-inset-top) + 62px));
+    max-width:220px;padding:7px 10px}
+  #mission-label{font-size:8px;letter-spacing:2px}
+  #mission-title{font-size:11px;margin-bottom:0}
+  #mission-desc{display:none}
+  #mission-reward{font-size:9px;margin-top:4px}
+  #msg{top:max(62px,calc(env(safe-area-inset-top) + 62px));font-size:clamp(15px,3.8vw,22px);
+    max-width:78vw;white-space:normal;line-height:1.25}
+  #bigtext{font-size:clamp(38px,11vw,96px);letter-spacing:3px;white-space:normal;text-align:center;max-width:88vw}
+  #pauseov{font-size:clamp(38px,12vw,64px)}
+  #dlg{bottom:max(12px,env(safe-area-inset-bottom));width:min(760px,94vw)}
+  #dlg-portrait{width:66px;padding:8px 5px}
+  #dlg-letter{font-size:32px}
+  #dlg-body{padding:10px 14px}
+  #dlg-text{font-size:12px;line-height:1.55;min-height:42px}
+  #dlg-prompt{font-size:9px;letter-spacing:2px}
+  #mp-title{font-size:clamp(36px,10vw,72px);letter-spacing:3px;text-align:center}
+  #mp-mission,#mp-respect{max-width:86vw;text-align:center;line-height:1.35}
+  #title{padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  #logo{font-size:clamp(46px,11vw,120px)}
+  #controls{margin-top:24px;font-size:11px;gap:5px 14px;padding:12px 16px;max-width:88vw}
+  #play{margin-top:22px;font-size:clamp(18px,4vw,24px);padding:10px 24px}
+  #credit{bottom:max(10px,env(safe-area-inset-bottom));font-size:9px;text-align:center;max-width:90vw}
+}

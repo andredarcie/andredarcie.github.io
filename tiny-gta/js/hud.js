@@ -1,5 +1,5 @@
 import {N,ROAD,BLOCK,GROUND,BEACH,nodeX} from './constants.js';
-import {state,refs} from './state.js';
+import {state,input,refs} from './state.js';
 import {isPark} from './world.js';
 
 const $=id=>document.getElementById(id);
@@ -22,6 +22,21 @@ export function bigText(t,col){
   hudBig.classList.add('show');
 }
 export function hideBig(){hudBig.classList.remove('show');}
+
+export function getInteractAction(){
+  if(state.dlgActive)return{label:'OK',prompt:'CONTINUE',enabled:true};
+  if(state.paused||state.mode==='cut'||state.orientationBlocked)return{label:'...',prompt:'',enabled:false};
+  if(refs.canPickWeapon?.())return{label:'PICK',prompt:'PICK UP WEAPON',enabled:true};
+  if(state.mode==='foot'&&refs.isNearDiego?.())return{label:'TALK',prompt:'TALK TO DIEGO PENHA',enabled:true};
+  if(state.mode==='foot'&&refs.nearestCar?.(3.6))return{label:'CAR',prompt:'TAKE THE CAR',enabled:true};
+  if(state.mode==='car'){
+    const speed=Math.abs(refs.getCur?.()?.speed||0);
+    return speed<6
+      ?{label:'EXIT',prompt:'EXIT THE CAR',enabled:true}
+      :{label:'...',prompt:'',enabled:false};
+  }
+  return{label:'...',prompt:'',enabled:false};
+}
 
 // Vice City-style radar: circular, rotates with the player (forward is always
 // up), player arrow fixed at the center, square blips clamped to the rim
@@ -130,26 +145,14 @@ export function updateHUD(dt){
     hudAmmoMax.textContent='/'+max;
     hudWeaponAmmo.classList.toggle('low',ammo<=Math.max(6,Math.ceil(max*.15)));
   }else hudWeapon.style.display='none';
-  const aiming=state.started&&state.hasGun&&state.mode==='foot'&&!state.paused&&!state.dlgActive;
+  const aiming=state.started&&refs.isWeaponHeld?.()&&!state.paused&&!state.dlgActive&&!state.orientationBlocked;
   hudCrosshair.classList.toggle('show',aiming);
   hudCrosshair.classList.toggle('target',aiming&&state.crosshairTarget);
   hudCrosshair.classList.toggle('shoot',state.crosshairKick>.01);
   if(state.crosshairKick>0)state.crosshairKick=Math.max(0,state.crosshairKick-dt*7);
   if(msgT>0){msgT-=dt;if(msgT<=0)hudMsg.style.opacity=0;}
-  const pp=refs.playerPos?.();
-  const DIEGO=refs.DIEGO;
-  const DIEGO_X=refs.DIEGO_X||0,DIEGO_Z=refs.DIEGO_Z||0;
-  const _nearDiego=pp&&state.mode==='foot'&&!state.dlgActive
-    &&DIEGO&&DIEGO.state!=='active'&&DIEGO.state!=='done'
-    &&Math.hypot(pp.x-DIEGO_X,pp.z-DIEGO_Z)<3.5;
-  const _nearDiegoReturn=pp&&state.mode==='foot'&&!state.dlgActive
-    &&DIEGO&&DIEGO.state==='returning'
-    &&Math.hypot(pp.x-DIEGO_X,pp.z-DIEGO_Z)<3.5;
-  if(_nearDiego||_nearDiegoReturn){
-    hudPrompt.innerHTML='<b>E</b> - TALK TO DIEGO PENHA';hudPrompt.style.display='block';
-  }else if(refs.canPickWeapon?.()){
-    hudPrompt.innerHTML='<b>E</b> - PICK UP WEAPON';hudPrompt.style.display='block';
-  }else if(state.mode==='foot'&&refs.nearestCar?.(3.6)){
-    hudPrompt.innerHTML='<b>E</b> - TAKE THE CAR';hudPrompt.style.display='block';
+  const action=getInteractAction();
+  if(action.enabled&&!input.touchActive){
+    hudPrompt.innerHTML=`<b>E</b> - ${action.prompt}`;hudPrompt.style.display='block';
   }else hudPrompt.style.display='none';
 }

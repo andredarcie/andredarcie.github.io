@@ -125,6 +125,38 @@ function diegoShowMissionPass(){
   },5600);
 }
 
+export function isNearDiego(){
+  if(state.mode!=='foot')return false;
+  const pp=playerPos();
+  return Math.hypot(pp.x-DIEGO_X,pp.z-DIEGO_Z)<3.5
+    && DIEGO.state!=='active'
+    && DIEGO.state!=='completing';
+}
+
+export function performDiegoInteract(){
+  if(state.dlgActive||state.mode!=='foot'||!isNearDiego())return false;
+  if(DIEGO.state==='available'){
+    dlgOpen(diegoMissionLines(),()=>{
+      diegoSpawnItem();
+      DIEGO.state='active';
+      diegoMarker.visible=false;
+      message('DIEGO PENHA MISSION: FIND THE FLASH DRIVE','var(--gold)');
+    });
+    return true;
+  }
+  if(DIEGO.state==='returning'){
+    DIEGO.state='completing';
+    diegoMarker.visible=false;
+    dlgOpen(diegoReturnLines(),()=>diegoShowMissionPass());
+    return true;
+  }
+  if(DIEGO.state==='done'){
+    dlgOpen([{text:'Good work. Stay available.'}],null);
+    return true;
+  }
+  return false;
+}
+
 export function updateDiego(dt){
   if(diegoMarker.visible){
     diegoMarker.position.y=3.6+Math.sin(state.time*2.8)*.2;
@@ -142,25 +174,6 @@ export function updateDiego(dt){
   }
   if(state.dlgActive||state.mode==='cut')return;
   const pp=playerPos();
-  const near=Math.hypot(pp.x-DIEGO_X,pp.z-DIEGO_Z)<3.5;
-  if(near&&!DIEGO.proxLock){
-    DIEGO.proxLock=true;
-    if(DIEGO.state==='available'){
-      dlgOpen(diegoMissionLines(),()=>{
-        diegoSpawnItem();
-        DIEGO.state='active';
-        diegoMarker.visible=false;
-        message('DIEGO PENHA MISSION: FIND THE FLASH DRIVE','var(--gold)');
-      });
-    }else if(DIEGO.state==='returning'){
-      DIEGO.state='completing';
-      diegoMarker.visible=false;
-      dlgOpen(diegoReturnLines(),()=>diegoShowMissionPass());
-    }else if(DIEGO.state==='done'){
-      dlgOpen([{text:'Good work. Stay available.'}],null);
-    }
-  }
-  if(!near)DIEGO.proxLock=false;
   if(DIEGO.state==='active'&&DIEGO.secretMesh){
     if(Math.hypot(pp.x-DIEGO.secretX,pp.z-DIEGO.secretZ)<2.4){
       scene.remove(DIEGO.secretMesh,DIEGO.secretBeacon);
