@@ -1,6 +1,7 @@
 export const state={
   started:false,paused:false,mode:'foot',money:250,wanted:0,lastCrime:-99,
-  deliveries:0,bustT:0,cutT:0,cutFn:null,shake:0,time:0,comboN:0,lastHit:-99,dlgActive:false
+  deliveries:0,bustT:0,cutT:0,cutFn:null,shake:0,time:0,comboN:0,lastHit:-99,dlgActive:false,
+  crosshairKick:0,crosshairTarget:false
 };
 
 export let best={money:0,deliveries:0};

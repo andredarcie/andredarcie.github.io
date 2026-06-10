@@ -36,6 +36,22 @@ canvas#game{display:block;width:100%;height:100%}
   text-shadow:2px 2px 0 #7a3a00,0 0 14px rgba(255,210,74,.48);line-height:1;margin-top:4px}
 #weapon-ammo.low{color:var(--pink);text-shadow:2px 2px 0 #4d001f,0 0 14px rgba(255,46,136,.65)}
 #ammo-max{font-size:14px;color:var(--cream);opacity:.72;margin-left:2px}
+#crosshair{position:absolute;left:50%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%);
+  display:none;opacity:.92;filter:drop-shadow(0 1px 1px rgba(0,0,0,.9));transition:opacity .12s}
+#crosshair.show{display:block}
+#crosshair.shoot{animation:crosspop .16s ease-out}
+#crosshair.target .ch-line,#crosshair.target .ch-dot{background:var(--gold)}
+#crosshair.target .ch-ring{border-color:rgba(255,210,74,.55)}
+.ch-dot{position:absolute;left:50%;top:50%;width:4px;height:4px;border-radius:50%;
+  background:rgba(255,255,255,.96);transform:translate(-50%,-50%)}
+.ch-line{position:absolute;background:rgba(255,255,255,.88);border-radius:2px;
+  box-shadow:0 0 8px rgba(25,227,255,.28)}
+.ch-top,.ch-bottom{left:50%;width:2px;height:9px;transform:translateX(-50%)}
+.ch-top{top:5px}.ch-bottom{bottom:5px}
+.ch-left,.ch-right{top:50%;width:9px;height:2px;transform:translateY(-50%)}
+.ch-left{left:5px}.ch-right{right:5px}
+.ch-ring{position:absolute;inset:10px;border:1px solid rgba(25,227,255,.38);border-radius:50%}
+@keyframes crosspop{50%{transform:translate(-50%,-50%) scale(1.28);opacity:1}}
 #speedo{position:absolute;right:18px;bottom:18px;padding:10px 18px;text-align:right;display:none}
 #kmh{font-family:'Bowlby One SC';font-size:38px;color:var(--cyan);
   text-shadow:2px 2px 0 #003a4d,0 0 18px rgba(25,227,255,.55);line-height:1}

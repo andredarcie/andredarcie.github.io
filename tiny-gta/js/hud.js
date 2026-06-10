@@ -8,7 +8,7 @@ export const hudMoney=$('money'),hudSub=$('sub'),
   hudWanted=$('wantedtag'),hudSpeedo=$('speedo'),hudKmh=$('kmh'),
   hudCar=$('carname'),hudPrompt=$('prompt'),hudMsg=$('msg'),hudBig=$('bigtext'),
   hudWeapon=$('weaponhud'),hudWeaponAmmo=$('weapon-ammo'),
-  hudAmmoNow=$('ammo-now'),hudAmmoMax=$('ammo-max');
+  hudAmmoNow=$('ammo-now'),hudAmmoMax=$('ammo-max'),hudCrosshair=$('crosshair');
 
 let shownMoney=250,msgT=0;
 
@@ -130,6 +130,11 @@ export function updateHUD(dt){
     hudAmmoMax.textContent='/'+max;
     hudWeaponAmmo.classList.toggle('low',ammo<=Math.max(6,Math.ceil(max*.15)));
   }else hudWeapon.style.display='none';
+  const aiming=state.started&&state.hasGun&&state.mode==='foot'&&!state.paused&&!state.dlgActive;
+  hudCrosshair.classList.toggle('show',aiming);
+  hudCrosshair.classList.toggle('target',aiming&&state.crosshairTarget);
+  hudCrosshair.classList.toggle('shoot',state.crosshairKick>.01);
+  if(state.crosshairKick>0)state.crosshairKick=Math.max(0,state.crosshairKick-dt*7);
   if(msgT>0){msgT-=dt;if(msgT<=0)hudMsg.style.opacity=0;}
   const pp=refs.playerPos?.();
   const DIEGO=refs.DIEGO;

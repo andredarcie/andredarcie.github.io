@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {state,refs} from './state.js';
-import {scene} from './engine.js';
+import {scene,camera} from './engine.js';
 import {rand,irand,nodeX} from './constants.js';
 import {blip,thud} from './audio.js';
 import {message} from './hud.js';
@@ -29,6 +29,7 @@ const glowMat=new THREE.MeshBasicMaterial({color:0xffd24a,transparent:true,opaci
 const tracerMat=new THREE.LineBasicMaterial({color:0xfff2b0,transparent:true,opacity:.9});
 const explosions=[];
 const tracers=[];
+const impacts=[];
 const MAX_AMMO=90;
 let lastShot=-99;
 
@@ -51,6 +52,41 @@ function rayHitXZ(origin,dir,pos,radius,range){
   if(ahead<0||ahead>range)return null;
   const side=Math.abs(dx*dir.z-dz*dir.x);
   return side<=radius?ahead:null;
+}
+
+function aimRay(range=48){
+  const camDir=new THREE.Vector3();
+  camera.getWorldDirection(camDir);
+  const right=new THREE.Vector3(Math.cos(cameraRig.yaw),0,-Math.sin(cameraRig.yaw));
+  const muzzle=playerPos().clone().addScaledVector(right,.46);
+  muzzle.y+=1.05;
+  let aimPoint;
+  if(Math.abs(camDir.y)>.001){
+    const t=(1.05-camera.position.y)/camDir.y;
+    if(t>3&&t<range*2)aimPoint=camera.position.clone().addScaledVector(camDir,t);
+  }
+  if(!aimPoint)aimPoint=camera.position.clone().addScaledVector(camDir,range);
+  const dir=aimPoint.sub(muzzle);
+  dir.y=0;
+  if(dir.lengthSq()<.0001)dir.set(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
+  dir.normalize();
+  return{origin:muzzle,dir};
+}
+
+function findWeaponHit(origin,dir,range=48){
+  let best={kind:'miss',d:range,target:null,arr:null};
+  for(const p of peds){
+    if(p.state==='dead'||p.state==='fly')continue;
+    const d=rayHitXZ(origin,dir,p.g.position,1.05,range);
+    if(d!==null&&d<best.d)best={kind:'ped',d,target:p};
+  }
+  for(const arr of[traffic,idleCars,cops]){
+    for(const c of arr){
+      const d=rayHitXZ(origin,dir,c.g.position,2.1,range);
+      if(d!==null&&d<best.d)best={kind:'car',d,target:c,arr};
+    }
+  }
+  return best;
 }
 
 function killPed(p,dir){
@@ -88,42 +124,47 @@ function explodeCar(car,arr){
 
 function addTracer(origin,end){
   const geo=new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(origin.x,origin.y+.95,origin.z),
-    new THREE.Vector3(end.x,end.y+.95,end.z),
+    origin.clone(),
+    new THREE.Vector3(end.x,origin.y,end.z),
   ]);
   const line=new THREE.Line(geo,tracerMat.clone());
   scene.add(line);tracers.push({line,t:0});
+}
+
+function addImpact(pos,hit){
+  const missed=hit?.kind==='miss';
+  const impactRadius=missed ? .16 : .28;
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(impactRadius,.025,6,18),
+    new THREE.MeshBasicMaterial({color:missed?0xfff2b0:0xffd24a,transparent:true,opacity:.85,depthWrite:false}));
+  ring.position.set(pos.x,.08,pos.z);
+  ring.rotation.x=Math.PI/2;
+  scene.add(ring);impacts.push({ring,t:0});
 }
 
 export function shootWeapon(){
   if(!state.hasGun||state.mode!=='foot'||state.time-lastShot<.18)return;
   if(state.ammo<=0){message('OUT OF AMMO','var(--pink)');return;}
   lastShot=state.time;state.ammo--;
-  const origin=playerPos().clone();
-  const dir=new THREE.Vector3(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw)).normalize();
-  let best={kind:'miss',d:42,target:null,arr:null};
-
-  for(const p of peds){
-    if(p.state==='dead'||p.state==='fly')continue;
-    const d=rayHitXZ(origin,dir,p.g.position,1.05,42);
-    if(d!==null&&d<best.d)best={kind:'ped',d,target:p};
-  }
-  for(const arr of[traffic,idleCars,cops]){
-    for(const c of arr){
-      const d=rayHitXZ(origin,dir,c.g.position,2.1,42);
-      if(d!==null&&d<best.d)best={kind:'car',d,target:c,arr};
-    }
-  }
+  const{origin,dir}=aimRay();
+  const best=findWeaponHit(origin,dir);
 
   const end=origin.clone().addScaledVector(dir,best.d);
   addTracer(origin,end);
+  addImpact(end,best);
   blip([1200],.035,'square',.12);
+  state.crosshairKick=1;
+  state.shake=Math.max(state.shake,.08);
+  player.g.rotation.y=Math.atan2(dir.x,dir.z);
   if(best.kind==='ped')killPed(best.target,dir);
   else if(best.kind==='car')explodeCar(best.target,best.arr);
   else addWanted(.25,'SHOT FIRED!');
 }
 
 export function updateWeapons(dt){
+  if(state.hasGun&&state.mode==='foot'){
+    const{origin,dir}=aimRay();
+    state.crosshairTarget=findWeaponHit(origin,dir,48).kind!=='miss';
+  }else state.crosshairTarget=false;
   if(!state.hasGun){
     gunGroup.rotation.y+=dt*1.8;
     gunGroup.position.y=.05+Math.sin(state.time*3)*.08;
@@ -139,5 +180,12 @@ export function updateWeapons(dt){
     const t=tracers[i];t.t+=dt;
     t.line.material.opacity=Math.max(0,1-t.t*8);
     if(t.t>.14){scene.remove(t.line);tracers.splice(i,1);}
+  }
+  for(let i=impacts.length-1;i>=0;i--){
+    const p=impacts[i];p.t+=dt;
+    const s=1+p.t*5;
+    p.ring.scale.set(s,s,s);
+    p.ring.material.opacity=Math.max(0,.85-p.t*4);
+    if(p.t>.25){scene.remove(p.ring);impacts.splice(i,1);}
   }
 }
