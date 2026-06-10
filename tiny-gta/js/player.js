@@ -155,7 +155,8 @@ export function updateCamera(dt){
     tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;dist=9.6;baseH=1.75;
   }else{tgt=player.g.position;heading=player.heading;dist=6.2;baseH=1.25;}
   if(input.lookActive&&!state.dlgActive&&!state.paused&&!state.orientationBlocked){
-    cameraRig.yaw-=input.lookX*dt;
+    // Touch camera input uses gamepad-style semantics: positive X turns right.
+    cameraRig.yaw+=input.lookX*dt;
     cameraRig.pitch+=(cameraRig.invertY?-1:1)*input.lookY*dt;
     cameraRig.touchLookIdle=0;
   }else cameraRig.touchLookIdle+=dt;

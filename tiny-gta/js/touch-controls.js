@@ -149,6 +149,7 @@ export function setupTouchControls(){
   bindStick($('stick-look'),v=>{
     if(state.orientationBlocked||state.paused||state.dlgActive||state.mode==='cut')return;
     input.lookActive=v.active;
+    // Positive X means "turn camera right"; updateCamera applies this directly.
     input.lookX=v.x*YAW_SPEED;
     input.lookY=v.y*PITCH_SPEED;
     input.lastInput='touch';
