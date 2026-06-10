@@ -105,39 +105,118 @@ export function makeCar(color,police){
   return g;
 }
 
-const pedBodyG=new THREE.CylinderGeometry(.3,.34,.95,7);
-const pedHeadG=new THREE.SphereGeometry(.24,8,7);
-const pedArmG=new THREE.BoxGeometry(.13,.62,.13);
-const pedLegG=new THREE.BoxGeometry(.16,.56,.15);
+const pedTorsoG=new THREE.BoxGeometry(.52,.72,.28);
+const pedChestG=new THREE.BoxGeometry(.6,.16,.3);
+const pedHipG=new THREE.BoxGeometry(.46,.18,.28);
+const pedNeckG=new THREE.CylinderGeometry(.08,.09,.16,7);
+const pedHeadG=new THREE.SphereGeometry(.24,10,8);
+const pedArmG=new THREE.BoxGeometry(.13,.55,.13);
+const pedHandG=new THREE.SphereGeometry(.075,7,5);
+const pedLegG=new THREE.BoxGeometry(.16,.58,.16);
+const pedShoeG=new THREE.BoxGeometry(.18,.1,.28);
+const eyeG=new THREE.SphereGeometry(.035,6,4);
+const noseG=new THREE.ConeGeometry(.04,.12,6);
+const mouthG=new THREE.BoxGeometry(.15,.025,.018);
+const browG=new THREE.BoxGeometry(.12,.025,.02);
+const beardG=new THREE.SphereGeometry(.18,8,5);
+const hairG=new THREE.SphereGeometry(.255,8,5);
+const skinColors=[0xf0c08b,0xd9a06b,0xb8754c,0x8f5637,0x6f3e2a];
+const pantsColors=[0x202435,0x263454,0x2e2a24,0x3d3f46,0x18191f];
+const shoeColors=[0x111117,0x33251e,0xe8e3d2,0x1f2733];
 const skinM=new THREE.MeshStandardMaterial({color:0xd9a06b,roughness:.9,transparent:true});
-const pantsM=new THREE.MeshStandardMaterial({color:0x202435,roughness:.9,transparent:true});
+const eyeM=new THREE.MeshBasicMaterial({color:0x101018});
+const mouthM=new THREE.MeshBasicMaterial({color:0x6b1220});
+const facialHairColors=[0x17100c,0x2a1911,0x4a2b18,0x6b5137,0x0d0d12];
 export const shirtColors=[0xc23b4e,0x3b7ac2,0xcf9a3a,0x3aa06b,0xd96fae,0xe8e3d2,0x7a4f9e,0x40c8c0];
+
+function makeMat(color,roughness=.9){
+  return new THREE.MeshStandardMaterial({color,roughness,transparent:true});
+}
+
+function makeFace(head,skinMat){
+  const face=new THREE.Group();
+  const hairColor=facialHairColors[Math.floor(Math.random()*facialHairColors.length)];
+  const hairM=new THREE.MeshStandardMaterial({color:hairColor,roughness:.95,transparent:true});
+  const beardM=new THREE.MeshStandardMaterial({color:hairColor,roughness:.95,transparent:true});
+  for(const sx of[-1,1]){
+    const eye=new THREE.Mesh(eyeG,eyeM);
+    eye.position.set(sx*.085,.045,.225);
+    face.add(eye);
+    if(Math.random()<.65){
+      const brow=new THREE.Mesh(browG,hairM);
+      brow.position.set(sx*.085,.105,.22);
+      brow.rotation.z=-sx*Math.random()*.25;
+      face.add(brow);
+    }
+  }
+  const nose=new THREE.Mesh(noseG,skinMat.clone());
+  nose.position.set(0,-.015,.255);
+  nose.rotation.x=Math.PI/2;
+  nose.scale.setScalar(.85+Math.random()*.45);
+  face.add(nose);
+  const mouth=new THREE.Mesh(mouthG,mouthM);
+  mouth.position.set(0,-.12,.228);
+  mouth.scale.x=.75+Math.random()*.55;
+  face.add(mouth);
+  if(Math.random()<.58){
+    const beard=new THREE.Mesh(beardG,beardM);
+    beard.position.set(0,-.115,.165);
+    beard.scale.set(.82+Math.random()*.35,.42+Math.random()*.3,.26);
+    face.add(beard);
+  }
+  if(Math.random()<.74){
+    const hair=new THREE.Mesh(hairG,hairM);
+    hair.position.set(0,.13,-.005);
+    hair.scale.set(1.02,.42+Math.random()*.22,1);
+    face.add(hair);
+  }
+  head.add(face);
+}
 
 export function makePed(color){
   const g=new THREE.Group();
-  const shirtM=new THREE.MeshStandardMaterial({color,roughness:.9,transparent:true});
-  const body=new THREE.Mesh(pedBodyG,
-    shirtM);
-  body.position.y=.85;body.castShadow=true;g.add(body);
-  const head=new THREE.Mesh(pedHeadG,skinM.clone());
-  head.position.y=1.55;head.castShadow=true;g.add(head);
+  const skinMat=makeMat(skinColors[Math.floor(Math.random()*skinColors.length)]);
+  const shirtM=makeMat(color);
+  const pantsM=makeMat(pantsColors[Math.floor(Math.random()*pantsColors.length)]);
+  const shoeM=makeMat(shoeColors[Math.floor(Math.random()*shoeColors.length)],.82);
+  const bodyScale=.92+Math.random()*.18;
+
+  const torso=new THREE.Mesh(pedTorsoG,shirtM);
+  torso.position.y=.95;torso.scale.set(bodyScale,.95+Math.random()*.15,.92+Math.random()*.16);
+  torso.castShadow=true;g.add(torso);
+  const chest=new THREE.Mesh(pedChestG,shirtM);
+  chest.position.y=1.26;chest.scale.x=bodyScale;chest.castShadow=true;g.add(chest);
+  const hip=new THREE.Mesh(pedHipG,pantsM);
+  hip.position.y=.56;hip.scale.x=.92+Math.random()*.18;hip.castShadow=true;g.add(hip);
+  const neck=new THREE.Mesh(pedNeckG,skinMat);
+  neck.position.y=1.37;neck.castShadow=true;g.add(neck);
+
+  const head=new THREE.Mesh(pedHeadG,skinMat.clone());
+  head.position.y=1.62;head.castShadow=true;
+  head.scale.set(1+Math.random()*.14,.92+Math.random()*.18,1+Math.random()*.08);
+  g.add(head);
+  makeFace(head,skinMat);
   const limbs={};
   for(const side of[-1,1]){
     const arm=new THREE.Group();
-    const armMesh=new THREE.Mesh(pedArmG,skinM.clone());
-    arm.position.set(side*.39,1.18,0);
-    armMesh.position.y=-.31;
-    armMesh.castShadow=true;
-    arm.add(armMesh);
+    const sleeve=new THREE.Mesh(pedArmG,shirtM);
+    const hand=new THREE.Mesh(pedHandG,skinMat.clone());
+    arm.position.set(side*.42*bodyScale,1.22,0);
+    sleeve.position.y=-.27;
+    hand.position.y=-.59;
+    sleeve.castShadow=true;hand.castShadow=true;
+    arm.add(sleeve,hand);
     g.add(arm);
     limbs[side<0?'leftArm':'rightArm']=arm;
 
     const leg=new THREE.Group();
-    const legMesh=new THREE.Mesh(pedLegG,pantsM.clone());
-    leg.position.set(side*.15,.44,0);
-    legMesh.position.y=-.28;
-    legMesh.castShadow=true;
-    leg.add(legMesh);
+    const legMesh=new THREE.Mesh(pedLegG,pantsM);
+    const shoe=new THREE.Mesh(pedShoeG,shoeM);
+    leg.position.set(side*.15,.48,0);
+    legMesh.position.y=-.29;
+    shoe.position.set(0,-.61,.04);
+    legMesh.castShadow=true;shoe.castShadow=true;
+    leg.add(legMesh,shoe);
     g.add(leg);
     limbs[side<0?'leftLeg':'rightLeg']=leg;
   }

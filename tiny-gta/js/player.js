@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {clamp,rand,nodeX} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makeCar,makePed,spinWheels} from './entities.js?v=10';
-import * as Entities from './entities.js?v=10';
+import {makeCar,makePed,spinWheels} from './entities.js?v=12';
+import * as Entities from './entities.js?v=12';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff} from './radio.js';
 import {collideStatics,addWanted} from './physics.js';
@@ -90,7 +90,7 @@ export function getBusted(){
     for(const c of cops)scene.remove(c.g);cops.length=0;
     if(cur){idleCars.push(cur);cur=null;}
     player.g.visible=true;player.g.position.set(nodeX(2)+4,0,nodeX(2)+4);
-    state.weaponHeld=!!state.hasGun;
+    refs.confiscateWeapon?.();
     state.mode='foot';hudSpeedo.style.display='none';radioOff();
     message('YOU WERE RELEASED. BEHAVE.','var(--cyan)');
   });

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {state,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {rand,irand,nodeX} from './constants.js';
+import {N,ROAD,BLOCK,SIDE,rand,irand,nodeX} from './constants.js';
+import {isPark} from './world.js';
 import {blip,thud} from './audio.js';
 import {message} from './hud.js';
 import {addWanted} from './physics.js';
@@ -43,14 +44,30 @@ function makeGunModel({pickup=false}={}){
   return g;
 }
 
-const gunGroup=makeGunModel({pickup:true});
-gunGroup.scale.set(1.15,1.15,1.15);
-gunGroup.position.set(nodeX(4)+12,.82,nodeX(4)+12);
-scene.add(gunGroup);
+const weaponPickups=[];
+function makeWeaponPickup(x,z){
+  const g=makeGunModel({pickup:true});
+  g.scale.set(1.05,1.05,1.05);
+  g.position.set(x,.82,z);
+  g.userData.baseY=.82;
+  scene.add(g);
+  weaponPickups.push(g);
+}
+
+for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+  if(!isPark(i,j))continue;
+  const x0=nodeX(i)+ROAD/2+SIDE,z0=nodeX(j)+ROAD/2+SIDE;
+  const tucked=Math.random()<.5?-1:1;
+  makeWeaponPickup(
+    x0+BLOCK*.5+tucked*rand(7,12),
+    z0+BLOCK*.5+rand(-11,11)
+  );
+}
+if(!weaponPickups.length)makeWeaponPickup(nodeX(4)+12,nodeX(4)+12);
 
 const heldGun=makeGunModel();
-heldGun.position.set(.33,1.08,.34);
-heldGun.rotation.set(.08,0,-.12);
+heldGun.position.set(.43,1.13,.64);
+heldGun.rotation.set(-.03,0,-.03);
 heldGun.visible=false;
 player.g.add(heldGun);
 const muzzlePoint=new THREE.Object3D();
@@ -73,15 +90,36 @@ export function isWeaponHeld(){
 
 export function canPickWeapon(){
   if(state.hasGun||state.mode!=='foot')return false;
-  return playerPos().distanceTo(gunGroup.position)<3;
+  return !!nearestWeaponPickup(3);
 }
 
 export function pickupWeapon(){
-  if(!canPickWeapon())return;
+  const pickup=nearestWeaponPickup(3);
+  if(!pickup)return;
   state.hasGun=true;state.weaponHeld=true;state.ammo=MAX_AMMO;state.maxAmmo=MAX_AMMO;
-  scene.remove(gunGroup);
+  for(const g of weaponPickups)scene.remove(g);
   message('WEAPON PICKED UP - LEFT CLICK TO SHOOT','var(--gold)');
   blip([440,660,880],.07,'square',.14);
+}
+
+export function confiscateWeapon(){
+  state.hasGun=false;
+  state.weaponHeld=false;
+  state.ammo=0;
+  state.maxAmmo=0;
+  heldGun.visible=false;
+  for(const g of weaponPickups)if(!g.parent)scene.add(g);
+}
+
+function nearestWeaponPickup(maxD){
+  const pp=playerPos();
+  let best=null,bd=maxD;
+  for(const g of weaponPickups){
+    if(!g.parent)continue;
+    const d=pp.distanceTo(g.position);
+    if(d<bd){bd=d;best=g;}
+  }
+  return best;
 }
 
 function rayHitXZ(origin,dir,pos,radius,range){
@@ -96,17 +134,20 @@ function aimRay(range=48){
   const camDir=new THREE.Vector3();
   camera.getWorldDirection(camDir);
   const muzzle=getMuzzleWorldPosition();
+  const flatDir=new THREE.Vector3(camDir.x,0,camDir.z);
+  if(flatDir.lengthSq()<.0001)flatDir.set(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
+  flatDir.normalize();
   let aimPoint;
   if(Math.abs(camDir.y)>.001){
     const t=(muzzle.y-camera.position.y)/camDir.y;
     if(t>3&&t<range*2)aimPoint=camera.position.clone().addScaledVector(camDir,t);
   }
-  if(!aimPoint)aimPoint=camera.position.clone().addScaledVector(camDir,range);
+  if(!aimPoint)aimPoint=muzzle.clone().addScaledVector(flatDir,range);
   const dir=aimPoint.sub(muzzle);
   dir.y=0;
-  if(dir.lengthSq()<.0001)dir.set(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
+  if(dir.lengthSq()<.0001)dir.copy(flatDir);
   dir.normalize();
-  return{origin:muzzle,dir};
+  return{origin:muzzle.addScaledVector(dir,.42),dir};
 }
 
 function getMuzzleWorldPosition(){
@@ -115,6 +156,22 @@ function getMuzzleWorldPosition(){
   }
   const right=new THREE.Vector3(Math.cos(cameraRig.yaw),0,-Math.sin(cameraRig.yaw));
   return playerPos().clone().addScaledVector(right,.46).setY(playerPos().y+1.12);
+}
+
+function posePlayerWithGun(){
+  const limbs=player.g.userData.limbs;
+  if(!limbs?.rightArm)return;
+  const handX=limbs.rightArm.position.x;
+  limbs.rightArm.rotation.x=-Math.PI/2+gunKick*1.2;
+  limbs.rightArm.rotation.y=-.04;
+  limbs.rightArm.rotation.z=-.08;
+  if(limbs.leftArm){
+    limbs.leftArm.rotation.x=-.28;
+    limbs.leftArm.rotation.y=.08;
+    limbs.leftArm.rotation.z=.18;
+  }
+  heldGun.position.set(handX,1.13,.64-gunKick*.75);
+  heldGun.rotation.set(-.03-gunKick*.9,0,-.03);
 }
 
 function findWeaponHit(origin,dir,range=48){
@@ -209,6 +266,7 @@ function makeBullet(origin,dir){
   g.add(slug,core);
   g.position.copy(origin);
   g.rotation.y=Math.atan2(dir.x,dir.z);
+  g.position.addScaledVector(dir,.55);
   scene.add(g);
   bullets.push({
     g,dir:dir.clone(),prev:origin.clone(),
@@ -229,7 +287,8 @@ export function shootWeapon(){
   lastShot=state.time;state.ammo--;
   player.heading=cameraRig.yaw;
   player.g.rotation.y=cameraRig.yaw;
-  player.g.updateWorldMatrix(true,false);
+  posePlayerWithGun();
+  player.g.updateWorldMatrix(true,true);
   const{origin,dir}=aimRay();
   makeBullet(origin,dir);
   addTracer(origin,origin.clone().addScaledVector(dir,3.2));
@@ -243,8 +302,7 @@ export function shootWeapon(){
 export function updateWeapons(dt){
   heldGun.visible=isWeaponHeld();
   if(heldGun.visible){
-    heldGun.position.z=.34-gunKick;
-    heldGun.rotation.x=.08-gunKick*1.8;
+    posePlayerWithGun();
     gunKick=Math.max(0,gunKick-dt*.55);
   }
   if(isWeaponHeld()&&!state.paused&&!state.dlgActive&&!state.orientationBlocked){
@@ -252,8 +310,12 @@ export function updateWeapons(dt){
     state.crosshairTarget=findWeaponHit(origin,dir,48).kind!=='miss';
   }else state.crosshairTarget=false;
   if(!state.hasGun){
-    gunGroup.rotation.y+=dt*1.8;
-    gunGroup.position.y=.82+Math.sin(state.time*3)*.08;
+    for(let i=0;i<weaponPickups.length;i++){
+      const g=weaponPickups[i];
+      if(!g.parent)continue;
+      g.rotation.y+=dt*(1.45+i*.08);
+      g.position.y=g.userData.baseY+Math.sin(state.time*3+i)*.08;
+    }
   }
   for(let i=bullets.length-1;i>=0;i--){
     const b=bullets[i];

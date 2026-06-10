@@ -10,10 +10,10 @@ import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
 import {DIEGO,DIEGO_X,DIEGO_Z,updateDiego,isNearDiego} from './diego.js';
-import {blinkBar} from './entities.js?v=10';
+import {blinkBar} from './entities.js?v=12';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
-import {canPickWeapon,updateWeapons,isWeaponHeld} from './weapons.js';
+import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=15';
 import {updatePoliceRadio} from './police-radio.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
@@ -36,6 +36,7 @@ refs.getHeli=()=>heli;
 refs.nearestCar=nearestCar;
 refs.canPickWeapon=canPickWeapon;
 refs.isWeaponHeld=isWeaponHeld;
+refs.confiscateWeapon=confiscateWeapon;
 
 // First delivery spawned here, after refs are set (spawnDelivery needs playerPos)
 spawnDelivery();

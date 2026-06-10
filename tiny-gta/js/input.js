@@ -5,7 +5,7 @@ import {enterCar,exitCar,cur,player,cameraRig} from './player.js';
 import {dlgPress,isNearDiego,performDiegoInteract} from './diego.js';
 import {setMissionHUD} from './missions.js';
 import {message} from './hud.js';
-import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js';
+import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js?v=15';
 
 const gameCanvas=()=>document.getElementById('game');
 const isBlocked=()=>state.paused||state.mode==='cut'||state.orientationBlocked||state.controlsLocked;
