@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import {clamp,rand,nodeX} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makeCar,makePed,spinWheels} from './entities.js';
+import {makeCar,makePed,spinWheels} from './entities.js?v=10';
+import * as Entities from './entities.js?v=10';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff} from './radio.js';
 import {collideStatics,addWanted} from './physics.js';
@@ -135,10 +136,12 @@ export function updateFoot(dt){
   if(state.dlgActive)return;
   const f=input.moveY;
   const side=input.moveX;
+  let walkAmount=0;
   if(f||side){
     const camF=new THREE.Vector3(Math.sin(cameraRig.yaw),0,Math.cos(cameraRig.yaw));
     const camR=new THREE.Vector3(Math.cos(cameraRig.yaw),0,-Math.sin(cameraRig.yaw));
     const analog=Math.min(1,Math.hypot(f,side));
+    walkAmount=analog;
     const mv=new THREE.Vector3().addScaledVector(camF,f).addScaledVector(camR,side).normalize();
     const spd=(input.run?9:5.2)*analog;
     player.g.position.addScaledVector(mv,spd*dt);
@@ -146,6 +149,7 @@ export function updateFoot(dt){
     player.bob+=dt*spd*1.8;
     player.g.position.y=Math.abs(Math.sin(player.bob))*.09;
   }else player.g.position.y*=.8;
+  Entities.animatePed?.(player.g,player.bob,walkAmount);
   collideStatics(player.g.position,.5);
   const armed=state.hasGun&&state.weaponHeld&&state.mode==='foot';
   if(armed){

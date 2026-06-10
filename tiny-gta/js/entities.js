@@ -107,18 +107,56 @@ export function makeCar(color,police){
 
 const pedBodyG=new THREE.CylinderGeometry(.3,.34,.95,7);
 const pedHeadG=new THREE.SphereGeometry(.24,8,7);
+const pedArmG=new THREE.BoxGeometry(.13,.62,.13);
+const pedLegG=new THREE.BoxGeometry(.16,.56,.15);
 const skinM=new THREE.MeshStandardMaterial({color:0xd9a06b,roughness:.9,transparent:true});
+const pantsM=new THREE.MeshStandardMaterial({color:0x202435,roughness:.9,transparent:true});
 export const shirtColors=[0xc23b4e,0x3b7ac2,0xcf9a3a,0x3aa06b,0xd96fae,0xe8e3d2,0x7a4f9e,0x40c8c0];
 
 export function makePed(color){
   const g=new THREE.Group();
+  const shirtM=new THREE.MeshStandardMaterial({color,roughness:.9,transparent:true});
   const body=new THREE.Mesh(pedBodyG,
-    new THREE.MeshStandardMaterial({color,roughness:.9,transparent:true}));
+    shirtM);
   body.position.y=.85;body.castShadow=true;g.add(body);
   const head=new THREE.Mesh(pedHeadG,skinM.clone());
   head.position.y=1.55;head.castShadow=true;g.add(head);
+  const limbs={};
+  for(const side of[-1,1]){
+    const arm=new THREE.Group();
+    const armMesh=new THREE.Mesh(pedArmG,skinM.clone());
+    arm.position.set(side*.39,1.18,0);
+    armMesh.position.y=-.31;
+    armMesh.castShadow=true;
+    arm.add(armMesh);
+    g.add(arm);
+    limbs[side<0?'leftArm':'rightArm']=arm;
+
+    const leg=new THREE.Group();
+    const legMesh=new THREE.Mesh(pedLegG,pantsM.clone());
+    leg.position.set(side*.15,.44,0);
+    legMesh.position.y=-.28;
+    legMesh.castShadow=true;
+    leg.add(legMesh);
+    g.add(leg);
+    limbs[side<0?'leftLeg':'rightLeg']=leg;
+  }
+  g.userData.limbs=limbs;
   scene.add(g);
   return g;
+}
+
+export function animatePed(g,phase=0,amount=0){
+  const l=g.userData.limbs;if(!l)return;
+  const a=Math.min(1,amount);
+  const swing=Math.sin(phase)*.62*a;
+  const armSwing=swing*.72;
+  l.leftLeg.rotation.x=swing;
+  l.rightLeg.rotation.x=-swing;
+  l.leftArm.rotation.x=-armSwing;
+  l.rightArm.rotation.x=armSwing;
+  l.leftArm.rotation.z=.12;
+  l.rightArm.rotation.z=-.12;
 }
 
 export function setOpacity(g,o){g.traverse(m=>{if(m.material)m.material.opacity=o;});}

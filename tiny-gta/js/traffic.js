@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {N,CELL,nodeX,pick,rand,irand,wrapA,clamp} from './constants.js';
 import {state,carNames,carColors} from './state.js';
-import {makeCar,spinWheels} from './entities.js';
+import {makeCar,spinWheels} from './entities.js?v=10';
 import {collideStatics,addWanted} from './physics.js';
 import {thud} from './audio.js';
 import {playerPos,cur,player,getWasted} from './player.js';

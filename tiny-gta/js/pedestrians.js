@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import {N,nodeX,irand,rand,pick} from './constants.js';
 import {state} from './state.js';
 import {scene} from './engine.js';
-import {makePed,setOpacity,shirtColors} from './entities.js';
+import {makePed,setOpacity,shirtColors} from './entities.js?v=10';
+import * as Entities from './entities.js?v=10';
 import {collideStatics,addWanted} from './physics.js';
 import {thud} from './audio.js';
 import {message} from './hud.js';
@@ -80,6 +81,7 @@ export function updatePeds(dt){
         p.block=[irand(0,N-1),irand(0,N-1)];p.corner=irand(0,3);p.state='walk';
         p.bloodDropped=false;
         p.g.rotation.set(0,0,0);setOpacity(p.g,1);
+        Entities.animatePed?.(p.g,0,0);
         const c=pedCorner(p);p.g.position.set(c[0]+rand(-2,2),.0,c[1]+rand(-2,2));
       }
       continue;
@@ -117,5 +119,6 @@ export function updatePeds(dt){
     p.g.rotation.y=Math.atan2(d.x,d.z);
     p.t+=dt*spd*2.2;
     p.g.position.y=Math.abs(Math.sin(p.t))*.07;
+    Entities.animatePed?.(p.g,p.t,Math.min(1,spd/5.5));
   }
 }

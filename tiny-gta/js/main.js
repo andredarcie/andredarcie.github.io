@@ -10,7 +10,7 @@ import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
 import {DIEGO,DIEGO_X,DIEGO_Z,updateDiego,isNearDiego} from './diego.js';
-import {blinkBar} from './entities.js';
+import {blinkBar} from './entities.js?v=10';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
 import {canPickWeapon,updateWeapons,isWeaponHeld} from './weapons.js';
