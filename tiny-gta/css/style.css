@@ -76,6 +76,12 @@ canvas#game{display:block;width:100%;height:100%;touch-action:none}
 #pauseov{position:fixed;inset:0;z-index:45;display:none;align-items:center;justify-content:center;
   background:rgba(10,2,20,.6);font-family:'Bowlby One SC';font-size:64px;color:var(--cyan);
   letter-spacing:8px;text-shadow:0 0 24px rgba(25,227,255,.7)}
+#btn-fullscreen{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  z-index:72;min-width:92px;height:44px;padding:0 18px;border:2px solid var(--gold);border-radius:8px;
+  background:rgba(20,9,31,.78);color:var(--gold);font-family:'Bowlby One SC';font-size:15px;
+  letter-spacing:2px;text-shadow:1px 1px 0 #000;box-shadow:0 0 22px rgba(255,210,74,.46);
+  pointer-events:auto;touch-action:none}
+#btn-fullscreen:active{transform:translateX(-50%) scale(.96);background:rgba(255,210,74,.24)}
 
 #title{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;
   align-items:center;justify-content:center;cursor:pointer;
@@ -242,6 +248,8 @@ body.is-portrait-blocked #rotate-device{display:flex}
     max-width:78vw;white-space:normal;line-height:1.25}
   #bigtext{font-size:clamp(38px,11vw,96px);letter-spacing:3px;white-space:normal;text-align:center;max-width:88vw}
   #pauseov{font-size:clamp(38px,12vw,64px)}
+  #btn-fullscreen{top:max(10px,env(safe-area-inset-top));min-width:82px;height:40px;font-size:13px;
+    box-shadow:0 0 18px rgba(255,210,74,.52)}
   #dlg{bottom:max(12px,env(safe-area-inset-bottom));width:min(760px,94vw)}
   #dlg-portrait{width:66px;padding:8px 5px}
   #dlg-letter{font-size:32px}

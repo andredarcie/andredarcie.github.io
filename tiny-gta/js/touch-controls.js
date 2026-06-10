@@ -43,7 +43,7 @@ function bindStick(el,onMove,onEnd){
     radius=rect.width*.5;
     const dist=Math.hypot(dx,dy);
     const k=dist>radius?radius/dist:1;
-    knob.style.transform=`translate(${dx*k}px,${dy*k}px)`;
+    knob.style.transform=`translate(-50%,-50%) translate(${dx*k}px,${dy*k}px)`;
     onMove(norm(dx,dy,radius));
   };
   el?.addEventListener('pointerdown',e=>{
@@ -137,7 +137,7 @@ export function setupTouchControls(){
   bindStick($('stick-move'),v=>{
     if(state.orientationBlocked||state.paused||state.dlgActive||state.mode==='cut')return;
     input.moveActive=v.active;
-    input.moveX=v.x;
+    input.moveX=-v.x;
     input.moveY=-v.y;
     input.run=Math.hypot(v.x,v.y)>.88;
     input.lastInput='touch';
@@ -149,8 +149,8 @@ export function setupTouchControls(){
   bindStick($('stick-look'),v=>{
     if(state.orientationBlocked||state.paused||state.dlgActive||state.mode==='cut')return;
     input.lookActive=v.active;
-    input.lookX=v.x*YAW_SPEED;
-    input.lookY=-v.y*PITCH_SPEED;
+    input.lookX=-v.x*YAW_SPEED;
+    input.lookY=v.y*PITCH_SPEED;
     input.lastInput='touch';
   },()=>{
     input.lookActive=false;

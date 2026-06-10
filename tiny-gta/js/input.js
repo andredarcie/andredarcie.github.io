@@ -61,6 +61,15 @@ export function performPauseToggle(){
   showPause();
 }
 
+export function performFullscreenToggle(){
+  if(document.fullscreenElement){
+    document.exitFullscreen?.();
+    return;
+  }
+  const fs=document.documentElement.requestFullscreen?.();
+  fs?.catch?.(()=>{});
+}
+
 export function performInteract(){
   if(!state.started)return;
   if(state.dlgActive){dlgPress();return;}
@@ -124,6 +133,7 @@ export function setupInput(){
       return;
     }
     if(e.code==='KeyP'){performPauseToggle();return;}
+    if(e.code==='KeyF'&&e.shiftKey){performFullscreenToggle();return;}
     if(e.code==='Tab'){performRadioSwitch();return;}
     if(e.code==='KeyE'||e.code==='KeyF'){performInteract();return;}
   });
@@ -142,5 +152,10 @@ export function setupInput(){
 
   document.getElementById('title').addEventListener('click',()=>{
     startGameFromUserGesture({mobile:state.mobile||matchMedia('(pointer: coarse)').matches});
+  });
+  document.getElementById('btn-fullscreen')?.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    performFullscreenToggle();
   });
 }
