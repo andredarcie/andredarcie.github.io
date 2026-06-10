@@ -6,7 +6,7 @@
 <title>Tiny GTA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=IBM+Plex+Mono:wght@400;600;700&family=Press+Start+2P&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,17 +14,35 @@
 <div class="vignette"></div><div class="scanlines"></div>
 
 <div id="hud">
-  <div id="topleft" class="panel">
-    <div id="money">$250</div>
-    <div id="sub">DELIVERIES: 0</div>
-  </div>
-  <div id="topright" class="panel">
-    <div id="stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
-    <div id="wantedtag">WANTED</div>
-  </div>
-  <div id="weaponhud" class="panel">
-    <div id="weapon-name">PISTOL</div>
-    <div id="weapon-ammo"><span id="ammo-now">0</span><span id="ammo-max">/0</span></div>
+  <div id="vchud">
+    <div id="vc-stack">
+      <div id="clock">08:00</div>
+      <div id="money">$00000250</div>
+      <div id="health"><span id="health-heart">&#9829;</span><span id="health-val">100</span></div>
+      <div id="stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+    </div>
+    <div id="weaponhud">
+      <svg id="wicon-fist" viewBox="0 0 40 40" aria-label="Unarmed">
+        <defs><linearGradient id="wg1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#8ceefb"/><stop offset="1" stop-color="#ff9bd1"/>
+        </linearGradient></defs>
+        <g fill="url(#wg1)">
+          <rect x="7" y="14" width="22" height="16" rx="5"/>
+          <circle cx="11" cy="14" r="4"/>
+          <circle cx="17.5" cy="12.5" r="4.2"/>
+          <circle cx="24" cy="13" r="4"/>
+          <circle cx="29.5" cy="15" r="3.4"/>
+          <rect x="25" y="18" width="9" height="10" rx="4.5"/>
+        </g>
+      </svg>
+      <svg id="wicon-pistol" viewBox="0 0 40 40" aria-label="Pistol">
+        <defs><linearGradient id="wg2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#8ceefb"/><stop offset="1" stop-color="#ff9bd1"/>
+        </linearGradient></defs>
+        <path fill="url(#wg2)" d="M3 12h34v8.5h-7.5L26 32h-9l3.2-11.5H12c-.6 3.4-3 5.5-7 5.5l1.6-5.5H3z"/>
+      </svg>
+      <div id="weapon-ammo"><span id="ammo-now">0</span><span id="ammo-max">/0</span></div>
+    </div>
   </div>
   <div id="crosshair" aria-hidden="true">
     <span class="ch-dot"></span>
@@ -34,7 +52,7 @@
     <span class="ch-line ch-left"></span>
     <span class="ch-ring"></span>
   </div>
-  <div id="speedo" class="panel"><div id="kmh">0</div><div id="carname">ON FOOT</div></div>
+  <div id="carname"></div>
   <div id="radio-hud" class="panel">
     <div id="radio-name"></div>
     <div id="radio-tag"></div>
@@ -47,12 +65,6 @@
     <div id="police-radio-text"></div>
   </div>
   <div id="bigtext"></div>
-  <div id="missionblock" class="panel">
-    <div id="mission-label">◆ CURRENT MISSION</div>
-    <div id="mission-title"></div>
-    <div id="mission-desc"></div>
-    <div id="mission-reward">REWARD: <span id="mission-val"></span></div>
-  </div>
 </div>
 <div id="touch-controls" aria-hidden="true">
   <div id="stick-move" class="touch-stick" aria-label="Move"><div class="stick-knob"></div></div>

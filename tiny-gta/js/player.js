@@ -7,7 +7,7 @@ import * as Entities from './entities.js?v=12';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff} from './radio.js';
 import {collideStatics,addWanted} from './physics.js';
-import {message,bigText,hideBig,hudCar,hudSpeedo} from './hud.js';
+import {message,bigText,hideBig,hudCar} from './hud.js';
 
 export const player={g:makePed(0x19e3ff),heading:0,bob:0};
 player.g.position.set(nodeX(4)+9,0,nodeX(4)+9);
@@ -63,7 +63,7 @@ export function enterCar(){
     addWanted(2,'STOLEN POLICE CAR!','police_vehicle_theft');
   }
   state.mode='car';state.weaponHeld=false;player.g.visible=false;
-  hudCar.textContent=cur.name;hudSpeedo.style.display='block';
+  hudCar.textContent=cur.name;hudCar.style.display='block';
   blip([330,440],0.07,'triangle',.12);
   radioOn();
 }
@@ -74,7 +74,7 @@ export function exitCar(){
   player.g.position.copy(cur.g.position).addScaledVector(right,-2.2);
   collideStatics(player.g.position,.5);
   player.g.position.y=0;player.g.visible=true;player.heading=cur.heading;
-  idleCars.push(cur);cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudSpeedo.style.display='none';
+  idleCars.push(cur);cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudCar.style.display='none';
   radioOff();
 }
 
@@ -91,7 +91,7 @@ export function getBusted(){
     if(cur){idleCars.push(cur);cur=null;}
     player.g.visible=true;player.g.position.set(nodeX(2)+4,0,nodeX(2)+4);
     refs.confiscateWeapon?.();
-    state.mode='foot';hudSpeedo.style.display='none';radioOff();
+    state.mode='foot';hudCar.style.display='none';radioOff();
     message('YOU WERE RELEASED. BEHAVE.','var(--cyan)');
   });
 }
@@ -103,7 +103,7 @@ export function getWasted(){
     for(const c of cops)scene.remove(c.g);cops.length=0;
     player.g.visible=true;player.g.position.set(nodeX(6)+4,0,nodeX(6)+4);
     state.weaponHeld=!!state.hasGun;
-    state.mode='foot';hudSpeedo.style.display='none';radioOff();
+    state.mode='foot';hudCar.style.display='none';radioOff();
     message('DISCHARGED FROM HOSPITAL. WATCH IT.','var(--cyan)');
   });
 }

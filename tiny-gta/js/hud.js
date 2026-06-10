@@ -3,11 +3,10 @@ import {state,input,refs} from './state.js';
 import {isPark} from './world.js';
 
 const $=id=>document.getElementById(id);
-export const hudMoney=$('money'),hudSub=$('sub'),
+export const hudMoney=$('money'),hudClock=$('clock'),hudHealth=$('health-val'),
   hudStars=[...document.querySelectorAll('#stars .s')],
-  hudWanted=$('wantedtag'),hudSpeedo=$('speedo'),hudKmh=$('kmh'),
   hudCar=$('carname'),hudPrompt=$('prompt'),hudMsg=$('msg'),hudBig=$('bigtext'),
-  hudWeapon=$('weaponhud'),hudWeaponAmmo=$('weapon-ammo'),
+  wiconFist=$('wicon-fist'),wiconPistol=$('wicon-pistol'),hudWeaponAmmo=$('weapon-ammo'),
   hudAmmoNow=$('ammo-now'),hudAmmoMax=$('ammo-max'),hudCrosshair=$('crosshair');
 
 let shownMoney=250,msgT=0;
@@ -38,8 +37,8 @@ export function getInteractAction(){
   return{label:'...',prompt:'',enabled:false};
 }
 
-// Vice City-style radar: circular, rotates with the player (forward is always
-// up), player arrow fixed at the center, square blips clamped to the rim
+// Vice City-style radar: circular, fixed north-up, player arrow rotating at
+// the center, square blips clamped to the rim
 const mmCanvas=$('minimap');
 export const mm=mmCanvas.getContext('2d');
 const MMW=GROUND+BEACH*2;            // world span covered by the static map
@@ -56,11 +55,9 @@ const mmStatic=document.createElement('canvas');mmStatic.width=512;mmStatic.heig
   }
 }
 
-// world offset → rotated radar screen offset, clamped to the rim
-function mmBlip(wx,wz,pp,th,scale){
-  const dx=(wx-pp.x)*scale,dz=(wz-pp.z)*scale;
-  const c=Math.cos(th),s=Math.sin(th);
-  let px=dx*c-dz*s,py=dx*s+dz*c;
+// world offset → radar screen offset (north-up), clamped to the rim
+function mmBlip(wx,wz,pp,scale){
+  let px=(wx-pp.x)*scale,py=(wz-pp.z)*scale;
   const d=Math.hypot(px,py),max=MM_R-8;
   if(d>max){px*=max/d;py*=max/d;}
   return[MM_C+px,MM_C+py];
@@ -83,27 +80,27 @@ export function drawMinimap(){
   mm.fillStyle='#2e8a96';mm.fillRect(0,0,170,170);           // mar ao fundo
 
   mm.save();
-  mm.translate(MM_C,MM_C);mm.rotate(th);mm.scale(scale,scale);
+  mm.translate(MM_C,MM_C);mm.scale(scale,scale);
   mm.translate(-pp.x,-pp.z);
   mm.drawImage(mmStatic,-MMW/2,-MMW/2,MMW,MMW);
   mm.restore();
 
-  // blips quadrados (não giram com o mapa, presos na borda quando longe)
+  // blips quadrados (presos na borda quando longe)
   const cops=refs.cops||[];
   for(const c of cops){
-    const[px,py]=mmBlip(c.g.position.x,c.g.position.z,pp,th,scale);
+    const[px,py]=mmBlip(c.g.position.x,c.g.position.z,pp,scale);
     mmSquare(px,py,6,'#3e7bff');
   }
   const delivery=refs.getDelivery?.();
   if(delivery){
-    const[px,py]=mmBlip(delivery.x,delivery.z,pp,th,scale);
+    const[px,py]=mmBlip(delivery.x,delivery.z,pp,scale);
     mmSquare(px,py,8,'#ffd24a');
   }
   const DIEGO=refs.DIEGO;
   if(DIEGO&&DIEGO.state!=='done'){
     const blink=DIEGO.state==='returning'?Math.floor(state.time*4)%2===0:true;
     if(blink){
-      const[px,py]=mmBlip(refs.DIEGO_X,refs.DIEGO_Z,pp,th,scale);
+      const[px,py]=mmBlip(refs.DIEGO_X,refs.DIEGO_Z,pp,scale);
       mmSquare(px,py,9,DIEGO.state==='returning'?'#ff2e88':'#ffd24a');
       mm.fillStyle='#14091f';mm.font='bold 7px monospace';
       mm.textAlign='center';mm.textBaseline='middle';
@@ -111,12 +108,14 @@ export function drawMinimap(){
     }
   }
 
-  // seta do jogador fixa no centro, sempre apontando pra cima
+  // seta do jogador no centro, girando com a direção (mapa fixo no norte)
+  mm.save();
+  mm.translate(MM_C,MM_C);mm.rotate(-th);
   mm.fillStyle='#fff';mm.strokeStyle='#000';mm.lineWidth=1.4;
   mm.beginPath();
-  mm.moveTo(MM_C,MM_C-7);mm.lineTo(MM_C-5,MM_C+5.5);
-  mm.lineTo(MM_C,MM_C+2.8);mm.lineTo(MM_C+5,MM_C+5.5);
+  mm.moveTo(0,-7);mm.lineTo(-5,5.5);mm.lineTo(0,2.8);mm.lineTo(5,5.5);
   mm.closePath();mm.fill();mm.stroke();
+  mm.restore();
   mm.restore();
 
   // aro do radar
@@ -126,25 +125,38 @@ export function drawMinimap(){
   mm.beginPath();mm.arc(MM_C,MM_C,MM_R-4,0,Math.PI*2);mm.stroke();
   mm.strokeStyle='rgba(255,255,255,.42)';mm.lineWidth=1;
   mm.beginPath();mm.arc(MM_C,MM_C,MM_R-5.8,0,Math.PI*2);mm.stroke();
+
+  // marcador de norte no topo do aro
+  const ny=MM_C-MM_R+2;
+  mm.fillStyle='#08050a';
+  mm.beginPath();mm.arc(MM_C,ny,7,0,Math.PI*2);mm.fill();
+  mm.strokeStyle='#fff';mm.lineWidth=1.4;mm.stroke();
+  mm.fillStyle='#fff';mm.font='bold 9px monospace';
+  mm.textAlign='center';mm.textBaseline='middle';
+  mm.fillText('N',MM_C,ny+.5);
 }
 
 export function updateHUD(dt){
   shownMoney+=(state.money-shownMoney)*Math.min(1,8*dt);
   if(Math.abs(shownMoney-state.money)<1)shownMoney=state.money;
-  hudMoney.textContent='$'+Math.round(shownMoney);
-  hudSub.textContent='DELIVERIES: '+state.deliveries;
+  hudMoney.textContent='$'+String(Math.max(0,Math.round(shownMoney))).padStart(8,'0');
+  const min=Math.floor(state.time);                 // 1s real = 1min do jogo
+  hudClock.textContent=String((8+Math.floor(min/60))%24).padStart(2,'0')
+    +':'+String(min%60).padStart(2,'0');
+  hudHealth.textContent=Math.max(0,Math.round(state.health));
   const w=Math.floor(state.wanted);
   hudStars.forEach((s,i)=>s.classList.toggle('on',i<w));
-  hudWanted.style.visibility=w>0?'visible':'hidden';
-  const cur=refs.getCur?.();
-  if(state.mode==='car'&&cur)hudKmh.textContent=Math.abs(Math.round(cur.speed*3.6));
   if(state.hasGun){
     const ammo=state.ammo||0,max=state.maxAmmo||0;
-    hudWeapon.style.display='block';
+    wiconFist.style.display='none';wiconPistol.style.display='block';
+    hudWeaponAmmo.style.display='block';
     hudAmmoNow.textContent=ammo;
     hudAmmoMax.textContent='/'+max;
     hudWeaponAmmo.classList.toggle('low',ammo<=Math.max(6,Math.ceil(max*.15)));
-  }else hudWeapon.style.display='none';
+  }else{
+    wiconFist.style.display='block';wiconPistol.style.display='none';
+    hudWeaponAmmo.style.display='none';
+  }
   const aiming=state.started&&refs.isWeaponHeld?.()&&!state.paused&&!state.dlgActive&&!state.orientationBlocked;
   hudCrosshair.classList.toggle('show',aiming);
   hudCrosshair.classList.toggle('target',aiming&&state.crosshairTarget);

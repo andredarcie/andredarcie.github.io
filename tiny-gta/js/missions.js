@@ -65,14 +65,8 @@ export function spawnDelivery(){
   setMissionHUD();
 }
 
-export function setMissionHUD(){
-  const mb=document.getElementById('missionblock');
-  if(!curMission||!state.started){mb.style.display='none';return;}
-  document.getElementById('mission-title').textContent=curMission.title;
-  document.getElementById('mission-desc').textContent=curMission.desc;
-  document.getElementById('mission-val').textContent='$'+curMission.reward+'+';
-  mb.style.display='block';
-}
+// HUD minimalista estilo Vice City: missão atual não aparece mais na tela
+export function setMissionHUD(){}
 
 // Navigation arrow
 export const navArrow=new THREE.Group();
