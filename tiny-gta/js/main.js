@@ -6,6 +6,7 @@ import {drawMinimap,updateHUD,hideBig} from './hud.js';
 import {player,cur,playerPos,nearestCar,idleCars,cameraRig,updateCar,updateFoot,updateCamera,getBusted,getWasted} from './player.js';
 import {traffic,trafficPos,spawnTraffic,updateTraffic} from './traffic.js';
 import {updatePeds,ejectDriver} from './pedestrians.js';
+import {updateGangs,gangs} from './gangs.js';
 import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
@@ -27,6 +28,7 @@ refs.cops=cops;
 refs.trafficPos=trafficPos;
 refs.spawnTraffic=spawnTraffic;
 refs.ejectDriver=ejectDriver;
+refs.gangs=gangs; // hud desenha os territórios no minimapa via refs
 refs.getDelivery=()=>delivery;
 refs.DIEGO=DIEGO;
 refs.DIEGO_X=DIEGO_X;
@@ -66,7 +68,7 @@ function frame(){
     const a=state.time*.07;
     camera.position.set(Math.cos(a)*140,65,Math.sin(a)*140);
     camera.lookAt(0,6,0);
-    updateTraffic(dt);updatePeds(dt);
+    updateTraffic(dt);updatePeds(dt);updateGangs(dt);
     renderer.render(scene,camera);return;
   }
 
@@ -78,6 +80,7 @@ function frame(){
 
   updateTraffic(dt);
   updatePeds(dt);
+  updateGangs(dt);
   if(state.mode!=='cut')updateCops(dt);
   updateHeli(dt);
   updateDiego(dt);

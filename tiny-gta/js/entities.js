@@ -199,11 +199,11 @@ function makeFace(head,skinMat){
   head.add(face);
 }
 
-export function makePed(color){
+export function makePed(color,pantsColor){
   const g=new THREE.Group();
   const skinMat=makeMat(skinColors[Math.floor(Math.random()*skinColors.length)]);
   const shirtM=makeMat(color);
-  const pantsM=makeMat(pantsColors[Math.floor(Math.random()*pantsColors.length)]);
+  const pantsM=makeMat(pantsColor??pantsColors[Math.floor(Math.random()*pantsColors.length)]);
   const shoeM=makeMat(shoeColors[Math.floor(Math.random()*shoeColors.length)],.82);
   const bodyScale=.92+Math.random()*.18;
 

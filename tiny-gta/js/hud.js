@@ -84,6 +84,13 @@ export function drawMinimap(){
   mm.translate(MM_C,MM_C);mm.scale(scale,scale);
   mm.translate(-pp.x,-pp.z);
   mm.drawImage(mmStatic,-MMW/2,-MMW/2,MMW,MMW);
+  // territórios das gangues (círculos coloridos que encolhem conforme você mata)
+  const gangsArr=refs.gangs;
+  if(gangsArr)for(const g of gangsArr){
+    mm.fillStyle=g.cssA;
+    mm.beginPath();mm.arc(g.x,g.z,g.r,0,Math.PI*2);mm.fill();
+    mm.strokeStyle=g.css;mm.lineWidth=2/scale;mm.stroke();
+  }
   mm.restore();
 
   // blips quadrados (presos na borda quando longe)

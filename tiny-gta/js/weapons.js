@@ -12,6 +12,7 @@ import {peds,addBloodPuddle} from './pedestrians.js';
 import {traffic,spawnTraffic} from './traffic.js';
 import {cops} from './police.js';
 import {spawnDrop} from './missions.js';
+import {gangPeds,killGangPed} from './gangs.js';
 
 const gunMat=new THREE.MeshStandardMaterial({color:0x15121a,roughness:.45,metalness:.8});
 const gunDarkMat=new THREE.MeshStandardMaterial({color:0x07070b,roughness:.35,metalness:.9});
@@ -181,6 +182,11 @@ function findWeaponHit(origin,dir,range=48){
     const d=rayHitXZ(origin,dir,p.g.position,1.05,range);
     if(d!==null&&d<best.d)best={kind:'ped',d,target:p};
   }
+  for(const p of gangPeds){
+    if(p.state==='dead'||p.state==='fly')continue;
+    const d=rayHitXZ(origin,dir,p.g.position,1.05,range);
+    if(d!==null&&d<best.d)best={kind:'gang',d,target:p};
+  }
   for(const arr of[traffic,idleCars,cops]){
     for(const c of arr){
       const d=rayHitXZ(origin,dir,c.g.position,2.1,range);
@@ -277,6 +283,7 @@ function makeBullet(origin,dir){
 function handleBulletHit(hit,pos,dir){
   addImpact(pos,hit);
   if(hit.kind==='ped')killPed(hit.target,dir);
+  else if(hit.kind==='gang')killGangPed(hit.target,dir);
   else if(hit.kind==='car')damageCar(hit.target,hit.arr);
   else addWanted(.25,'SHOT FIRED!','gunfire');
 }
