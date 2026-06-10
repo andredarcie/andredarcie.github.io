@@ -33,29 +33,7 @@ addEventListener('resize',resizeRenderer);
 addEventListener('orientationchange',resizeRenderer);
 window.visualViewport?.addEventListener?.('resize',resizeRenderer);
 
-// Afternoon sky gradient + sun sprite
-{
-  const c=document.createElement('canvas');c.width=16;c.height=512;
-  const x=c.getContext('2d');
-  const g=x.createLinearGradient(0,0,0,512);
-  g.addColorStop(0,'#2e7fd9');g.addColorStop(.45,'#5aa7e8');
-  g.addColorStop(.7,'#a8d8f0');g.addColorStop(.86,'#ffe7c4');g.addColorStop(1,'#fff4dd');
-  x.fillStyle=g;x.fillRect(0,0,16,512);
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;
-  const sky=new THREE.Mesh(new THREE.SphereGeometry(900,24,16),
-    new THREE.MeshBasicMaterial({map:t,side:THREE.BackSide,fog:false}));
-  scene.add(sky);
-  const sc=document.createElement('canvas');sc.width=128;sc.height=128;
-  const sx=sc.getContext('2d');
-  const sg=sx.createRadialGradient(64,64,8,64,64,64);
-  sg.addColorStop(0,'rgba(255,244,210,1)');sg.addColorStop(.45,'rgba(255,200,130,.9)');
-  sg.addColorStop(1,'rgba(255,160,90,0)');
-  sx.fillStyle=sg;sx.fillRect(0,0,128,128);
-  const st=new THREE.CanvasTexture(sc);st.colorSpace=THREE.SRGBColorSpace;
-  const sun=new THREE.Sprite(new THREE.SpriteMaterial({map:st,fog:false,depthWrite:false}));
-  sun.scale.set(300,300,1);sun.position.set(-320,330,-680);
-  scene.add(sun);
-}
+// Céu, sol, lua e estrelas vivem em daynight.js (ciclo de dia e noite)
 
 export const hemi=new THREE.HemisphereLight(0xbfdfff,0x8a8078,1.05);scene.add(hemi);
 export const sunDir=new THREE.Vector3(-.45,.9,-.55).normalize();

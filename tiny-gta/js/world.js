@@ -79,6 +79,7 @@ function windowTexPair(base){
   return{map:mk(c),emis:mk(e)};
 }
 const texVariants=facadePalette.map(windowTexPair);
+export const buildingMats=[]; // daynight.js controla emissiveIntensity (janelas acesas à noite)
 const roofMat=new THREE.MeshStandardMaterial({color:0xa39aa8,roughness:1});
 const neonColors=[0xff2e88,0x19e3ff,0x9dff2e,0xffb52e];
 
@@ -92,6 +93,7 @@ function addBuilding(cx,cz,w,d){
   emis.repeat.set(...rep);emis.offset.set(...off);emis.needsUpdate=true;
   const side=new THREE.MeshStandardMaterial({map,emissiveMap:emis,emissive:0xffe9b0,
     emissiveIntensity:.3,roughness:.9});
+  buildingMats.push(side);
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[side,side,roofMat,roofMat,side,side]);
   m.position.set(cx,h/2,cz);m.castShadow=true;m.receiveShadow=true;scene.add(m);
   solids.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2});

@@ -33,6 +33,28 @@ const hubM=new THREE.MeshStandardMaterial({color:0xb9bec9,roughness:.3,metalness
 const darkM=new THREE.MeshStandardMaterial({color:0x1a1d24,roughness:.6,metalness:.25});
 const glassM=new THREE.MeshStandardMaterial({color:0x8fc3e0,roughness:.08,metalness:.6});
 const plateM=new THREE.MeshStandardMaterial({color:0xe8e9e2,roughness:.7});
+// Facho dos faróis projetado no chão — material compartilhado entre todos os
+// carros; daynight.js controla visible/opacity (acende só à noite)
+const beamCanvas=document.createElement('canvas');
+beamCanvas.width=256;beamCanvas.height=256;
+{
+  const x=beamCanvas.getContext('2d');
+  for(const cx of[92,164]){
+    x.save();x.translate(cx,16);x.scale(1,1.7);
+    const g=x.createRadialGradient(0,0,4,0,0,132);
+    g.addColorStop(0,'rgba(255,238,190,.9)');
+    g.addColorStop(.35,'rgba(255,222,155,.38)');
+    g.addColorStop(1,'rgba(255,205,125,0)');
+    x.fillStyle=g;x.beginPath();x.arc(0,0,132,0,7);x.fill();x.restore();
+  }
+}
+const beamTex=new THREE.CanvasTexture(beamCanvas);
+beamTex.colorSpace=THREE.SRGBColorSpace;
+export const beamMat=new THREE.MeshBasicMaterial({map:beamTex,transparent:true,
+  opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
+beamMat.visible=false;
+const beamGeo=new THREE.PlaneGeometry(5.4,7.4);
+
 const paintCache=new Map();
 function paintFor(color){
   if(!paintCache.has(color))
@@ -90,6 +112,10 @@ export function makeCar(color,police){
     const tl=new THREE.Mesh(tlG,tlM);
     tl.position.set(sx,.74,-2.15);g.add(tl);
   }
+
+  const beam=new THREE.Mesh(beamGeo,beamMat);
+  beam.rotation.x=-Math.PI/2;beam.position.set(0,.07,5.2);
+  beam.renderOrder=2;g.add(beam);
 
   if(police){
     const r=new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.42),

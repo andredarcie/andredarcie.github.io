@@ -15,6 +15,7 @@ import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
 import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=15';
 import {updatePoliceRadio} from './police-radio.js';
+import {updateDayNight} from './daynight.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
 refs.playerPos=playerPos;
@@ -58,6 +59,7 @@ function frame(){
     if(c.position.x>550)c.position.x=-550;
   }
   updateBeach(state.time);
+  updateDayNight(dt);
 
   if(!state.started){
     const a=state.time*.07;

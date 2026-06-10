@@ -1,6 +1,7 @@
 import {N,ROAD,BLOCK,GROUND,BEACH,nodeX} from './constants.js';
 import {state,input,refs} from './state.js';
 import {isPark} from './world.js';
+import {getTod} from './daynight.js';
 
 const $=id=>document.getElementById(id);
 export const hudMoney=$('money'),hudClock=$('clock'),hudHealth=$('health-val'),
@@ -140,8 +141,8 @@ export function updateHUD(dt){
   shownMoney+=(state.money-shownMoney)*Math.min(1,8*dt);
   if(Math.abs(shownMoney-state.money)<1)shownMoney=state.money;
   hudMoney.textContent='$'+String(Math.max(0,Math.round(shownMoney))).padStart(8,'0');
-  const min=Math.floor(state.time);                 // 1s real = 1min do jogo
-  hudClock.textContent=String((8+Math.floor(min/60))%24).padStart(2,'0')
+  const min=Math.floor(getTod()*1440);              // relógio segue o ciclo de dia/noite
+  hudClock.textContent=String(Math.floor(min/60)).padStart(2,'0')
     +':'+String(min%60).padStart(2,'0');
   hudHealth.textContent=Math.max(0,Math.round(state.health));
   const w=Math.floor(state.wanted);
