@@ -10,6 +10,7 @@ import {message,bigText,hideBig,hudCar,hudSpeedo} from './hud.js';
 
 export const player={g:makePed(0x19e3ff),heading:0,bob:0};
 player.g.position.set(nodeX(4)+9,0,nodeX(4)+9);
+document.getElementById('buildver')?.insertAdjacentText('beforeend',' ◆ CAM-R');
 export const cameraRig={
   yaw:player.heading,
   pitch:.34,
