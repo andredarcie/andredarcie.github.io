@@ -56,16 +56,17 @@ canvas{position:fixed;inset:0;width:100vw!important;height:100vh!important}
 
 /* controles touch (só aparecem com body.mobile) */
 #stick-l,#stick-r{position:fixed;bottom:6vh;width:124px;height:124px;border-radius:50%;
-  border:2px solid rgba(166,182,184,.45);background:rgba(38,56,72,.35);display:none;z-index:7;touch-action:none}
+  border:2px solid rgba(166,182,184,.22);background:rgba(38,56,72,.16);display:none;z-index:7;touch-action:none}
 #stick-l{left:5vw}
 #stick-r{right:5vw}
 .nub{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
-  background:rgba(166,182,184,.6);pointer-events:none}
+  background:rgba(166,182,184,.32);pointer-events:none}
 #btn-e{position:fixed;right:calc(5vw + 30px);bottom:calc(6vh + 140px);width:64px;height:64px;border-radius:50%;
-  border:2px solid var(--light);background:rgba(38,56,72,.7);color:var(--glow);font-family:inherit;
-  font-size:36px;line-height:1;display:none;z-index:7;touch-action:none}
-#btn-e.hot{background:var(--blue);border-color:var(--glow)}
-body.mobile #stick-l,body.mobile #stick-r,body.mobile #btn-e{display:block}
+  border:2px solid rgba(221,232,233,.45);background:rgba(58,162,234,.28);color:rgba(221,232,233,.85);
+  font-family:inherit;font-size:36px;line-height:1;display:none;z-index:7;touch-action:none}
+body.mobile #stick-l,body.mobile #stick-r{display:block}
+body.mobile #stick-l.off,body.mobile #stick-r.off{display:none}
+body.mobile #btn-e.on{display:block}
 body.mobile #textbox{bottom:4vh}
 
 /* aviso para girar o celular: o jogo roda na horizontal */
@@ -106,6 +107,6 @@ body.mobile #textbox{bottom:4vh}
 </div>
 
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
-<script type="module" src="main.js?v=7"></script>
+<script type="module" src="main.js?v=9"></script>
 </body>
 </html>

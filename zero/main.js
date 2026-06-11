@@ -120,7 +120,7 @@ const dotEl = $('dot'), promptEl = $('prompt'), prName = $('pr-name');
 const tbEl = $('textbox'), tbName = $('tb-name'), tbText = $('tb-text'), tbHint = $('tb-hint');
 const capEl = $('caption'), fadeEl = $('fade');
 const titleEl = $('title'), pauseEl = $('pause'), endEl = $('end');
-const btnE = $('btn-e');
+const btnE = $('btn-e'), stickL = $('stick-l'), stickR = $('stick-r');
 
 /* ===================== estado ===================== */
 let scene = null;
@@ -357,6 +357,20 @@ function blob(rx, ry, rz, c, x, y, z, parent) { // esfera low-poly achatada, for
   m.position.set(x, y, z);
   (parent || scene).add(m);
   return m;
+}
+
+const texLoader = new THREE.TextureLoader();
+function quadro(file, w, h, x, y, z, roty) { // quadro emoldurado com imagem
+  const g = grp(x, y, z);
+  g.rotation.y = roty;
+  box(w + .16, h + .16, .06, DARK2, 0, 0, 0, g);
+  const tex = texLoader.load(file);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.magFilter = THREE.NearestFilter; // mantém o pixel art da arte 2D
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex }));
+  m.position.z = .035;
+  g.add(m);
+  return g;
 }
 
 /* ===================== a cidade lá fora ===================== */
@@ -840,10 +854,10 @@ function buildEmpresa() {
   const b = box(.34, .52, .05, BLUE, 0, .26, -.11, placa); b.rotation.x = .35;
   blockOf(-4.45, 2.85, -3.95, 3.35);
 
-  // quadro (cenário)
-  const quadro = grp(1.0, 2.0, 3.97);
-  box(.95, .6, .07, DARK2, 0, 0, 0, quadro);
-  box(.85, .5, .02, LIGHT2, 0, 0, -.045, quadro);
+  // quadros com as 3 telas do jogo 2D original (cenário)
+  quadro('quarto.png', .59, .55, -.1, 2.0, 3.99, Math.PI);
+  quadro('metro.png', 1.02, .55, 1.0, 2.0, 3.99, Math.PI);
+  quadro('empresa.png', .65, .55, 2.1, 2.0, 3.99, Math.PI);
 
   // sua mesa: o computador do trabalho, fecha o dia
   const minha = grp(-7.3, 0, 2.6);
@@ -966,7 +980,15 @@ function updateTarget() {
   }
   dotEl.classList.toggle('hot', !!target);
   promptEl.classList.toggle('on', !!target && !textOpen);
-  if (isMobile) btnE.classList.toggle('hot', !!target || textOpen || !!(term && term.typing));
+  if (isMobile) {
+    // botão E só aparece quando há algo para interagir / texto para avançar
+    btnE.classList.toggle('on', !!target || textOpen || !!(term && term.typing));
+    // analógicos somem enquanto há texto na tela
+    const hide = textOpen || !!term;
+    stickL.classList.toggle('off', hide);
+    stickR.classList.toggle('off', hide);
+    if (hide) { joyL.x = joyL.y = 0; joyR.x = joyR.y = 0; }
+  }
 }
 
 /* ===================== mobile: dois analógicos + botão E ===================== */
@@ -1013,8 +1035,8 @@ function actionE() {
 if (isMobile) {
   document.body.classList.add('mobile');
   titleEl.querySelector('.keys').textContent = 'analógico esquerdo move · direito olha · E interage';
-  bindStick($('stick-l'), joyL);
-  bindStick($('stick-r'), joyR);
+  bindStick(stickL, joyL);
+  bindStick(stickR, joyR);
   btnE.addEventListener('pointerdown', e => { e.preventDefault(); actionE(); });
 }
 
@@ -1078,10 +1100,10 @@ function tick(now) {
 
   let mv = false;
   if (started && !ended && !transit && !term && (document.pointerLockElement || isMobile)) {
-    // analógico direito gira a câmera
+    // analógico direito gira a câmera (devagar, para mirar com calma)
     if (joyR.x || joyR.y) {
-      yaw -= joyR.x * 2.4 * dt;
-      pitch = Math.max(-1.45, Math.min(1.45, pitch - joyR.y * 1.8 * dt));
+      yaw -= joyR.x * 1.2 * dt;
+      pitch = Math.max(-1.45, Math.min(1.45, pitch - joyR.y * .9 * dt));
     }
     const f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0) - joyL.y;
     const st = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joyL.x;
