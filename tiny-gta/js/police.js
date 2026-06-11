@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {N,clamp,rand,wrapA,nodeX,irand} from './constants.js';
 import {state} from './state.js';
 import {scene} from './engine.js';
-import {makeCar,spinWheels,blinkBar} from './entities.js?v=13';
+import {makeCar,spinWheels,blinkBar,dentCar} from './entities.js?v=22';
 import {thud} from './audio.js';
 import {collideStatics,addWanted} from './physics.js';
 import {message} from './hud.js';
@@ -90,10 +90,18 @@ export function updateCops(dt){
     const activeCur=cur;
     if(state.mode==='car'&&activeCur){
       const d=p.distanceTo(activeCur.g.position);
-      if(d<2.9){
+      if(d<3.4){
         const push=new THREE.Vector3().subVectors(activeCur.g.position,p).setY(0).normalize();
-        activeCur.g.position.addScaledVector(push,(2.9-d)*.7);
+        activeCur.g.position.addScaledVector(push,(3.4-d)*.7);
         activeCur.speed*=.75;c.speed*=.6;thud(8);state.shake=.35;
+        // amassa os dois na pancada (cooldown: o encosto dura vários frames)
+        if(!c.dentT||state.time-c.dentT>.5){
+          c.dentT=state.time;
+          const mid=new THREE.Vector3().addVectors(p,activeCur.g.position)
+            .multiplyScalar(.5).setY(.7);
+          dentCar(activeCur.g,mid,push,.16);
+          dentCar(c.g,mid,push.clone().negate(),.16);
+        }
       }
     }else if(state.mode==='foot'&&Math.abs(c.speed)>7){
       if(p.distanceTo(playerPos())<1.8){getWasted();return;}

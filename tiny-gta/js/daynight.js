@@ -3,7 +3,7 @@ import {rand,clamp} from './constants.js';
 import {scene,renderer,hemi,dlight,sunDir,clouds} from './engine.js';
 import {buildingMats,lampGlowMat,lampHaloMat,lampBulbMat} from './world.js';
 import {state,refs} from './state.js';
-import {beamMat} from './entities.js?v=13';
+import {beamMat} from './entities.js?v=22';
 
 // Ciclo completo em segundos. tod: 0=meia-noite, .25=nascer do sol, .5=meio-dia, .75=pôr do sol
 const DAY_LEN=300;

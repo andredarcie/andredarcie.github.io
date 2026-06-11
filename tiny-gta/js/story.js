@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {nodeX,ROAD,SIDE,BLOCK,N,GROUND,BEACH,rand,irand,pick,MOUNT_X,groundHeight} from './constants.js';
 import {state,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makePed} from './entities.js?v=13';
+import {makePed} from './entities.js?v=22';
 import {AC,master,blip,thud} from './audio.js';
 import {message} from './hud.js';
 import {parks} from './world.js';
@@ -252,7 +252,10 @@ function endCutscene(){
   subEl.textContent='';
   // braços e boca de volta ao repouso
   const l=cine.actor?.ped.userData.limbs;
-  if(l){l.rightArm.rotation.set(0,0,-.12);l.leftArm.rotation.set(0,0,.12);}
+  if(l){
+    l.rightArm.rotation.set(0,0,-.12);l.leftArm.rotation.set(0,0,.12);
+    l.rightForearm?.rotation.set(0,0,0);l.leftForearm?.rotation.set(0,0,0);
+  }
   const mouth=cine.actor?.ped.userData.mouth;
   if(mouth)mouth.scale.y=1;
   const fn=cine.onDone;cine.onDone=null;fn&&fn();
@@ -268,9 +271,14 @@ function setTalkPose(actor,t,talking){
       l.leftArm.rotation.x=-.3+Math.sin(t*1.9+1.4)*.32;
       l.rightArm.rotation.z=-.28-Math.max(0,Math.sin(t*1.3))*.2;
       l.leftArm.rotation.z=.18;
+      // cotovelos acompanham o gesto: mão sobe e desce enquanto fala
+      if(l.rightForearm)l.rightForearm.rotation.x=-.5-Math.max(0,Math.sin(t*2.2))*.4;
+      if(l.leftForearm)l.leftForearm.rotation.x=-.3-Math.max(0,Math.sin(t*1.6+.7))*.3;
     }else{
       l.rightArm.rotation.x*=.85;l.leftArm.rotation.x*=.85;
       l.rightArm.rotation.z=-.12;l.leftArm.rotation.z=.12;
+      if(l.rightForearm)l.rightForearm.rotation.x*=.85;
+      if(l.leftForearm)l.leftForearm.rotation.x*=.85;
     }
   }
   const mouth=actor.ped.userData.mouth;

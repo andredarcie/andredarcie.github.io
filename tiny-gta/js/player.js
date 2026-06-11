@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {clamp,rand,nodeX,WATER,SWIM_BOUND,RURAL_X1,RURAL_HALF,groundHeight} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makeCar,makePed,makePlane,spinWheels} from './entities.js?v=13';
-import * as Entities from './entities.js?v=13';
+import {makeCar,makePed,makePlane,spinWheels,dentCar} from './entities.js?v=22';
+import * as Entities from './entities.js?v=22';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff,radioRandom} from './radio.js';
 import {collideStatics,addWanted} from './physics.js';
@@ -39,6 +39,8 @@ spawnPlane();
 
 export function playerPos(){return state.mode==='car'?cur.g.position:player.g.position;}
 
+const _dentPt=new THREE.Vector3(),_dentDir=new THREE.Vector3();
+
 export function nearestCar(maxD){
   let best=null,bd=maxD,kind=null;
   const pp=player.g.position;
@@ -56,8 +58,71 @@ export function nearestCar(maxD){
   return best?{c:best,kind}:null;
 }
 
+// Pose de motorista: pernas escondidas embaixo do painel, mãos no volante
+function setDrivePose(on){
+  const l=player.g.userData.limbs;if(!l)return;
+  l.leftLeg.visible=l.rightLeg.visible=!on;
+  if(on){
+    l.leftArm.rotation.set(-.9,0,.1);
+    l.rightArm.rotation.set(-.9,0,-.1);
+    l.leftForearm?.rotation.set(-.3,0,0);
+    l.rightForearm?.rotation.set(-.3,0,0);
+  }else{
+    for(const k of['leftArm','rightArm','leftForearm','rightForearm',
+      'leftLeg','rightLeg','leftCalf','rightCalf'])l[k]?.rotation.set(0,0,0);
+  }
+}
+
+// Tira o jogador de dentro do veículo (reparenta na cena e desfaz a pose)
+function unseatPlayer(){
+  scene.add(player.g);
+  player.g.rotation.set(0,player.heading,0);
+  setDrivePose(false);
+}
+
+// Entrar no carro é uma sequência: anda até a porta, ela abre, senta, fecha
+let entering=null;
 export function enterCar(){
+  if(entering)return;
   const f=nearestCar(3.6);if(!f)return;
+  entering={f,door:f.c.g.userData.door||null,t:0,phase:0};
+  state.controlsLocked=true;
+  if(f.kind==='traffic')f.c.brakeT=1.8; // carro do tráfego espera parado
+  blip([220],.06,'square',.1); // clique da maçaneta
+}
+
+export function cancelEntering(){
+  if(entering){if(entering.door)entering.door.rotation.y=0;entering=null;}
+  if(exiting){exiting.door.rotation.y=0;exiting=null;}
+  state.controlsLocked=false;
+}
+
+function updateEntering(dt){
+  const e=entering;e.t+=dt;
+  const car=e.f.c;
+  if(e.phase===0){ // porta abrindo enquanto o jogador chega nela
+    const k=Math.min(1,e.t/.4);
+    if(e.door)e.door.rotation.y=1.15*k;
+    const h=car.heading??car.g.rotation.y;
+    const wx=car.g.position.x+(-1.7)*Math.cos(h)+.5*Math.sin(h);
+    const wz=car.g.position.z-(-1.7)*Math.sin(h)+.5*Math.cos(h);
+    player.g.position.x+=(wx-player.g.position.x)*Math.min(1,10*dt);
+    player.g.position.z+=(wz-player.g.position.z)*Math.min(1,10*dt);
+    player.bob+=dt*8;Entities.animatePed?.(player.g,player.bob,.7);
+    if(e.t>=.45){completeEnter(e.f);e.phase=1;e.t=0;}
+  }else{ // sentado: porta fechando
+    const k=Math.min(1,e.t/.35);
+    if(e.door)e.door.rotation.y=1.15*(1-k);
+    if(cur)cur.speed=0;
+    if(k>=1){
+      if(e.door)e.door.rotation.y=0;
+      blip([180],.05,'square',.12); // porta bate
+      entering=null;state.controlsLocked=false;
+    }
+  }
+}
+
+function completeEnter(f){
   const{c,kind}=f;
   const traffic=refs.traffic||[];
   const cops=refs.cops||[];
@@ -73,27 +138,62 @@ export function enterCar(){
     cur={g:c.g,heading:c.heading,speed:0,name:'CRUISER 47',police:true};
     addWanted(2,'STOLEN POLICE CAR!','police_vehicle_theft');
   }
-  state.mode='car';state.weaponHeld=false;player.g.visible=false;
+  state.mode='car';state.weaponHeld=false;
+  // jogador sentado no banco do motorista, visível pelo vidro
+  cur.g.add(player.g);
+  if(cur.plane)player.g.position.set(0,-.45,.5);
+  else player.g.position.set(-.46,-.06,-.08); // sentado no banco do motorista
+  player.g.rotation.set(0,0,0);
+  setDrivePose(true);
   hudCar.textContent=cur.name;hudCar.style.display='block';
   blip([330,440],0.07,'triangle',.12);
   radioRandom();radioOn();
 }
 
+// Sair também abre e fecha a porta (avião não tem porta: sai direto)
+let exiting=null;
 export function exitCar(){
+  if(exiting||entering)return;
   if(cur.plane&&cur.g.position.y>groundHeight(cur.g.position.x,cur.g.position.z)+1.2){
     message('LAND BEFORE BAILING OUT!','var(--gold)');return;
   }
   cur.speed=0;
+  const door=cur.g.userData.door||null;
+  if(!door){completeExit();return;}
+  exiting={t:0,phase:0,door};
+  state.controlsLocked=true;
+  blip([220],.06,'square',.1); // clique da maçaneta
+}
+
+function completeExit(){
+  player.heading=cur.heading;
+  unseatPlayer();
   const right=new THREE.Vector3(Math.cos(cur.heading),0,-Math.sin(cur.heading));
-  player.g.position.copy(cur.g.position).addScaledVector(right,-2.2);
+  player.g.position.copy(cur.g.position).addScaledVector(right,-2.6);
   collideStatics(player.g.position,.5,SWIM_BOUND);
   player.g.position.y=groundHeight(player.g.position.x,player.g.position.z);
-  player.g.visible=true;player.heading=cur.heading;
+  player.g.visible=true;
   // veículo abandonado afundando some no mar; os outros viram veículo parado
   if(cur.sinkT){scene.remove(cur.g);if(cur.plane)spawnPlane();}
   else idleCars.push(cur);
   cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;hudCar.style.display='none';
   radioOff();
+}
+
+function updateExiting(dt){
+  const e=exiting;e.t+=dt;
+  if(e.phase===0){ // porta abrindo, ainda sentado
+    e.door.rotation.y=1.15*Math.min(1,e.t/.35);
+    if(cur)cur.speed=0;
+    if(e.t>=.4){completeExit();e.phase=1;e.t=0;}
+  }else{ // já fora: porta fechando
+    e.door.rotation.y=1.15*(1-Math.min(1,e.t/.35));
+    if(e.t>=.4){
+      e.door.rotation.y=0;
+      blip([180],.05,'square',.12); // porta bate
+      exiting=null;state.controlsLocked=false;
+    }
+  }
 }
 
 export const inWater=p=>{
@@ -108,11 +208,13 @@ export function startCut(text,col,fn){
 }
 
 export function getBusted(){
+  cancelEntering();
   startCut('BUSTED','#3e7bff',()=>{
     state.money=Math.floor(state.money*.85);state.wanted=0;state.bustT=0;
     const cops=refs.cops||[];
     for(const c of cops)scene.remove(c.g);cops.length=0;
     if(cur){idleCars.push(cur);cur=null;}
+    unseatPlayer();
     player.g.visible=true;player.g.position.set(nodeX(2)+4,0,nodeX(2)+4);
     refs.confiscateWeapon?.();
     state.mode='foot';hudCar.style.display='none';radioOff();
@@ -121,10 +223,12 @@ export function getBusted(){
 }
 
 export function getWasted(){
+  cancelEntering();
   startCut('WASTED','#ff2e88',()=>{
     state.money=Math.floor(state.money*.8);state.wanted=0;state.bustT=0;
     const cops=refs.cops||[];
     for(const c of cops)scene.remove(c.g);cops.length=0;
+    unseatPlayer();
     player.g.visible=true;player.g.position.set(nodeX(6)+4,0,nodeX(6)+4);
     state.weaponHeld=!!state.hasGun;
     state.mode='foot';hudCar.style.display='none';radioOff();
@@ -156,8 +260,9 @@ function updatePlane(dt){
     c.g.rotation.x=Math.min(.22,c.sinkT*.1);
     if(c.sinkT>2.1){
       scene.remove(c.g);
+      player.heading=c.heading;unseatPlayer();
       player.g.position.set(p.x,0,p.z);
-      player.g.visible=true;player.heading=c.heading;
+      player.g.visible=true;
       cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;
       hudCar.style.display='none';radioOff();
       spawnPlane();
@@ -211,6 +316,8 @@ function updatePlane(dt){
 }
 
 export function updateCar(dt){
+  if(entering){if(cur)cur.speed=0;return updateEntering(dt);}
+  if(exiting){if(cur)cur.speed=0;return updateExiting(dt);}
   if(cur.plane)return updatePlane(dt);
   // No mar o carro perde tração, afunda aos poucos e o jogador escapa nadando
   if(inWater(cur.g.position)){
@@ -225,8 +332,9 @@ export function updateCar(dt){
     spinWheels(cur.g,cur.speed,dt);
     if(cur.sinkT>2.1){
       scene.remove(cur.g);
+      player.heading=cur.heading;unseatPlayer();
       player.g.position.set(p.x,0,p.z);
-      player.g.visible=true;player.heading=cur.heading;
+      player.g.visible=true;
       cur=null;state.mode='foot';state.weaponHeld=!!state.hasGun;
       hudCar.style.display='none';radioOff();
       message('SWIM BACK TO SHORE!','var(--cyan)');
@@ -246,7 +354,14 @@ export function updateCar(dt){
   p.x+=Math.sin(cur.heading)*cur.speed*dt;
   p.z+=Math.cos(cur.heading)*cur.speed*dt;
   if(collideStatics(p,1.5,SWIM_BOUND)){
-    if(Math.abs(cur.speed)>6){thud(Math.abs(cur.speed));state.shake=Math.min(.6,Math.abs(cur.speed)*.02);}
+    if(Math.abs(cur.speed)>4){
+      // até batida leve já amassa feio; em alta velocidade destrói a frente
+      if(Math.abs(cur.speed)>6){thud(Math.abs(cur.speed));state.shake=Math.min(.6,Math.abs(cur.speed)*.02);}
+      const fwd=cur.speed>0?1:-1;
+      _dentPt.set(p.x+Math.sin(cur.heading)*2.75*fwd,p.y+.8,p.z+Math.cos(cur.heading)*2.75*fwd);
+      _dentDir.set(-Math.sin(cur.heading)*fwd,0,-Math.cos(cur.heading)*fwd);
+      dentCar(cur.g,_dentPt,_dentDir,Math.min(.32,.18+Math.abs(cur.speed)*.004));
+    }
     cur.speed*=-.25;
   }
   cur.g.rotation.y=cur.heading;
@@ -263,6 +378,8 @@ export function updateCar(dt){
 }
 
 export function updateFoot(dt){
+  if(entering)return updateEntering(dt);
+  if(exiting)return updateExiting(dt);
   if(state.dlgActive)return;
   const f=input.moveY;
   const side=input.moveX;
@@ -302,7 +419,7 @@ export function updateCamera(dt){
   let tgt,heading,dist,baseH;
   if(state.mode==='car'||state.mode==='cut'&&cur){
     tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;
-    dist=cur?.plane?15.5:9.6;baseH=1.75;
+    dist=cur?.plane?15.5:11.4;baseH=1.95;
   }else{tgt=player.g.position;heading=player.heading;dist=6.2;baseH=1.25;}
   if(input.lookActive&&!state.dlgActive&&!state.paused&&!state.orientationBlocked){
     // Positive lookX means "turn right". In this engine yaw increases to the LEFT

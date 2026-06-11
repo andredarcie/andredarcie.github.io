@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {N,CELL,nodeX,pick,rand,irand,wrapA,clamp} from './constants.js';
 import {state,carNames,carColors} from './state.js';
-import {makeCar,spinWheels} from './entities.js?v=13';
+import {makeCar,spinWheels,dentCar} from './entities.js?v=22';
 import {collideStatics,addWanted} from './physics.js';
 import {thud} from './audio.js';
 import {playerPos,cur,player,getWasted} from './player.js';
@@ -38,7 +38,7 @@ export function updateTraffic(dt){
     const ax=pos.x+pos.dx*6,az=pos.z+pos.dz*6;
     let blocked=Math.hypot(ax-pp.x,az-pp.z)<4.5;
     if(!blocked)for(const o of traffic){
-      if(o!==t&&Math.hypot(ax-o.g.position.x,az-o.g.position.z)<3.5){blocked=true;break;}
+      if(o!==t&&Math.hypot(ax-o.g.position.x,az-o.g.position.z)<4.2){blocked=true;break;}
     }
     if(t.brakeT>0){t.brakeT-=dt;blocked=true;}
     const target=blocked?0:8.5;
@@ -57,10 +57,17 @@ export function updateTraffic(dt){
     const activeCur=cur;
     if(state.mode==='car'&&activeCur){
       const d=t.g.position.distanceTo(activeCur.g.position);
-      if(d<2.9){
+      if(d<3.4){
         const push=new THREE.Vector3().subVectors(t.g.position,activeCur.g.position).setY(0).normalize();
-        activeCur.g.position.addScaledVector(push,-(2.9-d)*.6);
-        if(Math.abs(activeCur.speed)>8){addWanted(.25,null,'pursuit');thud(Math.abs(activeCur.speed));state.shake=.3;}
+        activeCur.g.position.addScaledVector(push,-(3.4-d)*.6);
+        if(Math.abs(activeCur.speed)>8){
+          addWanted(.25,null,'pursuit');thud(Math.abs(activeCur.speed));state.shake=.3;
+          // amassa os dois carros no ponto de contato
+          const mid=new THREE.Vector3().addVectors(t.g.position,activeCur.g.position)
+            .multiplyScalar(.5).setY(.7);
+          dentCar(activeCur.g,mid,push.clone().negate(),.2);
+          dentCar(t.g,mid,push,.2);
+        }
         activeCur.speed*=.6;t.brakeT=2;
       }
     }else if(state.mode==='foot'&&t.speed>6.5){

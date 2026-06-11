@@ -11,10 +11,10 @@ import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
 import {updateStory,storyNear,storyBlips,storyTargets} from './story.js';
-import {blinkBar} from './entities.js?v=13';
+import {blinkBar} from './entities.js?v=22';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
-import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=16';
+import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=18';
 import {updatePoliceRadio} from './police-radio.js';
 import {updateDayNight} from './daynight.js';
 

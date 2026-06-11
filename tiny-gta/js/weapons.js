@@ -13,6 +13,7 @@ import {traffic,spawnTraffic} from './traffic.js';
 import {cops} from './police.js';
 import {spawnDrop} from './missions.js';
 import {gangPeds,killGangPed} from './gangs.js';
+import {dentCar} from './entities.js?v=22';
 
 const gunMat=new THREE.MeshStandardMaterial({color:0x15121a,roughness:.45,metalness:.8});
 const gunDarkMat=new THREE.MeshStandardMaterial({color:0x07070b,roughness:.35,metalness:.9});
@@ -67,7 +68,7 @@ for(let i=0;i<N;i++)for(let j=0;j<N;j++){
 if(!weaponPickups.length)makeWeaponPickup(nodeX(4)+12,nodeX(4)+12);
 
 const heldGun=makeGunModel();
-heldGun.position.set(.43,1.13,.64);
+heldGun.position.set(.43,1.26,.67);
 heldGun.rotation.set(-.03,0,-.03);
 heldGun.visible=false;
 player.g.add(heldGun);
@@ -171,7 +172,10 @@ function posePlayerWithGun(){
     limbs.leftArm.rotation.y=.08;
     limbs.leftArm.rotation.z=.18;
   }
-  heldGun.position.set(handX,1.13,.64-gunKick*.75);
+  // mirando: antebraço do braço da arma esticado, o de apoio dobrado
+  if(limbs.rightForearm)limbs.rightForearm.rotation.set(0,0,0);
+  if(limbs.leftForearm)limbs.leftForearm.rotation.x=-.35;
+  heldGun.position.set(handX,1.26,.67-gunKick*.75);
   heldGun.rotation.set(-.03-gunKick*.9,0,-.03);
 }
 
@@ -235,8 +239,9 @@ function explodeCar(car,arr){
   if(arr===traffic)setTimeout(()=>spawnTraffic(),900);
 }
 
-function damageCar(car,arr){
+function damageCar(car,arr,pos,dir){
   if(!car||car===cur)return;
+  if(pos&&dir)dentCar(car.g,pos,dir,.07); // amassadinho onde a bala pegou
   const ud=car.g.userData;
   ud.bulletHits=(ud.bulletHits||0)+1;
   state.shake=Math.max(state.shake,.04);
@@ -289,7 +294,7 @@ function handleBulletHit(hit,pos,dir){
   if(hit.kind==='ped')killPed(hit.target,dir);
   else if(hit.kind==='gang')killGangPed(hit.target,dir);
   else if(hit.kind==='story')hit.target.kill();
-  else if(hit.kind==='car')damageCar(hit.target,hit.arr);
+  else if(hit.kind==='car')damageCar(hit.target,hit.arr,pos,dir);
   else addWanted(.25,'SHOT FIRED!','gunfire');
 }
 
