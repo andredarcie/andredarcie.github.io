@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Zero To One</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#2e4358; --dark2:#263848;
+  --light:#a6b6b8; --blue:#3aa2ea; --glow:#dde8e9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'VT323',monospace;user-select:none;
+  touch-action:none;overscroll-behavior:none;-webkit-user-select:none}
+canvas{position:fixed;inset:0;width:100vw!important;height:100vh!important}
+
+#dot{position:fixed;left:50%;top:50%;width:7px;height:7px;margin:-4px 0 0 -4px;border-radius:50%;
+  background:var(--glow);outline:2px solid rgba(38,56,72,.6);transition:transform .12s,background .12s;
+  pointer-events:none;z-index:5}
+#dot.hot{background:var(--blue);transform:scale(1.6)}
+
+#prompt{position:fixed;left:50%;top:57%;transform:translateX(-50%);color:var(--glow);font-size:26px;
+  letter-spacing:1px;text-shadow:2px 2px 0 var(--dark2);opacity:0;transition:opacity .15s;
+  pointer-events:none;z-index:5;white-space:nowrap}
+#prompt b{color:var(--blue)}
+#prompt.on{opacity:1}
+
+#textbox{position:fixed;left:50%;bottom:7vh;transform:translateX(-50%) translateY(14px);
+  width:min(640px,92vw);background:rgba(38,56,72,.94);border:2px solid var(--light);
+  border-left:8px solid var(--blue);padding:13px 20px 14px;color:var(--glow);
+  opacity:0;transition:.18s;pointer-events:none;z-index:6}
+#textbox.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#tb-name{color:var(--blue);font-size:22px;letter-spacing:3px;text-transform:uppercase}
+#tb-text{font-size:27px;line-height:1.12;margin-top:2px}
+#tb-hint{font-size:18px;color:var(--light);opacity:.65;margin-top:7px}
+
+#caption{position:fixed;top:9vh;width:100%;text-align:center;color:var(--glow);font-size:36px;
+  letter-spacing:8px;text-shadow:3px 3px 0 var(--dark2);opacity:0;transition:opacity .6s;
+  pointer-events:none;z-index:5}
+
+#fade{position:fixed;inset:0;background:var(--dark2);opacity:0;transition:opacity .7s;pointer-events:none;z-index:8}
+#fade.on{opacity:1}
+
+.screen{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:10px;color:var(--glow);z-index:10;cursor:pointer;text-align:center}
+.screen h1{font-size:min(19vw,150px);letter-spacing:.18em;line-height:.9;text-shadow:6px 6px 0 var(--dark2)}
+.screen h1 span{color:var(--blue)}
+.screen p{font-size:27px;color:var(--light)}
+.screen .keys{font-size:21px;color:var(--light);opacity:.75;margin-top:8px}
+.screen .go{margin-top:26px;font-size:30px;color:var(--blue);letter-spacing:3px;animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.hidden{display:none!important}
+
+/* controles touch (só aparecem com body.mobile) */
+#stick-l,#stick-r{position:fixed;bottom:6vh;width:124px;height:124px;border-radius:50%;
+  border:2px solid rgba(166,182,184,.45);background:rgba(38,56,72,.35);display:none;z-index:7;touch-action:none}
+#stick-l{left:5vw}
+#stick-r{right:5vw}
+.nub{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
+  background:rgba(166,182,184,.6);pointer-events:none}
+#btn-e{position:fixed;right:calc(5vw + 30px);bottom:calc(6vh + 140px);width:64px;height:64px;border-radius:50%;
+  border:2px solid var(--light);background:rgba(38,56,72,.7);color:var(--glow);font-family:inherit;
+  font-size:36px;line-height:1;display:none;z-index:7;touch-action:none}
+#btn-e.hot{background:var(--blue);border-color:var(--glow)}
+body.mobile #stick-l,body.mobile #stick-r,body.mobile #btn-e{display:block}
+body.mobile #textbox{bottom:4vh}
+
+/* aviso para girar o celular: o jogo roda na horizontal */
+#rotate{position:fixed;inset:0;background:var(--dark);z-index:20;display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;color:var(--glow);font-size:36px;letter-spacing:4px;text-align:center}
+#rotate small{font-size:24px;color:var(--light);letter-spacing:1px}
+@media (orientation:portrait){body.mobile #rotate{display:flex}}
+</style>
+</head>
+<body>
+<div id="dot"></div>
+<div id="prompt"><b>E</b> para interagir — <span id="pr-name"></span></div>
+<div id="textbox"><div id="tb-name"></div><div id="tb-text"></div><div id="tb-hint">E para fechar</div></div>
+<div id="caption"></div>
+<div id="fade"></div>
+
+<div id="stick-l"><div class="nub"></div></div>
+<div id="stick-r"><div class="nub"></div></div>
+<button id="btn-e">E</button>
+<div id="rotate">GIRE O CELULAR<small>o jogo roda na horizontal</small></div>
+
+<div id="title" class="screen">
+  <h1 style="font-size:min(13vw,110px)">ZERO TO <span>ONE</span></h1>
+  <p>Inferno &nbsp;·&nbsp; Purgatorio &nbsp;·&nbsp; Paraiso</p>
+  <div class="keys">WASD mover &nbsp;·&nbsp; mouse olhar &nbsp;·&nbsp; E interagir</div>
+  <div class="go">CLIQUE PARA COMEÇAR</div>
+</div>
+
+<div id="pause" class="screen hidden">
+  <h1 style="font-size:64px">PAUSA</h1>
+  <div class="go">CLIQUE PARA VOLTAR</div>
+</div>
+
+<div id="end" class="screen hidden">
+  <h1 style="font-size:min(14vw,110px)"><span>UM</span>.</h1>
+  <p>Zero finalmente se tornou Um</p>
+  <div class="go">CLIQUE PARA RECOMEÇAR</div>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<script type="module" src="main.js?v=7"></script>
+</body>
+</html>
