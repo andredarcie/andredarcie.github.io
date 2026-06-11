@@ -288,7 +288,7 @@ function freshScene() {
   drawIdle();
 }
 
-function room(W, D, H, hole) {
+function room(W, D, H, hole, holeW) {
   box(W + .4, .2, D + .4, FLOOR, 0, -.1, 0);
   box(W + .4, .2, D + .4, DARK2, 0, H + .1, 0);
   const zN = -D / 2 - .09;
@@ -303,7 +303,16 @@ function room(W, D, H, hole) {
     box(hole.x1 - hole.x0, H - hole.y1, .18, LIGHT, (hole.x0 + hole.x1) / 2, (hole.y1 + H) / 2, zN);
   }
   box(W + .4, H, .18, LIGHT, 0, H / 2, D / 2 + .09);
-  box(.18, H, D + .4, LIGHT, -W / 2 - .09, H / 2, 0);
+  const xW = -W / 2 - .09;
+  if (!holeW) {
+    box(.18, H, D + .4, LIGHT, xW, H / 2, 0);
+  } else {
+    // parede oeste em 3 segmentos, deixando o vão da porta do banheiro
+    const Z0 = -D / 2 - .2, Z1 = D / 2 + .2;
+    box(.18, H, holeW.z0 - Z0, LIGHT, xW, H / 2, (Z0 + holeW.z0) / 2);
+    box(.18, H, Z1 - holeW.z1, LIGHT, xW, H / 2, (holeW.z1 + Z1) / 2);
+    box(.18, H - holeW.h, holeW.z1 - holeW.z0, LIGHT, xW, (holeW.h + H) / 2, (holeW.z0 + holeW.z1) / 2);
+  }
   box(.18, H, D + .4, LIGHT, W / 2 + .09, H / 2, 0);
   for (const s of [-1, 1]) {
     box(W, .12, .06, DARK2, 0, .06, s * (D / 2 - .03));
@@ -416,19 +425,48 @@ function buildQuarto() {
   freshScene();
   scene.fog = new THREE.Fog(DARK, 9, 42);
   const W = 9, D = 4.6, H = 2.8;
-  room(W, D, H, { x0: .34, x1: 1.46, y0: 1.32, y1: 2.18 });
+  room(W, D, H, { x0: .34, x1: 1.46, y0: 1.32, y1: 2.18 }, { z0: -1.8, z1: -.7, h: 2.05 });
   cidade();
   walkOf(-4.2, -2.0, 4.2, 2.0);
 
-  // pia + espelho (cenário, coluna esquerda da arte)
-  const pia = grp(-4.05, 0, -1.3);
+  // banheiro: anexo atrás do vão na parede oeste
+  box(2.7, .2, 2.7, FLOOR, -5.8, -.1, -1.2);
+  box(2.7, .2, 2.7, DARK2, -5.8, H + .1, -1.2);
+  box(.18, H, 2.7, LIGHT, -7.04, H / 2, -1.2);   // parede oeste
+  box(2.4, H, .18, LIGHT, -5.79, H / 2, -2.39);  // norte
+  box(2.4, H, .18, LIGHT, -5.79, H / 2, -.01);   // sul
+  walkOf(-6.7, -2.0, -4.55, -.4);
+  walkOf(-4.8, -1.7, -4.1, -.8); // passagem pelo vão
+  box(.1, 2.05, .1, DARK2, -4.59, 1.025, -1.83); // batentes
+  box(.1, 2.05, .1, DARK2, -4.59, 1.025, -.67);
+  lite(.14, .06, .14, GLOW, -5.8, H - .07, -1.2);
+  const bl = new THREE.PointLight(0xeaf2f2, .45, 6);
+  bl.position.set(-5.8, 2.2, -1.2);
+  scene.add(bl);
+
+  // pia + espelho (coluna esquerda da arte, agora no banheiro)
+  const pia = grp(-6.6, 0, -.85);
   box(.6, .85, .95, LIGHT2, 0, .43, 0, pia);
   box(.64, .07, .99, DARK2, 0, .885, 0, pia);
   box(.1, .2, .08, DARK2, -.18, 1.0, 0, pia);
-  const esp = grp(-4.38, 1.6, -1.3);
+  const esp = grp(-6.92, 1.6, -.85);
   box(.07, .78, .6, DARK2, 0, 0, 0, esp);
   box(.05, .66, .48, NAVY, .03, 0, 0, esp);
-  blockOf(-4.6, -1.85, -3.6, -.75);
+  blockOf(-6.95, -1.35, -6.25, -.35);
+
+  // vaso sanitário contra a parede norte
+  const vaso = grp(-6.35, 0, -1.8);
+  box(.36, .4, .44, LIGHT2, 0, .2, .05, vaso);
+  box(.44, .08, .5, LIGHT, 0, .44, .05, vaso);
+  box(.48, .55, .2, LIGHT2, 0, .62, -.32, vaso);
+  box(.12, .05, .08, DARK2, 0, .92, -.32, vaso);
+  blockOf(-6.65, -2.2, -6.05, -1.5);
+
+  // chuveiro no canto
+  box(.95, .07, .85, DARK2, -5.15, .035, -1.85);  // base
+  box(.05, 1.1, .05, DARK2, -5.15, 1.7, -2.24);   // cano
+  box(.3, .06, .3, LIGHT2, -5.15, 2.22, -2.05);   // ducha
+  box(.12, .2, .06, DARK2, -5.15, 1.05, -2.26);   // registro
 
   // guarda roupa na parede norte
   const gr = grp(-2.9, 0, -1.95);
@@ -490,7 +528,7 @@ function buildQuarto() {
   box(1.14, 2.3, .1, LIGHT2, 0, 1.15, 0, door);
   box(.96, 2.16, .09, DARK2, 0, 1.08, .03, door);
   box(.07, .07, .07, BLUE, -.36, 1.08, .07, door);
-  if (day < 3) tag(door, 'Porta', { go: 'rua' });
+  if (day < 3) tag(door, 'Porta', { go: 'corredor' });
 
   // cama com cobertor azul
   const cama = grp(1.7, 0, 1.72);
@@ -516,6 +554,63 @@ function buildQuarto() {
     3: { name: 'Pensamento', lines: ROTEIRO.pensamento3 },
   };
   return { spawn: { x: 0, z: 1.1, yaw: 0 }, caption: caps[day], auto: autos[day] };
+}
+
+/* ===================== CENA: O CORREDOR DO PRÉDIO ===================== */
+function buildCorredor() {
+  freshScene();
+  scene.fog = new THREE.Fog(DARK, 7, 26);
+  const L = 12, Wz = 2.4, H = 2.6;
+
+  box(L + .4, .2, Wz + .4, FLOOR, 0, -.1, 0);
+  box(L + .4, .2, Wz + .4, DARK2, 0, H + .1, 0);
+  for (const s of [-1, 1]) {
+    box(L + .4, H, .16, LIGHT, 0, H / 2, s * (Wz / 2 + .08));
+    box(L, .12, .06, DARK2, 0, .06, s * (Wz / 2 - .03));
+    box(L, .1, .06, DARK2, 0, H - .05, s * (Wz / 2 - .03));
+  }
+  box(.16, H, Wz + .4, LIGHT, -L / 2 - .08, H / 2, 0);
+  box(.16, H, Wz + .4, LIGHT, L / 2 + .08, H / 2, 0);
+  walkOf(-L / 2 + .45, -Wz / 2 + .42, L / 2 - .45, Wz / 2 - .42);
+
+  // tapete corrido
+  box(L - 1.2, .04, .95, DARK2, 0, .02, 0);
+
+  // luzes do teto
+  for (const lx of [-4, 0, 4]) {
+    lite(.5, .04, .2, GLOW, lx, H - .03, 0);
+    const pl = new THREE.PointLight(0xeaf2f2, .35, 8);
+    pl.position.set(lx, 2.2, 0);
+    scene.add(pl);
+  }
+
+  // portas dos vizinhos, todas exatamente iguais (cenário)
+  function portaViz(x, s) {
+    const d = grp(x, 0, s * (Wz / 2 - .04));
+    box(1.0, 2.2, .1, LIGHT2, 0, 1.1, 0, d);
+    box(.84, 2.06, .09, DARK2, 0, 1.03, -s * .03, d);
+    box(.06, .06, .06, BLUE, .32, 1.05, -s * .07, d);
+    lite(.18, .12, .03, GLOW, 0, 2.32, -s * .06, d); // numerinho iluminado
+  }
+  for (const x of [-3.6, -1.2, 1.2, 3.6]) { portaViz(x, 1); portaViz(x, -1); }
+
+  // a porta do seu apartamento, atrás de você (cenário)
+  const ap = grp(-L / 2 + .02, 0, 0);
+  ap.rotation.y = Math.PI / 2;
+  box(1.14, 2.3, .1, LIGHT2, 0, 1.15, 0, ap);
+  box(.96, 2.16, .09, DARK2, 0, 1.08, .03, ap);
+  box(.07, .07, .07, BLUE, -.36, 1.08, .07, ap);
+
+  // a porta do outro lado, que dá para a praça
+  const out = grp(L / 2 - .02, 0, 0);
+  out.rotation.y = -Math.PI / 2;
+  box(1.3, 2.4, .12, LIGHT2, 0, 1.2, 0, out);
+  box(.55, 2.25, .1, DARK2, -.29, 1.12, .05, out);
+  box(.55, 2.25, .1, DARK2, .29, 1.12, .05, out);
+  lite(.8, .14, .06, BLUE, 0, 2.51, .06, out); // letreiro de saída
+  tag(out, 'Porta para a praça', { go: 'rua' });
+
+  return { spawn: { x: -5, z: 0, yaw: -Math.PI / 2 }, caption: 'CORREDOR', auto: null };
 }
 
 /* ===================== CENA: A PRAÇA ===================== */
@@ -892,7 +987,7 @@ function buildEmpresa() {
   return { spawn: { x: 5.5, z: -7.1, yaw: Math.PI }, caption: 'TRABALHO', auto: null };
 }
 
-const builders = { quarto: buildQuarto, rua: buildRua, metro: buildMetro, empresa: buildEmpresa };
+const builders = { quarto: buildQuarto, corredor: buildCorredor, rua: buildRua, metro: buildMetro, empresa: buildEmpresa };
 
 /* ===================== colisão ===================== */
 const R = .3;
