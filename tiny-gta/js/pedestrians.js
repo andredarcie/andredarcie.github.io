@@ -9,6 +9,7 @@ import {thud} from './audio.js';
 import {message} from './hud.js';
 import {playerPos,cur,getWasted} from './player.js';
 import {spawnDrop} from './missions.js';
+import {makeBloodPuddle} from '../assets/models/effects/blood-puddle.js';
 
 export function pedCorner(p){
   const[i,j]=p.block;
@@ -18,25 +19,9 @@ export function pedCorner(p){
 
 export const peds=[];
 const bloodPuddles=[];
-const bloodMat=new THREE.MeshBasicMaterial({
-  color:0x5f0018,transparent:true,opacity:.78,depthWrite:false
-});
-const bloodGeo=new THREE.CircleGeometry(1,18);
 
 export function addBloodPuddle(x,z){
-  const puddle=new THREE.Group();
-  const main=new THREE.Mesh(bloodGeo,bloodMat.clone());
-  main.rotation.x=-Math.PI/2;
-  main.scale.set(rand(.55,1.25),rand(.38,.9),1);
-  main.position.y=.018;
-  puddle.add(main);
-  for(let i=0;i<3;i++){
-    const spot=new THREE.Mesh(bloodGeo,bloodMat.clone());
-    spot.rotation.x=-Math.PI/2;
-    spot.scale.set(rand(.12,.34),rand(.08,.24),1);
-    spot.position.set(rand(-.75,.75),.02,rand(-.55,.55));
-    puddle.add(spot);
-  }
+  const puddle=makeBloodPuddle();
   puddle.position.set(x+rand(-.12,.12),0,z+rand(-.12,.12));
   puddle.rotation.y=rand(0,Math.PI*2);
   scene.add(puddle);

@@ -1,17 +1,16 @@
-import * as THREE from 'three';
 import {N,nodeX,irand,rand} from './constants.js';
 import {state,saveBest} from './state.js';
 import {scene} from './engine.js';
 import {blip} from './audio.js';
 import {message} from './hud.js';
 import {playerPos} from './player.js';
+import {makeMoneyDrop} from '../assets/models/missions/money-drop.js';
+import {makeDeliveryMarker} from '../assets/models/missions/delivery-marker.js';
 
 // Money pickups
 export const drops=[];
-const dropG=new THREE.BoxGeometry(.5,.5,.5);
-const dropM=new THREE.MeshBasicMaterial({color:0x4dff7a});
 export function spawnDrop(x,z,val){
-  const m=new THREE.Mesh(dropG,dropM);m.position.set(x,.5,z);scene.add(m);
+  const m=makeMoneyDrop();m.position.set(x,.5,z);scene.add(m);
   drops.push({g:m,val,t:0});
 }
 
@@ -53,12 +52,8 @@ export function spawnDelivery(){
   const px=playerPos();let x,z,tries=0;
   do{x=nodeX(irand(0,N))+rand(-3.5,3.5);z=nodeX(irand(0,N))+rand(-3.5,3.5);tries++;}
   while(Math.hypot(x-px.x,z-px.z)<90&&tries<30);
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(2.2,.25,8,28),
-    new THREE.MeshBasicMaterial({color:0x19e3ff}));
+  const {ring,beacon}=makeDeliveryMarker(0x19e3ff);
   ring.rotation.x=Math.PI/2;ring.position.set(x,.4,z);scene.add(ring);
-  const beacon=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.4,60,12,1,true),
-    new THREE.MeshBasicMaterial({color:0x19e3ff,transparent:true,opacity:.16,
-      side:THREE.DoubleSide,depthWrite:false}));
   beacon.position.set(x,30,z);scene.add(beacon);
   curMission=nextMission();
   delivery={g:ring,beacon,x,z,t0:state.time};

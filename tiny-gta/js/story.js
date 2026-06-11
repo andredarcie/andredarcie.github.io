@@ -9,6 +9,13 @@ import {parks} from './world.js';
 import {player,playerPos} from './player.js';
 import {addBloodPuddle} from './pedestrians.js';
 import {setTod} from './daynight.js';
+import {makeStoryGem} from '../assets/models/missions/story-gem.js';
+import {makeStoryUsb} from '../assets/models/missions/story-usb.js';
+import {makeStoryBottle} from '../assets/models/missions/story-bottle.js';
+import {makeStoryBox} from '../assets/models/missions/story-box.js';
+import {makeStoryMarker} from '../assets/models/missions/story-marker.js';
+import {makeStoryBeacon} from '../assets/models/missions/story-beacon.js';
+import {makeStoryArrow} from '../assets/models/missions/story-arrow.js';
 
 // ============================================================================
 // STORY: estrutura genérica de missões. Tudo que define uma missão (NPC,
@@ -146,27 +153,6 @@ function fillLines(lines,spot){
     .replace('{vert}',spot?.vert??''));
 }
 
-function makeItemMesh(item){
-  const mat=new THREE.MeshBasicMaterial({color:item.color});
-  if(item.shape==='gem')return new THREE.Mesh(new THREE.OctahedronGeometry(.44,1),mat);
-  if(item.shape==='usb'){
-    const g=new THREE.Group();
-    const body=new THREE.Mesh(new THREE.BoxGeometry(.5,.18,.24),mat);
-    const plug=new THREE.Mesh(new THREE.BoxGeometry(.18,.12,.16),
-      new THREE.MeshBasicMaterial({color:0xc8ccd4}));
-    plug.position.x=.34;g.add(body,plug);
-    return g;
-  }
-  if(item.shape==='bottle'){
-    const g=new THREE.Group();
-    const body=new THREE.Mesh(new THREE.CylinderGeometry(.16,.18,.55,8),mat);
-    const neck=new THREE.Mesh(new THREE.CylinderGeometry(.05,.07,.25,8),mat);
-    neck.position.y=.38;g.add(body,neck);
-    return g;
-  }
-  return new THREE.Mesh(new THREE.BoxGeometry(.62,.42,.42),mat);
-}
-
 // ---------------------------------------------------------------------------
 // Atores: ped + marcador de cada NPC da história (só o da missão atual aparece)
 // ---------------------------------------------------------------------------
@@ -174,8 +160,7 @@ const actors=STORY.missions.map(m=>{
   const ped=makePed(m.npc.shirt,m.npc.pants??undefined);
   ped.position.set(m.npc.x,0,m.npc.z);
   if(m.npc.face)ped.rotation.y=m.npc.face;
-  const mat=new THREE.MeshBasicMaterial({color:m.npc.color});
-  const marker=new THREE.Mesh(new THREE.OctahedronGeometry(.52,0),mat);
+  const {marker,mat}=makeStoryMarker(m.npc.color);
   marker.position.set(m.npc.x,3.6,m.npc.z);
   marker.visible=false;
   scene.add(marker);
@@ -189,6 +174,12 @@ const S={idx:0,phase:'available',spot:null,itemMesh:null,beacon:null,
   target:null,targetNpc:null};
 const cm=()=>STORY.missions[S.idx];
 const ca=()=>actors[S.idx];
+function makeStoryItem(item){
+  if(item.shape==='gem')return makeStoryGem(item.color);
+  if(item.shape==='usb')return makeStoryUsb(item.color);
+  if(item.shape==='bottle')return makeStoryBottle(item.color);
+  return makeStoryBox(item.color);
+}
 
 // ---------------------------------------------------------------------------
 // Cut-scene: barras de cinema, câmera em plano aberto dos dois personagens e
@@ -375,13 +366,11 @@ function showPrologueEnd(){
 // ---------------------------------------------------------------------------
 function spawnItem(m){
   const gh=groundHeight(S.spot.x,S.spot.z);
-  S.itemMesh=makeItemMesh(m.objective.item);
+  S.itemMesh=makeStoryItem(m.objective.item);
   S.itemMesh.position.set(S.spot.x,gh+.75,S.spot.z);
   S.itemMesh.userData.baseY=gh+.75;
   scene.add(S.itemMesh);
-  const bm=new THREE.MeshBasicMaterial({color:m.objective.beacon,transparent:true,
-    opacity:.07,side:THREE.DoubleSide,depthWrite:false});
-  S.beacon=new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,36,8,1,true),bm);
+  S.beacon=makeStoryBeacon(m.objective.beacon);
   S.beacon.position.set(S.spot.x,gh+18,S.spot.z);
   scene.add(S.beacon);
 }
@@ -390,9 +379,7 @@ function spawnItem(m){
 function armKillTarget(m){
   const i=STORY.missions.findIndex(x=>x.id===m.objective.target);
   S.target=actors[i];S.targetNpc=STORY.missions[i].npc;
-  const bm=new THREE.MeshBasicMaterial({color:0xff2e88,transparent:true,
-    opacity:.07,side:THREE.DoubleSide,depthWrite:false});
-  S.beacon=new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,36,8,1,true),bm);
+  S.beacon=makeStoryBeacon(0xff2e88);
   S.beacon.position.set(S.targetNpc.x,18,S.targetNpc.z);
   scene.add(S.beacon);
 }
@@ -482,13 +469,8 @@ export function storyBlips(){
 
 // Seta de navegação 3D sobre o jogador apontando para o objetivo atual da
 // história (NPC quando disponível/retorno, item ou alvo quando a missão roda)
-const navMat=new THREE.MeshBasicMaterial({color:0xffd24a,transparent:true,opacity:.85});
-const storyArrow=new THREE.Group();
-{
-  const cone=new THREE.Mesh(new THREE.ConeGeometry(.45,1.3,6),navMat);
-  cone.rotation.x=Math.PI/2;storyArrow.add(cone);
-  storyArrow.visible=false;scene.add(storyArrow);
-}
+const {arrow:storyArrow,material:navMat}=makeStoryArrow();
+storyArrow.visible=false;scene.add(storyArrow);
 
 // Para onde a missão atual aponta agora (null = sem objetivo na tela)
 function storyGoal(){

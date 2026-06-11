@@ -10,6 +10,8 @@ import {message} from './hud.js';
 import {playerPos,getWasted} from './player.js';
 import {addBloodPuddle} from './pedestrians.js';
 import {spawnDrop} from './missions.js';
+import {makeGangGun} from '../assets/models/weapons/gang-gun.js';
+import {makeGangTracerLine} from '../assets/models/effects/gang-tracer.js';
 
 // Três gangues, cada uma com cor própria, território circular (aparece no
 // minimapa) e membros uniformizados e armados. Matar um membro encolhe o
@@ -29,16 +31,9 @@ for(const g of gangs){g.spawnT=rand(4,10);g.alarmT=0;g.wasInside=false;}
 
 export const gangPeds=[];
 
-const gunM=new THREE.MeshStandardMaterial({color:0x15121a,roughness:.5,metalness:.7});
 function attachGun(g){
   const arm=g.userData.limbs?.rightArm;if(!arm)return;
-  const gun=new THREE.Group();
-  const body=new THREE.Mesh(new THREE.BoxGeometry(.1,.13,.34),gunM);
-  const barrel=new THREE.Mesh(new THREE.BoxGeometry(.06,.06,.22),gunM);
-  barrel.position.set(0,.04,.26);
-  gun.add(body,barrel);
-  gun.position.set(0,-.62,.14);
-  arm.add(gun);
+  arm.add(makeGangGun());
 }
 
 function spawnMember(gang){
@@ -74,10 +69,9 @@ export function killGangPed(m,dir){
   addWanted(.4,null,'ped_shot');
 }
 
-const tracerM=new THREE.LineBasicMaterial({color:0xffd9a8,transparent:true,opacity:.9});
 const tracers=[];
 function addTracer(a,b){
-  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),tracerM.clone());
+  const line=makeGangTracerLine(a,b);
   scene.add(line);tracers.push({line,t:0});
 }
 

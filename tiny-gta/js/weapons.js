@@ -14,37 +14,11 @@ import {cops} from './police.js';
 import {spawnDrop} from './missions.js';
 import {gangPeds,killGangPed} from './gangs.js';
 import {dentCar} from './entities.js?v=22';
-
-const gunMat=new THREE.MeshStandardMaterial({color:0x15121a,roughness:.45,metalness:.8});
-const gunDarkMat=new THREE.MeshStandardMaterial({color:0x07070b,roughness:.35,metalness:.9});
-const glowMat=new THREE.MeshBasicMaterial({color:0xffd24a,transparent:true,opacity:.25});
-const bulletMat=new THREE.MeshBasicMaterial({color:0xfff4a8});
-const bulletCoreMat=new THREE.MeshBasicMaterial({color:0xffffff});
-
-function makeGunModel({pickup=false}={}){
-  const g=new THREE.Group();
-  const slide=new THREE.Mesh(new THREE.BoxGeometry(.54,.13,.34),gunDarkMat);
-  const frame=new THREE.Mesh(new THREE.BoxGeometry(.46,.13,.28),gunMat);
-  const grip=new THREE.Mesh(new THREE.BoxGeometry(.14,.36,.17),gunMat);
-  const barrel=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.46,8),gunDarkMat);
-  const trigger=new THREE.Mesh(new THREE.TorusGeometry(.08,.015,6,12),gunDarkMat);
-  slide.position.set(0,.08,.1);
-  frame.position.set(0,-.02,.06);
-  grip.position.set(0,-.24,-.08);
-  grip.rotation.x=-.38;
-  barrel.rotation.x=Math.PI/2;
-  barrel.position.set(0,.09,.44);
-  trigger.position.set(0,-.11,.1);
-  trigger.rotation.y=Math.PI/2;
-  g.add(slide,frame,grip,barrel,trigger);
-  if(pickup){
-    const glow=new THREE.Mesh(new THREE.TorusGeometry(.9,.045,8,28),glowMat);
-    glow.rotation.x=Math.PI/2;
-    glow.position.y=-.46;
-    g.add(glow);
-  }
-  return g;
-}
+import {makeGunModel} from '../assets/models/weapons/player-gun.js';
+import {makeExplosionModel} from '../assets/models/effects/explosion.js';
+import {makeImpactRing} from '../assets/models/effects/impact-ring.js';
+import {makeBulletModel} from '../assets/models/effects/bullet.js';
+import {makeWeaponTracerLine} from '../assets/models/effects/weapon-tracer.js';
 
 const weaponPickups=[];
 function makeWeaponPickup(x,z){
@@ -72,11 +46,8 @@ heldGun.position.set(.43,1.26,.67);
 heldGun.rotation.set(-.03,0,-.03);
 heldGun.visible=false;
 player.g.add(heldGun);
-const muzzlePoint=new THREE.Object3D();
-muzzlePoint.position.set(0,.09,.72);
-heldGun.add(muzzlePoint);
+const muzzlePoint=heldGun.userData.muzzlePoint;
 
-const tracerMat=new THREE.LineBasicMaterial({color:0xfff2b0,transparent:true,opacity:.9});
 const explosions=[];
 const tracers=[];
 const impacts=[];
@@ -215,14 +186,7 @@ function killPed(p,dir){
 }
 
 function makeExplosion(pos){
-  const g=new THREE.Group();
-  const fire=new THREE.Mesh(new THREE.SphereGeometry(1.1,14,10),
-    new THREE.MeshBasicMaterial({color:0xff6a00,transparent:true,opacity:.88}));
-  const core=new THREE.Mesh(new THREE.SphereGeometry(.55,12,8),
-    new THREE.MeshBasicMaterial({color:0xfff0a0,transparent:true,opacity:.95}));
-  const smoke=new THREE.Mesh(new THREE.SphereGeometry(1.8,12,8),
-    new THREE.MeshBasicMaterial({color:0x24172a,transparent:true,opacity:.35}));
-  g.add(smoke,fire,core);g.position.copy(pos);g.position.y=1.2;scene.add(g);
+  const g=makeExplosionModel();g.position.copy(pos);g.position.y=1.2;scene.add(g);
   explosions.push({g,t:0});
   thud(18);blip([80,52],.12,'sawtooth',.28);
 }
@@ -254,31 +218,20 @@ function damageCar(car,arr,pos,dir){
 }
 
 function addTracer(origin,end){
-  const geo=new THREE.BufferGeometry().setFromPoints([
-    origin.clone(),
-    new THREE.Vector3(end.x,origin.y,end.z),
-  ]);
-  const line=new THREE.Line(geo,tracerMat.clone());
+  const line=makeWeaponTracerLine(origin.clone(),new THREE.Vector3(end.x,origin.y,end.z));
   scene.add(line);tracers.push({line,t:0});
 }
 
 function addImpact(pos,hit){
   const missed=hit?.kind==='miss';
   const impactRadius=missed ? .16 : .28;
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(impactRadius,.025,6,18),
-    new THREE.MeshBasicMaterial({color:missed?0xfff2b0:0xffd24a,transparent:true,opacity:.85,depthWrite:false}));
+  const ring=makeImpactRing(impactRadius,missed?0xfff2b0:0xffd24a);
   ring.position.set(pos.x,.08,pos.z);
-  ring.rotation.x=Math.PI/2;
   scene.add(ring);impacts.push({ring,t:0});
 }
 
 function makeBullet(origin,dir){
-  const g=new THREE.Group();
-  const slug=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.52,8),bulletMat);
-  const core=new THREE.Mesh(new THREE.SphereGeometry(.075,8,6),bulletCoreMat);
-  slug.rotation.x=Math.PI/2;
-  core.position.z=.28;
-  g.add(slug,core);
+  const g=makeBulletModel();
   g.position.copy(origin);
   g.rotation.y=Math.atan2(dir.x,dir.z);
   g.position.addScaledVector(dir,.55);

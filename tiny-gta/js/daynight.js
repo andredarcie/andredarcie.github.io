@@ -1,9 +1,14 @@
 import * as THREE from 'three';
-import {rand,clamp} from './constants.js';
+import {clamp} from './constants.js';
 import {scene,renderer,hemi,dlight,sunDir,clouds} from './engine.js';
 import {buildingMats,lampGlowMat,lampHaloMat,lampBulbMat} from './world.js';
 import {state,refs} from './state.js';
 import {beamMat} from './entities.js?v=22';
+import {makeSkyDome} from '../assets/models/daynight/sky-dome.js';
+import {makeSunSprite} from '../assets/models/daynight/sun.js';
+import {makeMoonSprite} from '../assets/models/daynight/moon.js';
+import {makeHorizonGlow} from '../assets/models/daynight/horizon-glow.js';
+import {makeStarField} from '../assets/models/daynight/star-field.js';
 
 // Ciclo completo em segundos. tod: 0=meia-noite, .25=nascer do sol, .5=meio-dia, .75=pôr do sol
 const DAY_LEN=300;
@@ -71,8 +76,7 @@ function sampleKeyframes(){
 const skyCanvas=document.createElement('canvas');skyCanvas.width=16;skyCanvas.height=512;
 const skyCtx=skyCanvas.getContext('2d');
 const skyTex=new THREE.CanvasTexture(skyCanvas);skyTex.colorSpace=THREE.SRGBColorSpace;
-scene.add(new THREE.Mesh(new THREE.SphereGeometry(900,24,16),
-  new THREE.MeshBasicMaterial({map:skyTex,side:THREE.BackSide,fog:false})));
+scene.add(makeSkyDome(skyTex));
 const STOPS=[0,.45,.7,.86,1];
 function drawSky(){
   const g=skyCtx.createLinearGradient(0,0,0,512);
@@ -81,64 +85,17 @@ function drawSky(){
   skyTex.needsUpdate=true;
 }
 
-function spriteTex(draw,w=128,h=128){
-  const c=document.createElement('canvas');c.width=w;c.height=h;
-  draw(c.getContext('2d'),w,h);
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
-}
-
 // --- Sol (textura neutra; a cor vem do tint do material) ---
-const sunMat=new THREE.SpriteMaterial({map:spriteTex(x=>{
-  const g=x.createRadialGradient(64,64,6,64,64,64);
-  g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.32,'rgba(255,255,255,.92)');
-  g.addColorStop(.55,'rgba(255,244,224,.45)');g.addColorStop(1,'rgba(255,232,200,0)');
-  x.fillStyle=g;x.fillRect(0,0,128,128);
-}),fog:false,depthWrite:false,transparent:true});
-const sunSpr=new THREE.Sprite(sunMat);scene.add(sunSpr);
+const {sprite:sunSpr,material:sunMat}=makeSunSprite();scene.add(sunSpr);
 
 // --- Lua ---
-const moonMat=new THREE.SpriteMaterial({map:spriteTex(x=>{
-  const halo=x.createRadialGradient(64,64,20,64,64,64);
-  halo.addColorStop(0,'rgba(205,222,255,.4)');halo.addColorStop(1,'rgba(205,222,255,0)');
-  x.fillStyle=halo;x.fillRect(0,0,128,128);
-  x.fillStyle='#e9eff9';x.beginPath();x.arc(64,64,30,0,7);x.fill();
-  x.fillStyle='rgba(165,182,210,.55)';
-  for(const [cx,cy,r] of [[54,52,6],[76,68,8],[62,80,4],[80,46,3.5],[48,70,3]]){
-    x.beginPath();x.arc(cx,cy,r,0,7);x.fill();
-  }
-}),fog:false,depthWrite:false,transparent:true,opacity:0});
-const moonSpr=new THREE.Sprite(moonMat);moonSpr.scale.set(95,95,1);scene.add(moonSpr);
+const {sprite:moonSpr,material:moonMat}=makeMoonSprite();scene.add(moonSpr);
 
 // --- Brilho do horizonte no nascer/pôr do sol ---
-const glowMat=new THREE.SpriteMaterial({map:spriteTex((x,w,h)=>{
-  x.save();x.translate(w/2,h/2);x.scale(1,.5);
-  const g=x.createRadialGradient(0,0,8,0,0,w/2);
-  g.addColorStop(0,'rgba(255,160,80,.9)');g.addColorStop(.5,'rgba(255,120,60,.45)');
-  g.addColorStop(1,'rgba(255,100,50,0)');
-  x.fillStyle=g;x.fillRect(-w/2,-w/2,w,w);x.restore();
-},256,256),fog:false,depthWrite:false,transparent:true,opacity:0,
-  blending:THREE.AdditiveBlending});
-const glowSpr=new THREE.Sprite(glowMat);glowSpr.scale.set(880,440,1);scene.add(glowSpr);
+const {sprite:glowSpr,material:glowMat}=makeHorizonGlow();scene.add(glowSpr);
 
 // --- Estrelas (hemisfério de pontos com brilho variado) ---
-let starMat;
-{
-  const n=420,pos=new Float32Array(n*3),col=new Float32Array(n*3);
-  for(let i=0;i<n;i++){
-    let x,y,z,l;
-    do{x=rand(-1,1);y=rand(.05,1);z=rand(-1,1);l=Math.hypot(x,y,z);}while(l>1||l<.3);
-    pos[i*3]=x/l*870;pos[i*3+1]=y/l*870;pos[i*3+2]=z/l*870;
-    const b=rand(.35,1);
-    if(Math.random()<.15){col[i*3]=b;col[i*3+1]=b*.82;col[i*3+2]=b*.66;}      // estrela quente
-    else{col[i*3]=b*rand(.8,.95);col[i*3+1]=b*rand(.86,1);col[i*3+2]=b;}      // estrela fria
-  }
-  const geo=new THREE.BufferGeometry();
-  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
-  starMat=new THREE.PointsMaterial({size:1.7,sizeAttenuation:false,vertexColors:true,
-    transparent:true,opacity:0,fog:false,depthWrite:false});
-  scene.add(new THREE.Points(geo,starMat));
-}
+const {points:starPoints,material:starMat}=makeStarField();scene.add(starPoints);
 
 for(const c of clouds)c.userData.op0=c.material.opacity;
 

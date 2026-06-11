@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import {rand,irand} from './constants.js';
+import {makeSea} from '../assets/models/environment/sea.js';
+import {makeClouds} from '../assets/models/environment/clouds.js';
 
 export const canvas=document.getElementById('game');
 export const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
@@ -45,29 +46,10 @@ dlight.shadow.camera.top=95;dlight.shadow.camera.bottom=-95;
 dlight.shadow.camera.far=420;dlight.shadow.bias=-.0015;
 scene.add(dlight);scene.add(dlight.target);
 
-{
-  const sea=new THREE.Mesh(new THREE.CircleGeometry(1400,40),
-    new THREE.MeshStandardMaterial({color:0x2e9ec4,roughness:.3,metalness:.2}));
-  sea.rotation.x=-Math.PI/2;sea.position.y=-.32;scene.add(sea);
-}
+scene.add(makeSea());
 
 export const clouds=[];
 {
-  const c=document.createElement('canvas');c.width=256;c.height=128;
-  const x=c.getContext('2d');
-  for(let k=0;k<14;k++){
-    const r=rand(18,42),px=rand(40,216),py=rand(45,86);
-    const g2=x.createRadialGradient(px,py,2,px,py,r);
-    g2.addColorStop(0,'rgba(255,255,255,.85)');g2.addColorStop(1,'rgba(255,255,255,0)');
-    x.fillStyle=g2;x.fillRect(0,0,256,128);
-  }
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;
-  for(let k=0;k<10;k++){
-    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,
-      opacity:rand(.45,.8),fog:false,depthWrite:false}));
-    const s=rand(90,170);sp.scale.set(s,s*.45,1);
-    sp.position.set(rand(-500,500),rand(110,175),rand(-500,500));
-    sp.userData.v=rand(1.5,3.5);
-    scene.add(sp);clouds.push(sp);
-  }
+  clouds.push(...makeClouds(10));
+  for(const sp of clouds)scene.add(sp);
 }
