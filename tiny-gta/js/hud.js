@@ -25,13 +25,13 @@ export function bigText(t,col){
 export function hideBig(){hudBig.classList.remove('show');}
 
 export function getInteractAction(){
-  if(state.dlgActive)return{label:'OK',prompt:'CONTINUE',enabled:true};
+  if(state.cine||state.dlgActive)return{label:'...',prompt:'',enabled:false}; // cut-scene: sem ações
   if(state.paused||state.mode==='cut'||state.orientationBlocked)return{label:'...',prompt:'',enabled:false};
   if(refs.canPickWeapon?.())return{label:'PICK',prompt:'PICK UP WEAPON',enabled:true};
-  if(state.mode==='foot'&&refs.isNearDiego?.())return{label:'TALK',prompt:'TALK TO DIEGO PENHA',enabled:true};
-  if(state.mode==='foot'&&refs.isNearLeo?.())return{label:'TALK',prompt:'TALK TO LEOZINHO',enabled:true};
-  if(state.mode==='foot')for(const n of refs.npcs||[])
-    if(n.isNear())return{label:'TALK',prompt:'TALK TO '+n.name,enabled:true};
+  if(state.mode==='foot'){
+    const sn=refs.storyNear?.();
+    if(sn)return{label:'TALK',prompt:'TALK TO '+sn,enabled:true};
+  }
   if(state.mode==='foot'&&refs.nearestCar?.(3.6))return{label:'CAR',prompt:'TAKE THE CAR',enabled:true};
   if(state.mode==='car'){
     const speed=Math.abs(refs.getCur?.()?.speed||0);
@@ -129,53 +129,16 @@ export function drawMinimap(){
     const[px,py]=mmBlip(delivery.x,delivery.z,pp,scale);
     mmSquare(px,py,8,'#ffd24a');
   }
-  const DIEGO=refs.DIEGO;
-  if(DIEGO&&DIEGO.state!=='done'){
-    const blink=DIEGO.state==='returning'?Math.floor(state.time*4)%2===0:true;
-    if(blink){
-      const[px,py]=mmBlip(refs.DIEGO_X,refs.DIEGO_Z,pp,scale);
-      mmSquare(px,py,9,DIEGO.state==='returning'?'#ff2e88':'#ffd24a');
+  // Missão da história: blip no NPC atual (letra) ou no item quando ativa;
+  // o piscar de retorno já vem resolvido de storyBlips()
+  for(const b of refs.storyBlips?.()||[]){
+    const[px,py]=mmBlip(b.x,b.z,pp,scale);
+    if(b.letter){
+      mmSquare(px,py,9,b.col);
       mm.fillStyle='#14091f';mm.font='bold 7px monospace';
       mm.textAlign='center';mm.textBaseline='middle';
-      mm.fillText('D',px,py+.5);
-    }
-  }
-
-  // Leozinho: 'L' verde quando disponível, piscando rosa quando é hora de voltar;
-  // durante a missão o blip aponta para o pacote no celeiro
-  const LEO=refs.LEO;
-  if(LEO){
-    if(LEO.state==='active'){
-      const[px,py]=mmBlip(LEO.stashX,LEO.stashZ,pp,scale);
-      mmSquare(px,py,8,'#9dff2e');
-    }else if(LEO.state!=='completing'){
-      const blink=LEO.state==='returning'?Math.floor(state.time*4)%2===0:true;
-      if(blink){
-        const[px,py]=mmBlip(refs.LEO_X,refs.LEO_Z,pp,scale);
-        mmSquare(px,py,9,LEO.state==='returning'?'#ff2e88':'#9dff2e');
-        mm.fillStyle='#14091f';mm.font='bold 7px monospace';
-        mm.textAlign='center';mm.textBaseline='middle';
-        mm.fillText('L',px,py+.5);
-      }
-    }
-  }
-
-  // NPCs de busca (Russo, Rodrigo): letra quando disponíveis, piscando no
-  // retorno; durante a missão o blip aponta para o item
-  for(const npc of refs.npcs||[]){
-    if(npc.state==='active'){
-      const[px,py]=mmBlip(npc.stashX,npc.stashZ,pp,scale);
-      mmSquare(px,py,8,npc.css);
-    }else if(npc.state!=='completing'){
-      const blink=npc.state==='returning'?Math.floor(state.time*4)%2===0:true;
-      if(blink){
-        const[px,py]=mmBlip(npc.X,npc.Z,pp,scale);
-        mmSquare(px,py,9,npc.state==='returning'?'#ff2e88':npc.css);
-        mm.fillStyle='#14091f';mm.font='bold 7px monospace';
-        mm.textAlign='center';mm.textBaseline='middle';
-        mm.fillText(npc.letter,px,py+.5);
-      }
-    }
+      mm.fillText(b.letter,px,py+.5);
+    }else mmSquare(px,py,8,b.col);
   }
 
   // seta do jogador no centro, girando com a direção (mapa fixo no norte)

@@ -184,6 +184,7 @@ function makeFace(head,skinMat){
   mouth.position.set(0,-.12,.228);
   mouth.scale.x=.75+Math.random()*.55;
   face.add(mouth);
+  head.userData.mouth=mouth; // exposto pra animação de fala nas cut-scenes
   if(Math.random()<.58){
     const beard=new THREE.Mesh(beardG,beardM);
     beard.position.set(0,-.115,.165);
@@ -222,6 +223,7 @@ export function makePed(color,pantsColor){
   head.scale.set(1+Math.random()*.14,.92+Math.random()*.18,1+Math.random()*.08);
   g.add(head);
   makeFace(head,skinMat);
+  g.userData.mouth=head.userData.mouth;
   const limbs={};
   for(const side of[-1,1]){
     const arm=new THREE.Group();

@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import {clamp,rand,nodeX,WATER,SWIM_BOUND,RURAL_X1,RURAL_HALF,groundHeight} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makeCar,makePed,makePlane,spinWheels} from './entities.js?v=12';
-import * as Entities from './entities.js?v=12';
+import {makeCar,makePed,makePlane,spinWheels} from './entities.js?v=13';
+import * as Entities from './entities.js?v=13';
 import {thud,blip} from './audio.js';
-import {radioOn,radioOff} from './radio.js';
+import {radioOn,radioOff,radioRandom} from './radio.js';
 import {collideStatics,addWanted} from './physics.js';
 import {message,bigText,hideBig,hudCar} from './hud.js';
 
@@ -76,7 +76,7 @@ export function enterCar(){
   state.mode='car';state.weaponHeld=false;player.g.visible=false;
   hudCar.textContent=cur.name;hudCar.style.display='block';
   blip([330,440],0.07,'triangle',.12);
-  radioOn();
+  radioRandom();radioOn();
 }
 
 export function exitCar(){
@@ -298,6 +298,7 @@ export function updateFoot(dt){
 }
 
 export function updateCamera(dt){
+  if(state.cine)return; // em cut-scene a câmera é controlada por story.js
   let tgt,heading,dist,baseH;
   if(state.mode==='car'||state.mode==='cut'&&cur){
     tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;

@@ -2,12 +2,10 @@ import {state,keys,input} from './state.js';
 import {initAudio,AC} from './audio.js';
 import {radioSwitch} from './radio.js';
 import {enterCar,exitCar,cur,player,cameraRig} from './player.js';
-import {dlgPress,isNearDiego,performDiegoInteract} from './diego.js';
-import {isNearLeo,performLeoInteract} from './leozinho.js';
-import {npcs} from './npcs.js';
+import {storyInteract} from './story.js';
 import {setMissionHUD} from './missions.js';
 import {message} from './hud.js';
-import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js?v=15';
+import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js?v=16';
 
 const gameCanvas=()=>document.getElementById('game');
 const isBlocked=()=>state.paused||state.mode==='cut'||state.orientationBlocked||state.controlsLocked;
@@ -74,13 +72,11 @@ export function performFullscreenToggle(){
 
 export function performInteract(){
   if(!state.started)return;
-  if(state.dlgActive){dlgPress();return;}
+  if(state.dlgActive)return; // cut-scene: legendas correm sozinhas
   if(isBlocked())return;
   if(state.mode==='foot'){
     if(canPickWeapon()){pickupWeapon();return;}
-    if(isNearDiego()){performDiegoInteract();return;}
-    if(isNearLeo()){performLeoInteract();return;}
-    for(const n of npcs)if(n.isNear()){n.interact();return;}
+    if(storyInteract())return;
     enterCar();
   }else if(state.mode==='car'&&Math.abs(cur?.speed||0)<6){
     exitCar();
@@ -132,10 +128,7 @@ export function setupInput(){
     keys[e.code]=true;
     input.lastInput='keyboard';
     if(!state.started)return;
-    if(state.dlgActive){
-      if(e.code==='KeyE'||e.code==='Enter'||e.code==='Space')dlgPress();
-      return;
-    }
+    if(state.dlgActive)return; // cut-scene: nada de pular falas
     if(e.code==='KeyP'){performPauseToggle();return;}
     if(e.code==='KeyF'&&e.shiftKey){performFullscreenToggle();return;}
     if(e.code==='Tab'){performRadioSwitch();return;}

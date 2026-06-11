@@ -10,13 +10,11 @@ import {updateGangs,gangs} from './gangs.js';
 import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
-import {DIEGO,DIEGO_X,DIEGO_Z,updateDiego,isNearDiego} from './diego.js';
-import {LEO,LEO_X,LEO_Z,updateLeo,isNearLeo} from './leozinho.js';
-import {npcs,updateNpcs} from './npcs.js';
-import {blinkBar} from './entities.js?v=12';
+import {updateStory,storyNear,storyBlips,storyTargets} from './story.js';
+import {blinkBar} from './entities.js?v=13';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
-import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=15';
+import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=16';
 import {updatePoliceRadio} from './police-radio.js';
 import {updateDayNight} from './daynight.js';
 
@@ -32,13 +30,9 @@ refs.spawnTraffic=spawnTraffic;
 refs.ejectDriver=ejectDriver;
 refs.gangs=gangs; // hud desenha os territórios no minimapa via refs
 refs.getDelivery=()=>delivery;
-refs.DIEGO=DIEGO;
-refs.DIEGO_X=DIEGO_X;
-refs.DIEGO_Z=DIEGO_Z;
-refs.isNearDiego=isNearDiego;
-refs.LEO=LEO;refs.LEO_X=LEO_X;refs.LEO_Z=LEO_Z;
-refs.isNearLeo=isNearLeo;
-refs.npcs=npcs;
+refs.storyNear=storyNear;
+refs.storyBlips=storyBlips;
+refs.storyTargets=storyTargets;
 refs.getBusted=getBusted;
 refs.getWasted=getWasted;
 refs.getHeli=()=>heli;
@@ -86,11 +80,8 @@ function frame(){
   updateTraffic(dt);
   updatePeds(dt);
   updateGangs(dt);
-  if(state.mode!=='cut')updateCops(dt);
+  if(state.mode!=='cut'&&!state.cine)updateCops(dt);
   updateHeli(dt);
-  updateDiego(dt);
-  updateLeo(dt);
-  updateNpcs(dt);
   updatePickups(dt);
   updateWeapons(dt);
   if(input.shootHeld)performShoot();
@@ -99,6 +90,7 @@ function frame(){
   for(const c of idleCars)blinkBar(c.g);
 
   updateCamera(dt);
+  updateStory(dt); // depois da câmera: em cut-scene a câmera é da história
   updateHUD(dt);
   updatePoliceRadio(dt);
   updateAudio();

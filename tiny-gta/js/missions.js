@@ -68,15 +68,8 @@ export function spawnDelivery(){
 // HUD minimalista estilo Vice City: missão atual não aparece mais na tela
 export function setMissionHUD(){}
 
-// Navigation arrow
-export const navArrow=new THREE.Group();
-{
-  const cone=new THREE.Mesh(new THREE.ConeGeometry(.45,1.3,6),
-    new THREE.MeshBasicMaterial({color:0x19e3ff,transparent:true,opacity:.85}));
-  cone.rotation.x=Math.PI/2;navArrow.add(cone);
-  navArrow.visible=false;scene.add(navArrow);
-}
-
+// Sem seta 3D para entregas: o blip amarelo no radar já basta (a seta sobre o
+// jogador é exclusiva da história — ver story.js)
 export function updatePickups(dt){
   const pp=playerPos();
   for(let i=drops.length-1;i>=0;i--){
@@ -91,9 +84,6 @@ export function updatePickups(dt){
   if(delivery){
     delivery.g.rotation.z+=2*dt;
     const sc=1+Math.sin(state.time*4)*.12;delivery.g.scale.set(sc,sc,1);
-    navArrow.visible=true;
-    navArrow.position.set(pp.x,4.4+Math.sin(state.time*3)*.25,pp.z);
-    navArrow.lookAt(delivery.x,navArrow.position.y,delivery.z);
     if(Math.hypot(pp.x-delivery.x,pp.z-delivery.z)<3.2){
       const base=curMission?curMission.reward:150;
       const fast=Math.max(0,Math.round(120-(state.time-delivery.t0)*4));

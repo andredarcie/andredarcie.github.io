@@ -127,31 +127,6 @@ canvas#game{display:block;width:100%;height:100%;touch-action:none}
 #best{margin-top:18px;font-size:13px;letter-spacing:2px;color:#14091f;font-weight:700}
 #credit{position:absolute;bottom:16px;font-size:11px;letter-spacing:2px;color:rgba(20,9,31,.65);font-weight:700}
 
-#dlg{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);
-  width:min(820px,94vw);display:none;z-index:55;
-  filter:drop-shadow(0 6px 28px rgba(0,0,0,.8))}
-#dlg-portrait{width:88px;flex-shrink:0;
-  background:linear-gradient(155deg,#12042a 0%,#2c0e58 100%);
-  border:2px solid var(--gold);border-right:none;
-  border-radius:12px 0 0 12px;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:5px;padding:10px 6px}
-#dlg-letter{font-family:'Bowlby One SC';font-size:42px;color:var(--gold);
-  text-shadow:0 0 24px rgba(255,210,74,.9),0 0 4px #000;line-height:1}
-#dlg-pname{font-size:8px;letter-spacing:2px;color:var(--cream);opacity:.65;
-  text-align:center;line-height:1.5}
-#dlg-body{flex:1;background:rgba(5,1,14,.92);border:2px solid var(--gold);
-  border-radius:0 12px 12px 0;padding:14px 20px;
-  box-shadow:inset 0 0 40px rgba(255,210,74,.04),0 0 20px rgba(255,210,74,.15)}
-#dlg-name{font-family:'Bowlby One SC';color:var(--gold);font-size:14px;
-  letter-spacing:3px;margin-bottom:9px;
-  text-shadow:0 0 12px rgba(255,210,74,.45)}
-#dlg-text{font-size:13px;line-height:1.8;color:var(--cream);
-  letter-spacing:.35px;min-height:60px}
-#dlg-prompt{font-size:10px;color:var(--cyan);letter-spacing:3px;
-  margin-top:10px;text-align:right;visibility:hidden}
-#dlg-prompt.show{visibility:visible;animation:blink 1s steps(2) infinite}
-
 #missionpass{position:fixed;inset:0;z-index:58;display:none;
   flex-direction:column;align-items:center;justify-content:center;
   pointer-events:none;
@@ -175,6 +150,32 @@ canvas#game{display:block;width:100%;height:100%;touch-action:none}
   box-shadow:0 0 14px rgba(25,227,255,.9);
   transition:width 1.6s .9s ease-out}
 @keyframes mpslide{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:none}}
+
+/* Cut-scene: barras de cinema que deslizam + legenda estilo filme */
+.cine-bar{position:fixed;left:0;width:100%;height:13vh;background:#000;z-index:60;
+  pointer-events:none;transition:transform .55s ease}
+#cine-top{top:0;transform:translateY(-101%)}
+#cine-bottom{bottom:0;transform:translateY(101%)}
+body.cine #cine-top,body.cine #cine-bottom{transform:none}
+#cine-sub{position:fixed;left:50%;bottom:calc(13vh + 20px);transform:translateX(-50%);
+  z-index:61;max-width:min(880px,86vw);text-align:center;pointer-events:none;
+  font:400 clamp(15px,2.4vw,24px)/1.45 'IBM Plex Mono',monospace;color:#fff;
+  text-shadow:2px 2px 2px #000,-1px -1px 1px #000,0 0 10px rgba(0,0,0,.9);
+  opacity:0;transition:opacity .3s}
+body.cine #cine-sub{opacity:1}
+body.cine #hud,body.cine #touch-controls{display:none!important}
+
+/* Fim do prólogo */
+#prologue-end{position:fixed;inset:0;z-index:62;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;pointer-events:none;
+  background:rgba(2,0,8,.88);opacity:0;visibility:hidden;transition:opacity 1.2s,visibility 1.2s}
+#prologue-end.show{opacity:1;visibility:visible}
+#pe-sub{font-size:14px;letter-spacing:6px;color:var(--cyan);
+  text-shadow:0 0 16px rgba(25,227,255,.7)}
+#pe-title{font-family:'Bowlby One SC';font-size:clamp(46px,10vw,96px);color:var(--gold);
+  letter-spacing:8px;margin-top:6px;text-shadow:4px 4px 0 #000,0 0 55px rgba(255,210,74,.65)}
+#pe-text{margin-top:26px;font-size:14px;line-height:2;letter-spacing:3px;color:var(--cream);
+  text-shadow:2px 2px 0 #000;max-width:86vw}
 
 #radio-hud{position:absolute;right:18px;bottom:128px;padding:8px 16px;
   text-align:right;opacity:0;visibility:hidden;
@@ -255,12 +256,6 @@ body.is-portrait-blocked #rotate-device{display:flex}
   #pauseov{font-size:clamp(38px,12vw,64px)}
   #btn-fullscreen{top:max(10px,env(safe-area-inset-top));min-width:82px;height:40px;font-size:13px;
     box-shadow:0 0 18px rgba(255,210,74,.52)}
-  #dlg{bottom:max(12px,env(safe-area-inset-bottom));width:min(760px,94vw)}
-  #dlg-portrait{width:66px;padding:8px 5px}
-  #dlg-letter{font-size:32px}
-  #dlg-body{padding:10px 14px}
-  #dlg-text{font-size:12px;line-height:1.55;min-height:42px}
-  #dlg-prompt{font-size:9px;letter-spacing:2px}
   #mp-title{font-size:clamp(36px,10vw,72px);letter-spacing:3px;text-align:center}
   #mp-mission,#mp-respect{max-width:86vw;text-align:center;line-height:1.35}
   #title{padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}

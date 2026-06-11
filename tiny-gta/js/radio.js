@@ -39,6 +39,11 @@ export function radioOn(){
   _radioHudShow();
 }
 
+// Entrou no carro: sorteia uma estação de música (nunca a OFF AIR)
+export function radioRandom(){
+  stationIdx=Math.floor(Math.random()*(STATIONS.length-1));
+}
+
 export function radioSwitch(){
   stationIdx=(stationIdx+1)%STATIONS.length;
   _radioStatic();

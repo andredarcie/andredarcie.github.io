@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {N,clamp,rand,wrapA,nodeX,irand} from './constants.js';
 import {state} from './state.js';
 import {scene} from './engine.js';
-import {makeCar,spinWheels,blinkBar} from './entities.js?v=12';
+import {makeCar,spinWheels,blinkBar} from './entities.js?v=13';
 import {thud} from './audio.js';
 import {collideStatics,addWanted} from './physics.js';
 import {message} from './hud.js';

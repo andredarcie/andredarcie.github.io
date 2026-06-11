@@ -187,6 +187,10 @@ function findWeaponHit(origin,dir,range=48){
     const d=rayHitXZ(origin,dir,p.g.position,1.05,range);
     if(d!==null&&d<best.d)best={kind:'gang',d,target:p};
   }
+  for(const t of refs.storyTargets?.()||[]){ // alvo de missão de assassinato
+    const d=rayHitXZ(origin,dir,t.g.position,1.05,range);
+    if(d!==null&&d<best.d)best={kind:'story',d,target:t};
+  }
   for(const arr of[traffic,idleCars,cops]){
     for(const c of arr){
       const d=rayHitXZ(origin,dir,c.g.position,2.1,range);
@@ -284,6 +288,7 @@ function handleBulletHit(hit,pos,dir){
   addImpact(pos,hit);
   if(hit.kind==='ped')killPed(hit.target,dir);
   else if(hit.kind==='gang')killGangPed(hit.target,dir);
+  else if(hit.kind==='story')hit.target.kill();
   else if(hit.kind==='car')damageCar(hit.target,hit.arr);
   else addWanted(.25,'SHOT FIRED!','gunfire');
 }

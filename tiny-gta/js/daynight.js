@@ -3,25 +3,27 @@ import {rand,clamp} from './constants.js';
 import {scene,renderer,hemi,dlight,sunDir,clouds} from './engine.js';
 import {buildingMats,lampGlowMat,lampHaloMat,lampBulbMat} from './world.js';
 import {state,refs} from './state.js';
-import {beamMat} from './entities.js?v=12';
+import {beamMat} from './entities.js?v=13';
 
 // Ciclo completo em segundos. tod: 0=meia-noite, .25=nascer do sol, .5=meio-dia, .75=pôr do sol
 const DAY_LEN=300;
-// A noite corre mais rápido que o dia (sol abaixo do horizonte = relógio 2.2x)
-const NIGHT_MULT=2.2;
+// O dia corre 3x mais devagar e a noite 3x mais rápido que antes
+const DAY_MULT=1/3;
+const NIGHT_MULT=6.6;
 // ?tod=0..1 na URL força o horário inicial (debug); padrão início da tarde,
 // o primeiro pôr do sol chega em ~1 min
 const urlTod=parseFloat(new URLSearchParams(location.search).get('tod'));
 let tod=isNaN(urlTod)?.55:((urlTod%1)+1)%1;
 export const getTod=()=>tod;
+export const setTod=v=>{tod=((v%1)+1)%1;};
 
 // Keyframes do ciclo. sky = 5 paradas do gradiente (zênite -> horizonte).
 // sun = cor da luz direcional (vira luar à noite), win = brilho das janelas dos prédios.
 const KF=[
- {t:.00,sky:['#0a1226','#101a36','#182648','#203456','#2a405f'],fog:'#16243c',
-  sun:'#bdd2ff',sunI:.44,hs:'#324468',hg:'#161a26',hI:.46,win:2.0,star:1,exp:1.06,cloud:'#46526e'},
- {t:.17,sky:['#0a1226','#101a36','#182648','#203456','#2a405f'],fog:'#16243c',
-  sun:'#bdd2ff',sunI:.44,hs:'#324468',hg:'#161a26',hI:.46,win:2.0,star:1,exp:1.06,cloud:'#46526e'},
+ {t:.00,sky:['#141e38','#1b2848','#26365c','#32466e','#405a7e'],fog:'#243652',
+  sun:'#c6d8ff',sunI:.72,hs:'#44587e',hg:'#242c3e',hI:.66,win:2.0,star:1,exp:1.14,cloud:'#5a688a'},
+ {t:.17,sky:['#141e38','#1b2848','#26365c','#32466e','#405a7e'],fog:'#243652',
+  sun:'#c6d8ff',sunI:.72,hs:'#44587e',hg:'#242c3e',hI:.66,win:2.0,star:1,exp:1.14,cloud:'#5a688a'},
  {t:.215,sky:['#0b1430','#1c2048','#3c2a56','#7a3e4e','#c06a4a'],fog:'#503a44',
   sun:'#ff9a5e',sunI:.5,hs:'#3a3658',hg:'#1e161e',hI:.4,win:1.7,star:.6,exp:1.0,cloud:'#8a5e66'},
  {t:.26,sky:['#1a3a6c','#3a5c92','#9a6e8a','#ff9a56','#ffd28e'],fog:'#c08a62',
@@ -36,10 +38,10 @@ const KF=[
   sun:'#ffa050',sunI:1.6,hs:'#8a7a8e',hg:'#4a342e',hI:.8,win:.6,star:0,exp:1.18,cloud:'#ffc09a'},
  {t:.77,sky:['#1c2a5e','#46336e','#9c4460','#ff6e3a','#ffb060'],fog:'#b06a4a',
   sun:'#ff6a32',sunI:1.0,hs:'#5c4a6e',hg:'#2c2026',hI:.55,win:1.1,star:.12,exp:1.1,cloud:'#ff8e6a'},
- {t:.81,sky:['#0c1434','#161c44','#2e2454','#642e4e','#9a4a46'],fog:'#352640',
-  sun:'#8c9ad8',sunI:.42,hs:'#303656',hg:'#16182a',hI:.43,win:1.8,star:.65,exp:1.03,cloud:'#46405e'},
- {t:.87,sky:['#0a1226','#101a36','#182648','#203456','#2a405f'],fog:'#16243c',
-  sun:'#bdd2ff',sunI:.44,hs:'#324468',hg:'#161a26',hI:.46,win:2.0,star:1,exp:1.06,cloud:'#46526e'}
+ {t:.81,sky:['#121a3e','#1c244e','#342c5e','#6a3856','#9a524e'],fog:'#3e3050',
+  sun:'#9aa8e0',sunI:.56,hs:'#3e4668',hg:'#202236',hI:.56,win:1.8,star:.65,exp:1.08,cloud:'#504a6a'},
+ {t:.87,sky:['#141e38','#1b2848','#26365c','#32466e','#405a7e'],fog:'#243652',
+  sun:'#c6d8ff',sunI:.72,hs:'#44587e',hg:'#242c3e',hI:.66,win:2.0,star:1,exp:1.14,cloud:'#5a688a'}
 ];
 // Pré-converte cores para THREE.Color (sem alocação por frame)
 const P=KF.map(k=>({t:k.t,sky:k.sky.map(c=>new THREE.Color(c)),fog:new THREE.Color(k.fog),
@@ -152,7 +154,8 @@ const _fwd=new THREE.Vector3();
 
 let twinkleT=0;
 export function updateDayNight(dt){
-  tod=(tod+dt*(tod<.24||tod>.76?NIGHT_MULT:1)/DAY_LEN)%1;
+  // em cut-scene o tempo para (story.js força meio-dia ao entrar na cena)
+  if(!state.cine)tod=(tod+dt*(tod<.24||tod>.76?NIGHT_MULT:DAY_MULT)/DAY_LEN)%1;
   twinkleT+=dt;
   sampleKeyframes();
   drawSky();
