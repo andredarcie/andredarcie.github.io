@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {N,clamp,rand,wrapA,nodeX,irand} from './constants.js';
 import {state} from './state.js';
 import {scene} from './engine.js';
-import {makeCar,spinWheels,blinkBar,dentCar} from './entities.js?v=22';
+import {makeCar,spinWheels,blinkBar,dentCar,seatDriver} from './entities.js';
 import {makeHeli} from '../assets/models/police/helicopter.js';
 import {thud} from './audio.js';
 import {collideStatics,addWanted} from './physics.js';
@@ -18,6 +18,7 @@ export function spawnCop(){
   do{nx=nodeX(irand(0,N));nz=nodeX(irand(0,N));tries++;}
   while(Math.hypot(nx-px.x,nz-px.z)<80&&tries<30);
   const c={g:makeCar(0xe8e8ee,true),heading:rand(0,6.28),speed:0,stuckT:0,backT:0};
+  c.driver=seatDriver(c.g,0x2a3f6e,0x1a2440); // policial de uniforme azul ao volante
   c.g.position.set(nx,0,nz);
   cops.push(c);
 }
@@ -61,7 +62,17 @@ export function updateCops(dt){
     }
     p.x+=Math.sin(c.heading)*c.speed*dt;
     p.z+=Math.cos(c.heading)*c.speed*dt;
-    if(collideStatics(p,1.5)){c.speed*=.3;c.stuckT+=dt*3;}
+    // viaturas não se atravessam: empurra uma pra fora da outra
+    for(const o of cops){
+      if(o===c)continue;
+      const sx=p.x-o.g.position.x,sz=p.z-o.g.position.z,sd=Math.hypot(sx,sz);
+      if(sd<2.9&&sd>.001){
+        const push=(2.9-sd)*.5/sd;
+        p.x+=sx*push;p.z+=sz*push;
+        o.g.position.x-=sx*push;o.g.position.z-=sz*push;
+      }
+    }
+    if(collideStatics(p,1.3)){c.speed*=.3;c.stuckT+=dt*3;}
     if(Math.abs(c.speed)<2.5)c.stuckT+=dt;else c.stuckT=Math.max(0,c.stuckT-dt*2);
     if(c.stuckT>1.2){c.backT=.9;c.stuckT=0;}
     c.g.rotation.y=c.heading;
@@ -70,9 +81,9 @@ export function updateCops(dt){
     const activeCur=cur;
     if(state.mode==='car'&&activeCur){
       const d=p.distanceTo(activeCur.g.position);
-      if(d<3.4){
+      if(d<2.9){
         const push=new THREE.Vector3().subVectors(activeCur.g.position,p).setY(0).normalize();
-        activeCur.g.position.addScaledVector(push,(3.4-d)*.7);
+        activeCur.g.position.addScaledVector(push,(2.9-d)*.7);
         activeCur.speed*=.75;c.speed*=.6;thud(8);state.shake=.35;
         // amassa os dois na pancada (cooldown: o encosto dura vários frames)
         if(!c.dentT||state.time-c.dentT>.5){
@@ -84,7 +95,7 @@ export function updateCops(dt){
         }
       }
     }else if(state.mode==='foot'&&Math.abs(c.speed)>7){
-      if(p.distanceTo(playerPos())<1.8){getWasted();return;}
+      if(p.distanceTo(playerPos())<1.5){getWasted();return;}
     }
   }
   if(cops.length&&minD<6&&(state.mode==='foot'||Math.abs(cur?.speed||0)<3.5)){

@@ -5,7 +5,7 @@ import {enterCar,exitCar,cur,player,cameraRig} from './player.js';
 import {storyInteract} from './story.js';
 import {setMissionHUD} from './missions.js';
 import {message} from './hud.js';
-import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js?v=18';
+import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js';
 
 const gameCanvas=()=>document.getElementById('game');
 const isBlocked=()=>state.paused||state.mode==='cut'||state.orientationBlocked||state.controlsLocked;

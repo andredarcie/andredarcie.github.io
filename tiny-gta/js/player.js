@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {clamp,rand,nodeX,WATER,SWIM_BOUND,RURAL_X1,RURAL_HALF,groundHeight} from './constants.js';
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makeCar,makePed,makePlane,spinWheels,dentCar} from './entities.js?v=22';
-import * as Entities from './entities.js?v=22';
+import {makeCar,makePed,makePlane,spinWheels,dentCar} from './entities.js';
+import * as Entities from './entities.js';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff,radioRandom} from './radio.js';
 import {collideStatics,addWanted} from './physics.js';
@@ -58,15 +58,20 @@ export function nearestCar(maxD){
   return best?{c:best,kind}:null;
 }
 
-// Pose de motorista: pernas escondidas embaixo do painel, mãos no volante
+// Pose de motorista: sentado com as coxas pra frente, pés no piso, mãos no volante
 function setDrivePose(on){
   const l=player.g.userData.limbs;if(!l)return;
-  l.leftLeg.visible=l.rightLeg.visible=!on;
+  l.leftLeg.visible=l.rightLeg.visible=true; // pernas sempre visíveis (cabine é oca)
   if(on){
-    l.leftArm.rotation.set(-.9,0,.1);
-    l.rightArm.rotation.set(-.9,0,-.1);
-    l.leftForearm?.rotation.set(-.3,0,0);
-    l.rightForearm?.rotation.set(-.3,0,0);
+    l.leftLeg.rotation.set(-2.0,0,0);
+    l.rightLeg.rotation.set(-2.0,0,0);
+    l.leftCalf?.rotation.set(.5,0,0);
+    l.rightCalf?.rotation.set(.5,0,0);
+    // braços esticados à frente, mãos convergindo até tocar o aro do volante
+    l.leftArm.rotation.set(-1.3,0,.42);
+    l.rightArm.rotation.set(-1.3,0,-.42);
+    l.leftForearm?.rotation.set(-.78,0,0);
+    l.rightForearm?.rotation.set(-.78,0,0);
   }else{
     for(const k of['leftArm','rightArm','leftForearm','rightForearm',
       'leftLeg','rightLeg','leftCalf','rightCalf'])l[k]?.rotation.set(0,0,0);
@@ -85,7 +90,13 @@ let entering=null;
 export function enterCar(){
   if(entering)return;
   const f=nearestCar(3.6);if(!f)return;
-  entering={f,door:f.c.g.userData.door||null,t:0,phase:0};
+  // escolhe a porta do lado em que o jogador está (carro tem duas portas)
+  const cg=f.c.g,h=f.c.heading??cg.rotation.y;
+  const dx=player.g.position.x-cg.position.x,dz=player.g.position.z-cg.position.z;
+  const side=(dx*Math.cos(h)-dz*Math.sin(h))>0?1:-1;
+  const doors=cg.userData.doors;
+  const door=doors?(side>0?doors[1]:doors[0]):cg.userData.door||null;
+  entering={f,door,side,t:0,phase:0};
   state.controlsLocked=true;
   if(f.kind==='traffic')f.c.brakeT=1.8; // carro do tráfego espera parado
   blip([220],.06,'square',.1); // clique da maçaneta
@@ -102,17 +113,18 @@ function updateEntering(dt){
   const car=e.f.c;
   if(e.phase===0){ // porta abrindo enquanto o jogador chega nela
     const k=Math.min(1,e.t/.4);
-    if(e.door)e.door.rotation.y=1.15*k;
+    if(e.door)e.door.rotation.y=(e.door.userData.sign||1)*1.15*k;
     const h=car.heading??car.g.rotation.y;
-    const wx=car.g.position.x+(-1.7)*Math.cos(h)+.5*Math.sin(h);
-    const wz=car.g.position.z-(-1.7)*Math.sin(h)+.5*Math.cos(h);
+    const lx=e.side*1.25,lz=.35; // ponto ao lado da porta escolhida
+    const wx=car.g.position.x+lx*Math.cos(h)+lz*Math.sin(h);
+    const wz=car.g.position.z-lx*Math.sin(h)+lz*Math.cos(h);
     player.g.position.x+=(wx-player.g.position.x)*Math.min(1,10*dt);
     player.g.position.z+=(wz-player.g.position.z)*Math.min(1,10*dt);
     player.bob+=dt*8;Entities.animatePed?.(player.g,player.bob,.7);
     if(e.t>=.45){completeEnter(e.f);e.phase=1;e.t=0;}
   }else{ // sentado: porta fechando
     const k=Math.min(1,e.t/.35);
-    if(e.door)e.door.rotation.y=1.15*(1-k);
+    if(e.door)e.door.rotation.y=(e.door.userData.sign||1)*1.15*(1-k);
     if(cur)cur.speed=0;
     if(k>=1){
       if(e.door)e.door.rotation.y=0;
@@ -138,11 +150,14 @@ function completeEnter(f){
     cur={g:c.g,heading:c.heading,speed:0,name:'CRUISER 47',police:true};
     addWanted(2,'STOLEN POLICE CAR!','police_vehicle_theft');
   }
+  // motorista NPC some do banco (o ejetado/fugitivo é tratado à parte)
+  if(c.driver){c.g.remove(c.driver);c.driver=null;}
   state.mode='car';state.weaponHeld=false;
   // jogador sentado no banco do motorista, visível pelo vidro
   cur.g.add(player.g);
+  cur.g.userData.driver=player.g; // braços seguem o volante via spinWheels
   if(cur.plane)player.g.position.set(0,-.45,.5);
-  else player.g.position.set(-.46,-.06,-.08); // sentado no banco do motorista
+  else player.g.position.set(-.38,-.52,-.15); // sentado no banco do motorista
   player.g.rotation.set(0,0,0);
   setDrivePose(true);
   hudCar.textContent=cur.name;hudCar.style.display='block';
@@ -158,7 +173,7 @@ export function exitCar(){
     message('LAND BEFORE BAILING OUT!','var(--gold)');return;
   }
   cur.speed=0;
-  const door=cur.g.userData.door||null;
+  const door=cur.g.userData.doors?.[0]||cur.g.userData.door||null; // sai pela porta do motorista
   if(!door){completeExit();return;}
   exiting={t:0,phase:0,door};
   state.controlsLocked=true;
@@ -167,9 +182,10 @@ export function exitCar(){
 
 function completeExit(){
   player.heading=cur.heading;
+  cur.g.userData.driver=null;
   unseatPlayer();
   const right=new THREE.Vector3(Math.cos(cur.heading),0,-Math.sin(cur.heading));
-  player.g.position.copy(cur.g.position).addScaledVector(right,-2.6);
+  player.g.position.copy(cur.g.position).addScaledVector(right,-2.0);
   collideStatics(player.g.position,.5,SWIM_BOUND);
   player.g.position.y=groundHeight(player.g.position.x,player.g.position.z);
   player.g.visible=true;
@@ -183,11 +199,11 @@ function completeExit(){
 function updateExiting(dt){
   const e=exiting;e.t+=dt;
   if(e.phase===0){ // porta abrindo, ainda sentado
-    e.door.rotation.y=1.15*Math.min(1,e.t/.35);
+    e.door.rotation.y=(e.door.userData.sign||1)*1.15*Math.min(1,e.t/.35);
     if(cur)cur.speed=0;
     if(e.t>=.4){completeExit();e.phase=1;e.t=0;}
   }else{ // já fora: porta fechando
-    e.door.rotation.y=1.15*(1-Math.min(1,e.t/.35));
+    e.door.rotation.y=(e.door.userData.sign||1)*1.15*(1-Math.min(1,e.t/.35));
     if(e.t>=.4){
       e.door.rotation.y=0;
       blip([180],.05,'square',.12); // porta bate
@@ -208,12 +224,13 @@ export function startCut(text,col,fn){
 }
 
 export function getBusted(){
+  if(dying)return; // morrendo não é preso
   cancelEntering();
   startCut('BUSTED','#3e7bff',()=>{
     state.money=Math.floor(state.money*.85);state.wanted=0;state.bustT=0;
     const cops=refs.cops||[];
     for(const c of cops)scene.remove(c.g);cops.length=0;
-    if(cur){idleCars.push(cur);cur=null;}
+    if(cur){cur.g.userData.driver=null;idleCars.push(cur);cur=null;}
     unseatPlayer();
     player.g.visible=true;player.g.position.set(nodeX(2)+4,0,nodeX(2)+4);
     refs.confiscateWeapon?.();
@@ -222,8 +239,7 @@ export function getBusted(){
   });
 }
 
-export function getWasted(){
-  cancelEntering();
+function wastedCut(){
   startCut('WASTED','#ff2e88',()=>{
     state.money=Math.floor(state.money*.8);state.wanted=0;state.bustT=0;
     const cops=refs.cops||[];
@@ -234,6 +250,33 @@ export function getWasted(){
     state.mode='foot';hudCar.style.display='none';radioOff();
     message('DISCHARGED FROM HOSPITAL. WATCH IT.','var(--cyan)');
   });
+}
+
+// Morte a pé: o corpo tomba de costas (rosto pra cima) com poça de sangue,
+// como os NPCs; o letreiro WASTED só aparece depois do corpo no chão
+let dying=null;
+export function getWasted(){
+  if(dying)return;
+  cancelEntering();
+  if(state.mode==='car'||cur)return wastedCut(); // dentro de veículo: corte direto
+  dying={t:0,puddle:false};
+  state.controlsLocked=true;
+  state.weaponHeld=false;
+  Entities.animatePed?.(player.g,0,0); // relaxa os membros antes de cair
+  thud(10);
+}
+
+function updateDying(dt){
+  const d=dying;d.t+=dt;
+  const k=Math.min(1,d.t/.45);
+  const gh=groundHeight(player.g.position.x,player.g.position.z);
+  player.g.rotation.x=-Math.PI/2*k; // mesma pose dos NPCs mortos
+  player.g.position.y=gh+.35*k;
+  if(k>=1&&!d.puddle){
+    d.puddle=true;
+    refs.addBloodPuddle?.(player.g.position.x,player.g.position.z);
+  }
+  if(d.t>1.5){dying=null;state.controlsLocked=false;wastedCut();}
 }
 
 const PMAX=55,VTO=22,PCEIL=130; // avião: velocidade máx, decolagem, teto
@@ -353,16 +396,32 @@ export function updateCar(dt){
   const p=cur.g.position;
   p.x+=Math.sin(cur.heading)*cur.speed*dt;
   p.z+=Math.cos(cur.heading)*cur.speed*dt;
-  if(collideStatics(p,1.5,SWIM_BOUND)){
+  if(collideStatics(p,1.3,SWIM_BOUND)){
     if(Math.abs(cur.speed)>4){
       // até batida leve já amassa feio; em alta velocidade destrói a frente
       if(Math.abs(cur.speed)>6){thud(Math.abs(cur.speed));state.shake=Math.min(.6,Math.abs(cur.speed)*.02);}
       const fwd=cur.speed>0?1:-1;
-      _dentPt.set(p.x+Math.sin(cur.heading)*2.75*fwd,p.y+.8,p.z+Math.cos(cur.heading)*2.75*fwd);
+      _dentPt.set(p.x+Math.sin(cur.heading)*2.2*fwd,p.y+.65,p.z+Math.cos(cur.heading)*2.2*fwd);
       _dentDir.set(-Math.sin(cur.heading)*fwd,0,-Math.cos(cur.heading)*fwd);
       dentCar(cur.g,_dentPt,_dentDir,Math.min(.32,.18+Math.abs(cur.speed)*.004));
     }
     cur.speed*=-.25;
+  }
+  // carros estacionados também são sólidos pro carro dirigido
+  for(const c of idleCars){
+    if(c.plane)continue;
+    const d=p.distanceTo(c.g.position);
+    if(d<2.9&&d>.001){
+      const push=new THREE.Vector3().subVectors(p,c.g.position).setY(0).normalize();
+      p.addScaledVector(push,2.9-d);
+      if(Math.abs(cur.speed)>6){
+        thud(Math.abs(cur.speed));state.shake=.3;
+        const mid=new THREE.Vector3().addVectors(p,c.g.position).multiplyScalar(.5).setY(.6);
+        dentCar(cur.g,mid,push,.2);
+        dentCar(c.g,mid,push.clone().negate(),.2);
+      }
+      cur.speed*=.5;
+    }
   }
   cur.g.rotation.y=cur.heading;
   cur.g.rotation.z=THREE.MathUtils.lerp(cur.g.rotation.z,-st*clamp(cur.speed/MAX,0,1)*.06,10*dt);
@@ -370,14 +429,15 @@ export function updateCar(dt){
   const gh=groundHeight(p.x,p.z);
   p.y+=(gh-p.y)*Math.min(1,8*dt);
   const fx=Math.sin(cur.heading),fz=Math.cos(cur.heading);
-  const slope=groundHeight(p.x+fx*1.7,p.z+fz*1.7)-groundHeight(p.x-fx*1.7,p.z-fz*1.7);
-  cur.g.rotation.x=THREE.MathUtils.lerp(cur.g.rotation.x,-Math.atan2(slope,3.4),Math.min(1,8*dt));
+  const slope=groundHeight(p.x+fx*1.3,p.z+fz*1.3)-groundHeight(p.x-fx*1.3,p.z-fz*1.3);
+  cur.g.rotation.x=THREE.MathUtils.lerp(cur.g.rotation.x,-Math.atan2(slope,2.6),Math.min(1,8*dt));
   spinWheels(cur.g,cur.speed,dt,st);
   const tail=cur.g.userData.tailM;
   if(tail)tail.color.setHex(cur.speed<-.5?0xffd6d6:(th<0||hb)?0xff4444:0xa01515);
 }
 
 export function updateFoot(dt){
+  if(dying)return updateDying(dt);
   if(entering)return updateEntering(dt);
   if(exiting)return updateExiting(dt);
   if(state.dlgActive)return;
@@ -407,6 +467,21 @@ export function updateFoot(dt){
   }
   Entities.animatePed?.(player.g,player.bob,walkAmount);
   collideStatics(player.g.position,.5,SWIM_BOUND);
+  // carros são sólidos a pé: dois círculos ao longo do eixo cobrem o carro
+  // inteiro e empurram o jogador pra fora (também evita nascer dentro de um)
+  const ppos=player.g.position;
+  for(const arr of[idleCars,refs.traffic||[],refs.cops||[]]){
+    for(const c of arr){
+      if(c.plane)continue;
+      const h=c.heading??c.g.rotation.y;
+      const fx=Math.sin(h),fz=Math.cos(h);
+      for(const off of[1.1,-1.1]){
+        const dx=ppos.x-(c.g.position.x+fx*off),dz=ppos.z-(c.g.position.z+fz*off);
+        const d=Math.hypot(dx,dz);
+        if(d<1.3&&d>.001){const push=(1.3-d)/d;ppos.x+=dx*push;ppos.z+=dz*push;}
+      }
+    }
+  }
   const armed=state.hasGun&&state.weaponHeld&&state.mode==='foot';
   if(armed){
     player.heading=cameraRig.yaw;
@@ -419,7 +494,8 @@ export function updateCamera(dt){
   let tgt,heading,dist,baseH;
   if(state.mode==='car'||state.mode==='cut'&&cur){
     tgt=cur?cur.g.position:player.g.position;heading=cur?cur.heading:player.heading;
-    dist=cur?.plane?15.5:11.4;baseH=1.95;
+    // carro: câmera colada e baixa, estilo GTA; avião continua afastado
+    dist=cur?.plane?15.5:7.2;baseH=cur?.plane?1.95:1.1;
   }else{tgt=player.g.position;heading=player.heading;dist=6.2;baseH=1.25;}
   if(input.lookActive&&!state.dlgActive&&!state.paused&&!state.orientationBlocked){
     // Positive lookX means "turn right". In this engine yaw increases to the LEFT

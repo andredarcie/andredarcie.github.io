@@ -75,21 +75,6 @@ canvas#game{display:block;width:100%;height:100%;touch-action:none}
   font-family:'Bowlby One SC';font-size:24px;color:var(--cream);letter-spacing:2px;
   text-shadow:2px 2px 0 #000,0 0 18px rgba(255,46,136,.7);opacity:0;transition:opacity .25s;
   white-space:nowrap;text-align:center}
-#police-radio{position:absolute;left:50%;bottom:74px;transform:translateX(-50%) translateY(8px);
-  width:min(820px,84vw);opacity:0;visibility:hidden;text-align:center;z-index:80;
-  transition:opacity .16s,transform .16s,visibility .16s}
-#police-radio.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
-#police-radio-head{display:block;margin-bottom:5px;font-family:'IBM Plex Mono',monospace;
-  font-size:12px;font-weight:700;letter-spacing:1.4px;color:var(--gold);
-  text-shadow:2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000}
-#police-radio-head span::before{content:"["}
-#police-radio-head span::after{content:"]"}
-#police-radio-head b{display:none}
-#police-radio-text{min-height:44px;color:#fff;font-size:21px;font-weight:700;line-height:1.32;
-  letter-spacing:.15px;text-shadow:3px 3px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,
-  -1px 1px 0 #000,0 0 7px rgba(0,0,0,.95)}
-#police-radio.typing #police-radio-text::after{content:"_";display:inline-block;margin-left:2px;
-  color:#fff;animation:blink .8s steps(2) infinite}
 #bigtext{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(.7);
   font-family:'Bowlby One SC';font-size:96px;letter-spacing:6px;opacity:0;
   transition:opacity .35s,transform .35s;white-space:nowrap}
@@ -249,9 +234,6 @@ body.is-portrait-blocked #rotate-device{display:flex}
   #prompt{display:none!important}
   #msg{top:max(62px,calc(env(safe-area-inset-top) + 62px));font-size:clamp(15px,3.8vw,22px);
     max-width:78vw;white-space:normal;line-height:1.25}
-  #police-radio{bottom:max(74px,calc(env(safe-area-inset-bottom) + 74px));width:86vw}
-  #police-radio-head{font-size:10px;margin-bottom:3px}
-  #police-radio-text{font-size:clamp(15px,3.7vw,20px);line-height:1.28;min-height:38px}
   #bigtext{font-size:clamp(38px,11vw,96px);letter-spacing:3px;white-space:normal;text-align:center;max-width:88vw}
   #pauseov{font-size:clamp(38px,12vw,64px)}
   #btn-fullscreen{top:max(10px,env(safe-area-inset-top));min-width:82px;height:40px;font-size:13px;

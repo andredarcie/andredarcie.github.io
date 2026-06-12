@@ -184,6 +184,20 @@ const waves=addShallowsAndWaves(GROUND/2,BEACH);
     x.fillStyle=`rgba(${irand(140,180)},${irand(105,135)},${irand(70,95)},.5)`;
     x.fillRect(rand(u(RURAL_X0),u(MOUNT_X-MOUNT_R+16)),rand(w(-3.4),w(3.4)),irand(2,6),irand(1,3));
   }
+  // borda de praia onde o pasto encontra o mar: faixa de areia (~12 un) nos
+  // lados norte/sul e na ponta leste, com areia molhada escura rente à água
+  const SZ=26,SX=47; // 12 unidades em px nos eixos z e x do canvas
+  x.fillStyle='#e3cf9c';
+  x.fillRect(0,0,1024,SZ);x.fillRect(0,512-SZ,1024,SZ);x.fillRect(1024-SX,0,SX,512);
+  for(let k=0;k<800;k++){ // transição irregular pasto→areia + grão
+    x.fillStyle=`rgba(${irand(205,238)},${irand(178,212)},${irand(128,162)},.5)`;
+    const e=irand(0,2);
+    if(e===0)x.fillRect(Math.random()*1024,SZ-7+Math.random()*14,irand(3,8),irand(2,5));
+    else if(e===1)x.fillRect(Math.random()*1024,512-SZ-7+Math.random()*14,irand(3,8),irand(2,5));
+    else x.fillRect(1024-SX-12+Math.random()*24,Math.random()*512,irand(2,5),irand(3,8));
+  }
+  x.fillStyle='rgba(146,116,78,.6)'; // areia úmida na linha d'água
+  x.fillRect(0,0,1024,8);x.fillRect(0,512-8,1024,8);x.fillRect(1024-15,0,15,512);
   const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;
   const ground=makeTexturedPlane(RW,RD,t,-.02);
   ground.position.set(RURAL_X0+RW/2,-.02,0);

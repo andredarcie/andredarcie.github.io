@@ -51,7 +51,6 @@ function windowTexPair(base){
 const texVariants=facadePalette.map(windowTexPair);
 export const buildingMats=[];
 const roofMat=new THREE.MeshStandardMaterial({color:0x8a857c,roughness:1});
-const neonColors=[0xff2e88,0x19e3ff,0x9dff2e,0xffb52e];
 const unitBox=new THREE.BoxGeometry(1,1,1);
 const parapetMat=new THREE.MeshStandardMaterial({color:0xf0eadc,roughness:.9});
 const roofEquipMat=new THREE.MeshStandardMaterial({color:0x9aa0a8,roughness:.8,metalness:.2});
@@ -75,15 +74,6 @@ export function addBuilding(cx,cz,w,d,solids){
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[side,side,roofMat,roofMat,side,side]);
   m.position.set(cx,h/2,cz);m.castShadow=true;m.receiveShadow=true;scene.add(m);
   solids.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2,h});
-  if(h>20&&Math.random()<.5){
-    const nh=h*rand(.35,.55);
-    const neon=new THREE.Mesh(new THREE.BoxGeometry(.5,nh,.5),
-      new THREE.MeshBasicMaterial({color:pick(neonColors)}));
-    const sgn=Math.random()<.5?1:-1;
-    if(Math.random()<.5)neon.position.set(cx+sgn*(w/2+.3),h*.55,cz+rand(-d/4,d/4));
-    else neon.position.set(cx+rand(-w/4,w/4),h*.55,cz+sgn*(d/2+.3));
-    scene.add(neon);
-  }
 
   const par=new THREE.Mesh(unitBox,parapetMat);
   par.scale.set(w+.35,.55,d+.35);par.position.set(cx,h+.12,cz);

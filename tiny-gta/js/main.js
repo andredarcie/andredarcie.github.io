@@ -5,17 +5,16 @@ import {updateAudio} from './audio.js';
 import {drawMinimap,updateHUD,hideBig} from './hud.js';
 import {player,cur,playerPos,nearestCar,idleCars,cameraRig,updateCar,updateFoot,updateCamera,getBusted,getWasted} from './player.js';
 import {traffic,trafficPos,spawnTraffic,updateTraffic} from './traffic.js';
-import {updatePeds,ejectDriver} from './pedestrians.js';
+import {updatePeds,ejectDriver,addBloodPuddle} from './pedestrians.js';
 import {updateGangs,gangs} from './gangs.js';
 import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
 import {updateStory,storyNear,storyBlips,storyTargets} from './story.js';
-import {blinkBar} from './entities.js?v=22';
+import {blinkBar} from './entities.js';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
-import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js?v=18';
-import {updatePoliceRadio} from './police-radio.js';
+import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js';
 import {updateDayNight} from './daynight.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
@@ -28,6 +27,7 @@ refs.cops=cops;
 refs.trafficPos=trafficPos;
 refs.spawnTraffic=spawnTraffic;
 refs.ejectDriver=ejectDriver;
+refs.addBloodPuddle=addBloodPuddle; // morte do jogador deixa poça igual NPC
 refs.gangs=gangs; // hud desenha os territórios no minimapa via refs
 refs.getDelivery=()=>delivery;
 refs.storyNear=storyNear;
@@ -92,7 +92,6 @@ function frame(){
   updateCamera(dt);
   updateStory(dt); // depois da câmera: em cut-scene a câmera é da história
   updateHUD(dt);
-  updatePoliceRadio(dt);
   updateAudio();
   drawMinimap();
 

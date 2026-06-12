@@ -3,7 +3,6 @@ import {solids} from './world.js';
 import {state} from './state.js';
 import {blip} from './audio.js';
 import {message} from './hud.js';
-import {reportPoliceCrime} from './police-radio.js';
 
 // bound: NPCs param no calção da praia (BOUND); jogador pode nadar até SWIM_BOUND
 export function collideStatics(p,r,bound=BOUND){
@@ -34,7 +33,6 @@ export function collideStatics(p,r,bound=BOUND){
 export function addWanted(n,why,crime='pursuit'){
   const before=Math.floor(state.wanted);
   state.wanted=clamp(state.wanted+n,0,5);state.lastCrime=state.time;
-  reportPoliceCrime(crime,n);
   if(Math.floor(state.wanted)>before){
     blip([880,660,880],0.08,'square',.14);
     message(why||('WANTED ★'+Math.floor(state.wanted)),'var(--pink)');

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {nodeX,ROAD,SIDE,BLOCK,N,GROUND,BEACH,rand,irand,pick,MOUNT_X,groundHeight} from './constants.js';
 import {state,refs} from './state.js';
 import {scene,camera} from './engine.js';
-import {makePed} from './entities.js?v=22';
+import {makePed} from './entities.js';
 import {AC,master,blip,thud} from './audio.js';
 import {message} from './hud.js';
 import {parks} from './world.js';

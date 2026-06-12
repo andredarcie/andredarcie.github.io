@@ -3,7 +3,7 @@ import {state,saveBest} from './state.js';
 import {scene} from './engine.js';
 import {blip} from './audio.js';
 import {message} from './hud.js';
-import {playerPos} from './player.js';
+import {playerPos,cur} from './player.js';
 import {makeMoneyDrop} from '../assets/models/missions/money-drop.js';
 import {makeDeliveryMarker} from '../assets/models/missions/delivery-marker.js';
 
@@ -79,7 +79,9 @@ export function updatePickups(dt){
   if(delivery){
     delivery.g.rotation.z+=2*dt;
     const sc=1+Math.sin(state.time*4)*.12;delivery.g.scale.set(sc,sc,1);
-    if(Math.hypot(pp.x-delivery.x,pp.z-delivery.z)<3.2){
+    // entrega só no chão e fora do avião (sobrevoar o marcador não conta)
+    const inPlane=state.mode==='car'&&cur?.plane;
+    if(!inPlane&&pp.y<3&&Math.hypot(pp.x-delivery.x,pp.z-delivery.z)<3.2){
       const base=curMission?curMission.reward:150;
       const fast=Math.max(0,Math.round(120-(state.time-delivery.t0)*4));
       state.money+=base+fast;state.deliveries++;

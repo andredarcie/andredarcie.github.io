@@ -6,14 +6,13 @@ import {isPark} from './world.js';
 import {blip,thud} from './audio.js';
 import {message} from './hud.js';
 import {addWanted} from './physics.js';
-import {reportPoliceCrime} from './police-radio.js';
-import {player,playerPos,cameraRig,idleCars,cur} from './player.js';
+import {player,playerPos,cameraRig,idleCars,cur,getWasted} from './player.js';
 import {peds,addBloodPuddle} from './pedestrians.js';
 import {traffic,spawnTraffic} from './traffic.js';
 import {cops} from './police.js';
 import {spawnDrop} from './missions.js';
 import {gangPeds,killGangPed} from './gangs.js';
-import {dentCar} from './entities.js?v=22';
+import {dentCar} from './entities.js';
 import {makeGunModel} from '../assets/models/weapons/player-gun.js';
 import {makeExplosionModel} from '../assets/models/effects/explosion.js';
 import {makeImpactRing} from '../assets/models/effects/impact-ring.js';
@@ -191,6 +190,45 @@ function makeExplosion(pos){
   thud(18);blip([80,52],.12,'sawtooth',.28);
 }
 
+// Onda de choque da explosão (raio 5): mata quem está perto, amassa e pode
+// detonar carros vizinhos em cadeia
+function blastDamage(pos){
+  const bp=pos.clone().setY(.6);
+  const pp=playerPos();
+  if(pp.distanceTo(pos)<5){
+    if(state.mode==='foot')getWasted();
+    else if(cur){
+      const dir=new THREE.Vector3().subVectors(cur.g.position,pos).setY(0).normalize();
+      dentCar(cur.g,bp,dir,.3);cur.speed*=.5;state.shake=.9;
+    }
+  }
+  for(const p of peds){
+    if(p.state==='dead'||p.state==='fly')continue;
+    if(p.g.position.distanceTo(pos)>=5)continue;
+    const dir=new THREE.Vector3().subVectors(p.g.position,pos).setY(0).normalize();
+    p.state='fly';p.bloodDropped=false;
+    p.vel.copy(dir).multiplyScalar(8).add(new THREE.Vector3(rand(-1,1),rand(6,9),rand(-1,1)));
+  }
+  for(const p of gangPeds){
+    if(p.state==='dead'||p.state==='fly')continue;
+    if(p.g.position.distanceTo(pos)<5)
+      killGangPed(p,new THREE.Vector3().subVectors(p.g.position,pos).setY(0).normalize());
+  }
+  for(const arr of[traffic,idleCars,cops]){
+    for(const c of arr){
+      if(c===cur||c.plane)continue;
+      const d=c.g.position.distanceTo(pos);
+      if(d>=5)continue;
+      const dir=new THREE.Vector3().subVectors(c.g.position,pos).setY(0).normalize();
+      dentCar(c.g,bp,dir,.25);
+      const ud=c.g.userData;
+      ud.bulletHits=(ud.bulletHits||0)+2;
+      if(ud.bulletHits>=4)
+        setTimeout(()=>{if(arr.indexOf(c)>=0)explodeCar(c,arr);},220);
+    }
+  }
+}
+
 function explodeCar(car,arr){
   if(!car||car===cur)return;
   const pos=car.g.position.clone();
@@ -198,6 +236,7 @@ function explodeCar(car,arr){
   const idx=arr.indexOf(car);
   if(idx>=0)arr.splice(idx,1);
   makeExplosion(pos);
+  blastDamage(pos);
   addWanted(1.5,'VEHICLE DESTROYED!','vehicle_destroyed');
   state.shake=.7;
   if(arr===traffic)setTimeout(()=>spawnTraffic(),900);
@@ -210,11 +249,7 @@ function damageCar(car,arr,pos,dir){
   ud.bulletHits=(ud.bulletHits||0)+1;
   state.shake=Math.max(state.shake,.04);
   addWanted(.35,'SHOT FIRED!','vehicle_shot');
-  if(ud.bulletHits>=4){
-    explodeCar(car,arr);
-  }else{
-    message('VEHICLE HIT '+ud.bulletHits+'/4','var(--gold)');
-  }
+  if(ud.bulletHits>=4)explodeCar(car,arr);
 }
 
 function addTracer(origin,end){
@@ -262,7 +297,6 @@ export function shootWeapon(){
   const{origin,dir}=aimRay();
   makeBullet(origin,dir);
   addTracer(origin,origin.clone().addScaledVector(dir,3.2));
-  reportPoliceCrime('gunfire',1);
   blip([1200],.035,'square',.12);
   state.crosshairKick=1;
   state.shake=Math.max(state.shake,.08);

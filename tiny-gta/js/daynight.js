@@ -3,7 +3,7 @@ import {clamp} from './constants.js';
 import {scene,renderer,hemi,dlight,sunDir,clouds} from './engine.js';
 import {buildingMats,lampGlowMat,lampHaloMat,lampBulbMat} from './world.js';
 import {state,refs} from './state.js';
-import {beamMat} from './entities.js?v=22';
+import {beamMat} from './entities.js';
 import {makeSkyDome} from '../assets/models/daynight/sky-dome.js';
 import {makeSunSprite} from '../assets/models/daynight/sun.js';
 import {makeMoonSprite} from '../assets/models/daynight/moon.js';

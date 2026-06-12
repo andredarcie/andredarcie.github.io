@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {N,CELL,HALF,nodeX,irand,rand,pick,clamp} from './constants.js';
 import {state} from './state.js';
 import {scene} from './engine.js';
-import {makePed,setOpacity,shirtColors} from './entities.js?v=22';
-import * as Entities from './entities.js?v=22';
+import {makePed,setOpacity,shirtColors} from './entities.js';
+import * as Entities from './entities.js';
 import {collideStatics,addWanted} from './physics.js';
 import {thud} from './audio.js';
 import {message} from './hud.js';
@@ -56,7 +56,7 @@ export function ejectDriver(x,z,heading){
   }
   if(!best)return;
   const right=new THREE.Vector3(Math.cos(heading),0,-Math.sin(heading));
-  best.g.position.set(x,0,z).addScaledVector(right,1.9);
+  best.g.position.set(x,0,z).addScaledVector(right,1.6);
   best.g.rotation.set(0,heading,0);
   best.state='panic';best.panicT=rand(3.5,5);best.t=0;
   // quarteirão mais próximo, para retomar o passeio quando o pânico passar
@@ -91,7 +91,7 @@ export function updatePeds(dt){
       }
       continue;
     }
-    if(danger&&p.g.position.distanceTo(activeCur.g.position)<2.3){
+    if(danger&&p.g.position.distanceTo(activeCur.g.position)<2.0){
       p.state='fly';
       p.bloodDropped=false;
       const dir=new THREE.Vector3(Math.sin(activeCur.heading),0,Math.cos(activeCur.heading));

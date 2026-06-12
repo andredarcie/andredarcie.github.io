@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {state} from './state.js';
 export {beamMat,makeCar} from '../assets/models/vehicles/car.js';
-export {makePed,shirtColors} from '../assets/models/characters/pedestrian.js';
+import {makePed,shirtColors} from '../assets/models/characters/pedestrian.js';
+export {makePed,shirtColors};
 export {makePlane} from '../assets/models/aircraft/plane.js';
 
 export function setOpacity(g,o){g.traverse(m=>{if(m.material)m.material.opacity=o;});}
@@ -64,8 +65,37 @@ export function dentCar(g,worldPoint,worldDir,strength=.1){
 
 export function spinWheels(g,speed,dt,steer=0){
   const u=g.userData;if(!u.wheels)return;
-  for(const w of u.wheels)w.rotation.x+=speed*dt/.42;
+  for(const w of u.wheels)w.rotation.x+=speed*dt/.30;
   for(const w of u.front)w.rotation.y=steer*.38;
+  // volante gira e os braços do motorista (jogador ou NPC) acompanham a curva
+  const k=Math.min(1,12*dt);
+  if(u.steer)u.steer.rotation.z+=(-steer*1.8-u.steer.rotation.z)*k;
+  const l=u.driver?.userData.limbs;
+  if(l){
+    l.leftArm.rotation.z+=(.42-steer*.25-l.leftArm.rotation.z)*k;
+    l.rightArm.rotation.z+=(-.42-steer*.25-l.rightArm.rotation.z)*k;
+  }
+}
+
+// Cria um NPC já sentado no banco do motorista do carro, mãos no volante,
+// coxas pra frente e pés no piso (mesma pose do jogador dirigindo)
+export function seatDriver(carG,color,pants){
+  const d=makePed(color,pants);
+  const l=d.userData.limbs;
+  if(l){
+    l.leftLeg.rotation.set(-2.0,0,0);
+    l.rightLeg.rotation.set(-2.0,0,0);
+    l.leftCalf?.rotation.set(.5,0,0);
+    l.rightCalf?.rotation.set(.5,0,0);
+    l.leftArm.rotation.set(-1.3,0,.42);
+    l.rightArm.rotation.set(-1.3,0,-.42);
+    l.leftForearm?.rotation.set(-.78,0,0);
+    l.rightForearm?.rotation.set(-.78,0,0);
+  }
+  d.position.set(-.38,-.52,-.15);
+  carG.add(d);
+  carG.userData.driver=d; // spinWheels anima os braços de quem está aqui
+  return d;
 }
 
 export function blinkBar(g){
