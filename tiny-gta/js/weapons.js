@@ -9,10 +9,10 @@ import {addWanted,collideStatics} from './physics.js';
 import {player,playerPos,cameraRig,idleCars,cur,getWasted} from './player.js';
 import {peds,addBloodPuddle} from './pedestrians.js';
 import {traffic,spawnTraffic} from './traffic.js';
-import {cops} from './police.js';
+import {cops,officers as copOfficers,killOfficer} from './police.js';
 import {spawnDrop} from './missions.js';
 import {gangPeds,killGangPed} from './gangs.js';
-import {dentCar} from './entities.js';
+import {dentCar,poseAiming} from './entities.js';
 import {makeGunModel} from '../assets/models/weapons/player-gun.js';
 import {makeBazookaModel,makeMissileModel} from '../assets/models/weapons/bazooka.js';
 import {makeExplosionModel} from '../assets/models/effects/explosion.js';
@@ -188,19 +188,8 @@ function getMuzzleWorldPosition(){
 function posePlayerWithGun(){
   const limbs=player.g.userData.limbs;
   if(!limbs?.rightArm)return;
-  const handX=limbs.rightArm.position.x;
-  limbs.rightArm.rotation.x=-Math.PI/2+gunKick*1.2;
-  limbs.rightArm.rotation.y=-.04;
-  limbs.rightArm.rotation.z=-.08;
-  if(limbs.leftArm){
-    limbs.leftArm.rotation.x=-.28;
-    limbs.leftArm.rotation.y=.08;
-    limbs.leftArm.rotation.z=.18;
-  }
-  // mirando: antebraço do braço da arma esticado, o de apoio dobrado
-  if(limbs.rightForearm)limbs.rightForearm.rotation.set(0,0,0);
-  if(limbs.leftForearm)limbs.leftForearm.rotation.x=-.35;
-  heldGun.position.set(handX,1.26,.67-gunKick*.75);
+  poseAiming(player.g,gunKick); // pose padrão de mira (mesma de NPCs/polícia)
+  heldGun.position.set(limbs.rightArm.position.x,1.26,.67-gunKick*.75);
   heldGun.rotation.set(-.03-gunKick*.9,0,-.03);
 }
 
@@ -219,6 +208,11 @@ function findWeaponHit(origin,dir,range=48){
   for(const t of refs.storyTargets?.()||[]){ // alvo de missão de assassinato
     const d=rayHitXZ(origin,dir,t.g.position,1.05,range);
     if(d!==null&&d<best.d)best={kind:'story',d,target:t};
+  }
+  for(const o of copOfficers){ // policiais a pé também levam bala
+    if(o.dead)continue;
+    const d=rayHitXZ(origin,dir,o.g.position,1.05,range);
+    if(d!==null&&d<best.d)best={kind:'officer',d,target:o};
   }
   for(const arr of[traffic,idleCars,cops]){
     for(const c of arr){
@@ -269,6 +263,9 @@ function blastDamage(pos){
     if(p.g.position.distanceTo(pos)<5)
       killGangPed(p,new THREE.Vector3().subVectors(p.g.position,pos).setY(0).normalize());
   }
+  for(const o of copOfficers){ // a onda de choque também derruba a dupla
+    if(!o.dead&&o.g.position.distanceTo(pos)<5)killOfficer(o);
+  }
   for(const arr of[traffic,idleCars,cops]){
     for(const c of arr){
       if(c===cur||c.plane)continue;
@@ -283,6 +280,14 @@ function blastDamage(pos){
     }
   }
 }
+
+// explosão genérica exposta via refs: police.js detona os mísseis das
+// bazucas dos policiais sem criar import circular com este módulo
+export function explodeAt(pos){
+  makeExplosion(pos.clone());
+  blastDamage(pos);
+}
+refs.explodeAt=explodeAt;
 
 function explodeCar(car,arr){
   if(!car||car===cur)return;
@@ -341,6 +346,7 @@ function handleBulletHit(hit,pos,dir){
   addImpact(pos,hit);
   if(hit.kind==='ped')killPed(hit.target,dir);
   else if(hit.kind==='gang')killGangPed(hit.target,dir);
+  else if(hit.kind==='officer')killOfficer(hit.target);
   else if(hit.kind==='story')hit.target.kill();
   else if(hit.kind==='car')damageCar(hit.target,hit.arr,pos,dir);
   else addWanted(.25,'SHOT FIRED!','gunfire');

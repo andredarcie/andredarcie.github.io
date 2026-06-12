@@ -75,6 +75,10 @@ canvas#game{display:block;width:100%;height:100%;touch-action:none}
   font-family:'Bowlby One SC';font-size:24px;color:var(--cream);letter-spacing:2px;
   text-shadow:2px 2px 0 #000,0 0 18px rgba(255,46,136,.7);opacity:0;transition:opacity .25s;
   white-space:nowrap;text-align:center}
+/* placar do rampage da bazuca: faixa própria ABAIXO do #msg pra não sobrepor */
+#rampage{position:absolute;left:50%;top:126px;transform:translateX(-50%);
+  font-family:'Press Start 2P',monospace;font-size:13px;color:#ff5f5f;letter-spacing:2px;
+  text-shadow:2px 2px 0 #000,0 0 18px rgba(255,46,46,.6);white-space:nowrap;display:none}
 #bigtext{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(.7);
   font-family:'Bowlby One SC';font-size:96px;letter-spacing:6px;opacity:0;
   transition:opacity .35s,transform .35s;white-space:nowrap}
@@ -234,6 +238,7 @@ body.is-portrait-blocked #rotate-device{display:flex}
   #prompt{display:none!important}
   #msg{top:max(62px,calc(env(safe-area-inset-top) + 62px));font-size:clamp(15px,3.8vw,22px);
     max-width:78vw;white-space:normal;line-height:1.25}
+  #rampage{top:max(128px,calc(env(safe-area-inset-top) + 128px));font-size:10px}
   #bigtext{font-size:clamp(38px,11vw,96px);letter-spacing:3px;white-space:normal;text-align:center;max-width:88vw}
   #pauseov{font-size:clamp(38px,12vw,64px)}
   #btn-fullscreen{top:max(10px,env(safe-area-inset-top));min-width:82px;height:40px;font-size:13px;

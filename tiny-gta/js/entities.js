@@ -4,6 +4,33 @@ export {beamMat,makeCar} from '../assets/models/vehicles/car.js';
 import {makePed,shirtColors} from '../assets/models/characters/pedestrian.js';
 export {makePed,shirtColors};
 export {makePlane} from '../assets/models/aircraft/plane.js';
+import {makeGangGun} from '../assets/models/weapons/gang-gun.js';
+
+// ---- Empunhadura PADRÃO de arma (jogador, gangues e polícia) ----
+// attachHandGun pendura a pistola na mão direita do ped (idempotente);
+// poseAiming põe o boneco na pose única de mira: braço da arma esticado à
+// frente, braço de apoio dobrado. Chamar DEPOIS do animatePed do frame, que
+// a pose sobrescreve os braços e as pernas continuam na animação de andar.
+// kick = recuo do tiro (0..~.16), usado pelo jogador.
+export function attachHandGun(ped){
+  const arm=ped.userData.limbs?.rightArm;
+  if(!arm||arm.userData.gun)return;
+  const gun=makeGangGun();
+  arm.add(gun);
+  arm.userData.gun=gun;
+}
+
+export function poseAiming(ped,kick=0){
+  const l=ped.userData.limbs;if(!l)return;
+  l.rightArm.rotation.x=-Math.PI/2+kick*1.2;
+  l.rightArm.rotation.y=-.04;
+  l.rightArm.rotation.z=-.08;
+  l.leftArm.rotation.x=-.28;
+  l.leftArm.rotation.y=.08;
+  l.leftArm.rotation.z=.18;
+  l.rightForearm?.rotation.set(0,0,0);
+  if(l.leftForearm)l.leftForearm.rotation.x=-.35;
+}
 
 // Fade de morte: o ped fundido guarda seus materiais em userData.fadeMats.
 // transparent só fica ligado durante o fade — ped opaco sai do pass de

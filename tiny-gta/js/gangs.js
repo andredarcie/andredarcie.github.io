@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {rand,irand,clamp,nodeX} from './constants.js';
 import {state,refs} from './state.js';
 import {scene} from './engine.js';
-import {makePed,setOpacity} from './entities.js';
+import {makePed,setOpacity,attachHandGun,poseAiming} from './entities.js';
 import * as Entities from './entities.js';
 import {collideStatics,addWanted} from './physics.js';
 import {blip,thud,gunshot} from './audio.js';
@@ -10,7 +10,6 @@ import {message} from './hud.js';
 import {playerPos,getWasted} from './player.js';
 import {addBloodPuddle} from './pedestrians.js';
 import {spawnDrop} from './missions.js';
-import {makeGangGun} from '../assets/models/weapons/gang-gun.js';
 import {makeGangTracerLine} from '../assets/models/effects/gang-tracer.js';
 
 // Três gangues, cada uma com cor própria, território circular (aparece no
@@ -31,11 +30,6 @@ for(const g of gangs){g.spawnT=rand(4,10);g.alarmT=0;g.wasInside=false;}
 
 export const gangPeds=[];
 
-function attachGun(g){
-  const arm=g.userData.limbs?.rightArm;if(!arm)return;
-  arm.add(makeGangGun());
-}
-
 function spawnMember(gang){
   const pp=playerPos();
   let x=gang.x,z=gang.z;
@@ -48,7 +42,7 @@ function spawnMember(gang){
     t:0,bob:0,shootT:rand(.6,1.6),tgt:null,tgtT:0};
   m.g.position.set(x,0,z);
   collideStatics(m.g.position,.4);
-  attachGun(m.g);
+  attachHandGun(m.g); // pistola na mão direita (empunhadura padrão)
   gangPeds.push(m);
 }
 for(const g of gangs)for(let k=0;k<5;k++)spawnMember(g);
@@ -168,10 +162,7 @@ export function updateGangs(dt){
     collideStatics(p,.4);
     p.y=Math.abs(Math.sin(m.bob))*.07;
     Entities.animatePed?.(m.g,m.bob,mvAmount);
-    if(aggro){ // braço da arma apontado, por cima da animação de andar
-      const arm=m.g.userData.limbs?.rightArm;
-      if(arm){arm.rotation.x=-Math.PI/2;arm.rotation.z=-.06;}
-    }
+    if(aggro)poseAiming(m.g); // pose padrão de mira, por cima da animação de andar
   }
   for(let i=tracers.length-1;i>=0;i--){
     const t=tracers[i];t.t+=dt;

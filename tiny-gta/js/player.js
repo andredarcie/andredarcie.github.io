@@ -231,8 +231,7 @@ export function getBusted(){
   startCut('BUSTED','#3e7bff',()=>{
     state.onRoof=null;roofFall=null; // delegacia fica no chão, não no telhado
     state.money=Math.floor(state.money*.85);state.wanted=0;state.bustT=0;
-    const cops=refs.cops||[];
-    for(const c of cops)scene.remove(c.g);cops.length=0;
+    refs.clearCops?.(); // viaturas, policiais a pé, mísseis e tracers
     if(cur){cur.g.userData.driver=null;idleCars.push(cur);cur=null;}
     unseatPlayer();
     player.g.visible=true;player.g.position.set(nodeX(2)+4,0,nodeX(2)+4);
@@ -246,8 +245,7 @@ function wastedCut(){
   startCut('WASTED','#ff2e88',()=>{
     state.onRoof=null;roofFall=null; // hospital fica no chão, não no telhado
     state.money=Math.floor(state.money*.8);state.wanted=0;state.bustT=0;
-    const cops=refs.cops||[];
-    for(const c of cops)scene.remove(c.g);cops.length=0;
+    refs.clearCops?.(); // viaturas, policiais a pé, mísseis e tracers
     unseatPlayer();
     player.g.visible=true;player.g.position.set(nodeX(6)+4,0,nodeX(6)+4);
     state.weaponHeld=!!state.hasGun;
