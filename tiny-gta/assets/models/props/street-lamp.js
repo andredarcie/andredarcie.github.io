@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {scene} from '../../../js/engine.js';
+import {bakeProp} from './prop-merge.js';
 
 function lampTex(){
   const c=document.createElement('canvas');c.width=128;c.height=128;
@@ -25,11 +26,12 @@ const bulbG=new THREE.SphereGeometry(.22,8,6);
 const glowG=new THREE.PlaneGeometry(9,9);
 
 export function addStreetLamp(px,pz){
-  const p=new THREE.Mesh(poleG,poleM);p.position.set(px,2.7,pz);p.castShadow=true;scene.add(p);
-  const b=new THREE.Mesh(bulbG,lampBulbMat);b.position.set(px,5.5,pz);scene.add(b);
+  const p=new THREE.Mesh(poleG,poleM);p.position.set(px,2.7,pz);p.castShadow=true;bakeProp(p);
+  const b=new THREE.Mesh(bulbG,lampBulbMat);b.position.set(px,5.5,pz);bakeProp(b);
   const gl=new THREE.Mesh(glowG,lampGlowMat);
-  gl.rotation.x=-Math.PI/2;gl.position.set(px,.07,pz);gl.renderOrder=2;scene.add(gl);
+  gl.rotation.x=-Math.PI/2;gl.position.set(px,.07,pz);gl.renderOrder=2;bakeProp(gl);
+  // halo é Sprite (não funde): fica individual, invisível de dia via material
   const h=new THREE.Sprite(lampHaloMat);
   h.position.set(px,5.5,pz);h.scale.set(2.6,2.6,1);scene.add(h);
-  return{pole:p,bulb:b,glow:gl,halo:h};
+  return{halo:h};
 }

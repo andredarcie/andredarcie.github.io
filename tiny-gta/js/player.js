@@ -384,6 +384,9 @@ export function updateCar(dt){
     }
     return;
   }
+  // voltou pra terra firme: cancela o afundamento, senão o carro some na
+  // próxima saída (completeExit remove veículo com sinkT marcado)
+  cur.sinkT=0;
   const th=input.moveY;
   const st=input.moveX;
   const hb=input.brake;

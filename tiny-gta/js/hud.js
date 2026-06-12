@@ -13,6 +13,20 @@ export const hudMoney=$('money'),hudClock=$('clock'),hudHealth=$('health-val'),
 
 let shownMoney=250,msgT=0;
 
+// Medidor de FPS: conta frames reais e só toca no DOM 2x por segundo —
+// atualizar texto todo frame custaria mais que aquilo que o medidor mede
+const hudFps=$('fps');
+let fpsFrames=0,fpsLast=performance.now();
+export function tickFps(){
+  fpsFrames++;
+  const now=performance.now();
+  if(now-fpsLast<500)return;
+  const fps=Math.round(fpsFrames*1000/(now-fpsLast));
+  hudFps.textContent=fps+' FPS';
+  hudFps.style.color=fps>=50?'#41ce62':fps>=30?'#ffd24a':'#ff2e88';
+  fpsFrames=0;fpsLast=now;
+}
+
 export function message(t,col){
   hudMsg.textContent=t;hudMsg.style.color=col||'var(--cream)';
   hudMsg.style.opacity=1;msgT=2.6;

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {scene} from '../../../js/engine.js';
+import {bakeProp} from './prop-merge.js';
 import {rand,groundHeight} from '../../../js/constants.js';
 
 const pineLeafM=new THREE.MeshStandardMaterial({color:0x2e7a44,roughness:1});
@@ -13,6 +13,6 @@ export function addPine(px,pz){
     const cone=new THREE.Mesh(new THREE.ConeGeometry(.9-k*.3,h*.6,7),pineLeafM);
     cone.position.y=h*.45+k*h*.32;cone.castShadow=true;g.add(cone);
   }
-  g.position.set(px,groundHeight(px,pz)-.02,pz);scene.add(g);
+  g.position.set(px,groundHeight(px,pz)-.02,pz);bakeProp(g);
   return g;
 }

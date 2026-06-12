@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {scene} from '../../../js/engine.js';
+import {bakeProp} from './prop-merge.js';
 import {rand} from '../../../js/constants.js';
 
 const palmLeafMat=new THREE.MeshStandardMaterial({color:0x3aa856,roughness:1});
@@ -14,6 +14,6 @@ export function addPalm(x,z){
     leaf.position.y=h;leaf.rotation.y=k*Math.PI/3;leaf.rotation.z=-.42;
     leaf.geometry.translate?.(0,0,0);leaf.translateX(1.0);leaf.castShadow=true;g.add(leaf);
   }
-  g.position.set(x,0,z);scene.add(g);
+  g.position.set(x,0,z);bakeProp(g);
   return g;
 }

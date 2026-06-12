@@ -10,6 +10,8 @@ import {addFarmHouse} from '../assets/models/props/farm-house.js';
 import {addPine} from '../assets/models/props/pine.js';
 import {addStreetLamp,lampGlowMat,lampHaloMat,lampBulbMat} from '../assets/models/props/street-lamp.js';
 import {addBuilding,finalizeBuildings,buildingMats} from '../assets/models/city/building.js';
+import {addAbandonedLot,finalizeAbandonedLots} from '../assets/models/city/abandoned-lot.js';
+import {finalizeProps} from '../assets/models/props/prop-merge.js';
 import {addBarnWithSilo} from '../assets/models/rural/barn-with-silo.js';
 import {addHayBales} from '../assets/models/rural/hay-bales.js';
 import {addSummitFlag} from '../assets/models/rural/summit-flag.js';
@@ -23,6 +25,18 @@ export const solids=[];
 export const parks=new Set();
 while(parks.size<6){const i=irand(0,N-1),j=irand(0,N-1);if(Math.abs(i-4)+Math.abs(j-4)>1)parks.add(i+'_'+j);}
 export const isPark=(i,j)=>parks.has(i+'_'+j);
+
+// Lotes da cidade, sorteados ANTES da textura do chão: ~1/3 não ganha prédio
+// e vira lote abandonado (terra batida pintada no canvas + entulho 3D)
+const cityLots=[];
+for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+  if(isPark(i,j))continue;
+  const x0=nodeX(i)+ROAD/2+SIDE,z0=nodeX(j)+ROAD/2+SIDE,inner=BLOCK-2*SIDE;
+  const sx=Math.random()<.5?1:2,sz=Math.random()<.5?1:2;
+  for(let a=0;a<sx;a++)for(let b=0;b<sz;b++)
+    cityLots.push({cx:x0+(a+.5)*inner/sx,cz:z0+(b+.5)*inner/sz,
+      w:inner/sx-1.6,d:inner/sz-1.6,empty:Math.random()<1/3});
+}
 
 // Ground texture (asphalt, sidewalks, crosswalks)
 const groundCv=document.createElement('canvas');groundCv.width=2048;groundCv.height=2048;
@@ -38,6 +52,18 @@ const groundCv=document.createElement('canvas');groundCv.width=2048;groundCv.hei
       x.strokeStyle='#d8c79a';x.lineWidth=1.4*s;
       x.beginPath();x.moveTo(M(x0+SIDE),M(z0+BLOCK/2));x.lineTo(M(x0+BLOCK-SIDE),M(z0+BLOCK/2));
       x.moveTo(M(x0+BLOCK/2),M(z0+SIDE));x.lineTo(M(x0+BLOCK/2),M(z0+BLOCK-SIDE));x.stroke();
+    }
+  }
+  // lotes abandonados: terra batida com manchas de entulho e mato ralo
+  for(const lot of cityLots){
+    if(!lot.empty)continue;
+    const lx=M(lot.cx-lot.w/2),lz=M(lot.cz-lot.d/2),lw=lot.w*s,ld=lot.d*s;
+    x.fillStyle='#8a7a62';x.fillRect(lx,lz,lw,ld);
+    for(let k=0;k<46;k++){
+      x.fillStyle=Math.random()<.3
+        ?`rgba(${irand(80,110)},${irand(120,150)},${irand(60,85)},.5)`
+        :`rgba(${irand(125,165)},${irand(108,140)},${irand(82,112)},.5)`;
+      x.fillRect(lx+Math.random()*lw,lz+Math.random()*ld,irand(2,6),irand(2,6));
     }
   }
   for(let i=0;i<=N;i++){
@@ -76,18 +102,16 @@ const groundCv=document.createElement('canvas');groundCv.width=2048;groundCv.hei
 export {buildingMats}; // daynight.js controla emissiveIntensity (janelas acesas à noite)
 
 for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+  if(!isPark(i,j))continue;
   const x0=nodeX(i)+ROAD/2+SIDE,z0=nodeX(j)+ROAD/2+SIDE,inner=BLOCK-2*SIDE;
-  if(isPark(i,j)){
-    for(let k=0;k<7;k++)addPalm(x0+rand(1,inner-1),z0+rand(1,inner-1));
-    continue;
-  }
-  const sx=Math.random()<.5?1:2,sz=Math.random()<.5?1:2;
-  for(let a=0;a<sx;a++)for(let b=0;b<sz;b++){
-    const w=inner/sx-1.6,d=inner/sz-1.6;
-    addBuilding(x0+(a+.5)*inner/sx,z0+(b+.5)*inner/sz,w,d,solids);
-  }
+  for(let k=0;k<7;k++)addPalm(x0+rand(1,inner-1),z0+rand(1,inner-1));
 }
-finalizeBuildings(); // funde a cidade inteira em ~18 meshes (draw calls)
+for(const lot of cityLots){
+  if(lot.empty)addAbandonedLot(lot.cx,lot.cz,lot.w,lot.d,solids);
+  else addBuilding(lot.cx,lot.cz,lot.w,lot.d,solids);
+}
+finalizeBuildings();     // funde a cidade inteira em ~18 meshes (draw calls)
+finalizeAbandonedLots(); // e todos os lotes abandonados em ~5
 
 // Beach ring around the whole city: sand plane slightly below the city ground,
 // foam painted on the outer edge where it meets the sea
@@ -262,3 +286,7 @@ export {lampGlowMat,lampHaloMat,lampBulbMat};
     addStreetLamp(px,pz);
   }
 }
+
+// Fusão dos props estáticos: TEM que ser a última linha do mundo — qualquer
+// addPalm/addPine/addStreetLamp depois daqui não apareceria na cena
+finalizeProps();

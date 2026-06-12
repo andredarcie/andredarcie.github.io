@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {state,input,refs} from './state.js';
 import {renderer,scene,camera,clouds,dlight,sunDir} from './engine.js';
 import {updateAudio} from './audio.js';
-import {drawMinimap,updateHUD,hideBig} from './hud.js';
+import {drawMinimap,updateHUD,hideBig,tickFps} from './hud.js';
 import {player,cur,playerPos,nearestCar,idleCars,cameraRig,updateCar,updateFoot,updateCamera,getBusted,getWasted} from './player.js';
 import {traffic,trafficPos,spawnTraffic,updateTraffic} from './traffic.js';
 import {updatePeds,ejectDriver,addBloodPuddle} from './pedestrians.js';
@@ -50,6 +50,7 @@ setupTouchControls();
 const clock=new THREE.Clock();
 function frame(){
   requestAnimationFrame(frame);
+  tickFps(); // antes dos early-returns: mede até pausado/tela de título
   const dt=Math.min(clock.getDelta(),.05);
   updateKeyboardInput();
   updateTouchControls();

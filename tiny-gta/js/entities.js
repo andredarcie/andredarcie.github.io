@@ -5,7 +5,17 @@ import {makePed,shirtColors} from '../assets/models/characters/pedestrian.js';
 export {makePed,shirtColors};
 export {makePlane} from '../assets/models/aircraft/plane.js';
 
-export function setOpacity(g,o){g.traverse(m=>{if(m.material)m.material.opacity=o;});}
+// Fade de morte: o ped fundido guarda seus materiais em userData.fadeMats.
+// transparent só fica ligado durante o fade — ped opaco sai do pass de
+// transparência (sem sorting por frame), que era um dos maiores custos.
+export function setOpacity(g,o){
+  const mats=g.userData.fadeMats;
+  if(mats){
+    for(const m of mats){m.opacity=o;m.transparent=o<1;}
+    return;
+  }
+  g.traverse(m=>{if(m.material)m.material.opacity=o;});
+}
 
 export function animatePed(g,phase=0,amount=0){
   const l=g.userData.limbs;if(!l)return;
