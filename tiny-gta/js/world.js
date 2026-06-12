@@ -9,7 +9,7 @@ import {addLifeguard} from '../assets/models/props/lifeguard.js';
 import {addFarmHouse} from '../assets/models/props/farm-house.js';
 import {addPine} from '../assets/models/props/pine.js';
 import {addStreetLamp,lampGlowMat,lampHaloMat,lampBulbMat} from '../assets/models/props/street-lamp.js';
-import {addBuilding,buildingMats} from '../assets/models/city/building.js';
+import {addBuilding,finalizeBuildings,buildingMats} from '../assets/models/city/building.js';
 import {addBarnWithSilo} from '../assets/models/rural/barn-with-silo.js';
 import {addHayBales} from '../assets/models/rural/hay-bales.js';
 import {addSummitFlag} from '../assets/models/rural/summit-flag.js';
@@ -87,6 +87,7 @@ for(let i=0;i<N;i++)for(let j=0;j<N;j++){
     addBuilding(x0+(a+.5)*inner/sx,z0+(b+.5)*inner/sz,w,d,solids);
   }
 }
+finalizeBuildings(); // funde a cidade inteira em ~18 meshes (draw calls)
 
 // Beach ring around the whole city: sand plane slightly below the city ground,
 // foam painted on the outer edge where it meets the sea

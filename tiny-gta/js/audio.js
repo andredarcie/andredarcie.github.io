@@ -44,6 +44,52 @@ export function thud(v){
   src.connect(f).connect(g).connect(master);src.start();
 }
 
+// Tiro realista em camadas: estalo agudo do disparo, corpo do estouro,
+// soco grave com queda de pitch e cauda de reverberação da rua, tudo passando
+// por uma saturação (tanh) — arma de verdade "clipa" o ar, não soa limpa
+let shotBus=null;
+export function gunshot(vol=1){
+  if(!AC)return;
+  if(!shotBus){
+    shotBus=AC.createGain();shotBus.gain.value=.7;
+    const shaper=AC.createWaveShaper();
+    const curve=new Float32Array(256);
+    for(let i=0;i<256;i++){const x=i/127.5-1;curve[i]=Math.tanh(2.4*x);}
+    shaper.curve=curve;
+    shotBus.connect(shaper);shaper.connect(master);
+    // eco curto rebatendo nos prédios
+    const dl=AC.createDelay(.3);dl.delayTime.value=.09;
+    const dlp=AC.createBiquadFilter();dlp.type='lowpass';dlp.frequency.value=1100;
+    const fb=AC.createGain();fb.gain.value=.32;
+    shaper.connect(dl);dl.connect(dlp);dlp.connect(fb);fb.connect(dl);
+    const wet=AC.createGain();wet.gain.value=.22;
+    fb.connect(wet);wet.connect(master);
+  }
+  const t0=AC.currentTime;
+  const noise=(dur,type,freq,Q,v,decay)=>{
+    const len=Math.floor(AC.sampleRate*dur);
+    const b=AC.createBuffer(1,len,AC.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+    const src=AC.createBufferSource();src.buffer=b;
+    const f=AC.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=Q;
+    const g=AC.createGain();
+    g.gain.setValueAtTime(v*vol,t0);
+    g.gain.exponentialRampToValueAtTime(.0008,t0+decay);
+    src.connect(f).connect(g).connect(shotBus);
+    src.start(t0);src.stop(t0+dur);
+  };
+  noise(.07,'highpass',2400+Math.random()*700,.7,1.0,.05); // estalo
+  noise(.16,'bandpass',520+Math.random()*140,.8,.9,.13);   // estouro
+  noise(.5,'lowpass',900,.5,.26,.42);                      // cauda
+  const o=AC.createOscillator();o.type='sine';             // soco grave
+  o.frequency.setValueAtTime(150+Math.random()*25,t0);
+  o.frequency.exponentialRampToValueAtTime(45,t0+.16);
+  const og=AC.createGain();
+  og.gain.setValueAtTime(.9*vol,t0);
+  og.gain.exponentialRampToValueAtTime(.001,t0+.18);
+  o.connect(og).connect(shotBus);o.start(t0);o.stop(t0+.2);
+}
+
 export function blip(freqs,dur=.09,type='sine',vol=.18){
   if(!AC)return;
   freqs.forEach((fr,k)=>{

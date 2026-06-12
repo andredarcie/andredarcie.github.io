@@ -5,7 +5,7 @@ import {scene} from './engine.js';
 import {makePed,setOpacity} from './entities.js';
 import * as Entities from './entities.js';
 import {collideStatics,addWanted} from './physics.js';
-import {blip,thud} from './audio.js';
+import {blip,thud,gunshot} from './audio.js';
 import {message} from './hud.js';
 import {playerPos,getWasted} from './player.js';
 import {addBloodPuddle} from './pedestrians.js';
@@ -85,7 +85,7 @@ function memberShoot(m,pp,dist){
     to.x+=Math.cos(a)*rand(.8,2.2);to.z+=Math.sin(a)*rand(.8,2.2);
   }
   addTracer(from,to);
-  blip([860,520],.04,'square',.07);
+  gunshot(.35); // tiro de gangue: mais distante/abafado que o do jogador
   if(hit){
     state.health-=state.mode==='car'?irand(2,5):irand(5,10); // lataria protege um pouco
     state.shake=Math.max(state.shake,.14);

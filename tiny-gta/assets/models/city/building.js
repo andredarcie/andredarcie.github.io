@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {scene} from '../../../js/engine.js';
 import {rand,irand,pick,clamp} from '../../../js/constants.js';
 
@@ -49,9 +50,18 @@ function windowTexPair(base){
 }
 
 const texVariants=facadePalette.map(windowTexPair);
+
+// Materiais COMPARTILHADOS (um por variante de fachada). A variação por prédio
+// (escala e deslocamento das janelas) é cozida nas UVs de cada geometria, o
+// que permite fundir a cidade inteira em pouquíssimos meshes (draw calls).
 export const buildingMats=[];
+const sideMats=texVariants.map(v=>{
+  const m=new THREE.MeshStandardMaterial({map:v.map,emissiveMap:v.emis,
+    emissive:0xffe9b0,emissiveIntensity:.3,roughness:.9});
+  buildingMats.push(m);
+  return m;
+});
 const roofMat=new THREE.MeshStandardMaterial({color:0x8a857c,roughness:1});
-const unitBox=new THREE.BoxGeometry(1,1,1);
 const parapetMat=new THREE.MeshStandardMaterial({color:0xf0eadc,roughness:.9});
 const roofEquipMat=new THREE.MeshStandardMaterial({color:0x9aa0a8,roughness:.8,metalness:.2});
 const tankMat=new THREE.MeshStandardMaterial({color:0x8a705a,roughness:.9});
@@ -60,73 +70,119 @@ const antennaTipMat=new THREE.MeshBasicMaterial({color:0xff3030});
 const awningMats=[0xff5f9e,0x2ec8c8,0xffd24a,0xff8c2e,0xb06ad8]
   .map(c=>new THREE.MeshStandardMaterial({color:c,roughness:.85}));
 
+// Baldes de geometria por material; finalizeBuildings() funde cada balde num
+// único mesh — a cidade toda vira ~18 draw calls em vez de ~900
+const buckets={
+  sides:texVariants.map(()=>[]),
+  roof:[],parapet:[],equip:[],tank:[],tip:[],door:[],
+  awning:awningMats.map(()=>[]),
+};
+
+// Tiling que antes era texture.repeat/offset, agora por face nas UVs
+function bakeBoxUVs(geo,w,h,d){
+  const uv=geo.attributes.uv;
+  const offU=Math.random(),offV=Math.random();
+  const widths=[d,d,w,w,w,w]; // dimensão horizontal de cada face do box
+  for(let f=0;f<6;f++){
+    const su=widths[f]/17.6,sv=h/48;
+    for(let i=f*6;i<f*6+6;i++)uv.setXY(i,uv.getX(i)*su+offU,uv.getY(i)*sv+offV);
+  }
+}
+
+// Extrai faces de um BoxGeometry não-indexado (cada face = 6 vértices,
+// ordem +x,-x,+y,-y,+z,-z)
+function sliceFaces(geo,faces){
+  const out=new THREE.BufferGeometry();
+  for(const name of['position','normal','uv']){
+    const src=geo.attributes[name];
+    const dst=new Float32Array(faces.length*6*src.itemSize);
+    faces.forEach((f,k)=>dst.set(
+      src.array.subarray(f*6*src.itemSize,(f+1)*6*src.itemSize),k*6*src.itemSize));
+    out.setAttribute(name,new THREE.BufferAttribute(dst,src.itemSize));
+  }
+  return out;
+}
+
+// Caixa de fachada: laterais no balde da variante, topo no balde de telhado;
+// a face de baixo nunca aparece e é descartada
+function addFacadeBox(vi,cx,cy,cz,w,h,d){
+  const nb=new THREE.BoxGeometry(w,h,d).toNonIndexed();
+  bakeBoxUVs(nb,w,h,d);
+  nb.translate(cx,cy,cz);
+  buckets.sides[vi].push(sliceFaces(nb,[0,1,4,5]));
+  buckets.roof.push(sliceFaces(nb,[2]));
+}
+
+function pushBox(arr,sx,sy,sz,x,y,z,rx=0,rz=0){
+  const g=new THREE.BoxGeometry(sx,sy,sz);
+  if(rz)g.rotateZ(rz);
+  if(rx)g.rotateX(rx);
+  g.translate(x,y,z);
+  arr.push(g);
+}
+
 export function addBuilding(cx,cz,w,d,solids){
   const dist=Math.hypot(cx,cz);
   const h=clamp(rand(7,17)+Math.max(0,1-dist/200)*rand(8,30),7,46);
-  const v=pick(texVariants);
-  const map=v.map.clone(),emis=v.emis.clone();
-  const rep=[w/17.6,h/48],off=[Math.random(),Math.random()];
-  map.repeat.set(...rep);map.offset.set(...off);map.needsUpdate=true;
-  emis.repeat.set(...rep);emis.offset.set(...off);emis.needsUpdate=true;
-  const side=new THREE.MeshStandardMaterial({map,emissiveMap:emis,emissive:0xffe9b0,
-    emissiveIntensity:.3,roughness:.9});
-  buildingMats.push(side);
-  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[side,side,roofMat,roofMat,side,side]);
-  m.position.set(cx,h/2,cz);m.castShadow=true;m.receiveShadow=true;scene.add(m);
+  const vi=irand(0,texVariants.length-1);
+  addFacadeBox(vi,cx,h/2,cz,w,h,d);
   solids.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2,h});
 
-  const par=new THREE.Mesh(unitBox,parapetMat);
-  par.scale.set(w+.35,.55,d+.35);par.position.set(cx,h+.12,cz);
-  par.castShadow=true;scene.add(par);
+  pushBox(buckets.parapet,w+.35,.55,d+.35,cx,h+.12,cz);
 
   let topH=h;
   if(h>26&&Math.random()<.6){
     const w2=w*.62,d2=d*.62,h2=rand(3.5,6.5);
-    const map2=v.map.clone(),emis2=v.emis.clone();
-    const rep2=[w2/17.6,h2/48],off2=[Math.random(),Math.random()];
-    map2.repeat.set(...rep2);map2.offset.set(...off2);map2.needsUpdate=true;
-    emis2.repeat.set(...rep2);emis2.offset.set(...off2);emis2.needsUpdate=true;
-    const side2=new THREE.MeshStandardMaterial({map:map2,emissiveMap:emis2,
-      emissive:0xffe9b0,emissiveIntensity:.3,roughness:.9});
-    buildingMats.push(side2);
-    const top=new THREE.Mesh(new THREE.BoxGeometry(w2,h2,d2),
-      [side2,side2,roofMat,roofMat,side2,side2]);
-    top.position.set(cx,h+h2/2,cz);top.castShadow=true;scene.add(top);
+    addFacadeBox(vi,cx,h+h2/2,cz,w2,h2,d2);
     topH=h+h2;
   }
 
   if(Math.random()<.75){
     const eh=rand(.5,1.3);
-    const eq=new THREE.Mesh(unitBox,roofEquipMat);
-    eq.scale.set(rand(.9,2.2),eh,rand(.9,2));
-    eq.position.set(cx+rand(-w/2+1.6,w/2-1.6),h+eh/2+.1,cz+rand(-d/2+1.6,d/2-1.6));
-    eq.castShadow=true;scene.add(eq);
+    pushBox(buckets.equip,rand(.9,2.2),eh,rand(.9,2),
+      cx+rand(-w/2+1.6,w/2-1.6),h+eh/2+.1,cz+rand(-d/2+1.6,d/2-1.6));
   }
   if(h>13&&Math.random()<.22){
     const tx=cx+rand(-w/4,w/4),tz=cz+rand(-d/4,d/4);
-    const tk=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,1.3,8),tankMat);
-    tk.position.set(tx,h+.75,tz);tk.castShadow=true;scene.add(tk);
-    const lid=new THREE.Mesh(new THREE.ConeGeometry(.92,.5,8),parapetMat);
-    lid.position.set(tx,h+1.65,tz);scene.add(lid);
+    const tk=new THREE.CylinderGeometry(.8,.8,1.3,8);
+    tk.translate(tx,h+.75,tz);buckets.tank.push(tk);
+    const lid=new THREE.ConeGeometry(.92,.5,8);
+    lid.translate(tx,h+1.65,tz);buckets.parapet.push(lid);
   }
   if(h>24&&Math.random()<.55){
     const ah=rand(2.4,4),ax=cx+rand(-w/4,w/4),az=cz+rand(-d/4,d/4);
-    const an=new THREE.Mesh(new THREE.CylinderGeometry(.04,.07,ah,5),roofEquipMat);
-    an.position.set(ax,topH+ah/2,az);scene.add(an);
-    const tip=new THREE.Mesh(new THREE.SphereGeometry(.12,6,5),antennaTipMat);
-    tip.position.set(ax,topH+ah+.05,az);scene.add(tip);
+    const an=new THREE.CylinderGeometry(.04,.07,ah,5);
+    an.translate(ax,topH+ah/2,az);buckets.equip.push(an);
+    const tip=new THREE.SphereGeometry(.12,6,5);
+    tip.translate(ax,topH+ah+.05,az);buckets.tip.push(tip);
   }
   if(Math.random()<.65){
     const sgn=Math.random()<.5?1:-1,onX=Math.random()<.5;
     const dx=onX?sgn*(w/2+.07):rand(-w/4+1,w/4-1);
     const dz=onX?rand(-d/4+1,d/4-1):sgn*(d/2+.07);
-    const door=new THREE.Mesh(unitBox,doorMat);
-    door.scale.set(onX?.14:1.3,2.3,onX?1.3:.14);
-    door.position.set(cx+dx,1.15,cz+dz);scene.add(door);
-    const aw=new THREE.Mesh(unitBox,pick(awningMats));
-    aw.scale.set(onX?.85:rand(2.6,4),.13,onX?rand(2.6,4):.85);
-    aw.position.set(cx+dx+(onX?sgn*.42:0),2.55,cz+dz+(onX?0:sgn*.42));
-    if(onX)aw.rotation.z=-sgn*.14;else aw.rotation.x=sgn*.14;
-    aw.castShadow=true;scene.add(aw);
+    pushBox(buckets.door,onX?.14:1.3,2.3,onX?1.3:.14,cx+dx,1.15,cz+dz);
+    pushBox(buckets.awning[irand(0,awningMats.length-1)],
+      onX?.85:rand(2.6,4),.13,onX?rand(2.6,4):.85,
+      cx+dx+(onX?sgn*.42:0),2.55,cz+dz+(onX?0:sgn*.42),
+      onX?0:sgn*.14,onX?-sgn*.14:0);
   }
+}
+
+// Funde cada balde num único mesh — chamar UMA vez, depois da cidade montada
+export function finalizeBuildings(){
+  const addMerged=(geos,mat,cast=true,receive=false)=>{
+    if(!geos.length)return;
+    const m=new THREE.Mesh(mergeGeometries(geos),mat);
+    m.castShadow=cast;m.receiveShadow=receive;
+    scene.add(m);
+    geos.length=0;
+  };
+  buckets.sides.forEach((g,i)=>addMerged(g,sideMats[i],true,true));
+  addMerged(buckets.roof,roofMat,true,true);
+  addMerged(buckets.parapet,parapetMat);
+  addMerged(buckets.equip,roofEquipMat);
+  addMerged(buckets.tank,tankMat);
+  addMerged(buckets.tip,antennaTipMat,false);
+  addMerged(buckets.door,doorMat,false);
+  buckets.awning.forEach((g,i)=>addMerged(g,awningMats[i]));
 }

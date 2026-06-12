@@ -3,7 +3,7 @@ import {state,refs} from './state.js';
 import {scene,camera} from './engine.js';
 import {N,ROAD,BLOCK,SIDE,rand,irand,nodeX} from './constants.js';
 import {isPark} from './world.js';
-import {blip,thud} from './audio.js';
+import {blip,thud,gunshot} from './audio.js';
 import {message} from './hud.js';
 import {addWanted} from './physics.js';
 import {player,playerPos,cameraRig,idleCars,cur,getWasted} from './player.js';
@@ -297,7 +297,7 @@ export function shootWeapon(){
   const{origin,dir}=aimRay();
   makeBullet(origin,dir);
   addTracer(origin,origin.clone().addScaledVector(dir,3.2));
-  blip([1200],.035,'square',.12);
+  gunshot();
   state.crosshairKick=1;
   state.shake=Math.max(state.shake,.08);
   gunKick=.09;
