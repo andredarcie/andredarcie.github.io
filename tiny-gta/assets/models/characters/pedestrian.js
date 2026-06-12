@@ -125,7 +125,7 @@ export function makePed(color,pantsColor){
     const arm=new THREE.Group();
     arm.position.set(side*.34*bodyScale,1.26,0);
     const armMesh=new THREE.Mesh(armGeo,mat);
-    armMesh.castShadow=true;arm.add(armMesh);
+    arm.add(armMesh);
     const forearm=new THREE.Group();
     forearm.position.y=-.30;
     // mão (palma+dedos+polegar) fundida no antebraço; polegar muda de lado
@@ -137,7 +137,7 @@ export function makePed(color,pantsColor){
       tinted(pedThumbG,partM([-side*.06,-.33,.04]),skin),
     ],false);
     const foreMesh=new THREE.Mesh(foreGeo,mat);
-    foreMesh.castShadow=true;forearm.add(foreMesh);
+    forearm.add(foreMesh);
     arm.add(forearm);
     g.add(arm);
     limbs[side<0?'leftArm':'rightArm']=arm;
@@ -146,11 +146,11 @@ export function makePed(color,pantsColor){
     const leg=new THREE.Group();
     leg.position.set(side*.15,.52,0);
     const thighMesh=new THREE.Mesh(thighGeo,mat);
-    thighMesh.castShadow=true;leg.add(thighMesh);
+    leg.add(thighMesh);
     const calf=new THREE.Group();
     calf.position.y=-.30;
     const calfMesh=new THREE.Mesh(calfGeo,mat);
-    calfMesh.castShadow=true;calf.add(calfMesh);
+    calf.add(calfMesh);
     leg.add(calf);
     g.add(leg);
     limbs[side<0?'leftLeg':'rightLeg']=leg;

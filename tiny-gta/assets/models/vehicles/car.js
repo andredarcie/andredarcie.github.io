@@ -161,7 +161,7 @@ export function makeCar(color,police){
   g.add(new THREE.Mesh(seatsGeo,seatM));
 
   const cab=new THREE.Mesh(cabG,glassM);
-  cab.position.set(0,1.05,-.2);cab.castShadow=true;cab.renderOrder=3;g.add(cab);
+  cab.position.set(0,1.05,-.2);cab.renderOrder=3;g.add(cab);
 
   // Volante de pé, de frente pro motorista; spinWheels gira via userData.steer
   const wheel=new THREE.Mesh(steerGeo,darkM);
@@ -175,7 +175,7 @@ export function makeCar(color,police){
     doorPivot.position.set(side*.84,.54,1.0); // da soleira (.33) à cintura (.75)
     doorPivot.userData.sign=side<0?1:-1;
     const door=new THREE.Mesh(doorG,paint);
-    door.position.set(0,0,-.575);door.castShadow=true;
+    door.position.set(0,0,-.575);
     doorPivot.add(door);g.add(doorPivot);
     g.userData.doors.push(doorPivot);
   }
@@ -193,7 +193,7 @@ export function makeCar(color,police){
   for(const[sx,sz]of[[1,1.45],[-1,1.45],[1,-1.08],[-1,-1.08]]){
     const wg=new THREE.Group();wg.position.set(sx*.75,.30,sz);wg.rotation.order='YXZ';
     const w=new THREE.Mesh(wheelG,[tireM,hubM,hubM]);
-    w.rotation.z=Math.PI/2;w.castShadow=true;wg.add(w);
+    w.rotation.z=Math.PI/2;wg.add(w);
     g.add(wg);g.userData.wheels.push(wg);
     if(sz>0)g.userData.front.push(wg);
   }

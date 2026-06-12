@@ -3,7 +3,8 @@ import {makeSea} from '../assets/models/environment/sea.js';
 import {makeClouds} from '../assets/models/environment/clouds.js';
 
 export const canvas=document.getElementById('game');
-export const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+export const renderer=new THREE.WebGLRenderer({canvas,antialias:true,
+  powerPreference:'high-performance'});
 const isMobileLike=()=>matchMedia('(pointer: coarse)').matches||innerWidth<900;
 const viewportSize=()=>({
   w:Math.round(window.visualViewport?.width||innerWidth),
@@ -14,7 +15,8 @@ const initialSize=viewportSize();
 renderer.setPixelRatio(Math.min(devicePixelRatio,pixelRatioLimit()));
 renderer.setSize(initialSize.w,initialSize.h);
 renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+// PCF simples: o PCFSoft fazia várias leituras extras da shadow map por pixel
+renderer.shadowMap.type=THREE.PCFShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.25;
 

@@ -1,0 +1,31 @@
+name: Deploy tiny-gta to itch.io
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tiny-gta/**'
+  workflow_dispatch:
+
+jobs:
+  deploy-itch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install butler
+        run: |
+          curl --fail --location --retry 5 --retry-delay 2 --retry-all-errors -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+
+      - name: Deploy to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          ./butler push ./tiny-gta andredarcie/tiny-gta:html5 \
+            --ignore 'output/*' \
+            --ignore '*.md' \
+            --ignore '*.zip'

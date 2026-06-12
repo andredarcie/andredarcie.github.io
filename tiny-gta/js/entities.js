@@ -91,6 +91,7 @@ export function spinWheels(g,speed,dt,steer=0){
 // coxas pra frente e pés no piso (mesma pose do jogador dirigindo)
 export function seatDriver(carG,color,pants){
   const d=makePed(color,pants);
+  d.traverse(o=>{if(o.isMesh)o.castShadow=false;});
   const l=d.userData.limbs;
   if(l){
     l.leftLeg.rotation.set(-2.0,0,0);
