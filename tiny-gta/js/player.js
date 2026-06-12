@@ -3,6 +3,7 @@ import {clamp,rand,nodeX,WATER,SWIM_BOUND,RURAL_X1,RURAL_HALF,groundHeight} from
 import {state,input,carNames,carColors,refs} from './state.js';
 import {scene,camera} from './engine.js';
 import {makeCar,makePed,makePlane,spinWheels,dentCar} from './entities.js';
+import {INT_BOUNDS} from '../assets/models/city/nightclub.js';
 import * as Entities from './entities.js';
 import {thud,blip} from './audio.js';
 import {radioOn,radioOff,radioRandom} from './radio.js';
@@ -213,6 +214,7 @@ function updateExiting(dt){
 }
 
 export const inWater=p=>{
+  if(state.inClub)return false; // interior da boate fica fora do mapa, mas é chão seco
   if(Math.max(Math.abs(p.x),Math.abs(p.z))<=WATER)return false;
   // península rural a leste é terra firme
   return !(p.x>WATER&&p.x<=RURAL_X1&&Math.abs(p.z)<=RURAL_HALF);
@@ -523,6 +525,11 @@ export function updateCamera(dt){
   const want=new THREE.Vector3(tgt.x,tgt.y+height,tgt.z)
     .addScaledVector(forward,-flat)
     .addScaledVector(right,shoulder);
+  if(state.inClub){ // na boate a câmera fica presa dentro da sala (não vaza)
+    want.x=clamp(want.x,INT_BOUNDS.x0,INT_BOUNDS.x1);
+    want.y=Math.min(want.y,INT_BOUNDS.y1);
+    want.z=clamp(want.z,INT_BOUNDS.z0,INT_BOUNDS.z1);
+  }
   const k=1-Math.exp(-4.5*dt);
   camera.position.lerp(want,k);
   const tf=state.mode==='car'?62+Math.abs(cur.speed)/32*13:62;

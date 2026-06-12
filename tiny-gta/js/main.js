@@ -16,6 +16,7 @@ import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
 import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js';
 import {updateDayNight} from './daynight.js';
+import {clubNear,updateClub} from './club.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
 refs.playerPos=playerPos;
@@ -40,6 +41,7 @@ refs.nearestCar=nearestCar;
 refs.canPickWeapon=canPickWeapon;
 refs.isWeaponHeld=isWeaponHeld;
 refs.confiscateWeapon=confiscateWeapon;
+refs.clubNear=clubNear; // hud mostra ENTER/LEAVE THE CLUB perto das portas
 
 // First delivery spawned here, after refs are set (spawnDelivery needs playerPos)
 spawnDelivery();
@@ -85,6 +87,7 @@ function frame(){
   updateHeli(dt);
   updatePickups(dt);
   updateWeapons(dt);
+  updateClub(dt);
   if(input.shootHeld)performShoot();
 
   if(cur)blinkBar(cur.g);

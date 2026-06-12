@@ -3,7 +3,8 @@ export const state={
   deliveries:0,bustT:0,cutT:0,cutFn:null,shake:0,time:0,comboN:0,lastHit:-99,dlgActive:false,cine:false,
   hasGun:false,weaponHeld:false,ammo:0,maxAmmo:0,
   crosshairKick:0,crosshairTarget:false,
-  mobile:false,orientationBlocked:false,controlsLocked:false
+  mobile:false,orientationBlocked:false,controlsLocked:false,
+  inClub:false
 };
 
 export const input={

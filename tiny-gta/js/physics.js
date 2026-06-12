@@ -22,6 +22,10 @@ export function collideStatics(p,r,bound=BOUND){
       hit=true;
     }
   }
+  // Dentro da boate o jogador está a ~600m do mapa: o limite do mundo não
+  // vale lá (senão o clamp o arrasta pro meio do mar); as paredes da sala
+  // já são sólidas. NPCs (bound===BOUND) continuam presos à praia.
+  if(state.inClub&&bound>BOUND)return hit;
   // Jogador (bound>BOUND) pode seguir a península rural para +x até a montanha
   const ext=Math.max(0,bound-BOUND);
   const maxX=ext>0&&Math.abs(p.z)<RURAL_HALF+ext?RURAL_X1+ext:bound;

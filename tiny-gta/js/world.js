@@ -12,6 +12,7 @@ import {addStreetLamp,lampGlowMat,lampHaloMat,lampBulbMat} from '../assets/model
 import {addBuilding,finalizeBuildings,buildingMats} from '../assets/models/city/building.js';
 import {addAbandonedLot,finalizeAbandonedLots} from '../assets/models/city/abandoned-lot.js';
 import {finalizeProps} from '../assets/models/props/prop-merge.js';
+import {addNightclub,CLUB_I,CLUB_J} from '../assets/models/city/nightclub.js';
 import {addBarnWithSilo} from '../assets/models/rural/barn-with-silo.js';
 import {addHayBales} from '../assets/models/rural/hay-bales.js';
 import {addSummitFlag} from '../assets/models/rural/summit-flag.js';
@@ -23,7 +24,11 @@ import {addMountainRock} from '../assets/models/terrain/mountain-rock.js';
 
 export const solids=[];
 export const parks=new Set();
-while(parks.size<6){const i=irand(0,N-1),j=irand(0,N-1);if(Math.abs(i-4)+Math.abs(j-4)>1)parks.add(i+'_'+j);}
+while(parks.size<6){
+  const i=irand(0,N-1),j=irand(0,N-1);
+  if(i===CLUB_I&&j===CLUB_J)continue; // quarteirão reservado pra boate
+  if(Math.abs(i-4)+Math.abs(j-4)>1)parks.add(i+'_'+j);
+}
 export const isPark=(i,j)=>parks.has(i+'_'+j);
 
 // Lotes da cidade, sorteados ANTES da textura do chão: ~1/3 não ganha prédio
@@ -31,6 +36,7 @@ export const isPark=(i,j)=>parks.has(i+'_'+j);
 const cityLots=[];
 for(let i=0;i<N;i++)for(let j=0;j<N;j++){
   if(isPark(i,j))continue;
+  if(i===CLUB_I&&j===CLUB_J)continue; // o quarteirão da boate não vira lote
   const x0=nodeX(i)+ROAD/2+SIDE,z0=nodeX(j)+ROAD/2+SIDE,inner=BLOCK-2*SIDE;
   const sx=Math.random()<.5?1:2,sz=Math.random()<.5?1:2;
   for(let a=0;a<sx;a++)for(let b=0;b<sz;b++)
@@ -110,6 +116,7 @@ for(const lot of cityLots){
   if(lot.empty)addAbandonedLot(lot.cx,lot.cz,lot.w,lot.d,solids);
   else addBuilding(lot.cx,lot.cz,lot.w,lot.d,solids);
 }
+addNightclub(solids); // boate de frente pro mar no quarteirão reservado
 finalizeBuildings();     // funde a cidade inteira em ~18 meshes (draw calls)
 finalizeAbandonedLots(); // e todos os lotes abandonados em ~5
 
