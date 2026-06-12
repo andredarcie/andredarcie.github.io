@@ -7,9 +7,10 @@ import {animatePed} from './entities.js';
 import {clamp} from './constants.js';
 import {CLUB_DOOR,CLUB_SPAWN_OUT,INT_CENTER,INT_DOOR,INT_SPAWN,INT_BOUNDS,clubFx,clubInterior}
   from '../assets/models/city/nightclub.js';
+import {arrowBob} from '../assets/models/city/door-arrow.js';
 
-// Boate: chegar na porta a pé mostra o prompt (hud.js via refs.clubNear),
-// E/botão de interação teleporta pra dentro; na porta interna, volta pra rua.
+// Boate: encostar na porta a pé já teleporta pra dentro (js/doors.js chama
+// clubInteract, sem botão); encostar na porta interna volta pra rua.
 // O interior fica num grupo com visible=false quando ninguém está lá.
 
 export function clubNear(){
@@ -64,6 +65,7 @@ export function updateClub(dt){
   if(Math.hypot(pp.x-INT_CENTER.x,pp.z-INT_CENTER.z)>60){leaveClubState();return;}
 
   clubFx.ball.rotation.y+=dt*1.4;
+  if(clubFx.exitArrow)clubFx.exitArrow.position.y=1.7+arrowBob(state.time);
   fxT+=dt;
   if(fxT>=.24){ // pista pisca trocando as cores dos 4 materiais compartilhados
     fxT=0;step++;

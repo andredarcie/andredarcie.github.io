@@ -43,8 +43,6 @@ export function getInteractAction(){
   if(state.paused||state.mode==='cut'||state.orientationBlocked)return{label:'...',prompt:'',enabled:false};
   if(refs.canPickWeapon?.())return{label:'PICK',prompt:'PICK UP WEAPON',enabled:true};
   if(state.mode==='foot'){
-    const cn=refs.clubNear?.();
-    if(cn)return{label:'CLUB',prompt:cn==='enter'?'ENTER THE CLUB':'LEAVE THE CLUB',enabled:true};
     const sn=refs.storyNear?.();
     if(sn)return{label:'TALK',prompt:'TALK TO '+sn,enabled:true};
   }

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import {state,refs} from './state.js';
+import {state,refs,saveBest} from './state.js';
 import {scene,camera} from './engine.js';
-import {N,ROAD,BLOCK,SIDE,rand,irand,nodeX} from './constants.js';
+import {N,ROAD,BLOCK,SIDE,rand,irand,nodeX,groundHeight,SWIM_BOUND} from './constants.js';
 import {isPark} from './world.js';
 import {blip,thud,gunshot} from './audio.js';
 import {message} from './hud.js';
-import {addWanted} from './physics.js';
+import {addWanted,collideStatics} from './physics.js';
 import {player,playerPos,cameraRig,idleCars,cur,getWasted} from './player.js';
 import {peds,addBloodPuddle} from './pedestrians.js';
 import {traffic,spawnTraffic} from './traffic.js';
@@ -14,6 +14,7 @@ import {spawnDrop} from './missions.js';
 import {gangPeds,killGangPed} from './gangs.js';
 import {dentCar} from './entities.js';
 import {makeGunModel} from '../assets/models/weapons/player-gun.js';
+import {makeBazookaModel,makeMissileModel} from '../assets/models/weapons/bazooka.js';
 import {makeExplosionModel} from '../assets/models/effects/explosion.js';
 import {makeImpactRing} from '../assets/models/effects/impact-ring.js';
 import {makeBulletModel} from '../assets/models/effects/bullet.js';
@@ -47,6 +48,49 @@ heldGun.visible=false;
 player.g.add(heldGun);
 const muzzlePoint=heldGun.userData.muzzlePoint;
 
+// ----- BAZUCA: item mais potente do jogo, escondida na zona rural -----
+// Encostar nela inicia um rampage estilo Vice City: destruir N carros em
+// T segundos com mísseis (cada míssil destrói um carro de uma vez e a onda
+// de choque mata grupos inteiros). Ganhou, leva o prêmio; perdeu, fica tudo
+// normal. A bazuca só existe durante o rampage e reaparece no campo depois.
+const RAMPAGE_GOAL=3,RAMPAGE_TIME=80,RAMPAGE_REWARD=1000;
+const rampage={active:false,end:0,kills:0};
+const missiles=[];
+const BAZ_X=320,BAZ_Z=0; // fim da estrada de terra, no pé da montanha
+const bazookaPickup=makeBazookaModel({pickup:true});
+bazookaPickup.scale.set(1.4,1.4,1.4);
+bazookaPickup.position.set(BAZ_X,groundHeight(BAZ_X,BAZ_Z)+.95,BAZ_Z);
+scene.add(bazookaPickup);
+let bazRespawnAt=-1;
+
+const heldBazooka=makeBazookaModel();
+heldBazooka.position.set(.43,1.48,.15); // apoiada no ombro direito
+heldBazooka.visible=false;
+player.g.add(heldBazooka);
+
+const rampageEl=document.getElementById('rampage');
+
+function startRampage(){
+  rampage.active=true;rampage.end=state.time+RAMPAGE_TIME;rampage.kills=0;
+  bazookaPickup.visible=false;
+  message(`RAMPAGE! DESTROY ${RAMPAGE_GOAL} CARS WITH THE BAZOOKA`,'var(--pink)');
+  blip([220,330,440,660],.09,'square',.2);
+}
+
+function endRampage(won){
+  rampage.active=false;
+  if(rampageEl)rampageEl.style.display='none';
+  bazRespawnAt=state.time+75; // a bazuca volta pro pasto um tempo depois
+  if(won){
+    state.money+=RAMPAGE_REWARD;saveBest();
+    message(`RAMPAGE PASSED! +$${RAMPAGE_REWARD}`,'var(--gold)');
+    blip([523,659,784,1047],.09,'sine',.18);
+  }else{
+    message('RAMPAGE FAILED','var(--pink)');
+    blip([220,170,120],.1,'sawtooth',.16);
+  }
+}
+
 const explosions=[];
 const tracers=[];
 const impacts=[];
@@ -57,7 +101,8 @@ let gunKick=0;
 document.getElementById('buildver')?.insertAdjacentText('beforeend',' ◆ BULLET');
 
 export function isWeaponHeld(){
-  return !!(state.hasGun&&state.weaponHeld&&state.mode==='foot');
+  if(state.mode!=='foot')return false;
+  return rampage.active||!!(state.hasGun&&state.weaponHeld);
 }
 
 export function canPickWeapon(){
@@ -65,13 +110,20 @@ export function canPickWeapon(){
   return !!nearestWeaponPickup(3);
 }
 
+// Dá a arma com pente cheio sem depender de um pickup no chão (o espólio
+// dos telhados em js/doors.js também usa)
+export function grantWeapon(){
+  state.hasGun=true;state.weaponHeld=state.mode==='foot';
+  state.ammo=MAX_AMMO;state.maxAmmo=MAX_AMMO;
+  for(const g of weaponPickups)scene.remove(g);
+  blip([440,660,880],.07,'square',.14);
+}
+
 export function pickupWeapon(){
   const pickup=nearestWeaponPickup(3);
   if(!pickup)return;
-  state.hasGun=true;state.weaponHeld=true;state.ammo=MAX_AMMO;state.maxAmmo=MAX_AMMO;
-  for(const g of weaponPickups)scene.remove(g);
+  grantWeapon();
   message('WEAPON PICKED UP - LEFT CLICK TO SHOOT','var(--gold)');
-  blip([440,660,880],.07,'square',.14);
 }
 
 export function confiscateWeapon(){
@@ -123,6 +175,9 @@ function aimRay(range=48){
 }
 
 function getMuzzleWorldPosition(){
+  if(heldBazooka.visible){
+    return heldBazooka.userData.muzzlePoint.getWorldPosition(new THREE.Vector3());
+  }
   if(heldGun.visible){
     return muzzlePoint.getWorldPosition(new THREE.Vector3());
   }
@@ -240,6 +295,11 @@ function explodeCar(car,arr){
   addWanted(1.5,'VEHICLE DESTROYED!','vehicle_destroyed');
   state.shake=.7;
   if(arr===traffic)setTimeout(()=>spawnTraffic(),900);
+  // rampage da bazuca: todo carro destruído conta (em cadeia também)
+  if(rampage.active){
+    rampage.kills++;
+    if(rampage.kills>=RAMPAGE_GOAL)endRampage(true);
+  }
 }
 
 function damageCar(car,arr,pos,dir){
@@ -286,8 +346,44 @@ function handleBulletHit(hit,pos,dir){
   else addWanted(.25,'SHOT FIRED!','gunfire');
 }
 
+// Tiro da bazuca: cadência lenta, míssil visível, coice forte; sem munição
+// pra controlar — o limite do rampage é o relógio
+function fireMissile(){
+  if(state.time-lastShot<1.15)return;
+  lastShot=state.time;
+  player.heading=cameraRig.yaw;
+  player.g.rotation.y=cameraRig.yaw;
+  posePlayerWithGun();
+  player.g.updateWorldMatrix(true,true);
+  const{origin,dir}=aimRay(70);
+  const g=makeMissileModel();
+  g.position.copy(origin);
+  g.rotation.y=Math.atan2(dir.x,dir.z);
+  scene.add(g);
+  missiles.push({g,dir:dir.clone(),dist:0,range:75});
+  thud(7);blip([95,60],.16,'sawtooth',.3); // estampido grave do tubo
+  state.crosshairKick=1;
+  state.shake=Math.max(state.shake,.2);
+  gunKick=.16;
+}
+
+// Impacto do míssil: carro atingido em cheio explode na hora (explodeCar já
+// faz a explosão + onda de choque); qualquer outro impacto detona no ponto
+function missileBlast(pos,hit){
+  if(hit&&hit.kind==='car')explodeCar(hit.target,hit.arr);
+  else{
+    makeExplosion(pos.clone());
+    blastDamage(pos);
+    addWanted(1,'EXPLOSION!','explosion');
+  }
+  if(hit&&hit.kind==='story')hit.target.kill();
+  state.shake=Math.max(state.shake,.4);
+}
+
 export function shootWeapon(){
-  if(!isWeaponHeld()||state.time-lastShot<.18)return;
+  if(!isWeaponHeld())return;
+  if(rampage.active)return fireMissile();
+  if(state.time-lastShot<.18)return;
   if(state.ammo<=0){message('OUT OF AMMO','var(--pink)');return;}
   lastShot=state.time;state.ammo--;
   player.heading=cameraRig.yaw;
@@ -303,11 +399,56 @@ export function shootWeapon(){
   gunKick=.09;
 }
 
+const _missileProbe=new THREE.Vector3();
+
 export function updateWeapons(dt){
-  heldGun.visible=isWeaponHeld();
-  if(heldGun.visible){
+  heldBazooka.visible=rampage.active&&state.mode==='foot';
+  heldGun.visible=isWeaponHeld()&&!rampage.active;
+  if(heldGun.visible||heldBazooka.visible){
     posePlayerWithGun();
     gunKick=Math.max(0,gunKick-dt*.55);
+  }
+
+  // ----- rampage da bazuca: relógio, placar e fim por morte/prisão -----
+  if(rampage.active){
+    if(state.mode==='cut')endRampage(false); // WASTED/BUSTED encerra o desafio
+    else if(state.time>rampage.end)endRampage(false);
+    else if(rampageEl){
+      rampageEl.style.display='block';
+      rampageEl.textContent=
+        `RAMPAGE ${rampage.kills}/${RAMPAGE_GOAL} CARS - ${Math.ceil(rampage.end-state.time)}s`;
+    }
+  }else{
+    if(!bazookaPickup.visible&&bazRespawnAt>=0&&state.time>bazRespawnAt)
+      bazookaPickup.visible=true;
+    if(bazookaPickup.visible){
+      bazookaPickup.rotation.y+=dt*1.2;
+      bazookaPickup.position.y=groundHeight(BAZ_X,BAZ_Z)+.95+Math.sin(state.time*2.6)*.1;
+      // pegar é encostar (igual às portas): o rampage começa na hora
+      if(state.started&&state.mode==='foot'&&!state.controlsLocked&&
+        playerPos().distanceTo(bazookaPickup.position)<2.6)startRampage();
+    }
+  }
+
+  // mísseis em voo: raio contra alvos no passo, prédios/limites via solids
+  for(let i=missiles.length-1;i>=0;i--){
+    const m=missiles[i];
+    const step=34*dt;
+    const hit=findWeaponHit(m.g.position,m.dir,step+1.2);
+    if(hit.kind!=='miss'){
+      missileBlast(m.g.position.clone().addScaledVector(m.dir,hit.d),hit);
+      scene.remove(m.g);missiles.splice(i,1);continue;
+    }
+    m.g.position.addScaledVector(m.dir,step);
+    m.dist+=step;
+    _missileProbe.copy(m.g.position);
+    if(collideStatics(_missileProbe,.3,SWIM_BOUND)||m.dist>=m.range||
+      m.g.position.y<=groundHeight(m.g.position.x,m.g.position.z)){ // encosta da montanha
+      missileBlast(m.g.position.clone(),null);
+      scene.remove(m.g);missiles.splice(i,1);continue;
+    }
+    m.g.userData.flame.scale.setScalar(.7+Math.random()*.6); // chama tremula
+    addTracer(m.g.position.clone().addScaledVector(m.dir,-1.1),m.g.position);
   }
   if(isWeaponHeld()&&!state.paused&&!state.dlgActive&&!state.orientationBlocked){
     const{origin,dir}=aimRay();

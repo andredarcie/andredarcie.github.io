@@ -4,7 +4,8 @@ export const state={
   hasGun:false,weaponHeld:false,ammo:0,maxAmmo:0,
   crosshairKick:0,crosshairTarget:false,
   mobile:false,orientationBlocked:false,controlsLocked:false,
-  inClub:false
+  inClub:false,
+  onRoof:null // registro da porta do prédio em cujo telhado o jogador está
 };
 
 export const input={

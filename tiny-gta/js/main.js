@@ -16,7 +16,9 @@ import {setupInput,updateKeyboardInput,performShoot} from './input.js';
 import {setupTouchControls,updateTouchControls} from './touch-controls.js';
 import {canPickWeapon,updateWeapons,isWeaponHeld,confiscateWeapon} from './weapons.js';
 import {updateDayNight} from './daynight.js';
-import {clubNear,updateClub} from './club.js';
+import {updateClub} from './club.js';
+import {updateDoors} from './doors.js';
+import {updateDoorArrows} from '../assets/models/city/door-arrow.js';
 
 // Populate late-binding refs so cross-module code can access these without circular imports
 refs.playerPos=playerPos;
@@ -41,7 +43,6 @@ refs.nearestCar=nearestCar;
 refs.canPickWeapon=canPickWeapon;
 refs.isWeaponHeld=isWeaponHeld;
 refs.confiscateWeapon=confiscateWeapon;
-refs.clubNear=clubNear; // hud mostra ENTER/LEAVE THE CLUB perto das portas
 
 // First delivery spawned here, after refs are set (spawnDelivery needs playerPos)
 spawnDelivery();
@@ -65,6 +66,10 @@ function frame(){
   }
   updateBeach(state.time);
   updateDayNight(dt);
+  { // setinhas de porta: só aparecem nas portas perto do jogador
+    const ap=playerPos();
+    updateDoorArrows(state.time,ap.x,ap.z);
+  }
 
   if(!state.started){
     const a=state.time*.07;
@@ -88,6 +93,7 @@ function frame(){
   updatePickups(dt);
   updateWeapons(dt);
   updateClub(dt);
+  updateDoors(); // portas por toque: boate e telhados dos prédios
   if(input.shootHeld)performShoot();
 
   if(cur)blinkBar(cur.g);

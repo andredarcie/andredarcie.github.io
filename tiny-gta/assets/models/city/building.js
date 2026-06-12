@@ -2,6 +2,11 @@ import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {scene} from '../../../js/engine.js';
 import {rand,irand,pick,clamp} from '../../../js/constants.js';
+import {addDoorArrow} from './door-arrow.js';
+
+// Portas funcionais: encostar nelas leva o jogador ao telhado do prédio
+// (js/doors.js cuida do gatilho e do teleporte; js/player.js da queda)
+export const buildingDoors=[];
 
 const facadePalette=['#f4c2d0','#a8e0d8','#f9e4b8','#ffb88a','#b8d4f0','#e8c8f0','#8ad8c8','#f49a8a'];
 
@@ -165,6 +170,30 @@ export function addBuilding(cx,cz,w,d,solids){
       onX?.85:rand(2.6,4),.13,onX?rand(2.6,4):.85,
       cx+dx+(onX?sgn*.42:0),2.55,cz+dz+(onX?0:sgn*.42),
       onX?0:sgn*.14,onX?-sgn*.14:0);
+    // registro da porta: gatilho na calçada, spawn/saída no telhado e os
+    // limites da laje (parapeito) — passar deles é queda livre
+    const nx=onX?sgn:0,nz=onX?0:sgn; // normal da fachada (aponta pra rua)
+    const door={
+      x:cx+dx,z:cz+dz,                      // gatilho de entrada (na porta)
+      outX:cx+dx+nx*1.3,outZ:cz+dz+nz*1.3,  // desembarque na calçada
+      topX:cx+dx-nx*1.9,topZ:cz+dz-nz*1.9,  // spawn e saída no telhado
+      y:h+.395,                             // topo da laje (parapeito)
+      x0:cx-(w+.35)/2,x1:cx+(w+.35)/2,
+      z0:cz-(d+.35)/2,z1:cz+(d+.35)/2,
+      // bloco superior (quando existe) é sólido pra quem anda no telhado
+      top:topH>h?{x0:cx-w*.31,x1:cx+w*.31,z0:cz-d*.31,z1:cz+d*.31}:null,
+      // espólio do telhado: uns têm dinheiro, outros arma, outros nada
+      // (visual e coleta em js/doors.js, só pra quem está neste telhado)
+      loot:Math.random()<.35?'money':Math.random()<.4?'gun':null,
+      lootX:cx+(nx?-nx:1)*(w/2-1.6),lootZ:cz+(nz?-nz:1)*(d/2-1.6),
+    };
+    buildingDoors.push(door);
+    addDoorArrow(cx+dx+nx*.85,1.55,cz+dz+nz*.85); // seta rente ao chão, na porta
+    // alçapão de metal no telhado marcando o ponto de descida (a seta de lá
+    // é dinâmica: js/doors.js só a mostra quando o jogador está neste telhado)
+    pushBox(buckets.door,1.8,.05,1.8,door.topX,h+.41,door.topZ);  // moldura escura
+    pushBox(buckets.equip,1.4,.07,1.4,door.topX,h+.45,door.topZ); // folha de metal
+    pushBox(buckets.door,.5,.07,.13,door.topX,h+.5,door.topZ+.4); // alça
   }
 }
 

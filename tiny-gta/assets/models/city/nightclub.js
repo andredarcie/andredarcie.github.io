@@ -3,6 +3,7 @@ import {scene} from '../../../js/engine.js';
 import {rand,pick} from '../../../js/constants.js';
 import {addPalm} from '../props/palm.js';
 import {makePed,shirtColors} from '../characters/pedestrian.js';
+import {addDoorArrow,makeDoorArrow} from './door-arrow.js';
 
 // Boate "THE FLAMINGO", estilo Vice City: prédio na orla oeste (quarteirão
 // CLUB_I/CLUB_J, reservado pelo world.js) com letreiro neon e entrada coberta.
@@ -38,7 +39,7 @@ function signTexture(){
   return t;
 }
 
-export const clubFx={tiles:[],tileMats:[],ball:null,dancers:[]};
+export const clubFx={tiles:[],tileMats:[],ball:null,dancers:[],exitArrow:null};
 export const clubInterior=new THREE.Group();
 clubInterior.visible=false;
 
@@ -74,6 +75,8 @@ export function addNightclub(solids){
   const sign=new THREE.Mesh(new THREE.PlaneGeometry(9.5,2.4),
     new THREE.MeshBasicMaterial({map:signTexture(),transparent:true}));
   sign.position.set(-162.18,5.7,-22);sign.rotation.y=-Math.PI/2;scene.add(sign);
+  // seta estilo Vice City quicando rente ao chão na entrada: encostou, entrou
+  addDoorArrow(-163.4,1.7,-22);
   // palmeiras na calçada (entram na fusão de props do world.js)
   addPalm(-164.2,-13.2);addPalm(-164.2,-30.8);
   solids.push({x0:-162.2,x1:-145.8,z0:-31.2,z1:-12.8,h:7.2});
@@ -153,6 +156,11 @@ export function addNightclub(solids){
   exitDoor.position.set(-812.85,1.5,-22);clubInterior.add(exitDoor);
   const exitNeon=new THREE.Mesh(new THREE.BoxGeometry(.1,.3,1.6),neonPinkM);
   exitNeon.position.set(-812.8,3.3,-22);clubInterior.add(exitNeon);
+  // seta de saída quicando na frente da porta (animada pelo js/club.js,
+  // porque o mesh fundido das setas externas não alcança o interior)
+  clubFx.exitArrow=makeDoorArrow();
+  clubFx.exitArrow.position.set(-811.9,1.7,-22);
+  clubInterior.add(clubFx.exitArrow);
 
   // dançarinos: peds fundidos reaproveitados, animados pelo js/club.js
   const spots=[[-804,-23.5],[-801.8,-21],[-799.5,-24],[-803,-19.8],[-800.6,-26],[-797.8,-21.6]];

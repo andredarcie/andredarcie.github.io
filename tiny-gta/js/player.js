@@ -229,6 +229,7 @@ export function getBusted(){
   if(dying)return; // morrendo não é preso
   cancelEntering();
   startCut('BUSTED','#3e7bff',()=>{
+    state.onRoof=null;roofFall=null; // delegacia fica no chão, não no telhado
     state.money=Math.floor(state.money*.85);state.wanted=0;state.bustT=0;
     const cops=refs.cops||[];
     for(const c of cops)scene.remove(c.g);cops.length=0;
@@ -243,6 +244,7 @@ export function getBusted(){
 
 function wastedCut(){
   startCut('WASTED','#ff2e88',()=>{
+    state.onRoof=null;roofFall=null; // hospital fica no chão, não no telhado
     state.money=Math.floor(state.money*.8);state.wanted=0;state.bustT=0;
     const cops=refs.cops||[];
     for(const c of cops)scene.remove(c.g);cops.length=0;
@@ -271,14 +273,38 @@ export function getWasted(){
 function updateDying(dt){
   const d=dying;d.t+=dt;
   const k=Math.min(1,d.t/.45);
-  const gh=groundHeight(player.g.position.x,player.g.position.z);
+  // morrendo no telhado o corpo tomba na laje, não no asfalto lá embaixo
+  const gh=state.onRoof?state.onRoof.y
+    :groundHeight(player.g.position.x,player.g.position.z);
   player.g.rotation.x=-Math.PI/2*k; // mesma pose dos NPCs mortos
   player.g.position.y=gh+.35*k;
   if(k>=1&&!d.puddle){
     d.puddle=true;
-    refs.addBloodPuddle?.(player.g.position.x,player.g.position.z);
+    if(!state.onRoof)refs.addBloodPuddle?.(player.g.position.x,player.g.position.z);
   }
   if(d.t>1.5){dying=null;state.controlsLocked=false;wastedCut();}
+}
+
+// Queda do telhado: passou da borda do parapeito, despenca sem controle e
+// morre no impacto com o chão (queda de prédio mata na hora)
+let roofFall=null;
+function startRoofFall(){
+  roofFall={vy:0,dx:Math.sin(player.heading)*2.4,dz:Math.cos(player.heading)*2.4};
+  state.controlsLocked=true;
+  state.weaponHeld=false;
+}
+function updateRoofFall(dt){
+  const p=player.g.position;
+  roofFall.vy-=30*dt;
+  p.x+=roofFall.dx*dt;p.z+=roofFall.dz*dt;p.y+=roofFall.vy*dt;
+  collideStatics(p,.5,SWIM_BOUND); // escorrega pela fachada em vez de entrar nela
+  player.bob+=dt*14;Entities.animatePed?.(player.g,player.bob,1); // se debate no ar
+  const gh=groundHeight(p.x,p.z);
+  if(p.y<=gh){
+    p.y=gh;roofFall=null;state.controlsLocked=false;
+    thud(18);state.shake=.45;
+    getWasted();
+  }
 }
 
 const PMAX=55,VTO=22,PCEIL=130; // avião: velocidade máx, decolagem, teto
@@ -443,6 +469,7 @@ export function updateCar(dt){
 
 export function updateFoot(dt){
   if(dying)return updateDying(dt);
+  if(roofFall)return updateRoofFall(dt);
   if(entering)return updateEntering(dt);
   if(exiting)return updateExiting(dt);
   if(state.dlgActive)return;
@@ -466,9 +493,25 @@ export function updateFoot(dt){
     player.g.position.y=-1.5+Math.sin(player.bob*2)*.06;
     walkAmount=Math.max(walkAmount,.5);
   }else{
-    const gh=groundHeight(player.g.position.x,player.g.position.z);
-    if(f||side)player.g.position.y=gh+Math.abs(Math.sin(player.bob))*.09;
-    else player.g.position.y=gh+(player.g.position.y-gh)*.8;
+    const r=state.onRoof,p=player.g.position;
+    if(r){
+      // bloco superior do prédio é sólido pra quem anda na laje (não tem
+      // entrada própria no solids[]: lá em cima só este AABB importa)
+      const t=r.top;
+      if(t&&p.x>t.x0-.5&&p.x<t.x1+.5&&p.z>t.z0-.5&&p.z<t.z1+.5){
+        const pl=p.x-t.x0+.5,pr=t.x1+.5-p.x,pt=p.z-t.z0+.5,pb=t.z1+.5-p.z;
+        const m=Math.min(pl,pr,pt,pb);
+        if(m===pl)p.x=t.x0-.5;else if(m===pr)p.x=t.x1+.5;
+        else if(m===pt)p.z=t.z0-.5;else p.z=t.z1+.5;
+      }
+      // passou da borda do parapeito: vira queda livre (e morte no chão)
+      if(p.x<r.x0||p.x>r.x1||p.z<r.z0||p.z>r.z1){
+        state.onRoof=null;startRoofFall();return;
+      }
+    }
+    const gh=r?r.y:groundHeight(p.x,p.z);
+    if(f||side)p.y=gh+Math.abs(Math.sin(player.bob))*.09;
+    else p.y=gh+(p.y-gh)*.8;
   }
   Entities.animatePed?.(player.g,player.bob,walkAmount);
   collideStatics(player.g.position,.5,SWIM_BOUND);
@@ -487,7 +530,8 @@ export function updateFoot(dt){
       }
     }
   }
-  const armed=state.hasGun&&state.weaponHeld&&state.mode==='foot';
+  // armado de pistola ou no rampage da bazuca: vira junto com a câmera
+  const armed=refs.isWeaponHeld?.()||false;
   if(armed){
     player.heading=cameraRig.yaw;
     player.g.rotation.y=cameraRig.yaw;

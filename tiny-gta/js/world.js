@@ -10,6 +10,7 @@ import {addFarmHouse} from '../assets/models/props/farm-house.js';
 import {addPine} from '../assets/models/props/pine.js';
 import {addStreetLamp,lampGlowMat,lampHaloMat,lampBulbMat} from '../assets/models/props/street-lamp.js';
 import {addBuilding,finalizeBuildings,buildingMats} from '../assets/models/city/building.js';
+import {finalizeDoorArrows} from '../assets/models/city/door-arrow.js';
 import {addAbandonedLot,finalizeAbandonedLots} from '../assets/models/city/abandoned-lot.js';
 import {finalizeProps} from '../assets/models/props/prop-merge.js';
 import {addNightclub,CLUB_I,CLUB_J} from '../assets/models/city/nightclub.js';
@@ -119,6 +120,7 @@ for(const lot of cityLots){
 addNightclub(solids); // boate de frente pro mar no quarteirão reservado
 finalizeBuildings();     // funde a cidade inteira em ~18 meshes (draw calls)
 finalizeAbandonedLots(); // e todos os lotes abandonados em ~5
+finalizeDoorArrows();    // todas as setinhas de porta num único mesh
 
 // Beach ring around the whole city: sand plane slightly below the city ground,
 // foam painted on the outer edge where it meets the sea

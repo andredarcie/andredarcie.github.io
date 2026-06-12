@@ -6,7 +6,6 @@ import {storyInteract} from './story.js';
 import {setMissionHUD} from './missions.js';
 import {message} from './hud.js';
 import {canPickWeapon,pickupWeapon,shootWeapon} from './weapons.js';
-import {clubInteract} from './club.js';
 
 const gameCanvas=()=>document.getElementById('game');
 const isBlocked=()=>state.paused||state.mode==='cut'||state.orientationBlocked||state.controlsLocked;
@@ -77,7 +76,6 @@ export function performInteract(){
   if(isBlocked())return;
   if(state.mode==='foot'){
     if(canPickWeapon()){pickupWeapon();return;}
-    if(clubInteract())return;
     if(storyInteract())return;
     enterCar();
   }else if(state.mode==='car'&&Math.abs(cur?.speed||0)<6){
