@@ -10,6 +10,7 @@ import {updateGangs,gangs} from './gangs.js';
 import {updateBeach} from './world.js';
 import {cops,heli,updateCops,updateHeli} from './police.js';
 import {delivery,spawnDelivery,updatePickups} from './missions.js';
+import {updateTaxi} from './taxi.js';
 import {updateStory,storyNear,storyBlips,storyTargets} from './story.js';
 import {blinkBar} from './entities.js';
 import {setupInput,updateKeyboardInput,performShoot} from './input.js';
@@ -51,10 +52,7 @@ setupInput();
 setupTouchControls();
 
 const clock=new THREE.Clock();
-function frame(){
-  requestAnimationFrame(frame);
-  tickFps(); // antes dos early-returns: mede até pausado/tela de título
-  const dt=Math.min(clock.getDelta(),.05);
+function step(dt){
   updateKeyboardInput();
   updateTouchControls();
   if(state.paused||state.orientationBlocked){renderer.render(scene,camera);return;}
@@ -91,6 +89,7 @@ function frame(){
   if(state.mode!=='cut'&&!state.cine)updateCops(dt);
   updateHeli(dt);
   updatePickups(dt);
+  updateTaxi(dt);
   updateWeapons(dt);
   updateClub(dt);
   updateDoors(); // portas por toque: boate e telhados dos prédios
@@ -111,4 +110,33 @@ function frame(){
 
   renderer.render(scene,camera);
 }
+
+function frame(){
+  requestAnimationFrame(frame);
+  tickFps(); // antes dos early-returns: mede até pausado/tela de título
+  step(Math.min(clock.getDelta(),.05));
+}
+
+window.advanceTime=ms=>{
+  const steps=Math.max(1,Math.round(ms/(1000/60)));
+  for(let i=0;i<steps;i++)step(1/60);
+};
+
+window.render_game_to_text=()=>{
+  const pp=playerPos();
+  const c=cur;
+  return JSON.stringify({
+    coordinateSystem:'world x/z plane, y height; x and z use map meters, y up',
+    started:state.started,
+    paused:state.paused,
+    mode:state.mode,
+    money:state.money,
+    wanted:state.wanted,
+    player:{x:pp.x,y:pp.y,z:pp.z,heading:state.mode==='car'?c?.heading:player.heading},
+    vehicle:c?{name:c.name,x:c.g.position.x,y:c.g.position.y,z:c.g.position.z,speed:c.speed,plane:!!c.plane,taxi:!!c.taxi}:null,
+    taxi:refs.getTaxiState?.()||null,
+    delivery:delivery?{x:delivery.x,z:delivery.z}:null,
+    storyBlips:refs.storyBlips?.()||[],
+  });
+};
 frame();

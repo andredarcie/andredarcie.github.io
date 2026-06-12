@@ -46,7 +46,12 @@ export function getInteractAction(){
     const sn=refs.storyNear?.();
     if(sn)return{label:'TALK',prompt:'TALK TO '+sn,enabled:true};
   }
-  if(state.mode==='foot'&&refs.nearestCar?.(3.6))return{label:'CAR',prompt:'TAKE THE CAR',enabled:true};
+  if(state.mode==='foot'){
+    const near=refs.nearestCar?.(3.6);
+    if(near)return refs.isTaxiCar?.(near.c)
+      ?{label:'TAXI',prompt:'START TAXI SHIFT',enabled:true}
+      :{label:'CAR',prompt:'TAKE THE CAR',enabled:true};
+  }
   if(state.mode==='car'){
     const speed=Math.abs(refs.getCur?.()?.speed||0);
     return speed<6
@@ -142,6 +147,11 @@ export function drawMinimap(){
   if(delivery){
     const[px,py]=mmBlip(delivery.x,delivery.z,pp,scale);
     mmSquare(px,py,8,'#ffd24a');
+  }
+  const taxiT=refs.taxiTarget?.(); // corrida de táxi: passageiro ou destino
+  if(taxiT){
+    const[px,py]=mmBlip(taxiT.x,taxiT.z,pp,scale);
+    mmSquare(px,py,8,'#5eff8a');
   }
   // Missão da história: blip no NPC atual (letra) ou no item quando ativa;
   // o piscar de retorno já vem resolvido de storyBlips()

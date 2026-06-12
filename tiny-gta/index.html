@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=IBM+Plex+Mono:wght@400;600;700&family=Press+Start+2P&family=Yellowtail&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=62">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -54,6 +54,7 @@
     <span class="ch-ring"></span>
   </div>
   <div id="carname"></div>
+  <div id="taxihud"></div>
   <div id="radio-hud" class="panel">
     <div id="radio-name"></div>
     <div id="radio-tag"></div>
@@ -110,7 +111,7 @@
   <div id="play">CLICK TO PLAY</div>
   <div id="best"></div>
   <div id="credit">TALK TO DIEGO PENHA ◆ EVADE THE POLICE ◆ DO NOT GET BUSTED</div>
-  <div id="buildver" style="margin-top:8px;font:600 11px 'IBM Plex Mono',monospace;opacity:.55">BUILD 56</div>
+  <div id="buildver" style="margin-top:8px;font:600 11px 'IBM Plex Mono',monospace;opacity:.55">BUILD 62</div>
 </div>
 
 <!-- Cache-busting central: o import map remapeia cada módulo para a URL com
@@ -120,80 +121,81 @@
 {"imports":{
   "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
   "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-  "./js/audio.js":"./js/audio.js?v=56",
-  "./js/club.js":"./js/club.js?v=56",
-  "./js/constants.js":"./js/constants.js?v=56",
-  "./js/daynight.js":"./js/daynight.js?v=56",
-  "./js/doors.js":"./js/doors.js?v=56",
-  "./js/engine.js":"./js/engine.js?v=56",
-  "./js/entities.js":"./js/entities.js?v=56",
-  "./js/gangs.js":"./js/gangs.js?v=56",
-  "./js/hud.js":"./js/hud.js?v=56",
-  "./js/input.js":"./js/input.js?v=56",
-  "./js/main.js":"./js/main.js?v=56",
-  "./js/missions.js":"./js/missions.js?v=56",
-  "./js/pedestrians.js":"./js/pedestrians.js?v=56",
-  "./js/physics.js":"./js/physics.js?v=56",
-  "./js/player.js":"./js/player.js?v=56",
-  "./js/police.js":"./js/police.js?v=56",
-  "./js/radio.js":"./js/radio.js?v=56",
-  "./js/state.js":"./js/state.js?v=56",
-  "./js/story.js":"./js/story.js?v=56",
-  "./js/touch-controls.js":"./js/touch-controls.js?v=56",
-  "./js/traffic.js":"./js/traffic.js?v=56",
-  "./js/weapons.js":"./js/weapons.js?v=56",
-  "./js/world.js":"./js/world.js?v=56",
-  "./assets/models/aircraft/plane.js":"./assets/models/aircraft/plane.js?v=56",
-  "./assets/models/characters/pedestrian.js":"./assets/models/characters/pedestrian.js?v=56",
-  "./assets/models/city/abandoned-lot.js":"./assets/models/city/abandoned-lot.js?v=56",
-  "./assets/models/city/building.js":"./assets/models/city/building.js?v=56",
-  "./assets/models/city/door-arrow.js":"./assets/models/city/door-arrow.js?v=56",
-  "./assets/models/city/nightclub.js":"./assets/models/city/nightclub.js?v=56",
-  "./assets/models/daynight/horizon-glow.js":"./assets/models/daynight/horizon-glow.js?v=56",
-  "./assets/models/daynight/moon.js":"./assets/models/daynight/moon.js?v=56",
-  "./assets/models/daynight/sky-dome.js":"./assets/models/daynight/sky-dome.js?v=56",
-  "./assets/models/daynight/star-field.js":"./assets/models/daynight/star-field.js?v=56",
-  "./assets/models/daynight/sun.js":"./assets/models/daynight/sun.js?v=56",
-  "./assets/models/effects/blood-puddle.js":"./assets/models/effects/blood-puddle.js?v=56",
-  "./assets/models/effects/bullet.js":"./assets/models/effects/bullet.js?v=56",
-  "./assets/models/effects/explosion.js":"./assets/models/effects/explosion.js?v=56",
-  "./assets/models/effects/gang-tracer.js":"./assets/models/effects/gang-tracer.js?v=56",
-  "./assets/models/effects/impact-ring.js":"./assets/models/effects/impact-ring.js?v=56",
-  "./assets/models/effects/weapon-tracer.js":"./assets/models/effects/weapon-tracer.js?v=56",
-  "./assets/models/environment/clouds.js":"./assets/models/environment/clouds.js?v=56",
-  "./assets/models/environment/sea.js":"./assets/models/environment/sea.js?v=56",
-  "./assets/models/missions/delivery-marker.js":"./assets/models/missions/delivery-marker.js?v=56",
-  "./assets/models/missions/money-drop.js":"./assets/models/missions/money-drop.js?v=56",
-  "./assets/models/missions/story-arrow.js":"./assets/models/missions/story-arrow.js?v=56",
-  "./assets/models/missions/story-beacon.js":"./assets/models/missions/story-beacon.js?v=56",
-  "./assets/models/missions/story-bottle.js":"./assets/models/missions/story-bottle.js?v=56",
-  "./assets/models/missions/story-box.js":"./assets/models/missions/story-box.js?v=56",
-  "./assets/models/missions/story-gem.js":"./assets/models/missions/story-gem.js?v=56",
-  "./assets/models/missions/story-marker.js":"./assets/models/missions/story-marker.js?v=56",
-  "./assets/models/missions/story-usb.js":"./assets/models/missions/story-usb.js?v=56",
-  "./assets/models/police/helicopter.js":"./assets/models/police/helicopter.js?v=56",
-  "./assets/models/props/chair.js":"./assets/models/props/chair.js?v=56",
-  "./assets/models/props/farm-house.js":"./assets/models/props/farm-house.js?v=56",
-  "./assets/models/props/lifeguard.js":"./assets/models/props/lifeguard.js?v=56",
-  "./assets/models/props/palm.js":"./assets/models/props/palm.js?v=56",
-  "./assets/models/props/prop-merge.js":"./assets/models/props/prop-merge.js?v=56",
-  "./assets/models/props/pine.js":"./assets/models/props/pine.js?v=56",
-  "./assets/models/props/street-lamp.js":"./assets/models/props/street-lamp.js?v=56",
-  "./assets/models/props/umbrella.js":"./assets/models/props/umbrella.js?v=56",
-  "./assets/models/rural/barn-with-silo.js":"./assets/models/rural/barn-with-silo.js?v=56",
-  "./assets/models/rural/hay-bales.js":"./assets/models/rural/hay-bales.js?v=56",
-  "./assets/models/rural/summit-flag.js":"./assets/models/rural/summit-flag.js?v=56",
-  "./assets/models/terrain/beach-rock.js":"./assets/models/terrain/beach-rock.js?v=56",
-  "./assets/models/terrain/mountain-rock.js":"./assets/models/terrain/mountain-rock.js?v=56",
-  "./assets/models/terrain/mountain.js":"./assets/models/terrain/mountain.js?v=56",
-  "./assets/models/terrain/shallows-waves.js":"./assets/models/terrain/shallows-waves.js?v=56",
-  "./assets/models/terrain/textured-plane.js":"./assets/models/terrain/textured-plane.js?v=56",
-  "./assets/models/vehicles/car.js":"./assets/models/vehicles/car.js?v=56",
-  "./assets/models/weapons/bazooka.js":"./assets/models/weapons/bazooka.js?v=56",
-  "./assets/models/weapons/gang-gun.js":"./assets/models/weapons/gang-gun.js?v=56",
-  "./assets/models/weapons/player-gun.js":"./assets/models/weapons/player-gun.js?v=56"
+  "./js/audio.js":"./js/audio.js?v=62",
+  "./js/club.js":"./js/club.js?v=62",
+  "./js/constants.js":"./js/constants.js?v=62",
+  "./js/daynight.js":"./js/daynight.js?v=62",
+  "./js/doors.js":"./js/doors.js?v=62",
+  "./js/engine.js":"./js/engine.js?v=62",
+  "./js/entities.js":"./js/entities.js?v=62",
+  "./js/gangs.js":"./js/gangs.js?v=62",
+  "./js/hud.js":"./js/hud.js?v=62",
+  "./js/input.js":"./js/input.js?v=62",
+  "./js/main.js":"./js/main.js?v=62",
+  "./js/missions.js":"./js/missions.js?v=62",
+  "./js/pedestrians.js":"./js/pedestrians.js?v=62",
+  "./js/physics.js":"./js/physics.js?v=62",
+  "./js/player.js":"./js/player.js?v=62",
+  "./js/police.js":"./js/police.js?v=62",
+  "./js/radio.js":"./js/radio.js?v=62",
+  "./js/state.js":"./js/state.js?v=62",
+  "./js/story.js":"./js/story.js?v=62",
+  "./js/taxi.js":"./js/taxi.js?v=62",
+  "./js/touch-controls.js":"./js/touch-controls.js?v=62",
+  "./js/traffic.js":"./js/traffic.js?v=62",
+  "./js/weapons.js":"./js/weapons.js?v=62",
+  "./js/world.js":"./js/world.js?v=62",
+  "./assets/models/aircraft/plane.js":"./assets/models/aircraft/plane.js?v=62",
+  "./assets/models/characters/pedestrian.js":"./assets/models/characters/pedestrian.js?v=62",
+  "./assets/models/city/abandoned-lot.js":"./assets/models/city/abandoned-lot.js?v=62",
+  "./assets/models/city/building.js":"./assets/models/city/building.js?v=62",
+  "./assets/models/city/door-arrow.js":"./assets/models/city/door-arrow.js?v=62",
+  "./assets/models/city/nightclub.js":"./assets/models/city/nightclub.js?v=62",
+  "./assets/models/daynight/horizon-glow.js":"./assets/models/daynight/horizon-glow.js?v=62",
+  "./assets/models/daynight/moon.js":"./assets/models/daynight/moon.js?v=62",
+  "./assets/models/daynight/sky-dome.js":"./assets/models/daynight/sky-dome.js?v=62",
+  "./assets/models/daynight/star-field.js":"./assets/models/daynight/star-field.js?v=62",
+  "./assets/models/daynight/sun.js":"./assets/models/daynight/sun.js?v=62",
+  "./assets/models/effects/blood-puddle.js":"./assets/models/effects/blood-puddle.js?v=62",
+  "./assets/models/effects/bullet.js":"./assets/models/effects/bullet.js?v=62",
+  "./assets/models/effects/explosion.js":"./assets/models/effects/explosion.js?v=62",
+  "./assets/models/effects/gang-tracer.js":"./assets/models/effects/gang-tracer.js?v=62",
+  "./assets/models/effects/impact-ring.js":"./assets/models/effects/impact-ring.js?v=62",
+  "./assets/models/effects/weapon-tracer.js":"./assets/models/effects/weapon-tracer.js?v=62",
+  "./assets/models/environment/clouds.js":"./assets/models/environment/clouds.js?v=62",
+  "./assets/models/environment/sea.js":"./assets/models/environment/sea.js?v=62",
+  "./assets/models/missions/delivery-marker.js":"./assets/models/missions/delivery-marker.js?v=62",
+  "./assets/models/missions/money-drop.js":"./assets/models/missions/money-drop.js?v=62",
+  "./assets/models/missions/story-arrow.js":"./assets/models/missions/story-arrow.js?v=62",
+  "./assets/models/missions/story-beacon.js":"./assets/models/missions/story-beacon.js?v=62",
+  "./assets/models/missions/story-bottle.js":"./assets/models/missions/story-bottle.js?v=62",
+  "./assets/models/missions/story-box.js":"./assets/models/missions/story-box.js?v=62",
+  "./assets/models/missions/story-gem.js":"./assets/models/missions/story-gem.js?v=62",
+  "./assets/models/missions/story-marker.js":"./assets/models/missions/story-marker.js?v=62",
+  "./assets/models/missions/story-usb.js":"./assets/models/missions/story-usb.js?v=62",
+  "./assets/models/police/helicopter.js":"./assets/models/police/helicopter.js?v=62",
+  "./assets/models/props/chair.js":"./assets/models/props/chair.js?v=62",
+  "./assets/models/props/farm-house.js":"./assets/models/props/farm-house.js?v=62",
+  "./assets/models/props/lifeguard.js":"./assets/models/props/lifeguard.js?v=62",
+  "./assets/models/props/palm.js":"./assets/models/props/palm.js?v=62",
+  "./assets/models/props/prop-merge.js":"./assets/models/props/prop-merge.js?v=62",
+  "./assets/models/props/pine.js":"./assets/models/props/pine.js?v=62",
+  "./assets/models/props/street-lamp.js":"./assets/models/props/street-lamp.js?v=62",
+  "./assets/models/props/umbrella.js":"./assets/models/props/umbrella.js?v=62",
+  "./assets/models/rural/barn-with-silo.js":"./assets/models/rural/barn-with-silo.js?v=62",
+  "./assets/models/rural/hay-bales.js":"./assets/models/rural/hay-bales.js?v=62",
+  "./assets/models/rural/summit-flag.js":"./assets/models/rural/summit-flag.js?v=62",
+  "./assets/models/terrain/beach-rock.js":"./assets/models/terrain/beach-rock.js?v=62",
+  "./assets/models/terrain/mountain-rock.js":"./assets/models/terrain/mountain-rock.js?v=62",
+  "./assets/models/terrain/mountain.js":"./assets/models/terrain/mountain.js?v=62",
+  "./assets/models/terrain/shallows-waves.js":"./assets/models/terrain/shallows-waves.js?v=62",
+  "./assets/models/terrain/textured-plane.js":"./assets/models/terrain/textured-plane.js?v=62",
+  "./assets/models/vehicles/car.js":"./assets/models/vehicles/car.js?v=62",
+  "./assets/models/weapons/bazooka.js":"./assets/models/weapons/bazooka.js?v=62",
+  "./assets/models/weapons/gang-gun.js":"./assets/models/weapons/gang-gun.js?v=62",
+  "./assets/models/weapons/player-gun.js":"./assets/models/weapons/player-gun.js?v=62"
 }}
 </script>
-<script type="module" src="js/main.js?v=56"></script>
+<script type="module" src="js/main.js?v=62"></script>
 </body>
 </html>
