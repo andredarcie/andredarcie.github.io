@@ -11,7 +11,7 @@
 // este arquivo é um script clássico (não module).
 
 // ══ CONFIG ══════════════════════════════════════
-const POP    = 20;
+const POP    = 40;   // população maior → busca mais ampla (resolve mapas difíceis)
 const GLEN   = 80;   // máximo de passos por geração (orçamento de tempo)
 const SPRITES = window.TinyCreaturesSprites;
 const NEAT    = window.TinyCreaturesNEAT;
@@ -45,6 +45,7 @@ const BUDGET      = 30;  // total de peças na construção
 const TOWER_RANGE = 2;   // alcance (Manhattan) da torre
 const DEAD_PENALTY = 100; // penalidade de fitness para quem morre
 const LAG_MARGIN   = 8;   // morre se ficar mais que isso atrás do líder (no caminho)
+const EXPLORE_BONUS = 0.12; // bônus de fitness por célula nova visitada (incentiva explorar)
 
 const SPRITES_DIR = SPRITES.getCreatureSprites();
 const createCreatureColor = SPRITES.createCreatureColor;
@@ -261,7 +262,7 @@ function fitness(a) {
 
 // Aptidão p/ o NEAT (maior = melhor): menor distância-BFS já alcançada no trajeto.
 function neatFitness(a) {
-  let f = bfsMax - a.bestBfs;
+  let f = bfsMax - a.bestBfs + EXPLORE_BONUS * a.seen.size; // + bônus por explorar células novas
   if (a.reached) f += 100;
   if (a.dead)    f *= 0.4;
   return Math.max(0.05, f);
@@ -296,7 +297,7 @@ function sensors(a) {
 }
 
 function makeAgent(brain, name, color) {
-  return { brain, name, color, facing: 'U', pos: {...START}, reached: false, dead: false, bestBfs: Infinity, path: [{...START}] };
+  return { brain, name, color, facing: 'U', pos: {...START}, reached: false, dead: false, bestBfs: Infinity, seen: new Set([key(START.x, START.y)]), path: [{...START}] };
 }
 
 // ══ EVOLVE ═══════════════════════════════════════
@@ -519,6 +520,7 @@ function startGen() {
     a.reached = false;
     a.dead = false;
     a.bestBfs = bfsDistOf(START.x, START.y);
+    a.seen = new Set([key(START.x, START.y)]);
     a.path = [{...START}];
   });
   enemies = enemyStarts.map(s => ({...s}));
@@ -585,6 +587,7 @@ function tick() {
     else if (act === 2) a.facing = TURN_R[a.facing];   // vira à direita
     else                a.facing = TURN_B[a.facing];   // meia-volta
     a.bestBfs = Math.min(a.bestBfs, bfsDistOf(a.pos.x, a.pos.y));
+    a.seen.add(key(a.pos.x, a.pos.y));
     a.path.push({ ...a.pos });
     if (a.pos.x === GOAL.x && a.pos.y === GOAL.y) a.reached = true;
   });
