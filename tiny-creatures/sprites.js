@@ -7,18 +7,54 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  function getCreatureSprite() {
-    return [
-      [0, 0, 1, 1, 1, 1, 0, 0],
-      [0, 1, 1, 3, 3, 1, 1, 0],
-      [1, 1, 1, 4, 4, 1, 1, 1],
-      [0, 1, 1, 1, 1, 1, 1, 0],
-      [1, 1, 2, 1, 1, 2, 1, 1],
-      [0, 1, 1, 2, 2, 1, 1, 0],
-      [0, 1, 0, 1, 1, 0, 1, 0],
-      [1, 0, 0, 1, 1, 0, 0, 1],
-    ];
+  // Um sprite 8×8 por direção que a criatura encara. Os olhos (3=branco,
+  // 4=pupila) mudam de posição para indicar o olhar.
+  function getCreatureSprites() {
+    return {
+      D: [
+        [0, 0, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 3, 3, 1, 1, 0],
+        [1, 1, 1, 4, 4, 1, 1, 1],
+        [0, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 2, 1, 1, 2, 1, 1],
+        [0, 1, 1, 2, 2, 1, 1, 0],
+        [0, 1, 0, 1, 1, 0, 1, 0],
+        [1, 0, 0, 1, 1, 0, 0, 1],
+      ],
+      U: [
+        [0, 0, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 4, 4, 1, 1, 0],
+        [1, 1, 1, 3, 3, 1, 1, 1],
+        [0, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 2, 1, 1, 2, 1, 1],
+        [0, 1, 1, 2, 2, 1, 1, 0],
+        [0, 1, 0, 1, 1, 0, 1, 0],
+        [1, 0, 0, 1, 1, 0, 0, 1],
+      ],
+      L: [
+        [0, 0, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 4, 3, 1, 4, 3, 1],
+        [0, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 2, 1, 1, 2, 1, 1],
+        [0, 1, 1, 2, 2, 1, 1, 0],
+        [0, 1, 0, 1, 1, 0, 1, 0],
+        [1, 0, 0, 1, 1, 0, 0, 1],
+      ],
+      R: [
+        [0, 0, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 3, 4, 1, 3, 4, 1],
+        [0, 1, 1, 1, 1, 1, 1, 0],
+        [1, 1, 2, 1, 1, 2, 1, 1],
+        [0, 1, 1, 2, 2, 1, 1, 0],
+        [0, 1, 0, 1, 1, 0, 1, 0],
+        [1, 0, 0, 1, 1, 0, 0, 1],
+      ],
+    };
   }
+
+  function getCreatureSprite() { return getCreatureSprites().D; }
 
   function getSpriteScale(cellSize) {
     return Math.max(1, Math.floor(cellSize / 10));
@@ -65,30 +101,32 @@
     };
   }
 
+  // Cientistas da computação famosos (sobrenomes, curtos para o rótulo).
   const CREATURE_NAMES = [
-    'Riane',
-    'Diego',
-    'Rodrigo',
-    'Capivara',
-    'Augusto',
-    'Cris',
-    'Cainã',
-    'Leo',
-    'Rick',
-    'Geovani',
-    'Taki',
-    'Well',
-    'Marlon',
-    'Wallison',
-    'Al Caponi',
-    'Felipão',
-    'Adriel',
-    'Youdy',
-    'José',
-    'Jorge',
-    'Guilherme',
-    'Robson',
-    'Lucas',
+    'Turing',
+    'Lovelace',
+    'Hopper',
+    'Dijkstra',
+    'Knuth',
+    'Neumann',
+    'Ritchie',
+    'Thompson',
+    'Torvalds',
+    'Shannon',
+    'Hamming',
+    'Karp',
+    'Hoare',
+    'Liskov',
+    'Backus',
+    'McCarthy',
+    'Minsky',
+    'Cerf',
+    'Wozniak',
+    'Stallman',
+    'Tarjan',
+    'Rivest',
+    'Babbage',
+    'Boole',
   ];
 
   const CREATURE_COLORS = [
@@ -214,6 +252,7 @@
     getEvolutionPreviewEntry,
     getCreatureColorPalette,
     getCreatureSprite,
+    getCreatureSprites,
     getCreatureNames,
     getOffspringIdentity,
     getResponsiveRenderMetrics,

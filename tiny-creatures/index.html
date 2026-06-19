@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiny Creatures — Algoritmo Genético</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="phase-build">
+
+<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
+<main id="main-content">
+<div class="app">
+
+  <!-- GRID -->
+  <section class="grid-area" aria-label="Grade de simulação">
+    <div class="coord-wrap">
+      <div class="coord-corner"></div>
+      <div class="coord-cols" id="coord-cols"></div>
+      <div class="coord-rows" id="coord-rows"></div>
+      <div class="grid-wrap">
+        <div id="grid" class="grid"
+             role="img"
+             aria-label="Grade 15×15: criaturas partem da base no centro inferior e tentam alcançar a espada no centro do topo">
+        </div>
+        <div id="vision" class="vision-layer" aria-hidden="true"></div>
+        <div id="agents" class="agents" aria-hidden="true"></div>
+        <div id="enemies" class="enemies-layer" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="phase-wrap" role="progressbar" aria-label="Progresso da geração" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0" id="phase-bar">
+      <div id="phase" class="phase-fill"></div>
+    </div>
+    <div id="status" class="status-line running" role="status" aria-live="polite" aria-atomic="true">INICIALIZANDO...</div>
+  </section>
+
+  <div class="side">
+
+  <!-- BRAIN (cérebro do líder, tempo real) -->
+  <aside class="brain-panel" aria-label="Cérebro do líder em tempo real">
+    <div class="build-hdr">Cérebro do líder</div>
+    <div class="brain-sub" id="brain-sub">—</div>
+    <div class="brain-live" id="brain-live"><div class="brain-empty">Inicie a defesa para ver o cérebro do líder em tempo real.</div></div>
+  </aside>
+
+  <!-- PANEL -->
+  <aside class="panel" aria-label="Painel de estatísticas">
+
+    <div class="card" aria-label="Geração atual">
+      <div class="card-label" id="lbl-gen">Geração</div>
+      <div id="gen-val" class="card-val orange" aria-labelledby="lbl-gen" aria-live="polite">001</div>
+    </div>
+
+    <div class="card" aria-label="Melhor distância até a espada">
+      <div class="card-label" id="lbl-dist">Melhor distância</div>
+      <div id="dist-val" class="card-val" aria-labelledby="lbl-dist" aria-live="polite">—</div>
+    </div>
+
+    <div class="card" aria-label="Passo atual">
+      <div class="card-label" id="lbl-step">Passo</div>
+      <div id="step-val" class="card-val small" aria-labelledby="lbl-step" aria-live="polite">0 / 80</div>
+    </div>
+
+    <div id="pop-list" class="pop-list" role="list" aria-label="Ranking de criaturas por distância">
+      <div class="list-hdr" role="heading" aria-level="2">Criaturas</div>
+    </div>
+
+    <div class="controls" role="group" aria-label="Controles de simulação">
+      <div class="speed-row" role="group" aria-label="Velocidade da simulação">
+        <span aria-hidden="true">VEL</span>
+        <button class="sdot" onclick="setSpeed(0)" id="s0" aria-label="Velocidade 1 — muito lenta" aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(1)" id="s1" aria-label="Velocidade 2 — lenta"       aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(2)" id="s2" aria-label="Velocidade 3 — média"       aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(3)" id="s3" aria-label="Velocidade 4 — rápida"      aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(4)" id="s4" aria-label="Velocidade 5 — muito rápida" aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(5)" id="s5" aria-label="Velocidade 6 — máxima"      aria-pressed="false"></button>
+      </div>
+      <button class="btn" id="pause-btn" onclick="togglePause()" aria-pressed="false">⏸ PAUSAR</button>
+      <button class="btn" onclick="reset()">↺ CONSTRUÇÃO</button>
+    </div>
+
+  </aside>
+
+  <!-- BUILD PANEL (fase 1) -->
+  <aside class="build-panel" aria-label="Construção da defesa">
+    <div class="build-hdr">Fase 1 · Construção</div>
+    <p class="build-tip">Posicione defesas entre a base (▼) e a espada (⚔). Clique ou arraste na grade. Depois inicie e assista a IA evoluir tentando passar.</p>
+    <div id="budget" class="budget">Peças <span id="budget-left">30</span> / 30</div>
+    <div class="tool-grid" role="group" aria-label="Ferramentas de construção">
+      <button class="tool on" id="tool-tower" onclick="setTool('tower')" aria-pressed="true">
+        <span class="tool-ico tower" aria-hidden="true"></span>Torre<small>bloqueia + atira</small>
+      </button>
+      <button class="tool" id="tool-trap" onclick="setTool('trap')" aria-pressed="false">
+        <span class="tool-ico trap" aria-hidden="true"></span>Armadilha<small>mata quem pisa</small>
+      </button>
+      <button class="tool" id="tool-enemy" onclick="setTool('enemy')" aria-pressed="false">
+        <span class="tool-ico enemy" aria-hidden="true"></span>Inimigo<small>persegue e mata</small>
+      </button>
+      <button class="tool" id="tool-erase" onclick="setTool('erase')" aria-pressed="false">
+        <span class="tool-ico erase" aria-hidden="true"></span>Apagar<small>remove peça</small>
+      </button>
+    </div>
+    <button class="btn" onclick="clearDefenses()">✕ LIMPAR TUDO</button>
+    <button class="btn" id="copy-btn" onclick="copyMap()">⧉ COPIAR MAPA</button>
+    <button class="btn" id="start-btn" onclick="startDefense()">▶ INICIAR DEFESA</button>
+  </aside>
+
+  </div><!-- .side -->
+</div>
+</main>
+
+<!-- TOAST DE GERAÇÃO (substitui os modais de fim de geração) -->
+<div id="gen-toast" class="gen-toast" role="status" aria-live="polite" aria-hidden="true"></div>
+
+<!-- FIM DE PARTIDA -->
+<div class="overlay" id="overlay"
+     role="alertdialog" aria-modal="true" aria-labelledby="ov-title" aria-describedby="ov-desc">
+  <div class="overlay-title" id="ov-title"></div>
+  <div class="overlay-sub" id="ov-desc"></div>
+  <button class="btn" id="ov-btn" onclick="backToBuild()">↺ NOVA DEFESA</button>
+</div>
+
+<!-- INSPETOR DE REDE NEURAL -->
+<div class="rank-overlay" id="net-overlay" role="dialog" aria-modal="true" aria-labelledby="net-title">
+  <div class="rank-box net-box">
+    <div class="rank-header">
+      <h2 class="rank-title" id="net-title">Rede neural</h2>
+    </div>
+    <div class="net-sub" id="net-sub"></div>
+    <div class="net-diagram" id="net-diagram"></div>
+    <div class="net-legend" aria-hidden="true">
+      <span><i class="sw goal"></i> espada</span>
+      <span><i class="sw wall"></i> parede/torre</span>
+      <span><i class="sw enemy"></i> inimigo</span>
+      <span><i class="sw trap"></i> armadilha</span>
+      <span><i class="sw free"></i> livre</span>
+      <span><i class="ln pos"></i> peso +</span>
+      <span><i class="ln neg"></i> peso −</span>
+      <span><i class="ln off"></i> desativada · espessura = força</span>
+    </div>
+    <div class="rank-footer">
+      <button class="btn" id="net-close" onclick="closeNetwork()">✕ FECHAR</button>
+    </div>
+  </div>
+</div>
+
+<script src="sprites.js"></script>
+<script src="neat.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
