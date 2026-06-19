@@ -1,48 +1,50 @@
 /* Tiny Creatures — estilos
-   Visual 8-bit NES, homenagem ao Zelda clássico (overworld): preto puro,
-   gramado verde, caixas de diálogo com moldura, paleta NES "flat" (sem
-   blur/gradiente/glow suave), contornos duros e ícones em pixel-art CSS.
-   Fontes: Press Start 2P (UI NES) + Share Tech Mono (dados).
-   100% responsivo: mobile-first, sem scroll horizontal, toques >=42px. */
+   Tema: Windows XP (Luna Blue). A MOLDURA/UI imita o Windows XP — papel de
+   parede "Bliss", janelas com barra de título azul, botões 3D, campos
+   rebaixados, barra de progresso verde segmentada e diálogos clássicos.
+   O TABULEIRO em si continua pixel-art (grama + sprites PICO-8): é o conteúdo.
+   Fonte da UI: Tahoma. 100% responsivo, mobile-first, toques >=40px. */
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── PALETA NES ── */
 :root {
-  --nes-black:  #000000;
-  --nes-white:  #fcfcfc;
-  --nes-grey:   #bcbcbc;
-  --nes-dkgrey: #7c7c7c;
+  /* ── Paleta PICO-8 (usada pelos sprites do tabuleiro e pela legenda) ── */
+  --p8-black:#000000; --p8-dblue:#1d2b53; --p8-dpurple:#7e2553; --p8-dgreen:#008751;
+  --p8-brown:#ab5236; --p8-dgrey:#5f574f; --p8-lgrey:#c2c3c7; --p8-white:#fff1e8;
+  --p8-red:#ff004d;   --p8-orange:#ffa300; --p8-yellow:#ffec27; --p8-green:#00e436;
+  --p8-blue:#29adff;  --p8-indigo:#83769c; --p8-pink:#ff77a8;   --p8-peach:#ffccaa;
 
-  --gold:    #e8b838;
-  --gold-lt: #fcd860;
-  --red:     #d82800;
-  --blue:    #3cbcfc;
-  --green:   #00d800;
-  --orange:  #fc9838;
-  --purple:  #b840fc;
+  /* Cores do conteúdo pixel-art (tabuleiro/efeitos) — mantidas */
+  --nes-black:#000000; --nes-white:#fff1e8; --nes-grey:#c2c3c7; --nes-dkgrey:#5f574f;
+  --gold:#ffa300; --gold-lt:#ffec27; --red:#ff004d; --blue:#29adff;
+  --green:#00e436; --orange:#ffa300; --purple:#7e2553;
+  --grass-a:#3c8d3c; --grass-b:#3c8d3c; --tree:#008751; --trunk:#ab5236;
+  --path:#caa46a; --path-dk:#9c7b46; --cave:#000000;
 
-  /* Overworld */
-  --grass-a: #38a82c;
-  --grass-b: #2f9024;
-  --tree:    #15601c;
-  --trunk:   #5a3a16;
-  --path:    #c08440;
-  --path-dk: #9c6526;
-  --stone:   #b06a30;
-  --stone-dk:#5a3312;
-  --cave:    #0a0e12;
+  /* ── Windows XP (Luna) ── */
+  --ui: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+  --xp-face:#ece9d8;          /* superfície bege das janelas/diálogos */
+  --xp-face-dk:#d6d2bd;
+  --xp-hi:#ffffff;            /* brilho do bevel */
+  --xp-sh:#aca899;            /* sombra do bevel */
+  --xp-sh-dk:#716f64;
+  --xp-win-border:#0a51d0;    /* moldura azul da janela */
+  --xp-ink:#101010;           /* texto principal */
+  --xp-muted:#5a5648;         /* texto secundário */
+  --xp-sel:#316ac5;           /* azul de seleção XP */
+  --xp-sunken:#7f9db9;        /* borda de campo rebaixado */
+  --xp-green:#43a047;         /* verde do Start/progresso */
+  --xp-green-lt:#73c350;
+  --xp-green-dk:#2f7d24;
+  /* barra de título Luna (azul brilhante com faixa de brilho no topo) */
+  --xp-title-bg: linear-gradient(to bottom,
+      #2f8eef 0%, #1f7cec 8%, #0f66e2 16%, #0a5cdb 42%,
+      #0e63e1 76%, #1d70e9 90%, #0c4fce 96%, #0a3fc2 100%);
+  --xp-taskbar: linear-gradient(180deg,
+      #3f93f4 0%, #2c79e3 9%, #2462db 48%, #2160da 90%, #163d9e 100%);
+  --taskbar-h: 32px;
 
-  /* Semânticos */
-  --bg:     var(--nes-black);
-  --text:   var(--nes-white);
-  --muted:  var(--nes-grey);
-  --accent: var(--gold);
-
-  /* Tipo / grade */
-  --fs-xs:   10px;
-  --fs-sm:   11px;
-  --fs-base: 12px;
+  --fs-base:12px;
   --cell:    clamp(13px, calc((100vw - 44px) / 15), 84px);
   --chrome:  clamp(14px, 3.2vw, 18px);
   --shell:   100%;
@@ -51,9 +53,13 @@
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-  background: var(--nes-black);
-  color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
+  /* Papel de parede estilo "Bliss": céu azul descendo para colina verde */
+  background:
+    radial-gradient(150% 70% at 50% 120%, #8ec63f 0%, #5fa92e 36%, rgba(95,169,46,0) 60%),
+    linear-gradient(180deg, #1c5cae 0%, #3f86d4 36%, #79b0e4 58%, #bcd9b0 76%, #8ec63f 100%);
+  background-attachment: fixed;
+  color: var(--xp-ink);
+  font-family: var(--ui);
   font-size: var(--fs-base);
   line-height: 1.5;
   min-height: 100vh;
@@ -61,24 +67,25 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: clamp(8px, 2vw, 14px) clamp(6px, 2vw, 12px) clamp(10px, 2vw, 16px);
+  padding: clamp(8px, 2vw, 16px) clamp(6px, 2vw, 12px) calc(var(--taskbar-h) + 16px);
   user-select: none;
   overflow-x: hidden;
 }
 
 :focus-visible {
-  outline: 3px solid var(--gold-lt);
+  outline: 1px dotted #000;
   outline-offset: 2px;
 }
 
 .skip-link {
   position: absolute;
   top: -999px; left: 8px;
-  background: var(--gold);
-  color: var(--nes-black);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  padding: 10px 14px;
+  background: var(--xp-sel);
+  color: #fff;
+  font-family: var(--ui);
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 3px;
   z-index: 9999;
   text-decoration: none;
 }
@@ -87,7 +94,6 @@ body {
 /* ── LAYOUT ── */
 #main-content { width: 100%; }
 
-/* Barra lateral (painéis): empilha no mobile, vira coluna ao lado do tabuleiro no desktop */
 .side {
   width: 100%;
   min-width: 0;
@@ -104,20 +110,73 @@ body {
   align-items: stretch;
 }
 
-/* ── PLAYFIELD (overworld) ── */
+/* ── BARRA DE TÍTULO XP (reutilizável) ── */
+.win-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ui);
+  font-weight: bold;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  background: var(--xp-title-bg);
+  border: 1px solid var(--xp-win-border);
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  padding: 4px 6px 4px 8px;
+  letter-spacing: 0.02em;
+}
+.win-ico { font-size: 13px; line-height: 1; filter: drop-shadow(0 1px 0 rgba(0,0,0,0.4)); }
+.build-tag {
+  font-size: 10px;
+  font-weight: normal;
+  color: rgba(255,255,255,0.8);
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 3px;
+  padding: 0 4px;
+  margin-left: 2px;
+}
+.win-btns { margin-left: auto; display: flex; gap: 3px; }
+.wb {
+  width: 16px; height: 14px;
+  border: 1px solid rgba(255,255,255,0.85);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #5fa0f4, #1a63dd);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+  position: relative;
+  flex-shrink: 0;
+}
+.wb-close { background: linear-gradient(180deg, #f08a6c, #d33b1e); }
+.wb-min::after { content:''; position:absolute; left:3px; right:3px; bottom:2px; height:2px; background:#fff; }
+.wb-max::after { content:''; position:absolute; inset:2px 3px; border:1px solid #fff; border-top-width:2px; }
+.wb-close::after { content:'✕'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:9px; font-weight:bold; line-height:1; }
+
+/* ── JANELA DO TABULEIRO ── */
 .grid-area {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   min-width: 0;
+  background: var(--xp-face);
+  border: 1px solid var(--xp-win-border);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+  padding: 0 8px 10px;
+}
+.board-bar {
+  align-self: stretch;
+  margin: 0 -8px 6px;
 }
 
 .grid-wrap {
   position: relative;
-  border: 5px solid var(--stone);
-  box-shadow: inset 0 0 0 3px var(--stone-dk);
+  border: 2px solid #41617f;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.45);
   background: var(--grass-a);
+  border-radius: 2px;
 }
 
 .grid {
@@ -152,9 +211,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(5px, 1.5vw, 7px);
-  color: var(--nes-dkgrey);
+  font-family: var(--ui);
+  font-weight: bold;
+  font-size: clamp(6px, 1.5vw, 9px);
+  color: var(--xp-muted);
   flex-shrink: 0;
 }
 .coord-cols .coord-num { width: var(--cell); height: var(--chrome); }
@@ -169,52 +229,48 @@ body {
 /* Objetivo: entrada de caverna onde repousa a espada */
 .cell.goal-cell {
   background: var(--cave) !important;
-  box-shadow: inset 0 0 0 2px var(--stone);
+  box-shadow: inset 0 0 0 2px #6b8e6b;
 }
 
-/* Espada em pixel-art (esconde o emoji, desenha com CSS) */
+/* Espada em pixel-art */
 .sword-mark {
   position: absolute;
   inset: 0;
   font-size: 0;
   z-index: 2;
+  background: var(--spr-sword) center / 62% no-repeat;
+  image-rendering: pixelated;
+  animation: sword-shine 1.1s steps(2, jump-none) infinite;
 }
-.sword-mark::before {  /* lâmina */
-  content: '';
-  position: absolute;
-  left: 50%; top: 12%;
-  transform: translateX(-50%);
-  width: 18%; height: 50%;
-  background: var(--nes-white);
-  clip-path: polygon(50% 0, 100% 20%, 100% 100%, 0 100%, 0 20%);
-  animation: sword-blink 0.9s steps(2, jump-none) infinite;
-}
-.sword-mark::after {   /* guarda dourada */
-  content: '';
-  position: absolute;
-  left: 50%; top: 56%;
-  transform: translateX(-50%);
-  width: 54%; height: 10%;
-  background: var(--gold);
-}
-@keyframes sword-blink {
-  50% { filter: brightness(1.7); }
-}
+@keyframes sword-shine { 50% { filter: brightness(1.45); } }
 
-/* Ponto de partida */
+/* Ponto de partida — bandeira da base */
 .start-mark {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(8px, calc(var(--cell) * 0.42), 14px);
-  color: var(--nes-white);
-  opacity: 0.65;
+  font-size: 0;
+  background: var(--spr-base) center / 72% no-repeat;
+  image-rendering: pixelated;
   z-index: 2;
 }
 
-/* Árvore (pinheiro em pixel-art, esconde o emoji) */
+/* Enfeites decorativos do mapa (grama, arbusto, árvore) — só efeito visual */
+.decor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+  opacity: 0.85;
+}
+.decor-grass { background: var(--spr-grass) center bottom / 55% no-repeat; }
+.decor-bush  { background: var(--spr-bush)  center bottom / 72% no-repeat; }
+.decor-tree  { background: var(--spr-tree)  center bottom / 88% no-repeat; }
+.cell.tower .decor,
+.cell.trap .decor,
+.cell.trail .decor { display: none; }
+
+/* Árvore (pinheiro em pixel-art CSS — não usado atualmente) */
 .tree-mark {
   position: absolute;
   inset: 0;
@@ -224,14 +280,14 @@ body {
   justify-content: center;
   z-index: 1;
 }
-.tree-mark::before {  /* copa */
+.tree-mark::before {
   content: '';
   width: 0; height: 0;
   border-left: calc(var(--cell) * 0.28) solid transparent;
   border-right: calc(var(--cell) * 0.28) solid transparent;
   border-bottom: calc(var(--cell) * 0.5) solid var(--tree);
 }
-.tree-mark::after {   /* tronco */
+.tree-mark::after {
   content: '';
   position: absolute;
   bottom: 14%;
@@ -249,7 +305,6 @@ body {
   transition: left 0.09s linear, top 0.09s linear;
 }
 
-/* Contorno duro de 1px (estilo sprite NES) */
 .dot {
   position: absolute;
   width: 1px;
@@ -261,28 +316,28 @@ body {
     drop-shadow(0 -1px 0 #000);
 }
 
+/* Etiqueta de nome — tooltip estilo XP (amarelo claro) */
 .dot-label {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 3px);
   transform: translateX(-50%);
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(5px, 1.5vw, 6px);
-  line-height: 1;
-  color: var(--nes-white);
-  background: var(--nes-black);
-  border: 1px solid var(--nes-grey);
-  padding: 3px 4px 2px;
+  font-family: var(--ui);
+  font-size: clamp(7px, 1.6vw, 9px);
+  line-height: 1.2;
+  color: #000;
+  background: #ffffe1;
+  border: 1px solid #000;
+  border-radius: 2px;
+  padding: 1px 4px;
   white-space: nowrap;
   pointer-events: none;
 }
 
-/* Líder e vencedor piscam como sprites de item NES */
 .dot.best {
   z-index: 12;
   animation: dot-pulse 0.5s steps(2, jump-none) infinite;
 }
-
 @keyframes dot-pulse {
   50% {
     filter:
@@ -297,7 +352,6 @@ body {
   z-index: 15;
   animation: dot-win 0.2s steps(2, jump-none) infinite;
 }
-
 @keyframes dot-win {
   50% {
     transform: scale(1.5);
@@ -309,153 +363,207 @@ body {
   }
 }
 
-/* Barra de progresso (medidor estilo NES) */
+/* ── BARRA DE PROGRESSO (estilo XP — blocos verdes num sulco branco) ── */
 .phase-wrap {
   width: 100%;
   max-width: calc(var(--chrome) + 15 * var(--cell) + 6px);
-  height: 10px;
-  background: var(--nes-black);
-  border: 2px solid var(--nes-grey);
+  height: 17px;
+  background: #fff;
+  border: 1px solid var(--xp-sunken);
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.2);
+  padding: 2px;
   overflow: hidden;
 }
-
 .phase-fill {
   height: 100%;
-  background: var(--green);
   width: 0%;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 55%),
+    repeating-linear-gradient(90deg,
+      var(--xp-green) 0, var(--xp-green) 7px,
+      rgba(0,0,0,0) 7px, rgba(0,0,0,0) 9px);
+  border-radius: 1px;
   transition: width 0.08s linear;
 }
 
-/* Status */
+/* ── BARRA DE STATUS (campo rebaixado) ── */
 .status-line {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(7px, 2vw, 8px);
-  letter-spacing: 0.1em;
+  width: 100%;
+  max-width: calc(var(--chrome) + 15 * var(--cell) + 6px);
+  font-family: var(--ui);
+  font-size: clamp(10px, 2vw, 12px);
+  font-weight: bold;
+  letter-spacing: 0.01em;
   text-align: center;
-  min-height: 18px;
-  color: var(--nes-grey);
-  padding-top: 2px;
-  line-height: 1.7;
+  min-height: 20px;
+  color: var(--xp-muted);
+  background: var(--xp-face);
+  border: 1px solid var(--xp-sh);
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.18);
+  border-radius: 2px;
+  padding: 3px 8px;
+  line-height: 1.4;
 }
+.status-line.running  { color: #1a7d1a; }
+.status-line.evolving { color: #15489c; }
+.status-line.success  { color: #167a16; }
+.status-line.building { color: #15489c; }
 
-.status-line.running  { color: var(--green); }
-.status-line.evolving { color: var(--blue); }
-.status-line.success  { color: var(--gold-lt); }
-.status-line.building { color: var(--gold-lt); }
-
-/* ── PAINEL (subtela de inventário) ── */
+/* ── JANELA: PAINEL DE ESTATÍSTICAS ── */
 .panel {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(8px, 2.4vw, 10px);
   align-self: stretch;
+  background: var(--xp-face);
+  border: 1px solid var(--xp-win-border);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  padding: 0 10px 12px;
+}
+.panel::before {
+  content: "📊 Estatísticas";
+  grid-column: 1 / -1;
+  margin: 0 -10px 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  background: var(--xp-title-bg);
+  border: 1px solid var(--xp-win-border);
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  padding: 4px 8px;
 }
 
+/* Campos rebaixados (XP) */
 .card {
-  border: 3px solid var(--nes-grey);
-  background: var(--nes-black);
-  padding: 12px 14px;
-  min-height: 84px;
+  border: 1px solid var(--xp-sunken);
+  background: #fff;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.12);
+  border-radius: 3px;
+  padding: 10px 12px;
+  min-height: 70px;
   min-width: 0;
 }
-.card:first-child { border-color: var(--gold); }
+.card:first-of-type { border-color: var(--xp-sel); }
 
 .card-label {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 7px;
-  letter-spacing: 0.1em;
-  color: var(--nes-grey);
+  font-family: var(--ui);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  color: var(--xp-muted);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .card-val {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(18px, 5vw, 22px);
-  color: var(--nes-white);
-  line-height: 1.2;
+  font-family: var(--ui);
+  font-weight: bold;
+  font-size: clamp(20px, 5vw, 26px);
+  color: var(--xp-ink);
+  line-height: 1.1;
 }
+.card-val.orange { color: var(--xp-sel); }
+.card-val.small  { font-size: clamp(13px, 3.4vw, 16px); }
 
-.card-val.orange { color: var(--gold-lt); }
-.card-val.small  { font-size: clamp(12px, 3.4vw, 14px); }
-
-/* Lista da população */
+/* Lista da população (campo rebaixado) */
 .pop-list {
   grid-column: 1 / -1;
-  border: 3px solid var(--nes-grey);
-  background: var(--nes-black);
-  padding: 10px 12px;
-  min-height: 170px;
+  border: 1px solid var(--xp-sunken);
+  background: #fff;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.12);
+  border-radius: 3px;
+  padding: 8px 10px;
+  min-height: 160px;
   max-height: 300px;
   overflow-y: auto;
 }
-
-.pop-list::-webkit-scrollbar { width: 8px; }
-.pop-list::-webkit-scrollbar-track { background: var(--nes-black); }
-.pop-list::-webkit-scrollbar-thumb { background: var(--nes-dkgrey); }
+.pop-list::-webkit-scrollbar { width: 16px; }
+.pop-list::-webkit-scrollbar-track { background: #e7e4d3; }
+.pop-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cfe0f6, #97b9e6);
+  border: 1px solid #6b8fc4;
+  border-radius: 2px;
+}
 
 .list-hdr {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 7px;
-  letter-spacing: 0.1em;
-  color: var(--nes-grey);
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--xp-muted);
   text-transform: uppercase;
-  margin-bottom: 9px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #d8d4c2;
+  padding-bottom: 4px;
 }
 
 .list-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
+  padding: 2px 3px;
+  border-radius: 2px;
 }
+.list-row.reached-row { background: #e3f0d4; }
 
 .list-dot {
-  width: 9px; height: 9px;
-  border: 1px solid var(--nes-black);
+  width: 10px; height: 10px;
+  border: 1px solid #555;
+  border-radius: 2px;
   flex-shrink: 0;
 }
 
 .list-bar-bg {
   flex: 1;
   min-width: 0;
-  height: 7px;
-  background: var(--nes-black);
-  border: 1px solid var(--nes-dkgrey);
+  height: 9px;
+  background: #fff;
+  border: 1px solid var(--xp-sunken);
+  border-radius: 2px;
+  overflow: hidden;
 }
-
 .list-bar { height: 100%; transition: width 0.3s ease; }
 
 .list-dist {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  width: 22px;
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: bold;
+  width: 24px;
   text-align: right;
-  color: var(--nes-grey);
+  color: var(--xp-muted);
   flex-shrink: 0;
 }
 
 .list-name {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 7px;
-  color: var(--nes-white);
-  width: clamp(60px, 18vw, 76px);
+  font-family: var(--ui);
+  font-size: 11px;
+  color: var(--xp-ink);
+  width: clamp(64px, 18vw, 84px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 0;
 }
 
-/* Controles */
+/* Controles (grupo dentro do painel) */
 .controls {
   grid-column: 1 / -1;
-  border: 3px solid var(--nes-grey);
-  background: var(--nes-black);
-  padding: 12px;
+  border: 1px solid var(--xp-sh);
+  background: var(--xp-face);
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 #fff;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 .speed-row {
@@ -464,87 +572,88 @@ body {
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 7px;
-  color: var(--nes-grey);
-  letter-spacing: 0.1em;
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--xp-muted);
+  letter-spacing: 0.04em;
 }
 
 .sdot {
-  width: 12px; height: 12px;
-  background: var(--nes-black);
-  border: 2px solid var(--nes-dkgrey);
+  width: 14px; height: 14px;
+  background: linear-gradient(180deg, #fff, #d7d2bd);
+  border: 1px solid #8d8a7c;
+  border-radius: 3px;
   cursor: pointer;
   transition: background 0.1s, border-color 0.1s;
   flex-shrink: 0;
-  padding: 7px;
-  margin: -7px;
+  padding: 6px;
+  margin: -5px;
   box-sizing: content-box;
 }
-
 .sdot.on {
-  background: var(--gold);
-  border-color: var(--gold-lt);
+  background: linear-gradient(180deg, var(--xp-green-lt), var(--xp-green-dk));
+  border-color: var(--xp-green-dk);
 }
 
+/* ── BOTÕES XP (3D) ── */
 .btn {
-  background: var(--nes-black);
-  border: 3px solid var(--nes-grey);
-  color: var(--nes-white);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  padding: 11px 12px;
-  min-height: 44px;
+  background: linear-gradient(180deg, #ffffff 0%, #f2f0e6 46%, #ddd8c4 92%, #d0cab1 100%);
+  border: 1px solid #8c8a7e;
+  border-radius: 4px;
+  color: var(--xp-ink);
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 12px;
+  min-height: 40px;
   cursor: pointer;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: border-color 0.1s, color 0.1s, background 0.1s, transform 0.05s;
+  letter-spacing: 0.01em;
+  box-shadow: inset 0 0 0 1px #fff, 0 1px 1px rgba(0,0,0,0.18);
+  transition: border-color 0.1s, box-shadow 0.1s, background 0.1s;
   text-align: center;
   width: 100%;
-  line-height: 1.6;
+  line-height: 1.4;
 }
-
 .btn:hover {
-  border-color: var(--gold);
-  color: var(--gold-lt);
+  border-color: #d79b00;
+  box-shadow: inset 0 0 0 1px #fff, 0 0 5px 1px rgba(255,179,0,0.55);
 }
-
-.btn:active { transform: translateY(2px); }
-
+.btn:active {
+  background: linear-gradient(180deg, #d9d4c0, #efece0);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.28);
+}
 .btn.active {
-  background: var(--gold);
-  color: var(--nes-black);
-  border-color: var(--gold-lt);
+  background: linear-gradient(180deg, #cfe0f6, #9cc0ee);
+  border-color: var(--xp-sel);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
 }
 
-/* CTA primária (avançar) — preenchida em ouro */
-.overlay .btn {
-  background: var(--gold);
-  color: var(--nes-black);
-  border-color: var(--gold-lt);
-}
-.overlay .btn:hover {
-  background: var(--gold-lt);
-  color: var(--nes-black);
-}
-
-/* Ação primária da construção */
+/* CTA primária — botão "verde Start" do XP */
+.overlay .btn,
 #start-btn {
-  background: var(--gold);
-  color: var(--nes-black);
-  border-color: var(--gold-lt);
+  background: linear-gradient(180deg, #8ed46f 0%, #5cb13b 45%, #439a2a 92%, #347d20 100%);
+  border: 1px solid #2f7d24;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 2px rgba(0,0,0,0.25);
 }
-#start-btn:hover { background: var(--gold-lt); color: var(--nes-black); }
+.overlay .btn:hover,
+#start-btn:hover {
+  background: linear-gradient(180deg, #a0e07f 0%, #69c047 45%, #4caa30 92%, #3c8c25 100%);
+  border-color: #2f7d24;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 0 6px 1px rgba(120,210,90,0.6);
+}
 
-/* ── OVERLAYS (caixas de diálogo NES) ── */
+/* ── OVERLAYS / DIÁLOGOS XP ── */
 .rank-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.94);
+  background: rgba(20,40,90,0.45);
   display: none;
   align-items: flex-start;
   justify-content: center;
   z-index: 150;
-  animation: fade-in 0.2s steps(2, jump-none);
+  animation: fade-in 0.18s ease;
   padding: 10px;
   overflow: auto;
 }
@@ -554,104 +663,122 @@ body {
   width: 100%;
   max-width: 100%;
   max-height: calc(100dvh - 20px);
-  overflow: auto;
-  border: 4px solid var(--nes-white);
-  background: var(--nes-black);
-  padding: 14px 12px;
+  overflow: hidden;
+  border: 1px solid var(--xp-win-border);
+  background: var(--xp-face);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.5);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.rank-box::-webkit-scrollbar { width: 9px; }
-.rank-box::-webkit-scrollbar-track { background: var(--nes-black); }
-.rank-box::-webkit-scrollbar-thumb { background: var(--nes-dkgrey); }
-
+/* O cabeçalho do diálogo vira a barra de título azul */
 .rank-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  background: var(--xp-title-bg);
+  border-radius: 7px 7px 0 0;
+  padding: 4px 8px;
+  flex-shrink: 0;
 }
-
 .rank-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(9px, 2.6vw, 12px);
-  color: var(--nes-white);
-  letter-spacing: 0.06em;
-  line-height: 1.7;
+  font-family: var(--ui);
+  font-size: clamp(12px, 2.6vw, 13px);
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
 }
-.rank-title span { color: var(--gold-lt); }
+.rank-title span { color: #ffec27; }
+
+/* corpo do diálogo (rolável) */
+.net-sub,
+.net-diagram,
+.net-legend { margin-left: 12px; margin-right: 12px; }
+.rank-box > .net-sub { margin-top: 12px; }
 
 .rank-footer {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  border-top: 2px solid var(--nes-dkgrey);
-  padding-top: 14px;
-  margin-top: 4px;
-  gap: 12px;
+  border-top: 1px solid var(--xp-sh);
+  box-shadow: inset 0 1px 0 #fff;
+  padding: 12px;
+  gap: 10px;
+  flex-shrink: 0;
+  background: var(--xp-face);
 }
 
-/* ── OVERLAY DE SUCESSO ── */
+/* ── OVERLAY DE SUCESSO (diálogo XP centralizado) ── */
 .overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.97);
+  background: rgba(20,40,90,0.5);
   display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 0;
   z-index: 200;
   padding: 24px;
-  animation: fade-in 0.2s steps(2, jump-none);
+  animation: fade-in 0.18s ease;
 }
-
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 .overlay-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(13px, 5vw, 18px);
-  color: var(--gold-lt);
+  font-family: var(--ui);
+  font-size: clamp(16px, 5vw, 22px);
+  font-weight: bold;
+  color: var(--xp-green-dk);
   text-align: center;
-  line-height: 2.1;
-  border: 4px solid var(--gold);
-  padding: clamp(18px, 5vw, 26px) clamp(20px, 6vw, 34px);
-  background: var(--nes-black);
-  animation: title-pulse 0.6s steps(2, jump-none) infinite;
+  line-height: 1.7;
+  border: 1px solid var(--xp-win-border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: clamp(20px, 5vw, 30px) clamp(22px, 6vw, 36px);
+  background: var(--xp-face);
+  box-shadow: inset 0 1px 0 #fff;
 }
-
-.overlay-title .ico { color: var(--nes-white); }
-
-@keyframes title-pulse {
-  50% { color: var(--nes-white); }
-}
+.overlay-title .ico { color: var(--xp-green); }
 
 .overlay-sub {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(8px, 2.6vw, 9px);
-  color: var(--nes-grey);
-  letter-spacing: 0.1em;
+  font-family: var(--ui);
+  font-size: clamp(11px, 2.6vw, 13px);
+  color: var(--xp-muted);
   text-align: center;
-  line-height: 2.2;
+  line-height: 1.7;
+  background: var(--xp-face);
+  border: 1px solid var(--xp-win-border);
+  border-top: none;
+  padding: 14px 22px;
+  width: min(420px, 86vw);
 }
-.overlay-sub span { color: var(--gold-lt); }
+.overlay-sub span { color: var(--xp-sel); font-weight: bold; }
+.overlay .btn { width: min(420px, 86vw); border-radius: 0 0 6px 6px; margin-top: -1px; }
 
-/* ── TOAST DE GERAÇÃO (substitui o modal de fim de geração) ── */
+/* ── BALÃO DE GERAÇÃO (tooltip XP) ── */
 .gen-toast {
   position: fixed;
   top: clamp(10px, 4vh, 28px);
   left: 50%;
   transform: translate(-50%, -10px) scale(0.96);
   z-index: 320;
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(9px, 2.6vw, 13px);
-  letter-spacing: 0.08em;
-  color: var(--gold-lt);
-  background: var(--nes-black);
-  border: 3px solid var(--gold);
-  padding: 10px 16px;
+  font-family: var(--ui);
+  font-size: clamp(12px, 2.6vw, 15px);
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+  background: var(--xp-title-bg);
+  border: 1px solid var(--xp-win-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  padding: 8px 18px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.18s steps(2, jump-none), transform 0.18s steps(2, jump-none);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 .gen-toast.show {
   opacity: 1;
@@ -661,209 +788,382 @@ body {
 /* ── FASES: construção × assistir ── */
 .build-panel { display: none; }
 body.phase-build .panel { display: none; }
-body.phase-build .brain-panel { display: none; } /* cérebro só na fase de assistir */
+body.phase-build .brain-panel { display: none; }
 body.phase-build .build-panel {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 3px solid var(--gold);
-  background: var(--nes-black);
-  padding: 12px;
+  background: var(--xp-face);
+  border: 1px solid var(--xp-win-border);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  padding: 0 12px 12px;
   min-width: 0;
 }
 body.phase-build .phase-wrap { display: none; }
 body.phase-build .grid { touch-action: none; cursor: crosshair; }
-body.phase-build .cell:hover { box-shadow: inset 0 0 0 2px var(--gold); }
+body.phase-build .cell:hover { box-shadow: inset 0 0 0 2px var(--gold-lt); }
+
+/* Cabeçalho de janela: a primeira .build-hdr vira barra de título azul */
+.brain-panel > .build-hdr:first-child,
+body.phase-build .build-panel > .build-hdr:first-child {
+  margin: 0 -12px 8px;
+  border-radius: 7px 7px 0 0;
+  background: var(--xp-title-bg);
+  border: 1px solid var(--xp-win-border);
+  border-bottom: none;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  text-transform: none;
+  padding: 4px 8px;
+  letter-spacing: 0.01em;
+}
 
 .build-hdr {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  letter-spacing: 0.1em;
-  color: var(--gold-lt);
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  color: var(--xp-ink);
   text-transform: uppercase;
 }
 .build-tip {
-  font-family: 'Share Tech Mono', monospace;
+  font-family: var(--ui);
   font-size: 12px;
-  color: var(--nes-grey);
+  color: var(--xp-muted);
   line-height: 1.5;
 }
 .budget {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
-  color: var(--gold-lt);
-  border: 2px solid var(--nes-dkgrey);
-  padding: 9px;
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--xp-ink);
+  background: #fff;
+  border: 1px solid var(--xp-sunken);
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.12);
+  border-radius: 3px;
+  padding: 8px;
   text-align: center;
-  letter-spacing: 0.08em;
 }
-.budget span { color: var(--nes-white); }
+.budget span { color: var(--xp-sel); }
 .budget.empty { color: var(--red); border-color: var(--red); }
 
-.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.tool {
+/* ── PALETA DE FERRAMENTAS (refeita do zero) ──
+   Lista vertical. Cada item = ícone (esquerda) + nome/descrição (direita).
+   Layout em GRID explícito: o ícone ocupa as duas linhas da coluna esquerda,
+   o texto fica na direita. Sem nó de texto solto, sem coluna apertada. */
+.tool-grid {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+}
+.tool {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  grid-template-areas:
+    "ico name"
+    "ico desc";
   align-items: center;
-  gap: 5px;
-  background: var(--nes-black);
-  border: 3px solid var(--nes-grey);
-  color: var(--nes-white);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 10px 6px;
-  min-height: 66px;
+  column-gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: linear-gradient(180deg, #ffffff 0%, #f2f0e6 46%, #ddd8c4 100%);
+  border: 1px solid #8c8a7e;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #fff;
+  color: var(--xp-ink);
+  font-family: var(--ui);
+  padding: 7px 11px;
+  min-height: 46px;
   cursor: pointer;
-  transition: border-color 0.1s, color 0.1s, background 0.1s;
+  transition: border-color 0.1s, box-shadow 0.1s, background 0.1s;
 }
-.tool small {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--nes-grey);
-  text-transform: none;
-  letter-spacing: 0;
+.tool:hover {
+  border-color: #d79b00;
+  box-shadow: inset 0 0 0 1px #fff, 0 0 5px 1px rgba(255,179,0,0.5);
 }
-.tool:hover { border-color: var(--gold); }
-.tool.on { border-color: var(--gold); color: var(--gold-lt); background: #332600; }
-.tool.on small { color: var(--gold-lt); }
+.tool.on {
+  background: linear-gradient(180deg, #cfe0f6, #9cc0ee);
+  border-color: var(--xp-sel);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+}
 
-.tool-ico { width: 18px; height: 18px; position: relative; flex-shrink: 0; }
-.tool-ico.tower { background: #8a8f98; box-shadow: inset 0 0 0 2px #3a3f47; }
-.tool-ico.trap  { background: repeating-linear-gradient(45deg, #d82800 0 3px, #7a1410 3px 6px); box-shadow: inset 0 0 0 1px #ff5d76; }
-.tool-ico.enemy { background: var(--purple); box-shadow: inset 0 0 0 2px #2a0a3a; }
-.tool-ico.erase { background: transparent; border: 2px dashed var(--nes-grey); }
+.tool-ico {
+  grid-area: ico;
+  width: 26px;
+  height: 26px;
+  align-self: center;
+  image-rendering: pixelated;
+}
+.tool-ico.tower { background: var(--spr-tower) center / contain no-repeat; }
+.tool-ico.trap  { background: var(--spr-trap)  center / contain no-repeat; }
+.tool-ico.enemy { background: var(--spr-enemy) center / contain no-repeat; }
+.tool-ico.erase { background: transparent; border: 2px dashed var(--xp-muted); border-radius: 3px; }
 
-/* ── DEFESAS NA GRADE ── */
+.tool-name { grid-area: name; font-size: 12px; font-weight: bold; line-height: 1.25; }
+.tool-desc { grid-area: desc; font-size: 11px; color: var(--xp-muted); line-height: 1.25; }
+.tool.on .tool-name { color: #14306b; }
+.tool.on .tool-desc { color: #1a3f80; }
+
+/* ── DEFESAS NA GRADE (sprites pixel-art) ── */
 .cell.tower::before {
   content: '';
   position: absolute;
-  inset: 12%;
-  background: #8a8f98;
-  box-shadow: inset 0 0 0 2px #3a3f47, inset 0 -4px 0 #5a606a;
+  inset: 4%;
+  background: var(--spr-tower) center bottom / contain no-repeat;
+  image-rendering: pixelated;
   z-index: 3;
 }
-.cell.tower::after {
+/* Torre danificada: leve inclinação + rachaduras escuras por cima */
+.cell.tower.cracked::before { transform: rotate(-3deg); filter: brightness(0.82); }
+.cell.tower.cracked::after {
   content: '';
   position: absolute;
-  left: 50%; top: 14%;
-  transform: translateX(-50%);
-  width: 22%; height: 30%;
-  background: #23262b;
-  z-index: 3;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    linear-gradient(122deg, transparent 43%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.72) 49%, transparent 51%),
+    linear-gradient(54deg, transparent 55%, rgba(0,0,0,0.5) 57%, rgba(0,0,0,0.5) 60%, transparent 62%);
 }
 .cell.trap::before {
   content: '';
   position: absolute;
-  inset: 20%;
-  background: repeating-linear-gradient(45deg, #d82800 0 3px, #7a1410 3px 6px);
-  box-shadow: inset 0 0 0 1px #ff5d76;
+  inset: 10%;
+  background: var(--spr-trap) center bottom / contain no-repeat;
+  image-rendering: pixelated;
   z-index: 1;
 }
 
-/* ── CAMADA DE VISÃO (cone translúcido, suave) ── */
+/* ── CAMADA DE VISÃO (cone translúcido) ── */
 .vision-layer { position: absolute; inset: 0; pointer-events: none; z-index: 13; }
 .vision-cell {
   position: absolute;
-  background: #ffe7a0;
-  box-shadow: inset 0 0 6px rgba(255,231,160,0.6);
+  background: #ffec27;
+  box-shadow: inset 0 0 6px rgba(255,236,39,0.55);
 }
 
-/* ── INIMIGOS ── */
+/* ── INIMIGOS (sprite monstrinho pixel-art) ── */
 .enemies-layer { position: absolute; inset: 0; pointer-events: none; z-index: 11; }
 .enemy {
   position: absolute;
-  transform: translate(-50%, -50%);
-  background: var(--purple);
-  box-shadow: inset 0 0 0 2px #2a0a3a, 0 0 0 1px #000;
+  background: var(--spr-enemy) center / contain no-repeat;
+  image-rendering: pixelated;
   transition: left 0.12s linear, top 0.12s linear;
 }
-.enemy::before,
-.enemy::after {
-  content: '';
+
+/* ── EFEITOS: tiro da torre + bolha de sangue ── */
+.fx-layer { position: absolute; inset: 0; pointer-events: none; z-index: 14; overflow: visible; }
+
+.shot {
   position: absolute;
-  top: 32%;
-  width: 20%; height: 20%;
-  background: #fff;
+  width: 6px; height: 6px;
+  margin: -3px 0 0 -3px;
+  background: var(--gold-lt);
+  box-shadow: 0 0 0 1px var(--nes-black), 0 0 5px 2px var(--orange);
+  image-rendering: pixelated;
+  animation: shot-fly 0.16s linear forwards;
 }
-.enemy::before { left: 20%; }
-.enemy::after  { right: 20%; }
+@keyframes shot-fly { to { transform: translate(var(--dx), var(--dy)); } }
+
+.impact {
+  position: absolute;
+  width: 12px; height: 12px;
+  margin: -6px 0 0 -6px;
+  background: var(--gold-lt);
+  box-shadow: 0 0 0 2px var(--orange), 0 0 8px 3px var(--red);
+  animation: impact-pop 0.22s steps(3, jump-none) forwards;
+}
+@keyframes impact-pop {
+  0%   { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(2);   opacity: 0; }
+}
+
+.blood {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: inset -2px -2px 0 var(--purple), inset 3px 3px 0 var(--p8-pink), 0 0 0 1px var(--nes-black);
+  transform: translate(-50%, -50%) scale(0.2);
+  animation: blood-pop 0.5s steps(6, jump-none) forwards;
+}
+@keyframes blood-pop {
+  0%   { transform: translate(-50%,-50%) scale(0.2);  opacity: 1; }
+  45%  { transform: translate(-50%,-50%) scale(1.35); opacity: 1; }
+  62%  { transform: translate(-50%,-50%) scale(1.05); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(1.6);  opacity: 0; }
+}
+
+.droplet {
+  position: absolute;
+  width: 4px; height: 4px;
+  margin: -2px 0 0 -2px;
+  background: var(--red);
+  box-shadow: 0 0 0 1px var(--nes-black);
+  animation: droplet-fly 0.45s ease-out forwards;
+}
+@keyframes droplet-fly {
+  0%   { transform: translate(0,0) scale(1);   opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
+}
 
 /* ── CRIATURA MORTA ── */
 .dot.dead { opacity: 0.28; }
 .list-row.dead-row { opacity: 0.42; }
-.list-row.reached-row .list-dist { color: var(--gold-lt); }
+.list-row.reached-row .list-dist { color: var(--xp-green-dk); }
 
-/* Criaturas clicáveis durante a simulação */
 body.phase-watch .agents { pointer-events: none; }
 body.phase-watch .grid { cursor: pointer; }
 
-/* ── CÉREBRO DO LÍDER (tempo real, bloco à esquerda) ── */
+/* ── JANELA: CÉREBRO DO LÍDER ── */
 .brain-panel {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border: 3px solid var(--nes-grey);
-  background: var(--nes-black);
-  padding: 12px;
+  background: var(--xp-face);
+  border: 1px solid var(--xp-win-border);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  padding: 0 12px 12px;
   min-width: 0;
 }
-.brain-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--nes-grey); }
-.brain-sub span { color: var(--gold-lt); }
-.brain-live { overflow: auto; }
+.brain-sub { font-family: var(--ui); font-size: 11px; color: var(--xp-muted); }
+.brain-sub span { color: var(--xp-sel); font-weight: bold; }
+/* tela rebaixada escura para o diagrama (texto branco do SVG fica legível) */
+.brain-live {
+  overflow: auto;
+  background: #0a0a16;
+  border: 1px solid var(--xp-sunken);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.6);
+  border-radius: 3px;
+  padding: 6px;
+}
 .brain-live .net-svg { width: 100%; height: auto; display: block; }
-.brain-empty { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--nes-dkgrey); line-height: 1.5; padding: 8px 0; }
+.brain-empty { font-family: var(--ui); font-size: 12px; color: #9aa0b0; line-height: 1.5; padding: 8px 4px; }
 
 /* ── INSPETOR DE REDE NEURAL ── */
 .net-box { width: min(840px, 100%); }
 
 .net-sub {
-  font-family: 'Share Tech Mono', monospace;
+  font-family: var(--ui);
   font-size: 12px;
-  color: var(--nes-grey);
+  color: var(--xp-muted);
   margin-bottom: 12px;
 }
-.net-sub span { color: var(--gold-lt); }
+.net-sub span { color: var(--xp-sel); font-weight: bold; }
 
 .net-diagram {
   overflow: auto;
-  border: 2px solid var(--nes-dkgrey);
-  background: #06100a;
+  border: 1px solid var(--xp-sunken);
+  background: #0a0a16;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.6);
+  border-radius: 3px;
   padding: 8px;
   margin-bottom: 12px;
 }
 .net-svg { width: 100%; height: auto; display: block; }
-.net-diagram .net-svg { min-width: 460px; } /* só o modal rola na horizontal; o bloco do líder se ajusta */
-.net-svg .nl { font-family: 'Share Tech Mono', monospace; font-size: 11px; fill: var(--nes-white); }
+.net-diagram .net-svg { min-width: 460px; }
+.net-svg .nl { font-family: var(--ui); font-size: 11px; fill: var(--nes-white); }
 .net-svg .nv { fill: var(--gold-lt); }
 .net-svg .nl.pick { fill: var(--gold-lt); }
-.net-svg .cap { font-family: 'Press Start 2P', monospace; font-size: 7px; fill: var(--nes-grey); }
+.net-svg .cap { font-family: var(--ui); font-weight: bold; font-size: 9px; fill: #9aa0b0; }
 
 .net-legend {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 16px;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: var(--ui);
   font-size: 11px;
-  color: var(--nes-grey);
+  color: var(--xp-muted);
   margin-bottom: 14px;
   padding-bottom: 12px;
-  border-bottom: 2px solid var(--nes-dkgrey);
+  border-bottom: 1px solid var(--xp-sh);
 }
 .net-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .net-legend .sw { width: 13px; height: 13px; border: 1px solid #000; display: inline-block; flex-shrink: 0; }
-.net-legend .sw.goal  { background: #00d800; }
-.net-legend .sw.wall  { background: #8a8f98; }
-.net-legend .sw.enemy { background: #b840fc; }
-.net-legend .sw.trap  { background: #d82800; }
-.net-legend .sw.free  { background: #0e2a1d; }
+.net-legend .sw.goal  { background: #00e436; }
+.net-legend .sw.wall  { background: #c2c3c7; }
+.net-legend .sw.enemy { background: #7e2553; }
+.net-legend .sw.trap  { background: #ff004d; }
+.net-legend .sw.free  { background: #1d2b53; }
 .net-legend .ln { width: 18px; height: 0; border-top: 3px solid; display: inline-block; flex-shrink: 0; }
-.net-legend .ln.pos { border-top-color: #00d800; }
-.net-legend .ln.neg { border-top-color: #d82800; }
-.net-legend .ln.off { border-top: 3px dashed #555; }
+.net-legend .ln.pos { border-top-color: #00e436; }
+.net-legend .ln.neg { border-top-color: #ff004d; }
+.net-legend .ln.off { border-top: 3px dashed #5f574f; }
+
+/* ── BARRA DE TAREFAS (estilo Windows XP, decorativa) ── */
+.xp-taskbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--taskbar-h);
+  display: flex;
+  align-items: stretch;
+  z-index: 140;
+  background: var(--xp-taskbar);
+  box-shadow: inset 0 1px 0 #5a9bf0, inset 0 2px 0 rgba(255,255,255,0.25);
+  border-top: 1px solid #0b3aa0;
+  font-family: var(--ui);
+}
+.xp-start {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 26px 3px 9px;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 15px;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.55);
+  background: radial-gradient(130% 90% at 28% 22%, #84cf6e 0%, #4faa3a 42%, #2f8f24 76%, #1d7a16 100%);
+  border-radius: 0 13px 14px 0 / 0 16px 18px 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset -3px -2px 5px rgba(0,0,0,0.22);
+}
+.xp-flag {
+  width: 17px; height: 16px;
+  flex-shrink: 0;
+  transform: skewX(-9deg);
+  border-radius: 3px;
+  background:
+    linear-gradient(#fff,#fff) center / 100% 2px no-repeat,
+    linear-gradient(#fff,#fff) center / 2px 100% no-repeat,
+    conic-gradient(from 0deg, #f7491e 0 90deg, #7fbb00 90deg 180deg, #ffb900 180deg 270deg, #00a4ef 270deg 360deg);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+}
+.xp-tasks { flex: 1; display: flex; align-items: center; padding: 0 6px; min-width: 0; }
+.xp-task {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 220px;
+  height: 23px;
+  padding: 0 12px;
+  color: #fff;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 3px;
+}
+.xp-task.active {
+  background: linear-gradient(180deg, #1e54c0, #295fd0 50%, #1c4cb4);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.xp-tray {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  margin-left: auto;
+  color: #fff;
+  font-size: 11px;
+  background: linear-gradient(180deg, #16a0e9 0%, #0f86dd 12%, #0d77d4 60%, #0e6fcf 100%);
+  box-shadow: inset 2px 0 3px rgba(0,0,0,0.28), inset 1px 0 0 rgba(255,255,255,0.18);
+}
+.xp-tray-ico { font-size: 12px; line-height: 1; }
+.xp-clock { font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.4); }
 
 /* ── MOVIMENTO REDUZIDO ── */
 @media (prefers-reduced-motion: reduce) {
@@ -876,13 +1176,12 @@ body.phase-watch .grid { cursor: pointer; }
   .phase-fill { transition: none !important; }
 }
 
-/* ── DESKTOP (>=900px): tabuleiro (herói) + barra lateral, grupo centralizado ── */
+/* ── DESKTOP (>=900px): tabuleiro + barra lateral ── */
 @media (min-width: 900px) {
   body { min-height: 100dvh; }
 
-  /* Célula cabe na largura E na altura disponíveis (com teto), nunca corta. */
   :root {
-    --cell: clamp(20px, min(calc((100vw - 420px) / 15), calc((100dvh - 120px) / 15)), 44px);
+    --cell: clamp(20px, min(calc((100vw - 440px) / 15), calc((100dvh - 150px - var(--taskbar-h)) / 15)), 44px);
   }
 
   .app {
@@ -892,11 +1191,11 @@ body.phase-watch .grid { cursor: pointer; }
     gap: clamp(16px, 2vw, 28px);
   }
 
-  .grid-area { flex: 0 0 auto; }              /* tabuleiro no tamanho natural */
+  .grid-area { flex: 0 0 auto; }
 
   .side {
     flex: 0 0 clamp(300px, 30vw, 360px);
-    max-height: calc(100dvh - 24px);
+    max-height: calc(100dvh - 24px - var(--taskbar-h));
     overflow-y: auto;
   }
 
@@ -904,7 +1203,7 @@ body.phase-watch .grid { cursor: pointer; }
   .card { min-height: auto; }
 }
 
-/* ── DESKTOP (>=900px): caixa de diálogo (inspetor) centralizada ── */
+/* ── DESKTOP (>=900px): diálogo centralizado ── */
 @media (min-width: 900px) {
   .rank-overlay {
     align-items: center;
@@ -914,7 +1213,6 @@ body.phase-watch .grid { cursor: pointer; }
   .rank-box {
     width: min(900px, 100%);
     max-height: 92dvh;
-    padding: clamp(16px, 3vw, 22px) clamp(14px, 2.5vw, 18px);
   }
 
   .rank-footer {
@@ -922,4 +1220,5 @@ body.phase-watch .grid { cursor: pointer; }
     align-items: center;
     justify-content: flex-end;
   }
+  .rank-footer .btn { width: auto; min-width: 120px; }
 }

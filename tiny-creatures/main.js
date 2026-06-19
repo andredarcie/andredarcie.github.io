@@ -43,9 +43,14 @@ const SPEEDS = [220, 120, 70, 35, 12, 2]; // ms por passo
 const GEN_PAUSE   = 650; // ms entre gerações (pra dar pra acompanhar)
 const BUDGET      = 30;  // total de peças na construção
 const TOWER_RANGE = 2;   // alcance (Manhattan) da torre
+const ENEMY_MAX_KILLS = 2; // o inimigo (monstro) mata só isso e morre
+const TOWER_HP = 2;        // batidas de criatura até a torre ser destruída (1ª racha)
 const DEAD_PENALTY = 100; // penalidade de fitness para quem morre
 const LAG_MARGIN   = 8;   // morre se ficar mais que isso atrás do líder (no caminho)
 const EXPLORE_BONUS = 0.12; // bônus de fitness por célula nova visitada (incentiva explorar)
+const GOAL_VISION_BONUS = 14;    // passos extras concedidos enquanto o objetivo está no cone de visão
+const STEP_LIMIT_MAX = GLEN * 3; // teto da extensão de passos por geração
+const PRETRAIN_GENS = 50;        // gerações pré-treinadas (ocultas) antes da "geração 1" visível
 
 const SPRITES_DIR = SPRITES.getCreatureSprites();
 const createCreatureColor = SPRITES.createCreatureColor;
@@ -53,6 +58,22 @@ const createCreatureName = SPRITES.createCreatureName;
 const getResponsiveRenderMetrics = SPRITES.getResponsiveRenderMetrics;
 
 function key(x, y) { return x + '_' + y; }
+
+// Enfeites decorativos (grama, arbusto, árvore) — só visual, sem efeito no jogo.
+// Posição determinística por célula (estável entre renders, não usa random).
+function decorHash(x, y) {
+  let h = (x * 374761393 + y * 668265263) >>> 0;
+  h = ((h ^ (h >>> 13)) * 1274126177) >>> 0;
+  return h >>> 0;
+}
+function decorAt(x, y) {
+  const h = decorHash(x, y);
+  if (h % 100 >= 32) return null;          // ~32% das gramas ganham um enfeite
+  const r = (h >>> 8) % 10;
+  if (r < 5) return 'grass';               // graminha (mais comum)
+  if (r < 8) return 'bush';                // arbusto
+  return 'tree';                           // arvorezinha
+}
 
 function darkenHex(hex, f) {
   const n = parseInt(hex.replace('#',''), 16);
@@ -64,8 +85,9 @@ function darkenHex(hex, f) {
 
 function spriteBoxShadow(bodyCol, facing) {
   const scale = getRenderMetrics().spriteScale;
-  const darkCol = darkenHex(bodyCol, 0.55);
-  const cm = { 1: bodyCol, 2: darkCol, 3: '#ffffff', 4: '#000000' };
+  const darkCol = darkenHex(bodyCol, 0.55); // contorno/sombra
+  const liteCol = darkenHex(bodyCol, 1.45); // brilho (fator > 1 clareia)
+  const cm = { 1: bodyCol, 2: darkCol, 3: '#FFF1E8', 4: '#000000', 5: liteCol };
   const sprite = SPRITES_DIR[facing] || SPRITES_DIR.U;
   const parts = [];
   sprite.forEach((row, y) => row.forEach((px, x) => {
@@ -94,17 +116,23 @@ function getRenderMetrics() {
 let pop      = [];
 let gen      = 1;
 let stepN    = 0;
+let stepLimit = GLEN;  // limite de passos da geração atual (cresce se o objetivo entra na visão)
 let handle   = null;
 let delay    = SPEEDS[0];
 let paused   = false;
 let trail    = [];
 let genEndTimer = null;
 let neat     = null;
+let silentSim = false;         // true durante o pré-treino oculto (não desenha efeitos)
 
 let phase    = 'build';        // 'build' | 'watch'
 let tool     = 'tower';        // ferramenta de construção atual
 let towers   = new Set();      // "x_y" impassáveis que atiram
 let traps    = new Set();      // "x_y" que matam quem pisa
+let liveTraps = new Set();     // armadilhas ainda intactas na geração atual (quebram ao matar)
+let spentTowers = new Set();   // torres que já deram seu único tiro nesta geração
+let liveTowers = new Set();    // torres ainda de pé na geração atual (caem com TOWER_HP batidas)
+let towerHp    = new Map();    // "x_y" -> vida restante da torre
 let enemyStarts = [];          // [{x,y}] posições iniciais dos inimigos
 let enemies  = [];             // inimigos vivos durante a fase de assistir
 let painting = false;          // arrastar para pintar defesas
@@ -115,6 +143,7 @@ let bfsMax   = 1;              // maior distância BFS alcançável
 const gridEl   = document.getElementById('grid');
 const agEl     = document.getElementById('agents');
 const enemyEl  = document.getElementById('enemies');
+const fxEl     = document.getElementById('fx');
 const visionEl = document.getElementById('vision');
 const brainLiveEl = document.getElementById('brain-live');
 const brainSubEl  = document.getElementById('brain-sub');
@@ -162,6 +191,9 @@ function buildGrid() {
         c.innerHTML = '<span class="sword-mark" aria-label="Espada — objetivo a defender">⚔</span>';
       } else if (x===START.x && y===START.y) {
         c.innerHTML = '<span class="start-mark" aria-label="Base das criaturas">▼</span>';
+      } else {
+        const d = decorAt(x, y);
+        if (d) c.innerHTML = `<span class="decor decor-${d}" aria-hidden="true"></span>`;
       }
       gridEl.appendChild(c);
     }
@@ -271,9 +303,9 @@ function neatFitness(a) {
 // O que a criatura "vê" num bloco: positivo = bom, negativo = perigo.
 function cellSense(cx, cy) {
   if (cx<0 || cy<0 || cx>MAXI || cy>MAXI) return -1;        // fora da grade (parede)
-  if (towers.has(key(cx,cy))) return -1;                    // torre (parede)
+  if (liveTowers.has(key(cx,cy))) return -1;                // torre (parede; some quando destruída)
   if (enemies.some(e => e.x===cx && e.y===cy)) return -0.8; // inimigo
-  if (traps.has(key(cx,cy))) return -0.6;                   // armadilha
+  if (liveTraps.has(key(cx,cy))) return -0.6;               // armadilha (só as intactas)
   if (cx===GOAL.x && cy===GOAL.y) return 1;                 // espada (objetivo)
   return 0;                                                 // grama livre
 }
@@ -297,7 +329,7 @@ function sensors(a) {
 }
 
 function makeAgent(brain, name, color) {
-  return { brain, name, color, facing: 'U', pos: {...START}, reached: false, dead: false, bestBfs: Infinity, seen: new Set([key(START.x, START.y)]), path: [{...START}] };
+  return { brain, name, color, facing: 'U', pos: {...START}, reached: false, dead: false, hidden: false, bestBfs: Infinity, seen: new Set([key(START.x, START.y)]), path: [{...START}] };
 }
 
 // ══ EVOLVE ═══════════════════════════════════════
@@ -500,30 +532,36 @@ function startDefense() {
   document.body.classList.remove('phase-build');
   document.body.classList.add('phase-watch');
   computeBFS();          // campo do caminho real (faro) com as defesas atuais
+  liveTraps = new Set(traps);
+  liveTowers = new Set(towers);
+  towerHp = new Map();
+  towers.forEach(k => towerHp.set(k, TOWER_HP));
   buildDots();
   initPop();
   gen = 1;
   genEl.textContent = '001';
   trail = [];
   renderDefenses();
-  showGenToast(gen);
-  setStatus('GERAÇÃO 1', 'running');
-  startGen();
+  render();
+  setStatus('TREINANDO IA...', 'evolving');
+  // Pré-treino OCULTO: roda PRETRAIN_GENS gerações sem desenhar pra já começar
+  // com cérebros bons. O setTimeout deixa o status pintar antes do trabalho síncrono.
+  setTimeout(() => {
+    if (phase !== 'watch') return;   // jogador voltou pra construção nesse meio tempo
+    pretrain(PRETRAIN_GENS);
+    trail = [];
+    gen = 1;                       // mostra "Geração 1" (mas os cérebros são da 50ª)
+    genEl.textContent = '001';
+    showGenToast(gen);
+    setStatus('GERAÇÃO 1', 'running');
+    startGen();
+  }, 30);
 }
 
 function startGen() {
   if (genEndTimer) { clearTimeout(genEndTimer); genEndTimer = null; }
-  stepN = 0;
-  pop.forEach(a => {
-    a.pos = {...START};
-    a.facing = 'U';
-    a.reached = false;
-    a.dead = false;
-    a.bestBfs = bfsDistOf(START.x, START.y);
-    a.seen = new Set([key(START.x, START.y)]);
-    a.path = [{...START}];
-  });
-  enemies = enemyStarts.map(s => ({...s}));
+  if (fxEl) fxEl.innerHTML = '';
+  resetPositions();
   render();
   if (handle) clearInterval(handle);
   handle = setInterval(tick, delay);
@@ -556,12 +594,26 @@ function stepEnemies() {
   });
 }
 
-function tick() {
-  if (paused) return;
+// Criatura bateu numa torre: tira 1 de vida. Na primeira batida ela racha; ao
+// zerar a vida é destruída (some e deixa passar). Reseta a cada geração.
+function damageTower(k) {
+  const hp = (towerHp.get(k) || 0) - 1;
+  towerHp.set(k, Math.max(0, hp));
+  if (hp <= 0) {
+    liveTowers.delete(k);
+    if (!silentSim) {
+      const m = getRenderMetrics();
+      const i = k.indexOf('_'), tx = +k.slice(0, i), ty = +k.slice(i + 1);
+      const c = fxCenter(tx, ty, m);
+      spawnImpact(c.x, c.y);
+    }
+  }
+}
 
-  // 1) criaturas se movem (torres bloqueiam a passagem)
+// Move todas as criaturas um passo (decisão da rede + giro/avanço).
+function moveAgents() {
   pop.forEach(a => {
-    if (a.reached || a.dead || stepN >= GLEN) return;
+    if (a.reached || a.dead || stepN >= stepLimit) return;
 
     // Espada logo ao lado? Pega — só basta chegar.
     const dgoal = Math.abs(a.pos.x - GOAL.x) + Math.abs(a.pos.y - GOAL.y);
@@ -580,7 +632,13 @@ function tick() {
     let act = order[0];
     if (act === 0) {                                    // quer andar: só se a frente estiver livre
       const n = mv(a.pos, a.facing);
-      if ((n.x === a.pos.x && n.y === a.pos.y) || towers.has(key(n.x, n.y))) act = order[1]; // bloqueada → vira (2ª opção)
+      const nk = key(n.x, n.y);
+      if (n.x === a.pos.x && n.y === a.pos.y) {
+        act = order[1];                                 // parede da borda → vira
+      } else if (liveTowers.has(nk)) {
+        damageTower(nk);                                // bateu na torre → dana e vira
+        act = order[1];
+      }
     }
     if (act === 0)      a.pos = mv(a.pos, a.facing);    // anda à frente
     else if (act === 1) a.facing = TURN_L[a.facing];   // vira à esquerda
@@ -591,23 +649,51 @@ function tick() {
     a.path.push({ ...a.pos });
     if (a.pos.x === GOAL.x && a.pos.y === GOAL.y) a.reached = true;
   });
+}
 
-  // 2) IA alcançou a espada?
-  if (pop.some(a => a.reached)) { stepN++; render(); finishWatch(); return; }
+// O objetivo (espada) está no cone de visão de alguma criatura viva?
+function goalInVision() {
+  for (const a of pop) {
+    if (a.dead || a.reached) continue;
+    const v = DIRVEC[a.facing] || DIRVEC.U;
+    for (const c of CONE) {
+      if (a.pos.x + v.fx * c.f + v.px * c.l === GOAL.x &&
+          a.pos.y + v.fy * c.f + v.py * c.l === GOAL.y) return true;
+    }
+  }
+  return false;
+}
 
-  // 3) inimigos perseguem
+// Avança a simulação 1 passo. Retorna 'won' (chegou), 'over' (sem vivos) ou
+// 'on'. headless=true pula efeitos visuais e a extensão de passos.
+function advance(headless) {
+  moveAgents();
+  if (pop.some(a => a.reached)) return 'won';
+
+  // inimigos perseguem
   stepEnemies();
 
-  // 4) mortes por armadilha / inimigo
+  // mortes por armadilha / inimigo
   pop.forEach(a => {
     if (a.reached || a.dead) return;
     const k = key(a.pos.x, a.pos.y);
-    if (traps.has(k)) { a.dead = true; return; }
-    if (enemies.some(e => e.x===a.pos.x && e.y===a.pos.y)) a.dead = true;
+    if (liveTraps.has(k)) {                  // armadilha mata 1 e quebra: ambos somem do tabuleiro
+      a.dead = true;
+      a.hidden = true;
+      liveTraps.delete(k);
+      if (!headless) spawnBlood(a.pos.x, a.pos.y);
+      return;
+    }
+    const mob = enemies.find(e => e.x === a.pos.x && e.y === a.pos.y && e.kills < ENEMY_MAX_KILLS);
+    if (mob) { a.dead = true; mob.kills++; } // o monstro contabiliza a morte
   });
+  // monstro que atingiu o limite de mortes também morre (some do tabuleiro)
+  if (!headless) enemies.forEach(e => { if (e.kills >= ENEMY_MAX_KILLS) spawnBlood(e.x, e.y); });
+  enemies = enemies.filter(e => e.kills < ENEMY_MAX_KILLS);
 
-  // 5) torres atiram (1 alvo por torre por passo)
-  towers.forEach(tk => {
+  // torres atiram (1 tiro por torre na geração inteira; só as que ainda estão de pé)
+  liveTowers.forEach(tk => {
+    if (spentTowers.has(tk)) return;          // já deu seu único tiro nesta geração
     const i = tk.indexOf('_');
     const tx = +tk.slice(0, i), ty = +tk.slice(i + 1);
     let target = null, best = 1e9;
@@ -616,10 +702,10 @@ function tick() {
       const d = Math.abs(a.pos.x - tx) + Math.abs(a.pos.y - ty);
       if (d <= TOWER_RANGE && d < best) { best = d; target = a; }
     });
-    if (target) target.dead = true;
+    if (target) { if (!headless) spawnShot(tx, ty, target.pos.x, target.pos.y); target.dead = true; spentTowers.add(tk); }
   });
 
-  // 6) punição: quem fica muito atrás do líder (no caminho até a bandeira) é eliminado
+  // punição: quem fica muito atrás do líder (no caminho até a espada) é eliminado
   if (stepN >= 4) {
     let lead = Infinity;
     pop.forEach(a => { if (!a.dead && !a.reached) { const d = bfsDistOf(a.pos.x, a.pos.y); if (d < lead) lead = d; } });
@@ -630,13 +716,68 @@ function tick() {
     }
   }
 
+  // Objetivo à vista? A IA ganha mais passos pra finalizar (só no jogo visível).
+  if (!headless && goalInVision() && stepLimit < STEP_LIMIT_MAX) {
+    stepLimit = Math.min(STEP_LIMIT_MAX, Math.max(stepLimit, stepN + GOAL_VISION_BONUS));
+  }
+
+  return pop.some(a => !a.dead && !a.reached) ? 'on' : 'over';
+}
+
+function tick() {
+  if (paused) return;
+  const r = advance(false);
+  if (r === 'won') { stepN++; render(); finishWatch(); return; }
+
   stepN++;
-  phaseEl.style.width = (stepN/GLEN*100) + '%';
-  stepEl.textContent  = `${stepN} / ${GLEN}`;
+  phaseEl.style.width = (stepN / stepLimit * 100) + '%';
+  stepEl.textContent  = `${stepN} / ${stepLimit}`;
   render();
 
-  const alive = pop.some(a => !a.dead && !a.reached);
-  if (stepN >= GLEN || !alive) { clearInterval(handle); onGenEnd(); }
+  if (stepN >= stepLimit || r === 'over') { clearInterval(handle); onGenEnd(); }
+}
+
+// Reposiciona todas as criaturas na base (início de geração), sem desenhar.
+function resetPositions() {
+  stepN = 0;
+  stepLimit = GLEN;
+  pop.forEach(a => {
+    a.pos = {...START};
+    a.facing = 'U';
+    a.reached = false;
+    a.dead = false;
+    a.hidden = false;
+    a.bestBfs = bfsDistOf(START.x, START.y);
+    a.seen = new Set([key(START.x, START.y)]);
+    a.path = [{...START}];
+  });
+  liveTraps = new Set(traps);                 // armadilhas voltam intactas a cada geração
+  spentTowers = new Set();                     // torres recarregam (1 tiro por geração)
+  liveTowers = new Set(towers);                // torres voltam de pé a cada geração
+  towerHp = new Map();
+  towers.forEach(k => towerHp.set(k, TOWER_HP));
+  enemies = enemyStarts.map((s, i) => ({...s, kills: 0, eid: i}));
+}
+
+// Simula uma geração inteira sem render nem efeitos (usado no pré-treino).
+function runHeadlessGen() {
+  silentSim = true;
+  resetPositions();
+  while (stepN < stepLimit) {
+    const r = advance(true);
+    stepN++;
+    if (r === 'won' || r === 'over') break;
+  }
+  silentSim = false;
+}
+
+// Pré-treino OCULTO: roda N gerações (simula + evolui) pra começar com cérebros
+// já decentes. O jogador não vê e não precisa esperar as primeiras gerações.
+function pretrain(gens) {
+  for (let g = 0; g < gens; g++) {
+    runHeadlessGen();
+    evolve();
+  }
 }
 
 function onGenEnd() {
@@ -789,27 +930,27 @@ function buildNetSVG(g, inputs, outVals, facing) {
     const a = pos[c.from], b = pos[c.to];
     if (!a || !b) return;
     if (!c.enabled) {
-      lines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#555" stroke-width="1" stroke-dasharray="3 3" opacity="0.3"/>`;
+      lines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#5F574F" stroke-width="1" stroke-dasharray="3 3" opacity="0.3"/>`;
       return;
     }
-    const col = c.w >= 0 ? '#00d800' : '#d82800';
+    const col = c.w >= 0 ? '#00E436' : '#FF004D';
     const sw = Math.max(0.5, Math.min(5, Math.abs(c.w) * 1.4));
     lines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${col}" stroke-width="${sw.toFixed(2)}" opacity="0.6"/>`;
   });
 
   // ── nós ──
   const visColor = (val) => {
-    if (val > 0.5) return '#00d800';   // espada
-    if (val <= -1) return '#8a8f98';   // parede/torre
-    if (val <= -0.7) return '#b840fc'; // inimigo
-    if (val < -0.3) return '#d82800';  // armadilha
-    return '#0e2a1d';                  // livre
+    if (val > 0.5) return '#00E436';   // espada
+    if (val <= -1) return '#C2C3C7';   // parede/torre
+    if (val <= -0.7) return '#7E2553'; // inimigo
+    if (val < -0.3) return '#FF004D';  // armadilha
+    return '#1D2B53';                  // livre
   };
   let nodes = '';
 
   // "ela" no centro + seta da direção que encara
-  nodes += `<rect x="${selfP.x - sq/2}" y="${selfP.y - sq/2}" width="${sq}" height="${sq}" fill="#102016" stroke="#e8b838" stroke-width="2"/>`;
-  nodes += `<line x1="${selfP.x - v.fx*2}" y1="${selfP.y - v.fy*2}" x2="${selfP.x + v.fx*(sq/2-1)}" y2="${selfP.y + v.fy*(sq/2-1)}" stroke="#e8b838" stroke-width="3"/>`;
+  nodes += `<rect x="${selfP.x - sq/2}" y="${selfP.y - sq/2}" width="${sq}" height="${sq}" fill="#1D2B53" stroke="#FFA300" stroke-width="2"/>`;
+  nodes += `<line x1="${selfP.x - v.fx*2}" y1="${selfP.y - v.fy*2}" x2="${selfP.x + v.fx*(sq/2-1)}" y2="${selfP.y + v.fy*(sq/2-1)}" stroke="#FFA300" stroke-width="3"/>`;
 
   // blocos do cone (o que ela enxerga à frente)
   coneOff.forEach((o, i) => {
@@ -822,12 +963,12 @@ function buildNetSVG(g, inputs, outVals, facing) {
     const p = pos[n.id];
     if (!p) return;
     if (n.type === 'bias') {
-      nodes += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="#7c7c7c" stroke="#000" stroke-width="1.5"/>`;
+      nodes += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="#5F574F" stroke="#000" stroke-width="1.5"/>`;
       nodes += `<text x="${p.x}" y="${p.y + 19}" text-anchor="middle" class="nl">viés</text>`;
     } else if (n.type === 'in' && n.id >= CONE.length) {
       const ci = n.id - CONE.length;
       const lbl = ['faro frente', 'faro esq', 'faro dir', 'faro tras', 'aleatorio'][ci] || ('in' + ci);
-      nodes += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="#3cbcfc" stroke="#000" stroke-width="1.5"/>`;
+      nodes += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="#29ADFF" stroke="#000" stroke-width="1.5"/>`;
       nodes += `<text x="${p.x}" y="${p.y + 19}" text-anchor="middle" class="nl">${lbl} <tspan class="nv">${fmtVal(inputs[n.id])}</tspan></text>`;
     }
   });
@@ -835,7 +976,7 @@ function buildNetSVG(g, inputs, outVals, facing) {
   // ocultos
   hiddenNodes.forEach(n => {
     const p = pos[n.id];
-    if (p) nodes += `<circle cx="${p.x}" cy="${p.y}" r="6" fill="#e8b838" stroke="#000" stroke-width="1.5"/>`;
+    if (p) nodes += `<circle cx="${p.x}" cy="${p.y}" r="6" fill="#FFA300" stroke="#000" stroke-width="1.5"/>`;
   });
 
   // saídas
@@ -844,7 +985,7 @@ function buildNetSVG(g, inputs, outVals, facing) {
     const p = pos[n.id];
     if (!p) return;
     const o = n.id - firstOut, pick = (o === chosen);
-    nodes += `<circle cx="${p.x}" cy="${p.y}" r="8" fill="#00d800" stroke="${pick ? '#e8b838' : '#000'}" stroke-width="${pick ? 2.5 : 1.5}"/>`;
+    nodes += `<circle cx="${p.x}" cy="${p.y}" r="8" fill="#00E436" stroke="${pick ? '#FFA300' : '#000'}" stroke-width="${pick ? 2.5 : 1.5}"/>`;
     nodes += `<text x="${p.x + 13}" y="${p.y + 3}" text-anchor="start" class="nl${pick ? ' pick' : ''}">${OUT_LABELS[o] || ('s' + o)} <tspan class="nv">${fmtVal(outVals[o])}</tspan>${pick ? ' ◀' : ''}</text>`;
   });
 
@@ -858,29 +999,104 @@ function buildNetSVG(g, inputs, outVals, facing) {
 
 // ══ RENDER ═══════════════════════════════════════
 function renderDefenses() {
-  document.querySelectorAll('.cell.tower, .cell.trap').forEach(c => c.classList.remove('tower','trap'));
-  towers.forEach(k => { const c = document.getElementById('c' + k); if (c) c.classList.add('tower'); });
-  traps.forEach(k =>  { const c = document.getElementById('c' + k); if (c) c.classList.add('trap'); });
+  document.querySelectorAll('.cell.tower, .cell.trap').forEach(c => c.classList.remove('tower','trap','cracked'));
+  const towerSet = phase === 'watch' ? liveTowers : towers; // assistindo: torres destruídas somem
+  towerSet.forEach(k => {
+    const c = document.getElementById('c' + k);
+    if (!c) return;
+    c.classList.add('tower');
+    if (phase === 'watch' && towerHp.get(k) < TOWER_HP) c.classList.add('cracked'); // levou batida → rachada
+  });
+  const trapSet = phase === 'watch' ? liveTraps : traps; // assistindo: mostra só as armadilhas intactas
+  trapSet.forEach(k =>  { const c = document.getElementById('c' + k); if (c) c.classList.add('trap'); });
 }
 
 function renderEnemies(list) {
   const m = getRenderMetrics();
-  if (enemyEl.children.length !== list.length) {
-    enemyEl.innerHTML = '';
-    list.forEach(() => {
-      const d = document.createElement('div');
-      d.className = 'enemy';
-      enemyEl.appendChild(d);
-    });
-  }
   const sz = Math.max(6, Math.round(m.cellSize * 0.62));
-  list.forEach((e, i) => {
-    const d = enemyEl.children[i];
+  // Cada inimigo tem um nó FIXO (chave por eid na fase de assistir; índice na
+  // construção). Assim nascer/morrer não recria a camada inteira — sem o nó
+  // novo "voar" do canto (0,0) até a célula por causa da transição CSS.
+  const off = (m.cellSize - sz) / 2;       // canto já centralizado (sem depender de transform)
+  const wanted = new Map();
+  list.forEach((e, i) => wanted.set(e.eid != null ? 'e' + e.eid : 'i' + i, e));
+  Array.from(enemyEl.children).forEach(d => { if (!wanted.has(d.dataset.eid)) d.remove(); });
+  wanted.forEach((e, k) => {
+    const left = (e.x * m.cellSize + off) + 'px';
+    const top  = (e.y * m.cellSize + off) + 'px';
+    let d = enemyEl.querySelector('[data-eid="' + k + '"]');
+    if (!d) {
+      d = document.createElement('div');
+      d.className = 'enemy';
+      d.dataset.eid = k;
+      d.style.left = left;   // nasce já posicionado (não anima a partir do canto)
+      d.style.top  = top;
+      enemyEl.appendChild(d);
+    }
     d.style.width  = sz + 'px';
     d.style.height = sz + 'px';
-    d.style.left = (e.x * m.cellSize + m.cellSize/2) + 'px';
-    d.style.top  = (e.y * m.cellSize + m.cellSize/2) + 'px';
+    d.style.left = left;
+    d.style.top  = top;
   });
+}
+
+// ══ EFEITOS (tiro da torre + bolha de sangue na armadilha) ════════
+function fxCenter(cx, cy, m) {
+  return { x: cx * m.cellSize + m.cellSize / 2, y: cy * m.cellSize + m.cellSize / 2 };
+}
+
+// Projétil que sai da torre e voa até o alvo, terminando num clarão.
+function spawnShot(fromX, fromY, toX, toY) {
+  if (!fxEl) return;
+  const m = getRenderMetrics();
+  const a = fxCenter(fromX, fromY, m), b = fxCenter(toX, toY, m);
+  const s = document.createElement('div');
+  s.className = 'shot';
+  s.style.left = a.x + 'px';
+  s.style.top  = a.y + 'px';
+  s.style.setProperty('--dx', (b.x - a.x) + 'px');
+  s.style.setProperty('--dy', (b.y - a.y) + 'px');
+  fxEl.appendChild(s);
+  s.addEventListener('animationend', () => { s.remove(); spawnImpact(b.x, b.y); });
+}
+
+function spawnImpact(px, py) {
+  if (!fxEl) return;
+  const d = document.createElement('div');
+  d.className = 'impact';
+  d.style.left = px + 'px';
+  d.style.top  = py + 'px';
+  fxEl.appendChild(d);
+  d.addEventListener('animationend', () => d.remove());
+}
+
+// A criatura vira uma bolha de sangue que incha, estoura e espalha gotas.
+function spawnBlood(cx, cy) {
+  if (!fxEl) return;
+  const m = getRenderMetrics();
+  const c = fxCenter(cx, cy, m);
+  const sz = Math.max(10, Math.round(m.cellSize * 0.7));
+  const b = document.createElement('div');
+  b.className = 'blood';
+  b.style.left = c.x + 'px';
+  b.style.top  = c.y + 'px';
+  b.style.width = sz + 'px';
+  b.style.height = sz + 'px';
+  fxEl.appendChild(b);
+  b.addEventListener('animationend', () => b.remove());
+  const n = 6;
+  for (let i = 0; i < n; i++) {
+    const ang = (Math.PI * 2 * i) / n + Math.random() * 0.7;
+    const dd  = m.cellSize * (0.5 + Math.random() * 0.6);
+    const drop = document.createElement('div');
+    drop.className = 'droplet';
+    drop.style.left = c.x + 'px';
+    drop.style.top  = c.y + 'px';
+    drop.style.setProperty('--dx', Math.cos(ang) * dd + 'px');
+    drop.style.setProperty('--dy', Math.sin(ang) * dd + 'px');
+    fxEl.appendChild(drop);
+    drop.addEventListener('animationend', () => drop.remove());
+  }
 }
 
 // Cérebro do líder (quem está mais perto da espada) em tempo real.
@@ -942,6 +1158,7 @@ function renderVision() {
 function render() {
   const metrics = getRenderMetrics();
 
+  renderDefenses();   // armadilhas quebradas somem, monstros mortos já saíram da lista
   document.querySelectorAll('.cell.trail').forEach(c => c.classList.remove('trail'));
   trail.forEach(({x,y}) => {
     const c = document.getElementById('c' + key(x, y));
@@ -960,6 +1177,7 @@ function render() {
     const label = document.getElementById(`n${i}`);
     if (!agent || !dot) return;
 
+    agent.style.display = a.hidden ? 'none' : '';   // pego por armadilha → some do tabuleiro
     dot.style.width     = metrics.spriteScale + 'px';
     dot.style.height    = metrics.spriteScale + 'px';
     agent.style.left    = (a.pos.x * metrics.cellSize + sub.x + metrics.spriteScale / 2) + 'px';
@@ -1038,7 +1256,23 @@ function reset() { startBuild(); }
 // Botão do modal de fim de partida.
 function backToBuild() { startBuild(); }
 
+// Gera os sprites do tabuleiro a partir das matrizes (BOARD_SPRITES em
+// sprites.js) e injeta como variáveis CSS (--spr-*) que os backgrounds usam.
+function installSprites() {
+  const root = document.documentElement.style;
+  const B = SPRITES.BOARD_SPRITES;
+  root.setProperty('--spr-sword', SPRITES.spriteToDataURL(B.sword));
+  root.setProperty('--spr-base',  SPRITES.spriteToDataURL(B.base));
+  root.setProperty('--spr-tower', SPRITES.spriteToDataURL(B.tower));
+  root.setProperty('--spr-trap',  SPRITES.spriteToDataURL(B.trap));
+  root.setProperty('--spr-enemy', SPRITES.spriteToDataURL(B.enemy));
+  root.setProperty('--spr-grass', SPRITES.spriteToDataURL(B.grass));
+  root.setProperty('--spr-bush',  SPRITES.spriteToDataURL(B.bush));
+  root.setProperty('--spr-tree',  SPRITES.spriteToDataURL(B.tree));
+}
+
 // ══ BOOT ═════════════════════════════════════════
+installSprites();
 buildGrid();
 gridEl.addEventListener('pointerdown', onGridPointer);
 gridEl.addEventListener('pointermove', onGridPointer);

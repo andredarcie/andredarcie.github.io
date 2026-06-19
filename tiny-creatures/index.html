@@ -6,7 +6,7 @@
 <title>Tiny Creatures — Algoritmo Genético</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body class="phase-build">
 
@@ -17,6 +17,7 @@
 
   <!-- GRID -->
   <section class="grid-area" aria-label="Grade de simulação">
+    <div class="win-bar board-bar"><span class="win-ico" aria-hidden="true">🐾</span>Tiny Creatures <small class="build-tag">build 7</small><span class="win-btns" aria-hidden="true"><i class="wb wb-min"></i><i class="wb wb-max"></i><i class="wb wb-close"></i></span></div>
     <div class="coord-wrap">
       <div class="coord-corner"></div>
       <div class="coord-cols" id="coord-cols"></div>
@@ -29,6 +30,7 @@
         <div id="vision" class="vision-layer" aria-hidden="true"></div>
         <div id="agents" class="agents" aria-hidden="true"></div>
         <div id="enemies" class="enemies-layer" aria-hidden="true"></div>
+        <div id="fx" class="fx-layer" aria-hidden="true"></div>
       </div>
     </div>
     <div class="phase-wrap" role="progressbar" aria-label="Progresso da geração" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0" id="phase-bar">
@@ -91,16 +93,24 @@
     <div id="budget" class="budget">Peças <span id="budget-left">30</span> / 30</div>
     <div class="tool-grid" role="group" aria-label="Ferramentas de construção">
       <button class="tool on" id="tool-tower" onclick="setTool('tower')" aria-pressed="true">
-        <span class="tool-ico tower" aria-hidden="true"></span>Torre<small>bloqueia + atira</small>
+        <span class="tool-ico tower" aria-hidden="true"></span>
+        <span class="tool-name">Torre</span>
+        <span class="tool-desc">bloqueia · 1 tiro</span>
       </button>
       <button class="tool" id="tool-trap" onclick="setTool('trap')" aria-pressed="false">
-        <span class="tool-ico trap" aria-hidden="true"></span>Armadilha<small>mata quem pisa</small>
+        <span class="tool-ico trap" aria-hidden="true"></span>
+        <span class="tool-name">Armadilha</span>
+        <span class="tool-desc">mata 1 e quebra</span>
       </button>
       <button class="tool" id="tool-enemy" onclick="setTool('enemy')" aria-pressed="false">
-        <span class="tool-ico enemy" aria-hidden="true"></span>Inimigo<small>persegue e mata</small>
+        <span class="tool-ico enemy" aria-hidden="true"></span>
+        <span class="tool-name">Inimigo</span>
+        <span class="tool-desc">persegue · mata 2</span>
       </button>
       <button class="tool" id="tool-erase" onclick="setTool('erase')" aria-pressed="false">
-        <span class="tool-ico erase" aria-hidden="true"></span>Apagar<small>remove peça</small>
+        <span class="tool-ico erase" aria-hidden="true"></span>
+        <span class="tool-name">Apagar</span>
+        <span class="tool-desc">remove peça</span>
       </button>
     </div>
     <button class="btn" onclick="clearDefenses()">✕ LIMPAR TUDO</button>
@@ -147,8 +157,15 @@
   </div>
 </div>
 
-<script src="sprites.js"></script>
-<script src="neat.js"></script>
-<script src="main.js"></script>
+<!-- TASKBAR (decorativa, estilo Windows XP) -->
+<div class="xp-taskbar" aria-hidden="true">
+  <div class="xp-start"><span class="xp-flag"></span>iniciar</div>
+  <div class="xp-tasks"><div class="xp-task active">🐾 Tiny Creatures</div></div>
+  <div class="xp-tray"><span class="xp-tray-ico">🔉</span><span class="xp-clock">10:24</span></div>
+</div>
+
+<script src="sprites.js?v=7"></script>
+<script src="neat.js?v=7"></script>
+<script src="main.js?v=7"></script>
 </body>
 </html>
