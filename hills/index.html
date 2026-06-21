@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>SILENT HILLS — first person (PSX)</title>
+<style>
+  :root { --ink:#cfcabf; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#000; }
+  body { font-family: "Times New Roman", Georgia, serif; color:var(--ink); cursor:default; }
+  #game { position:fixed; inset:0; display:block; width:100vw; height:100vh; image-rendering:pixelated; }
+
+  .overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+             flex-direction:column; text-align:center; z-index:10; }
+  .hidden { display:none !important; }
+
+  @keyframes flick { 0%,92%,100%{opacity:1} 93%{opacity:.2} 95%{opacity:.9} 97%{opacity:.3} }
+
+  /* efeitos de tela (não são HUD) */
+  #damage { position:fixed; inset:0; z-index:4; pointer-events:none; opacity:0;
+            box-shadow:inset 0 0 200px 40px rgba(140,0,0,.9); transition:opacity .12s; }
+  #flash { position:fixed; inset:0; z-index:7; pointer-events:none; opacity:0; background:#fff; }
+
+  #pause, #dead, #win { background:rgba(2,3,4,.86); z-index:11; }
+  #dead { background:radial-gradient(circle,#1a0303 0%, #000 80%); }
+  .big { font-size:clamp(30px,7vw,72px); letter-spacing:.16em; font-weight:400; }
+  #dead .big { color:#a11; text-shadow:0 0 30px #500; }
+  #win .big { color:#d8d2c6; text-shadow:0 0 30px #243; }
+  .hint { margin-top:1.6em; font-size:14px; letter-spacing:.2em; color:#8a8478; animation:flick 3s infinite; }
+  .hint b { color:#bdb6a7; font-weight:400; }
+
+  /* inspeção de item: a chave 3D é desenhada no canvas do jogo (filtros PSX); aqui só a legenda */
+  #inspect { background:none; z-index:12; justify-content:flex-end; padding-bottom:9vh; }
+  #inspect .cap { color:#cfc7b6; letter-spacing:.3em; font-size:clamp(13px,2.4vw,19px); text-transform:uppercase; text-shadow:0 2px 8px #000; }
+  #inspect .sub { margin-top:1.6em; color:#7c766b; letter-spacing:.22em; font-size:12px; animation:flick 3s infinite; }
+
+  /* prompt de interação com o portão */
+  #open { position:fixed; left:50%; top:53%; transform:translateX(-50%); z-index:6;
+          color:#e2dccd; letter-spacing:.34em; font-size:clamp(16px,3vw,22px); text-transform:uppercase;
+          text-shadow:0 2px 8px #000; opacity:0; pointer-events:none; transition:opacity .12s; }
+  #open::before { content:""; display:block; width:5px; height:5px; margin:0 auto 10px; border-radius:50%;
+                  background:rgba(226,220,205,.7); box-shadow:0 0 5px #000; }
+  #open.show { opacity:1; }
+  #open.show { pointer-events:auto; cursor:pointer; }
+
+  #build { position:fixed; bottom:8px; right:10px; z-index:20; font-family:monospace;
+           font-size:11px; color:#4a463f; letter-spacing:.1em; }
+</style>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "./psx.js": "./psx.js?v=15",
+    "./world.js": "./world.js?v=15",
+    "./player.js": "./player.js?v=15",
+    "./entities.js": "./entities.js?v=15",
+    "./audio.js": "./audio.js?v=15",
+    "./boot.js": "./boot.js?v=15",
+    "./touch.js": "./touch.js?v=15",
+    "./main.js": "./main.js?v=15"
+  }
+}
+</script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- efeitos de tela -->
+  <div id="damage"></div>
+  <div id="flash"></div>
+
+  <!-- prompt de abrir o portão (aparece ao mirar nele) -->
+  <div id="open">Open</div>
+
+  <!-- INSPEÇÃO DA CHAVE (pausa o jogo; o modelo 3D é desenhado no canvas com filtros PSX) -->
+  <div id="inspect" class="overlay hidden">
+    <div class="cap">Chave enferrujada</div>
+    <div class="sub">clique para guardar</div>
+  </div>
+
+  <!-- PAUSA -->
+  <div id="pause" class="overlay hidden">
+    <div class="big">PAUSA</div>
+    <div class="hint">clique para <b>continuar</b></div>
+  </div>
+
+  <!-- MORTE -->
+  <div id="dead" class="overlay hidden">
+    <div class="big">VOCÊ MORREU</div>
+    <div class="hint">pressione <b>R</b> para recomeçar</div>
+  </div>
+
+  <!-- VITÓRIA -->
+  <div id="win" class="overlay hidden">
+    <div class="big">Fugi do inferno</div>
+    <div class="hint">pressione <b>R</b> (ou toque) para jogar de novo</div>
+  </div>
+
+  <div id="build">BUILD 15</div>
+
+  <script type="module">import './main.js';</script>
+</body>
+</html>
