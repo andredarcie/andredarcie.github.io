@@ -46,6 +46,56 @@ function mats() {
   return MATS;
 }
 
+// poça de sangue deixada ao morrer (material compartilhado)
+let _bloodMat = null;
+function dropBlood(scene, x, z) {
+  if (!_bloodMat) {
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d');
+    g.clearRect(0, 0, 64, 64);
+    g.fillStyle = 'rgba(80,6,6,0.95)'; g.beginPath(); g.ellipse(32, 32, 26, 20, 0.4, 0, 7); g.fill();
+    g.fillStyle = 'rgba(40,2,2,0.96)'; g.beginPath(); g.ellipse(32, 32, 14, 10, 0.4, 0, 7); g.fill();
+    for (let i = 0; i < 30; i++) { g.fillStyle = 'rgba(60,2,2,0.7)'; g.beginPath(); g.arc(32 + (Math.random() - 0.5) * 58, 32 + (Math.random() - 0.5) * 58, 1 + Math.random() * 4, 0, 7); g.fill(); }
+    const tex = new THREE.CanvasTexture(c); tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter; tex.generateMipmaps = false;
+    _bloodMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: true });
+  }
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4), _bloodMat);
+  b.rotation.x = -Math.PI / 2; b.rotation.z = Math.random() * 6;
+  b.position.set(x, 0.05, z); scene.add(b);
+}
+
+// ---------- gore: pedaços de carne arremessados (física simples, baratos) ----------
+const _gibs = [];
+let _gibGeo = null, _gibMat = null;
+function gibAssets() {
+  if (!_gibGeo) {
+    _gibGeo = new THREE.BoxGeometry(0.16, 0.16, 0.16);
+    _gibMat = applyVertexSnap(new THREE.MeshLambertMaterial({ map: fleshTexture(), color: 0x6a1212, emissive: 0x2a0606, fog: true }));
+  }
+  return { geo: _gibGeo, mat: _gibMat };
+}
+function spawnGibs(scene, x, z, n, force) {
+  const { geo, mat } = gibAssets();
+  for (let i = 0; i < n; i++) {
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(x + (Math.random() - 0.5) * 0.3, 0.9 + Math.random() * 0.6, z + (Math.random() - 0.5) * 0.3);
+    const a = Math.random() * 6.283, sp = force * (0.5 + Math.random());
+    m.scale.setScalar(0.6 + Math.random() * 0.9);
+    m.userData = { vx: Math.cos(a) * sp, vz: Math.sin(a) * sp, vy: 2.5 + Math.random() * 4.5, rest: false };
+    scene.add(m); _gibs.push(m);
+  }
+  while (_gibs.length > 160) { const old = _gibs.shift(); scene.remove(old); }
+}
+export function updateGore(dt) {
+  for (const m of _gibs) {
+    const u = m.userData; if (u.rest) continue;
+    u.vy -= 13 * dt;
+    m.position.x += u.vx * dt; m.position.y += u.vy * dt; m.position.z += u.vz * dt;
+    m.rotation.x += dt * 7; m.rotation.y += dt * 5;
+    if (m.position.y <= 0.08) { m.position.y = 0.08; u.rest = true; }
+  }
+}
+
 const cyl = (rt, rb, h, m, seg = 6) => new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m);
 const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
 
@@ -53,9 +103,13 @@ export class Monster {
   constructor(scene, pos) {
     this.scene = scene;
     this.pos = pos.clone(); this.pos.y = 0;
-    this.dead = false;
-    this.speed = 1.7;
-    this.detect = 16;
+    this.dead = false;          // morto (em animação de morte ou removido)
+    this.removed = false;       // já tirado da cena (pruning)
+    this.health = 55;           // ~1 tiro de espingarda de perto, ~2 de longe
+    this.dying = 0;             // timer da animação de morte
+    this.hitFlash = 0;          // recuo/flinch ao levar tiro
+    this.speed = 2.1;           // mais agressivo / frenético
+    this.detect = 20;
     this.state = 'wander';
     this.dir = Math.random() * Math.PI * 2;
     this.wanderTimer = 0;
@@ -76,6 +130,7 @@ export class Monster {
     const M = mats();
     const g = new THREE.Group();
     const scl = 0.95 + Math.random() * 0.3;
+    this.scl = scl;
     g.scale.setScalar(scl);
 
     // ---- pernas dobradas (agachadas), corpo se arrasta baixo ----
@@ -164,10 +219,44 @@ export class Monster {
     scene.add(g);
   }
 
+  // levou chumbo: dano + flinch; ao zerar a vida, começa a animação de morte.
+  // retorna true se ESTE tiro matou (p/ o main contar / tocar som de morte).
+  hurt(dmg, dirX = 0, dirZ = 0) {
+    if (this.dead) return false;
+    this.health -= dmg;
+    this.hitFlash = 0.18;
+    // empurrão pra trás
+    this.pos.x += dirX * 0.3; this.pos.z += dirZ * 0.3;
+    spawnGibs(this.scene, this.pos.x, this.pos.z, 3, 2.2);     // respingo de sangue ao acertar
+    if (this.health <= 0) {
+      this.dead = true; this.dying = 0.0001;
+      spawnGibs(this.scene, this.pos.x, this.pos.z, 12, 6.0);  // explode em pedaços (brutal)
+      dropBlood(this.scene, this.pos.x, this.pos.z);
+      return true;
+    }
+    return false;
+  }
+
+  // animação de morte: rápida e violenta — tomba, afunda e some
+  _death(dt) {
+    this.dying += dt;
+    const k = Math.min(1, this.dying / 0.6);
+    this.mesh.rotation.x = -k * (Math.PI / 2);          // tomba
+    this.mesh.position.y = -k * 1.1;                      // afunda
+    this.mesh.scale.y = this.scl * (1 - k * 0.7);
+    if (this.dying >= 0.6 && !this.removed) {
+      this.removed = true;
+      this.scene.remove(this.mesh);
+    }
+    return Infinity;
+  }
+
   update(dt, t, playerPos, colliders, otherworld) {
-    if (this.dead) return Infinity;
+    if (this.dead) return this._death(dt);
     const dx = playerPos.x - this.pos.x, dz = playerPos.z - this.pos.z;
     const dist = Math.hypot(dx, dz);
+
+    if (this.hitFlash > 0) this.hitFlash -= dt;
 
     const detect = otherworld ? this.detect + 8 : this.detect;
     if (dist < detect) this.state = 'seek'; else if (dist > detect + 6) this.state = 'wander';
@@ -245,6 +334,12 @@ export class MonsterManager {
       if (d < nearest) nearest = d;
       if (m.caughtPlayer(playerPos)) caught = true;
     }
+    // remove os que terminaram a animação de morte
+    if (this.list.some((m) => m.removed)) this.list = this.list.filter((m) => !m.removed);
+    updateGore(dt);     // física dos pedaços de carne
     return { nearest, caught };
   }
+
+  // nº de inimigos ainda vivos (não mortos)
+  get aliveCount() { let n = 0; for (const m of this.list) if (!m.dead) n++; return n; }
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>SILENT HILLS — first person (PSX)</title>
+<title>DOOM HILLS — first person (PSX)</title>
 <style>
   :root { --ink:#cfcabf; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -21,8 +21,22 @@
   #damage { position:fixed; inset:0; z-index:4; pointer-events:none; opacity:0;
             box-shadow:inset 0 0 200px 40px rgba(140,0,0,.9); transition:opacity .12s; }
   #flash { position:fixed; inset:0; z-index:7; pointer-events:none; opacity:0; background:#fff; }
-  /* fade preto das transições rua <-> banheiro */
-  #fade { position:fixed; inset:0; z-index:8; pointer-events:none; opacity:0; background:#000; }
+
+  /* ---------- crosshair ---------- */
+  #cross { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+           z-index:5; width:16px; height:16px; pointer-events:none; opacity:.7; }
+  #cross::before, #cross::after { content:""; position:absolute; background:rgba(232,226,212,.85); box-shadow:0 0 3px #000; }
+  #cross::before { left:50%; top:0; width:2px; height:100%; margin-left:-1px; }
+  #cross::after  { top:50%; left:0; height:2px; width:100%; margin-top:-1px; }
+
+  /* ---------- HUD (Doom: vida / colete / munição) ---------- */
+  #hud { position:fixed; left:0; right:0; bottom:0; z-index:6; pointer-events:none;
+         display:flex; justify-content:space-between; align-items:flex-end;
+         padding:12px 26px; font-family:"Courier New", monospace; }
+  .stat { text-align:center; min-width:64px; }
+  .stat .num { font-size:clamp(26px,5vw,46px); font-weight:700; line-height:1; color:#d8d2c6;
+               text-shadow:0 0 10px #000, 1.5px 0 0 rgba(255,40,70,.35), -1.5px 0 0 rgba(40,200,255,.3); }
+  .stat .lbl { font-size:10px; letter-spacing:.32em; color:#7c766b; margin-top:5px; }
 
   #pause, #dead, #win { background:rgba(2,3,4,.86); z-index:11; }
   #dead { background:radial-gradient(circle,#1a0303 0%, #000 80%); }
@@ -32,19 +46,13 @@
   .hint { margin-top:1.6em; font-size:14px; letter-spacing:.2em; color:#8a8478; animation:flick 3s infinite; }
   .hint b { color:#bdb6a7; font-weight:400; }
 
-  /* inspeção de item: a chave 3D é desenhada no canvas do jogo (filtros PSX); aqui só a legenda */
-  #inspect { background:none; z-index:12; justify-content:flex-end; padding-bottom:9vh; }
-  #inspect .cap { color:#cfc7b6; letter-spacing:.3em; font-size:clamp(13px,2.4vw,19px); text-transform:uppercase; text-shadow:0 2px 8px #000; }
-  #inspect .sub { margin-top:1.6em; color:#7c766b; letter-spacing:.22em; font-size:12px; animation:flick 3s infinite; }
-
-  /* prompt de interação com o portão */
+  /* prompt de interação (porta / saída) */
   #open { position:fixed; left:50%; top:53%; transform:translateX(-50%); z-index:6;
-          color:#e2dccd; letter-spacing:.34em; font-size:clamp(16px,3vw,22px); text-transform:uppercase;
+          color:#e2dccd; letter-spacing:.34em; font-size:clamp(15px,2.6vw,20px); text-transform:uppercase;
           text-shadow:0 2px 8px #000; opacity:0; pointer-events:none; transition:opacity .12s; }
   #open::before { content:""; display:block; width:5px; height:5px; margin:0 auto 10px; border-radius:50%;
                   background:rgba(226,220,205,.7); box-shadow:0 0 5px #000; }
   #open.show { opacity:1; }
-  #open.show { pointer-events:auto; cursor:pointer; }
 
   #build { position:fixed; bottom:8px; right:10px; z-index:20; font-family:monospace;
            font-size:11px; color:#4a463f; letter-spacing:.1em; }
@@ -55,16 +63,16 @@
   "imports": {
     "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
     "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-    "./psx.js": "./psx.js?v=27",
-    "./world.js": "./world.js?v=27",
-    "./interior.js": "./interior.js?v=27",
-    "./player.js": "./player.js?v=27",
-    "./entities.js": "./entities.js?v=27",
-    "./audio.js": "./audio.js?v=27",
-    "./boot.js": "./boot.js?v=27",
-    "./touch.js": "./touch.js?v=27",
-    "./crt.js": "./crt.js?v=27",
-    "./main.js": "./main.js?v=27"
+    "./psx.js": "./psx.js?v=31",
+    "./world.js": "./world.js?v=31",
+    "./player.js": "./player.js?v=31",
+    "./entities.js": "./entities.js?v=31",
+    "./weapon.js": "./weapon.js?v=31",
+    "./audio.js": "./audio.js?v=31",
+    "./boot.js": "./boot.js?v=31",
+    "./touch.js": "./touch.js?v=31",
+    "./crt.js": "./crt.js?v=31",
+    "./main.js": "./main.js?v=31"
   }
 }
 </script>
@@ -75,36 +83,39 @@
   <!-- efeitos de tela -->
   <div id="damage"></div>
   <div id="flash"></div>
-  <div id="fade"></div>
 
-  <!-- prompt de abrir o portão (aparece ao mirar nele) -->
-  <div id="open">Open</div>
+  <!-- crosshair -->
+  <div id="cross"></div>
 
-  <!-- INSPEÇÃO DA CHAVE (pausa o jogo; o modelo 3D é desenhado no canvas com filtros PSX) -->
-  <div id="inspect" class="overlay hidden">
-    <div class="cap" id="inspectCap">Chave enferrujada</div>
-    <div class="sub">clique para guardar</div>
+  <!-- prompt de interação (porta trancada / switch de saída) -->
+  <div id="open">USE</div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="stat"><div class="num" id="hp">100</div><div class="lbl">HEALTH</div></div>
+    <div class="stat"><div class="num" id="armor">0</div><div class="lbl">ARMOR</div></div>
+    <div class="stat"><div class="num" id="ammo">16</div><div class="lbl">SHELLS</div></div>
   </div>
 
-  <!-- PAUSA -->
+  <!-- PAUSE -->
   <div id="pause" class="overlay hidden">
     <div class="big">PAUSED</div>
     <div class="hint">click to <b>resume</b></div>
   </div>
 
-  <!-- MORTE -->
+  <!-- DEATH -->
   <div id="dead" class="overlay hidden">
-    <div class="big">VOCÊ MORREU</div>
-    <div class="hint">pressione <b>R</b> para recomeçar</div>
+    <div class="big">YOU DIED</div>
+    <div class="hint">press <b>R</b> to restart</div>
   </div>
 
-  <!-- VITÓRIA -->
+  <!-- VICTORY -->
   <div id="win" class="overlay hidden">
-    <div class="big">Fugi do inferno</div>
-    <div class="hint">pressione <b>R</b> (ou toque) para jogar de novo</div>
+    <div class="big">LEVEL CLEARED</div>
+    <div class="hint">press <b>R</b> (or tap) to play again</div>
   </div>
 
-  <div id="build">BUILD 27</div>
+  <div id="build">BUILD 31</div>
 
   <script type="module">import './main.js';</script>
 </body>

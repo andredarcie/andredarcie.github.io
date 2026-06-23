@@ -241,6 +241,152 @@ export class GameAudio {
     lo.connect(lg).connect(this.master); lo.start(t); lo.stop(t + 0.55);
   }
 
+  // destino com pan estéreo (cai pro master se o navegador não tiver panner)
+  _pan(pan) {
+    const ctx = this.ctx;
+    if (!ctx.createStereoPanner) return this.master;
+    const p = ctx.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan));
+    p.connect(this.master); return p;
+  }
+
+  // ---------- reverb por convolução p/ a cauda do tiro (eco nos prédios) ----------
+  // gera uma resposta-ao-impulso sintética (ruído decaindo + reflexões iniciais).
+  _makeIR(seconds, decay) {
+    const ctx = this.ctx, len = (ctx.sampleRate * seconds) | 0;
+    const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ir.getChannelData(ch);
+      for (let i = 0; i < len; i++) { const x = i / len; d[i] = (Math.random() * 2 - 1) * Math.pow(1 - x, decay); }
+      // slap-back das construções próximas (reflexões iniciais discretas)
+      for (const [pos, amp] of [[0.011, 0.6], [0.027, 0.42], [0.051, 0.3], [0.083, 0.2]]) {
+        const idx = (pos * ctx.sampleRate) | 0; if (idx < len) d[idx] += amp * (ch ? -1 : 1);
+      }
+    }
+    return ir;
+  }
+  _gunVerb() {
+    if (this._verb) return this._verb;
+    const ctx = this.ctx;
+    const conv = ctx.createConvolver(); conv.buffer = this._makeIR(0.75, 3.2);
+    const wet = ctx.createGain(); wet.gain.value = 0.5; conv.connect(wet).connect(this.master);
+    this._verb = conv; return conv;
+  }
+
+  // ---------- ESPINGARDA: tiro super realista (transiente + estouro + sub + eco) ----------
+  // camadas: estalo agudo distorcido (pólvora) -> corpo de banda -> baque sub ->
+  // cauda por convolução (eco urbano) + rack mecânico do pump. Cada tiro varia.
+  shotgun() {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now();
+    const verb = this._gunVerb();
+    const off = () => Math.random() * 1.5;                 // offset no buffer -> tiros diferentes
+
+    // barramento (soma e escala p/ não clipar) + envio pro reverb
+    const bus = ctx.createGain(); bus.gain.value = 0.5; bus.connect(this.master);
+    const send = ctx.createGain(); send.gain.value = 0.6; bus.connect(send); send.connect(verb);
+
+    // 1) ESTALO / transiente da pólvora (super curto, agudo, com aspereza)
+    const crack = ctx.createBufferSource(); crack.buffer = this.noiseBuf;
+    const chp = ctx.createBiquadFilter(); chp.type = 'highpass'; chp.frequency.value = 2600;
+    const csh = ctx.createWaveShaper(); csh.curve = this._distCurve(4);
+    const cg = ctx.createGain(); cg.gain.setValueAtTime(0.85, t); cg.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    crack.connect(chp).connect(csh).connect(cg).connect(bus);
+    crack.start(t, off()); crack.stop(t + 0.07);
+
+    // 2) CORPO (banda média descendo)
+    const mid = ctx.createBufferSource(); mid.buffer = this.noiseBuf;
+    const mbp = ctx.createBiquadFilter(); mbp.type = 'bandpass'; mbp.frequency.setValueAtTime(1500, t); mbp.frequency.exponentialRampToValueAtTime(500, t + 0.12); mbp.Q.value = 0.8;
+    const mg = ctx.createGain(); mg.gain.setValueAtTime(0.5, t); mg.gain.exponentialRampToValueAtTime(0.0001, t + 0.17);
+    mid.connect(mbp).connect(mg).connect(bus);
+    mid.start(t, off()); mid.stop(t + 0.19);
+
+    // 3) ESTOURO grave (lowpass varrendo p/ baixo)
+    const low = ctx.createBufferSource(); low.buffer = this.noiseBuf;
+    const llp = ctx.createBiquadFilter(); llp.type = 'lowpass'; llp.frequency.setValueAtTime(950, t); llp.frequency.exponentialRampToValueAtTime(120, t + 0.2);
+    const lg = ctx.createGain(); lg.gain.setValueAtTime(0.7, t); lg.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    low.connect(llp).connect(lg).connect(bus);
+    low.start(t, off()); low.stop(t + 0.32);
+
+    // 4) SUB thump (a onda de pressão no peito)
+    const sub = ctx.createOscillator(); sub.type = 'sine'; sub.frequency.setValueAtTime(145, t); sub.frequency.exponentialRampToValueAtTime(42, t + 0.22);
+    const sg = ctx.createGain(); sg.gain.setValueAtTime(0.0001, t); sg.gain.exponentialRampToValueAtTime(0.7, t + 0.008); sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    sub.connect(sg).connect(bus); sub.start(t); sub.stop(t + 0.32);
+
+    // 5) RACK do pump (mecânico): cartucho ejeta e a corrediça volta
+    const clack = (tt, freq, amp) => {
+      const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 9;
+      const g = ctx.createGain(); g.gain.setValueAtTime(amp, tt); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.04);
+      s.connect(bp).connect(g).connect(this.master); s.start(tt, off()); s.stop(tt + 0.05);
+    };
+    clack(t + 0.20, 2500, 0.1); clack(t + 0.34, 1900, 0.12);
+  }
+
+  // gatilho seco sem munição
+  empty() {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now();
+    const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2200; bp.Q.value = 8;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    s.connect(bp).connect(g).connect(this.master); s.start(t); s.stop(t + 0.06);
+  }
+
+  // chumbo acerta o inimigo: esguicho úmido curto (pan estéreo)
+  enemyHit(pan = 0) {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now(); const dest = this._pan(pan);
+    const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.32, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+    s.connect(lp).connect(g).connect(dest); s.start(t); s.stop(t + 0.16);
+    const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
+    const og = ctx.createGain(); og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.22, t + 0.01); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+    o.connect(og).connect(dest); o.start(t); o.stop(t + 0.18);
+  }
+
+  // inimigo morre: grito gutural curto + baque do corpo (pan estéreo)
+  enemyDie(pan = 0) {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now(); const dest = this._pan(pan);
+    const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(420, t); o.frequency.exponentialRampToValueAtTime(70, t + 0.45);
+    const sh = ctx.createWaveShaper(); sh.curve = this._distCurve(7);
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 700; bp.Q.value = 1.4;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.26, t + 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+    o.connect(sh).connect(bp).connect(g).connect(dest); o.start(t); o.stop(t + 0.52);
+    // baque do corpo no chão
+    const b = ctx.createOscillator(); b.type = 'sine'; b.frequency.setValueAtTime(120, t + 0.3); b.frequency.exponentialRampToValueAtTime(40, t + 0.6);
+    const bg = ctx.createGain(); bg.gain.setValueAtTime(0.0001, t + 0.3); bg.gain.exponentialRampToValueAtTime(0.3, t + 0.33); bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.62);
+    b.connect(bg).connect(dest); b.start(t + 0.3); b.stop(t + 0.64);
+  }
+
+  // pegar munição: chacoalho de cartuchos (clinques metálicos)
+  ammoPickup() {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now();
+    for (let i = 0; i < 4; i++) {
+      const tt = t + i * 0.03;
+      const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800 + Math.random() * 1400; bp.Q.value = 10;
+      const g = ctx.createGain(); g.gain.setValueAtTime(0.12, tt); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.05);
+      s.connect(bp).connect(g).connect(this.master); s.start(tt); s.stop(tt + 0.06);
+    }
+    const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = 300;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.1, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    o.connect(g).connect(this.master); o.start(t); o.stop(t + 0.22);
+  }
+
+  // pegar item (kit/colete): bip ascendente positivo
+  itemPickup() {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now();
+    for (const [f, off] of [[440, 0], [660, 0.06]]) {
+      const o = ctx.createOscillator(); o.type = 'square'; o.frequency.value = f;
+      const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t + off); g.gain.exponentialRampToValueAtTime(0.12, t + off + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.18);
+      o.connect(g).connect(this.master); o.start(t + off); o.stop(t + off + 0.2);
+    }
+  }
+
   // TENTAR abrir a grade trancada (realista): trinco -> chacoalho -> ferrolho que não cede
   gateLocked() {
     if (!this.ready) return;

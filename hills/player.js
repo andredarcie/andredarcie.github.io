@@ -21,12 +21,16 @@ export class Player {
     this.pos = spawn.clone();
     this.yaw = Math.PI;          // olhando pro norte (portão)
     this.pitch = 0;
-    this.eye = 1.7;
-    this.radius = 0.45;
+    this.eye = 1.3;              // Doom: altura de visão 41 u ÷ 32 u/m ≈ 1.28 m
+    this.radius = 0.5;           // Doom: raio 16 u ÷ 32 u/m = 0.5 m
     this.sens = 0.0022;
 
     this.health = 100;
-    this.walk = 3.4;             // só andar (sem corrida)
+    this.armor = 0;              // colete verde absorve 1/3 do dano
+    // velocidades EXATAS do Doom (escala 32 u/m):
+    //   andar = 290.9 u/s ÷ 32 = 9.1 m/s ;  correr (always-run / Shift) = 581.8 ÷ 32 = 18.2 m/s
+    this.walk = 9.1;
+    this.run = 18.2;
     this.bobPhase = 0; this.bobAmt = 0;
     this.stepTimer = 0;
     this.flashOn = true;
@@ -50,31 +54,47 @@ export class Player {
   toggleFlash() { this.flashOn = !this.flashOn; }
   forward() { return new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw)); }
 
-  damage(amount) {
-    if (this.hurtCooldown > 0) return false;
-    this.health = Math.max(0, this.health - amount);
-    this.hurtCooldown = 0.8;
+  // bypass = dano contínuo (ex.: lodo) que ignora a janela de invulnerabilidade
+  damage(amount, bypass = false) {
+    if (!bypass && this.hurtCooldown > 0) return false;
+    let dmg = amount;
+    if (this.armor > 0) {                        // colete absorve ~1/3 (estilo Doom)
+      const absorbed = Math.min(this.armor, Math.ceil(amount / 3));
+      this.armor -= absorbed; dmg = amount - absorbed;
+    }
+    this.health = Math.max(0, this.health - dmg);
+    if (!bypass) this.hurtCooldown = 0.8;
     return true;
   }
 
-  // input = { mx, mz }  (mx = strafe, mz = frente; combinam teclado + analógico)
+  heal(amount) { this.health = Math.min(100, this.health + amount); }
+  addArmor(amount) { this.armor = Math.min(100, this.armor + amount); }
+
+  // input = { mx, mz, run }  (mx = strafe, mz = frente; run = Shift/correr)
   update(dt, input, colliders, onStep) {
     const fwd = input.mz, str = input.mx;
     const mag = Math.min(1, Math.hypot(fwd, str));   // deflexão (analógico = velocidade parcial)
     const moving = mag > 0.02;
-    const speed = this.walk;
+    const speed = input.run ? this.run : this.walk;
 
     const f = this.forward();
     const r = new THREE.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
     const dir = new THREE.Vector3().addScaledVector(f, fwd).addScaledVector(r, str);
     if (dir.lengthSq() > 0) dir.normalize();
-    collideMove(this.pos, dir.x * speed * mag * dt, dir.z * speed * mag * dt, this.radius, colliders);
+    // deslocamento total do frame, fatiado em passos <= 0.25 m p/ não atravessar
+    // paredes finas na velocidade alta do Doom (anti-tunneling)
+    const dx = dir.x * speed * mag * dt, dz = dir.z * speed * mag * dt;
+    const dist = Math.hypot(dx, dz);
+    if (dist > 0) {
+      const steps = Math.max(1, Math.ceil(dist / 0.25));
+      for (let i = 0; i < steps; i++) collideMove(this.pos, dx / steps, dz / steps, this.radius, colliders);
+    }
 
     // balanço de passos: sobe a cada passada (abs), sacode de lado e rola levemente
     if (moving) {
-      this.bobPhase += dt * 8.5 * mag;
+      this.bobPhase += dt * 8.5 * mag * (input.run ? 1.5 : 1);
       this.bobAmt = THREE.MathUtils.lerp(this.bobAmt, 0.08 * mag, dt * 6);
-      this.stepTimer -= dt * mag;
+      this.stepTimer -= dt * mag * (input.run ? 1.7 : 1);
       if (this.stepTimer <= 0) { this.stepTimer = 0.5; onStep && onStep(); }
     } else {
       this.bobAmt = THREE.MathUtils.lerp(this.bobAmt, 0, dt * 6);

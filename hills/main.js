@@ -1,127 +1,100 @@
-// main.js — monta a cena, conecta tudo e roda o loop. Sem HUD, sem combate.
-// Abertura (boot homage + menu) via boot.js; controles de toque via touch.js.
-// Objetivo: atravessar a cidade enevoada e escapar pelo portão ao norte. Só correr.
+// main.js — DOOM HILLS: monta a cena, conecta tudo e roda o loop de combate.
+// Estética Silent Hill PSX (névoa, grão, CRT) + gameplay Doom (espingarda, hordas,
+// munição, chave azul, porta trancada, switch de saída). Abertura via boot.js,
+// controles de toque via touch.js.
 import * as THREE from 'three';
-import { PSX, applyVertexSnap } from './psx.js';
+import { PSX } from './psx.js';
 import { World } from './world.js';
 import { Player } from './player.js';
 import { MonsterManager } from './entities.js';
 import { GameAudio } from './audio.js';
 import { runIntro } from './boot.js';
 import { TouchControls, isTouchDevice } from './touch.js';
-import { Interior } from './interior.js';
 import { startCRT } from './crt.js';
+import { Shotgun } from './weapon.js';
 
-const FOG_NORMAL = 0x0b0e12;
-const FOG_OTHER = 0x140404;
-const TOUCH_LOOK_X = 17;   // sensibilidade do analógico direito (girar)
+const FOG = 0x0a0d10;
+const TOUCH_LOOK_X = 17;
 const TOUCH_LOOK_Y = 13;
-const SEE_MAX = 20;        // distância máx. p/ considerar o monstro "à vista"
+const SEE_MAX = 20;
 
-// location: 'street' (cidade) | 'bathroom' (interior). hasBathKey abre a porta de
-// metal (e some ao usar); hasGateKey (achada no vaso) abre o portão grande.
-const state = {
-  mode: 'title', location: 'street', otherworld: false, time: 0,
-  hasBathKey: false, usedBathKey: false, hasGateKey: false, pendingKey: null,
-  busy: false, alarmStarted: false, escaping: false,
-};
+const state = { mode: 'title', time: 0, hasKey: false };
 
-// detecção de campo de visão + grão dinâmico + agendador de sons
+// detecção de visão + grão dinâmico + sons
 const _frustum = new THREE.Frustum();
 const _projScreen = new THREE.Matrix4();
 const _mpos = new THREE.Vector3();
 let grainNow = 0.07;
 let creepyTimer = 3;
-let spottedCd = 0;        // trava global do sting "te avistou" (evita cacofonia com a horda)
-let aimingGate = false;   // mirando no portão?
+let spottedCd = 0;
+let nukeTimer = 0;
+let firingMouse = false;
+let shake = 0;        // tremor aleatório da tela (tiro / dano)
+let viewKick = 0;     // coice: a câmera sobe e volta
 
 // ---------- render / cena ----------
 const canvas = document.getElementById('game');
 const psx = new PSX(canvas);
-startCRT();                              // "vidro" de TV CRT por cima do jogo (mesmo filtro da intro)
+startCRT();
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(FOG_NORMAL);
-scene.fog = new THREE.FogExp2(FOG_NORMAL, 0.07);
+scene.background = new THREE.Color(FOG);
+scene.fog = new THREE.FogExp2(FOG, 0.05);
 
-const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.05, 200);
+const camera = new THREE.PerspectiveCamera(78, window.innerWidth / window.innerHeight, 0.05, 200);
 scene.add(camera);
 
-const ambient = new THREE.AmbientLight(0x191d24, 0.4); scene.add(ambient);
-const hemi = new THREE.HemisphereLight(0x222934, 0x05060a, 0.32); scene.add(hemi);
-const moon = new THREE.DirectionalLight(0x36506e, 0.22); moon.position.set(-30, 45, -12); scene.add(moon);
+const ambient = new THREE.AmbientLight(0x22262d, 0.55); scene.add(ambient);
+const hemi = new THREE.HemisphereLight(0x2a313c, 0x07080c, 0.4); scene.add(hemi);
+const moon = new THREE.DirectionalLight(0x3a4a60, 0.25); moon.position.set(-30, 45, -12); scene.add(moon);
 
-// ---------- mundo / jogador / inimigos / áudio / toque ----------
+// ---------- mundo / jogador / inimigos / arma / áudio / toque ----------
 const world = new World(scene);
-const interior = new Interior();          // banheiro interno (cena THREE própria)
 const player = new Player(camera, world.spawn);
+player.yaw = 0;                       // olhando pro norte (-z), pro fundo da fase
 const monsters = new MonsterManager(scene);
+const weapon = new Shotgun(camera);
 const audio = new GameAudio();
 const touchMode = isTouchDevice();
 const touch = touchMode ? new TouchControls() : null;
 
-// UM inimigo à espreita perto da chave/porta no norte (na névoa).
-// descomente os outros p/ encher a cidade de novo:
-monsters.spawn(new THREE.Vector3(-6, 0, -28));
-// monsters.spawn(new THREE.Vector3(-18, 0, -8));
-// monsters.spawn(new THREE.Vector3(20, 0, 6));
-// monsters.spawn(new THREE.Vector3(10, 0, 16));
+for (const p of world.monsterSpawns) monsters.spawn(p);
 
-// ---------- chave em 3D na inspeção (renderizada pelo MESMO pipeline PSX do jogo) ----------
-let keyScene = null, keyCam = null, keyMesh = null, keyMat = null;
-function rustTexture() {
-  const c = document.createElement('canvas'); c.width = c.height = 128;
-  const g = c.getContext('2d');
-  g.fillStyle = '#6e4a28'; g.fillRect(0, 0, 128, 128);
-  for (let i = 0; i < 1600; i++) { const s = Math.random(); g.fillStyle = `rgba(${120 + s * 90 | 0},${60 + s * 40 | 0},${24 + s * 22 | 0},${0.25 + s * 0.4})`; g.fillRect(Math.random() * 128, Math.random() * 128, 1 + s * 3, 1 + s * 3); }
-  for (let i = 0; i < 70; i++) { g.fillStyle = 'rgba(28,14,7,0.55)'; g.beginPath(); g.arc(Math.random() * 128, Math.random() * 128, 1 + Math.random() * 4, 0, 7); g.fill(); }
-  const tex = new THREE.CanvasTexture(c); tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter; tex.generateMipmaps = false; tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  return tex;
-}
-function buildInspectKey() {
-  const g = new THREE.Group();
-  const m = keyMat = applyVertexSnap(new THREE.MeshLambertMaterial({ map: rustTexture(), color: 0x9a6a3a, emissive: 0x241405, fog: false }));
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 2.2, 10), m); shaft.rotation.z = Math.PI / 2; shaft.position.x = 0.15; g.add(shaft);
-  const bow = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.15, 8, 16), m); bow.position.x = -1.15; g.add(bow);
-  const bit1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.55, 0.18), m); bit1.position.set(1.05, -0.32, 0); g.add(bit1);
-  const bit2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.36, 0.18), m); bit2.position.set(1.3, -0.24, 0); g.add(bit2);
-  g.rotation.set(0.25, 0.5, 0.08);
-  return g;
-}
-(function setupKeyView() {
-  keyScene = new THREE.Scene();
-  keyScene.background = null;          // transparente: o ambiente pausado aparece atrás
-  keyCam = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 20);
-  keyCam.position.set(0, 0, 4.6);
-  keyScene.add(new THREE.AmbientLight(0x484b51, 0.7));
-  const l1 = new THREE.PointLight(0xffe2b4, 1.5, 30, 1.0); l1.position.set(3, 4, 5); keyScene.add(l1);
-  const l2 = new THREE.PointLight(0x355a78, 0.6, 30, 1.0); l2.position.set(-4, -2, 4); keyScene.add(l2);
-  keyMesh = buildInspectKey(); keyScene.add(keyMesh);
-})();
-
-// ---------- UI (só telas; nenhum HUD em jogo) ----------
+// ---------- UI ----------
 const ui = {
   pause: document.getElementById('pause'),
   dead: document.getElementById('dead'),
   win: document.getElementById('win'),
   damage: document.getElementById('damage'),
   flash: document.getElementById('flash'),
-  inspect: document.getElementById('inspect'),
-  cap: document.getElementById('inspectCap'),
-  fade: document.getElementById('fade'),
   open: document.getElementById('open'),
+  hp: document.getElementById('hp'),
+  armor: document.getElementById('armor'),
+  ammo: document.getElementById('ammo'),
 };
 function flashDamage() { ui.damage.style.opacity = 0.9; setTimeout(() => ui.damage.style.opacity = 0, 120); }
+let lastMsg = null;
+function showMsg(txt) {
+  if (txt === lastMsg) return; lastMsg = txt;
+  if (txt) { ui.open.textContent = txt; ui.open.classList.add('show'); }
+  else ui.open.classList.remove('show');
+}
+function updateHUD() {
+  ui.hp.textContent = player.health;
+  ui.hp.style.color = player.health <= 25 ? '#ff3030' : '#d8d2c6';
+  ui.armor.textContent = player.armor;
+  ui.ammo.textContent = weapon.ammo;
+  ui.ammo.style.color = weapon.ammo <= 0 ? '#ff3030' : '#d8d2c6';
+}
 
 // ---------- input ----------
 const keys = {};
 addEventListener('keydown', (e) => {
   keys[e.code] = true;
   if (e.code === 'KeyF' && state.mode === 'play') player.toggleFlash();
-  if (e.code === 'KeyE' && state.mode === 'play') interactGate();
-  if (state.mode === 'inspect' && (e.code === 'KeyE' || e.code === 'Space' || e.code === 'Enter')) dismissInspect();
+  if (e.code === 'KeyE' && state.mode === 'play') useAction();
   if (e.code === 'KeyR') {
-    if (state.mode === 'dead') restartToTitle();        // morte: volta pro titulo (sem reintro)
-    else if (state.mode === 'win') location.reload();   // vitoria: recomeca do zero
+    if (state.mode === 'dead') restartToTitle();
+    else if (state.mode === 'win') location.reload();
   }
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; });
@@ -129,36 +102,38 @@ addEventListener('mousemove', (e) => {
   if (state.mode === 'play' && document.pointerLockElement) player.look(e.movementX, e.movementY);
 });
 addEventListener('mousedown', (e) => {
-  if (state.mode === 'play' && e.button === 0 && document.pointerLockElement) interactGate();
+  if (state.mode !== 'play' || e.button !== 0 || !document.pointerLockElement) return;
+  firingMouse = true;
+  if (weapon.empty) audio.empty();
 });
+addEventListener('mouseup', (e) => { if (e.button === 0) firingMouse = false; });
 
-// movimento combinado: teclado + analógico esquerdo (só andar, sem correr)
+// movimento: teclado + analógico esquerdo
 function gatherInput() {
   let mx = (keys['KeyD'] ? 1 : 0) - (keys['KeyA'] ? 1 : 0);
   let mz = (keys['KeyW'] ? 1 : 0) - (keys['KeyS'] ? 1 : 0);
+  let run = keys['ShiftLeft'] || keys['ShiftRight'] || false;
   if (touch) {
-    const mv = touch.moveVec;          // y pra cima = -1
-    mx += mv.x; mz += -mv.y;
-    const lv = touch.lookVec;          // analógico direito = girar a câmera
+    const mv = touch.moveVec; mx += mv.x; mz += -mv.y;
+    const lv = touch.lookVec;
     if (lv.x || lv.y) player.look(lv.x * TOUCH_LOOK_X, lv.y * TOUCH_LOOK_Y);
     if (touch.consumeFlash()) player.toggleFlash();
+    if (touch.running) run = true;          // analógico no talo = correr
   }
-  return { mx, mz };
+  return { mx, mz, run };
 }
 
 // ---------- abertura / início ----------
 function startPlay() { state.mode = 'play'; ui.pause.classList.add('hidden'); }
 function pauseGame() { state.mode = 'pause'; ui.pause.classList.remove('hidden'); ui.open.classList.remove('show'); audio.setStatic(0); audio.setHeartbeat(false); }
 
-// chamado SÍNCRONO dentro do gesto do botão "start torture"
 function beginGame() {
   audio.init();
   if (touchMode) { touch.show(); startPlay(); }
-  else { document.body.requestPointerLock(); }   // startPlay vem do pointerlockchange
+  else { document.body.requestPointerLock(); }
 }
 runIntro(beginGame);
 
-// desktop: re-trava o ponteiro ao retomar da pausa
 function requestPlay() { audio.init(); document.body.requestPointerLock(); }
 ui.pause.addEventListener('click', requestPlay);
 
@@ -171,136 +146,44 @@ document.addEventListener('pointerlockchange', () => {
   }
 });
 
-// reiniciar tocando na tela de morte/vitória (mobile) ou clicando (desktop)
-// morte -> volta direto pro título (pula a intro); vitória -> recomeça do zero
 ui.dead.addEventListener('click', () => { if (state.mode === 'dead') restartToTitle(); });
 ui.win.addEventListener('click', () => { if (state.mode === 'win') location.reload(); });
-
-// recarrega a página marcando para pular a intro: o reload zera todo o estado
-// do jogo (jogador, monstros, névoa) e o boot.js cai direto no menu/título.
 function restartToTitle() {
   try { sessionStorage.setItem('hills-skip-intro', '1'); } catch (e) { /* ignora */ }
   location.reload();
 }
 
-// ---------- inspeção da chave (pausa o jogo; o AMBIENTE fica congelado atrás) ----------
-// kind: 'bath' (chave do banheiro) | 'gate' (chave do portão geral)
-function enterInspect(kind) {
-  state.mode = 'inspect';
-  state.pendingKey = kind;
-  if (kind === 'bath') world.takeKey(); else interior.takeKey();
-  if (keyMat) keyMat.color.setHex(kind === 'bath' ? 0x9a6a3a : 0x8893a0);   // ferro velho x aço frio
-  ui.cap.textContent = kind === 'bath' ? 'chave do banheiro' : 'chave do portão geral';
-  audio.keyPickup();                  // som de pegar a chave
-  audio.setStatic(0); audio.setHeartbeat(false);
-  ui.open.classList.remove('show');
-  if (touch) touch.hide();
-  if (!touchMode && document.pointerLockElement) document.exitPointerLock();
-  ui.inspect.classList.remove('hidden');
-}
-function dismissInspect() {
-  if (state.mode !== 'inspect') return;
-  ui.inspect.classList.add('hidden');
-  if (state.pendingKey === 'bath') state.hasBathKey = true;
-  else if (state.pendingKey === 'gate') state.hasGateKey = true;
-  state.pendingKey = null;
-  if (touchMode) { if (touch) touch.show(); state.mode = 'play'; }
-  else { document.body.requestPointerLock(); }   // startPlay vem do pointerlockchange
-}
-ui.inspect.addEventListener('click', dismissInspect);
-
-// ---------- transição rua <-> banheiro (fade preto; reposiciona o jogador) ----------
-function snapCamera() { player.update(0, { mx: 0, mz: 0 }, [], null); }   // recalcula a câmera sem mover
-function fadeTo(midFn) {
-  ui.fade.style.transition = 'opacity .5s';
-  ui.fade.style.opacity = '1';
-  setTimeout(() => {
-    midFn();
-    ui.fade.style.opacity = '0';
-    setTimeout(() => { state.busy = false; }, 520);
-  }, 520);
-}
-// chegou na porta de metal com a chave -> usa (e PERDE) a chave e entra no banheiro
-function enterBathroom() {
-  if (state.busy) return;
-  state.busy = true;
-  state.hasBathKey = false; state.usedBathKey = true;     // perde a chave do banheiro
-  audio.gateUnlock(); world.openBathDoor();
-  ui.open.classList.remove('show');
-  audio.setStatic(0); audio.setHeartbeat(false);
-  fadeTo(() => {
-    state.location = 'bathroom';
-    scene.remove(camera); interior.scene.add(camera);     // a lanterna acompanha a câmera
-    player.pos.copy(interior.spawn); player.yaw = 0; player.pitch = 0;
-    snapCamera();
-  });
-}
-// com a chave do portão geral -> volta pra rua (do lado de fora da porta de metal)
-function exitBathroom() {
-  if (state.busy) return;
-  state.busy = true;
-  audio.gateUnlock();
-  fadeTo(() => {
-    state.location = 'street';
-    interior.scene.remove(camera); scene.add(camera);
-    player.pos.set(0, 1.7, -43.0); player.yaw = Math.PI; player.pitch = 0;
-    snapCamera();
-  });
+// ---------- ação USE (porta / saída) ----------
+function useAction() {
+  if (!world.doorOpen && world.nearDoor(player.pos)) {
+    if (state.hasKey) { world.openDoor(); audio.gateUnlock(); }
+    else audio.gateLocked();
+  } else if (world.nearExit(player.pos)) {
+    finishLevel();
+  }
 }
 
-// ---------- interação com o portão ----------
-function interactGate() {
-  if (state.mode !== 'play' || state.location !== 'street' || state.escaping || !aimingGate) return;
-  if (state.hasGateKey) openGate();         // com a chave do portão: destranca e abre
-  else audio.gateLocked();                  // sem a chave: chacoalha trancado
-}
-ui.open.addEventListener('click', interactGate);
-ui.open.addEventListener('touchend', (e) => { e.preventDefault(); interactGate(); }, { passive: false });
-
-// ---------- alarme: ao QUASE chegar no portão com a chave -> sirene + horda ----------
-function startAlarm() {
-  if (state.alarmStarted) return;
-  state.alarmStarted = true;
-  state.otherworld = true;
-  audio.siren();                       // sirene realista (urgência de fugir já dali)
-  world.setOtherworld();
-  psx.setTint(1.0, 0.7, 0.64);
-  // monsters.spawnRing(12, player.pos, 16);   // INIMIGOS OCULTOS POR ENQUANTO (horda do outro mundo)
-  ui.flash.style.transition = 'none'; ui.flash.style.opacity = 0.9;
-  setTimeout(() => { ui.flash.style.transition = 'opacity 1.4s'; ui.flash.style.opacity = 0; }, 60);
+// ---------- tiro: hitscan em cone (espalhamento da espingarda) ----------
+function doHitscan() {
+  const f = player.forward();
+  for (const m of monsters.list) {
+    if (m.dead) continue;
+    const dx = m.pos.x - player.pos.x, dz = m.pos.z - player.pos.z;
+    const dist = Math.hypot(dx, dz);
+    if (dist > weapon.range || dist < 0.001) continue;
+    const ndx = dx / dist, ndz = dz / dist;
+    const dot = ndx * f.x + ndz * f.z;
+    if (dot < 0.95) continue;                                 // fora do cone (~18°)
+    if (lineBlocked(player.pos.x, player.pos.z, m.pos.x, m.pos.z)) continue;
+    const falloff = Math.max(0.3, 1 - dist / weapon.range);
+    const center = (dot - 0.95) / 0.05;                       // 0=borda 1=centro
+    const dmg = Math.round((40 + 50 * center) * falloff);     // 40..90 * falloff
+    const killed = m.hurt(dmg, ndx, ndz);
+    if (killed) audio.enemyDie(panOf(m)); else audio.enemyHit(panOf(m));
+  }
 }
 
-// abrir o portão com a chave (som realista de destrancar + abrir)
-function openGate() {
-  if (state.escaping) return;
-  if (!state.alarmStarted) startAlarm();
-  state.escaping = true;
-  audio.gateUnlock();
-  world.unlockGate();
-  ui.open.classList.remove('show');
-}
-
-let fogLerp = 0;
-function updateFog(dt) {
-  const target = state.otherworld ? 1 : 0;
-  fogLerp += (target - fogLerp) * Math.min(1, dt * 0.4);
-  const c = new THREE.Color(FOG_NORMAL).lerp(new THREE.Color(FOG_OTHER), fogLerp);
-  scene.fog.color.copy(c); scene.background.copy(c);
-  scene.fog.density = 0.07 + fogLerp * 0.022;
-  ambient.color.copy(new THREE.Color(0x191d24).lerp(new THREE.Color(0x2a1010), fogLerp));
-  moon.color.copy(new THREE.Color(0x36506e).lerp(new THREE.Color(0x6a2218), fogLerp));
-}
-
-// ---------- visão / áudio espacial ----------
-// monstro "à vista" = dentro do frustum, perto o bastante e sem prédio na frente
-function isSeen(m, d) {
-  if (d > SEE_MAX) return false;
-  _mpos.set(m.pos.x, 1.2, m.pos.z);
-  if (!_frustum.containsPoint(_mpos)) return false;
-  return !lineBlocked(player.pos.x, player.pos.z, m.pos.x, m.pos.z);
-}
-
-// segmento A->B cruza algum colisor (AABB no plano x,z)? (slab test 2D)
+// ---------- segmento A->B cruza algum colisor? (slab test 2D) ----------
 function lineBlocked(ax, az, bx, bz) {
   const dx = bx - ax, dz = bz - az;
   for (const c of world.colliders) {
@@ -314,31 +197,32 @@ function lineBlocked(ax, az, bx, bz) {
   return false;
 }
 
-// está mirando no portão? (gate à frente e perto)
-function isAimingGate() {
-  if (state.escaping) return false;
-  const dx = world.gatePos.x - player.pos.x, dz = world.gatePos.z - player.pos.z;
-  const dist = Math.hypot(dx, dz);
-  if (dist > 7.5 || dist < 0.001) return false;
-  const f = player.forward();
-  return ((dx / dist) * f.x + (dz / dist) * f.z) > 0.92;
+// ---------- visão / áudio espacial ----------
+function isSeen(m, d) {
+  if (d > SEE_MAX) return false;
+  _mpos.set(m.pos.x, 1.2, m.pos.z);
+  if (!_frustum.containsPoint(_mpos)) return false;
+  return !lineBlocked(player.pos.x, player.pos.z, m.pos.x, m.pos.z);
 }
-
-// pan estéreo [-1,1] do monstro relativo à direção do olhar
 function panOf(m) {
   const dx = m.pos.x - player.pos.x, dz = m.pos.z - player.pos.z;
   const len = Math.hypot(dx, dz) || 1;
   const rx = Math.cos(player.yaw), rz = -Math.sin(player.yaw);
   return Math.max(-1, Math.min(1, (dx / len) * rx + (dz / len) * rz));
 }
-
-// chuvisco na tela cresce quando um monstro está à vista (mais perto = mais grão)
 function updateGrain(dt, nearestSeen) {
-  const base = state.otherworld ? 0.11 : 0.07;
-  let target = base;
-  if (nearestSeen < SEE_MAX) target += (1 - nearestSeen / SEE_MAX) * 0.32;
+  let target = 0.07;
+  if (nearestSeen < SEE_MAX) target += (1 - nearestSeen / SEE_MAX) * 0.3;
   grainNow += (target - grainNow) * Math.min(1, dt * 5);
   psx.setGrain(grainNow);
+}
+
+// ---------- itens ----------
+function applyPickup(got) {
+  if (got.type === 'ammo') { weapon.addAmmo(got.amount); audio.ammoPickup(); }
+  else if (got.type === 'med') { player.heal(got.amount); audio.itemPickup(); }
+  else if (got.type === 'armor') { player.addArmor(got.amount); audio.itemPickup(); }
+  else if (got.type === 'key') { state.hasKey = true; audio.keyPickup(); }
 }
 
 // ---------- loop ----------
@@ -347,27 +231,17 @@ function loop() {
   requestAnimationFrame(loop);
   const dt = Math.min(0.05, clock.getDelta());
   state.time += dt;
-
-  if (state.mode === 'play' && !state.busy) {
-    if (state.location === 'street') updateStreet(dt);
-    else updateBathroom(dt);
-  }
-
-  if (state.location === 'street') updateFog(dt);
-  const active = state.location === 'bathroom' ? interior.scene : scene;
-  if (state.mode === 'inspect' && keyMesh) {
-    keyMesh.rotation.y += dt * 0.8;                                    // gira o item enquanto inspeciona
-    psx.renderInspect(active, camera, keyScene, keyCam, state.time);   // ambiente congelado + chave por cima
-  } else {
-    psx.render(active, camera, state.time);
-  }
+  if (state.mode === 'play') updatePlay(dt);
+  else { weapon.update(dt, false, false); world.update(dt, state.time, player.pos); }
+  psx.render(scene, camera, state.time);
 }
 
-// ---------- update da RUA (cidade): monstros, áudio espacial, chave, portões ----------
-function updateStreet(dt) {
-  player.update(dt, gatherInput(), world.colliders, () => audio.footstep());
+function updatePlay(dt) {
+  const input = gatherInput();
+  player.update(dt, input, world.colliders, () => audio.footstep());
+  const moving = Math.hypot(input.mx, input.mz) > 0.05;
 
-  // frustum da câmera p/ saber quais monstros estão à vista
+  // frustum p/ "à vista"
   camera.updateMatrixWorld();
   _projScreen.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse.copy(camera.matrixWorld).invert());
   _frustum.setFromProjectionMatrix(_projScreen);
@@ -375,72 +249,92 @@ function updateStreet(dt) {
   if (spottedCd > 0) spottedCd -= dt;
   let nearestM = null, nearestD = Infinity, nearestSeen = Infinity;
   for (const m of monsters.list) {
+    if (m.dead) continue;
     const d = Math.hypot(m.pos.x - player.pos.x, m.pos.z - player.pos.z);
     if (d < nearestD) { nearestD = d; nearestM = m; }
-    m.seen = isSeen(m, d);                 // monstro lido no update -> fica mais rápido à vista
+    m.seen = isSeen(m, d);
     if (m.seen && d < nearestSeen) nearestSeen = d;
-
-    // o INIMIGO enxerga o jogador: dentro do alcance de detecção + sem prédio na frente
-    const detectR = state.otherworld ? m.detect + 8 : m.detect;
-    const sawNow = d < detectR && !lineBlocked(player.pos.x, player.pos.z, m.pos.x, m.pos.z);
-    if (sawNow && !m.sawPlayer && spottedCd <= 0) { audio.spotted(panOf(m)); spottedCd = 0.7; }   // som macabro ao te avistar
-    m.sawPlayer = sawNow;                   // lido no update do monstro -> acelera a perseguição
+    const sawNow = d < m.detect && !lineBlocked(player.pos.x, player.pos.z, m.pos.x, m.pos.z);
+    if (sawNow && !m.sawPlayer && spottedCd <= 0) { audio.spotted(panOf(m)); spottedCd = 0.7; }
+    m.sawPlayer = sawNow;
   }
 
-  const { caught } = monsters.update(dt, state.time, player.pos, world.colliders, state.otherworld);
+  const { caught } = monsters.update(dt, state.time, player.pos, world.colliders, false);
   world.update(dt, state.time, player.pos);
 
-  audio.setStatic(nearestD === Infinity ? 0 : Math.max(0, 1 - nearestD / 17));   // estática do rádio
-  updateGrain(dt, nearestSeen);                                                  // chuvisco na tela
-  audio.setHeartbeat(nearestD < 13, nearestD < 7 ? 1.7 : 1.1);
+  // arma (auto a cada pump enquanto segura o gatilho)
+  const fire = firingMouse || (touch && touch.firing);
+  if (weapon.update(dt, fire, moving)) { audio.shotgun(); doHitscan(); shake = Math.max(shake, 0.7); viewKick = Math.max(viewKick, 0.07); }
 
-  // sons sinistros do monstro mais próximo (mais frequentes quando à vista)
+  // itens
+  const got = world.collect(player.pos);
+  if (got) applyPickup(got);
+
+  // dano do lodo radioativo
+  if (world.inNukage(player.pos)) {
+    nukeTimer -= dt;
+    if (nukeTimer <= 0) {
+      nukeTimer = 0.4; player.damage(7, true); flashDamage(); audio.hurt();
+      if (player.health <= 0) { gameOver(); return; }
+    }
+  } else nukeTimer = 0;
+
+  // contato com inimigo = dano (não mais morte instantânea)
+  if (caught && player.damage(16)) {
+    flashDamage(); audio.hurt(); shake = Math.max(shake, 0.9);
+    if (player.health <= 0) { gameOver(); return; }
+  }
+
+  // áudio ambiente
+  audio.setStatic(nearestD === Infinity ? 0 : Math.max(0, 1 - nearestD / 17));
+  updateGrain(dt, nearestSeen);
+  audio.setHeartbeat(nearestD < 13, nearestD < 7 ? 1.7 : 1.1);
   creepyTimer -= dt;
   if (nearestM && nearestD < 18 && creepyTimer <= 0) {
     audio.creepy(panOf(nearestM));
     creepyTimer = (nearestSeen < SEE_MAX ? 1.2 : 2.6) + Math.random() * 2.5;
   }
 
-  // achar a chave do banheiro no chão -> abre a inspeção (pausa o jogo)
-  if (world.atKey(player.pos)) { enterInspect('bath'); return; }
+  // prompts de porta / saída
+  if (!world.doorOpen && world.nearDoor(player.pos)) {
+    if (state.hasKey) { world.openDoor(); audio.gateUnlock(); showMsg(''); }
+    else showMsg(touchMode ? 'BLUE KEYCARD REQUIRED' : 'NEED BLUE KEYCARD — [E]');
+  } else if (world.nearExit(player.pos)) {
+    if (touchMode) { finishLevel(); return; }
+    showMsg('EXIT — [E]');
+  } else showMsg('');
 
-  // chegar na porta de metal com a chave do banheiro -> entra (e perde a chave)
-  if (state.hasBathKey && world.nearBathDoor(player.pos, 2.4)) { enterBathroom(); return; }
-
-  if (state.mode === 'play') {
-    // quase chegando no portão com a chave do portão -> a sirene já começa (urgência)
-    if (state.hasGateKey && !state.alarmStarted && world.nearGate(player.pos, 14)) startAlarm();
-    // mirar no portão mostra "Open" (abrir é via interactGate)
-    aimingGate = isAimingGate();
-    ui.open.classList.toggle('show', aimingGate);
-
-    if (caught) { flashDamage(); audio.hurt(); gameOver(); }   // contato = morte na hora
-    else if (state.escaping && world.atGate(player.pos)) youWin();
+  // feedback de câmera: coice (a tela sobe e volta) + tremor do tiro/dano
+  viewKick = Math.max(0, viewKick - dt * 0.55);
+  shake = Math.max(0, shake - dt * 3.5);
+  if (viewKick > 0.0001 || shake > 0.0001) {
+    camera.rotation.x += viewKick + (Math.random() - 0.5) * 0.09 * shake;
+    camera.rotation.y += (Math.random() - 0.5) * 0.09 * shake;
+    camera.rotation.z += (Math.random() - 0.5) * 0.05 * shake;
   }
+
+  updateHUD();
 }
 
-// ---------- update do BANHEIRO (refúgio): calmo, só a chave do portão e a saída ----------
-function updateBathroom(dt) {
-  player.update(dt, gatherInput(), interior.colliders, () => audio.footstep());
-  interior.update(dt, state.time);
-  audio.setStatic(0); audio.setHeartbeat(false); psx.setGrain(0.08);
-  ui.open.classList.remove('show');
-  aimingGate = false;
+function finishLevel() { showMsg(''); world.pullExit(); audio.gateUnlock(); youWin(); }
 
-  // chave do portão geral dentro do vaso -> inspeção
-  if (interior.atKey(player.pos)) { enterInspect('gate'); return; }
-  // com a chave do portão, sair pela porta de metal volta pra rua
-  if (state.hasGateKey && interior.atExit(player.pos)) { exitBathroom(); return; }
+function gameOver() {
+  if (state.mode !== 'play') return;
+  state.mode = 'dead'; if (!touchMode) document.exitPointerLock(); if (touch) touch.hide();
+  ui.dead.classList.remove('hidden'); ui.open.classList.remove('show');
+  audio.setStatic(0); audio.setHeartbeat(false);
 }
-
-function gameOver() { state.mode = 'dead'; if (!touchMode) document.exitPointerLock(); if (touch) touch.hide(); ui.dead.classList.remove('hidden'); audio.setStatic(0); audio.setHeartbeat(false); }
-function youWin() { state.mode = 'win'; if (!touchMode) document.exitPointerLock(); if (touch) touch.hide(); ui.win.classList.remove('hidden'); audio.setStatic(0); audio.setHeartbeat(false); }
+function youWin() {
+  if (state.mode !== 'play') return;
+  state.mode = 'win'; if (!touchMode) document.exitPointerLock(); if (touch) touch.hide();
+  ui.win.classList.remove('hidden'); ui.open.classList.remove('show');
+  audio.setStatic(0); audio.setHeartbeat(false);
+}
 
 // ---------- resize ----------
 addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  if (keyCam) { keyCam.aspect = camera.aspect; keyCam.updateProjectionMatrix(); }
   psx.setSize(window.innerWidth, window.innerHeight);
 });
 

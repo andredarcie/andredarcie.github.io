@@ -69,6 +69,25 @@ const CSS = `
   opacity: 0.55;
 }
 .tc-flash:active { background: rgba(255, 255, 255, 0.25); }
+.tc-fire {
+  position: fixed;
+  bottom: 26vmin;
+  right: 6vmin;
+  width: 22vmin;
+  height: 22vmin;
+  border-radius: 50%;
+  border: 0.5vmin solid rgba(255, 120, 80, 0.55);
+  background: rgba(220, 70, 40, 0.16);
+  color: rgba(255, 200, 180, 0.85);
+  font-size: 4.4vmin;
+  line-height: 22vmin;
+  text-align: center;
+  letter-spacing: 0.1em;
+  pointer-events: auto;
+  touch-action: none;
+  opacity: 0.7;
+}
+.tc-fire:active { background: rgba(255, 90, 50, 0.4); }
 `;
 
 function injectCSS() {
@@ -87,6 +106,7 @@ export class TouchControls {
     this._move = { x: 0, y: 0 };
     this._look = { x: 0, y: 0 };
     this._flash = false; // flag de lanterna a ser consumida
+    this._firing = false; // gatilho segurado (auto-fire enquanto pressionado)
 
     // Rastreio de toques ativos por pointerId.
     // Cada entrada: { side:'left'|'right', cx, cy, radius }
@@ -110,7 +130,21 @@ export class TouchControls {
       this._flash = true;
     });
 
-    this._root.append(this._leftStick.el, this._rightStick.el, this._flashBtn);
+    // Botão de tiro (segurar = auto a cada pump).
+    this._fireBtn = document.createElement('div');
+    this._fireBtn.className = 'tc-fire';
+    this._fireBtn.textContent = 'FIRE';
+    this._fireBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      this._firing = true;
+      try { this._fireBtn.setPointerCapture(e.pointerId); } catch (err) { /* ignora */ }
+    });
+    const stopFire = (e) => { e.preventDefault(); this._firing = false; };
+    this._fireBtn.addEventListener('pointerup', stopFire);
+    this._fireBtn.addEventListener('pointercancel', stopFire);
+    this._fireBtn.addEventListener('lostpointercapture', () => { this._firing = false; });
+
+    this._root.append(this._leftStick.el, this._rightStick.el, this._flashBtn, this._fireBtn);
     document.body.appendChild(this._root);
 
     // Listeners globais: move/up podem cair fora da base original.
@@ -217,6 +251,11 @@ export class TouchControls {
   // true quando o stick esquerdo está quase no máximo (correndo).
   get running() {
     return Math.hypot(this._move.x, this._move.y) > 0.85;
+  }
+
+  // true enquanto o botão de tiro está pressionado (auto-fire).
+  get firing() {
+    return this._firing;
   }
 
   // Retorna true UMA vez após tocar na lanterna; depois volta a false.

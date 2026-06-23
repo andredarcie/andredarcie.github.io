@@ -236,7 +236,7 @@ export function runIntro(onStart) {
     layer.className = 'hills-layer hills-menu';
     layer.innerHTML =
       '<div class="hills-fog"></div>' +
-      '<h1 class="hills-title">HILLS</h1>' +
+      '<h1 class="hills-title">DOOM<br>HILLS</h1>' +
       '<button type="button" class="hills-start">start torture</button>';
 
     const btn = layer.querySelector('.hills-start');
