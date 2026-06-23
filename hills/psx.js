@@ -47,13 +47,22 @@ const POST_FRAG = /* glsl */`
   uniform float uTime;
   uniform float uGrain;
   uniform float uVignette;
+  uniform float uAberr;
   uniform vec3  uTint;
 
   float ign(vec2 p){ return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
   float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453123); }
 
   void main(){
-    vec3 col = texture2D(tDiffuse, vUv).rgb;
+    vec2 q = vUv - 0.5;                             // centro -> bordas
+
+    // aberração cromática radial (vidro da TV CRT): ~0 no centro, cresce nas bordas
+    vec2 off = q * uAberr;
+    vec3 col;
+    col.r = texture2D(tDiffuse, vUv + off).r;
+    col.g = texture2D(tDiffuse, vUv).g;
+    col.b = texture2D(tDiffuse, vUv - off).b;
+
     vec2 pix = floor(vUv * uRes);
 
     // dithering ordenado + quantização (cor ~15bit)
@@ -63,13 +72,10 @@ const POST_FRAG = /* glsl */`
 
     col *= uTint;                                   // tom do "outro mundo"
 
-    col += (hash(pix + vec2(uTime*1.37, uTime*0.91)) - 0.5) * uGrain;   // grão
+    col += (hash(pix + vec2(uTime*1.37, uTime*0.91)) - 0.5) * uGrain;   // grão dinâmico (perigo)
 
-    col *= 0.93 + 0.07 * sin(pix.y * 3.14159);      // scanlines
-
-    vec2 q = vUv - 0.5;                             // vinheta
-    col *= clamp(1.0 - dot(q,q) * uVignette, 0.0, 1.0);
-
+    // scanlines + vinheta agora vêm da camada global de TV CRT (crt.js),
+    // a MESMA da intro -> gameplay e abertura com o mesmo "vidro" de CRT.
     gl_FragColor = vec4(max(col, 0.0), 1.0);
   }
 `;
@@ -100,6 +106,7 @@ export class PSX {
         uTime:     { value: 0 },
         uGrain:    { value: 0.07 },
         uVignette: { value: 1.15 },
+        uAberr:    { value: 0.006 },               // aberração cromática (RGB split) tipo TV CRT
         uTint:     { value: new THREE.Color(1, 1, 1) },
       },
       vertexShader: POST_VERT,
@@ -122,6 +129,7 @@ export class PSX {
 
   setTint(r, g, b) { this.postMat.uniforms.uTint.value.setRGB(r, g, b); }
   setGrain(v)      { this.postMat.uniforms.uGrain.value = v; }
+  setAberration(v) { this.postMat.uniforms.uAberr.value = v; }
 
   render(scene, camera, time) {
     this.postMat.uniforms.uTime.value = time;

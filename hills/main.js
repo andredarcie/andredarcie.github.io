@@ -10,6 +10,7 @@ import { GameAudio } from './audio.js';
 import { runIntro } from './boot.js';
 import { TouchControls, isTouchDevice } from './touch.js';
 import { Interior } from './interior.js';
+import { startCRT } from './crt.js';
 
 const FOG_NORMAL = 0x0b0e12;
 const FOG_OTHER = 0x140404;
@@ -37,6 +38,7 @@ let aimingGate = false;   // mirando no portão?
 // ---------- render / cena ----------
 const canvas = document.getElementById('game');
 const psx = new PSX(canvas);
+startCRT();                              // "vidro" de TV CRT por cima do jogo (mesmo filtro da intro)
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(FOG_NORMAL);
 scene.fog = new THREE.FogExp2(FOG_NORMAL, 0.07);

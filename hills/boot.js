@@ -22,6 +22,45 @@ export function runIntro(onStart) {
 
   document.body.appendChild(overlay);
 
+  // ---------- camada de FX PSX (mesmo "filtro" do jogo) por cima de TUDO ----------
+  // grão animado + dither ordenado + scanlines + vinheta, em blend modes, cobrindo
+  // boot/credito/menu pra que a abertura combine com o look PS1 do jogo.
+  let fxRaf = 0, fxGrainCanvas = null, fxGrainCtx = null, fxGrainImg = null;
+  function resizeFX() {
+    if (!fxGrainCanvas) return;
+    const ratio = window.innerHeight / Math.max(1, window.innerWidth);
+    const W = 240, H = Math.max(2, Math.round(W * ratio));
+    fxGrainCanvas.width = W; fxGrainCanvas.height = H;
+    fxGrainImg = fxGrainCtx.createImageData(W, H);
+    const d = fxGrainImg.data;
+    for (let i = 3; i < d.length; i += 4) d[i] = 255;   // alpha fixo; só o RGB muda por frame
+  }
+  function setupFX() {
+    // dither ordenado (matriz de Bayer 4x4) como textura tileável de 4px
+    const bay = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    const bc = document.createElement('canvas'); bc.width = bc.height = 4;
+    const bx = bc.getContext('2d'); const bimg = bx.createImageData(4, 4);
+    for (let i = 0; i < 16; i++) { const v = 110 + (bay[i] / 15) * 36 | 0; const o = i * 4; bimg.data[o] = bimg.data[o + 1] = bimg.data[o + 2] = v; bimg.data[o + 3] = 255; }
+    bx.putImageData(bimg, 0, 0);
+
+    const dith = document.createElement('div'); dith.className = 'hills-fx-dither';
+    dith.style.backgroundImage = 'url(' + bc.toDataURL() + ')';
+    const scan = document.createElement('div'); scan.className = 'hills-fx-scan';
+    const vig = document.createElement('div'); vig.className = 'hills-fx-vig';
+    fxGrainCanvas = document.createElement('canvas'); fxGrainCanvas.className = 'hills-fx-grain';
+    fxGrainCtx = fxGrainCanvas.getContext('2d');
+    overlay.appendChild(dith);
+    overlay.appendChild(fxGrainCanvas);
+    overlay.appendChild(scan);
+    overlay.appendChild(vig);
+    resizeFX();
+    (function paintGrain() {
+      if (fxGrainImg) { const d = fxGrainImg.data; for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; } fxGrainCtx.putImageData(fxGrainImg, 0, 0); }
+      fxRaf = requestAnimationFrame(paintGrain);
+    })();
+  }
+  setupFX();
+
   // estado interno
   let stage = 0;            // 0 boot, 1 credito, 2 menu
   let rafId = 0;
@@ -55,12 +94,16 @@ export function runIntro(onStart) {
 
   // ---------- ajuste de resolucao do canvas ----------
   function resizeCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.floor(window.innerWidth * dpr);
-    canvas.height = Math.floor(window.innerHeight * dpr);
+    // backing store em BAIXA resolução -> upscale pixelado: chunky igual ao jogo
+    const ih = 260;
+    const iw = Math.max(2, Math.round((window.innerWidth / window.innerHeight) * ih));
+    canvas.width = iw;
+    canvas.height = ih;
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
-    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // desenha em coordenadas de CSS px; o transform mapeia pro backing baixo
+    if (ctx) ctx.setTransform(iw / window.innerWidth, 0, 0, ih / window.innerHeight, 0, 0);
+    resizeFX();
   }
 
   // =====================================================================
@@ -122,8 +165,7 @@ export function runIntro(onStart) {
         ctx.fillStyle = vg;
         ctx.fillRect(0, 0, w, h);
 
-        drawScanlines(w, h);
-        drawGrain(w, h);
+        // grão/scanlines agora vêm da camada global de FX PSX (hills-fx-*)
       }
 
       if (running) rafId = requestAnimationFrame(frame);
@@ -162,29 +204,7 @@ export function runIntro(onStart) {
     }, C0_END + 3300);
   }
 
-  // grao sutil (ruido pontilhado)
-  function drawGrain(w, h) {
-    ctx.save();
-    ctx.globalAlpha = 0.04;
-    ctx.fillStyle = '#000';
-    for (let i = 0; i < 120; i++) {
-      const x = Math.random() * w;
-      const y = Math.random() * h;
-      ctx.fillRect(x, y, 1, 1);
-    }
-    ctx.restore();
-  }
-
-  // scanlines horizontais discretas
-  function drawScanlines(w, h) {
-    ctx.save();
-    ctx.globalAlpha = 0.03;
-    ctx.fillStyle = '#000';
-    for (let y = 0; y < h; y += 3) {
-      ctx.fillRect(0, y, w, 1);
-    }
-    ctx.restore();
-  }
+  // (grão e scanlines do boot agora são feitos pela camada global de FX PSX)
 
   // =====================================================================
   // CENA 2 — CREDITO (~2s): fundo preto, texto serifado fade in/out.
@@ -247,6 +267,7 @@ export function runIntro(onStart) {
     // remove listeners e timers
     clearTimers();
     if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+    if (fxRaf) { cancelAnimationFrame(fxRaf); fxRaf = 0; }
     window.removeEventListener('resize', resizeCanvas);
     window.removeEventListener('keydown', onKey);
     overlay.removeEventListener('click', onTap);
@@ -322,6 +343,7 @@ const DIAMOND_SVG = `
 function injectStyle() {
   if (document.getElementById('hills-intro-style')) return;
   const css = `
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 .hills-intro{
   position:fixed; inset:0; z-index:2147483000;
   background:#000; overflow:hidden;
@@ -329,7 +351,7 @@ function injectStyle() {
   -webkit-user-select:none; user-select:none;
   -webkit-tap-highlight-color:transparent; cursor:pointer;
 }
-.hills-boot-canvas{ position:absolute; inset:0; display:block; }
+.hills-boot-canvas{ position:absolute; inset:0; display:block; image-rendering:pixelated; }
 .hills-layer{
   position:absolute; inset:0;
   display:flex; align-items:center; justify-content:center;
@@ -355,9 +377,11 @@ function injectStyle() {
   color:#2a2f8f; font-family:Georgia,"Times New Roman",Times,serif;
   font-weight:700; font-size:clamp(30px,9vw,72px);
   letter-spacing:.05em; line-height:1; margin-bottom:-1vh;
+  text-shadow:1px 0 0 rgba(255,40,70,.35), -1px 0 0 rgba(40,170,255,.3);
 }
 .hills-diamond{
   width:clamp(150px,32vw,300px); height:auto; display:block;
+  filter:drop-shadow(1px 0 0 rgba(255,40,70,.4)) drop-shadow(-1px 0 0 rgba(40,170,255,.35));
 }
 .hills-sce-bot{
   color:#2a2f8f; font-family:Arial,Helvetica,sans-serif;
@@ -374,12 +398,13 @@ function injectStyle() {
 .hills-ps.on{ opacity:1; transform:scale(1); }
 .hills-ps-mark{
   width:clamp(150px,33vw,300px); height:auto; display:block;
-  filter:drop-shadow(0 6px 18px rgba(0,0,0,.55));
+  filter:drop-shadow(1.5px 0 0 rgba(255,40,70,.5)) drop-shadow(-1.5px 0 0 rgba(40,200,255,.45)) drop-shadow(0 6px 18px rgba(0,0,0,.55));
 }
 .hills-ps-word{
   color:#f3f5f8; font-family:"Arial Narrow",Arial,Helvetica,sans-serif;
   font-weight:700; font-size:clamp(26px,7vw,58px);
   letter-spacing:.01em; line-height:1; margin-top:.15em;
+  text-shadow:1.5px 0 0 rgba(255,40,70,.45), -1.5px 0 0 rgba(40,200,255,.4);
 }
 .hills-ps-lic{
   color:#c9cdd4; font-family:Arial,Helvetica,sans-serif;
@@ -388,13 +413,15 @@ function injectStyle() {
 }
 /* credito */
 .hills-credit-text{
-  color:#e8e3da; font-size:clamp(20px,4vw,34px);
-  letter-spacing:.22em; font-style:italic;
+  font-family:"Press Start 2P", monospace;
+  color:#e8e3da; font-size:clamp(11px,2.4vw,20px); line-height:1.7;
+  letter-spacing:.04em;
   opacity:0; transition:opacity 1s ease;
   text-align:center; padding:0 8vw;
+  text-shadow:1.2px 0 0 rgba(255,40,70,.4), -1.2px 0 0 rgba(40,200,255,.35);
 }
 /* menu */
-.hills-menu{ background:radial-gradient(120% 90% at 50% 40%, #0a0a0a 0%, #000 70%); }
+.hills-menu{ background:radial-gradient(120% 90% at 50% 40%, #0c1014 0%, #04060a 72%); }
 .hills-fog{
   position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(60% 40% at 50% 55%, rgba(60,60,60,.25), transparent 70%);
@@ -402,17 +429,18 @@ function injectStyle() {
 }
 @keyframes hills-fog{ from{opacity:.45; transform:translateY(0);} to{opacity:.8; transform:translateY(-12px);} }
 .hills-title{
+  font-family:"Press Start 2P", monospace;
   margin:0 0 8vh 0; color:#e9e4db;
-  font-size:clamp(56px,16vw,170px); font-weight:400;
-  letter-spacing:.18em; text-indent:.18em; line-height:1;
-  text-shadow:0 0 24px rgba(0,0,0,.9);
+  font-size:clamp(34px,10vw,104px); font-weight:400;
+  letter-spacing:.06em; text-indent:.06em; line-height:1;
+  text-shadow:1.5px 0 0 rgba(255,40,70,.45), -1.5px 0 0 rgba(40,200,255,.4), 0 0 24px rgba(0,0,0,.9);
   position:relative; z-index:1;
 }
 .hills-start{
   pointer-events:auto; cursor:pointer; position:relative; z-index:1;
   background:none; border:0; padding:.4em 1em;
-  color:#bdb6aa; font-family:inherit;
-  font-size:clamp(14px,2.6vw,20px); letter-spacing:.32em;
+  color:#bdb6aa; font-family:"Press Start 2P", monospace;
+  font-size:clamp(10px,2vw,15px); letter-spacing:.12em;
   text-transform:lowercase;
   animation:hills-flicker 3.2s steps(1) infinite;
 }
@@ -421,6 +449,28 @@ function injectStyle() {
   0%,19%,21%,55%,57%,100%{ opacity:1; }
   20%,56%{ opacity:.25; }
   78%,80%{ opacity:.5; }
+}
+/* ===== Camada de FX PSX por cima de TUDO (mesmo "filtro" do jogo) =====
+   dither ordenado + grão de filme + scanlines + vinheta, em blend modes,
+   pra que boot/credito/menu tenham o look PS1 do jogo. */
+.hills-fx-dither, .hills-fx-grain, .hills-fx-scan, .hills-fx-vig{
+  position:absolute; inset:0; pointer-events:none;
+}
+.hills-fx-dither{
+  width:100%; height:100%; background-repeat:repeat; background-size:4px 4px;
+  image-rendering:pixelated; mix-blend-mode:overlay; opacity:.06; z-index:58;
+}
+.hills-fx-grain{
+  width:100%; height:100%; image-rendering:pixelated;
+  mix-blend-mode:overlay; opacity:.1; z-index:60;
+}
+.hills-fx-scan{
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, rgba(0,0,0,0) 1px 3px);
+  mix-blend-mode:multiply; opacity:.55; z-index:62;
+}
+.hills-fx-vig{
+  background:radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 42%, rgba(0,0,0,.6) 100%);
+  mix-blend-mode:multiply; z-index:64;
 }
 `;
   const style = document.createElement('style');
