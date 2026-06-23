@@ -514,8 +514,8 @@ export class World {
     for (let yy = 0.6; yy < 2.6; yy += 0.5) for (const xx of [0.2, 1.5]) { const rv = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), frameMat); rv.position.set(xx, yy, 0.08); pivot.add(rv); }
     const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.3, 6), frameMat); handle.rotation.z = Math.PI / 2; handle.position.set(1.5, 1.4, 0.12); pivot.add(handle);
     g.add(pivot); this.bathDoor = pivot;
-    // placa "BANHEIRO" brilhando (achável na névoa)
-    const plate = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.4), new THREE.MeshBasicMaterial({ map: this._signTex('BANHEIRO'), fog: true }));
+    // placa "RESTROOM" brilhando (achável na névoa)
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.4), new THREE.MeshBasicMaterial({ map: this._signTex('RESTROOM'), fog: true }));
     plate.position.set(0, 3.45, wallZ + 0.3); g.add(plate);
     this.bathGlow = new THREE.PointLight(0x9fe0b0, 0.8, 9, 1.0); this.bathGlow.position.set(0, 2.6, wallZ + 1.2); g.add(this.bathGlow);
     this.scene.add(g);
