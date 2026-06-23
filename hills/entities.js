@@ -62,6 +62,7 @@ export class Monster {
     this.attackCd = 0;
     this.radius = 0.5;
     this.seen = false;                 // está no campo de visão do jogador?
+    this.sawPlayer = false;            // o inimigo enxerga o jogador? (alcance + linha de visada) -> corre mais rápido
     this.phase = Math.random() * 10;
     this.reach = 0;
     this.armRest = 0.55;
@@ -172,8 +173,10 @@ export class Monster {
     if (dist < detect) this.state = 'seek'; else if (dist > detect + 6) this.state = 'wander';
 
     let mx = 0, mz = 0;
-    // levemente mais rápido quando está à vista do jogador
-    const spd = (otherworld ? this.speed + 0.9 : this.speed) + (this.seen ? 0.6 : 0);
+    // ao ENXERGAR o jogador (linha de visada limpa), avança bem mais rápido;
+    // só estar no campo de visão do jogador dá um empurrão menor.
+    const chase = this.sawPlayer ? 1.4 : (this.seen ? 0.5 : 0);
+    const spd = (otherworld ? this.speed + 0.9 : this.speed) + chase;
     const seeking = this.state === 'seek';
     if (seeking) {
       mx = (dx / (dist || 1)) * spd; mz = (dz / (dist || 1)) * spd;

@@ -130,4 +130,20 @@ export class PSX {
     this.renderer.setRenderTarget(null);
     this.renderer.render(this.postScene, this.postCam);
   }
+
+  // inspeção: desenha o AMBIENTE congelado (bg) e a chave 3D por cima (fg),
+  // tudo no MESMO render target -> passa pela mesma pós-produção PSX.
+  renderInspect(bg, bgCam, fg, fgCam, time) {
+    this.postMat.uniforms.uTime.value = time;
+    const r = this.renderer;
+    r.setRenderTarget(this.rt);
+    r.autoClear = true;
+    r.render(bg, bgCam);          // cenário pausado ao fundo
+    r.autoClear = false;
+    r.clearDepth();               // a chave sempre por cima do cenário
+    r.render(fg, fgCam);
+    r.autoClear = true;
+    r.setRenderTarget(null);
+    r.render(this.postScene, this.postCam);
+  }
 }

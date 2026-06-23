@@ -21,6 +21,8 @@
   #damage { position:fixed; inset:0; z-index:4; pointer-events:none; opacity:0;
             box-shadow:inset 0 0 200px 40px rgba(140,0,0,.9); transition:opacity .12s; }
   #flash { position:fixed; inset:0; z-index:7; pointer-events:none; opacity:0; background:#fff; }
+  /* fade preto das transições rua <-> banheiro */
+  #fade { position:fixed; inset:0; z-index:8; pointer-events:none; opacity:0; background:#000; }
 
   #pause, #dead, #win { background:rgba(2,3,4,.86); z-index:11; }
   #dead { background:radial-gradient(circle,#1a0303 0%, #000 80%); }
@@ -52,14 +54,16 @@
 {
   "imports": {
     "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "./psx.js": "./psx.js?v=15",
-    "./world.js": "./world.js?v=15",
-    "./player.js": "./player.js?v=15",
-    "./entities.js": "./entities.js?v=15",
-    "./audio.js": "./audio.js?v=15",
-    "./boot.js": "./boot.js?v=15",
-    "./touch.js": "./touch.js?v=15",
-    "./main.js": "./main.js?v=15"
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+    "./psx.js": "./psx.js?v=23",
+    "./world.js": "./world.js?v=23",
+    "./interior.js": "./interior.js?v=23",
+    "./player.js": "./player.js?v=23",
+    "./entities.js": "./entities.js?v=23",
+    "./audio.js": "./audio.js?v=23",
+    "./boot.js": "./boot.js?v=23",
+    "./touch.js": "./touch.js?v=23",
+    "./main.js": "./main.js?v=23"
   }
 }
 </script>
@@ -70,13 +74,14 @@
   <!-- efeitos de tela -->
   <div id="damage"></div>
   <div id="flash"></div>
+  <div id="fade"></div>
 
   <!-- prompt de abrir o portão (aparece ao mirar nele) -->
   <div id="open">Open</div>
 
   <!-- INSPEÇÃO DA CHAVE (pausa o jogo; o modelo 3D é desenhado no canvas com filtros PSX) -->
   <div id="inspect" class="overlay hidden">
-    <div class="cap">Chave enferrujada</div>
+    <div class="cap" id="inspectCap">Chave enferrujada</div>
     <div class="sub">clique para guardar</div>
   </div>
 
@@ -98,7 +103,7 @@
     <div class="hint">pressione <b>R</b> (ou toque) para jogar de novo</div>
   </div>
 
-  <div id="build">BUILD 15</div>
+  <div id="build">BUILD 23</div>
 
   <script type="module">import './main.js';</script>
 </body>

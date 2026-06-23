@@ -28,6 +28,13 @@ export function runIntro(onStart) {
   let timers = [];
   let cleaned = false;
 
+  // voltando de um game over? pula a intro inteira e cai direto no menu/titulo.
+  let skipIntro = false;
+  try {
+    skipIntro = sessionStorage.getItem('hills-skip-intro') === '1';
+    if (skipIntro) sessionStorage.removeItem('hills-skip-intro');
+  } catch (e) { /* sessionStorage indisponivel: roda a intro normal */ }
+
   // A intro e TOTALMENTE SILENCIOSA: nenhum audio aqui. O som do jogo so
   // comeca depois, no proprio jogo (GameAudio), apos o botao "start torture".
 
@@ -255,8 +262,9 @@ export function runIntro(onStart) {
     setTimeout(() => { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 0);
   }
 
-  // arranca a sequencia
-  startBoot();
+  // arranca a sequencia (ou pula direto pro titulo se voltou de um game over)
+  if (skipIntro) startMenu();
+  else startBoot();
 }
 
 // ----------------------------------------------------------------------

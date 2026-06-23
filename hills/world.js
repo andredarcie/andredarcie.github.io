@@ -1,7 +1,20 @@
 // world.js — cidade enevoada detalhada: quarteirões com prédios, calçadas, postes
 // com god-rays, carros, props urbanos, poças, sangue e cinza. Tudo procedural.
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { applyVertexSnap } from './psx.js';
+
+// Modelos 3D dos carros (low-poly, via poly.pizza) — ver CREDITS.md. Carros comuns de
+// rua: combinam com a estética PSX. Re-skinados no pipeline PSX (vertex snap + névoa +
+// filtro nearest) ao carregar. Caixa procedural só de fallback. Cada vaga escolhe um
+// modelo pelo id (4º item de cada spot).
+//   id 0 = "Car"    de Quaternius (CC-BY 3.0) — sedã, materiais lisos
+//   id 1 = "Pickup" de Quaternius (CC0)       — picape, textura em atlas
+const CAR_MODELS = [
+  { id: 0, file: 'car.glb',  targetLen: 4.3, extraRot: 0 },
+  { id: 1, file: 'car2.glb', targetLen: 4.6, extraRot: 0 },   // gire 90° (Math.PI/2) aqui se sair de lado
+];
+const carUrl = (file) => new URL('./models/' + file + '?v=21', import.meta.url).href;
 
 // ---------- PRNG determinístico ----------
 function rng(seed) {
@@ -123,6 +136,7 @@ export class World {
     this._blocks();
     this._props();
     this._gate();
+    this._bathDoor();
     this._buildKey();
     this._ash();
     this._commitInstances();
@@ -286,7 +300,103 @@ export class World {
     this.lamps.push({ head, cone, light, base: x });
   }
 
-  _car(x, z, rot) {
+  // ---------- carros: colisores na hora; modelos 3D entram ao carregar (fallback caixa) ----------
+  _placeCars(spots) {
+    // colisores entram já (independem dos modelos carregarem)
+    for (const [x, z, rot] of spots) {
+      const ext = Math.abs(Math.round(rot / (Math.PI / 2))) % 2 === 0 ? [1.1, 2.3] : [2.3, 1.1];
+      this._addCollider(x, z, ext[0], ext[1]);
+    }
+    // cada modelo carrega em paralelo e instancia só as vagas com o seu id
+    for (const def of CAR_MODELS) {
+      const mine = spots.filter((s) => (s[3] || 0) === def.id);
+      if (!mine.length) continue;
+      new GLTFLoader().load(
+        carUrl(def.file),
+        (gltf) => {
+          try { const tpl = this._buildCarTemplate(gltf.scene, def); for (const [x, z, rot] of mine) this._makeCar(tpl, x, z, rot); }
+          catch (e) { console.warn('[hills] falha ao preparar carro 3D (' + def.file + '), usando caixa', e); for (const [x, z, rot] of mine) this._carBox(x, z, rot); }
+        },
+        undefined,
+        (err) => { console.warn('[hills] falha ao carregar carro 3D (' + def.file + '), usando caixa', err); for (const [x, z, rot] of mine) this._carBox(x, z, rot); }
+      );
+    }
+  }
+
+  // materiais PSX lisos compartilhados (poucos programas); a lataria é clonada por carro p/ variar a cor
+  _carFlatMats() {
+    return this._flatMats || (this._flatMats = {
+      glass: applyVertexSnap(new THREE.MeshBasicMaterial({ color: 0x10141a, fog: true })),
+      tire: applyVertexSnap(new THREE.MeshLambertMaterial({ color: 0x080808, fog: true })),
+      trim: applyVertexSnap(new THREE.MeshLambertMaterial({ map: this.tex.metal, color: 0x4a4d52, emissive: 0x050505, fog: true })),
+      body: applyVertexSnap(new THREE.MeshLambertMaterial({ map: this.tex.prop, color: 0x6a6a6a, emissive: 0x080808, fog: true })),
+      light: applyVertexSnap(new THREE.MeshLambertMaterial({ color: 0x8a8a6a, emissive: 0x20200c, fog: true })),
+      brake: applyVertexSnap(new THREE.MeshLambertMaterial({ color: 0x551111, emissive: 0x300404, fog: true })),
+    });
+  }
+
+  // escolhe o material PSX p/ cada material original do glTF
+  _psxCarMat(orig, M) {
+    // tem textura (ex.: atlas da picape) -> mantém o mapa, mas vira lambert PSX (nearest + névoa + snap)
+    if (orig && orig.map) {
+      this._texMats = this._texMats || new Map();
+      let m = this._texMats.get(orig.map.uuid);
+      if (!m) {
+        const map = orig.map;
+        map.magFilter = THREE.NearestFilter; map.minFilter = THREE.NearestFilter;
+        map.generateMipmaps = false; map.needsUpdate = true;
+        const col = (orig.color && orig.color.getHex) ? orig.color.getHex() : 0xffffff;
+        m = applyVertexSnap(new THREE.MeshLambertMaterial({ map, color: col, emissive: 0x070707, fog: true }));
+        this._texMats.set(orig.map.uuid, m);
+      }
+      return m;
+    }
+    // sem textura -> escolhe por nome (sedã liso, faróis, lanternas, vidro, pneu, cromados)
+    const n = ((orig && orig.name) || '').toLowerCase();
+    if (n.includes('window') || n.includes('glass')) return M.glass;
+    if (n.includes('brake') || n.includes('tail')) return M.brake;
+    if (n.includes('light') || n.includes('lamp')) return M.light;
+    if (n.includes('black') || n.includes('tire') || n.includes('wheel')) return M.tire;
+    if (n.includes('grey') || n.includes('gray') || n.includes('chrome') || n.includes('metal')) return M.trim;
+    return M.body;                              // 'Main' e o resto = lataria
+  }
+
+  // prepara um "molde" do carro: re-skina no PSX, centraliza no plano e apoia no chão.
+  // retorna { wrap, scale, rotOffset } — sem estado compartilhado entre modelos.
+  _buildCarTemplate(model, def) {
+    const M = this._carFlatMats();
+    model.traverse((o) => {
+      if (!o.isMesh) return;
+      o.material = Array.isArray(o.material) ? o.material.map((mm) => this._psxCarMat(mm, M)) : this._psxCarMat(o.material, M);
+    });
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    model.position.x -= center.x; model.position.z -= center.z; model.position.y -= box.min.y;  // centro no plano, base em y=0
+    const wrap = new THREE.Group(); wrap.add(model);
+    return {
+      wrap,
+      scale: def.targetLen / (Math.max(size.x, size.z) || 1),
+      rotOffset: (size.x > size.z ? Math.PI / 2 : 0) + def.extraRot,   // alinha o eixo longo ao Z
+    };
+  }
+
+  _makeCar(tpl, x, z, rot) {
+    const car = tpl.wrap.clone(true);
+    // lataria lisa (sedã): clona o material p/ variar a cor por carro; modelos com textura ignoram isto
+    const bodyTpl = this._flatMats.body;
+    const r = rng(((x * 91 + z * 7) | 0) || 5);
+    const body = bodyTpl.clone();                                                // mesma key de programa -> compartilha o shader
+    body.color.setRGB(0.1 + r() * 0.18, 0.1 + r() * 0.15, 0.11 + r() * 0.17);    // pintura fosca/sombria
+    car.traverse((o) => { if (o.isMesh && o.material === bodyTpl) o.material = body; });
+    car.position.set(x, 0, z);
+    car.rotation.y = rot + tpl.rotOffset;
+    car.scale.setScalar(tpl.scale);
+    this.scene.add(car);
+  }
+
+  // fallback: a caixa procedural antiga (só se o modelo 3D não carregar)
+  _carBox(x, z, rot) {
     const r = rng(((x * 91 + z * 7) | 0) || 5);
     const g = new THREE.Group();
     const paint = new THREE.Color(0.12 + r() * 0.22, 0.12 + r() * 0.18, 0.13 + r() * 0.2).getHex();
@@ -299,8 +409,6 @@ export class World {
     for (const sx of [-1, 1]) for (const sz of [-1.4, 1.4]) { const t = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.3, 8), tire); t.rotation.z = Math.PI / 2; t.position.set(sx * 1.0, 0.45, sz); g.add(t); }
     for (const sx of [-0.6, 0.6]) { const hl = new THREE.Mesh(new THREE.CircleGeometry(0.16, 8), new THREE.MeshBasicMaterial({ color: 0x6a6a55, fog: true })); hl.position.set(sx, 0.8, 2.21); g.add(hl); }
     g.position.set(x, 0, z); g.rotation.y = rot; this.scene.add(g);
-    const ext = Math.abs(Math.round(rot / (Math.PI / 2))) % 2 === 0 ? [1.1, 2.3] : [2.3, 1.1];
-    this._addCollider(x, z, ext[0], ext[1]);
   }
 
   _hydrant(x, z) {
@@ -331,8 +439,12 @@ export class World {
     this._lamp(-3, -38, true); this._lamp(26, 3, true); this._lamp(-26, -3, true);
     this._lamp(11, 11, false); this._lamp(-11, -11, false); this._lamp(11, -29, false); this._lamp(-29, 11, false);
 
-    this._car(6, 30, 0); this._car(-7, 8, Math.PI / 2); this._car(8, -16, 0.05); this._car(-6, -34, 0);
-    this._car(28, -6, Math.PI / 2); this._car(-30, 6, Math.PI / 2);
+    this._placeCars([                                  // [x, z, rot, modelo] (0=sedã, 1=picape) — ordem ~ proximidade do spawn
+      [6, 30, 0, 1],             // 1º a aparecer (mais perto do spawn) -> caminhonete
+      [-7, 8, Math.PI / 2, 0],   // 2º -> sedã (esse outro carro)
+      [-30, 6, Math.PI / 2, 1], [28, -6, Math.PI / 2, 0],
+      [8, -16, 0.05, 1], [-6, -34, 0, 0],
+    ]);
 
     this._hydrant(2.2, 14); this._hydrant(-2.4, -16); this._hydrant(24, 2.4);
     this._bin(-2.6, 22); this._bin(2.6, -10); this._bin(-2.6, -30); this._bin(13, -2.5);
@@ -371,6 +483,42 @@ export class World {
 
     this._addCollider(0, z, 2.6, 0.35);
     this._gateCollider = this.colliders[this.colliders.length - 1];
+  }
+
+  // placa luminosa em canvas (texto serifado) p/ achar a porta na névoa
+  _signTex(text) {
+    const c = document.createElement('canvas'); c.width = 256; c.height = 64;
+    const g = c.getContext('2d');
+    g.fillStyle = '#0a1410'; g.fillRect(0, 0, 256, 64);
+    g.fillStyle = '#9fe9b6'; g.font = 'bold 32px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(text, 128, 36);
+    const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
+    return t;
+  }
+
+  // porta de METAL embutida no muro norte: leva ao banheiro. O jogador chega
+  // pelo lado +z; ao encostar com a chave do banheiro, ela abre (e some a chave).
+  _bathDoor() {
+    const wallZ = -45.0;                                    // face interna do muro norte (maxZ do colisor)
+    this.bathDoorPos = new THREE.Vector3(0, 0, -44.3);      // ponto-alvo (onde o jogador encosta)
+    const g = new THREE.Group();
+    const doorMat = mat(this.tex.metal, 0x4a4e54);
+    const frameMat = mat(this.tex.metal, 0x35383d);
+    // moldura
+    const fl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 3.2, 0.5), frameMat); fl.position.set(-1.1, 1.6, wallZ); g.add(fl);
+    const frr = fl.clone(); frr.position.x = 1.1; g.add(frr);
+    const lint = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.4, 0.5), frameMat); lint.position.set(0, 3.1, wallZ); g.add(lint);
+    // folha numa dobradiça (gira ao abrir)
+    const pivot = new THREE.Group(); pivot.position.set(-0.85, 0, wallZ + 0.05);
+    const leaf = new THREE.Mesh(new THREE.BoxGeometry(1.7, 2.9, 0.14), doorMat); leaf.position.set(0.85, 1.45, 0); pivot.add(leaf);
+    for (let yy = 0.6; yy < 2.6; yy += 0.5) for (const xx of [0.2, 1.5]) { const rv = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), frameMat); rv.position.set(xx, yy, 0.08); pivot.add(rv); }
+    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.3, 6), frameMat); handle.rotation.z = Math.PI / 2; handle.position.set(1.5, 1.4, 0.12); pivot.add(handle);
+    g.add(pivot); this.bathDoor = pivot;
+    // placa "BANHEIRO" brilhando (achável na névoa)
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.4), new THREE.MeshBasicMaterial({ map: this._signTex('BANHEIRO'), fog: true }));
+    plate.position.set(0, 3.45, wallZ + 0.3); g.add(plate);
+    this.bathGlow = new THREE.PointLight(0x9fe0b0, 0.8, 9, 1.0); this.bathGlow.position.set(0, 2.6, wallZ + 1.2); g.add(this.bathGlow);
+    this.scene.add(g);
   }
 
   // a chave caída no chão, com brilho fraco pra ser achada no nevoeiro
@@ -453,6 +601,10 @@ export class World {
 
   nearGate(camPos, d) { const dx = this.gatePos.x - camPos.x, dz = this.gatePos.z - camPos.z; return dx * dx + dz * dz < d * d; }
   atGate(camPos) { const dx = this.gatePos.x - camPos.x, dz = this.gatePos.z - camPos.z; return dx * dx + dz * dz < 6.8; }
+
+  // chegou na porta de metal do banheiro?
+  nearBathDoor(camPos, d) { const dx = this.bathDoorPos.x - camPos.x, dz = this.bathDoorPos.z - camPos.z; return dx * dx + dz * dz < d * d; }
+  openBathDoor() { if (this.bathDoor) this.bathDoor.rotation.y = -Math.PI / 2.2; if (this.bathGlow) this.bathGlow.color.set(0x66ccff); }
 
   unlockGate() {
     this.gateGrille.rotation.y = -Math.PI / 1.7;   // abre girando na dobradiça

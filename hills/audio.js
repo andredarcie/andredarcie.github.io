@@ -116,6 +116,40 @@ export class GameAudio {
     else this._gurgle(t, dest);
   }
 
+  // ---------- "te avistou": sting macabro disparado quando o inimigo enxerga o jogador ----------
+  // mais agudo e pontual que o creepy ambiente: arquejo que sobe + stab dissonante + baque grave.
+  spotted(pan = 0) {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now();
+    let dest = this.master;
+    if (ctx.createStereoPanner) {
+      const p = ctx.createStereoPanner();
+      p.pan.value = Math.max(-1, Math.min(1, pan));
+      p.connect(this.master); dest = p;
+    }
+    // 1) arquejo: ruído de banda que sobe rápido (a criatura inala ao te ver)
+    const br = ctx.createBufferSource(); br.buffer = this.noiseBuf;
+    const bf = ctx.createBiquadFilter(); bf.type = 'bandpass';
+    bf.frequency.setValueAtTime(300, t); bf.frequency.exponentialRampToValueAtTime(1800, t + 0.22); bf.Q.value = 1.2;
+    const bg = ctx.createGain(); bg.gain.setValueAtTime(0.0001, t); bg.gain.exponentialRampToValueAtTime(0.16, t + 0.18); bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+    br.connect(bf).connect(bg).connect(dest); br.start(t); br.stop(t + 0.52);
+    // 2) stab dissonante: duas serras em semitom, distorcidas, sobem e cortam (tensão)
+    const sh = ctx.createWaveShaper(); sh.curve = this._distCurve(6);
+    const sbp = ctx.createBiquadFilter(); sbp.type = 'bandpass'; sbp.frequency.value = 1200; sbp.Q.value = 1.5;
+    const sg = ctx.createGain(); sg.gain.setValueAtTime(0.0001, t + 0.02); sg.gain.exponentialRampToValueAtTime(0.14, t + 0.1); sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+    sh.connect(sbp).connect(sg).connect(dest);
+    for (const f of [440, 466]) {                 // semitom => dissonância áspera
+      const o = ctx.createOscillator(); o.type = 'sawtooth';
+      o.frequency.setValueAtTime(f, t + 0.02); o.frequency.exponentialRampToValueAtTime(f * 1.5, t + 0.18);
+      o.connect(sh); o.start(t + 0.02); o.stop(t + 0.62);
+    }
+    // 3) baque grave: a presença "fecha" em cima de você
+    const o2 = ctx.createOscillator(); o2.type = 'sine';
+    o2.frequency.setValueAtTime(150, t); o2.frequency.exponentialRampToValueAtTime(45, t + 0.4);
+    const og = ctx.createGain(); og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.4, t + 0.04); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    o2.connect(og).connect(dest); o2.start(t); o2.stop(t + 0.58);
+  }
+
   // curva de distorção (aspereza) p/ o grito
   _distCurve(amount) {
     const n = 256, c = new Float32Array(n);
