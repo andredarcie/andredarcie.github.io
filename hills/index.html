@@ -76,6 +76,13 @@
                   background:rgba(226,220,205,.7); box-shadow:0 0 5px #000; }
   #open.show { opacity:1; }
 
+  /* HUD do jogo fica oculto até a partida começar — não vaza atrás da intro no load */
+  #cross, #hud, #compass, #wave { visibility:hidden; }
+  body.playing #cross,
+  body.playing #hud,
+  body.playing #compass,
+  body.playing #wave { visibility:visible; }
+
   #build { position:fixed; bottom:8px; right:10px; z-index:20; font-family:monospace;
            font-size:11px; color:#4a463f; letter-spacing:.1em; }
 </style>
@@ -85,16 +92,16 @@
   "imports": {
     "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
     "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-    "./psx.js": "./psx.js?v=34",
-    "./world.js": "./world.js?v=34",
-    "./player.js": "./player.js?v=34",
-    "./entities.js": "./entities.js?v=34",
-    "./weapon.js": "./weapon.js?v=34",
-    "./audio.js": "./audio.js?v=34",
-    "./boot.js": "./boot.js?v=34",
-    "./touch.js": "./touch.js?v=34",
-    "./crt.js": "./crt.js?v=34",
-    "./main.js": "./main.js?v=34"
+    "./psx.js": "./psx.js?v=35",
+    "./world.js": "./world.js?v=35",
+    "./player.js": "./player.js?v=35",
+    "./entities.js": "./entities.js?v=35",
+    "./weapon.js": "./weapon.js?v=35",
+    "./audio.js": "./audio.js?v=35",
+    "./boot.js": "./boot.js?v=35",
+    "./touch.js": "./touch.js?v=35",
+    "./crt.js": "./crt.js?v=35",
+    "./main.js": "./main.js?v=35"
   }
 }
 </script>
@@ -150,7 +157,7 @@
     <div class="hint">press <b>R</b> (or tap) to play again</div>
   </div>
 
-  <div id="build">BUILD 34</div>
+  <div id="build">BUILD 35</div>
 
   <script type="module">import './main.js';</script>
 </body>

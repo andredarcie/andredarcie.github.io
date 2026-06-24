@@ -230,7 +230,7 @@ function gatherInput() {
 }
 
 // ---------- abertura / início ----------
-function startPlay() { state.mode = 'play'; ui.pause.classList.add('hidden'); }
+function startPlay() { state.mode = 'play'; ui.pause.classList.add('hidden'); document.body.classList.add('playing'); }
 function pauseGame() { state.mode = 'pause'; ui.pause.classList.remove('hidden'); ui.open.classList.remove('show'); audio.setStatic(0); audio.setHeartbeat(false); }
 
 function beginGame() {
