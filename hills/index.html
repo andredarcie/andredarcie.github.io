@@ -38,6 +38,28 @@
                text-shadow:0 0 10px #000, 1.5px 0 0 rgba(255,40,70,.35), -1.5px 0 0 rgba(40,200,255,.3); }
   .stat .lbl { font-size:10px; letter-spacing:.32em; color:#7c766b; margin-top:5px; }
 
+  /* indicador de extermínio: fase atual + inimigos restantes */
+  #wave { position:fixed; top:40px; left:50%; transform:translateX(-50%); z-index:6; pointer-events:none;
+          font-family:"Courier New", monospace; font-size:13px; letter-spacing:.26em; color:#9a9486;
+          text-transform:uppercase; text-shadow:0 0 8px #000; }
+  #wave b { color:#d8d2c6; font-weight:700; }
+
+  /* bússola estilo Call of Duty: fita de cardeais + blips vermelhos = inimigos (com fade nas pontas) */
+  #compass { position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:6;
+             width:300px; height:26px; pointer-events:none; opacity:.82;
+             -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+             mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+
+  /* combo / kill streak (estilo ultrakill), na direita; cor sobe de tier a cada abate */
+  #combo { position:fixed; right:24px; top:34%; z-index:6; pointer-events:none; text-align:right;
+           transform-origin:100% 50%; opacity:0; transition:opacity .12s; color:#e8e2d4; }
+  #comboRank { font-family:"Courier New", monospace; font-size:14px; letter-spacing:.2em; font-weight:700;
+               text-transform:uppercase; text-shadow:0 0 12px currentColor, 0 2px 6px #000; }
+  #comboNum { font-family:"Courier New", monospace; font-size:clamp(34px,6vw,58px); font-weight:700; line-height:.85;
+              text-shadow:0 0 16px currentColor, 0 3px 10px #000; }
+  #comboBar { width:120px; height:3px; margin:6px 0 0 auto; background:rgba(207,202,191,.14); }
+  #comboBar > i { display:block; height:100%; width:100%; background:currentColor; box-shadow:0 0 8px currentColor; }
+
   #pause, #dead, #win { background:rgba(2,3,4,.86); z-index:11; }
   #dead { background:radial-gradient(circle,#1a0303 0%, #000 80%); }
   .big { font-size:clamp(30px,7vw,72px); letter-spacing:.16em; font-weight:400; }
@@ -63,16 +85,16 @@
   "imports": {
     "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
     "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-    "./psx.js": "./psx.js?v=31",
-    "./world.js": "./world.js?v=31",
-    "./player.js": "./player.js?v=31",
-    "./entities.js": "./entities.js?v=31",
-    "./weapon.js": "./weapon.js?v=31",
-    "./audio.js": "./audio.js?v=31",
-    "./boot.js": "./boot.js?v=31",
-    "./touch.js": "./touch.js?v=31",
-    "./crt.js": "./crt.js?v=31",
-    "./main.js": "./main.js?v=31"
+    "./psx.js": "./psx.js?v=34",
+    "./world.js": "./world.js?v=34",
+    "./player.js": "./player.js?v=34",
+    "./entities.js": "./entities.js?v=34",
+    "./weapon.js": "./weapon.js?v=34",
+    "./audio.js": "./audio.js?v=34",
+    "./boot.js": "./boot.js?v=34",
+    "./touch.js": "./touch.js?v=34",
+    "./crt.js": "./crt.js?v=34",
+    "./main.js": "./main.js?v=34"
   }
 }
 </script>
@@ -97,6 +119,19 @@
     <div class="stat"><div class="num" id="ammo">16</div><div class="lbl">SHELLS</div></div>
   </div>
 
+  <!-- bússola (CoD): mostra a direção exata dos inimigos -->
+  <canvas id="compass" width="600" height="52"></canvas>
+
+  <!-- indicador de extermínio (fase / inimigos restantes) -->
+  <div id="wave">LEVEL <b id="level">1</b> — <b id="left">0</b> LEFT</div>
+
+  <!-- combo / kill streak (estilo ultrakill) -->
+  <div id="combo">
+    <div id="comboRank">DOUBLE KILL</div>
+    <div id="comboNum">x2</div>
+    <div id="comboBar"><i></i></div>
+  </div>
+
   <!-- PAUSE -->
   <div id="pause" class="overlay hidden">
     <div class="big">PAUSED</div>
@@ -115,7 +150,7 @@
     <div class="hint">press <b>R</b> (or tap) to play again</div>
   </div>
 
-  <div id="build">BUILD 31</div>
+  <div id="build">BUILD 34</div>
 
   <script type="module">import './main.js';</script>
 </body>

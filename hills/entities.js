@@ -1,6 +1,7 @@
 // entities.js — criaturas que vagam no nevoeiro e perseguem o jogador.
 // Figura emaciada e macabra (estilo Silent Hill em low-poly PSX).
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { applyVertexSnap } from './psx.js';
 import { collideMove } from './player.js';
 
@@ -49,7 +50,7 @@ function mats() {
 // poça de sangue deixada ao morrer (material compartilhado)
 let _bloodMat = null;
 const _bloods = [];               // poças vivas (limpas ao trocar de fase)
-function dropBlood(scene, x, z) {
+function dropBlood(scene, x, z, scale = 1) {
   if (!_bloodMat) {
     const c = document.createElement('canvas'); c.width = c.height = 64;
     const g = c.getContext('2d');
@@ -60,22 +61,30 @@ function dropBlood(scene, x, z) {
     const tex = new THREE.CanvasTexture(c); tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter; tex.generateMipmaps = false;
     _bloodMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: true });
   }
-  const b = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4), _bloodMat);
+  const s = 2.4 * scale;
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(s, s), _bloodMat);
   b.rotation.x = -Math.PI / 2; b.rotation.z = Math.random() * 6;
-  b.position.set(x, 0.05, z); scene.add(b); _bloods.push(b);
+  b.position.set(x, 0.04 + Math.random() * 0.03, z); scene.add(b); _bloods.push(b);
+  while (_bloods.length > 90) { const old = _bloods.shift(); scene.remove(old); if (old.geometry) old.geometry.dispose(); }
 }
 
 // limpa sangue + pedaços de carne ao gerar uma nova fase (evita acúmulo infinito)
 export function clearGore(scene) {
-  for (const m of _gibs) scene.remove(m);
-  _gibs.length = 0;
+  if (_gibIM) {
+    for (let i = 0; i < GIB_MAX; i++) {
+      const s = _gibStates[i]; if (!s.used) continue;
+      s.used = false; s.rest = true; s.y = -1000; s.sc = 0; _writeGib(i, s);
+    }
+    _gibIM.instanceMatrix.needsUpdate = true;
+  }
   for (const b of _bloods) { scene.remove(b); if (b.geometry) b.geometry.dispose(); }
   _bloods.length = 0;
 }
 
-// ---------- gore: pedaços de carne arremessados (física simples, baratos) ----------
-const _gibs = [];
-let _gibGeo = null, _gibMat = null;
+// ---------- gore: pedaços de carne num único InstancedMesh (1 draw call p/ até 200) ----------
+const GIB_MAX = 200;
+let _gibGeo = null, _gibMat = null, _gibIM = null, _gibDummy = null, _gibNext = 0;
+const _gibStates = [];
 function gibAssets() {
   if (!_gibGeo) {
     _gibGeo = new THREE.BoxGeometry(0.16, 0.16, 0.16);
@@ -83,30 +92,161 @@ function gibAssets() {
   }
   return { geo: _gibGeo, mat: _gibMat };
 }
-function spawnGibs(scene, x, z, n, force) {
+function gibPool(scene) {
+  if (_gibIM) return;
   const { geo, mat } = gibAssets();
-  for (let i = 0; i < n; i++) {
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x + (Math.random() - 0.5) * 0.3, 0.9 + Math.random() * 0.6, z + (Math.random() - 0.5) * 0.3);
-    const a = Math.random() * 6.283, sp = force * (0.5 + Math.random());
-    m.scale.setScalar(0.6 + Math.random() * 0.9);
-    m.userData = { vx: Math.cos(a) * sp, vz: Math.sin(a) * sp, vy: 2.5 + Math.random() * 4.5, rest: false };
-    scene.add(m); _gibs.push(m);
+  _gibIM = new THREE.InstancedMesh(geo, mat, GIB_MAX);
+  _gibIM.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  _gibIM.frustumCulled = false;
+  _gibDummy = new THREE.Object3D();
+  for (let i = 0; i < GIB_MAX; i++) {
+    _gibStates.push({ used: false, rest: true, x: 0, y: -1000, z: 0, vx: 0, vy: 0, vz: 0, rx: 0, ry: 0, sc: 0 });
+    _gibDummy.position.set(0, -1000, 0); _gibDummy.scale.setScalar(0); _gibDummy.updateMatrix();
+    _gibIM.setMatrixAt(i, _gibDummy.matrix);
   }
-  while (_gibs.length > 160) { const old = _gibs.shift(); scene.remove(old); }
+  _gibIM.instanceMatrix.needsUpdate = true;
+  scene.add(_gibIM);
+}
+function _writeGib(i, s) {
+  _gibDummy.position.set(s.x, s.y, s.z);
+  _gibDummy.rotation.set(s.rx, s.ry, 0);
+  _gibDummy.scale.setScalar(s.sc);
+  _gibDummy.updateMatrix();
+  _gibIM.setMatrixAt(i, _gibDummy.matrix);
+}
+function spawnGibs(scene, x, z, n, force) {
+  gibPool(scene);
+  for (let i = 0; i < n; i++) {
+    const slot = _gibNext; _gibNext = (_gibNext + 1) % GIB_MAX;
+    const a = Math.random() * 6.283, sp = force * (0.5 + Math.random());
+    const s = _gibStates[slot];
+    s.used = true; s.rest = false;
+    s.x = x + (Math.random() - 0.5) * 0.3; s.y = 0.9 + Math.random() * 0.6; s.z = z + (Math.random() - 0.5) * 0.3;
+    s.vx = Math.cos(a) * sp; s.vz = Math.sin(a) * sp; s.vy = 2.5 + Math.random() * 5.5;
+    s.rx = Math.random() * 6; s.ry = Math.random() * 6; s.sc = 0.7 + Math.random() * 1.3;
+    _writeGib(slot, s);
+  }
+  _gibIM.instanceMatrix.needsUpdate = true;
 }
 export function updateGore(dt) {
-  for (const m of _gibs) {
-    const u = m.userData; if (u.rest) continue;
-    u.vy -= 13 * dt;
-    m.position.x += u.vx * dt; m.position.y += u.vy * dt; m.position.z += u.vz * dt;
-    m.rotation.x += dt * 7; m.rotation.y += dt * 5;
-    if (m.position.y <= 0.08) { m.position.y = 0.08; u.rest = true; }
+  if (!_gibIM) return;
+  let changed = false;
+  for (let i = 0; i < GIB_MAX; i++) {
+    const s = _gibStates[i];
+    if (!s.used || s.rest) continue;
+    s.vy -= 13 * dt;
+    s.x += s.vx * dt; s.y += s.vy * dt; s.z += s.vz * dt;
+    s.rx += dt * 7; s.ry += dt * 5;
+    if (s.y <= 0.08) { s.y = 0.08; s.rest = true; }
+    _writeGib(i, s);
+    changed = true;
   }
+  if (changed) _gibIM.instanceMatrix.needsUpdate = true;
 }
 
 const cyl = (rt, rb, h, m, seg = 6) => new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m);
 const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+
+// ============================================================================
+// PERFORMANCE: cada inimigo tinha ~44 meshes (= ~44 draw calls). Aqui montamos o
+// esqueleto detalhado UMA vez e fundimos as partes ESTÁTICAS de cada grupo animado
+// (pernas, tronco, cabeça, braços) em ~12 geometrias por material — preservando a
+// hierarquia de grupos que a animação move. Todas as fases compartilham essas
+// geometrias e materiais (sem realocar/descartar a cada horda). ~12 draw calls/monstro.
+// ============================================================================
+const CULL_DIST = 42;                 // além disso a névoa já esconde tudo -> nem desenha
+const LEAN_REST = 0.55, HEAD_REST = 0.45, ARM_REST = 0.55;
+
+function buildSkeleton(M) {
+  const g = new THREE.Group();
+  // ---- pernas dobradas + pélvis (estáticas no grupo raiz) ----
+  for (const sx of [-1, 1]) {
+    const thigh = cyl(0.07, 0.09, 0.52, M.skin); thigh.position.set(sx * 0.14, 0.6, 0.04); thigh.rotation.x = -0.35; g.add(thigh);
+    const shin = cyl(0.055, 0.07, 0.5, M.skin); shin.position.set(sx * 0.17, 0.24, -0.04); shin.rotation.x = 0.45; g.add(shin);
+    const foot = box(0.12, 0.07, 0.3, M.skin); foot.position.set(sx * 0.17, 0.04, 0.08); g.add(foot);
+  }
+  const pelvis = cyl(0.18, 0.2, 0.2, M.skin); pelvis.position.set(0, 0.8, 0); g.add(pelvis);
+
+  const lean = new THREE.Group(); lean.position.set(0, 0.82, 0); lean.rotation.x = LEAN_REST; g.add(lean);
+
+  // ---- tronco: costelas e espinha à mostra ----
+  const body = new THREE.Group(); lean.add(body);
+  const chest = cyl(0.14, 0.23, 0.85, M.skin, 7); chest.position.set(0, 0.42, 0); chest.rotation.z = 0.08; body.add(chest);
+  const belly = box(0.26, 0.16, 0.02, M.meat); belly.position.set(0.01, 0.34, 0.16); body.add(belly);
+  for (let i = 0; i < 4; i++) { const rib = box(0.4 - i * 0.03, 0.05, 0.05, M.bone); rib.position.set(0, 0.4 + i * 0.11, 0.14 - i * 0.012); rib.rotation.x = -0.25; body.add(rib); }
+  for (let i = 0; i < 3; i++) { const v = cyl(0.02, 0.06, 0.12, M.bone, 5); v.position.set(0, 0.34 + i * 0.16, -0.16); v.rotation.x = Math.PI / 2; body.add(v); }
+  for (const sx of [-1, 1]) { const s = cyl(0.015, 0.02, 0.5, M.meat, 4); s.position.set(sx * 0.09, 0.12, 0.17); s.rotation.x = 0.2; body.add(s); }
+
+  // ---- cabeça deformada com o BURACO no rosto ----
+  const head = new THREE.Group(); head.position.set(0, 0.92, 0.06); head.rotation.x = HEAD_REST; lean.add(head);
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 7), M.skin); skull.scale.set(1.05, 0.92, 1.15); skull.position.set(0.01, 0.05, 0.0); skull.rotation.z = 0.22; head.add(skull);
+  const lobe = new THREE.Mesh(new THREE.SphereGeometry(0.11, 6, 5), M.skin); lobe.scale.set(1, 0.8, 1.05); lobe.position.set(-0.1, 0.17, -0.02); head.add(lobe);
+  { const t = new THREE.Mesh(new THREE.SphereGeometry(0.05, 5, 4), M.meat); t.position.set(0.12, 0.11, 0.08); head.add(t); }      // tumores fixos (compartilháveis)
+  { const t = new THREE.Mesh(new THREE.SphereGeometry(0.055, 5, 4), M.skin); t.position.set(-0.05, 0.21, 0.04); head.add(t); }
+  const shard = box(0.09, 0.13, 0.04, M.bone); shard.position.set(0.14, 0.04, 0.05); shard.rotation.set(0.2, 0.3, 0.5); head.add(shard);
+  const HZ = 0.26;
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.035, 6, 14), M.meat); rim.position.set(0, 0.03, HZ); head.add(rim);
+  const bore = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.5, 12, 1, true), M.void); bore.rotation.x = Math.PI / 2; bore.position.set(0, 0.03, HZ - 0.25); head.add(bore);
+  const back = new THREE.Mesh(new THREE.CircleGeometry(0.075, 12), M.void); back.position.set(0, 0.03, HZ - 0.5); head.add(back);
+  for (const a of [0.5, -0.8]) { const strand = cyl(0.006, 0.01, 0.19, M.meat, 4); strand.position.set(0, 0.03, HZ); strand.rotation.set(Math.PI / 2, 0, a); head.add(strand); }
+  const jaw = box(0.18, 0.07, 0.2, M.skin); jaw.position.set(0, -0.15, 0.12); jaw.rotation.x = 0.7; head.add(jaw);
+  const mouth = box(0.14, 0.08, 0.1, M.void); mouth.position.set(0, -0.11, 0.16); head.add(mouth);
+  for (let i = -1; i <= 1; i++) {
+    const tu = new THREE.Mesh(new THREE.ConeGeometry(0.013, 0.05, 4), M.bone); tu.position.set(i * 0.05, -0.07, 0.22); tu.rotation.x = Math.PI; head.add(tu);
+    const tl = new THREE.Mesh(new THREE.ConeGeometry(0.013, 0.045, 4), M.bone); tl.position.set(i * 0.05, -0.13, 0.23); head.add(tl);
+  }
+
+  // ---- braços longuíssimos arrastando (assimétricos) ----
+  const arms = [];
+  for (let k = 0; k < 2; k++) {
+    const sx = k === 0 ? -1 : 1;
+    const arm = new THREE.Group(); arm.position.set(sx * 0.2, 0.78, 0.04); arm.rotation.x = ARM_REST; lean.add(arm);
+    const longer = sx < 0 ? 1.12 : 1.0;
+    const upper = cyl(0.055, 0.07, 0.5 * longer, M.skin); upper.position.set(0, -0.25 * longer, 0); arm.add(upper);
+    const fore = new THREE.Group(); fore.position.set(0, -0.5 * longer, 0); fore.rotation.x = 0.6; arm.add(fore);
+    const forearm = cyl(0.045, 0.055, 0.55 * longer, M.skin); forearm.position.set(0, -0.27 * longer, 0); fore.add(forearm);
+    const hand = box(0.1, 0.07, 0.13, M.skin); hand.position.set(0, -0.55 * longer, 0.02); fore.add(hand);
+    for (const fx of [-0.035, 0.035]) { const claw = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.18, 4), M.bone); claw.position.set(fx, -0.64 * longer, 0.06); claw.rotation.x = Math.PI - 0.3; fore.add(claw); }
+    arms.push(arm);
+  }
+  return { g, lean, body, head, arms };
+}
+
+let MONSTER = null;
+function monsterParts() {
+  if (MONSTER) return MONSTER;
+  const sk = buildSkeleton(mats());
+  sk.g.updateMatrixWorld(true);                 // resolve as matrizes-mundo de tudo
+
+  // funde os meshes de um grupo em 1 geometria por material (no espaço local do grupo)
+  const mergeOf = (group, meshes) => {
+    const inv = new THREE.Matrix4().copy(group.matrixWorld).invert();
+    const byMat = new Map(); const order = [];
+    for (const m of meshes) {
+      const rel = new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld);
+      const geo = m.geometry.clone().applyMatrix4(rel);
+      if (!byMat.has(m.material)) { byMat.set(m.material, []); order.push(m.material); }
+      byMat.get(m.material).push(geo);
+    }
+    return order.map((material) => {
+      const geos = byMat.get(material);
+      return { material, geometry: geos.length === 1 ? geos[0] : mergeGeometries(geos, false) };
+    });
+  };
+  const direct = (grp) => grp.children.filter((o) => o.isMesh);            // pernas/tronco/cabeça: filhos diretos
+  const subtree = (grp) => { const a = []; grp.traverse((o) => { if (o.isMesh) a.push(o); }); return a; }; // braço: inclui o antebraço
+
+  MONSTER = {
+    leanPos: sk.lean.position.clone(),
+    headPos: sk.head.position.clone(),
+    armPos: [sk.arms[0].position.clone(), sk.arms[1].position.clone()],
+    g: mergeOf(sk.g, direct(sk.g)),
+    body: mergeOf(sk.body, direct(sk.body)),
+    head: mergeOf(sk.head, direct(sk.head)),
+    arms: [mergeOf(sk.arms[0], subtree(sk.arms[0])), mergeOf(sk.arms[1], subtree(sk.arms[1]))],
+  };
+  return MONSTER;
+}
 
 export class Monster {
   constructor(scene, pos, tuning = {}) {
@@ -136,90 +276,24 @@ export class Monster {
   }
 
   _build(scene) {
-    const M = mats();
+    const P = monsterParts();                       // geometrias mescladas compartilhadas
     const g = new THREE.Group();
-    const scl = 0.95 + Math.random() * 0.3;
-    this.scl = scl;
-    g.scale.setScalar(scl);
+    this.scl = 0.95 + Math.random() * 0.3;
+    g.scale.setScalar(this.scl);
+    for (const p of P.g) g.add(new THREE.Mesh(p.geometry, p.material));            // pernas + pélvis
 
-    // ---- pernas dobradas (agachadas), corpo se arrasta baixo ----
-    for (const sx of [-1, 1]) {
-      const thigh = cyl(0.07, 0.09, 0.52, M.skin); thigh.position.set(sx * 0.14, 0.6, 0.04); thigh.rotation.x = -0.35; g.add(thigh);
-      const shin = cyl(0.055, 0.07, 0.5, M.skin); shin.position.set(sx * 0.17, 0.24, -0.04); shin.rotation.x = 0.45; g.add(shin);
-      const foot = box(0.12, 0.07, 0.3, M.skin); foot.position.set(sx * 0.17, 0.04, 0.08); g.add(foot);
-    }
-    const pelvis = cyl(0.18, 0.2, 0.2, M.skin); pelvis.position.set(0, 0.8, 0); g.add(pelvis);
+    const lean = new THREE.Group(); lean.position.copy(P.leanPos); lean.rotation.x = this.leanRest; g.add(lean); this.lean = lean;
 
-    // ---- grupo "lean": tudo acima da pélvis, curvado pra frente (corcunda) ----
-    const lean = new THREE.Group(); lean.position.set(0, 0.82, 0); lean.rotation.x = this.leanRest; g.add(lean);
-    this.lean = lean;
+    const body = new THREE.Group(); lean.add(body); this.body = body;
+    for (const p of P.body) body.add(new THREE.Mesh(p.geometry, p.material));
 
-    // tronco (respira via escala) — costelas e espinha à mostra
-    const body = new THREE.Group(); lean.add(body);
-    const chest = cyl(0.14, 0.23, 0.85, M.skin, 7); chest.position.set(0, 0.42, 0); chest.rotation.z = 0.08; body.add(chest);
-    const belly = box(0.26, 0.16, 0.02, M.meat); belly.position.set(0.01, 0.34, 0.16); body.add(belly);   // carne exposta
-    for (let i = 0; i < 4; i++) {                                                                          // costelas
-      const rib = box(0.4 - i * 0.03, 0.05, 0.05, M.bone); rib.position.set(0, 0.4 + i * 0.11, 0.14 - i * 0.012); rib.rotation.x = -0.25; body.add(rib);
-    }
-    for (let i = 0; i < 3; i++) {                                                                          // vértebras nas costas
-      const v = cyl(0.02, 0.06, 0.12, M.bone, 5); v.position.set(0, 0.34 + i * 0.16, -0.16); v.rotation.x = Math.PI / 2; body.add(v);
-    }
-    // fios de pele/sinew pendurados (gore)
-    for (const sx of [-1, 1]) { const s = cyl(0.015, 0.02, 0.5, M.meat, 4); s.position.set(sx * 0.09, 0.12, 0.17); s.rotation.x = 0.2; body.add(s); }
-    this.body = body;
+    const head = new THREE.Group(); head.position.copy(P.headPos); head.rotation.x = this.headRest; lean.add(head); this.head = head;
+    for (const p of P.head) head.add(new THREE.Mesh(p.geometry, p.material));
 
-    // ---- cabeça bizarra e deformada, com um BURACO bem no meio do rosto ----
-    const head = new THREE.Group(); head.position.set(0, 0.92, 0.06); head.rotation.x = this.headRest; lean.add(head);
-
-    // crânio principal deformado/assimétrico + lobo grotesco extra
-    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 7), M.skin);
-    skull.scale.set(1.05, 0.92, 1.15); skull.position.set(0.01, 0.05, 0.0); skull.rotation.z = 0.22; head.add(skull);
-    const lobe = new THREE.Mesh(new THREE.SphereGeometry(0.11, 6, 5), M.skin);
-    lobe.scale.set(1, 0.8, 1.05); lobe.position.set(-0.1, 0.17, -0.02); head.add(lobe);
-
-    // caroços/tumores e retalho de osso rompendo a pele
-    for (const p of [[0.12, 0.11, 0.08], [-0.05, 0.21, 0.04]]) {
-      const t = new THREE.Mesh(new THREE.SphereGeometry(0.04 + Math.random() * 0.03, 5, 4), Math.random() < 0.5 ? M.meat : M.skin);
-      t.position.set(p[0], p[1], p[2]); head.add(t);
-    }
-    const shard = box(0.09, 0.13, 0.04, M.bone); shard.position.set(0.14, 0.04, 0.05); shard.rotation.set(0.2, 0.3, 0.5); head.add(shard);
-
-    // ---- BURACO no meio: aro carnudo + túnel preto atravessando o crânio + saída atrás ----
-    const HZ = 0.26;                                  // boca do buraco, à frente da superfície do crânio
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.035, 6, 14), M.meat);
-    rim.position.set(0, 0.03, HZ); head.add(rim);
-    const bore = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.5, 12, 1, true), M.void);
-    bore.rotation.x = Math.PI / 2; bore.position.set(0, 0.03, HZ - 0.25); head.add(bore);   // tubo oco frente->trás
-    const back = new THREE.Mesh(new THREE.CircleGeometry(0.075, 12), M.void); back.position.set(0, 0.03, HZ - 0.5); head.add(back);
-    for (const a of [0.5, -0.8]) {                   // fiapos de carne cruzando o vazio
-      const strand = cyl(0.006, 0.01, 0.19, M.meat, 4); strand.position.set(0, 0.03, HZ); strand.rotation.set(Math.PI / 2, 0, a); head.add(strand);
-    }
-
-    // sem olhos: rosto liso e cego acima do buraco (mais perturbador)
-
-    // mandíbula caída com dentes irregulares
-    const jaw = box(0.18, 0.07, 0.2, M.skin); jaw.position.set(0, -0.15, 0.12); jaw.rotation.x = 0.7; head.add(jaw);
-    const mouth = box(0.14, 0.08, 0.1, M.void); mouth.position.set(0, -0.11, 0.16); head.add(mouth);
-    for (let i = -1; i <= 1; i++) {
-      const tu = new THREE.Mesh(new THREE.ConeGeometry(0.013, 0.05, 4), M.bone); tu.position.set(i * 0.05, -0.07, 0.22); tu.rotation.x = Math.PI; head.add(tu);
-      const tl = new THREE.Mesh(new THREE.ConeGeometry(0.013, 0.045, 4), M.bone); tl.position.set(i * 0.05, -0.13, 0.23); head.add(tl);
-    }
-    this.head = head;
-
-    // ---- braços longuíssimos arrastando ----
     this.arms = [];
     for (let k = 0; k < 2; k++) {
-      const sx = k === 0 ? -1 : 1;
-      const arm = new THREE.Group(); arm.position.set(sx * 0.2, 0.78, 0.04); arm.rotation.x = this.armRest; lean.add(arm);
-      const longer = sx < 0 ? 1.12 : 1.0;                                  // assimetria
-      const upper = cyl(0.055, 0.07, 0.5 * longer, M.skin); upper.position.set(0, -0.25 * longer, 0); arm.add(upper);
-      const fore = new THREE.Group(); fore.position.set(0, -0.5 * longer, 0); fore.rotation.x = 0.6; arm.add(fore);
-      const forearm = cyl(0.045, 0.055, 0.55 * longer, M.skin); forearm.position.set(0, -0.27 * longer, 0); fore.add(forearm);
-      const hand = box(0.1, 0.07, 0.13, M.skin); hand.position.set(0, -0.55 * longer, 0.02); fore.add(hand);
-      for (const fx of [-0.035, 0.035]) {                                  // garras
-        const claw = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.18, 4), M.bone);
-        claw.position.set(fx, -0.64 * longer, 0.06); claw.rotation.x = Math.PI - 0.3; fore.add(claw);
-      }
+      const arm = new THREE.Group(); arm.position.copy(P.armPos[k]); arm.rotation.x = this.armRest; lean.add(arm);
+      for (const p of P.arms[k]) arm.add(new THREE.Mesh(p.geometry, p.material));
       this.arms.push(arm);
     }
 
@@ -235,12 +309,16 @@ export class Monster {
     this.health -= dmg;
     this.hitFlash = 0.18;
     // empurrão pra trás
-    this.pos.x += dirX * 0.3; this.pos.z += dirZ * 0.3;
-    spawnGibs(this.scene, this.pos.x, this.pos.z, 3, 2.2);     // respingo de sangue ao acertar
+    this.pos.x += dirX * 0.34; this.pos.z += dirZ * 0.34;
+    spawnGibs(this.scene, this.pos.x, this.pos.z, 6, 3.6);                       // jato de carne ao acertar
+    dropBlood(this.scene, this.pos.x + dirX * 0.6, this.pos.z + dirZ * 0.6, 0.6); // respingo no chão
     if (this.health <= 0) {
       this.dead = true; this.dying = 0.0001;
-      spawnGibs(this.scene, this.pos.x, this.pos.z, 12, 6.0);  // explode em pedaços (brutal)
-      dropBlood(this.scene, this.pos.x, this.pos.z);
+      // EXPLOSÃO de vísceras: chuva de pedaços + várias poças de sangue
+      spawnGibs(this.scene, this.pos.x, this.pos.z, 26, 8.5);
+      for (let i = 0; i < 3; i++) {
+        dropBlood(this.scene, this.pos.x + (Math.random() - 0.5) * 2.4, this.pos.z + (Math.random() - 0.5) * 2.4, 0.8 + Math.random() * 0.6);
+      }
       return true;
     }
     return false;
@@ -289,6 +367,11 @@ export class Monster {
     this.pos.x = Math.max(-44, Math.min(44, this.pos.x));
     this.pos.z = Math.max(-44, Math.min(44, this.pos.z));
     this.mesh.position.set(this.pos.x, 0, this.pos.z);
+
+    // cull por distância: além da névoa não desenha nem anima cosméticos (a IA segue rodando)
+    const visible = dist < CULL_DIST;
+    this.mesh.visible = visible;
+    if (!visible) { if (this.attackCd > 0) this.attackCd -= dt; return dist; }
 
     // -------- animação macabra: arrastar + convulsões --------
     const tw = t * 6 + this.phase;
@@ -339,10 +422,8 @@ export class MonsterManager {
   }
   // remove todos (troca de fase): tira da cena e libera as geometrias (sem leak)
   clear() {
-    for (const m of this.list) {
-      this.scene.remove(m.mesh);
-      m.mesh.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
-    }
+    // geometrias e materiais são compartilhados (cache MONSTER) — só remove da cena, sem dispose
+    for (const m of this.list) this.scene.remove(m.mesh);
     this.list = [];
   }
   update(dt, t, playerPos, colliders, otherworld) {

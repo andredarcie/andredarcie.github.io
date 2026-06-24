@@ -375,7 +375,7 @@ export class World {
   }
 
   _ash() {
-    const N = 800; const p = new Float32Array(N * 3);
+    const N = 480; const p = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) { p[i * 3] = (Math.random() - 0.5) * 80; p[i * 3 + 1] = Math.random() * 26; p[i * 3 + 2] = (Math.random() - 0.5) * 80; }
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(p, 3));
     this.ashMat = new THREE.PointsMaterial({ color: 0xb8b4a8, size: 0.07, sizeAttenuation: true, transparent: true, opacity: 0.5, fog: true });
