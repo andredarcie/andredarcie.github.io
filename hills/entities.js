@@ -48,6 +48,7 @@ function mats() {
 
 // poça de sangue deixada ao morrer (material compartilhado)
 let _bloodMat = null;
+const _bloods = [];               // poças vivas (limpas ao trocar de fase)
 function dropBlood(scene, x, z) {
   if (!_bloodMat) {
     const c = document.createElement('canvas'); c.width = c.height = 64;
@@ -61,7 +62,15 @@ function dropBlood(scene, x, z) {
   }
   const b = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4), _bloodMat);
   b.rotation.x = -Math.PI / 2; b.rotation.z = Math.random() * 6;
-  b.position.set(x, 0.05, z); scene.add(b);
+  b.position.set(x, 0.05, z); scene.add(b); _bloods.push(b);
+}
+
+// limpa sangue + pedaços de carne ao gerar uma nova fase (evita acúmulo infinito)
+export function clearGore(scene) {
+  for (const m of _gibs) scene.remove(m);
+  _gibs.length = 0;
+  for (const b of _bloods) { scene.remove(b); if (b.geometry) b.geometry.dispose(); }
+  _bloods.length = 0;
 }
 
 // ---------- gore: pedaços de carne arremessados (física simples, baratos) ----------
@@ -100,16 +109,16 @@ const cyl = (rt, rb, h, m, seg = 6) => new THREE.Mesh(new THREE.CylinderGeometry
 const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
 
 export class Monster {
-  constructor(scene, pos) {
+  constructor(scene, pos, tuning = {}) {
     this.scene = scene;
     this.pos = pos.clone(); this.pos.y = 0;
     this.dead = false;          // morto (em animação de morte ou removido)
     this.removed = false;       // já tirado da cena (pruning)
-    this.health = 55;           // ~1 tiro de espingarda de perto, ~2 de longe
+    this.health = tuning.health ?? 55;   // ~1 tiro de espingarda de perto, ~2 de longe
     this.dying = 0;             // timer da animação de morte
     this.hitFlash = 0;          // recuo/flinch ao levar tiro
-    this.speed = 2.1;           // mais agressivo / frenético
-    this.detect = 20;
+    this.speed = tuning.speed ?? 2.1;    // sobe a cada fase (mais frenético)
+    this.detect = tuning.detect ?? 20;
     this.state = 'wander';
     this.dir = Math.random() * Math.PI * 2;
     this.wanderTimer = 0;
@@ -318,14 +327,23 @@ export class Monster {
 }
 
 export class MonsterManager {
-  constructor(scene) { this.scene = scene; this.list = []; }
-  spawn(pos) { this.list.push(new Monster(this.scene, pos)); }
+  constructor(scene) { this.scene = scene; this.list = []; this.tuning = {}; }
+  setTuning(t) { this.tuning = t || {}; }
+  spawn(pos, tuning) { this.list.push(new Monster(this.scene, pos, tuning || this.tuning)); }
   spawnRing(count, center, radius) {
     for (let i = 0; i < count; i++) {
       const a = (i / count) * Math.PI * 2 + Math.random();
       const r = radius * (0.6 + Math.random() * 0.6);
       this.spawn(new THREE.Vector3(center.x + Math.cos(a) * r, 0, center.z + Math.sin(a) * r));
     }
+  }
+  // remove todos (troca de fase): tira da cena e libera as geometrias (sem leak)
+  clear() {
+    for (const m of this.list) {
+      this.scene.remove(m.mesh);
+      m.mesh.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
+    }
+    this.list = [];
   }
   update(dt, t, playerPos, colliders, otherworld) {
     let nearest = Infinity, caught = false;

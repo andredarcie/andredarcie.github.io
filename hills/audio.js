@@ -1,7 +1,7 @@
 // audio.js — tudo procedural via Web Audio (sem arquivos): estática do rádio,
 // drone ambiente, passos, sirene do "outro mundo", batimento e impactos.
 export class GameAudio {
-  constructor() { this.ctx = null; this.ready = false; }
+  constructor() { this.ctx = null; this.ready = false; this.shotBuf = null; this._shotLoaded = false; this._musicOn = false; }
 
   init() {
     if (this.ctx) { this.ctx.resume(); return; }
@@ -10,7 +10,11 @@ export class GameAudio {
 
     this.master = ctx.createGain();
     this.master.gain.value = 0.9;
-    this.master.connect(ctx.destination);
+    // compressor no final: segura os picos quando música + tiro + combo somam (sem clipar feio)
+    this.comp = ctx.createDynamicsCompressor();
+    this.comp.threshold.value = -10; this.comp.knee.value = 24; this.comp.ratio.value = 4;
+    this.comp.attack.value = 0.003; this.comp.release.value = 0.25;
+    this.master.connect(this.comp); this.comp.connect(ctx.destination);
 
     // buffer de ruído reutilizável (2s)
     const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
@@ -45,9 +49,23 @@ export class GameAudio {
 
     this.ready = true;
     this._clankLoop();
+    this._loadShot();        // baixa o sample de espingarda (com fallback procedural)
   }
 
   now() { return this.ctx.currentTime; }
+
+  // ---------- sample real de espingarda calibre 12 (mp3 baixado, CC0/Pixabay) ----------
+  // carregado de forma assíncrona; até carregar (ou se falhar), o tiro usa o sintético.
+  _loadShot() {
+    if (this._shotLoaded || !this.ctx) return;
+    this._shotLoaded = true;
+    try {
+      const url = new URL('sounds/shotgun-12gauge.mp3', import.meta.url).href;
+      fetch(url).then((r) => r.arrayBuffer()).then((arr) => {
+        this.ctx.decodeAudioData(arr, (buf) => { this.shotBuf = buf; }, () => { /* fica no fallback */ });
+      }).catch(() => { /* fica no fallback procedural */ });
+    } catch (e) { /* fica no fallback procedural */ }
+  }
 
   setStatic(level) {                 // 0..1
     if (!this.ready) return;
@@ -278,6 +296,8 @@ export class GameAudio {
   shotgun() {
     if (!this.ready) return;
     const ctx = this.ctx, t = this.now();
+    // se o sample real já carregou, usa ele (mais realista) + sub grave + cauda de eco
+    if (this.shotBuf) { this._shotgunSample(t); return; }
     const verb = this._gunVerb();
     const off = () => Math.random() * 1.5;                 // offset no buffer -> tiros diferentes
 
@@ -320,6 +340,23 @@ export class GameAudio {
       s.connect(bp).connect(g).connect(this.master); s.start(tt, off()); s.stop(tt + 0.05);
     };
     clack(t + 0.20, 2500, 0.1); clack(t + 0.34, 1900, 0.12);
+  }
+
+  // toca o SAMPLE real de calibre 12 com leve variação de pitch + reforço de sub
+  // (peito) + envio pro reverb por convolução (eco urbano) = bem realista.
+  _shotgunSample(t) {
+    const ctx = this.ctx, verb = this._gunVerb();
+    const src = ctx.createBufferSource(); src.buffer = this.shotBuf;
+    src.playbackRate.value = 0.93 + Math.random() * 0.14;     // cada tiro um pouco diferente
+    const g = ctx.createGain(); g.gain.value = 1.0;
+    src.connect(g).connect(this.master);
+    const send = ctx.createGain(); send.gain.value = 0.32; g.connect(send); send.connect(verb);
+    src.start(t);
+    // sub thump: onda de pressão grave (a maioria das mp3 perde isso em alto-falante de laptop)
+    const sub = ctx.createOscillator(); sub.type = 'sine';
+    sub.frequency.setValueAtTime(145, t); sub.frequency.exponentialRampToValueAtTime(45, t + 0.18);
+    const sg = ctx.createGain(); sg.gain.setValueAtTime(0.0001, t); sg.gain.exponentialRampToValueAtTime(0.5, t + 0.01); sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+    sub.connect(sg).connect(this.master); sub.start(t); sub.stop(t + 0.28);
   }
 
   // gatilho seco sem munição
@@ -520,5 +557,151 @@ export class GameAudio {
     const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.04, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.3);
     o.connect(of).connect(g).connect(this.master); o.start(t); o.stop(t + 1.35);
     setTimeout(() => this._clankLoop(), 5000 + Math.random() * 9000);
+  }
+
+  // ---------- IMPACTO do combo (stinger que sobe de intensidade com o tier) ----------
+  // transiente seco + baque distorcido + anel metálico cada vez mais agudo/alto.
+  combo(tier = 1) {
+    if (!this.ready) return;
+    const ctx = this.ctx, t = this.now();
+    const p = Math.max(0, Math.min(7, tier - 1));            // 0..7
+    // 1) transiente seco (o "punch")
+    const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1500 + p * 220;
+    const sg = ctx.createGain(); sg.gain.setValueAtTime(0.4 + p * 0.03, t); sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+    s.connect(hp).connect(sg).connect(this.master); s.start(t); s.stop(t + 0.1);
+    // 2) baque grave distorcido
+    const o = ctx.createOscillator(); o.type = 'square'; const base = 170 + p * 34;
+    o.frequency.setValueAtTime(base, t); o.frequency.exponentialRampToValueAtTime(base * 0.42, t + 0.2);
+    const sh = ctx.createWaveShaper(); sh.curve = this._distCurve(8);
+    const og = ctx.createGain(); og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.34, t + 0.01); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    o.connect(sh).connect(og).connect(this.master); o.start(t); o.stop(t + 0.32);
+    // 3) anel metálico (a "fanfarra demoníaca") — mais agudo a cada nível
+    const r = ctx.createOscillator(); r.type = 'triangle'; const rf = 440 + p * 110;
+    r.frequency.value = rf;
+    const rfl = ctx.createBiquadFilter(); rfl.type = 'bandpass'; rfl.frequency.value = rf; rfl.Q.value = 7;
+    const rg = ctx.createGain(); rg.gain.setValueAtTime(0.0001, t); rg.gain.exponentialRampToValueAtTime(0.1 + p * 0.018, t + 0.01); rg.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    r.connect(rfl).connect(rg).connect(this.master); r.start(t); r.stop(t + 0.57);
+  }
+
+  // ==================================================================
+  // MÚSICA estilo DOOM (riff ORIGINAL, sem copiar melodia) — metal pesado
+  // sintetizado: chug palm-mute na corda grave + power chords + riff em Mi
+  // menor com tritono + bateria (bumbo/caixa/chimbal). Tudo agendado em
+  // grade de semicolcheia com lookahead.
+  // ==================================================================
+  startMusic() {
+    if (!this.ready || this._musicOn) return;
+    this._musicOn = true;
+    const ctx = this.ctx;
+    this.musicGain = ctx.createGain(); this.musicGain.gain.value = 0.0001;
+    this.musicGain.connect(this.master);
+    this.musicGain.gain.exponentialRampToValueAtTime(0.5, this.now() + 1.2);   // entra subindo
+    // distorção + filtro p/ as guitarras
+    this._mDrive = ctx.createWaveShaper(); this._mDrive.curve = this._distCurve(36);
+    this._mLP = ctx.createBiquadFilter(); this._mLP.type = 'lowpass'; this._mLP.frequency.value = 2400;
+    this._mDrive.connect(this._mLP).connect(this.musicGain);
+    this._step = 0;
+    this._tempo = 148;                                   // bpm "frenético"
+    this._nextStepTime = this.now() + 0.12;
+    this._musicTimer = setInterval(() => this._musicScheduler(), 50);
+  }
+  // volume da música (duck no pause); ramp curto
+  setMusicVolume(v, ramp = 0.3) {
+    if (!this.musicGain) return;
+    const g = this.musicGain.gain; const n = this.now();
+    g.cancelScheduledValues(n); g.setValueAtTime(Math.max(0.0001, g.value), n);
+    g.linearRampToValueAtTime(Math.max(0.0001, v), n + ramp);
+  }
+  stopMusic() {
+    if (!this._musicOn) return;
+    this._musicOn = false;
+    if (this._musicTimer) { clearInterval(this._musicTimer); this._musicTimer = null; }
+    this.setMusicVolume(0.0001, 0.5);
+  }
+
+  _musicScheduler() {
+    if (!this._musicOn) return;
+    const ctx = this.ctx;
+    const sec16 = 15 / this._tempo;                      // 1 semicolcheia = (60/bpm)/4
+    while (this._nextStepTime < ctx.currentTime + 0.2) {
+      this._musicStep(this._step, this._nextStepTime, sec16);
+      this._step = (this._step + 1) % 32;               // 2 compassos de 16 semicolcheias
+      this._nextStepTime += sec16;
+    }
+  }
+
+  // power chord palm-mute (raiz + quinta + oitava abaixo), bem curto = "chug"
+  _chug(freq, t, dur, gainv) {
+    const ctx = this.ctx;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gainv, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    g.connect(this._mDrive);
+    for (const [mul, ty] of [[1, 'sawtooth'], [1.4983, 'sawtooth'], [0.5, 'square']]) {
+      const o = ctx.createOscillator(); o.type = ty; o.frequency.value = freq * mul;
+      o.connect(g); o.start(t); o.stop(t + dur + 0.02);
+    }
+  }
+  // nota de riff/lead (mais aguda, sustenta mais, corta por cima do chug)
+  _lead(freq, t, dur) {
+    const ctx = this.ctx;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    g.connect(this._mDrive);
+    const o1 = ctx.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = freq;
+    const o2 = ctx.createOscillator(); o2.type = 'sawtooth'; o2.frequency.value = freq; o2.detune.value = 8;
+    o1.connect(g); o2.connect(g); o1.start(t); o2.start(t); o1.stop(t + dur + 0.02); o2.stop(t + dur + 0.02);
+  }
+  _kick(t) {
+    const ctx = this.ctx;
+    const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+    o.connect(g).connect(this.musicGain); o.start(t); o.stop(t + 0.18);
+  }
+  _snare(t) {
+    const ctx = this.ctx;
+    const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1900; bp.Q.value = 0.7;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+    s.connect(bp).connect(g).connect(this.musicGain); s.start(t); s.stop(t + 0.18);
+    const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = 220;
+    const og = ctx.createGain(); og.gain.setValueAtTime(0.18, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    o.connect(og).connect(this.musicGain); o.start(t); o.stop(t + 0.14);
+  }
+  _hat(t, open) {
+    const ctx = this.ctx;
+    const s = ctx.createBufferSource(); s.buffer = this.noiseBuf;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7000;
+    const g = ctx.createGain(); g.gain.setValueAtTime(open ? 0.12 : 0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + (open ? 0.12 : 0.04));
+    s.connect(hp).connect(g).connect(this.musicGain); s.start(t); s.stop(t + 0.14);
+  }
+
+  _musicStep(step, t, sec16) {
+    // E2=82.41 (corda grave). Riff em Mi menor + tritono (Bb) p/ menção "demoníaca".
+    const E2 = 82.41;
+    // ----- LEAD: frase original de 32 semicolcheias (0 = silêncio), em Hz -----
+    // Mi menor pentatônica (E G A B D) + Bb (tritono) -> soa sombrio, nunca "errado".
+    const G3 = 196.0, A3 = 220.0, B3 = 246.94, D4 = 293.66, E4 = 329.63, Bb3 = 233.08, E3 = 164.81;
+    const LEAD = [
+      E4, 0, 0, B3, D4, 0, B3, 0, E4, 0, G3, A3, B3, 0, Bb3, 0,   // compasso 1
+      E4, 0, 0, B3, D4, 0, E4, 0, G3, 0, E4, D4, B3, 0, A3, E3,   // compasso 2 (resolve)
+    ];
+    // ----- CHUG: galope de palm mute na grave; acento na batida -----
+    // toca em quase toda semicolcheia (frenético); pula algumas p/ dar groove.
+    const skipChug = (step % 8) === 7;                   // pequena respiração no fim de cada batida-par
+    if (!skipChug) {
+      const accent = (step % 4) === 0;
+      // raiz alterna p/ o tritono em pontos de tensão (passos 14 e 30)
+      const root = (step === 14 || step === 30) ? E2 * 1.4142 : E2;   // Bb2 ~ tritono
+      this._chug(root, t, accent ? 0.12 : 0.08, accent ? 0.6 : 0.42);
+    }
+    // ----- LEAD -----
+    const lf = LEAD[step];
+    if (lf) this._lead(lf, t, sec16 * 1.8);
+    // ----- BATERIA: bumbo nas semínimas, caixa no 2 e 4, chimbal em colcheias -----
+    if (step % 4 === 0) this._kick(t);
+    if (step === 8 || step === 24) this._kick(t);        // bumbo extra (drive)
+    if (step % 8 === 4) this._snare(t);
+    if (step % 2 === 0) this._hat(t, step % 8 === 6);
   }
 }

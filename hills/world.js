@@ -1,9 +1,10 @@
-// world.js — DOOM HILLS: cidade enevoada estilo Silent Hill PSX (prédios, ruas,
-// postes, esqueleto urbano ao fundo), mas com o LAYOUT da primeira fase do Doom 1
-// (E1M1): sala inicial -> corredor -> salão -> pátio contaminado (zigue-zague +
-// colete) / sala da chave azul -> porta trancada -> saída. Tudo procedural.
-// PERFORMANCE: quase nenhuma luz dinâmica (só lanterna + 1 brilho do lodo). Postes,
-// janelas e itens são emissivos/aditivos (sem custo de iluminação por-pixel).
+// world.js — DOOM HILLS: arena urbana enevoada (Silent Hill PSX) gerada de forma
+// PROCEDURAL a cada fase. Nada é fixo: prédios, cobertura, lodo radioativo, postes
+// e itens mudam de lugar a cada nível. O objetivo agora é EXTERMÍNIO — matar toda
+// a horda libera a próxima fase (infinita). Tudo vive sob um único Group (this.root)
+// que é descartado (dispose) na troca de fase, sem vazar GPU.
+// PERFORMANCE: quase nenhuma luz dinâmica (lanterna + brilho do lodo). Janelas,
+// postes e itens são emissivos/aditivos (sem custo de iluminação por-pixel).
 import * as THREE from 'three';
 import { applyVertexSnap } from './psx.js';
 
@@ -18,7 +19,7 @@ function rng(seed) {
   };
 }
 
-// ---------- texturas em canvas 128px ----------
+// ---------- texturas em canvas 128px (criadas UMA vez, compartilhadas entre fases) ----------
 function canvasTex(draw, repeat = 1, transparent = false) {
   const c = document.createElement('canvas'); c.width = c.height = 128;
   const g = c.getContext('2d');
@@ -89,21 +90,33 @@ function makeTextures() {
   return { asphalt, brick, concrete, stucco, rust, wet, nuke, blood };
 }
 
+// texturas compartilhadas entre todas as fases (não são descartadas no dispose)
+let TEX = null;
+function textures() { if (!TEX) TEX = makeTextures(); return TEX; }
+
 function mat(map, color = 0xffffff, emissive = 0x000000) {
   return applyVertexSnap(new THREE.MeshLambertMaterial({ map, color, emissive, fog: true }));
 }
 
-const T = 1.0;          // espessura das paredes (grossa = robusta na velocidade do Doom)
+const T = 1.0;          // espessura das paredes
 const WALL_H = 12;      // altura das paredes (lados de prédio)
+const HALF = 40;        // meia-largura da arena (paredão em ±HALF)
+const CLEAR = 9;        // raio livre em volta do spawn (sem prédio/lodo)
 
 export class World {
-  constructor(scene) {
+  constructor(scene, level = 1) {
     this.scene = scene;
+    this.level = Math.max(1, level | 0);
+    this.root = new THREE.Group(); scene.add(this.root);
+    this.seed = (this.level * 2654435761 + (Math.random() * 0x7fffffff | 0)) >>> 0;
+    this.rand = rng(this.seed);
+
     this.colliders = [];
     this.lamps = [];
     this.pickups = [];
-    this.litWindows = null;
-    this.tex = makeTextures();
+    this.pools = [];          // poças de lodo (retângulos) p/ inNukage
+    this.glows = [];          // luzes do lodo (animadas)
+    this.tex = textures();
     this.t = 0;
 
     // buffers de instâncias (janelas) + debris
@@ -111,117 +124,113 @@ export class World {
     this._winGeo = new THREE.PlaneGeometry(1, 1);
     this._dummy = new THREE.Object3D();
 
-    this.spawn = new THREE.Vector3(0, 1.7, 39);   // sala inicial (sul), olhando p/ norte
+    this.spawn = new THREE.Vector3(0, 1.7, 0);   // centro da arena, área limpa
 
-    // hordas (frenético): vários inimigos espalhados pela fase
-    this.monsterSpawns = [
-      new THREE.Vector3(0, 0, 17), new THREE.Vector3(-10, 0, 8), new THREE.Vector3(10, 0, 14),
-      new THREE.Vector3(-5, 0, 0), new THREE.Vector3(8, 0, -2),                       // salão
-      new THREE.Vector3(31, 0, 4), new THREE.Vector3(30, 0, 14), new THREE.Vector3(36, 0, 9),  // sala da chave
-      new THREE.Vector3(-18, 0, 8), new THREE.Vector3(-35, 0, 5), new THREE.Vector3(-17, 0, 16), // pátio
-      new THREE.Vector3(0, 0, -22),                                                   // saída
-    ];
-
-    // materiais compartilhados (poucos programas)
+    // materiais compartilhados desta fase (descartados no dispose)
     this.M = {
       wall: mat(this.tex.brick, 0x8a8278, 0x0a0806),
       conc: mat(this.tex.concrete, 0x6f7176, 0x070809),
-      trim: mat(this.tex.concrete, 0x3a3c40),
       metal: mat(this.tex.rust, 0x55585c),
       dark: mat(this.tex.concrete, 0x202227),
     };
 
-    this.doorPos = new THREE.Vector3(0, 0, -6);
-    this.exitPos = new THREE.Vector3(0, 0, -27);
-
     this._ground();
-    this._walls();
-    this._skyline();
+    this._perimeter();
+    this._buildings();
     this._nukage();
-    this._door();
-    this._exitSign();
+    this._skyline();
     this._props();
     this._items();
     this._ash();
     this._commitInstances();
   }
 
+  add(obj) { this.root.add(obj); }
   _addCollider(cx, cz, hx, hz) { this.colliders.push({ minX: cx - hx, maxX: cx + hx, minZ: cz - hz, maxZ: cz + hz }); }
 
   _wall(cx, cz, w, d, h = WALL_H, material = this.M.wall) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
-    m.position.set(cx, h / 2, cz); this.scene.add(m);
+    m.position.set(cx, h / 2, cz); this.add(m);
     this._addCollider(cx, cz, w / 2, d / 2);
   }
-  _wallX(a, b, z, h = WALL_H, m) { this._wall((a + b) / 2, z, Math.abs(b - a), T, h, m); }
-  _wallZ(a, b, x, h = WALL_H, m) { this._wall(x, (a + b) / 2, T, Math.abs(b - a), h, m); }
 
-  // ---------- chão (asfalto + faixas + poças) ----------
+  // ponto bloqueado por algum colisor (margem) ?
+  _blocked(x, z, margin = 1.0) {
+    for (const c of this.colliders) {
+      if (x > c.minX - margin && x < c.maxX + margin && z > c.minZ - margin && z < c.maxZ + margin) return true;
+    }
+    return false;
+  }
+  _inPool(x, z) { for (const p of this.pools) if (x >= p.minX && x <= p.maxX && z >= p.minZ && z <= p.maxZ) return true; return false; }
+
+  // acha um ponto aberto (longe de fromX/fromZ, fora de colisores e do lodo)
+  _openSpot(minDist, fromX = 0, fromZ = 0, margin = 1.2) {
+    const lim = HALF - 3;
+    for (let i = 0; i < 60; i++) {
+      const x = (this.rand() * 2 - 1) * lim, z = (this.rand() * 2 - 1) * lim;
+      if (Math.hypot(x - fromX, z - fromZ) < minDist) continue;
+      if (this._blocked(x, z, margin) || this._inPool(x, z)) continue;
+      return new THREE.Vector3(x, 0, z);
+    }
+    return new THREE.Vector3((this.rand() * 2 - 1) * lim, 0, (this.rand() * 2 - 1) * lim);
+  }
+
+  // ---------- chão (asfalto + faixas + poças d'água + sangue) ----------
   _ground() {
     const g = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), mat(this.tex.asphalt, 0x84878c));
-    g.rotation.x = -Math.PI / 2; g.position.set(-2, 0, 8); this.scene.add(g);
+    g.rotation.x = -Math.PI / 2; g.position.set(0, 0, 0); this.add(g);
 
-    // faixa central tracejada nas "avenidas" (corredores)
-    const lineMat = new THREE.MeshBasicMaterial({ color: 0xb9a55a, fog: true });
-    for (let z = 44; z > -30; z -= 6) { const l = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 3), lineMat); l.rotation.x = -Math.PI / 2; l.position.set(0, 0.02, z); this.scene.add(l); }
-
-    // poças (sem luz: MeshBasic refletindo o céu)
     const wetMat = new THREE.MeshBasicMaterial({ map: this.tex.wet, color: 0x2a3340, transparent: true, opacity: 0.8, fog: true });
-    const r = rng(909);
-    for (let i = 0; i < 10; i++) { const p = new THREE.Mesh(new THREE.CircleGeometry(0.8 + r() * 2.0, 12), wetMat); p.rotation.x = -Math.PI / 2; p.position.set(-2 + (r() - 0.5) * 60, 0.025, 8 + (r() - 0.5) * 60); p.scale.y = 0.6 + r(); this.scene.add(p); }
+    for (let i = 0; i < 10; i++) { const p = new THREE.Mesh(new THREE.CircleGeometry(0.8 + this.rand() * 2.0, 12), wetMat); p.rotation.x = -Math.PI / 2; p.position.set((this.rand() - 0.5) * 70, 0.025, (this.rand() - 0.5) * 70); p.scale.y = 0.6 + this.rand(); this.add(p); }
 
-    // sangue (gore urbano)
     const bloodMat = new THREE.MeshBasicMaterial({ map: this.tex.blood, transparent: true, depthWrite: false, fog: true });
-    for (let i = 0; i < 12; i++) { const b = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), bloodMat); b.rotation.x = -Math.PI / 2; b.rotation.z = r() * 6; b.position.set(-2 + (r() - 0.5) * 64, 0.04, 8 + (r() - 0.5) * 60); this.scene.add(b); }
+    for (let i = 0; i < 12; i++) { const b = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), bloodMat); b.rotation.x = -Math.PI / 2; b.rotation.z = this.rand() * 6; b.position.set((this.rand() - 0.5) * 72, 0.04, (this.rand() - 0.5) * 72); this.add(b); }
   }
 
-  // ---------- paredes (mesmo layout E1M1, agora como muros/prédios de tijolo) ----------
-  _walls() {
-    // SALA INICIAL  x[-8,8] z[28,44]
-    this._wallX(-8, 8, 44); this._wallZ(28, 44, -8); this._wallZ(28, 44, 8);
-    this._wallX(-8, -2.5, 28); this._wallX(2.5, 8, 28);
-    // CORREDOR 1  x[-2.5,2.5] z[22,28]
-    this._wallZ(22, 28, -2.5); this._wallZ(22, 28, 2.5);
-    // SALÃO  x[-16,16] z[-6,22]
-    this._wallX(-16, -2.5, 22); this._wallX(2.5, 16, 22);
-    this._wallZ(-6, 2, -16); this._wallZ(14, 22, -16);
-    this._wallZ(-6, 6, 16); this._wallZ(11, 22, 16);
-    this._wallX(-16, -2.5, -6); this._wallX(2.5, 16, -6);
-    // PÁTIO  x[-44,-16] z[-6,22]
-    this._wallZ(-6, 22, -44); this._wallX(-44, -16, -6); this._wallX(-44, -16, 22);
-    // CORREDOR DA CHAVE  x[16,24] z[6,11]
-    this._wallX(16, 24, 6); this._wallX(16, 24, 11);
-    // SALA DA CHAVE  x[24,40] z[-2,18]
-    this._wallZ(-2, 18, 40); this._wallX(24, 40, 18); this._wallX(24, 40, -2);
-    this._wallZ(-2, 6, 24); this._wallZ(11, 18, 24);
-    // CORREDOR 2 (saída)  x[-2.5,2.5] z[-14,-6]
-    this._wallZ(-14, -6, -2.5); this._wallZ(-14, -6, 2.5);
-    // SALA DE SAÍDA  x[-12,12] z[-30,-14]
-    this._wallZ(-30, -14, -12); this._wallZ(-30, -14, 12); this._wallX(-12, 12, -30);
-    this._wallX(-12, -2.5, -14); this._wallX(2.5, 12, -14);
-
-    // janelas nas paredes internas das grandes salas (instanced, sem luz)
-    // (nx,nz) = normal apontando p/ DENTRO da sala (lado visível das janelas)
-    this._windowRow(-16, 16, 22, 0, -1);     // salão — parede sul (interior fica em -z)
-    this._windowRow(-16, 16, -6, 0, 1);      // salão — parede norte
-    this._windowRow(-6, 22, -16, 1, 0);      // salão — parede oeste
-    this._windowRow(-2, 18, 40, -1, 0);      // sala da chave — parede leste
-    this._windowRow(-44, -16, -6, 0, 1);     // pátio — parede norte
-    this._windowRow(-30, -14, -12, 1, 0);    // sala de saída — parede oeste
-    this._windowRow(-30, -14, 12, -1, 0);    // sala de saída — parede leste
+  // ---------- paredão da arena (mantém o jogador dentro) ----------
+  _perimeter() {
+    this._wall(0, HALF, HALF * 2 + T * 2, T);
+    this._wall(0, -HALF, HALF * 2 + T * 2, T);
+    this._wall(HALF, 0, T, HALF * 2 + T * 2);
+    this._wall(-HALF, 0, T, HALF * 2 + T * 2);
   }
 
-  // fileira de janelas ao longo de uma parede; (nx,nz)=normal apontando p/ dentro da sala
-  _windowRow(a, b, c, nx, nz) {
-    const horiz = nz !== 0;                  // parede que corre no eixo X
-    const lo = Math.min(a, b) + 2, hi = Math.max(a, b) - 2;
-    const r = rng(((a * 13 + b * 7 + c) | 0) || 5);
-    for (let s = lo; s <= hi; s += 2.4) {
-      for (let y = 3; y < WALL_H - 1.5; y += 3.2) {
-        if (r() < 0.18) continue;
-        const lit = r() < 0.16;
-        if (horiz) this._win(s, y, c + nz * 0.45, nz > 0 ? 0 : Math.PI, 1.1, 1.5, lit);
-        else this._win(c + nx * 0.45, y, s, nx > 0 ? Math.PI / 2 : -Math.PI / 2, 1.1, 1.5, lit);
+  // ---------- prédios/cobertura espalhados numa grade (sem sobrepor o spawn) ----------
+  _buildings() {
+    const lit = () => this.rand() < 0.18;
+    const tints = [
+      [this.tex.brick, 0x8a8278, 0x0a0806],
+      [this.tex.stucco, 0x7c776c, 0x060606],
+      [this.tex.concrete, 0x6f7176, 0x070809],
+      [this.tex.rust, 0x6a5a4e, 0x0c0604],
+    ];
+    // densidade cresce um pouco com a fase (até um teto), p/ variar o cenário
+    const density = Math.min(0.62, 0.42 + this.level * 0.02);
+    for (let cx = -30; cx <= 30; cx += 12) {
+      for (let cz = -30; cz <= 30; cz += 12) {
+        if (Math.hypot(cx, cz) < CLEAR + 3) continue;        // mantém o miolo aberto
+        if (this.rand() > density) continue;
+        const w = 4 + this.rand() * 3, d = 4 + this.rand() * 3, h = 5 + this.rand() * 14;
+        const x = cx + (this.rand() - 0.5) * 3, z = cz + (this.rand() - 0.5) * 3;
+        const ti = tints[(this.rand() * tints.length) | 0];
+        const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(ti[0], ti[1], ti[2]));
+        body.position.set(x, h / 2, z); this.add(body);
+        this._addCollider(x, z, w / 2, d / 2);
+        // janelas nas 4 faces (instanced) se for alto o bastante
+        if (h > 7) {
+          for (let yy = 3; yy < h - 1.5; yy += 3.2) {
+            for (let ox = -w / 2 + 1.2; ox <= w / 2 - 1.2; ox += 2.2) {
+              if (this.rand() < 0.25) continue;
+              this._win(x + ox, yy, z + d / 2 + 0.05, 0, 1.0, 1.4, lit());
+              this._win(x + ox, yy, z - d / 2 - 0.05, Math.PI, 1.0, 1.4, lit());
+            }
+            for (let oz = -d / 2 + 1.2; oz <= d / 2 - 1.2; oz += 2.2) {
+              if (this.rand() < 0.25) continue;
+              this._win(x + w / 2 + 0.05, yy, z + oz, Math.PI / 2, 1.0, 1.4, lit());
+              this._win(x - w / 2 - 0.05, yy, z + oz, -Math.PI / 2, 1.0, 1.4, lit());
+            }
+          }
+        }
       }
     }
   }
@@ -231,104 +240,51 @@ export class World {
     (lit ? this._winLit : this._winDark).push(d.matrix.clone());
   }
 
-  // ---------- esqueleto urbano ao fundo (silhuetas com janelas acesas na névoa) ----------
+  // ---------- esqueleto urbano ao fundo (fora da arena, na névoa) ----------
   _skyline() {
-    const r = rng(424242);
     const ring = [];
-    for (let x = -64; x <= 56; x += 12) { ring.push([x, -46], [x, 60]); }
-    for (let z = -40; z <= 56; z += 12) { ring.push([-60, z], [54, z]); }
+    for (let x = -64; x <= 56; x += 12) { ring.push([x, -(HALF + 14)], [x, HALF + 18]); }
+    for (let z = -(HALF + 8); z <= HALF + 14; z += 12) { ring.push([-(HALF + 16), z], [HALF + 14, z]); }
     for (const [cx, cz] of ring) {
-      if (r() < 0.18) continue;
-      const w = 8 + r() * 6, d = 8 + r() * 6, h = 16 + r() * 18;
-      const shade = 0.5 + r() * 0.4;
+      if (this.rand() < 0.2) continue;
+      const w = 8 + this.rand() * 6, d = 8 + this.rand() * 6, h = 16 + this.rand() * 18;
+      const shade = 0.5 + this.rand() * 0.4;
       const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(this.tex.stucco, new THREE.Color(shade, shade * 0.96, shade * 0.9).getHex(), 0x050505));
-      body.position.set(cx + (r() - 0.5) * 4, h / 2, cz + (r() - 0.5) * 4); this.scene.add(body);
-      // janelas nas 4 faces (instanced)
-      for (let y = 4; y < h - 2; y += 3.2) {
-        for (let off = -w / 2 + 1.4; off <= w / 2 - 1.4; off += 2.2) {
-          if (r() < 0.25) continue;
-          this._win(body.position.x + off, y, body.position.z + d / 2 + 0.05, 0, 1.1, 1.5, r() < 0.22);
-          this._win(body.position.x + off, y, body.position.z - d / 2 - 0.05, Math.PI, 1.1, 1.5, r() < 0.22);
-        }
-        for (let off = -d / 2 + 1.4; off <= d / 2 - 1.4; off += 2.2) {
-          if (r() < 0.25) continue;
-          this._win(body.position.x + w / 2 + 0.05, y, body.position.z + off, Math.PI / 2, 1.1, 1.5, r() < 0.22);
-          this._win(body.position.x - w / 2 - 0.05, y, body.position.z + off, -Math.PI / 2, 1.1, 1.5, r() < 0.22);
+      body.position.set(cx + (this.rand() - 0.5) * 4, h / 2, cz + (this.rand() - 0.5) * 4); this.add(body);
+      for (let y = 4; y < h - 2; y += 3.6) {
+        for (let off = -w / 2 + 1.4; off <= w / 2 - 1.4; off += 2.4) {
+          if (this.rand() < 0.3) continue;
+          this._win(body.position.x + off, y, body.position.z + d / 2 + 0.05, 0, 1.1, 1.5, this.rand() < 0.22);
+          this._win(body.position.x + off, y, body.position.z - d / 2 - 0.05, Math.PI, 1.1, 1.5, this.rand() < 0.22);
         }
       }
     }
   }
 
-  // ---------- derramamento tóxico (o "lodo" do Doom, agora urbano) + zigue-zague ----------
+  // ---------- lodo radioativo: 1-2 poças aleatórias (longe do spawn) ----------
   _nukage() {
-    this.pool = { minX: -41, maxX: -19, minZ: -3, maxZ: 19 };
     const nm = new THREE.MeshBasicMaterial({ map: this.tex.nuke, color: 0x9fe34a, fog: true });
-    const pool = new THREE.Mesh(new THREE.PlaneGeometry(22, 22), nm);
-    pool.rotation.x = -Math.PI / 2; pool.position.set(-30, 0.06, 8); this.scene.add(pool);
     this.nukeMat = nm;
-    // ÚNICA luz dinâmica do mapa (além da lanterna): o brilho verde do tóxico
-    this.nukeGlow = new THREE.PointLight(0x88ff44, 0.9, 26, 1.6); this.nukeGlow.position.set(-30, 1.4, 8); this.scene.add(this.nukeGlow);
-
-    this.planks = [
-      { minX: -27, maxX: -19, minZ: 11, maxZ: 15 },
-      { minX: -31, maxX: -27, minZ: 3, maxZ: 15 },
-      { minX: -39, maxX: -31, minZ: 3, maxZ: 7 },
-    ];
-    const pmat = mat(this.tex.concrete, 0x5a5e5c);
-    for (const p of this.planks) {
-      const w = p.maxX - p.minX, d = p.maxZ - p.minZ;
-      const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.24, d), pmat);
-      slab.position.set((p.minX + p.maxX) / 2, 0.12, (p.minZ + p.maxZ) / 2); this.scene.add(slab);
+    const count = 1 + (this.rand() < 0.5 ? 1 : 0);
+    for (let i = 0; i < count; i++) {
+      const spot = this._openSpot(CLEAR + 8, 0, 0, 3);
+      const w = 7 + this.rand() * 6, d = 7 + this.rand() * 6;
+      const pool = new THREE.Mesh(new THREE.PlaneGeometry(w, d), nm);
+      pool.rotation.x = -Math.PI / 2; pool.position.set(spot.x, 0.06, spot.z); this.add(pool);
+      this.pools.push({ minX: spot.x - w / 2, maxX: spot.x + w / 2, minZ: spot.z - d / 2, maxZ: spot.z + d / 2 });
+      const glow = new THREE.PointLight(0x88ff44, 0.9, 26, 1.6); glow.position.set(spot.x, 1.4, spot.z); this.add(glow);
+      this.glows.push({ light: glow, phase: this.rand() * 6 });
     }
-  }
-
-  // ---------- portão TRANCADO (chave azul) ----------
-  _door() {
-    const z = -6;
-    const frameMat = mat(this.tex.metal, 0x3a3d42);
-    const fl = new THREE.Mesh(new THREE.BoxGeometry(0.5, WALL_H, 0.8), frameMat); fl.position.set(-2.8, WALL_H / 2, z); this.scene.add(fl);
-    const fr = fl.clone(); fr.position.x = 2.8; this.scene.add(fr);
-    // verga acima (mantém a parede fechada por cima do vão)
-    const lint = new THREE.Mesh(new THREE.BoxGeometry(6, WALL_H - 5.4, 0.8), this.M.wall); lint.position.set(0, 5.4 + (WALL_H - 5.4) / 2, z); this.scene.add(lint);
-    // folha (sobe ao destrancar)
-    const leaf = new THREE.Mesh(new THREE.BoxGeometry(5, 5.2, 0.4), mat(this.tex.metal, 0x4a4e54));
-    leaf.position.set(0, 2.6, z); this.scene.add(leaf); this.doorLeaf = leaf;
-    const blueMat = new THREE.MeshBasicMaterial({ color: 0x2a55ff, fog: true });
-    for (const ly of [-1.6, 1.6]) { const stripe = new THREE.Mesh(new THREE.BoxGeometry(5, 0.4, 0.46), blueMat); stripe.position.set(0, ly, 0); leaf.add(stripe); }
-    this._addCollider(0, z, 2.5, 0.45);
-    this._doorCollider = this.colliders[this.colliders.length - 1];
-    this.doorOpen = false;
-  }
-
-  _signTex(text, bg = '#220606', fg = '#ff5a3c') {
-    const c = document.createElement('canvas'); c.width = 256; c.height = 64;
-    const g = c.getContext('2d');
-    g.fillStyle = bg; g.fillRect(0, 0, 256, 64);
-    g.fillStyle = fg; g.font = 'bold 30px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText(text, 128, 36);
-    const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
-    return t;
-  }
-
-  // ---------- saída: placa EXIT + alavanca (sem luz; emissivo) ----------
-  _exitSign() {
-    const z = -29.6;
-    const panel = new THREE.Mesh(new THREE.BoxGeometry(3.2, 3.2, 0.4), mat(this.tex.metal, 0x33373c)); panel.position.set(0, 2.0, z); this.scene.add(panel);
-    this.exitLever = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.4, 0.3), new THREE.MeshBasicMaterial({ color: 0xff7a2a, fog: true }));
-    this.exitLever.position.set(0, 2.0, z + 0.4); this.scene.add(this.exitLever);
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.7), new THREE.MeshBasicMaterial({ map: this._signTex('EXIT'), fog: true }));
-    sign.position.set(0, 3.8, z + 0.3); this.scene.add(sign);
-    this.exitSignMat = sign.material;
   }
 
   // ---------- postes (emissivo + god-ray aditivo; SEM PointLight) ----------
   _lamp(x, z) {
-    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 6.5, 6), this.M.metal); pole.position.set(x, 3.25, z); this.scene.add(pole);
-    const arm = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 0.12), this.M.metal); arm.position.set(x + 0.5, 6.3, z); this.scene.add(arm);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.32, 7, 6), new THREE.MeshBasicMaterial({ color: 0xffe6ad, fog: true })); head.position.set(x + 1, 6.1, z); this.scene.add(head);
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 6.5, 6), this.M.metal); pole.position.set(x, 3.25, z); this.add(pole);
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 0.12), this.M.metal); arm.position.set(x + 0.5, 6.3, z); this.add(arm);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.32, 7, 6), new THREE.MeshBasicMaterial({ color: 0xffe6ad, fog: true })); head.position.set(x + 1, 6.1, z); this.add(head);
     const cone = new THREE.Mesh(new THREE.ConeGeometry(1.7, 5.6, 10, 1, true),
       new THREE.MeshBasicMaterial({ color: 0xffd9a0, transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: true }));
-    cone.position.set(x + 1, 3.3, z); this.scene.add(cone);
+    cone.position.set(x + 1, 3.3, z); this.add(cone);
     this.lamps.push({ head, cone, base: x });
   }
 
@@ -343,37 +299,35 @@ export class World {
     for (const zz of [-1.1, 0.9]) { const w = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 0.7), glass); w.position.set(0, 1.5, zz - 0.2 + (zz < 0 ? -0.01 : 0.01)); w.rotation.x = zz < 0 ? -0.4 : 0.4; g.add(w); }
     const tire = new THREE.MeshLambertMaterial({ color: 0x0a0a0a, fog: true });
     for (const sx of [-1, 1]) for (const sz of [-1.4, 1.4]) { const t = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.3, 8), tire); t.rotation.z = Math.PI / 2; t.position.set(sx * 1.0, 0.45, sz); g.add(t); }
-    g.position.set(x, 0, z); g.rotation.y = rot; this.scene.add(g);
+    g.position.set(x, 0, z); g.rotation.y = rot; this.add(g);
     const ext = Math.abs(Math.round(rot / (Math.PI / 2))) % 2 === 0 ? [1.1, 2.3] : [2.3, 1.1];
     this._addCollider(x, z, ext[0], ext[1]);
   }
   _hydrant(x, z) {
     const m = mat(this.tex.rust, 0x6a2a22);
-    const b = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.9, 8), m); b.position.set(x, 0.45, z); this.scene.add(b);
-    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), m); cap.position.set(x, 0.92, z); this.scene.add(cap);
+    const b = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.9, 8), m); b.position.set(x, 0.45, z); this.add(b);
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), m); cap.position.set(x, 0.92, z); this.add(cap);
   }
   _crate(x, z, s = 1.4) {
-    const c = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), mat(this.tex.rust, 0x6a5230)); c.position.set(x, s / 2, z); this.scene.add(c);
+    const c = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), mat(this.tex.rust, 0x6a5230)); c.position.set(x, s / 2, z); this.add(c);
     this._addCollider(x, z, s / 2, s / 2);
   }
 
   _props() {
-    // postes nas avenidas/salas
-    this._lamp(0, 36); this._lamp(0, 10); this._lamp(-11, 18); this._lamp(11, 0);
-    this._lamp(32, 8); this._lamp(0, -22); this._lamp(-22, 16); this._lamp(-36, 6);
-    // carros (cobertura + cidade)
-    this._carBox(-9, 16, 0.1); this._carBox(11, 8, Math.PI / 2); this._carBox(30, -0.5, 0); this._carBox(-2, -22, Math.PI / 2);
-    // caixas / hidrantes (cobertura)
-    this._crate(-10, 13); this._crate(6, 18, 1.6); this._crate(28, 14); this._crate(36, 2, 1.6);
-    this._hydrant(2.4, 28); this._hydrant(-2.4, -10); this._hydrant(38, 14);
+    // postes espalhados
+    for (let i = 0; i < 7; i++) { const s = this._openSpot(6, 0, 0, 1.6); this._lamp(s.x, s.z); }
+    // carros (cobertura)
+    for (let i = 0; i < 3; i++) { const s = this._openSpot(CLEAR, 0, 0, 2.6); this._carBox(s.x, s.z, this.rand() < 0.5 ? 0 : Math.PI / 2); }
+    // caixas / hidrantes
+    for (let i = 0; i < 5; i++) { const s = this._openSpot(6, 0, 0, 1.4); this._crate(s.x, s.z, 1.2 + this.rand() * 0.6); }
+    for (let i = 0; i < 3; i++) { const s = this._openSpot(6, 0, 0, 1.0); this._hydrant(s.x, s.z); }
 
     // detritos espalhados (instanced)
-    const r = rng(555);
     for (let i = 0; i < 50; i++) {
-      const s = 0.25 + r() * 0.8;
-      this._dummy.position.set(-2 + (r() - 0.5) * 70, s / 2 + 0.05, 8 + (r() - 0.5) * 60);
-      this._dummy.rotation.set(r() * 0.3, r() * 6, r() * 0.3);
-      this._dummy.scale.set(s * (1 + r()), s * 0.5, s * (1 + r()));
+      const s = 0.25 + this.rand() * 0.8;
+      this._dummy.position.set((this.rand() - 0.5) * 74, s / 2 + 0.05, (this.rand() - 0.5) * 74);
+      this._dummy.rotation.set(this.rand() * 0.3, this.rand() * 6, this.rand() * 0.3);
+      this._dummy.scale.set(s * (1 + this.rand()), s * 0.5, s * (1 + this.rand()));
       this._dummy.updateMatrix(); this._debris.push(this._dummy.matrix.clone());
     }
   }
@@ -400,43 +354,32 @@ export class World {
     const nl = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.3, 0.3), m); nl.position.set(0, 0.5, 0); g.add(nl);
     return g;
   }
-  _keyModel() {
-    const g = new THREE.Group();
-    const m = new THREE.MeshLambertMaterial({ color: 0x2a6bff, emissive: 0x102a8a, fog: true });
-    const card = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.34, 0.05), m); card.position.y = 0.3; g.add(card);
-    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.08, 0.06), new THREE.MeshBasicMaterial({ color: 0x9fc0ff, fog: true })); stripe.position.set(0, 0.36, 0); g.add(stripe);
-    return g;
-  }
 
   _addPickup(type, x, z, amount, build, color) {
-    const g = build(); g.position.set(x, 0.55, z); this.scene.add(g);
-    // disco de brilho no chão (aditivo, sem custo de luz) p/ achar na névoa
+    const g = build(); g.position.set(x, 0.55, z); this.add(g);
     const glow = new THREE.Mesh(new THREE.CircleGeometry(1.0, 14),
       new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false, fog: true }));
-    glow.rotation.x = -Math.PI / 2; glow.position.set(x, 0.05, z); this.scene.add(glow);
-    this.pickups.push({ type, amount, pos: new THREE.Vector3(x, 0.55, z), mesh: g, glow, taken: false, phase: Math.random() * 6 });
+    glow.rotation.x = -Math.PI / 2; glow.position.set(x, 0.05, z); this.add(glow);
+    this.pickups.push({ type, amount, pos: new THREE.Vector3(x, 0.55, z), mesh: g, glow, taken: false, phase: this.rand() * 6 });
   }
 
   _items() {
-    this._addPickup('ammo', 0, 33, 12, () => this._shellModel(), 0xff8030);
-    this._addPickup('ammo', -6, 8, 12, () => this._shellModel(), 0xff8030);
-    this._addPickup('ammo', 13, 18, 12, () => this._shellModel(), 0xff8030);
-    this._addPickup('ammo', -36, 5, 16, () => this._shellModel(), 0xff8030);
-    this._addPickup('ammo', 30, 2, 12, () => this._shellModel(), 0xff8030);
-    this._addPickup('ammo', 0, -20, 16, () => this._shellModel(), 0xff8030);
-    this._addPickup('med', 6, 30, 25, () => this._medModel(), 0xff4040);
-    this._addPickup('med', -13, 18, 25, () => this._medModel(), 0xff4040);
-    this._addPickup('med', 36, 16, 25, () => this._medModel(), 0xff4040);
-    this._addPickup('armor', -36, 5, 100, () => this._armorModel(), 0x2ad24a);
-    this._addPickup('key', 34, 8, 1, () => this._keyModel(), 0x2a6bff);
+    // munição: sempre vários (a horda cresce a cada fase)
+    const ammoN = Math.min(8, 4 + (this.level >> 1));
+    for (let i = 0; i < ammoN; i++) { const s = this._openSpot(4); this._addPickup('ammo', s.x, s.z, 12, () => this._shellModel(), 0xff8030); }
+    // kits médicos
+    const medN = 2 + (this.rand() < 0.5 ? 1 : 0);
+    for (let i = 0; i < medN; i++) { const s = this._openSpot(6); this._addPickup('med', s.x, s.z, 25, () => this._medModel(), 0xff4040); }
+    // colete de vez em quando
+    if (this.level % 2 === 0 || this.rand() < 0.4) { const s = this._openSpot(8); this._addPickup('armor', s.x, s.z, 100, () => this._armorModel(), 0x2ad24a); }
   }
 
   _ash() {
     const N = 800; const p = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) { p[i * 3] = -2 + (Math.random() - 0.5) * 80; p[i * 3 + 1] = Math.random() * 26; p[i * 3 + 2] = 8 + (Math.random() - 0.5) * 70; }
+    for (let i = 0; i < N; i++) { p[i * 3] = (Math.random() - 0.5) * 80; p[i * 3 + 1] = Math.random() * 26; p[i * 3 + 2] = (Math.random() - 0.5) * 80; }
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(p, 3));
     this.ashMat = new THREE.PointsMaterial({ color: 0xb8b4a8, size: 0.07, sizeAttenuation: true, transparent: true, opacity: 0.5, fog: true });
-    this.ash = new THREE.Points(geo, this.ashMat); this.scene.add(this.ash);
+    this.ash = new THREE.Points(geo, this.ashMat); this.add(this.ash);
   }
 
   _commitInstances() {
@@ -444,14 +387,21 @@ export class World {
       if (!arr.length) return null;
       const im = new THREE.InstancedMesh(this._winGeo, material, arr.length);
       arr.forEach((m, i) => im.setMatrixAt(i, m)); im.instanceMatrix.needsUpdate = true;
-      this.scene.add(im); return im;
+      this.add(im); return im;
     };
     add(this._winDark, new THREE.MeshBasicMaterial({ color: 0x070a10, fog: true }));
     this.litWindows = add(this._winLit, new THREE.MeshBasicMaterial({ color: 0xffcf8a, fog: true }));
     if (this._debris.length) {
       const dim = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat(this.tex.concrete, 0x55524c), this._debris.length);
-      this._debris.forEach((m, i) => dim.setMatrixAt(i, m)); dim.instanceMatrix.needsUpdate = true; this.scene.add(dim);
+      this._debris.forEach((m, i) => dim.setMatrixAt(i, m)); dim.instanceMatrix.needsUpdate = true; this.add(dim);
     }
+  }
+
+  // pontos de spawn da horda: abertos e longe do jogador
+  enemySpawns(count, playerPos) {
+    const out = [];
+    for (let i = 0; i < count; i++) out.push(this._openSpot(12, playerPos.x, playerPos.z, 1.2));
+    return out;
   }
 
   // ---------- runtime ----------
@@ -468,7 +418,7 @@ export class World {
     a.needsUpdate = true;
     this.ash.position.set(camPos.x, 0, camPos.z);
 
-    if (this.nukeGlow) this.nukeGlow.intensity = 0.7 + Math.sin(t * 2.3) * 0.3;
+    for (const G of this.glows) G.light.intensity = 0.7 + Math.sin(t * 2.3 + G.phase) * 0.3;
     if (this.nukeMat) this.nukeMat.map.offset.y = (t * 0.06) % 1;
 
     for (const p of this.pickups) {
@@ -476,7 +426,6 @@ export class World {
       p.mesh.rotation.y += dt * 1.5;
       p.mesh.position.y = 0.55 + Math.sin(t * 2 + p.phase) * 0.08;
     }
-    if (this.exitSignMat) this.exitSignMat.color.setRGB(1, 0.45 + Math.sin(t * 5) * 0.2, 0.3);
   }
 
   collect(camPos) {
@@ -491,21 +440,16 @@ export class World {
     return null;
   }
 
-  inNukage(camPos) {
-    const x = camPos.x, z = camPos.z;
-    if (x < this.pool.minX || x > this.pool.maxX || z < this.pool.minZ || z > this.pool.maxZ) return false;
-    for (const pl of this.planks) if (x >= pl.minX && x <= pl.maxX && z >= pl.minZ && z <= pl.maxZ) return false;
-    return true;
-  }
+  inNukage(camPos) { return this._inPool(camPos.x, camPos.z); }
 
-  nearDoor(camPos, d = 3.4) { const dx = this.doorPos.x - camPos.x, dz = this.doorPos.z - camPos.z; return dx * dx + dz * dz < d * d; }
-  openDoor() {
-    if (this.doorOpen) return; this.doorOpen = true;
-    if (this.doorLeaf) this.doorLeaf.position.y = WALL_H + 2.6;
-    const i = this.colliders.indexOf(this._doorCollider);
-    if (i >= 0) this.colliders.splice(i, 1);
+  // descarta a fase inteira (geometrias + materiais); texturas são compartilhadas e ficam
+  dispose() {
+    this.scene.remove(this.root);
+    this.root.traverse((o) => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) { const m = o.material; (Array.isArray(m) ? m : [m]).forEach((mm) => mm && mm.dispose && mm.dispose()); }
+    });
+    this.lamps.length = 0; this.pickups.length = 0; this.pools.length = 0; this.glows.length = 0;
+    this.colliders.length = 0;
   }
-
-  nearExit(camPos, d = 4.0) { const dx = this.exitPos.x - camPos.x, dz = this.exitPos.z - camPos.z; return dx * dx + dz * dz < d * d; }
-  pullExit() { if (this.exitLever) this.exitLever.rotation.x = -0.9; }
 }
