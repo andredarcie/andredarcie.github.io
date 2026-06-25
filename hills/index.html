@@ -22,6 +22,19 @@
             box-shadow:inset 0 0 200px 40px rgba(140,0,0,.9); transition:opacity .12s; }
   #flash { position:fixed; inset:0; z-index:7; pointer-events:none; opacity:0; background:#fff; }
 
+  /* RAGE (berserk): tinta roxa na borda + indicador com barra de tempo */
+  #ragetint { position:fixed; inset:0; z-index:4; pointer-events:none; opacity:0; transition:opacity .2s;
+              box-shadow:inset 0 0 170px 28px rgba(150,40,255,.34); }
+  body.raging #ragetint { opacity:1; }
+  #rage { position:fixed; top:62px; left:50%; transform:translateX(-50%); z-index:6; pointer-events:none;
+          font-family:"Courier New", monospace; text-align:center; opacity:0; transition:opacity .15s;
+          color:#d98cff; text-shadow:0 0 12px #b050ff, 0 0 4px #000; }
+  body.raging #rage { opacity:1; }
+  #rage span { font-size:15px; letter-spacing:.34em; font-weight:700; }
+  #rage i { display:block; width:130px; height:3px; margin:5px auto 0; background:rgba(217,140,255,.2); overflow:hidden; }
+  #rage i::after { content:""; display:block; height:100%; width:100%; background:#c060ff; box-shadow:0 0 8px #c060ff;
+                   transform-origin:left center; transform:scaleX(var(--rage,1)); }
+
   /* ---------- crosshair ---------- */
   #cross { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
            z-index:5; width:16px; height:16px; pointer-events:none; opacity:.7; }
@@ -68,6 +81,22 @@
   .hint { margin-top:1.6em; font-size:14px; letter-spacing:.2em; color:#8a8478; animation:flick 3s infinite; }
   .hint b { color:#bdb6a7; font-weight:400; }
 
+  /* ---------- tela de score (game over) ---------- */
+  #score { margin-top:1.7em; font-family:"Courier New", monospace; color:#cfcabf;
+           display:flex; flex-direction:column; gap:.5em; width:min(80vw,330px); }
+  .srow { display:flex; justify-content:space-between; align-items:baseline; gap:1.4em;
+          font-size:clamp(12px,2.7vw,15px); letter-spacing:.16em; }
+  .srow .slbl { color:#7c766b; text-transform:uppercase; }
+  .srow .sval { color:#d8d2c6; font-weight:700; }
+  .srow.score-main { font-size:clamp(20px,5vw,30px); letter-spacing:.1em;
+                     border-bottom:1px solid rgba(207,202,191,.16); padding-bottom:.45em; margin-bottom:.15em; }
+  .srow.score-main .sval { color:#ff6a3a; text-shadow:0 0 16px rgba(255,80,40,.55); }
+  .srow.best .sval { color:#ffd24a; }
+  #sc-new { margin-top:.6em; text-align:center; color:#ffd24a; font-weight:700;
+            letter-spacing:.34em; font-size:clamp(12px,3vw,16px);
+            text-shadow:0 0 18px rgba(255,200,60,.75); animation:flick 1.1s infinite; }
+  #dead-hint { animation:none; transition:opacity .4s; }   /* sem flicker: faz fade-in após o respiro */
+
   /* prompt de interação (porta / saída) */
   #open { position:fixed; left:50%; top:53%; transform:translateX(-50%); z-index:6;
           color:#e2dccd; letter-spacing:.34em; font-size:clamp(15px,2.6vw,20px); text-transform:uppercase;
@@ -92,16 +121,16 @@
   "imports": {
     "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
     "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-    "./psx.js": "./psx.js?v=35",
-    "./world.js": "./world.js?v=35",
-    "./player.js": "./player.js?v=35",
-    "./entities.js": "./entities.js?v=35",
-    "./weapon.js": "./weapon.js?v=35",
-    "./audio.js": "./audio.js?v=35",
-    "./boot.js": "./boot.js?v=35",
-    "./touch.js": "./touch.js?v=35",
-    "./crt.js": "./crt.js?v=35",
-    "./main.js": "./main.js?v=35"
+    "./psx.js": "./psx.js?v=38",
+    "./world.js": "./world.js?v=38",
+    "./player.js": "./player.js?v=38",
+    "./entities.js": "./entities.js?v=38",
+    "./weapon.js": "./weapon.js?v=38",
+    "./audio.js": "./audio.js?v=38",
+    "./boot.js": "./boot.js?v=38",
+    "./touch.js": "./touch.js?v=38",
+    "./crt.js": "./crt.js?v=38",
+    "./main.js": "./main.js?v=38"
   }
 }
 </script>
@@ -111,6 +140,7 @@
 
   <!-- efeitos de tela -->
   <div id="damage"></div>
+  <div id="ragetint"></div>
   <div id="flash"></div>
 
   <!-- crosshair -->
@@ -132,6 +162,9 @@
   <!-- indicador de extermínio (fase / inimigos restantes) -->
   <div id="wave">LEVEL <b id="level">1</b> — <b id="left">0</b> LEFT</div>
 
+  <!-- indicador de RAGE (berserk) com barra de tempo -->
+  <div id="rage"><span>RAGE</span><i></i></div>
+
   <!-- combo / kill streak (estilo ultrakill) -->
   <div id="combo">
     <div id="comboRank">DOUBLE KILL</div>
@@ -145,10 +178,17 @@
     <div class="hint">click to <b>resume</b></div>
   </div>
 
-  <!-- DEATH -->
+  <!-- DEATH + SCORE -->
   <div id="dead" class="overlay hidden">
     <div class="big">YOU DIED</div>
-    <div class="hint">press <b>R</b> to restart</div>
+    <div id="score">
+      <div class="srow score-main"><span class="slbl">Score</span><span class="sval" id="sc-score">0</span></div>
+      <div class="srow"><span class="slbl">Kills</span><span class="sval" id="sc-kills">0</span></div>
+      <div class="srow"><span class="slbl">Level</span><span class="sval" id="sc-level">1</span></div>
+      <div class="srow best"><span class="slbl">Best</span><span class="sval" id="sc-best">0</span></div>
+      <div id="sc-new" class="hidden">NEW BEST</div>
+    </div>
+    <div class="hint" id="dead-hint">tap or press <b>any key</b></div>
   </div>
 
   <!-- VICTORY -->
@@ -157,7 +197,7 @@
     <div class="hint">press <b>R</b> (or tap) to play again</div>
   </div>
 
-  <div id="build">BUILD 35</div>
+  <div id="build">BUILD 38</div>
 
   <script type="module">import './main.js';</script>
 </body>

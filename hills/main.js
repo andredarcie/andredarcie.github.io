@@ -31,6 +31,12 @@ let nukeTimer = 0;
 let firingMouse = false;
 let shake = 0;        // tremor aleatório da tela (tiro / dano)
 let viewKick = 0;     // coice: a câmera sobe e volta
+let timeScale = 1;    // 1 normal; <1 durante o clímax (câmera lenta)
+let climax = 0;       // tempo REAL restante do clímax de fim de fase
+let rage = 0;         // tempo restante do berserk (RAGE)
+let score = 0;        // pontuação da run atual (abates encadeados + bônus de fase)
+let kills = 0;        // total de abates na run
+let deadReady = false; // tela de morte aceita interação? (respiro p/ ler o score)
 
 // ---------- render / cena ----------
 const canvas = document.getElementById('game');
@@ -76,6 +82,13 @@ const ui = {
   comboRank: document.getElementById('comboRank'),
   comboNum: document.getElementById('comboNum'),
   comboBar: document.querySelector('#comboBar > i'),
+  rage: document.getElementById('rage'),
+  scScore: document.getElementById('sc-score'),
+  scKills: document.getElementById('sc-kills'),
+  scLevel: document.getElementById('sc-level'),
+  scBest: document.getElementById('sc-best'),
+  scNew: document.getElementById('sc-new'),
+  deadHint: document.getElementById('dead-hint'),
 };
 function flashDamage() { ui.damage.style.opacity = 0.9; setTimeout(() => ui.damage.style.opacity = 0, 120); }
 let bannerT = 0;
@@ -172,6 +185,8 @@ function comboRank(n) { let r = COMBO_TIERS[0]; for (const t of COMBO_TIERS) if 
 function onKill() {
   combo++;
   comboTimer = COMBO_WINDOW;
+  kills++;
+  score += 100 * combo;                                          // encadear vale MUITO mais
   shake = Math.max(shake, 0.32 + Math.min(0.5, combo * 0.03));   // tremor brutal a cada abate
   if (combo >= 2) {
     const rk = comboRank(combo);
@@ -196,12 +211,48 @@ function updateCombo(dt) {
   }
 }
 
+// ---------- clímax de fim de fase: slow-mo + zoom no abate que limpa a arena ----------
+const CLIMAX_DUR = 1.15, CLIMAX_SLOW = 0.18, CLIMAX_FOV = 56, BASE_FOV = 78;
+function startClimax() {
+  climax = CLIMAX_DUR;
+  shake = Math.max(shake, 0.7);
+  ui.flash.style.opacity = '0.28';                 // pulso branco curtinho
+  setTimeout(() => { ui.flash.style.opacity = '0'; }, 70);
+  audio.setStatic(0); audio.setHeartbeat(false);   // silencia o dread pra saborear a vitória
+}
+function updateClimax(realDt) {
+  const k = Math.min(1, realDt * 11);
+  timeScale += (CLIMAX_SLOW - timeScale) * k;       // afunda no slow-mo
+  camera.fov += (CLIMAX_FOV - camera.fov) * k;      // dolly-zoom pra dentro
+  camera.updateProjectionMatrix();
+}
+function endClimax() {
+  climax = 0; timeScale = 1;
+  camera.fov = BASE_FOV; camera.updateProjectionMatrix();
+}
+
+// ---------- berserk / RAGE: dano multiplicado + bombeia mais rápido por alguns segundos ----------
+const RAGE_DUR = 9, RAGE_DMG = 2.6, RAGE_FIRE = 0.3;
+function startRage() {
+  rage = RAGE_DUR;
+  player.heal(25);                                  // recompensa por cruzar a arena
+  weapon.fireRate = RAGE_FIRE;
+  document.body.classList.add('raging');
+  audio.keyPickup();
+  shake = Math.max(shake, 0.5);
+}
+function endRage() {
+  rage = 0;
+  weapon.fireRate = 0.55;                            // volta ao pump normal
+  document.body.classList.remove('raging');
+}
+
 // ---------- input ----------
 const keys = {};
 addEventListener('keydown', (e) => {
   keys[e.code] = true;
   if (e.code === 'KeyF' && state.mode === 'play') player.toggleFlash();
-  if (e.code === 'KeyR' && state.mode === 'dead') restartToTitle();
+  if (state.mode === 'dead') tryLeaveDeath();          // qualquer tecla volta pra tela inicial
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; });
 addEventListener('mousemove', (e) => {
@@ -252,7 +303,7 @@ document.addEventListener('pointerlockchange', () => {
   }
 });
 
-ui.dead.addEventListener('click', () => { if (state.mode === 'dead') restartToTitle(); });
+ui.dead.addEventListener('pointerdown', tryLeaveDeath);   // celular + PC: toque/clique/caneta
 function restartToTitle() {
   try { sessionStorage.setItem('hills-skip-intro', '1'); } catch (e) { /* ignora */ }
   location.reload();
@@ -272,7 +323,7 @@ function doHitscan() {
     if (lineBlocked(player.pos.x, player.pos.z, m.pos.x, m.pos.z)) continue;
     const falloff = Math.max(0.3, 1 - dist / weapon.range);
     const center = (dot - 0.95) / 0.05;                       // 0=borda 1=centro
-    const dmg = Math.round((40 + 50 * center) * falloff);     // 40..90 * falloff
+    const dmg = Math.round((40 + 50 * center) * falloff * (rage > 0 ? RAGE_DMG : 1));   // RAGE multiplica
     const killed = m.hurt(dmg, ndx, ndz);
     if (killed) { audio.enemyDie(panOf(m)); onKill(); } else audio.enemyHit(panOf(m));
   }
@@ -317,6 +368,7 @@ function applyPickup(got) {
   if (got.type === 'ammo') { weapon.addAmmo(got.amount); audio.ammoPickup(); }
   else if (got.type === 'med') { player.heal(got.amount); audio.itemPickup(); }
   else if (got.type === 'armor') { player.addArmor(got.amount); audio.itemPickup(); }
+  else if (got.type === 'berserk') { startRage(); }
 }
 
 // ---------- ondas / progressão (extermínio: limpar a horda abre a próxima fase) ----------
@@ -332,6 +384,7 @@ function spawnWave() {
 }
 
 function nextLevel() {
+  score += 500 * state.level;               // bônus por ter limpado a fase atual
   state.level++;
   world.dispose();
   clearGore(scene);
@@ -348,14 +401,15 @@ function nextLevel() {
 const clock = new THREE.Clock();
 function loop() {
   requestAnimationFrame(loop);
-  const dt = Math.min(0.05, clock.getDelta());
+  const realDt = Math.min(0.05, clock.getDelta());
+  const dt = realDt * timeScale;                 // câmera lenta no clímax
   state.time += dt;
-  if (state.mode === 'play') updatePlay(dt);
+  if (state.mode === 'play') updatePlay(dt, realDt);
   else { weapon.update(dt, false, false); world.update(dt, state.time, player.pos); }
   psx.render(scene, camera, state.time);
 }
 
-function updatePlay(dt) {
+function updatePlay(dt, realDt) {
   const input = gatherInput();
   player.update(dt, input, world.colliders, () => audio.footstep());
   const moving = Math.hypot(input.mx, input.mz) > 0.05;
@@ -379,7 +433,26 @@ function updatePlay(dt) {
   }
 
   const { caught } = monsters.update(dt, state.time, player.pos, world.colliders, false);
-  if (monsters.aliveCount === 0) { nextLevel(); return; }   // horda limpa -> próxima fase
+
+  // CLÍMAX: o abate que limpa a arena merece um flourish — slow-mo + zoom curtos (a última
+  // morte e as vísceras tombam em câmera lenta) ANTES de gerar a próxima fase.
+  if (monsters.aliveCount === 0) {
+    if (climax <= 0) startClimax();
+    climax -= realDt;                                  // o clímax dura em tempo REAL
+    updateClimax(realDt);                              // ease do slow-mo + zoom
+    world.update(dt, state.time, player.pos);          // ambiente + gore seguem (lentos)
+    if (weapon.update(dt, firingMouse || (touch && touch.firing), moving)) { audio.shotgun(); doHitscan(); }
+    viewKick = Math.max(0, viewKick - realDt * 0.55);
+    shake = Math.max(0, shake - realDt * 3.5);
+    if (viewKick > 0.0001 || shake > 0.0001) {
+      camera.rotation.x += viewKick + (Math.random() - 0.5) * 0.09 * shake;
+      camera.rotation.y += (Math.random() - 0.5) * 0.09 * shake;
+      camera.rotation.z += (Math.random() - 0.5) * 0.05 * shake;
+    }
+    drawCompass(); updateHUD();
+    if (climax <= 0) { endClimax(); nextLevel(); }
+    return;
+  }
   world.update(dt, state.time, player.pos);
 
   // arma (auto a cada pump enquanto segura o gatilho)
@@ -427,6 +500,12 @@ function updatePlay(dt) {
     camera.rotation.z += (Math.random() - 0.5) * 0.05 * shake;
   }
 
+  if (rage > 0) {
+    rage -= dt;
+    ui.rage.style.setProperty('--rage', Math.max(0, rage / RAGE_DUR).toFixed(3));
+    if (rage <= 0) endRage();
+  }
+
   updateCombo(dt);
   drawCompass();
   updateHUD();
@@ -435,10 +514,34 @@ function updatePlay(dt) {
 function gameOver() {
   if (state.mode !== 'play') return;
   state.mode = 'dead'; if (!touchMode) document.exitPointerLock(); if (touch) touch.hide();
-  ui.dead.classList.remove('hidden'); ui.open.classList.remove('show');
+  ui.open.classList.remove('show');
   ui.combo.style.opacity = '0'; combo = 0;
+  endRage(); endClimax();                  // limpa buffs/efeitos ao morrer
   audio.setStatic(0); audio.setHeartbeat(false);
+
+  // --- tela final de score ---
+  const best = loadBest();
+  const isNewBest = score > best;
+  if (isNewBest) saveBest(score);
+  ui.scScore.textContent = score.toLocaleString('en-US');
+  ui.scKills.textContent = kills;
+  ui.scLevel.textContent = state.level;
+  ui.scBest.textContent = Math.max(best, score).toLocaleString('en-US');
+  ui.scNew.classList.toggle('hidden', !isNewBest);
+
+  ui.dead.classList.remove('hidden');
+  // exige interação, mas só DEPOIS de um respiro (pra não pular sem ver a pontuação)
+  deadReady = false;
+  ui.deadHint.style.opacity = '0';
+  setTimeout(() => { deadReady = true; ui.deadHint.style.opacity = '1'; }, 900);
 }
+
+// recorde persiste entre runs (a run zera ao recarregar a página)
+function loadBest() { try { return parseInt(localStorage.getItem('hills-best') || '0', 10) || 0; } catch (e) { return 0; } }
+function saveBest(v) { try { localStorage.setItem('hills-best', String(v)); } catch (e) { /* indisponível */ } }
+
+// sair da tela de morte -> volta pra tela inicial (qualquer tecla / toque / clique)
+function tryLeaveDeath() { if (state.mode === 'dead' && deadReady) restartToTitle(); }
 
 // ---------- resize ----------
 addEventListener('resize', () => {

@@ -102,6 +102,7 @@ const T = 1.0;          // espessura das paredes
 const WALL_H = 12;      // altura das paredes (lados de prédio)
 const HALF = 40;        // meia-largura da arena (paredão em ±HALF)
 const CLEAR = 9;        // raio livre em volta do spawn (sem prédio/lodo)
+const BERSERK_RESPAWN = 16;   // segundos até o farol de RAGE reaparecer noutro canto
 
 export class World {
   constructor(scene, level = 1) {
@@ -141,6 +142,7 @@ export class World {
     this._skyline();
     this._props();
     this._items();
+    this._berserk();
     this._ash();
     this._commitInstances();
   }
@@ -172,7 +174,21 @@ export class World {
       if (this._blocked(x, z, margin) || this._inPool(x, z)) continue;
       return new THREE.Vector3(x, 0, z);
     }
-    return new THREE.Vector3((this.rand() * 2 - 1) * lim, 0, (this.rand() * 2 - 1) * lim);
+    // FALLBACK garantido (sem rand, p/ não bagunçar a geração): varre anéis ao redor
+    // de fromX/fromZ até achar um ponto REALMENTE livre. NUNCA devolve ponto dentro de
+    // colisor/lodo — senão o inimigo nasce preso (collideMove trava nos 2 eixos) e fica
+    // invulnerável (o tiro é bloqueado por lineBlocked ao cruzar a própria caixa).
+    const relax = Math.max(0.7, margin * 0.6);          // > raio do inimigo (0.5)
+    for (let r = Math.max(2, minDist); r <= lim * 1.6; r += 1.5) {
+      for (let a = 0; a < 24; a++) {
+        const ang = (a / 24) * Math.PI * 2;
+        const x = fromX + Math.cos(ang) * r, z = fromZ + Math.sin(ang) * r;
+        if (Math.abs(x) > lim || Math.abs(z) > lim) continue;
+        if (this._blocked(x, z, relax) || this._inPool(x, z)) continue;
+        return new THREE.Vector3(x, 0, z);
+      }
+    }
+    return new THREE.Vector3(0, 0, 0);                   // miolo limpo (recurso teórico)
   }
 
   // ---------- chão (asfalto + faixas + poças d'água + sangue) ----------
@@ -374,6 +390,33 @@ export class World {
     if (this.level % 2 === 0 || this.rand() < 0.4) { const s = this._openSpot(8); this._addPickup('armor', s.x, s.z, 100, () => this._armorModel(), 0x2ad24a); }
   }
 
+  // ---------- farol de RAGE (berserk): feixe vertical que fura a névoa, nasce LONGE ----------
+  _berserkModel() {
+    const g = new THREE.Group();
+    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.34, 0), new THREE.MeshBasicMaterial({ color: 0xd9a0ff, fog: false }));
+    g.add(core);
+    const halo = new THREE.Mesh(new THREE.IcosahedronGeometry(0.55, 0),
+      new THREE.MeshBasicMaterial({ color: 0x9030ff, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+    g.add(halo);
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 18, 8, 1, true),
+      new THREE.MeshBasicMaterial({ color: 0xb050ff, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, side: THREE.DoubleSide }));
+    beam.position.y = 8.5; g.add(beam);
+    return g;
+  }
+  _berserk() {
+    const s = this._openSpot(24, 0, 0, 1.6);                  // longe do spawn central -> te puxa pela arena
+    this._addPickup('berserk', s.x, s.z, 0, () => this._berserkModel(), 0xb050ff);
+    this._bz = this.pickups[this.pickups.length - 1];
+    this._bz.respawn = 0;
+  }
+  _relocateBerserk(p, camPos) {                               // reaparece noutro canto, longe de onde o jogador está
+    const s = this._openSpot(22, camPos.x, camPos.z, 1.6);
+    p.pos.set(s.x, 0.55, s.z);
+    p.mesh.position.set(s.x, 0.55, s.z);
+    if (p.glow) p.glow.position.set(s.x, 0.05, s.z);
+    p.taken = false; p.respawn = 0; p.mesh.visible = true; if (p.glow) p.glow.visible = true;
+  }
+
   _ash() {
     const N = 480; const p = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) { p[i * 3] = (Math.random() - 0.5) * 80; p[i * 3 + 1] = Math.random() * 26; p[i * 3 + 2] = (Math.random() - 0.5) * 80; }
@@ -422,9 +465,13 @@ export class World {
     if (this.nukeMat) this.nukeMat.map.offset.y = (t * 0.06) % 1;
 
     for (const p of this.pickups) {
-      if (p.taken) continue;
-      p.mesh.rotation.y += dt * 1.5;
+      if (p.taken) {
+        if (p.type === 'berserk' && p.respawn > 0) { p.respawn -= dt; if (p.respawn <= 0) this._relocateBerserk(p, camPos); }
+        continue;
+      }
+      p.mesh.rotation.y += dt * (p.type === 'berserk' ? 0.7 : 1.5);
       p.mesh.position.y = 0.55 + Math.sin(t * 2 + p.phase) * 0.08;
+      if (p.type === 'berserk') p.mesh.scale.setScalar(1 + Math.sin(t * 5 + p.phase) * 0.12);   // pulsa pra chamar atenção
     }
   }
 
@@ -434,6 +481,7 @@ export class World {
       const dx = p.pos.x - camPos.x, dz = p.pos.z - camPos.z;
       if (dx * dx + dz * dz < 1.8 * 1.8) {
         p.taken = true; p.mesh.visible = false; if (p.glow) p.glow.visible = false;
+        if (p.type === 'berserk') p.respawn = BERSERK_RESPAWN;
         return { type: p.type, amount: p.amount };
       }
     }

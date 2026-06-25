@@ -5,6 +5,26 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { applyVertexSnap } from './psx.js';
 import { collideMove } from './player.js';
 
+// rede de segurança: se o centro do inimigo acabar DENTRO de um colisor (empurrão do
+// tiro contra parede, etc.), ele fica preso (collideMove trava os 2 eixos) e some do
+// alcance do tiro. Aqui empurramos pelo lado de menor penetração até sair da caixa.
+function ejectColliders(pos, radius, colliders) {
+  for (const c of colliders) {
+    if (pos.x + radius > c.minX && pos.x - radius < c.maxX &&
+        pos.z + radius > c.minZ && pos.z - radius < c.maxZ) {
+      const pl = (pos.x + radius) - c.minX;   // sair pela esquerda (-x)
+      const pr = c.maxX - (pos.x - radius);   // sair pela direita (+x)
+      const pb = (pos.z + radius) - c.minZ;   // sair por trás (-z)
+      const pf = c.maxZ - (pos.z - radius);   // sair pela frente (+z)
+      const m = Math.min(pl, pr, pb, pf);
+      if (m === pl) pos.x = c.minX - radius;
+      else if (m === pr) pos.x = c.maxX + radius;
+      else if (m === pb) pos.z = c.minZ - radius;
+      else pos.z = c.maxZ + radius;
+    }
+  }
+}
+
 // ---------- textura de pele mosqueada (gerada uma vez) ----------
 let _flesh = null;
 function fleshTexture() {
@@ -364,6 +384,7 @@ export class Monster {
       this.mesh.rotation.y = this.dir;
     }
     collideMove(this.pos, mx * dt, mz * dt, this.radius, colliders);
+    ejectColliders(this.pos, this.radius, colliders);     // nunca ficar travado dentro de um colisor
     this.pos.x = Math.max(-44, Math.min(44, this.pos.x));
     this.pos.z = Math.max(-44, Math.min(44, this.pos.z));
     this.mesh.position.set(this.pos.x, 0, this.pos.z);
