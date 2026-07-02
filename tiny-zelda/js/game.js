@@ -7,7 +7,7 @@ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
 // ---------------- input ----------------
-const input = { up: 0, down: 0, left: 0, right: 0, a: 0, b: 0, start: 0, sel: 0 };
+const input = { up: 0, down: 0, left: 0, right: 0, a: 0, b: 0, start: 0, sel: 0, ax: 0, ay: 0 };
 const KEYMAP = {
   ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
   ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
@@ -506,7 +506,7 @@ function updatePlay() {
 
   // sword hits
   if (p.attacking > 2 && p.attacking < 12) {
-    const sb = p.swordBox();
+    const sb = p.swordHitBox();
     for (const en of G.enemies) {
       if (!p.attackHit.has(en) && rectsHit(sb, en)) { p.attackHit.add(en); en.takeHit(1, p.center()); }
     }
@@ -751,6 +751,7 @@ function renderTitle() {
   drawText(ctx, 'AN NES DEMAKE', 76, 146, '#787878');
   if ((G.t >> 5) % 2) drawText(ctx, 'PRESS ENTER', 84, 180, '#FCFCFC');
   drawText(ctx, '(C)1986 TRIBUTE', 68, 220, '#787878');
+  drawText(ctx, 'BUILD 36', 100, 232, '#585858');
 }
 
 function renderGameOver() {

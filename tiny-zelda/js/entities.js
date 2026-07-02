@@ -38,13 +38,15 @@ class Player {
   center() { return { x: this.x + this.w / 2, y: this.y + this.h / 2 }; }
   hitbox() { return { x: this.x, y: this.y, w: this.w, h: this.h }; }
 
-  swordBox() {
-    const c = this.hitbox(), L = 14;
+  // Wide slash hitbox: reaches L px ahead AND overhangs S px to each side, so the
+  // sword also connects with enemies beside Link — not only the one dead in front.
+  swordHitBox() {
+    const c = this.hitbox(), L = 20, S = 9;
     switch (this.dir) {
-      case 'up':    return { x: c.x + 3, y: c.y - L, w: 6, h: L };
-      case 'down':  return { x: c.x + 3, y: c.y + c.h, w: 6, h: L };
-      case 'left':  return { x: c.x - L, y: c.y + 3, w: L, h: 6 };
-      case 'right': return { x: c.x + c.w, y: c.y + 3, w: L, h: 6 };
+      case 'up':    return { x: c.x - S, y: c.y - L, w: c.w + S * 2, h: L + c.h };
+      case 'down':  return { x: c.x - S, y: c.y,     w: c.w + S * 2, h: L + c.h };
+      case 'left':  return { x: c.x - L, y: c.y - S, w: L + c.w,     h: c.h + S * 2 };
+      case 'right': return { x: c.x,     y: c.y - S, w: L + c.w,     h: c.h + S * 2 };
     }
   }
 
@@ -75,25 +77,31 @@ class Player {
     }
     if (input.b) { input.b = false; this.useItem(); }
 
-    // movement (single-axis priority like NES)
-    let dx = 0, dy = 0;
-    if (input.left) dx = -1; else if (input.right) dx = 1;
-    if (input.up) dy = -1; else if (input.down) dy = 1;
-    if (dx && dy) { if (this.dir === 'left' || this.dir === 'right') dy = 0; else dx = 0; }
-    this.moving = !!(dx || dy);
-    if (dx) this.dir = dx < 0 ? 'left' : 'right';
-    else if (dy) this.dir = dy < 0 ? 'up' : 'down';
+    // movement — free 360° (analog stick sets ax/ay; keyboard falls back to unit axes)
+    let mx = 0, my = 0;
+    if (input.ax || input.ay) { mx = input.ax; my = input.ay; }
+    else {
+      if (input.left) mx -= 1; if (input.right) mx += 1;
+      if (input.up) my -= 1; if (input.down) my += 1;
+    }
+    const mag = Math.hypot(mx, my);
+    this.moving = mag > 0.12;
     if (this.moving) {
+      // face the dominant axis (keeps the 4-dir sprites + sword aim)
+      if (Math.abs(mx) > Math.abs(my)) this.dir = mx < 0 ? 'left' : 'right';
+      else this.dir = my < 0 ? 'up' : 'down';
       this.frame++;
-      const nx = this.x + dx * this.speed, ny = this.y + dy * this.speed;
+      const spd = this.speed * Math.min(1, mag);       // partial tilt = slower walk
+      const vx = (mx / mag) * spd, vy = (my / mag) * spd; // normalized so diagonals aren't faster
+      const nx = this.x + vx, ny = this.y + vy;
       if (!boxBlocked(nx, this.y, this.w, this.h)) this.x = nx;
       if (!boxBlocked(this.x, ny, this.w, this.h)) this.y = ny;
       // half-tile nudge around corners
-      if (dx && boxBlocked(nx, this.y, this.w, this.h)) {
+      if (vx && boxBlocked(nx, this.y, this.w, this.h)) {
         if (!boxBlocked(nx, this.y - 2, this.w, this.h)) this.y -= 1;
         else if (!boxBlocked(nx, this.y + 2, this.w, this.h)) this.y += 1;
       }
-      if (dy && boxBlocked(this.x, ny, this.w, this.h)) {
+      if (vy && boxBlocked(this.x, ny, this.w, this.h)) {
         if (!boxBlocked(this.x - 2, ny, this.w, this.h)) this.x -= 1;
         else if (!boxBlocked(this.x + 2, ny, this.w, this.h)) this.x += 1;
       }
@@ -140,21 +148,33 @@ class Player {
     if (this.attacking > 2) this.drawSword(ctx);
   }
 
+  // Slash rendered as an arc that sweeps across the front (side to side), matching
+  // the wide swordHitBox so the visual sells the lateral reach.
   drawSword(ctx) {
-    const b = this.swordBox();
-    const ext = Math.min(1, (14 - this.attacking) / 4); // extend animation
-    ctx.fillStyle = '#FCFCFC';
-    if (this.dir === 'up' || this.dir === 'down') {
-      const h = Math.round(b.h * ext);
-      ctx.fillRect(b.x + 2, this.dir === 'up' ? b.y + b.h - h : b.y, 2, h);
-      ctx.fillStyle = '#FCB040';
-      ctx.fillRect(b.x, this.dir === 'up' ? b.y + b.h - 2 : b.y, 6, 2);
-    } else {
-      const w = Math.round(b.w * ext);
-      ctx.fillRect(this.dir === 'left' ? b.x + b.w - w : b.x, b.y + 2, w, 2);
-      ctx.fillStyle = '#FCB040';
-      ctx.fillRect(this.dir === 'left' ? b.x + b.w - 2 : b.x, b.y, 2, 6);
+    const c = this.hitbox();
+    const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+    const d = DIRS[this.dir];
+    const baseAng = Math.atan2(d[1], d[0]);
+    const prog = Math.max(0, Math.min(1, (13 - this.attacking) / 10)); // 0..1 across the swing
+    const spread = 1.15;                                // arc half-width (radians)
+    const ang = baseAng - spread + prog * spread * 2;   // sweep one side -> other
+    const reach = 18;
+    const baseX = cx + Math.cos(baseAng) * 5, baseY = cy + Math.sin(baseAng) * 5;
+    // gleam trail lagging behind the blade tip
+    for (let i = 0; i < 5; i++) {
+      const a = ang - i * 0.16;
+      ctx.fillStyle = i % 2 ? '#BCECFC' : '#FCFCFC';
+      ctx.fillRect(Math.round(cx + Math.cos(a) * reach) - 1,
+                   Math.round(cy + Math.sin(a) * reach) - 1, 3, 3);
     }
+    // blade + hilt
+    ctx.strokeStyle = '#FCFCFC'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(baseX, baseY);
+    ctx.lineTo(cx + Math.cos(ang) * reach, cy + Math.sin(ang) * reach);
+    ctx.stroke();
+    ctx.fillStyle = '#FCB040';
+    ctx.fillRect(Math.round(baseX) - 2, Math.round(baseY) - 2, 4, 4);
   }
 }
 

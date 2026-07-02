@@ -86,38 +86,38 @@
     border-top: 3px solid #1c1c1c; border-bottom: 3px solid #1c1c1c;
   }
 
-  /* ---- D-pad (black cross, geometry-tracked) ---- */
-  #dpad {
-    position: absolute; left: 4%; top: 30%;
-    width: calc(var(--ph) * 0.60); height: calc(var(--ph) * 0.60);
+  /* ---- analog stick (position-tracked, free 360°) ---- */
+  #stick {
+    position: absolute; left: 5%; top: 27%;
+    width: calc(var(--ph) * 0.62); height: calc(var(--ph) * 0.62);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 38%, #2b2b2b, #141414 62%, #050505);
+    border: 2px solid #0c0c0c;
+    box-shadow:
+      inset 0 3px 7px rgba(0,0,0,.85),
+      inset 0 -2px 4px rgba(255,255,255,.06),
+      0 1px 0 rgba(255,255,255,.15);
     touch-action: none;
   }
-  #dpad::before, #dpad::after {
-    content: ''; position: absolute;
-    background: linear-gradient(#232323, #101010);
-    border-radius: calc(var(--ph) * 0.05);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,.10), inset 0 -3px 4px rgba(0,0,0,.7);
+  /* subtle guide ring */
+  #stick::before {
+    content: ''; position: absolute; inset: 16%;
+    border-radius: 50%;
+    border: 1px dashed rgba(255,255,255,.10);
   }
-  #dpad::before { left: 34%; right: 34%; top: 1%; bottom: 1%; }  /* vertical arm */
-  #dpad::after  { top: 34%; bottom: 34%; left: 1%; right: 1%; }  /* horizontal arm */
-  #dpad .hub {
-    position: absolute; left: 35%; top: 35%; width: 30%; height: 30%;
-    border-radius: 50%; background: #191919;
-    box-shadow: inset 0 2px 3px rgba(0,0,0,.8); z-index: 1;
+  #stick .nub {
+    position: absolute; left: 50%; top: 50%;
+    width: 46%; height: 46%; margin-left: -23%; margin-top: -23%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 32%, #7a7a7a, #3c3c3c 58%, #1e1e1e);
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.35),
+      inset 0 -3px 6px rgba(0,0,0,.6),
+      0 2px 4px rgba(0,0,0,.6);
+    will-change: transform;
+    transition: transform .08s ease-out;   /* smooth spring-back on release */
   }
-  #dpad .arrow { position: absolute; width: 0; height: 0; z-index: 2; }
-  #dpad .up    { top: 9%;  left: 50%; transform: translateX(-50%);
-    border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 11px solid #6a6a6a; }
-  #dpad .down  { bottom: 9%; left: 50%; transform: translateX(-50%);
-    border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 11px solid #6a6a6a; }
-  #dpad .left  { left: 9%; top: 50%; transform: translateY(-50%);
-    border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 11px solid #6a6a6a; }
-  #dpad .right { right: 9%; top: 50%; transform: translateY(-50%);
-    border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 11px solid #6a6a6a; }
-  #dpad .up.on    { border-bottom-color: #fff; }
-  #dpad .down.on  { border-top-color: #fff; }
-  #dpad .left.on  { border-right-color: #fff; }
-  #dpad .right.on { border-left-color: #fff; }
+  #stick.active .nub { transition: none; }  /* follow the finger with no lag */
 
   /* ---- center: parody emblem + SELECT / START ---- */
   #center {
@@ -191,12 +191,8 @@
 
 <div id="touch">
   <div id="pad">
-    <div id="dpad">
-      <span class="hub"></span>
-      <span class="arrow up"></span>
-      <span class="arrow down"></span>
-      <span class="arrow left"></span>
-      <span class="arrow right"></span>
+    <div id="stick">
+      <span class="nub"></span>
     </div>
     <div id="center">
       <div id="brand">TINY</div>
@@ -216,11 +212,11 @@
   </div>
 </div>
 
-<script src="js/audio.js"></script>
-<script src="js/sprites.js"></script>
-<script src="js/data.js"></script>
-<script src="js/entities.js"></script>
-<script src="js/game.js"></script>
-<script src="js/touch.js"></script>
+<script src="js/audio.js?v=36"></script>
+<script src="js/sprites.js?v=36"></script>
+<script src="js/data.js?v=36"></script>
+<script src="js/entities.js?v=36"></script>
+<script src="js/game.js?v=36"></script>
+<script src="js/touch.js?v=36"></script>
 </body>
 </html>

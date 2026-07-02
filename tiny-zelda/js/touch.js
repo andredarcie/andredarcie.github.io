@@ -27,40 +27,52 @@
     else if (mq.addListener) mq.addListener(refreshTouch); // older Safari
   });
 
-  // ---------------- D-pad (position-tracked, 8-way) ----------------
-  const dpad = document.getElementById('dpad');
-  const arrows = {
-    up: dpad.querySelector('.up'), down: dpad.querySelector('.down'),
-    left: dpad.querySelector('.left'), right: dpad.querySelector('.right'),
-  };
-  function setDir(u, d, l, r) {
-    input.up = u; input.down = d; input.left = l; input.right = r;
-    arrows.up.classList.toggle('on', !!u);
-    arrows.down.classList.toggle('on', !!d);
-    arrows.left.classList.toggle('on', !!l);
-    arrows.right.classList.toggle('on', !!r);
+  // ---------------- analog stick (position-tracked, free 360°) ----------------
+  // Feeds the engine a smooth vector (input.ax/ay) for free movement, and also
+  // trips the up/down/left/right booleans past a tilt threshold so the existing
+  // screen-scroll / door-unlock / cave-entry logic keeps working.
+  const stick = document.getElementById('stick');
+  const nub = stick.querySelector('.nub');
+  const DEAD = 0.20;   // ignore tiny wobbles near the center
+  const AXIS = 0.42;   // tilt past this to trip a d-pad boolean
+
+  function setStick(ax, ay) {
+    input.ax = ax; input.ay = ay;
+    input.left  = ax < -AXIS ? 1 : 0;
+    input.right = ax >  AXIS ? 1 : 0;
+    input.up    = ay < -AXIS ? 1 : 0;
+    input.down  = ay >  AXIS ? 1 : 0;
   }
-  let dpadId = null;
-  function readDpad(e) {
-    const r = dpad.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width / 2);
-    const dy = e.clientY - (r.top + r.height / 2);
-    const t = r.width * 0.16; // per-axis deadzone (corners give diagonals)
-    setDir(dy < -t ? 1 : 0, dy > t ? 1 : 0, dx < -t ? 1 : 0, dx > t ? 1 : 0);
+  function resetStick() {
+    nub.style.transform = 'translate(0px,0px)';
+    setStick(0, 0);
   }
-  dpad.addEventListener('pointerdown', e => {
+  let stickId = null;
+  function readStick(e) {
+    const r = stick.getBoundingClientRect();
+    const max = r.width * 0.34;                        // knob travel radius (px)
+    let dx = e.clientX - (r.left + r.width / 2);
+    let dy = e.clientY - (r.top + r.height / 2);
+    const dist = Math.hypot(dx, dy) || 1;
+    if (dist > max) { dx = dx / dist * max; dy = dy / dist * max; }
+    nub.style.transform = `translate(${dx}px,${dy}px)`;
+    let ax = dx / max, ay = dy / max;
+    if (Math.hypot(ax, ay) < DEAD) { ax = 0; ay = 0; }
+    setStick(ax, ay);
+  }
+  stick.addEventListener('pointerdown', e => {
     e.preventDefault(); Audio2.ensure();
-    dpadId = e.pointerId;
-    try { dpad.setPointerCapture(e.pointerId); } catch (_) {}
-    readDpad(e);
+    stickId = e.pointerId; stick.classList.add('active');
+    try { stick.setPointerCapture(e.pointerId); } catch (_) {}
+    readStick(e);
   });
-  dpad.addEventListener('pointermove', e => { if (e.pointerId === dpadId) readDpad(e); });
-  function endDpad(e) {
-    if (e.pointerId !== dpadId) return;
-    dpadId = null; setDir(0, 0, 0, 0);
+  stick.addEventListener('pointermove', e => { if (e.pointerId === stickId) readStick(e); });
+  function endStick(e) {
+    if (e.pointerId !== stickId) return;
+    stickId = null; stick.classList.remove('active'); resetStick();
   }
-  dpad.addEventListener('pointerup', endDpad);
-  dpad.addEventListener('pointercancel', endDpad);
+  stick.addEventListener('pointerup', endStick);
+  stick.addEventListener('pointercancel', endStick);
 
   // ---------------- buttons that map to an input key ----------------
   // data-btn = 'a' (sword) | 'b' (item) | 'start' (enter) | 'sel' (switch item)
