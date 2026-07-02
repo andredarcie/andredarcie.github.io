@@ -37,7 +37,6 @@ const G = {
   // persistence
   secrets: new Set(),      // opened bombable caves 'x,y'
   unlockedDoors: new Set(),// 'id:room:dir'
-  clearedRooms: new Set(), // rooms whose key/item drop was taken 'id:room'
   takenItems: new Set(),   // major items taken 'id:room' or 'cave:x,y'
   killedBosses: new Set(), // 'id'
   msg: null, msgT: 0,
@@ -348,12 +347,25 @@ G.onEnemyDead = function (en) {
   if (kind) G.pickups.push(new Pickup(kind, en.x + 2, en.y + 2));
 };
 
+// true while this dungeon still has a locked door nobody has opened yet
+function dungeonNeedsKey() {
+  const rooms = DUNGEONS[G.dungeon.id].rooms;
+  for (const rk in rooms) {
+    const doors = rooms[rk].doors || {};
+    for (const dir in doors)
+      if (doors[dir] === 'lock' && !G.unlockedDoors.has(G.dungeon.id + ':' + rk + ':' + dir))
+        return true;
+  }
+  return false;
+}
+
 function checkRoomClear() {
   if (G.env !== 'dungeon' || G.enemies.length > 0 || G.boss || G.clearProcessed) return;
   G.clearProcessed = true;
   const def = curRoomDef(), rk = roomKey();
-  // key respawns every visit until actually collected (clearedRooms set on pickup)
-  if (def.drop === 'key' && !G.clearedRooms.has(rk)) {
+  // key rooms respawn a key on every clear as long as a locked door still needs one,
+  // so using a key on the wrong door (or losing track) can never soft-lock the dungeon
+  if (def.drop === 'key' && G.player.keys === 0 && dungeonNeedsKey()) {
     const s = openSpotNear(120, 84);
     G.pickups.push(new Pickup('key', s.x, s.y));
   }
@@ -816,7 +828,7 @@ function startGame() {
 }
 
 function resetAll() {
-  G.secrets.clear(); G.unlockedDoors.clear(); G.clearedRooms.clear();
+  G.secrets.clear(); G.unlockedDoors.clear();
   G.takenItems.clear(); G.killedBosses.clear();
   G.player = null; G.dungeon = null; G.cave = null; G.msg = null;
   G.checkpoint = { screen: { x: START_SCREEN.x, y: START_SCREEN.y }, x: START_POS.x, y: START_POS.y };

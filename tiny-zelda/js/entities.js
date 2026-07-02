@@ -235,7 +235,6 @@ class Pickup {
   }
   collect() {
     const p = G.player;
-    if (this.kind === 'key' && G.env === 'dungeon') G.clearedRooms.add(G.dungeon.id + ':' + G.dungeon.room);
     switch (this.kind) {
       case 'heart': p.hp = Math.min(p.maxHp, p.hp + 2); Audio2.sfx.heart(); break;
       case 'fairy': p.hp = p.maxHp; Audio2.sfx.heart(); break;
