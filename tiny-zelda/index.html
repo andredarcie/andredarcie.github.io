@@ -2,41 +2,225 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
 <title>Tiny Zelda — The Legend of Zelda (NES demake)</title>
 <style>
+  * { box-sizing: border-box; }
+  /* NES pad geometry: width spans the screen (capped), height keeps the ~2.15:1
+     body ratio and is limited so it never eats too much of the screen. */
+  :root {
+    --pw: min(100vw - 12px, 540px, 44vh * 2.15);
+    --ph: calc(var(--pw) / 2.15);
+  }
   html, body {
     margin: 0; padding: 0;
     background: #000;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
+    overscroll-behavior: none;
   }
-  #wrap { text-align: center; }
+  body {
+    position: fixed; inset: 0;
+    touch-action: none;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* play area — on desktop leave a thin strip below for the key hint */
+  #stage {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
   canvas {
+    width: 100%; height: 100%;
+    object-fit: contain;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
-    width: min(96vw, calc(92vh * 256 / 240));
-    aspect-ratio: 256 / 240;
     background: #000;
     outline: none;
   }
   #hint {
-    color: #777; font: 12px monospace; margin-top: 8px;
-    user-select: none;
+    position: absolute; left: 0; right: 0; bottom: 5px;
+    text-align: center;
+    color: #666; font: 12px monospace;
+    pointer-events: none;
   }
+
+  /* ================= NES touch controller ================= */
+  #touch { display: none; }
+  body.touch #touch {
+    display: flex; justify-content: center;
+    position: fixed; left: 0; right: 0;
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    z-index: 10; pointer-events: none;
+  }
+  body.touch #hint { display: none; }
+  /* reserve room so the pad never covers the game */
+  body.touch #stage {
+    top: 0;
+    left: env(safe-area-inset-left);
+    right: env(safe-area-inset-right);
+    bottom: calc(var(--ph) + 16px + env(safe-area-inset-bottom));
+  }
+  #touch * { touch-action: none; -webkit-user-select: none; user-select: none; }
+
+  /* ---- controller body ---- */
+  #pad {
+    position: relative;
+    width: var(--pw); height: var(--ph);
+    pointer-events: auto;
+    border-radius: calc(var(--ph) * 0.10);
+    background:
+      linear-gradient(#dcdcdc, #c6c6c6 10%, #b9b9b9 78%, #a3a3a3);
+    border: 2px solid #0c0c0c;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.55),
+      inset 0 -4px 8px rgba(0,0,0,.30),
+      0 6px 16px rgba(0,0,0,.7);
+  }
+  /* the two iconic black stripes across the upper body */
+  #pad::before {
+    content: ''; position: absolute;
+    left: 4%; right: 4%; top: 9%; height: 11%;
+    border-top: 3px solid #1c1c1c; border-bottom: 3px solid #1c1c1c;
+  }
+
+  /* ---- D-pad (black cross, geometry-tracked) ---- */
+  #dpad {
+    position: absolute; left: 4%; top: 30%;
+    width: calc(var(--ph) * 0.60); height: calc(var(--ph) * 0.60);
+    touch-action: none;
+  }
+  #dpad::before, #dpad::after {
+    content: ''; position: absolute;
+    background: linear-gradient(#232323, #101010);
+    border-radius: calc(var(--ph) * 0.05);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.10), inset 0 -3px 4px rgba(0,0,0,.7);
+  }
+  #dpad::before { left: 34%; right: 34%; top: 1%; bottom: 1%; }  /* vertical arm */
+  #dpad::after  { top: 34%; bottom: 34%; left: 1%; right: 1%; }  /* horizontal arm */
+  #dpad .hub {
+    position: absolute; left: 35%; top: 35%; width: 30%; height: 30%;
+    border-radius: 50%; background: #191919;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,.8); z-index: 1;
+  }
+  #dpad .arrow { position: absolute; width: 0; height: 0; z-index: 2; }
+  #dpad .up    { top: 9%;  left: 50%; transform: translateX(-50%);
+    border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 11px solid #6a6a6a; }
+  #dpad .down  { bottom: 9%; left: 50%; transform: translateX(-50%);
+    border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 11px solid #6a6a6a; }
+  #dpad .left  { left: 9%; top: 50%; transform: translateY(-50%);
+    border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 11px solid #6a6a6a; }
+  #dpad .right { right: 9%; top: 50%; transform: translateY(-50%);
+    border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 11px solid #6a6a6a; }
+  #dpad .up.on    { border-bottom-color: #fff; }
+  #dpad .down.on  { border-top-color: #fff; }
+  #dpad .left.on  { border-right-color: #fff; }
+  #dpad .right.on { border-left-color: #fff; }
+
+  /* ---- center: parody emblem + SELECT / START ---- */
+  #center {
+    position: absolute; left: 50%; top: 26%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: calc(var(--ph) * 0.03);
+  }
+  #brand {
+    font: 800 calc(var(--ph) * 0.08)/1 monospace; letter-spacing: 1px;
+    color: #b12; background: #efe7d6;
+    padding: 2px 7px; border-radius: 3px; border: 1px solid #9a9a9a;
+    box-shadow: inset 0 0 0 1px #fff;
+  }
+  .sysrow {
+    display: flex; gap: calc(var(--ph) * 0.07);
+    background: #141414; padding: calc(var(--ph) * 0.045) calc(var(--ph) * 0.05);
+    border-radius: calc(var(--ph) * 0.08);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.7);
+  }
+  .sysbtn {
+    width: calc(var(--ph) * 0.20); height: calc(var(--ph) * 0.10);
+    border: none; border-radius: 4px;
+    background: linear-gradient(#7c1a16, #4c0f0c);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.25), 0 2px 2px rgba(0,0,0,.5);
+  }
+  .sysbtn.pressed { background: linear-gradient(#4c0f0c, #7c1a16); box-shadow: inset 0 2px 3px rgba(0,0,0,.6); }
+  .syslabels {
+    display: flex; gap: calc(var(--ph) * 0.07);
+    font: 700 calc(var(--ph) * 0.06)/1 monospace; color: #2a2a2a; letter-spacing: 1px;
+  }
+  .syslabels span { width: calc(var(--ph) * 0.20); text-align: center; }
+
+  /* ---- A / B buttons (round, dark red, in a black housing) ---- */
+  #actions {
+    position: absolute; right: 4%; top: 34%;
+    width: calc(var(--ph) * 0.66); height: calc(var(--ph) * 0.40);
+    background: #141414; border-radius: calc(var(--ph) * 0.20);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.75);
+  }
+  .abtn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: calc(var(--ph) * 0.28); height: calc(var(--ph) * 0.28);
+    border-radius: 50%; border: 2px solid #3a0a07;
+    background: radial-gradient(circle at 38% 30%, #d24b3a, #9c1f16 62%, #7a1610);
+    box-shadow: inset 0 2px 2px rgba(255,255,255,.35), inset 0 -3px 4px rgba(0,0,0,.45), 0 2px 3px rgba(0,0,0,.5);
+  }
+  .abtn.pressed { transform: translateY(-50%) scale(.92); box-shadow: inset 0 2px 5px rgba(0,0,0,.55); filter: brightness(1.12); }
+  #btnB { left: 6%; }
+  #btnA { right: 6%; }
+  .ablabel {
+    position: absolute; top: 102%;
+    font: 800 calc(var(--ph) * 0.08)/1 monospace; color: #3a1210;
+  }
+  .ablabel.bl { left: 14%; }
+  .ablabel.al { right: 14%; }
+
+  /* ---- mute (kept subtle, not part of the authentic layout) ---- */
+  #btnMute {
+    position: absolute; top: 5px; right: 6px;
+    padding: 2px 6px; border-radius: 4px;
+    border: 1px solid #7a7a7a; background: rgba(20,20,20,.7);
+    color: #ccc; font: 700 9px monospace; letter-spacing: 1px;
+  }
+  #btnMute.muted { color: #e05a4a; border-color: #e05a4a; }
 </style>
 </head>
 <body>
-<div id="wrap">
+<div id="stage">
   <canvas id="game" width="256" height="240" tabindex="0"></canvas>
-  <div id="hint">ARROWS/WASD move &nbsp;·&nbsp; Z/SPACE sword (A) &nbsp;·&nbsp; X item (B) &nbsp;·&nbsp; C switch item &nbsp;·&nbsp; ENTER start/pause &nbsp;·&nbsp; M mute</div>
 </div>
+<div id="hint">ARROWS/WASD move &nbsp;·&nbsp; Z/SPACE sword (A) &nbsp;·&nbsp; X item (B) &nbsp;·&nbsp; C switch item &nbsp;·&nbsp; ENTER start/pause &nbsp;·&nbsp; M mute</div>
+
+<div id="touch">
+  <div id="pad">
+    <div id="dpad">
+      <span class="hub"></span>
+      <span class="arrow up"></span>
+      <span class="arrow down"></span>
+      <span class="arrow left"></span>
+      <span class="arrow right"></span>
+    </div>
+    <div id="center">
+      <div id="brand">TINY</div>
+      <div class="sysrow">
+        <button class="sysbtn" data-btn="sel" aria-label="Select / switch item"></button>
+        <button class="sysbtn" data-btn="start" aria-label="Start / pause"></button>
+      </div>
+      <div class="syslabels"><span>SELECT</span><span>START</span></div>
+    </div>
+    <div id="actions">
+      <button class="abtn" id="btnB" data-btn="b" aria-label="B item"></button>
+      <button class="abtn" id="btnA" data-btn="a" aria-label="A sword"></button>
+      <span class="ablabel bl">B</span>
+      <span class="ablabel al">A</span>
+    </div>
+    <button id="btnMute" aria-label="Mute">MUTE</button>
+  </div>
+</div>
+
 <script src="js/audio.js"></script>
 <script src="js/sprites.js"></script>
 <script src="js/data.js"></script>
 <script src="js/entities.js"></script>
 <script src="js/game.js"></script>
+<script src="js/touch.js"></script>
 </body>
 </html>
