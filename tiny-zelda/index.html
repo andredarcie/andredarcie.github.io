@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tiny Zelda — The Legend of Zelda (NES demake)</title>
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    background: #000;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #wrap { text-align: center; }
+  canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    width: min(96vw, calc(92vh * 256 / 240));
+    aspect-ratio: 256 / 240;
+    background: #000;
+    outline: none;
+  }
+  #hint {
+    color: #777; font: 12px monospace; margin-top: 8px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="game" width="256" height="240" tabindex="0"></canvas>
+  <div id="hint">ARROWS/WASD move &nbsp;·&nbsp; Z/SPACE sword (A) &nbsp;·&nbsp; X item (B) &nbsp;·&nbsp; C switch item &nbsp;·&nbsp; ENTER start/pause &nbsp;·&nbsp; M mute</div>
+</div>
+<script src="js/audio.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/data.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
