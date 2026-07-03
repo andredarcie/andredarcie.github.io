@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Infinity Zelda — an endless Zelda (NES demake)</title>
+<style>
+  * { box-sizing: border-box; }
+  /* NES pad geometry: width spans the screen (capped), height keeps the ~2.15:1
+     body ratio and is limited so it never eats too much of the screen. */
+  :root {
+    --pw: min(100vw - 12px, 540px, 44vh * 2.15);
+    --ph: calc(var(--pw) / 2.15);
+  }
+  html, body {
+    margin: 0; padding: 0;
+    background: #000;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    position: fixed; inset: 0;
+    touch-action: none;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* play area — on desktop leave a thin strip below for the key hint */
+  #stage {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  canvas {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background: #000;
+    outline: none;
+  }
+
+  /* ---- crisp HTML text layer (all in-game text lives here) ---- */
+  #text-overlay {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+  }
+  #text-screen {
+    --s: 1;                       /* px-per-virtual-pixel, set from JS */
+    position: absolute; left: 0; top: 0;
+    width: 256px; height: 240px;
+    transform-origin: top left;
+  }
+  .tl {
+    position: absolute;
+    margin: 0; padding: 0;
+    white-space: nowrap;
+    color: #FCFCFC;
+    font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas,
+                 "Roboto Mono", "Courier New", monospace;
+    font-weight: 700;
+    /* rendered at the real on-screen size -> always sharp, never upscaled */
+    font-size: calc(8px * var(--s));
+    line-height: calc(8px * var(--s));
+    text-shadow: calc(1px * var(--s)) calc(1px * var(--s)) 0 rgba(0,0,0,.7);
+    -webkit-font-smoothing: antialiased;
+  }
+  .tl i {
+    display: inline-block;
+    width: calc(8px * var(--s));
+    text-align: center;
+    font-style: normal;
+  }
+  #hint {
+    position: absolute; left: 0; right: 0; bottom: 5px;
+    text-align: center;
+    color: #666; font: 12px monospace;
+    pointer-events: none;
+  }
+
+  /* ================= NES touch controller ================= */
+  #touch { display: none; }
+  body.touch #touch {
+    display: flex; justify-content: center;
+    position: fixed; left: 0; right: 0;
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    z-index: 10; pointer-events: none;
+  }
+  body.touch #hint { display: none; }
+  /* reserve room so the pad never covers the game */
+  body.touch #stage {
+    top: 0;
+    left: env(safe-area-inset-left);
+    right: env(safe-area-inset-right);
+    bottom: calc(var(--ph) + 16px + env(safe-area-inset-bottom));
+  }
+  #touch * { touch-action: none; -webkit-user-select: none; user-select: none; }
+
+  /* ---- controller body ---- */
+  #pad {
+    position: relative;
+    width: var(--pw); height: var(--ph);
+    pointer-events: auto;
+    border-radius: calc(var(--ph) * 0.10);
+    background:
+      linear-gradient(#dcdcdc, #c6c6c6 10%, #b9b9b9 78%, #a3a3a3);
+    border: 2px solid #0c0c0c;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.55),
+      inset 0 -4px 8px rgba(0,0,0,.30),
+      0 6px 16px rgba(0,0,0,.7);
+  }
+  /* the two iconic black stripes across the upper body */
+  #pad::before {
+    content: ''; position: absolute;
+    left: 4%; right: 4%; top: 9%; height: 11%;
+    border-top: 3px solid #1c1c1c; border-bottom: 3px solid #1c1c1c;
+  }
+
+  /* ---- analog stick (position-tracked, free 360°) ---- */
+  #stick {
+    position: absolute; left: 5%; top: 27%;
+    width: calc(var(--ph) * 0.62); height: calc(var(--ph) * 0.62);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 38%, #2b2b2b, #141414 62%, #050505);
+    border: 2px solid #0c0c0c;
+    box-shadow:
+      inset 0 3px 7px rgba(0,0,0,.85),
+      inset 0 -2px 4px rgba(255,255,255,.06),
+      0 1px 0 rgba(255,255,255,.15);
+    touch-action: none;
+  }
+  /* subtle guide ring */
+  #stick::before {
+    content: ''; position: absolute; inset: 16%;
+    border-radius: 50%;
+    border: 1px dashed rgba(255,255,255,.10);
+  }
+  #stick .nub {
+    position: absolute; left: 50%; top: 50%;
+    width: 46%; height: 46%; margin-left: -23%; margin-top: -23%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 32%, #7a7a7a, #3c3c3c 58%, #1e1e1e);
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.35),
+      inset 0 -3px 6px rgba(0,0,0,.6),
+      0 2px 4px rgba(0,0,0,.6);
+    will-change: transform;
+    transition: transform .08s ease-out;   /* smooth spring-back on release */
+  }
+  #stick.active .nub { transition: none; }  /* follow the finger with no lag */
+
+  /* ---- center: parody emblem + SELECT / START ---- */
+  #center {
+    position: absolute; left: 50%; top: 26%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: calc(var(--ph) * 0.03);
+  }
+  #brand {
+    font: 800 calc(var(--ph) * 0.08)/1 monospace; letter-spacing: 1px;
+    color: #b12; background: #efe7d6;
+    padding: 2px 7px; border-radius: 3px; border: 1px solid #9a9a9a;
+    box-shadow: inset 0 0 0 1px #fff;
+  }
+  .sysrow {
+    display: flex; gap: calc(var(--ph) * 0.07);
+    background: #141414; padding: calc(var(--ph) * 0.045) calc(var(--ph) * 0.05);
+    border-radius: calc(var(--ph) * 0.08);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.7);
+  }
+  .sysbtn {
+    width: calc(var(--ph) * 0.20); height: calc(var(--ph) * 0.10);
+    border: none; border-radius: 4px;
+    background: linear-gradient(#7c1a16, #4c0f0c);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.25), 0 2px 2px rgba(0,0,0,.5);
+  }
+  .sysbtn.pressed { background: linear-gradient(#4c0f0c, #7c1a16); box-shadow: inset 0 2px 3px rgba(0,0,0,.6); }
+  .syslabels {
+    display: flex; gap: calc(var(--ph) * 0.07);
+    font: 700 calc(var(--ph) * 0.06)/1 monospace; color: #2a2a2a; letter-spacing: 1px;
+  }
+  .syslabels span { width: calc(var(--ph) * 0.20); text-align: center; }
+
+  /* ---- A / B buttons (round, dark red, in a black housing) ---- */
+  #actions {
+    position: absolute; right: 4%; top: 34%;
+    width: calc(var(--ph) * 0.66); height: calc(var(--ph) * 0.40);
+    background: #141414; border-radius: calc(var(--ph) * 0.20);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.75);
+  }
+  .abtn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: calc(var(--ph) * 0.28); height: calc(var(--ph) * 0.28);
+    border-radius: 50%; border: 2px solid #3a0a07;
+    background: radial-gradient(circle at 38% 30%, #d24b3a, #9c1f16 62%, #7a1610);
+    box-shadow: inset 0 2px 2px rgba(255,255,255,.35), inset 0 -3px 4px rgba(0,0,0,.45), 0 2px 3px rgba(0,0,0,.5);
+  }
+  .abtn.pressed { transform: translateY(-50%) scale(.92); box-shadow: inset 0 2px 5px rgba(0,0,0,.55); filter: brightness(1.12); }
+  #btnB { left: 6%; }
+  #btnA { right: 6%; }
+  .ablabel {
+    position: absolute; top: 102%;
+    font: 800 calc(var(--ph) * 0.08)/1 monospace; color: #3a1210;
+  }
+  .ablabel.bl { left: 14%; }
+  .ablabel.al { right: 14%; }
+
+  /* ---- mute (kept subtle, not part of the authentic layout) ---- */
+  #btnMute {
+    position: absolute; top: 5px; right: 6px;
+    padding: 2px 6px; border-radius: 4px;
+    border: 1px solid #7a7a7a; background: rgba(20,20,20,.7);
+    color: #ccc; font: 700 9px monospace; letter-spacing: 1px;
+  }
+  #btnMute.muted { color: #e05a4a; border-color: #e05a4a; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="256" height="240" tabindex="0"></canvas>
+  <div id="text-overlay"><div id="text-screen"></div></div>
+</div>
+<div id="hint">ARROWS/WASD move &nbsp;·&nbsp; Z/SPACE sword (A) &nbsp;·&nbsp; X item (B) &nbsp;·&nbsp; C switch item &nbsp;·&nbsp; ENTER start/pause &nbsp;·&nbsp; M mute</div>
+
+<div id="touch">
+  <div id="pad">
+    <div id="stick">
+      <span class="nub"></span>
+    </div>
+    <div id="center">
+      <div id="brand">INF</div>
+      <div class="sysrow">
+        <button class="sysbtn" data-btn="sel" aria-label="Select / switch item"></button>
+        <button class="sysbtn" data-btn="start" aria-label="Start / pause"></button>
+      </div>
+      <div class="syslabels"><span>SELECT</span><span>START</span></div>
+    </div>
+    <div id="actions">
+      <button class="abtn" id="btnB" data-btn="b" aria-label="B item"></button>
+      <button class="abtn" id="btnA" data-btn="a" aria-label="A sword"></button>
+      <span class="ablabel bl">B</span>
+      <span class="ablabel al">A</span>
+    </div>
+    <button id="btnMute" aria-label="Mute">MUTE</button>
+  </div>
+</div>
+
+<script src="js/audio.js?v=44"></script>
+<script src="js/sprites.js?v=44"></script>
+<script src="js/text.js?v=44"></script>
+<script src="js/data.js?v=44"></script>
+<script src="js/generate.js?v=44"></script>
+<script src="js/entities.js?v=44"></script>
+<script src="js/game.js?v=44"></script>
+<script src="js/touch.js?v=44"></script>
+</body>
+</html>
