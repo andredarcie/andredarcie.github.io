@@ -878,7 +878,7 @@ function renderTitle() {
     if (sel) drawSprite(ctx, 'triforce', 128 - items[i].length * 4 - 13, y, { remap: (G.t >> 3) % 2 ? { Y: 'W' } : null });
   }
   ctext('(C)1986 TRIBUTE', 220, '#787878');
-  ctext('BUILD 48', 232, '#787878');
+  ctext('BUILD 49', 232, '#787878');
 }
 
 function renderGen() {
@@ -1075,7 +1075,9 @@ function startGame() {
   Audio2.ensure();
   G.player = new Player();
   applyUnlocks(G.player);
-  G.player.hasSword = true;          // every run now starts with the sword in hand
+  // No sword in hand at spawn — the hero must step into the cave on the start
+  // screen (always placed there) to receive it, classic "IT'S DANGEROUS TO GO
+  // ALONE! TAKE THIS." opener.
   if (G.hasMod('glass')) G.player.hp = Math.max(1, Math.ceil(G.player.maxHp / 2));
   G.env = 'overworld';
   G.screen = { x: START_SCREEN.x, y: START_SCREEN.y };
