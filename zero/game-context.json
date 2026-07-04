@@ -1,0 +1,363 @@
+{
+  "meta": {
+    "id": "zero-to-one",
+    "language": "pt-BR"
+  },
+  "ui": {
+    "title": {
+      "logo": {
+        "before": "ZERO TO ",
+        "highlight": "ONE"
+      },
+      "subtitle": "Inferno · Purgatorio · Paraiso",
+      "keysDesktop": "WASD mover · mouse olhar · E interagir",
+      "start": "CLIQUE PARA COMEÇAR"
+    },
+    "pause": {
+      "title": "PAUSA",
+      "resume": "CLIQUE PARA VOLTAR"
+    },
+    "end": {
+      "logo": {
+        "highlight": "UM",
+        "after": "."
+      },
+      "subtitle": "Zero finalmente se tornou Um",
+      "restart": "CLIQUE PARA RECOMEÇAR"
+    },
+    "dialog": {
+      "continueHint": "E para continuar",
+      "closeHint": "E para fechar"
+    },
+    "prompt": {
+      "key": "E",
+      "afterKey": " para interagir - "
+    },
+    "mobile": {
+      "keys": "analógico esquerdo move · direito olha · E interage"
+    },
+    "rotate": {
+      "title": "GIRE O CELULAR",
+      "subtitle": "o jogo roda na horizontal"
+    }
+  },
+  "assets": {
+    "pixelScreens": {
+      "quarto": "quarto.png",
+      "metro": "metro.png",
+      "empresa": "empresa.png"
+    }
+  },
+  "labels": {
+    "objects": {
+      "bookshelf": "Estante de livros",
+      "computer": "Computador",
+      "window": "Janela",
+      "photo": "Fotografia na parede",
+      "door": "Porta",
+      "elevator": "Elevador",
+      "streetDoor": "Porta da rua",
+      "metroEntrance": "Entrada do metro",
+      "subwayDoor": "Porta do vagão",
+      "boss": "Chefe",
+      "coworker": "Colega",
+      "homeless": "Morador de rua",
+      "otherHomeless": "Outro morador de rua",
+      "storeDoor": "Loja",
+      "storeClerk": "Atendente",
+      "exitSeat": "Sair"
+    },
+    "speakers": {
+      "thought": "Pensamento",
+      "boss": "Chefe",
+      "clerk": "Atendente",
+      "final": "Final"
+    }
+  },
+  "days": {
+    "1": {
+      "name": "Inferno",
+      "roomCaption": "INICIO - INFERNO",
+      "roomAuto": {
+        "speaker": "",
+        "script": "acorde"
+      }
+    },
+    "2": {
+      "name": "Purgatorio",
+      "roomCaption": "MEIO - PURGATORIO",
+      "roomAuto": {
+        "speaker": "thought",
+        "script": "sonho2"
+      }
+    },
+    "3": {
+      "name": "Paraiso",
+      "roomCaption": "FIM - PARAISO",
+      "roomAuto": {
+        "speaker": "thought",
+        "script": "pensamento3"
+      }
+    },
+    "4": {
+      "name": "O dia seguinte",
+      "roomCaption": "O DIA SEGUINTE",
+      "roomAuto": {
+        "speaker": "thought",
+        "script": "acorde4"
+      }
+    },
+    "5": {
+      "name": "A partida",
+      "roomCaption": "A PARTIDA",
+      "roomAuto": {
+        "speaker": "thought",
+        "script": "acorde5"
+      }
+    }
+  },
+  "scenes": {
+    "corredor": {
+      "caption": "CORREDOR"
+    },
+    "recepcao": {
+      "caption": "RECEPÇÃO"
+    },
+    "rua": {
+      "caption": "A RUA"
+    },
+    "plataforma": {
+      "caption": "PLATAFORMA"
+    },
+    "metro": {
+      "caption": "METRO"
+    },
+    "empresa": {
+      "caption": "TRABALHO"
+    },
+    "loja": {
+      "caption": "LOJA"
+    },
+    "aviao": {
+      "caption": "A BORDO"
+    },
+    "praia": {
+      "caption": "A PRAIA"
+    }
+  },
+  "audio": {
+    "musicThemes": {
+      "1": {
+        "root": 110,
+        "scale": [0, 3, 5, 7, 10],
+        "gap": [8, 16]
+      },
+      "2": {
+        "root": 146.83,
+        "scale": [0, 2, 3, 7, 10],
+        "gap": [7, 13]
+      },
+      "3": {
+        "root": 130.81,
+        "scale": [0, 2, 4, 7, 9],
+        "gap": [5, 10]
+      },
+      "4": {
+        "root": 116.54,
+        "scale": [0, 2, 3, 7, 8],
+        "gap": [8, 15]
+      },
+      "5": {
+        "root": 138.59,
+        "scale": [0, 2, 4, 7, 9],
+        "gap": [4, 9]
+      }
+    }
+  },
+  "sequences": {
+    "finishGame": [
+      {
+        "say": {
+          "speaker": "final",
+          "script": "final"
+        }
+      },
+      {
+        "go": "end"
+      }
+    ],
+    "finishDay1Work": [
+      {
+        "say": {
+          "speaker": "thought",
+          "script": "pensamento1"
+        }
+      },
+      {
+        "say": {
+          "speaker": "boss",
+          "script": "chefe1b"
+        }
+      },
+      {
+        "setDay": 2
+      },
+      {
+        "go": "quarto"
+      }
+    ],
+    "finishDay2Work": [
+      {
+        "say": {
+          "speaker": "boss",
+          "script": "chefe2b"
+        }
+      },
+      {
+        "setDay": 3
+      },
+      {
+        "go": "quarto"
+      }
+    ],
+    "finishDay3": [
+      {
+        "setDay": 4
+      },
+      {
+        "go": "quarto"
+      }
+    ],
+    "finishDay4": [
+      {
+        "setDay": 5
+      },
+      {
+        "go": "quarto"
+      }
+    ]
+  },
+  "roteiro": {
+    "acorde": [
+      "\"Acorde, Zero!\""
+    ],
+    "janela": [
+      "Janela do meu apartamento",
+      "Consigo ver mil outras janelas de outros predios, exatamente como a minha",
+      "Mas não consigo ver daqui o sol",
+      "O transito hoje esta parado, logo pela manhã",
+      "Deve ser algum operario que morreu na contramão, atrapalhando o tráfego"
+    ],
+    "fotografia": [
+      "São meus pais e eu quando criança",
+      "Sinto falta da minha familia e dos meus amigos de infancia"
+    ],
+    "pcQuarto1": [
+      "Iniciando...",
+      "0 Mensagens de 352 amigos"
+    ],
+    "guardaRoupa": [
+      "Esses são os meus livros",
+      "1984 do George Orwell",
+      "Alice's Adventures in Wonderland - Lewis Carroll",
+      "Assim Falou Zaratustra de Friedrich Nietzsche",
+      "Eu tenho que lê-los novamente um dia",
+      "Esses livros parecem descrever tão bem a minha vida"
+    ],
+    "metro1": [
+      "Vivo a muito tempo nessa rotina monotona",
+      "De certa forma eu acabei me acostumando"
+    ],
+    "chefe1a": [
+      "Você chegou atrasado hoje Zero, na proxima é rua!"
+    ],
+    "colega1": [
+      "Eae Zero!",
+      "Tenho uma noticia muito boa",
+      "Acho que mes que vem consigo sair desse buraco"
+    ],
+    "pcTrabalho1": [
+      "Iniciando...",
+      "15 tarefas atrasadas",
+      "Primeira tarefa: Cadastro de empresa está com bugs",
+      "Parece que é um problema de Javascript",
+      "-consertando-",
+      "git commit -m 'fix cadastro de empresas'",
+      "Segunda tarefa: Erro ao adicionar funcionario",
+      "É só colocar uma verificação se a empresa existe já cadastrada",
+      "-consertando-",
+      "git commit -m 'Fix adicinar funcionario'",
+      "Acabou meu tempo, é isso por hoje"
+    ],
+    "pensamento1": [
+      "Sinto que passo a maior parte do meu dia aqui"
+    ],
+    "chefe1b": [
+      "Espero que você vire a noite para cobrir esses atrasos"
+    ],
+    "sonho2": [
+      "Tive um sonho horrivel, que eu era um inseto gigante",
+      "Mal saia do quarto, não era mais capaz de trabalhar",
+      "Me tornei um inutil ao olhar de todos a minha volta",
+      "Sentiam nojo de mim, desprezado, por fim morri de solidão"
+    ],
+    "morador2a": [
+      "Não tenho casa, nem trabalho, mas pelo menos sou livre"
+    ],
+    "morador2b": [
+      "As pessoas dizem que sou louco, mas acho que somos personagens de um jogo"
+    ],
+    "chefe2a": [
+      "Atrasado novamente? Você já foi melhor"
+    ],
+    "pcTrabalho2": [
+      "Mensagem automatica: Parabens Zero, você completou 10 anos de empresa",
+      "10 anos? Eu era jovem, e a vida era longa e cheia de possibilidades",
+      "Correndo e correndo para alcançar o sol",
+      "Cada dia com menos folego",
+      "Em um exercicio sem fim, auto-destrutivo ou inutil, correndo em uma labirinto sem esperança"
+    ],
+    "chefe2b": [
+      "Estou fora, nunca mais quero voltar aqui"
+    ],
+    "pensamento3": [
+      "Eu preciso escapar da realidade, cair diretamente na toca do coelho",
+      "Eu sinto uma necessidade de me expressar, de me conectar",
+      "Isso é a forma ultima de me expressar",
+      "A música, teatro, dança, pintura, escultura, arquitetura, literatura, cinema, fotografia e historia em quadrinhos são a forma final de expressão dos sentimentos humanos",
+      "Em meio a tantas artes, a combinação de todas elas, faz a decima arte, os video games"
+    ],
+    "pcQuarto3": [
+      "Eu vou criar um game é isso, um game em Bitsy",
+      "Para contar minha historia, minha vida",
+      "Vai se chamar Zero To One"
+    ],
+    "final": [
+      "Zero finalmente se tornou Um"
+    ],
+    "acorde4": [
+      "Sera que alguem jogou meu jogo ontem?"
+    ],
+    "acorde5": [
+      "Preciso sair daqui, respirar outro ar"
+    ],
+    "pcQuarto4": [
+      "Iniciando...",
+      "Abrindo itch.io",
+      "Meu jogo: Zero To One",
+      "0 visualizações",
+      "0 downloads"
+    ],
+    "semViews": [
+      "Eu achava que a ideia era boa, que muitas pessoas poderiam acessar, mas não foi isso"
+    ],
+    "atendente": [
+      "Uma passagem de aviao, por favor",
+      "So de ida?",
+      "So de ida"
+    ],
+    "metroClosed": [
+      "O metro esta fechado hoje"
+    ]
+  }
+}

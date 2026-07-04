@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Tiny Skyrim</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #0c1420; }
+  body { font-family: Georgia, 'Times New Roman', serif; color: #e6e4d8; touch-action: none; }
+  #game, #game canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .overlay { position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; }
+
+  /* title screen */
+  #title { background: rgba(8, 14, 24, 0.68); cursor: pointer; z-index: 40; }
+  #title h1 { font-size: clamp(34px, 9vw, 74px); letter-spacing: 0.32em; text-indent: 0.32em;
+    font-weight: normal; color: #e6e4d8; text-shadow: 0 0 24px rgba(200, 220, 255, 0.25); }
+  #title .sub { margin-top: 8px; color: #b9b39f; font-style: italic; letter-spacing: 0.12em; }
+  #title .controls { margin-top: 34px; font-size: 14px; color: #9d9884; line-height: 1.8;
+    font-family: Arial, sans-serif; letter-spacing: 0.05em; }
+  body.touch #title .kbd { display: none; }
+  #title .tap { display: none; }
+  body.touch #title .tap { display: block; }
+  #title .start { margin-top: 30px; font-size: 18px; letter-spacing: 0.25em; color: #d8b76a;
+    animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+  #build { position: absolute; right: 12px; bottom: 10px; font-size: 12px; color: #8a856f;
+    font-family: Arial, sans-serif; letter-spacing: 0.1em; }
+
+  /* HUD */
+  #hud { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+  #compass { position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: min(360px, 72vw); height: 30px; background: rgba(10, 14, 20, 0.45);
+    border: 1px solid rgba(230, 228, 216, 0.25); border-radius: 3px; }
+  #objective { position: absolute; top: 48px; left: 50%; transform: translateX(-50%);
+    font-size: 14px; color: #d8cfae; text-shadow: 0 1px 3px #000; white-space: nowrap; }
+  #target { display: none; position: absolute; top: 72px; left: 50%; transform: translateX(-50%);
+    width: min(300px, 60vw); text-align: center; }
+  #targetName { font-size: 14px; color: #e6e4d8; text-shadow: 0 1px 3px #000; margin-bottom: 3px; }
+  #target .barOuter { height: 7px; }
+  #crosshair { position: absolute; top: 50%; left: 50%; width: 4px; height: 4px;
+    transform: translate(-50%, -50%); background: rgba(230, 228, 216, 0.8); border-radius: 50%;
+    box-shadow: 0 0 3px #000; }
+
+  .barOuter { background: rgba(8, 10, 14, 0.6); border: 1px solid rgba(230, 228, 216, 0.35);
+    border-radius: 2px; height: 9px; overflow: hidden; }
+  .barFill { height: 100%; width: 100%; transition: width 0.15s; }
+  #hpBar, #mgBar, #stBar { position: absolute; bottom: 26px; transition: opacity 0.6s; }
+  #hpBar { left: 50%; transform: translateX(-50%); width: min(230px, 30vw); }
+  #mgBar { left: calc(50% - min(115px, 15vw) - min(190px, 26vw) - 14px); width: min(190px, 26vw); }
+  #stBar { right: calc(50% - min(115px, 15vw) - min(190px, 26vw) - 14px); width: min(190px, 26vw); }
+  #hpFill { background: linear-gradient(#c8433a, #7d1f1a); }
+  #mgFill { background: linear-gradient(#3f7fd0, #1f3f7d); }
+  #stFill { background: linear-gradient(#4faf58, #1f5d28); }
+
+  #stats { position: absolute; top: 10px; right: 12px; text-align: right; font-size: 14px;
+    color: #d8cfae; text-shadow: 0 1px 3px #000; }
+  #xpBar { width: 90px; height: 3px; background: rgba(8, 10, 14, 0.6); margin-top: 5px;
+    margin-left: auto; border-radius: 2px; overflow: hidden; }
+  #xpFill { height: 100%; background: #d8b76a; width: 0; }
+
+  #shoutUI { display: none; position: absolute; bottom: 52px; left: 50%;
+    transform: translateX(-50%); width: min(180px, 30vw); text-align: center; }
+  #shoutLabel { font-size: 11px; letter-spacing: 0.18em; color: #9fc6df;
+    text-shadow: 0 1px 3px #000; margin-bottom: 3px; font-family: Arial, sans-serif; }
+  #shoutUI .barOuter { height: 4px; }
+  #shoutFill { background: #7fdfff; }
+  #shoutUI.ready #shoutLabel { color: #cfefff; text-shadow: 0 0 8px rgba(127, 223, 255, 0.9); }
+
+  #prompt { display: none; position: absolute; top: 58%; left: 50%; transform: translateX(-50%);
+    font-size: 16px; color: #e6e4d8; text-shadow: 0 1px 4px #000; background: rgba(10, 14, 20, 0.5);
+    padding: 5px 14px; border: 1px solid rgba(230, 228, 216, 0.25); border-radius: 3px;
+    white-space: nowrap; }
+
+  #dialog { display: none; position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+    width: min(620px, 88vw); background: rgba(8, 12, 18, 0.82);
+    border: 1px solid rgba(216, 183, 106, 0.4); border-radius: 4px; padding: 14px 18px; }
+  #dlgName { color: #d8b76a; font-size: 15px; letter-spacing: 0.08em; margin-bottom: 6px; }
+  #dlgText { font-size: 17px; line-height: 1.45; }
+  #dlgHint { margin-top: 8px; font-size: 11px; color: #8a856f; font-family: Arial, sans-serif; }
+
+  #announce { position: absolute; top: 22%; left: 0; right: 0; text-align: center; opacity: 0; }
+  #announce.show { animation: annFade 4.2s ease forwards; }
+  @keyframes annFade { 0% { opacity: 0; transform: scale(0.96); } 12% { opacity: 1; transform: scale(1); }
+    75% { opacity: 1; } 100% { opacity: 0; } }
+  #annTitle { font-size: clamp(26px, 5.4vw, 44px); letter-spacing: 0.28em; text-indent: 0.28em;
+    color: #e6e4d8; text-shadow: 0 2px 14px #000; }
+  #annSub { margin-top: 6px; font-size: 16px; color: #c9bd93; font-style: italic; text-shadow: 0 1px 6px #000; }
+
+  #toasts { position: absolute; bottom: 120px; right: 16px; text-align: right; }
+  .toast { font-size: 14px; color: #d8cfae; text-shadow: 0 1px 3px #000; margin-top: 5px;
+    animation: toastIn 3.5s ease forwards; }
+  @keyframes toastIn { 0% { opacity: 0; transform: translateX(12px); } 8% { opacity: 1; transform: none; }
+    80% { opacity: 1; } 100% { opacity: 0; } }
+
+  #vignette { position: absolute; inset: 0; pointer-events: none; opacity: 0;
+    box-shadow: inset 0 0 130px 45px rgba(150, 15, 10, 0.85); }
+  #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: #fff; }
+
+  /* overlays */
+  #paused, #death, #victory { display: none; background: rgba(6, 10, 16, 0.78); cursor: pointer; }
+  #paused h2, #death h2, #victory h2 { font-size: clamp(28px, 6vw, 52px); letter-spacing: 0.3em;
+    text-indent: 0.3em; font-weight: normal; }
+  #death h2 { color: #b03a30; }
+  #victory h2 { color: #d8b76a; }
+  .overlaySub { margin-top: 14px; color: #b9b39f; font-style: italic; }
+  #vicStats { margin-top: 22px; font-size: 16px; line-height: 1.9; color: #d8cfae; }
+  #vicBtn { margin-top: 28px; pointer-events: auto; cursor: pointer; background: none;
+    border: 1px solid rgba(216, 183, 106, 0.5); color: #d8b76a; font-family: Georgia, serif;
+    font-size: 15px; letter-spacing: 0.15em; padding: 10px 26px; border-radius: 3px; }
+  #vicBtn:hover { background: rgba(216, 183, 106, 0.12); }
+
+  /* touch controls */
+  #touchLayer { display: none; position: absolute; inset: 0; z-index: 20; }
+  body.touch #touchLayer { display: block; }
+  #stick { display: none; position: absolute; width: 110px; height: 110px; border-radius: 50%;
+    border: 2px solid rgba(230, 228, 216, 0.3); background: rgba(10, 14, 20, 0.25); }
+  #knob { position: absolute; left: 33px; top: 33px; width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(230, 228, 216, 0.4); }
+  .tbtn { position: absolute; width: 62px; height: 62px; border-radius: 50%;
+    background: rgba(10, 14, 20, 0.45); border: 2px solid rgba(230, 228, 216, 0.35);
+    color: #e6e4d8; font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 0.05em;
+    display: flex; align-items: center; justify-content: center; user-select: none;
+    -webkit-user-select: none; }
+  #btnAtk { right: 18px; bottom: 92px; }
+  #btnFire { right: 92px; bottom: 40px; }
+  #btnJump { right: 18px; bottom: 172px; }
+  #btnShout { display: none; right: 92px; bottom: 132px; border-color: rgba(127, 223, 255, 0.55);
+    color: #9fdfff; }
+  #btnE { display: none; right: 110px; bottom: 210px; border-color: rgba(216, 183, 106, 0.6);
+    color: #d8b76a; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+    "utils": "./js/utils.js?v=1",
+    "audio": "./js/audio.js?v=1",
+    "world": "./js/world.js?v=1",
+    "projectiles": "./js/projectiles.js?v=1",
+    "player": "./js/player.js?v=1",
+    "enemies": "./js/enemies.js?v=1",
+    "quests": "./js/quests.js?v=1",
+    "hud": "./js/hud.js?v=1",
+    "touch": "./js/touch.js?v=1",
+    "main": "./js/main.js?v=1"
+  }
+}
+</script>
+</head>
+<body>
+<div id="game"></div>
+
+<div id="hud">
+  <canvas id="compass" width="360" height="30"></canvas>
+  <div id="objective"></div>
+  <div id="target">
+    <div id="targetName"></div>
+    <div class="barOuter"><div id="targetFill" class="barFill" style="background:#a8332b"></div></div>
+  </div>
+  <div id="crosshair"></div>
+  <div id="hpBar" class="barOuter"><div id="hpFill" class="barFill"></div></div>
+  <div id="mgBar" class="barOuter"><div id="mgFill" class="barFill"></div></div>
+  <div id="stBar" class="barOuter"><div id="stFill" class="barFill"></div></div>
+  <div id="stats">
+    <div id="statLvl">LVL 1</div>
+    <div id="statGold">0 gold</div>
+    <div id="xpBar"><div id="xpFill"></div></div>
+  </div>
+  <div id="shoutUI">
+    <div id="shoutLabel">VUS RO DAH</div>
+    <div class="barOuter"><div id="shoutFill" class="barFill"></div></div>
+  </div>
+  <div id="prompt"></div>
+  <div id="dialog">
+    <div id="dlgName"></div>
+    <div id="dlgText"></div>
+    <div id="dlgHint">E / tap — continue</div>
+  </div>
+  <div id="announce">
+    <div id="annTitle"></div>
+    <div id="annSub"></div>
+  </div>
+  <div id="toasts"></div>
+  <div id="vignette"></div>
+  <div id="flash"></div>
+</div>
+
+<div id="touchLayer">
+  <div id="stick"><div id="knob"></div></div>
+  <div id="btnAtk" class="tbtn">ATK</div>
+  <div id="btnFire" class="tbtn">FIRE</div>
+  <div id="btnJump" class="tbtn">JUMP</div>
+  <div id="btnShout" class="tbtn">SHOUT</div>
+  <div id="btnE" class="tbtn">E</div>
+</div>
+
+<div id="paused" class="overlay">
+  <h2>PAUSED</h2>
+  <div class="overlaySub">Click to resume</div>
+</div>
+<div id="death" class="overlay">
+  <h2>YOU DIED</h2>
+  <div class="overlaySub">Click to rise again</div>
+</div>
+<div id="victory" class="overlay">
+  <h2>YOU ARE DRAGONBORN</h2>
+  <div class="overlaySub">Korvaldr the Black is slain.</div>
+  <div id="vicStats"></div>
+  <button id="vicBtn">KEEP EXPLORING</button>
+</div>
+
+<div id="title" class="overlay">
+  <h1>TINY SKYRIM</h1>
+  <div class="sub">A very small dragon problem</div>
+  <div class="controls">
+    <div class="kbd">
+      WASD — move &nbsp;·&nbsp; Mouse — look &nbsp;·&nbsp; Shift — sprint &nbsp;·&nbsp; Space — jump<br>
+      Left click — sword &nbsp;·&nbsp; Right click / F — fireball &nbsp;·&nbsp; Q — shout<br>
+      E — interact &nbsp;·&nbsp; M — mute
+    </div>
+    <div class="tap">
+      Left side — move &nbsp;·&nbsp; Right side — look<br>
+      Buttons — attack, fireball, jump, shout
+    </div>
+  </div>
+  <div class="start">CLICK TO BEGIN</div>
+  <div id="build">BUILD 1</div>
+</div>
+
+<script type="module">import 'main';</script>
+</body>
+</html>
