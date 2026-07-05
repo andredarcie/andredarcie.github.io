@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>André N. Darcie — games, experiments &amp; writing</title>
-  <meta name="description" content="Personal hub of André N. Darcie: browser games, tiny tools, interactive experiments and every article on Dev.to and TabNews.">
+  <title>André N. Darcie — software engineer</title>
+  <meta name="description" content="André N. Darcie — senior software engineer and computer scientist. Backend systems, tools, experiments, writing, and a few small games.">
   <meta name="author" content="André N. Darcie">
-  <meta property="og:title" content="André N. Darcie — games, experiments &amp; writing">
-  <meta property="og:description" content="Browser games, tiny tools, interactive experiments and writing.">
+  <meta property="og:title" content="André N. Darcie — software engineer">
+  <meta property="og:description" content="Senior software engineer and computer scientist. Projects, writing, and a few small games.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://andredarcie.github.io/">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
@@ -47,7 +47,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--sans);
-      line-height: 1.55;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; }
@@ -58,7 +58,7 @@
     }
 
     /* Header */
-    header { margin-bottom: 2.4rem; }
+    header { margin-bottom: 2.6rem; }
     .eyebrow {
       font-family: var(--mono);
       font-size: 0.72rem;
@@ -68,17 +68,17 @@
       margin: 0 0 0.9rem;
     }
     h1 {
-      font-size: clamp(1.9rem, 5.5vw, 3rem);
-      line-height: 1.05;
+      font-size: clamp(2rem, 5.5vw, 3.1rem);
+      line-height: 1.04;
       letter-spacing: -0.02em;
-      margin: 0 0 0.7rem;
+      margin: 0 0 0.8rem;
       font-weight: 700;
     }
     .lede {
-      max-width: 48ch;
+      max-width: 52ch;
       color: var(--muted);
-      font-size: clamp(1rem, 2.4vw, 1.12rem);
-      margin: 0 0 1.6rem;
+      font-size: clamp(1.02rem, 2.4vw, 1.18rem);
+      margin: 0 0 1.7rem;
     }
     .lede strong { color: var(--text); font-weight: 600; }
     .jump {
@@ -92,54 +92,19 @@
       text-decoration: none;
       color: var(--muted);
       border: 1px solid var(--border);
-      padding: 0.34rem 0.7rem;
+      padding: 0.34rem 0.72rem;
       border-radius: 999px;
       transition: color .15s, border-color .15s, background .15s;
     }
     .jump a:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-soft); }
 
-    /* Category filter */
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.45rem;
-      margin: 0 0 0.5rem;
-    }
-    .filters .flabel {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-right: 0.3rem;
-    }
-    .chip {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--muted);
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 0.36rem 0.78rem;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: color .15s, border-color .15s, background .15s;
-    }
-    .chip:hover { color: var(--text); border-color: var(--border-hover); }
-    .chip[aria-pressed="true"] {
-      color: #14140f;
-      background: var(--accent);
-      border-color: var(--accent);
-      font-weight: 600;
-    }
-
     /* Sections */
-    section { margin-top: 3.2rem; scroll-margin-top: 1.5rem; }
+    section { margin-top: 3.4rem; scroll-margin-top: 1.5rem; }
     .sec-head {
       display: flex;
       align-items: baseline;
       gap: 0.7rem;
-      margin: 0 0 1.2rem;
+      margin: 0 0 1.3rem;
     }
     .sec-head h2 {
       font-size: 0.8rem;
@@ -152,6 +117,30 @@
     }
     .sec-head .rule { flex: 1; height: 1px; background: var(--border); }
     .sec-head .count { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+
+    /* About */
+    .about p {
+      max-width: 66ch;
+      margin: 0 0 1.05rem;
+      color: var(--text);
+    }
+    .about p.lead { font-size: 1.12rem; }
+    .about p.detail { color: var(--muted); }
+    .about strong { color: var(--text); font-weight: 600; }
+
+    /* Subsection */
+    .subhead {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.9rem 0 1rem;
+    }
+    .subhead .count { color: var(--accent); }
 
     /* Card grid */
     .grid {
@@ -196,18 +185,6 @@
     }
 
     /* Writing */
-    .subhead {
-      display: flex;
-      align-items: baseline;
-      gap: 0.6rem;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 1.9rem 0 1rem;
-    }
-    .subhead .count { color: var(--accent); }
     .posts {
       list-style: none;
       margin: 0;
@@ -239,6 +216,65 @@
     }
     .posts a:hover { color: var(--accent); border-color: var(--accent); }
 
+    /* Games reveal */
+    .games-note { color: var(--muted); font-size: 0.98rem; margin: 0 0 1.3rem; max-width: 60ch; }
+    .reveal-btn {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      color: var(--text);
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.95rem 1.4rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      box-shadow: var(--shadow);
+      transition: border-color .16s, transform .16s, color .16s;
+    }
+    .reveal-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .reveal-btn .arrow { color: var(--accent); transition: transform .18s ease; }
+    .reveal-btn[aria-expanded="true"] .arrow { transform: rotate(90deg); }
+    #games-panel { margin-top: 1.6rem; }
+    #games-panel[hidden] { display: none; }
+
+    /* Category filter */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0 0 1.4rem;
+    }
+    .filters .flabel {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 0.35rem;
+    }
+    .filters .flabel b { color: var(--accent); font-weight: 600; }
+    .chip {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.36rem 0.78rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .chip:hover { color: var(--text); border-color: var(--border-hover); }
+    .chip[aria-pressed="true"] {
+      color: #14140f;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
     /* Inline link list */
     .linklist {
       display: flex;
@@ -255,7 +291,7 @@
     .linklist a:hover { color: var(--text); border-color: var(--accent); }
 
     footer {
-      margin-top: 3.6rem;
+      margin-top: 3.8rem;
       padding-top: 1.4rem;
       border-top: 1px solid var(--border);
       color: var(--muted);
@@ -275,192 +311,69 @@
     <header>
       <p class="eyebrow">andredarcie.github.io</p>
       <h1>André N. Darcie</h1>
-      <p class="lede">Senior software engineer by day, <strong>maker of small browser games and interactive experiments</strong> by night. This page is a hub for the things I build and write.</p>
+      <p class="lede">Senior software engineer and computer scientist. I build <strong>backend systems and distributed APIs</strong> for a living — and tools, experiments and the occasional small game for fun.</p>
       <nav class="jump">
-        <a href="#play">Play here</a>
-        <a href="#more">More games</a>
-        <a href="#labs">Tools &amp; labs</a>
-        <a href="#sites">Data &amp; sites</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
         <a href="#writing">Writing</a>
+        <a href="#games">Games</a>
         <a href="#links">Links</a>
       </nav>
     </header>
 
-    <div class="filters" role="group" aria-label="Filter games by category">
-      <span class="flabel">Games</span>
-      <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
-      <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
-      <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
-      <button type="button" class="chip" data-filter="shooter" aria-pressed="false">Shooter</button>
-      <button type="button" class="chip" data-filter="action" aria-pressed="false">Action</button>
-      <button type="button" class="chip" data-filter="rpg" aria-pressed="false">RPG</button>
-      <button type="button" class="chip" data-filter="narrative" aria-pressed="false">Narrative</button>
-      <button type="button" class="chip" data-filter="strategy" aria-pressed="false">Strategy</button>
-      <button type="button" class="chip" data-filter="sim" aria-pressed="false">Sim</button>
-      <button type="button" class="chip" data-filter="creative" aria-pressed="false">Creative</button>
-    </div>
-
-    <section id="play" class="game-section">
+    <section id="about" class="about">
       <div class="sec-head">
-        <h2>Play here</h2>
+        <h2>About</h2>
         <span class="rule"></span>
-        <span class="count" data-total="14">14</span>
       </div>
-      <div class="grid">
-        <a class="card" href="endless-zelda/" data-cat="adventure">
-          <div class="card-title">Endless Zelda</div>
-          <div class="card-desc">A procedurally generated, never-ending Zelda — NES demake.</div>
-          <span class="card-tag">Adventure</span>
-        </a>
-        <a class="card" href="hills/" data-cat="shooter">
-          <div class="card-title">DOOM Hills</div>
-          <div class="card-desc">First-person PSX-style shooter with an endless horde.</div>
-          <span class="card-tag">Shooter</span>
-        </a>
-        <a class="card" href="zero/" data-cat="narrative">
-          <div class="card-title">Zero To One</div>
-          <div class="card-desc">A short existential narrative told over five days.</div>
-          <span class="card-tag">Narrative</span>
-        </a>
-        <a class="card" href="zero-void/" data-cat="action">
-          <div class="card-title">Zero Void</div>
-          <div class="card-desc">An interactive experiment in the Zero universe.</div>
-          <span class="card-tag">Action</span>
-        </a>
-        <a class="card" href="tiny-skyrim/" data-cat="rpg">
-          <div class="card-title">Tiny Skyrim</div>
-          <div class="card-desc">A tiny open-world RPG that runs in the browser.</div>
-          <span class="card-tag">RPG</span>
-        </a>
-        <a class="card" href="insomnia.html" data-cat="horror">
-          <div class="card-title">Insomnia</div>
-          <div class="card-desc">Psychological horror — survive the family's sleepless night.</div>
-          <span class="card-tag">Horror</span>
-        </a>
-        <a class="card" href="brians-mansion.html" data-cat="horror">
-          <div class="card-title">Brian's Mansion</div>
-          <div class="card-desc">Horror-adventure set in a haunted mansion.</div>
-          <span class="card-tag">Horror</span>
-        </a>
-        <a class="card" href="tower/" data-cat="strategy">
-          <div class="card-title">Polygon-7 Defense</div>
-          <div class="card-desc">Minimalist tower-defense skirmish.</div>
-          <span class="card-tag">Strategy</span>
-        </a>
-        <a class="card" href="ai-platformer-trainer/" data-cat="sim">
-          <div class="card-title">AI Platformer Trainer</div>
-          <div class="card-desc">Watch NEAT evolve a neural net to beat a mini platformer.</div>
-          <span class="card-tag">Sim</span>
-        </a>
-        <a class="card" href="tiny-creatures/" data-cat="sim">
-          <div class="card-title">Tiny Creatures</div>
-          <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
-          <span class="card-tag">Sim</span>
-        </a>
-        <a class="card" href="tiny-computer/" data-cat="creative">
-          <div class="card-title">Super Tiny Computer</div>
-          <div class="card-desc">A retro virtual machine with a built-in code editor.</div>
-          <span class="card-tag">Creative</span>
-        </a>
-        <a class="card" href="tiny-voxel/" data-cat="creative">
-          <div class="card-title">Tiny Voxel</div>
-          <div class="card-desc">Minimalist voxel editor for tiny 3D scenes.</div>
-          <span class="card-tag">Creative</span>
-        </a>
-        <a class="card" href="arch-card/" data-cat="creative">
-          <div class="card-title">ArchCard</div>
-          <div class="card-desc">A card-based experiment in software architecture.</div>
-          <span class="card-tag">Creative</span>
-        </a>
-        <a class="card" href="andre-os/" data-cat="creative">
-          <div class="card-title">Andre OS</div>
-          <div class="card-desc">A tiny make-believe desktop OS in the browser.</div>
-          <span class="card-tag">Creative</span>
-        </a>
-      </div>
+      <p class="lead">I'm a software engineer and computer scientist who loves fusing the humanities with the exact sciences, and art with technology.</p>
+      <p class="detail">By day I'm a <strong>senior engineer at NTT Data</strong>, working at <strong>XP Investimentos</strong> (Brazil's largest brokerage) on the card-benefits area: high-impact financial products built on microservices and distributed APIs, with a focus on scalability, observability, resilience and software quality. Before that, at Exato Digital, I worked remotely on KYC and background-check solutions for clients like Grupo Globo, GetNinjas, QuintoAndar, B3, Stone and Huawei.</p>
+      <p class="detail">I hold a BSc in Computer Science and a postgraduate degree in Applied Data Science from PUC Minas, and spent three years in CNPq-funded scientific research. On the side I teach and consult on <strong>C# and .NET</strong>, founded the "Clube de Leitura nas Montanhas" book club, live as a digital nomad, and build the tools, experiments and small games gathered below.</p>
     </section>
 
-    <section id="more" class="game-section">
+    <section id="projects">
       <div class="sec-head">
-        <h2>More games</h2>
+        <h2>Projects</h2>
         <span class="rule"></span>
-        <span class="count" data-total="12">12</span>
+        <span class="count">27</span>
       </div>
-      <div class="grid">
-        <a class="card" href="https://andredarcie.github.io/get-out/" target="_blank" rel="noopener" data-cat="horror">
-          <div class="card-title">Get Out</div>
-          <div class="card-desc">Text horror-survival: manage a family's sanity through supernatural events.</div>
-          <span class="card-tag">Horror</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/life-is-undefined/" target="_blank" rel="noopener" data-cat="narrative">
-          <div class="card-title">Life is Undefined</div>
-          <div class="card-desc">Branching interactive-fiction game.</div>
-          <span class="card-tag">Narrative</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/the-legend-of-link/" target="_blank" rel="noopener" data-cat="adventure">
-          <div class="card-title">The Legend of Link</div>
-          <div class="card-desc">A Zelda-like adventure made in Godot.</div>
-          <span class="card-tag">Adventure</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/zero-the-hero/" target="_blank" rel="noopener" data-cat="adventure">
-          <div class="card-title">Zero The Hero</div>
-          <div class="card-desc">Zelda-like made in Godot — you can carry only one item at a time.</div>
-          <span class="card-tag">Adventure</span>
-        </a>
-        <a class="card" href="https://andredarcie.itch.io/zero-to-one" target="_blank" rel="noopener" data-cat="narrative">
-          <div class="card-title">Zero To One</div>
-          <div class="card-desc">Existential Bitsy game made for the One Room game jam.</div>
-          <span class="card-tag">Narrative</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/zero-the-cat-game/" target="_blank" rel="noopener" data-cat="shooter">
-          <div class="card-title">Zero the Cat</div>
-          <div class="card-desc">A fast-paced 2D arena shooter.</div>
-          <span class="card-tag">Shooter</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/2d-roguelike-game-unity/" target="_blank" rel="noopener" data-cat="action">
-          <div class="card-title">2D Roguelike</div>
-          <div class="card-desc">A 2D roguelike built in Unity (WebGL).</div>
-          <span class="card-tag">Action</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/kill-the-chef/" target="_blank" rel="noopener" data-cat="action">
-          <div class="card-title">Kill the Chef</div>
-          <div class="card-desc">A small arcade browser game.</div>
-          <span class="card-tag">Action</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/frostfall/" target="_blank" rel="noopener" data-cat="action">
-          <div class="card-title">Frostfall</div>
-          <div class="card-desc">A browser game experiment.</div>
-          <span class="card-tag">Action</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/godot-prototypes/" target="_blank" rel="noopener" data-cat="shooter">
-          <div class="card-title">Godot Prototypes</div>
-          <div class="card-desc">A Doom-like and other quick Godot prototypes.</div>
-          <span class="card-tag">Shooter</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/conceptual-art-unity/" target="_blank" rel="noopener" data-cat="creative">
-          <div class="card-title">Conceptual Art</div>
-          <div class="card-desc">A conceptual-art piece made in Unity.</div>
-          <span class="card-tag">Creative</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/tiny-gta/" target="_blank" rel="noopener" data-cat="action">
-          <div class="card-title">Tiny Theft Auto</div>
-          <div class="card-desc">A tiny top-down GTA-like built in the browser.</div>
-          <span class="card-tag">Action</span>
-        </a>
-      </div>
-    </section>
 
-    <section id="labs">
-      <div class="sec-head">
-        <h2>Tools, sims &amp; labs</h2>
-        <span class="rule"></span>
-        <span class="count">10</span>
-      </div>
+      <div class="subhead"><span>Tools, sims &amp; experiments</span><span class="count">17</span></div>
       <div class="grid">
         <a class="card" href="https://andredarcie.github.io/tiny-rpg-studio/" target="_blank" rel="noopener">
           <div class="card-title">Tiny RPG Studio</div>
           <div class="card-desc">Browser RPG engine: paint tiles, build rooms, share micro-stories as a URL.</div>
           <span class="card-tag">Studio</span>
+        </a>
+        <a class="card" href="tiny-computer/">
+          <div class="card-title">Super Tiny Computer</div>
+          <div class="card-desc">A retro virtual machine with a built-in code editor.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="tiny-voxel/">
+          <div class="card-title">Tiny Voxel</div>
+          <div class="card-desc">Minimalist voxel editor for tiny 3D scenes.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="arch-card/">
+          <div class="card-title">ArchCard</div>
+          <div class="card-desc">A card-based experiment in software architecture.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/arch-pull/" target="_blank" rel="noopener">
+          <div class="card-title">ArchPull</div>
+          <div class="card-desc">A software-architecture experiment.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/on-call-rota/" target="_blank" rel="noopener">
+          <div class="card-title">Divisor de Plantões</div>
+          <div class="card-desc">An on-call shift splitter tool.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="andre-os/">
+          <div class="card-title">Andre OS</div>
+          <div class="card-desc">A tiny make-believe desktop OS in the browser.</div>
+          <span class="card-tag">Toy</span>
         </a>
         <a class="card" href="https://andredarcie.github.io/evo-sim/" target="_blank" rel="noopener">
           <div class="card-title">Evo Sim</div>
@@ -472,15 +385,15 @@
           <div class="card-desc">A simulation of life on Earth, from its beginning to today.</div>
           <span class="card-tag">Sim</span>
         </a>
-        <a class="card" href="https://andredarcie.github.io/arch-pull/" target="_blank" rel="noopener">
-          <div class="card-title">ArchPull</div>
-          <div class="card-desc">A software-architecture experiment.</div>
-          <span class="card-tag">Tool</span>
+        <a class="card" href="ai-platformer-trainer/">
+          <div class="card-title">AI Platformer Trainer</div>
+          <div class="card-desc">Watch NEAT evolve a neural net to beat a mini platformer.</div>
+          <span class="card-tag">Sim</span>
         </a>
-        <a class="card" href="https://andredarcie.github.io/on-call-rota/" target="_blank" rel="noopener">
-          <div class="card-title">Divisor de Plantões</div>
-          <div class="card-desc">An on-call shift splitter tool.</div>
-          <span class="card-tag">Tool</span>
+        <a class="card" href="tiny-creatures/">
+          <div class="card-title">Tiny Creatures</div>
+          <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
+          <span class="card-tag">Sim</span>
         </a>
         <a class="card" href="https://andredarcie.github.io/claude-opus-46/" target="_blank" rel="noopener">
           <div class="card-title">Agora no Mundo · Opus</div>
@@ -502,21 +415,25 @@
           <div class="card-desc">Fraud-detection API for the Rinha de Backend 2026 challenge.</div>
           <span class="card-tag">Bench</span>
         </a>
+        <a class="card" href="https://andredarcie.github.io/conceptual-art-unity/" target="_blank" rel="noopener">
+          <div class="card-title">Conceptual Art</div>
+          <div class="card-desc">A conceptual-art piece made in Unity.</div>
+          <span class="card-tag">Art</span>
+        </a>
         <a class="card" href="https://andredarcie.github.io/Rick/" target="_blank" rel="noopener">
           <div class="card-title">Rick</div>
           <div class="card-desc">A small web experiment.</div>
           <span class="card-tag">Lab</span>
         </a>
       </div>
-    </section>
 
-    <section id="sites">
-      <div class="sec-head">
-        <h2>Data, guides &amp; sites</h2>
-        <span class="rule"></span>
-        <span class="count">9</span>
-      </div>
+      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">10</span></div>
       <div class="grid">
+        <a class="card" href="https://www.openvideogamedata.com/" target="_blank" rel="noopener">
+          <div class="card-title">OpenVideoGameData</div>
+          <div class="card-desc">Open platform to organize, enrich and discover video-game data — ~500k social views.</div>
+          <span class="card-tag">Platform</span>
+        </a>
         <a class="card" href="https://andredarcie.github.io/best-games-of-all-time-data-based/" target="_blank" rel="noopener">
           <div class="card-title">Best Games of All Time</div>
           <div class="card-desc">The definitive best games of all time, ranked from multiple data sources.</div>
@@ -625,23 +542,145 @@
       </ul>
     </section>
 
+    <section id="games">
+      <div class="sec-head">
+        <h2>Games</h2>
+        <span class="rule"></span>
+      </div>
+      <p class="games-note">Making small games is a hobby, not my main focus — but if you're curious, here they are.</p>
+      <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
+        <span class="arrow">▸</span><span class="label">Show my games (19)</span>
+      </button>
+
+      <div id="games-panel" hidden>
+        <div class="filters" role="group" aria-label="Filter games by category">
+          <span class="flabel"><b id="games-count">19</b> games · filter</span>
+          <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
+          <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
+          <button type="button" class="chip" data-filter="shooter" aria-pressed="false">Shooter</button>
+          <button type="button" class="chip" data-filter="action" aria-pressed="false">Action</button>
+          <button type="button" class="chip" data-filter="rpg" aria-pressed="false">RPG</button>
+          <button type="button" class="chip" data-filter="narrative" aria-pressed="false">Narrative</button>
+          <button type="button" class="chip" data-filter="strategy" aria-pressed="false">Strategy</button>
+        </div>
+
+        <div class="grid" id="games-grid">
+          <a class="card" href="endless-zelda/" data-cat="adventure">
+            <div class="card-title">Endless Zelda</div>
+            <div class="card-desc">A procedurally generated, never-ending Zelda — NES demake.</div>
+            <span class="card-tag">Adventure</span>
+          </a>
+          <a class="card" href="hills/" data-cat="shooter">
+            <div class="card-title">DOOM Hills</div>
+            <div class="card-desc">First-person PSX-style shooter with an endless horde.</div>
+            <span class="card-tag">Shooter</span>
+          </a>
+          <a class="card" href="insomnia.html" data-cat="horror">
+            <div class="card-title">Insomnia</div>
+            <div class="card-desc">Psychological horror — survive the family's sleepless night.</div>
+            <span class="card-tag">Horror</span>
+          </a>
+          <a class="card" href="brians-mansion.html" data-cat="horror">
+            <div class="card-title">Brian's Mansion</div>
+            <div class="card-desc">Horror-adventure set in a haunted mansion.</div>
+            <span class="card-tag">Horror</span>
+          </a>
+          <a class="card" href="zero/" data-cat="narrative">
+            <div class="card-title">Zero To One</div>
+            <div class="card-desc">A short existential narrative told over five days.</div>
+            <span class="card-tag">Narrative</span>
+          </a>
+          <a class="card" href="zero-void/" data-cat="action">
+            <div class="card-title">Zero Void</div>
+            <div class="card-desc">An interactive experiment in the Zero universe.</div>
+            <span class="card-tag">Action</span>
+          </a>
+          <a class="card" href="tiny-skyrim/" data-cat="rpg">
+            <div class="card-title">Tiny Skyrim</div>
+            <div class="card-desc">A tiny open-world RPG that runs in the browser.</div>
+            <span class="card-tag">RPG</span>
+          </a>
+          <a class="card" href="tower/" data-cat="strategy">
+            <div class="card-title">Polygon-7 Defense</div>
+            <div class="card-desc">Minimalist tower-defense skirmish.</div>
+            <span class="card-tag">Strategy</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/get-out/" target="_blank" rel="noopener" data-cat="horror">
+            <div class="card-title">Get Out</div>
+            <div class="card-desc">Text horror-survival: manage a family's sanity through supernatural events.</div>
+            <span class="card-tag">Horror</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/life-is-undefined/" target="_blank" rel="noopener" data-cat="narrative">
+            <div class="card-title">Life is Undefined</div>
+            <div class="card-desc">Branching interactive-fiction game.</div>
+            <span class="card-tag">Narrative</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/the-legend-of-link/" target="_blank" rel="noopener" data-cat="adventure">
+            <div class="card-title">The Legend of Link</div>
+            <div class="card-desc">A Zelda-like adventure made in Godot.</div>
+            <span class="card-tag">Adventure</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/zero-the-hero/" target="_blank" rel="noopener" data-cat="adventure">
+            <div class="card-title">Zero The Hero</div>
+            <div class="card-desc">Zelda-like made in Godot — you can carry only one item at a time.</div>
+            <span class="card-tag">Adventure</span>
+          </a>
+          <a class="card" href="https://andredarcie.itch.io/zero-to-one" target="_blank" rel="noopener" data-cat="narrative">
+            <div class="card-title">Zero To One <span style="opacity:.5">· itch</span></div>
+            <div class="card-desc">Existential Bitsy game made for the One Room game jam.</div>
+            <span class="card-tag">Narrative</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/zero-the-cat-game/" target="_blank" rel="noopener" data-cat="shooter">
+            <div class="card-title">Zero the Cat</div>
+            <div class="card-desc">A fast-paced 2D arena shooter.</div>
+            <span class="card-tag">Shooter</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/2d-roguelike-game-unity/" target="_blank" rel="noopener" data-cat="action">
+            <div class="card-title">2D Roguelike</div>
+            <div class="card-desc">A 2D roguelike built in Unity (WebGL).</div>
+            <span class="card-tag">Action</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/kill-the-chef/" target="_blank" rel="noopener" data-cat="action">
+            <div class="card-title">Kill the Chef</div>
+            <div class="card-desc">A small arcade browser game.</div>
+            <span class="card-tag">Action</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/frostfall/" target="_blank" rel="noopener" data-cat="action">
+            <div class="card-title">Frostfall</div>
+            <div class="card-desc">A browser game experiment.</div>
+            <span class="card-tag">Action</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/godot-prototypes/" target="_blank" rel="noopener" data-cat="shooter">
+            <div class="card-title">Godot Prototypes</div>
+            <div class="card-desc">A Doom-like and other quick Godot prototypes.</div>
+            <span class="card-tag">Shooter</span>
+          </a>
+          <a class="card" href="https://andredarcie.github.io/tiny-gta/" target="_blank" rel="noopener" data-cat="action">
+            <div class="card-title">Tiny Theft Auto</div>
+            <div class="card-desc">A tiny top-down GTA-like built in the browser.</div>
+            <span class="card-tag">Action</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section id="links">
       <div class="sec-head">
         <h2>Around the web</h2>
         <span class="rule"></span>
       </div>
       <div class="linklist">
-        <a href="https://andredarcie.itch.io/" target="_blank" rel="noopener">itch.io</a>
         <a href="https://github.com/andredarcie" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/andr%C3%A9-n-darcie-8b64817b/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://dev.to/andredarcie" target="_blank" rel="noopener">Dev.to</a>
         <a href="https://www.tabnews.com.br/andredarcie" target="_blank" rel="noopener">TabNews</a>
         <a href="https://medium.com/@andrendarcie" target="_blank" rel="noopener">Medium</a>
-        <a href="https://www.linkedin.com/in/andr%C3%A9-n-darcie-8b64817b/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://www.kaggle.com/andredarcie" target="_blank" rel="noopener">Kaggle</a>
         <a href="https://codepen.io/andredarcie" target="_blank" rel="noopener">CodePen</a>
+        <a href="https://andredarcie.itch.io/" target="_blank" rel="noopener">itch.io</a>
         <a href="https://www.instagram.com/andre.darcie/" target="_blank" rel="noopener">Instagram</a>
         <a href="https://www.tiktok.com/@andre_do_vr" target="_blank" rel="noopener">TikTok</a>
-        <a href="https://www.openvideogamedata.com/users/darcie" target="_blank" rel="noopener">OpenVideoGameData</a>
         <a href="https://letterboxd.com/andredarcie/films/" target="_blank" rel="noopener">Letterboxd</a>
         <a href="poemas.html">Poemas</a>
         <a href="pocket.html">Pocket</a>
@@ -657,21 +696,27 @@
 
   <script>
     (function () {
+      var reveal = document.getElementById('reveal');
+      var panel = document.getElementById('games-panel');
+      var label = reveal.querySelector('.label');
+      reveal.addEventListener('click', function () {
+        var willOpen = panel.hasAttribute('hidden');
+        if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+        reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (19)';
+      });
+
       var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
-      var sections = Array.prototype.slice.call(document.querySelectorAll('.game-section'));
+      var cards = Array.prototype.slice.call(document.querySelectorAll('#games-grid > [data-cat]'));
+      var countEl = document.getElementById('games-count');
       function apply(cat) {
-        sections.forEach(function (sec) {
-          var cards = Array.prototype.slice.call(sec.querySelectorAll('[data-cat]'));
-          var visible = 0;
-          cards.forEach(function (card) {
-            var show = cat === 'all' || card.getAttribute('data-cat') === cat;
-            card.style.display = show ? '' : 'none';
-            if (show) visible++;
-          });
-          sec.style.display = visible ? '' : 'none';
-          var count = sec.querySelector('.count');
-          if (count) count.textContent = cat === 'all' ? count.getAttribute('data-total') : String(visible);
+        var visible = 0;
+        cards.forEach(function (card) {
+          var show = cat === 'all' || card.getAttribute('data-cat') === cat;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
         });
+        if (countEl) countEl.textContent = String(visible);
         chips.forEach(function (c) {
           c.setAttribute('aria-pressed', c.getAttribute('data-filter') === cat ? 'true' : 'false');
         });
