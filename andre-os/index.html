@@ -930,6 +930,90 @@ body {
 }
 ::-webkit-scrollbar-button { background: #D4D0C4; border: 1px solid #888; display: block; height: 16px; }
 ::-webkit-scrollbar-corner { background: #C8C0B8; }
+
+/* ============================================================
+   MOBILE-FIRST / SMALL SCREENS
+   The desktop reflows into a scrollable icon grid, windows go
+   full-screen, and touch targets grow. The mouse/wide-viewport
+   layout above is left untouched.
+   ============================================================ */
+@media (max-width: 768px) {
+  body { height: 100dvh; }
+
+  /* Wallpaper hills stay pinned just above the taskbar */
+  #bliss-svg {
+    position: fixed;
+    bottom: 30px;
+    height: 34%;
+    z-index: 0;
+  }
+
+  /* Desktop becomes a scrollable, auto-reflowing icon grid so
+     every icon is reachable regardless of screen size */
+  #desktop {
+    height: calc(100dvh - 30px);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    align-content: start;
+    gap: 4px 0;
+    padding: 14px 6px 28px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  #desktop .desktop-icon {
+    position: static;
+    width: auto;
+    padding: 10px 3px;
+    z-index: 1;
+  }
+  #desktop .desktop-icon svg.icon-img { width: 44px; height: 44px; }
+  #desktop .desktop-icon .icon-label {
+    font-size: 12px;
+    max-width: 100%;
+    line-height: 1.25;
+  }
+
+  /* Windows: full-screen, drop the chrome that assumes a mouse */
+  .xp-window { min-width: 0; min-height: 0; }
+  .win-sidebar { display: none; }
+  .win-resize { display: none; }
+  .wc-maximize { display: none; }
+  .win-titlebar { height: 34px; }
+  .win-titlebar-text { font-size: 13px; }
+  .wc-btn { width: 30px; height: 26px; font-size: 12px; }
+  .win-toolbar { overflow-x: auto; }
+  .win-toolbar::-webkit-scrollbar { height: 0; }
+  .tb-btn { height: 30px; }
+  .addr-input { height: 26px; font-size: 16px; } /* 16px avoids iOS focus zoom */
+
+  /* Start menu spans the width and is easy to thumb */
+  #start-menu {
+    width: 100vw;
+    max-width: 100%;
+    border-radius: 8px 8px 0 0;
+  }
+  .sm-right { width: 44%; }
+  .sm-item { padding: 9px 12px; }
+  .sm-right .sm-item { padding: 8px 10px; }
+
+  /* Taskbar tap targets */
+  #start-btn { font-size: 14px; }
+  .task-btn { height: 24px; max-width: 46vw; }
+
+  /* Context menu tap targets */
+  .cm-item { padding: 9px 24px 9px 28px; }
+
+  /* Fixed-width dialogs/cards fit the viewport */
+  #proj-fallback > div { width: 92vw !important; max-width: 420px; }
+  #shutdown-overlay > div { width: 92vw !important; max-width: 380px; }
+}
+
+@media (max-width: 480px) {
+  /* Reclaim taskbar space on the smallest screens */
+  #quick-launch { display: none; }
+  .sm-right { width: 40%; }
+}
 </style>
 </head>
 <body>
@@ -2290,7 +2374,7 @@ function openWindow(name) {
   if (name === 'myGames') populateMyGames();
   if (name === 'diguifi') populateDiguifi();
   if (name === 'ie') loadIEHome();
-  if (navigator.maxTouchPoints > 0 && !win.maximized) toggleMaximize(win.id);
+  if ((navigator.maxTouchPoints > 0 || window.innerWidth <= 768) && !win.maximized) toggleMaximize(win.id);
 }
 
 function closeWindow(name) {
@@ -2338,7 +2422,7 @@ function toggleMaximize(elId) {
     el.style.left = '0';
     el.style.top = '0';
     el.style.width = '100vw';
-    el.style.height = 'calc(100vh - 30px)';
+    el.style.height = 'calc(100dvh - 30px)';
     el.style.borderRadius = '0';
     win.maximized = true;
   }
