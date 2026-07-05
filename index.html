@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>André N. Darcie — games &amp; experiments</title>
-  <meta name="description" content="Personal hub of André N. Darcie: browser games, tiny tools and interactive experiments — plus links to profiles around the web.">
+  <title>André N. Darcie — games, experiments &amp; writing</title>
+  <meta name="description" content="Personal hub of André N. Darcie: browser games, tiny tools, interactive experiments and every article on Dev.to and TabNews.">
   <meta name="author" content="André N. Darcie">
-  <meta property="og:title" content="André N. Darcie — games &amp; experiments">
-  <meta property="og:description" content="Browser games, tiny tools and interactive experiments.">
+  <meta property="og:title" content="André N. Darcie — games, experiments &amp; writing">
+  <meta property="og:description" content="Browser games, tiny tools, interactive experiments and writing.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://andredarcie.github.io/">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
@@ -41,7 +41,7 @@
       }
     }
     * { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
     body {
       margin: 0;
       background: var(--bg);
@@ -58,7 +58,7 @@
     }
 
     /* Header */
-    header { margin-bottom: 3rem; }
+    header { margin-bottom: 2.4rem; }
     .eyebrow {
       font-family: var(--mono);
       font-size: 0.72rem;
@@ -75,20 +75,20 @@
       font-weight: 700;
     }
     .lede {
-      max-width: 46ch;
+      max-width: 48ch;
       color: var(--muted);
       font-size: clamp(1rem, 2.4vw, 1.12rem);
       margin: 0 0 1.6rem;
     }
     .lede strong { color: var(--text); font-weight: 600; }
-    .toplinks {
+    .jump {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem 0.6rem;
       font-family: var(--mono);
       font-size: 0.82rem;
     }
-    .toplinks a {
+    .jump a {
       text-decoration: none;
       color: var(--muted);
       border: 1px solid var(--border);
@@ -96,10 +96,10 @@
       border-radius: 999px;
       transition: color .15s, border-color .15s, background .15s;
     }
-    .toplinks a:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-soft); }
+    .jump a:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-soft); }
 
     /* Sections */
-    section { margin-top: 3.2rem; }
+    section { margin-top: 3.2rem; scroll-margin-top: 1.5rem; }
     .sec-head {
       display: flex;
       align-items: baseline;
@@ -160,6 +160,50 @@
       border-radius: 5px;
     }
 
+    /* Writing */
+    .subhead {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.9rem 0 1rem;
+    }
+    .subhead .count { color: var(--accent); }
+    .posts {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      columns: 2;
+      column-gap: 2.4rem;
+    }
+    @media (max-width: 640px) { .posts { columns: 1; } }
+    .posts li {
+      break-inside: avoid;
+      margin: 0 0 0.6rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: baseline;
+      line-height: 1.4;
+    }
+    .posts .yr {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex: none;
+      width: 2.4rem;
+    }
+    .posts a {
+      text-decoration: none;
+      color: var(--text);
+      border-bottom: 1px solid transparent;
+      transition: color .15s, border-color .15s;
+    }
+    .posts a:hover { color: var(--accent); border-color: var(--accent); }
+
     /* Inline link list */
     .linklist {
       display: flex;
@@ -196,19 +240,20 @@
     <header>
       <p class="eyebrow">andredarcie.github.io</p>
       <h1>André N. Darcie</h1>
-      <p class="lede">Senior software engineer by day, <strong>maker of small browser games and interactive experiments</strong> by night. This page is a hub for the things I build for the web.</p>
-      <nav class="toplinks">
-        <a href="https://andredarcie.itch.io/" target="_blank" rel="noopener">itch.io</a>
-        <a href="https://github.com/andredarcie" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://dev.to/andredarcie" target="_blank" rel="noopener">Dev.to</a>
-        <a href="https://www.linkedin.com/in/andr%C3%A9-n-darcie-8b64817b/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="mailto:andrendarcie@gmail.com">Email</a>
+      <p class="lede">Senior software engineer by day, <strong>maker of small browser games and interactive experiments</strong> by night. This page is a hub for the things I build and write.</p>
+      <nav class="jump">
+        <a href="#play">Play here</a>
+        <a href="#more">More games</a>
+        <a href="#labs">Tools &amp; labs</a>
+        <a href="#sites">Data &amp; sites</a>
+        <a href="#writing">Writing</a>
+        <a href="#links">Links</a>
       </nav>
     </header>
 
-    <section>
+    <section id="play">
       <div class="sec-head">
-        <h2>Play &amp; explore</h2>
+        <h2>Play here</h2>
         <span class="rule"></span>
         <span class="count">14</span>
       </div>
@@ -286,19 +331,252 @@
       </div>
     </section>
 
-    <section>
+    <section id="more">
       <div class="sec-head">
-        <h2>Also here</h2>
+        <h2>More games</h2>
         <span class="rule"></span>
+        <span class="count">12</span>
       </div>
-      <div class="linklist">
-        <a href="poemas.html">Poemas Aleatórios</a>
-        <a href="pocket.html">Pocket — collection of amazing things</a>
-        <a href="https://github.com/andredarcie/andredarcie.github.io" target="_blank" rel="noopener">Source on GitHub</a>
+      <div class="grid">
+        <a class="card" href="https://andredarcie.github.io/get-out/" target="_blank" rel="noopener">
+          <div class="card-title">Get Out</div>
+          <div class="card-desc">Text horror-survival: manage a family's sanity through supernatural events.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/life-is-undefined/" target="_blank" rel="noopener">
+          <div class="card-title">Life is Undefined</div>
+          <div class="card-desc">Branching interactive-fiction game.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/the-legend-of-link/" target="_blank" rel="noopener">
+          <div class="card-title">The Legend of Link</div>
+          <div class="card-desc">A Zelda-like adventure made in Godot.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/zero-the-hero/" target="_blank" rel="noopener">
+          <div class="card-title">Zero The Hero</div>
+          <div class="card-desc">Zelda-like made in Godot — you can carry only one item at a time.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.itch.io/zero-to-one" target="_blank" rel="noopener">
+          <div class="card-title">Zero To One</div>
+          <div class="card-desc">Existential Bitsy game made for the One Room game jam.</div>
+          <span class="card-tag">itch.io</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/zero-the-cat-game/" target="_blank" rel="noopener">
+          <div class="card-title">Zero the Cat</div>
+          <div class="card-desc">A fast-paced 2D arena shooter.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/2d-roguelike-game-unity/" target="_blank" rel="noopener">
+          <div class="card-title">2D Roguelike</div>
+          <div class="card-desc">A 2D roguelike built in Unity (WebGL).</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/kill-the-chef/" target="_blank" rel="noopener">
+          <div class="card-title">Kill the Chef</div>
+          <div class="card-desc">A small arcade browser game.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/frostfall/" target="_blank" rel="noopener">
+          <div class="card-title">Frostfall</div>
+          <div class="card-desc">A browser game experiment.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/godot-prototypes/" target="_blank" rel="noopener">
+          <div class="card-title">Godot Prototypes</div>
+          <div class="card-desc">A Doom-like and other quick Godot prototypes.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/conceptual-art-unity/" target="_blank" rel="noopener">
+          <div class="card-title">Conceptual Art</div>
+          <div class="card-desc">A conceptual-art piece made in Unity.</div>
+          <span class="card-tag">Web</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/tiny-gta/" target="_blank" rel="noopener">
+          <div class="card-title">Tiny Theft Auto</div>
+          <div class="card-desc">A tiny top-down GTA-like built in the browser.</div>
+          <span class="card-tag">Web</span>
+        </a>
       </div>
     </section>
 
-    <section>
+    <section id="labs">
+      <div class="sec-head">
+        <h2>Tools, sims &amp; labs</h2>
+        <span class="rule"></span>
+        <span class="count">10</span>
+      </div>
+      <div class="grid">
+        <a class="card" href="https://andredarcie.github.io/tiny-rpg-studio/" target="_blank" rel="noopener">
+          <div class="card-title">Tiny RPG Studio</div>
+          <div class="card-desc">Browser RPG engine: paint tiles, build rooms, share micro-stories as a URL.</div>
+          <span class="card-tag">Studio</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/evo-sim/" target="_blank" rel="noopener">
+          <div class="card-title">Evo Sim</div>
+          <div class="card-desc">Real-time natural-selection sim: creatures evolve, mutate and compete.</div>
+          <span class="card-tag">Sim</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/tiny-evolution/" target="_blank" rel="noopener">
+          <div class="card-title">Tiny Evolution</div>
+          <div class="card-desc">A simulation of life on Earth, from its beginning to today.</div>
+          <span class="card-tag">Sim</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/arch-pull/" target="_blank" rel="noopener">
+          <div class="card-title">ArchPull</div>
+          <div class="card-desc">A software-architecture experiment.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/on-call-rota/" target="_blank" rel="noopener">
+          <div class="card-title">Divisor de Plantões</div>
+          <div class="card-desc">An on-call shift splitter tool.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/claude-opus-46/" target="_blank" rel="noopener">
+          <div class="card-title">Agora no Mundo · Opus</div>
+          <div class="card-desc">An app experiment generated with Claude Opus 4.6.</div>
+          <span class="card-tag">AI</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/gpt-codex-53/" target="_blank" rel="noopener">
+          <div class="card-title">Agora no Mundo · Codex</div>
+          <div class="card-desc">The same app experiment, generated with GPT Codex.</div>
+          <span class="card-tag">AI</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/backend-dotnet-ai-agent-benchmark/" target="_blank" rel="noopener">
+          <div class="card-title">.NET AI Agent Benchmark</div>
+          <div class="card-desc">Benchmarking AI agents on .NET backend tasks.</div>
+          <span class="card-tag">Bench</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/rinha-dev-backend-2026/" target="_blank" rel="noopener">
+          <div class="card-title">Rinha Backend 2026</div>
+          <div class="card-desc">Fraud-detection API for the Rinha de Backend 2026 challenge.</div>
+          <span class="card-tag">Bench</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/Rick/" target="_blank" rel="noopener">
+          <div class="card-title">Rick</div>
+          <div class="card-desc">A small web experiment.</div>
+          <span class="card-tag">Lab</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="sites">
+      <div class="sec-head">
+        <h2>Data, guides &amp; sites</h2>
+        <span class="rule"></span>
+        <span class="count">9</span>
+      </div>
+      <div class="grid">
+        <a class="card" href="https://andredarcie.github.io/best-games-of-all-time-data-based/" target="_blank" rel="noopener">
+          <div class="card-title">Best Games of All Time</div>
+          <div class="card-desc">The definitive best games of all time, ranked from multiple data sources.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/metacritic-must-play-dataset/" target="_blank" rel="noopener">
+          <div class="card-title">Metacritic Must-Play</div>
+          <div class="card-desc">An archive of Metacritic must-play games.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/my-life-data/" target="_blank" rel="noopener">
+          <div class="card-title">My Life Data</div>
+          <div class="card-desc">Personal archive of the books, films and games I've consumed.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/my-code-codex/" target="_blank" rel="noopener">
+          <div class="card-title">My Code Codex</div>
+          <div class="card-desc">Personal .NET development guide: patterns, architecture, best practices.</div>
+          <span class="card-tag">Guide</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/discovering-godot-course/" target="_blank" rel="noopener">
+          <div class="card-title">Discovering Godot</div>
+          <div class="card-desc">A beginner-friendly course on the fundamentals of the Godot engine.</div>
+          <span class="card-tag">Course</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/blog/" target="_blank" rel="noopener">
+          <div class="card-title">Blog</div>
+          <div class="card-desc">My personal blog.</div>
+          <span class="card-tag">Site</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/my-skills/" target="_blank" rel="noopener">
+          <div class="card-title">My Skills</div>
+          <div class="card-desc">A quick overview of my skills.</div>
+          <span class="card-tag">Site</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/my-first-web-site/" target="_blank" rel="noopener">
+          <div class="card-title">My First Website</div>
+          <div class="card-desc">My very first website — all about Google Glass.</div>
+          <span class="card-tag">Site</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/divinolandia-transparente/" target="_blank" rel="noopener">
+          <div class="card-title">Divinolândia Transparente</div>
+          <div class="card-desc">Public-spending transparency for Divinolândia (2026).</div>
+          <span class="card-tag">Site</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="writing">
+      <div class="sec-head">
+        <h2>Writing</h2>
+        <span class="rule"></span>
+        <span class="count">44</span>
+      </div>
+
+      <div class="subhead"><span>Dev.to</span><span class="count">33</span><a href="https://dev.to/andredarcie" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none;color:var(--muted)">dev.to/andredarcie ↗</a></div>
+      <ul class="posts">
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/making-of-tiny-rpg-studio-45oh" target="_blank" rel="noopener">Making of Tiny RPG Studio</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/o-minimo-que-voce-precisa-saber-para-desenvolver-software-com-ia-1dc9" target="_blank" rel="noopener">O mínimo que você precisa saber para desenvolver software com IA</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/a-ia-nao-vai-pensar-por-voce-e-isso-e-uma-coisa-boa-5jj" target="_blank" rel="noopener">A IA não vai pensar por você. E isso é uma coisa boa.</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/claude-fable-5-me-permitiu-criar-gta-em-apenas-um-prompt-j2o" target="_blank" rel="noopener">Claude Fable 5 me permitiu criar GTA em apenas um prompt.</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/ideias-valem-muito-menos-do-que-voce-imagina-pt-br-38c9" target="_blank" rel="noopener">Ideias Valem Muito Menos do Que Você Imagina</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/agentes-de-ia-exigem-tdd-o-passo-a-passo-necessario-para-aplicar-na-pratica-pt-br-p21" target="_blank" rel="noopener">Agentes de IA exigem TDD: o passo a passo para aplicar na prática</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/tdd-is-no-longer-optional-in-the-world-of-ai-agents-5b1e" target="_blank" rel="noopener">TDD Is No Longer Optional in the World of AI Agents</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/qwen35-rodando-localmente-super-rapido-e-com-otima-qualidade-1ee8" target="_blank" rel="noopener">Qwen3.5 rodando localmente: super rápido e com ótima qualidade</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/com-ia-ou-sem-ia-os-problemas-sao-os-mesmos-de-sempre-5h4" target="_blank" rel="noopener">A IA fez o trabalho de vários membros da minha equipe</a></li>
+        <li><span class="yr">2025</span><a href="https://dev.to/andredarcie/gone-home-o-jogo-que-destruiu-as-regras-e-construiu-um-novo-sentido-para-videogames-pt-br-4mfn" target="_blank" rel="noopener">Gone Home: o jogo que destruiu as regras dos videogames</a></li>
+        <li><span class="yr">2025</span><a href="https://dev.to/andredarcie/entenda-ddd-de-uma-vez-por-todas-na-implementacao-pt-br-3776" target="_blank" rel="noopener">Entenda DDD de uma vez por todas, na implementação</a></li>
+        <li><span class="yr">2025</span><a href="https://dev.to/andredarcie/como-modelar-microservicos-corretamente-pt-br-1gog" target="_blank" rel="noopener">Como modelar microserviços corretamente?</a></li>
+        <li><span class="yr">2025</span><a href="https://dev.to/andredarcie/quando-nao-usar-microservicospt-br-4him" target="_blank" rel="noopener">Quando NÃO usar microserviços</a></li>
+        <li><span class="yr">2025</span><a href="https://dev.to/andredarcie/me-obriguei-a-assistir-a-250-filmes-classicos-do-cinema-e-aqui-esta-o-que-aprendi-pt-br-31b5" target="_blank" rel="noopener">Me obriguei a assistir a 250 filmes clássicos do cinema</a></li>
+        <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/o-futuro-do-blazor-15d2" target="_blank" rel="noopener">O Futuro do Blazor</a></li>
+        <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/minha-conclusao-ao-conhecer-os-design-patterns-pt-br-37op" target="_blank" rel="noopener">Minha conclusão ao conhecer os "Design Patterns"</a></li>
+        <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/primeiros-meses-como-nomade-digital-pt-br-42g" target="_blank" rel="noopener">Primeiros Meses como Nômade Digital</a></li>
+        <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/computacao-nao-depende-da-existencia-de-computadores-pt-br-1i9c" target="_blank" rel="noopener">Computação não depende da existência de computadores</a></li>
+        <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/como-falhar-como-desenvolvedor-de-games-pt-br-3435" target="_blank" rel="noopener">Como falhar como desenvolvedor de games</a></li>
+        <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/a-diferenca-entre-desenvolvedor-junior-pleno-e-senior-na-minha-opiniao-pt-br-659" target="_blank" rel="noopener">A diferença entre desenvolvedor júnior, pleno e sênior</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/introducing-open-video-game-data-a-new-approach-to-evaluating-games-1ak5" target="_blank" rel="noopener">Introducing Open Video Game Data</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/criamos-uma-nova-forma-de-avaliar-jogos-open-video-game-data-pt-br-49j3" target="_blank" rel="noopener">Criamos uma nova forma de avaliar jogos: Open Video Game Data</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/aplicacoes-que-podem-ser-criadas-com-net-pt-br-300i" target="_blank" rel="noopener">Aplicações que podem ser criadas com .NET</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/python-in-one-page-40bl" target="_blank" rel="noopener">Python in one page</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/validando-formularios-com-blazor-pt-br-2lnb" target="_blank" rel="noopener">Validação de formulários com Blazor</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/como-ter-um-console-de-jogos-mudou-minha-vida-pt-br-3ehl" target="_blank" rel="noopener">Como ter um console de jogos trabalhando home-office mudou minha vida</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/novidades-no-net-8-preview-3-pt-br-478p" target="_blank" rel="noopener">Novidades no .NET 8 Preview 3</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/minha-jornada-de-uma-decada-pelo-net-4kme" target="_blank" rel="noopener">Minha jornada de uma década pelo .NET</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/meu-primeiro-ano-na-realidade-virtual-vr-pt-br-52m4" target="_blank" rel="noopener">Meu primeiro ano na Realidade Virtual - VR</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/como-realizar-o-deploy-de-uma-aplicacao-aspnet-no-heroku-pt-br-5cd7" target="_blank" rel="noopener">Como realizar o deploy de uma aplicação ASP.NET no Heroku</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/como-adicionar-banco-de-dados-em-uma-aplicacao-net-7-pt-br-mi9" target="_blank" rel="noopener">Como adicionar banco de dados em uma aplicação .NET 7</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/blazor-united-o-futuro-do-net-303l" target="_blank" rel="noopener">Blazor United o futuro do .NET</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/o-ciclo-de-vida-do-playstation-vr-2375" target="_blank" rel="noopener">O ciclo de vida do Playstation VR</a></li>
+      </ul>
+
+      <div class="subhead"><span>TabNews</span><span class="count">11</span><a href="https://www.tabnews.com.br/andredarcie" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none;color:var(--muted)">tabnews.com.br/andredarcie ↗</a></div>
+      <ul class="posts">
+        <li><span class="yr">2026</span><a href="https://www.tabnews.com.br/andredarcie/usar-tdd-deixou-de-ser-opcional-no-mundo-dos-agentes-de-ia" target="_blank" rel="noopener">Usar TDD deixou de ser opcional no mundo dos agentes de IA</a></li>
+        <li><span class="yr">2025</span><a href="https://www.tabnews.com.br/andredarcie/duvida-experiencia-com-microservices-e-essencial-para-um-backend-pleno-senior-com-base-no-que-o-mercado-exige" target="_blank" rel="noopener">[Dúvida] Experiência com Microservices é essencial para um backend pleno/sênior?</a></li>
+        <li><span class="yr">2024</span><a href="https://www.tabnews.com.br/andredarcie/finalmente-a-i-a-deixou-de-ser-apenas-um-chat-e-aprendeu-a-usar-o-computador" target="_blank" rel="noopener">Finalmente, a I.A. deixou de ser apenas um chat e aprendeu a usar o computador!</a></li>
+        <li><span class="yr">2024</span><a href="https://www.tabnews.com.br/andredarcie/ajude-a-votar-proposta-de-lei-para-incentivo-ao-home-office-atraves-de-beneficios-fiscais" target="_blank" rel="noopener">Ajude a votar! Proposta de Lei para Incentivo ao Home Office</a></li>
+        <li><span class="yr">2024</span><a href="https://www.tabnews.com.br/andredarcie/computacao-nao-depende-da-existencia-de-computadores" target="_blank" rel="noopener">Computação não depende da existência de computadores</a></li>
+        <li><span class="yr">2024</span><a href="https://www.tabnews.com.br/andredarcie/como-falhar-como-desenvolvedor-de-games" target="_blank" rel="noopener">Como falhar como desenvolvedor de games</a></li>
+        <li><span class="yr">2024</span><a href="https://www.tabnews.com.br/andredarcie/a-diferenca-entre-desenvolvedor-junior-pleno-e-senior-na-minha-opiniao" target="_blank" rel="noopener">A diferença entre desenvolvedor júnior, pleno e sênior na minha opinião</a></li>
+        <li><span class="yr">2023</span><a href="https://www.tabnews.com.br/andredarcie/criamos-uma-nova-forma-de-avaliar-jogos-open-video-game-data" target="_blank" rel="noopener">Pitch: Criamos uma nova forma de avaliar jogos: Open Video Game Data</a></li>
+        <li><span class="yr">2023</span><a href="https://www.tabnews.com.br/andredarcie/como-ter-um-console-de-jogos-trabalhando-home-office-mudou-minha-vida" target="_blank" rel="noopener">Como ter um console de jogos trabalhando home-office mudou minha vida</a></li>
+        <li><span class="yr">2023</span><a href="https://www.tabnews.com.br/andredarcie/meu-primeiro-ano-na-realidade-virtual-vr" target="_blank" rel="noopener">Meu primeiro ano na Realidade Virtual - VR</a></li>
+        <li><span class="yr">2023</span><a href="https://www.tabnews.com.br/andredarcie/blazor-united-o-futuro-do-net-pt-br" target="_blank" rel="noopener">Blazor United o futuro do .NET</a></li>
+      </ul>
+    </section>
+
+    <section id="links">
       <div class="sec-head">
         <h2>Around the web</h2>
         <span class="rule"></span>
@@ -307,6 +585,7 @@
         <a href="https://andredarcie.itch.io/" target="_blank" rel="noopener">itch.io</a>
         <a href="https://github.com/andredarcie" target="_blank" rel="noopener">GitHub</a>
         <a href="https://dev.to/andredarcie" target="_blank" rel="noopener">Dev.to</a>
+        <a href="https://www.tabnews.com.br/andredarcie" target="_blank" rel="noopener">TabNews</a>
         <a href="https://medium.com/@andrendarcie" target="_blank" rel="noopener">Medium</a>
         <a href="https://www.linkedin.com/in/andr%C3%A9-n-darcie-8b64817b/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://www.kaggle.com/andredarcie" target="_blank" rel="noopener">Kaggle</a>
@@ -315,6 +594,9 @@
         <a href="https://www.tiktok.com/@andre_do_vr" target="_blank" rel="noopener">TikTok</a>
         <a href="https://www.openvideogamedata.com/users/darcie" target="_blank" rel="noopener">OpenVideoGameData</a>
         <a href="https://letterboxd.com/andredarcie/films/" target="_blank" rel="noopener">Letterboxd</a>
+        <a href="poemas.html">Poemas</a>
+        <a href="pocket.html">Pocket</a>
+        <a href="https://github.com/andredarcie/andredarcie.github.io" target="_blank" rel="noopener">Site source</a>
       </div>
     </section>
 
