@@ -590,7 +590,12 @@
         <span class="count">20</span>
       </div>
       <p class="games-note">Rough experiments, game-jam entries, course work and one-off builds — kept here for the record.</p>
-      <div class="grid">
+      <button type="button" id="reveal-proto" class="reveal-btn" aria-expanded="false" aria-controls="prototypes-panel">
+        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (20)</span>
+      </button>
+
+      <div id="prototypes-panel" hidden>
+        <div class="grid">
         <a class="card" href="tiny-voxel/">
           <div class="card-title">Tiny Voxel</div>
           <div class="card-desc">Minimalist voxel editor for tiny 3D scenes.</div>
@@ -691,6 +696,7 @@
           <div class="card-desc">A Doom-like and other quick Godot prototypes.</div>
           <span class="card-tag">Shooter</span>
         </a>
+        </div>
       </div>
     </section>
 
@@ -733,6 +739,16 @@
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         label.textContent = willOpen ? 'Hide games' : 'Show my games (11)';
+      });
+
+      var revealP = document.getElementById('reveal-proto');
+      var panelP = document.getElementById('prototypes-panel');
+      var labelP = revealP.querySelector('.label');
+      revealP.addEventListener('click', function () {
+        var willOpen = panelP.hasAttribute('hidden');
+        if (willOpen) { panelP.removeAttribute('hidden'); } else { panelP.setAttribute('hidden', ''); }
+        revealP.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (20)';
       });
 
       var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
