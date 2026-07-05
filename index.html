@@ -141,6 +141,19 @@
       margin: 1.9rem 0 1rem;
     }
     .subhead .count { color: var(--accent); }
+    .langhead {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin: 2.3rem 0 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .langhead .count { color: var(--accent); font-size: 0.76rem; font-weight: 600; }
+    .langhead .rule { flex: 1; height: 1px; background: var(--border); }
 
     /* Card grid */
     .grid {
@@ -489,15 +502,23 @@
         <span class="count">44</span>
       </div>
 
-      <div class="subhead"><span>Dev.to</span><span class="count">33</span><a href="https://dev.to/andredarcie" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none;color:var(--muted)">dev.to/andredarcie ↗</a></div>
+      <div class="langhead"><span>English</span><span class="count">4</span><span class="rule"></span></div>
+      <div class="subhead"><span>Dev.to</span><span class="count">4</span><a href="https://dev.to/andredarcie" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none;color:var(--muted)">dev.to/andredarcie ↗</a></div>
       <ul class="posts">
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/making-of-tiny-rpg-studio-45oh" target="_blank" rel="noopener">Making of Tiny RPG Studio</a></li>
+        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/tdd-is-no-longer-optional-in-the-world-of-ai-agents-5b1e" target="_blank" rel="noopener">TDD Is No Longer Optional in the World of AI Agents</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/introducing-open-video-game-data-a-new-approach-to-evaluating-games-1ak5" target="_blank" rel="noopener">Introducing Open Video Game Data</a></li>
+        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/python-in-one-page-40bl" target="_blank" rel="noopener">Python in one page</a></li>
+      </ul>
+
+      <div class="langhead"><span>Português</span><span class="count">40</span><span class="rule"></span></div>
+      <div class="subhead"><span>Dev.to</span><span class="count">29</span><a href="https://dev.to/andredarcie" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none;color:var(--muted)">dev.to/andredarcie ↗</a></div>
+      <ul class="posts">
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/o-minimo-que-voce-precisa-saber-para-desenvolver-software-com-ia-1dc9" target="_blank" rel="noopener">O mínimo que você precisa saber para desenvolver software com IA</a></li>
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/a-ia-nao-vai-pensar-por-voce-e-isso-e-uma-coisa-boa-5jj" target="_blank" rel="noopener">A IA não vai pensar por você. E isso é uma coisa boa.</a></li>
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/claude-fable-5-me-permitiu-criar-gta-em-apenas-um-prompt-j2o" target="_blank" rel="noopener">Claude Fable 5 me permitiu criar GTA em apenas um prompt.</a></li>
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/ideias-valem-muito-menos-do-que-voce-imagina-pt-br-38c9" target="_blank" rel="noopener">Ideias Valem Muito Menos do Que Você Imagina</a></li>
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/agentes-de-ia-exigem-tdd-o-passo-a-passo-necessario-para-aplicar-na-pratica-pt-br-p21" target="_blank" rel="noopener">Agentes de IA exigem TDD: o passo a passo para aplicar na prática</a></li>
-        <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/tdd-is-no-longer-optional-in-the-world-of-ai-agents-5b1e" target="_blank" rel="noopener">TDD Is No Longer Optional in the World of AI Agents</a></li>
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/qwen35-rodando-localmente-super-rapido-e-com-otima-qualidade-1ee8" target="_blank" rel="noopener">Qwen3.5 rodando localmente: super rápido e com ótima qualidade</a></li>
         <li><span class="yr">2026</span><a href="https://dev.to/andredarcie/com-ia-ou-sem-ia-os-problemas-sao-os-mesmos-de-sempre-5h4" target="_blank" rel="noopener">A IA fez o trabalho de vários membros da minha equipe</a></li>
         <li><span class="yr">2025</span><a href="https://dev.to/andredarcie/gone-home-o-jogo-que-destruiu-as-regras-e-construiu-um-novo-sentido-para-videogames-pt-br-4mfn" target="_blank" rel="noopener">Gone Home: o jogo que destruiu as regras dos videogames</a></li>
@@ -511,10 +532,8 @@
         <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/computacao-nao-depende-da-existencia-de-computadores-pt-br-1i9c" target="_blank" rel="noopener">Computação não depende da existência de computadores</a></li>
         <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/como-falhar-como-desenvolvedor-de-games-pt-br-3435" target="_blank" rel="noopener">Como falhar como desenvolvedor de games</a></li>
         <li><span class="yr">2024</span><a href="https://dev.to/andredarcie/a-diferenca-entre-desenvolvedor-junior-pleno-e-senior-na-minha-opiniao-pt-br-659" target="_blank" rel="noopener">A diferença entre desenvolvedor júnior, pleno e sênior</a></li>
-        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/introducing-open-video-game-data-a-new-approach-to-evaluating-games-1ak5" target="_blank" rel="noopener">Introducing Open Video Game Data</a></li>
         <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/criamos-uma-nova-forma-de-avaliar-jogos-open-video-game-data-pt-br-49j3" target="_blank" rel="noopener">Criamos uma nova forma de avaliar jogos: Open Video Game Data</a></li>
         <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/aplicacoes-que-podem-ser-criadas-com-net-pt-br-300i" target="_blank" rel="noopener">Aplicações que podem ser criadas com .NET</a></li>
-        <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/python-in-one-page-40bl" target="_blank" rel="noopener">Python in one page</a></li>
         <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/validando-formularios-com-blazor-pt-br-2lnb" target="_blank" rel="noopener">Validação de formulários com Blazor</a></li>
         <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/como-ter-um-console-de-jogos-mudou-minha-vida-pt-br-3ehl" target="_blank" rel="noopener">Como ter um console de jogos trabalhando home-office mudou minha vida</a></li>
         <li><span class="yr">2023</span><a href="https://dev.to/andredarcie/novidades-no-net-8-preview-3-pt-br-478p" target="_blank" rel="noopener">Novidades no .NET 8 Preview 3</a></li>
