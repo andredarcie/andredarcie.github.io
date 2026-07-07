@@ -249,8 +249,8 @@
     .reveal-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
     .reveal-btn .arrow { color: var(--accent); transition: transform .18s ease; }
     .reveal-btn[aria-expanded="true"] .arrow { transform: rotate(90deg); }
-    #games-panel { margin-top: 1.6rem; }
-    #games-panel[hidden] { display: none; }
+    #games-panel, #prototypes-panel { margin-top: 1.6rem; }
+    #games-panel[hidden], #prototypes-panel[hidden] { display: none; }
 
     /* Category filter */
     .filters {
@@ -349,64 +349,34 @@
       <div class="sec-head">
         <h2>Projects</h2>
         <span class="rule"></span>
-        <span class="count">15</span>
+        <span class="count">9</span>
       </div>
 
-      <div class="subhead"><span>Tools, sims &amp; experiments</span><span class="count">8</span></div>
+      <div class="subhead"><span>Tools &amp; experiments</span><span class="count">3</span></div>
       <div class="grid">
         <a class="card" href="https://andredarcie.github.io/tiny-rpg-studio/" target="_blank" rel="noopener">
           <div class="card-title">Tiny RPG Studio</div>
-          <div class="card-desc">Browser RPG engine: paint tiles, build rooms, share micro-stories as a URL.</div>
-          <span class="card-tag">Studio</span>
-        </a>
-        <a class="card" href="tiny-computer/">
-          <div class="card-title">Super Tiny Computer</div>
-          <div class="card-desc">A retro virtual machine with a built-in code editor.</div>
-          <span class="card-tag">Tool</span>
+          <div class="card-desc">A web game engine with a large user community — over 60 games created and shared.</div>
+          <span class="card-tag">Engine</span>
         </a>
         <a class="card" href="https://andredarcie.github.io/arch-pull/" target="_blank" rel="noopener">
           <div class="card-title">ArchPull</div>
-          <div class="card-desc">A software-architecture experiment.</div>
+          <div class="card-desc">An app for learning software architecture, design patterns and best practices.</div>
           <span class="card-tag">Tool</span>
-        </a>
-        <a class="card" href="andre-os/">
-          <div class="card-title">Andre OS</div>
-          <div class="card-desc">A tiny make-believe desktop OS in the browser.</div>
-          <span class="card-tag">Toy</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/evo-sim/" target="_blank" rel="noopener">
-          <div class="card-title">Evo Sim</div>
-          <div class="card-desc">Real-time natural-selection sim: creatures evolve, mutate and compete.</div>
-          <span class="card-tag">Sim</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/tiny-evolution/" target="_blank" rel="noopener">
-          <div class="card-title">Tiny Evolution</div>
-          <div class="card-desc">A simulation of life on Earth, from its beginning to today.</div>
-          <span class="card-tag">Sim</span>
-        </a>
-        <a class="card" href="tiny-creatures/">
-          <div class="card-title">Tiny Creatures</div>
-          <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
-          <span class="card-tag">Sim</span>
         </a>
         <a class="card" href="https://andredarcie.github.io/backend-dotnet-ai-agent-benchmark/" target="_blank" rel="noopener">
           <div class="card-title">.NET AI Agent Benchmark</div>
-          <div class="card-desc">Benchmarking AI agents on .NET backend tasks.</div>
+          <div class="card-desc">Benchmarking AI agents on my work stack: .NET backend, web APIs, messaging, DDD and design patterns.</div>
           <span class="card-tag">Bench</span>
         </a>
       </div>
 
-      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">7</span></div>
+      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">6</span></div>
       <div class="grid">
         <a class="card" href="https://www.openvideogamedata.com/" target="_blank" rel="noopener">
           <div class="card-title">OpenVideoGameData</div>
           <div class="card-desc">Open platform to organize, enrich and discover video-game data — ~500k social views.</div>
           <span class="card-tag">Platform</span>
-        </a>
-        <a class="card" href="https://andredarcie.github.io/metacritic-must-play-dataset/" target="_blank" rel="noopener">
-          <div class="card-title">Metacritic Must-Play</div>
-          <div class="card-desc">An archive of Metacritic must-play games.</div>
-          <span class="card-tag">Data</span>
         </a>
         <a class="card" href="https://andredarcie.github.io/my-life-data/" target="_blank" rel="noopener">
           <div class="card-title">My Life Data</div>
@@ -425,7 +395,7 @@
         </a>
         <a class="card" href="https://andredarcie.github.io/my-skills/" target="_blank" rel="noopener">
           <div class="card-title">My Skills</div>
-          <div class="card-desc">A quick overview of my skills.</div>
+          <div class="card-desc">Skills for AI agents that apply software engineering best practices.</div>
           <span class="card-tag">Site</span>
         </a>
         <a class="card" href="https://andredarcie.github.io/divinolandia-transparente/" target="_blank" rel="noopener">
@@ -509,21 +479,27 @@
       </div>
       <p class="games-note">Making small games is a hobby of mine.</p>
       <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
-        <span class="arrow">▸</span><span class="label">Show my games (11)</span>
+        <span class="arrow">▸</span><span class="label">Show my games (10)</span>
       </button>
 
       <div id="games-panel" hidden>
         <div class="filters" role="group" aria-label="Filter games by category">
-          <span class="flabel"><b id="games-count">11</b> games · filter</span>
+          <span class="flabel"><b id="games-count">10</b> games · filter</span>
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
           <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
           <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
           <button type="button" class="chip" data-filter="shooter" aria-pressed="false">Shooter</button>
           <button type="button" class="chip" data-filter="action" aria-pressed="false">Action</button>
           <button type="button" class="chip" data-filter="narrative" aria-pressed="false">Narrative</button>
+          <button type="button" class="chip" data-filter="sim" aria-pressed="false">Sim</button>
         </div>
 
         <div class="grid" id="games-grid">
+          <a class="card" href="https://andredarcie.github.io/tiny-gta/" target="_blank" rel="noopener" data-cat="action">
+            <div class="card-title">Tiny Theft Auto</div>
+            <div class="card-desc">A real-time, online, open-world 3D game running in the browser.</div>
+            <span class="card-tag">Action</span>
+          </a>
           <a class="card" href="endless-zelda/" data-cat="adventure">
             <div class="card-title">Endless Zelda</div>
             <div class="card-desc">A procedurally generated, never-ending Zelda — NES demake.</div>
@@ -533,11 +509,6 @@
             <div class="card-title">DOOM Hills</div>
             <div class="card-desc">First-person PSX-style shooter with an endless horde.</div>
             <span class="card-tag">Shooter</span>
-          </a>
-          <a class="card" href="insomnia.html" data-cat="horror">
-            <div class="card-title">Insomnia</div>
-            <div class="card-desc">Psychological horror — survive the family's sleepless night.</div>
-            <span class="card-tag">Horror</span>
           </a>
           <a class="card" href="brians-mansion.html" data-cat="horror">
             <div class="card-title">Brian's Mansion</div>
@@ -549,35 +520,30 @@
             <div class="card-desc">A short existential narrative told over five days.</div>
             <span class="card-tag">Narrative</span>
           </a>
-          <a class="card" href="zero-void/" data-cat="action">
+          <a class="card" href="zero-void/" data-cat="shooter">
             <div class="card-title">Zero Void</div>
-            <div class="card-desc">An interactive experiment in the Zero universe.</div>
-            <span class="card-tag">Action</span>
+            <div class="card-desc">A bullet-hell spaceship shooter — an homage to the arcade classics.</div>
+            <span class="card-tag">Shooter</span>
           </a>
           <a class="card" href="https://andredarcie.github.io/get-out/" target="_blank" rel="noopener" data-cat="horror">
             <div class="card-title">Get Out</div>
             <div class="card-desc">Text horror-survival: manage a family's sanity through supernatural events.</div>
             <span class="card-tag">Horror</span>
           </a>
-          <a class="card" href="https://andredarcie.github.io/life-is-undefined/" target="_blank" rel="noopener" data-cat="narrative">
-            <div class="card-title">Life is Undefined</div>
-            <div class="card-desc">Branching interactive-fiction game.</div>
-            <span class="card-tag">Narrative</span>
-          </a>
           <a class="card" href="https://andredarcie.github.io/zero-the-hero/" target="_blank" rel="noopener" data-cat="adventure">
             <div class="card-title">Zero The Hero</div>
             <div class="card-desc">Zelda-like made in Godot — you can carry only one item at a time.</div>
             <span class="card-tag">Adventure</span>
           </a>
-          <a class="card" href="https://andredarcie.itch.io/zero-to-one" target="_blank" rel="noopener" data-cat="narrative">
-            <div class="card-title">Zero To One <span style="opacity:.5">· itch</span></div>
-            <div class="card-desc">Existential Bitsy game made for the One Room game jam.</div>
-            <span class="card-tag">Narrative</span>
+          <a class="card" href="https://andredarcie.github.io/tiny-evolution/" target="_blank" rel="noopener" data-cat="sim">
+            <div class="card-title">Tiny Evolution</div>
+            <div class="card-desc">A simulation of life on Earth, from its beginning to today.</div>
+            <span class="card-tag">Sim</span>
           </a>
-          <a class="card" href="https://andredarcie.github.io/tiny-gta/" target="_blank" rel="noopener" data-cat="action">
-            <div class="card-title">Tiny Theft Auto</div>
-            <div class="card-desc">A tiny top-down GTA-like built in the browser.</div>
-            <span class="card-tag">Action</span>
+          <a class="card" href="tiny-creatures/" data-cat="sim">
+            <div class="card-title">Tiny Creatures</div>
+            <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
+            <span class="card-tag">Sim</span>
           </a>
         </div>
       </div>
@@ -587,11 +553,11 @@
       <div class="sec-head">
         <h2>Tests &amp; prototypes</h2>
         <span class="rule"></span>
-        <span class="count">20</span>
+        <span class="count">27</span>
       </div>
       <p class="games-note">Rough experiments, game-jam entries, course work and one-off builds — kept here for the record.</p>
       <button type="button" id="reveal-proto" class="reveal-btn" aria-expanded="false" aria-controls="prototypes-panel">
-        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (20)</span>
+        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (27)</span>
       </button>
 
       <div id="prototypes-panel" hidden>
@@ -696,6 +662,41 @@
           <div class="card-desc">A Doom-like and other quick Godot prototypes.</div>
           <span class="card-tag">Shooter</span>
         </a>
+        <a class="card" href="tiny-computer/">
+          <div class="card-title">Super Tiny Computer</div>
+          <div class="card-desc">A retro virtual machine with a built-in code editor.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="andre-os/">
+          <div class="card-title">Andre OS</div>
+          <div class="card-desc">A tiny make-believe desktop OS in the browser.</div>
+          <span class="card-tag">Toy</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/evo-sim/" target="_blank" rel="noopener">
+          <div class="card-title">Evo Sim</div>
+          <div class="card-desc">Real-time natural-selection sim: creatures evolve, mutate and compete.</div>
+          <span class="card-tag">Sim</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/metacritic-must-play-dataset/" target="_blank" rel="noopener">
+          <div class="card-title">Metacritic Must-Play</div>
+          <div class="card-desc">An archive of Metacritic must-play games.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="insomnia.html">
+          <div class="card-title">Insomnia</div>
+          <div class="card-desc">Psychological horror — survive the family's sleepless night.</div>
+          <span class="card-tag">Horror</span>
+        </a>
+        <a class="card" href="https://andredarcie.github.io/life-is-undefined/" target="_blank" rel="noopener">
+          <div class="card-title">Life is Undefined</div>
+          <div class="card-desc">Branching interactive-fiction game.</div>
+          <span class="card-tag">Narrative</span>
+        </a>
+        <a class="card" href="https://andredarcie.itch.io/zero-to-one" target="_blank" rel="noopener">
+          <div class="card-title">Zero To One <span style="opacity:.5">· itch</span></div>
+          <div class="card-desc">Existential Bitsy game made for the One Room game jam.</div>
+          <span class="card-tag">Narrative</span>
+        </a>
         </div>
       </div>
     </section>
@@ -738,7 +739,7 @@
         var willOpen = panel.hasAttribute('hidden');
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        label.textContent = willOpen ? 'Hide games' : 'Show my games (11)';
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (10)';
       });
 
       var revealP = document.getElementById('reveal-proto');
@@ -748,7 +749,7 @@
         var willOpen = panelP.hasAttribute('hidden');
         if (willOpen) { panelP.removeAttribute('hidden'); } else { panelP.setAttribute('hidden', ''); }
         revealP.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (20)';
+        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (27)';
       });
 
       var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
