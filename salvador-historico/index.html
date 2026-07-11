@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Salvador Histórico — caminhe pelo passado da cidade</title>
+  <meta name="description" content="Mapa para explorar Salvador a pé e descobrir o que cada ponto histórico já foi: fortes, igrejas, largos e casas com quatro séculos de histórias.">
+  <meta name="theme-color" content="#122E56">
+  <meta property="og:title" content="Salvador Histórico">
+  <meta property="og:description" content="Caminhe por Salvador e descubra o que cada esquina já foi.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amarante&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+
+  <div id="map" aria-label="Mapa de Salvador com pontos históricos"></div>
+  <div id="pastfx" aria-hidden="true"></div>
+  <div id="flash" aria-hidden="true"></div>
+
+  <!-- Cabeçalho flutuante -->
+  <header class="topo">
+    <div class="marca">
+      <span class="marca-tile" aria-hidden="true"></span>
+      <h1>
+        <span class="nome-hoje">Salvador Histórico</span>
+        <span class="nome-outrora">São Salvador da Bahia de Todos os Santos</span>
+      </h1>
+    </div>
+    <span class="progresso" id="placarTopo" title="Lugares descobertos">0/0</span>
+  </header>
+
+  <span class="selo-outrora" aria-hidden="true">modo outrora</span>
+
+  <!-- Filtros por categoria -->
+  <nav class="filtros" aria-label="Filtrar por categoria">
+    <button class="chip" data-cat="todos" aria-pressed="true">Tudo</button>
+    <button class="chip" data-cat="igreja" aria-pressed="false">
+      <span class="ponto" style="background:#D99A28"></span>Igrejas</button>
+    <button class="chip" data-cat="forte" aria-pressed="false">
+      <span class="ponto" style="background:#BE5B34"></span>Fortes</button>
+    <button class="chip" data-cat="casa" aria-pressed="false">
+      <span class="ponto" style="background:#2B62B8"></span>Casas &amp; museus</button>
+    <button class="chip" data-cat="marco" aria-pressed="false">
+      <span class="ponto" style="background:#3F7D53"></span>Largos &amp; marcos</button>
+  </nav>
+
+  <!-- Radar do explorador -->
+  <button class="radar" id="radar" hidden>
+    <svg class="radar-seta" id="radarSeta" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2 L19 21 L12 17 L5 21 Z"/>
+    </svg>
+    <span class="radar-info">
+      <span class="radar-rotulo">Próxima descoberta</span>
+      <span class="radar-nome" id="radarNome"></span>
+      <span class="radar-dist" id="radarDist"></span>
+    </span>
+  </button>
+
+  <!-- Botões flutuantes -->
+  <div class="fabs">
+    <button class="fab fab-som" id="fabSom" aria-label="Som do passado" aria-pressed="true">
+      <svg class="icone-som" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>
+        <path d="M16.5 8.5a5 5 0 0 1 0 7"/>
+      </svg>
+      <svg class="icone-mudo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>
+        <line x1="16" y1="9" x2="21" y2="15"/>
+        <line x1="21" y1="9" x2="16" y2="15"/>
+      </svg>
+    </button>
+    <button class="fab" id="fabLista" aria-label="Abrir lista de lugares">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/>
+      </svg>
+    </button>
+    <button class="fab" id="fabPast" aria-label="Alternar modo outrora (mapa antigo)" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2h12M6 22h12M8 2v4l4 4 4-4V2M8 22v-4l4-4 4 4v4"/>
+      </svg>
+    </button>
+    <button class="fab" id="fabLocate" aria-label="Mostrar minha localização" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/>
+        <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Bottom sheet de detalhes -->
+  <section class="sheet" id="sheet" role="dialog" aria-label="Detalhes do ponto histórico">
+    <div class="fita-strip" aria-hidden="true"></div>
+    <div class="sheet-grip" id="sheetGrip" aria-hidden="true"><span></span></div>
+    <button class="sheet-close" id="sheetClose" aria-label="Fechar detalhes">×</button>
+    <div class="sheet-body" id="sheetBody"></div>
+  </section>
+
+  <!-- Painel Explorar -->
+  <section class="painel" id="painel" role="dialog" aria-label="Lista de lugares históricos">
+    <div class="painel-topo">
+      <div class="linha1">
+        <h2>Explorar</h2>
+        <button class="painel-fechar" id="painelFechar" aria-label="Fechar lista">×</button>
+      </div>
+      <p class="placar" id="placarPainel"></p>
+      <div class="ordem" role="group" aria-label="Ordenação da lista">
+        <button id="ordTempo" aria-pressed="true">Linha do tempo</button>
+        <button id="ordDist" aria-pressed="false">Perto de mim</button>
+      </div>
+      <div class="fitas" id="fitas" aria-hidden="true"></div>
+      <button class="gps-dica" id="gpsDica">Ativar localização para ver distâncias</button>
+    </div>
+    <div class="painel-lista" id="painelLista"></div>
+    <p class="painel-rodape">Salvador Histórico · BUILD 4 · Histórias resumidas de fontes públicas — horários e visitação podem variar.</p>
+  </section>
+
+  <!-- Carimbo de descoberta -->
+  <div class="carimbo" id="carimbo" aria-hidden="true">
+    <div class="carimbo-box">
+      <span class="carimbo-titulo">Descoberta</span>
+      <span class="carimbo-nome" id="carimboNome"></span>
+      <span class="carimbo-num" id="carimboNum"></span>
+    </div>
+  </div>
+
+  <!-- Modo cinema: mergulhar no passado -->
+  <div class="viver" id="viver" role="dialog" aria-label="Imersão no passado">
+    <div class="viver-foto"><img id="viverImg" alt=""></div>
+    <div class="viver-veu" aria-hidden="true"></div>
+    <div class="viver-conteudo" id="viverConteudo">
+      <p class="viver-ano rev" id="viverAno"></p>
+      <h2 class="viver-nome rev" id="viverNome"></h2>
+      <p class="viver-texto rev" id="viverTexto"></p>
+      <aside class="viver-sabia rev">
+        <h4>Você sabia?</h4>
+        <p id="viverSabia"></p>
+      </aside>
+    </div>
+    <button class="viver-fechar" id="viverFechar">← Voltar ao presente</button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Introdução (primeira visita) -->
+  <div class="intro" id="intro">
+    <div class="intro-card">
+      <div class="intro-tile" aria-hidden="true"></div>
+      <h2>Salvador Histórico</h2>
+      <p>A primeira capital do Brasil guarda quatro séculos de histórias. Caminhe pela cidade, chegue perto de cada ponto e descubra o que ele já foi — a cada lugar, uma fita se amarra.</p>
+      <button class="btn btn-primario" id="introGps">Ativar localização</button>
+      <button class="btn btn-contorno" id="introExplorar">Explorar sem GPS</button>
+      <p class="intro-build">BUILD 4</p>
+    </div>
+  </div>
+
+  <noscript>
+    <p style="position:fixed;inset:0;z-index:99;background:#F5F8FA;padding:40px 24px;font-family:sans-serif">
+      O Salvador Histórico precisa de JavaScript para mostrar o mapa. Ative o JavaScript e recarregue a página.
+    </p>
+  </noscript>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="data.js?v=4" defer></script>
+  <script src="app.js?v=4" defer></script>
+</body>
+</html>

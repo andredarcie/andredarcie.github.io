@@ -1,0 +1,12 @@
+{
+  "name": "Salvador Histórico",
+  "short_name": "Salvador Histórico",
+  "description": "Caminhe por Salvador e descubra o que cada esquina já foi.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F5F8FA",
+  "theme_color": "#122E56",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
