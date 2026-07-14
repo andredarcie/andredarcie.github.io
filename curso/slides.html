@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slides — Curso Dev do André</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --black: #1e1e1e;
+      --gray-mid: #4a4a4a;
+      --gray-light: #7a7a7a;
+      --border: #e8e4df;
+      --border-strong: #d9d3ca;
+      --bg: #f4f1ec;
+    }
+
+    html {
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--black);
+      font-family: 'IBM Plex Sans', sans-serif;
+      line-height: 1.8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 28px;
+      width: 100%;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 88px 0 56px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-light);
+      margin-bottom: 20px;
+    }
+
+    .label a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .label a:hover {
+      color: var(--black);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 8vw, 58px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: var(--gray-mid);
+      max-width: 52ch;
+    }
+
+    /* ── Deck list ── */
+    main {
+      flex: 1;
+    }
+
+    .deck-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .deck-row:focus-visible {
+      outline: 2px solid var(--black);
+      outline-offset: 4px;
+    }
+
+    .deck-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .deck-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-light);
+      margin-bottom: 10px;
+    }
+
+    .deck-row h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 27px;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      transition: opacity 0.15s;
+    }
+
+    .deck-row p {
+      font-size: 16px;
+      color: var(--gray-mid);
+      line-height: 1.7;
+      max-width: 48ch;
+    }
+
+    .deck-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--gray-light);
+      margin-top: 14px;
+    }
+
+    .deck-arrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px;
+      color: var(--black);
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .deck-row:hover .deck-arrow {
+      transform: translateX(8px);
+    }
+
+    .deck-row:hover h2 {
+      opacity: 0.6;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 0;
+    }
+
+    footer p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-light);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      header {
+        padding: 56px 0 40px;
+      }
+
+      .deck-row {
+        padding: 32px 0;
+        gap: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .deck-arrow {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <p class="label"><a href="index.html">Curso Dev do André</a></p>
+      <h1>Slides</h1>
+      <p class="tagline">As apresentações das aulas, feitas para a web. Navegue com as setas do teclado — F entra em tela cheia.</p>
+    </header>
+
+    <main>
+      <a class="deck-row" href="aula-01.html">
+        <div class="deck-info">
+          <p class="deck-label">Aula 01 · Introdução</p>
+          <h2>Engenharia de Software na Prática</h2>
+          <p>A tese do curso, o formato individual e o mapa dos quatro módulos — de Kafka a sistemas distribuídos.</p>
+          <p class="deck-meta">11 slides</p>
+        </div>
+        <span class="deck-arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="deck-row" href="avaliacao-de-nivel.html">
+        <div class="deck-info">
+          <p class="deck-label">Aula 02 · Diagnóstico</p>
+          <h2>Avaliação de Nível</h2>
+          <p>Júnior, pleno e sênior: o alcance de cada degrau — e como localizamos o seu ponto de partida.</p>
+          <p class="deck-meta">9 slides</p>
+        </div>
+        <span class="deck-arrow" aria-hidden="true">→</span>
+      </a>
+    </main>
+
+    <footer>
+      <p>© 2026 André N. Darcie</p>
+    </footer>
+  </div>
+
+</body>
+</html>
