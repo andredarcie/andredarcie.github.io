@@ -55,3 +55,12 @@ Original prompt: Pesquise todas as regras de catan na internet e crie um jogo se
 - Todos os itens divergentes do checklist do jogo-base foram corrigidos.
 - O jogo permanece um site estático sem dependências de build.
 - Nenhum TODO conhecido para o escopo de 3 jogadores do jogo-base oficial.
+
+## Correção de travamento do turno das IAs
+
+- Relato recebido: a partida permaneceu em “AGUARDE · As IAs estão jogando” sem avançar.
+- Os callbacks das IAs agora passam por um agendador único, que cancela timers obsoletos e recupera exceções.
+- Um watchdog retoma automaticamente estados de IA sem callback pendente; “Avançar agora” oferece saída manual imediata.
+- Reiniciar a partida cancela timers da ilha anterior, evitando ações atrasadas no novo jogo.
+- Validação concluída: preparação, turno humano, retomada durante IA, ciclo das duas IAs e retorno ao turno 2; nenhum erro de console.
+- Capturas desktop e mobile inspecionadas; estado visual e estado textual permaneceram consistentes.
