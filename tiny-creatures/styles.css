@@ -283,6 +283,13 @@ body.phase-watch .build-panel{display:none}
   border-bottom:2px solid #c08c46;padding-bottom:8px;
 }
 .build-tip{text-align:center;color:var(--ink-soft);font-size:13.5px;line-height:1.55}
+.build-ai{
+  display:flex;gap:8px;align-items:flex-start;text-align:left;
+  border:2px solid #b8813f;background:#fff2bd8c;padding:9px 11px;
+  color:#5c3a1e;font-size:12.5px;line-height:1.5;
+}
+.build-ai .ico{width:26px;height:26px;margin-top:1px}
+.build-ai b{color:#b72f28}
 .budget{text-align:center;border:2px solid #b8813f;background:#fff2bd8c;padding:9px;color:#7a3520;font:700 15px Georgia,serif}
 .budget span{color:#b72f28;font-size:19px}
 .budget.empty span{color:#8d1f1c}

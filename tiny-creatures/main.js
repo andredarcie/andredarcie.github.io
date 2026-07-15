@@ -54,7 +54,6 @@ const LAG_MARGIN   = 8;   // morre se ficar mais que isso atrás do líder (no c
 const EXPLORE_BONUS = 0.12; // bônus de fitness por célula nova visitada (incentiva explorar)
 const GOAL_VISION_BONUS = 14;    // passos extras concedidos enquanto o objetivo está no cone de visão
 const STEP_LIMIT_MAX = GLEN * 3; // teto da extensão de passos por geração
-const PRETRAIN_GENS = 50;        // gerações pré-treinadas (ocultas) antes da "geração 1" visível
 
 const createCreatureColor = SPRITES.createCreatureColor;
 const createCreatureName = SPRITES.createCreatureName;
@@ -133,7 +132,6 @@ let paused   = false;
 let trail    = [];
 let genEndTimer = null;
 let neat     = null;
-let silentSim = false;         // true durante o pré-treino oculto (não desenha efeitos)
 
 let phase    = 'build';        // 'build' | 'watch'
 let tool     = 'tower';        // ferramenta de construção atual
@@ -566,25 +564,17 @@ function startDefense() {
   towerHp = new Map();
   towers.forEach(k => towerHp.set(k, TOWER_HP));
   buildDots();
-  initPop();
+  initPop();                        // cérebros 100% aleatórios — sem treino escondido
   gen = 1;
   genEl.textContent = '001';
   trail = [];
   renderDefenses();
   render();
-  setStatus('TREINANDO IA...', 'evolving');
-  // Pré-treino OCULTO: roda PRETRAIN_GENS gerações sem desenhar pra já começar
-  // com cérebros bons. O setTimeout deixa o status pintar antes do trabalho síncrono.
-  setTimeout(() => {
-    if (phase !== 'watch') return;   // jogador voltou pra construção nesse meio tempo
-    pretrain(PRETRAIN_GENS);
-    trail = [];
-    gen = 1;                       // mostra "Geração 1" (mas os cérebros são da 50ª)
-    genEl.textContent = '001';
-    showGenToast(gen);
-    setStatus('GERAÇÃO 1', 'running');
-    startGen();
-  }, 30);
+  // Começa direto na GERAÇÃO 1 com cérebros aleatórios: o jogador assiste a IA
+  // aprender do zero, geração após geração, pela seleção natural.
+  showGenToast(gen);
+  setStatus('GERAÇÃO 1 · CÉREBROS ALEATÓRIOS', 'running');
+  startGen();
 }
 
 function startGen() {
@@ -633,12 +623,10 @@ function damageTower(k) {
   towerHp.set(k, Math.max(0, hp));
   if (hp <= 0) {
     liveTowers.delete(k);
-    if (!silentSim) {
-      const m = getRenderMetrics();
-      const i = k.indexOf('_'), tx = +k.slice(0, i), ty = +k.slice(i + 1);
-      const c = fxCenter(tx, ty, m);
-      spawnImpact(c.x, c.y);
-    }
+    const m = getRenderMetrics();
+    const i = k.indexOf('_'), tx = +k.slice(0, i), ty = +k.slice(i + 1);
+    const c = fxCenter(tx, ty, m);
+    spawnImpact(c.x, c.y);
   }
 }
 
@@ -789,27 +777,6 @@ function resetPositions() {
   towerHp = new Map();
   towers.forEach(k => towerHp.set(k, TOWER_HP));
   enemies = enemyStarts.map((s, i) => ({...s, kills: 0, eid: i}));
-}
-
-// Simula uma geração inteira sem render nem efeitos (usado no pré-treino).
-function runHeadlessGen() {
-  silentSim = true;
-  resetPositions();
-  while (stepN < stepLimit) {
-    const r = advance(true);
-    stepN++;
-    if (r === 'won' || r === 'over') break;
-  }
-  silentSim = false;
-}
-
-// Pré-treino OCULTO: roda N gerações (simula + evolui) pra começar com cérebros
-// já decentes. O jogador não vê e não precisa esperar as primeiras gerações.
-function pretrain(gens) {
-  for (let g = 0; g < gens; g++) {
-    runHeadlessGen();
-    evolve();
-  }
 }
 
 function onGenEnd() {
@@ -1380,7 +1347,7 @@ gridEl.addEventListener('click', onGridClick);
 const netOverlay = document.getElementById('net-overlay');
 if (netOverlay) netOverlay.addEventListener('click', (e) => { if (e.target === netOverlay) closeNetwork(); });
 setTool('tower');
-setSpeed(0);
+setSpeed(2);   // default mais rápido: sem pré-treino, as primeiras gerações passam ligeiro
 startBuild();
 
 // Interfaces de observação determinística para a automação e depuração.
