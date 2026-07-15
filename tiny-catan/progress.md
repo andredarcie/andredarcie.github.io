@@ -64,3 +64,10 @@ Original prompt: Pesquise todas as regras de catan na internet e crie um jogo se
 - Reiniciar a partida cancela timers da ilha anterior, evitando ações atrasadas no novo jogo.
 - Validação concluída: preparação, turno humano, retomada durante IA, ciclo das duas IAs e retorno ao turno 2; nenhum erro de console.
 - Capturas desktop e mobile inspecionadas; estado visual e estado textual permaneceram consistentes.
+
+## Motivos visuais para construções bloqueadas
+
+- Estrada, Assentamento, Cidade e Desenvolvimento agora exibem diretamente o motivo exato do bloqueio.
+- Motivos cobertos: recursos faltantes e respectivas quantidades, local/conexão indisponível, pré-requisito de assentamento, limite de peças e baralho esgotado.
+- O estado textual expõe a mesma disponibilidade e o mesmo motivo mostrado na interface.
+- Captura mobile da fase principal inspecionada; textos permanecem legíveis, sem overflow, e o console não apresentou erros.
