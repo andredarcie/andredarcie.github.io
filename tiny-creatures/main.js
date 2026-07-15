@@ -56,6 +56,7 @@ const ENEMY_MAX_KILLS = 2; // o inimigo (monstro) mata só isso e morre
 const TOWER_HP = 2;        // batidas de criatura até a torre ser destruída (1ª racha)
 const DEAD_PENALTY = 100; // penalidade de fitness para quem morre
 const LAG_MARGIN   = 8;   // morre se ficar mais que isso atrás do líder (no caminho)
+const LEAVE_BY     = 6;   // passos de tolerância para sair da base; ficar parado nela = morte
 const EXPLORE_BONUS = 0.12; // bônus de fitness por célula nova visitada (incentiva explorar)
 const GOAL_VISION_BONUS = 14;    // passos extras concedidos enquanto o objetivo está no cone de visão
 const STEP_LIMIT_MAX = GLEN * 3; // teto da extensão de passos por geração
@@ -320,7 +321,12 @@ function neatFitness(a) {
   let f = bfsMax - a.bestBfs + EXPLORE_BONUS * a.seen.size; // + bônus por explorar células novas
   if (a.reached) f += 100;
   if (a.dead)    f *= 0.4;
-  return Math.max(0.05, f);
+  f = Math.max(0.05, f);
+  // Punição GRAVE: quem NUNCA saiu da base (só girou no lugar; seen tem só o
+  // quartel) é inútil e não deve deixar descendentes. Fica muito abaixo do piso
+  // de todo mundo — na prática, some do pool genético.
+  if (a.seen.size <= 1) f = 0.001;
+  return f;
 }
 
 // O que a criatura "vê" num bloco: positivo = bom, negativo = perigo.
@@ -737,6 +743,17 @@ function advance(headless) {
     });
     if (target) { if (!headless) spawnShot(tx, ty, target.pos.x, target.pos.y); target.dead = true; spentTowers.add(tk); }
   });
+
+  // punição GRAVE: quem não saiu da base depois da tolerância fica girando à toa
+  // no quartel — morre na hora (seen só tem a célula de partida).
+  if (stepN >= LEAVE_BY) {
+    pop.forEach(a => {
+      if (!a.dead && !a.reached && a.seen.size <= 1) {
+        a.dead = true;
+        if (!headless) spawnDust(a.pos.x, a.pos.y);
+      }
+    });
+  }
 
   // punição: quem fica muito atrás do líder (no caminho até a espada) é eliminado
   if (stepN >= 4) {
