@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crown Circuit — Cerco Evolutivo</title>
-<link rel="stylesheet" href="styles.css?v=20">
+<title>Crown Circuit — Evolutionary Siege</title>
+<link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body class="phase-build">
 
-<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <main id="main-content">
 
   <!-- CENÁRIO: ocupa a tela toda. A ilha fica centrada e a água preenche o resto. -->
-  <div class="stage" aria-label="Grade de simulação">
+  <div class="stage" aria-label="Simulation grid">
     <div class="board">
       <div id="terrain" class="terrain" aria-hidden="true"></div>
       <div class="play">
         <div id="grid" class="grid"
              role="img"
-             aria-label="Grade 10×10: as criaturas partem do quartel na base e tentam alcançar o castelo no topo">
+             aria-label="10×10 grid: the creatures leave the barracks at the base and try to reach the castle at the top">
         </div>
         <div id="vision" class="vision-layer" aria-hidden="true"></div>
         <div id="enemies" class="enemies-layer" aria-hidden="true"></div>
@@ -30,104 +30,108 @@
   </div>
 
   <!-- JANELA FLUTUANTE: arrasta pela fita, minimiza no botão (ou tecla H). -->
-  <section class="hud" id="hud" aria-label="Painel de comando">
+  <section class="hud" id="hud" aria-label="Command panel">
     <div class="hud-bar" id="hud-bar">
       <span class="ico ico-swords" aria-hidden="true"></span>
       <span class="hud-title">Crown Circuit</span>
-      <small class="build-tag">build 20</small>
+      <small class="build-tag">build 24</small>
       <button class="hud-min" id="hud-min" onclick="toggleHud()"
               aria-expanded="true" aria-controls="hud-body"
-              aria-label="Minimizar painel de comando">▾</button>
+              aria-label="Minimize command panel">▾</button>
     </div>
 
     <div class="hud-body" id="hud-body">
 
-    <div class="phase-wrap" role="progressbar" aria-label="Progresso da geração" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0" id="phase-bar">
+    <div class="phase-wrap" role="progressbar" aria-label="Generation progress" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0" id="phase-bar">
       <div class="phase-track"><div id="phase" class="phase-fill"></div></div>
     </div>
-    <div id="status" class="status-line running" role="status" aria-live="polite" aria-atomic="true">INICIALIZANDO...</div>
+    <div id="status" class="status-line running" role="status" aria-live="polite" aria-atomic="true">INITIALIZING...</div>
+    <div id="coach" class="coach" role="note" aria-live="polite"></div>
 
     <div class="side">
 
   <!-- BRAIN (cérebro do líder, tempo real) -->
-  <aside class="brain-panel" aria-label="Cérebro do líder em tempo real">
-    <div class="build-hdr"><span class="ico ico-info" aria-hidden="true"></span>Estratégia do líder</div>
+  <aside class="brain-panel" aria-label="Leader's brain in real time">
+    <div class="build-hdr"><span class="ico ico-info" aria-hidden="true"></span>Leader's strategy</div>
     <div class="brain-sub" id="brain-sub">—</div>
-    <div class="brain-live" id="brain-live"><div class="brain-empty">Inicie a defesa para ver o cérebro do líder em tempo real.</div></div>
+    <div class="brain-live" id="brain-live"><div class="brain-empty">Start the defense to watch the leader's brain in real time.</div></div>
   </aside>
 
   <!-- PANEL -->
-  <aside class="panel" aria-label="Painel de estatísticas">
+  <aside class="panel" aria-label="Statistics panel">
 
-    <div class="card" aria-label="Geração atual">
-      <div class="card-label" id="lbl-gen">Geração</div>
+    <div class="card" aria-label="Current generation">
+      <div class="card-label" id="lbl-gen">Generation</div>
       <div id="gen-val" class="card-val" aria-labelledby="lbl-gen" aria-live="polite">001</div>
     </div>
 
-    <div class="card" aria-label="Melhor distância até o castelo">
-      <div class="card-label" id="lbl-dist">Melhor distância</div>
+    <div class="card" aria-label="Best distance to the castle">
+      <div class="card-label" id="lbl-dist">Best distance</div>
       <div id="dist-val" class="card-val" aria-labelledby="lbl-dist" aria-live="polite">—</div>
+      <div class="card-hint">their fitness · lower is better</div>
     </div>
 
-    <div class="card" aria-label="Passo atual">
-      <div class="card-label" id="lbl-step">Passo</div>
+    <div class="card" aria-label="Current step">
+      <div class="card-label" id="lbl-step">Step</div>
       <div id="step-val" class="card-val small" aria-labelledby="lbl-step" aria-live="polite">0 / 80</div>
     </div>
 
-    <div id="pop-list" class="pop-list" role="list" aria-label="Ranking de criaturas por distância">
-      <div class="list-hdr" role="heading" aria-level="2">Companhia invasora</div>
+    <div id="pop-list" class="pop-list" role="list" aria-label="Creature ranking by distance">
+      <div class="list-hdr" role="heading" aria-level="2">Invading company</div>
     </div>
 
-    <div class="controls" role="group" aria-label="Controles de simulação">
-      <div class="speed-row" role="group" aria-label="Velocidade da simulação">
-        <span aria-hidden="true">VEL</span>
-        <button class="sdot" onclick="setSpeed(0)" id="s0" aria-label="Velocidade 1 — muito lenta" aria-pressed="false"></button>
-        <button class="sdot" onclick="setSpeed(1)" id="s1" aria-label="Velocidade 2 — lenta"       aria-pressed="false"></button>
-        <button class="sdot" onclick="setSpeed(2)" id="s2" aria-label="Velocidade 3 — média"       aria-pressed="false"></button>
-        <button class="sdot" onclick="setSpeed(3)" id="s3" aria-label="Velocidade 4 — rápida"      aria-pressed="false"></button>
-        <button class="sdot" onclick="setSpeed(4)" id="s4" aria-label="Velocidade 5 — muito rápida" aria-pressed="false"></button>
-        <button class="sdot" onclick="setSpeed(5)" id="s5" aria-label="Velocidade 6 — máxima"      aria-pressed="false"></button>
+    <div class="controls" role="group" aria-label="Simulation controls">
+      <div class="speed-row" role="group" aria-label="Simulation speed">
+        <span aria-hidden="true">SPD</span>
+        <button class="sdot" onclick="setSpeed(0)" id="s0" aria-label="Speed 1 — very slow" aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(1)" id="s1" aria-label="Speed 2 — slow"       aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(2)" id="s2" aria-label="Speed 3 — medium"     aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(3)" id="s3" aria-label="Speed 4 — fast"       aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(4)" id="s4" aria-label="Speed 5 — very fast"  aria-pressed="false"></button>
+        <button class="sdot" onclick="setSpeed(5)" id="s5" aria-label="Speed 6 — maximum"    aria-pressed="false"></button>
       </div>
-      <button class="btn" id="pause-btn" onclick="togglePause()" aria-pressed="false">PAUSAR</button>
-      <button class="btn" onclick="reset()"><span class="ico ico-back" aria-hidden="true"></span>CONSTRUÇÃO</button>
+      <button class="btn" id="pause-btn" onclick="togglePause()" aria-pressed="false">PAUSE</button>
+      <button class="btn" onclick="reset()"><span class="ico ico-back" aria-hidden="true"></span>BUILD</button>
+      <button class="btn" onclick="openGuide()"><span class="ico ico-info" aria-hidden="true"></span>HOW IT WORKS</button>
     </div>
 
   </aside>
 
   <!-- BUILD PANEL (fase 1) -->
-  <aside class="build-panel" aria-label="Construção da defesa">
-    <div class="build-hdr"><span class="ico ico-hammer" aria-hidden="true"></span>Fase I · Fortifique a coroa</div>
-    <p class="build-tip">Erga as defesas entre o quartel invasor e o castelo. Clique ou arraste no campo; depois observe a companhia aprender a invadir.</p>
+  <aside class="build-panel" aria-label="Defense building">
+    <div class="build-hdr"><span class="ico ico-hammer" aria-hidden="true"></span>Phase I · Fortify the crown</div>
+    <p class="build-tip">Raise your defenses between the invaders' barracks and the castle. Click or drag on the field; then watch the company learn to break through.</p>
     <p class="build-ai">
       <span class="ico ico-info" aria-hidden="true"></span>
-      <span>Os invasores começam com o <b>cérebro 100% aleatório</b> &mdash; não há treino escondido. A cada geração, quem chega mais perto do castelo se reproduz e os piores desaparecem: é a <b>seleção natural</b> ensinando a IA a invadir, do zero, geração após geração. As primeiras gerações passam <b>aceleradas, como um filme</b>; depois o ritmo abranda para você acompanhar.</span>
+      <span>The invaders start with a <b>100% random brain</b> &mdash; there is no hidden training. Each generation, whoever gets closest to the castle reproduces and the worst ones disappear: it is <b>natural selection</b> teaching the AI to invade, from scratch, generation after generation. The first generations run <b>fast-forward, like a movie</b>; then the pace slows down so you can follow along.</span>
     </p>
-    <div id="budget" class="budget">Guarnições <span id="budget-left">–</span> / <span id="budget-total">–</span></div>
-    <div class="tool-grid" role="group" aria-label="Ferramentas de construção">
+    <button class="btn" onclick="openGuide()"><span class="ico ico-info" aria-hidden="true"></span>How evolution works</button>
+    <div id="budget" class="budget">Garrisons <span id="budget-left">–</span> / <span id="budget-total">–</span></div>
+    <div class="tool-grid" role="group" aria-label="Build tools">
       <button class="tool on" id="tool-tower" onclick="setTool('tower')" aria-pressed="true">
         <span class="tool-ico tower" aria-hidden="true"></span>
-        <span class="tool-name">Torre de vigia</span>
-        <span class="tool-desc">bloqueia · 1 flecha</span>
+        <span class="tool-name">Watchtower</span>
+        <span class="tool-desc">blocks · 1 arrow</span>
       </button>
       <button class="tool" id="tool-trap" onclick="setTool('trap')" aria-pressed="false">
         <span class="tool-ico trap" aria-hidden="true"></span>
-        <span class="tool-name">Barricada</span>
-        <span class="tool-desc">derruba 1 e quebra</span>
+        <span class="tool-name">Barricade</span>
+        <span class="tool-desc">downs 1 and breaks</span>
       </button>
       <button class="tool" id="tool-enemy" onclick="setTool('enemy')" aria-pressed="false">
         <span class="tool-ico enemy" aria-hidden="true"></span>
-        <span class="tool-name">Sentinela</span>
-        <span class="tool-desc">persegue · derruba 2</span>
+        <span class="tool-name">Sentinel</span>
+        <span class="tool-desc">chases · downs 2</span>
       </button>
       <button class="tool" id="tool-erase" onclick="setTool('erase')" aria-pressed="false">
         <span class="tool-ico erase" aria-hidden="true"></span>
-        <span class="tool-name">Apagar</span>
-        <span class="tool-desc">remove peça</span>
+        <span class="tool-name">Erase</span>
+        <span class="tool-desc">removes a piece</span>
       </button>
     </div>
-    <button class="btn" onclick="clearDefenses()"><span class="ico ico-x" aria-hidden="true"></span>LIMPAR TUDO</button>
-    <button class="btn" id="copy-btn" onclick="copyMap()"><span class="ico ico-wood" aria-hidden="true"></span>COPIAR MAPA</button>
-    <button class="btn btn-red" id="start-btn" onclick="startDefense()"><span class="ico ico-swords" aria-hidden="true"></span>COMEÇAR O CERCO</button>
+    <button class="btn" onclick="clearDefenses()"><span class="ico ico-x" aria-hidden="true"></span>CLEAR ALL</button>
+    <button class="btn" id="copy-btn" onclick="copyMap()"><span class="ico ico-wood" aria-hidden="true"></span>COPY MAP</button>
+    <button class="btn btn-red" id="start-btn" onclick="startDefense()"><span class="ico ico-swords" aria-hidden="true"></span>START THE SIEGE</button>
   </aside>
 
     </div><!-- .side -->
@@ -145,7 +149,7 @@
   <div class="overlay-box">
     <div class="overlay-title" id="ov-title"></div>
     <div class="overlay-sub" id="ov-desc"></div>
-    <button class="btn btn-red" id="ov-btn" onclick="backToBuild()"><span class="ico ico-back" aria-hidden="true"></span>NOVA DEFESA</button>
+    <button class="btn btn-red" id="ov-btn" onclick="backToBuild()"><span class="ico ico-back" aria-hidden="true"></span>NEW DEFENSE</button>
   </div>
 </div>
 
@@ -153,30 +157,51 @@
 <div class="rank-overlay" id="net-overlay" role="dialog" aria-modal="true" aria-labelledby="net-title">
   <div class="rank-box net-box">
     <div class="rank-header">
-      <h2 class="rank-title" id="net-title">Rede neural</h2>
+      <h2 class="rank-title" id="net-title">Neural network</h2>
     </div>
     <div class="net-sub" id="net-sub"></div>
     <div class="net-diagram" id="net-diagram"></div>
     <div class="net-legend" aria-hidden="true">
-      <span><i class="sw goal"></i> castelo</span>
-      <span><i class="sw wall"></i> torre</span>
-      <span><i class="sw enemy"></i> sentinela</span>
-      <span><i class="sw trap"></i> barricada</span>
-      <span><i class="sw free"></i> livre</span>
-      <span><i class="ln pos"></i> peso +</span>
-      <span><i class="ln neg"></i> peso −</span>
-      <span><i class="ln off"></i> desativada · espessura = força</span>
+      <span><i class="sw goal"></i> castle</span>
+      <span><i class="sw wall"></i> tower</span>
+      <span><i class="sw enemy"></i> sentinel</span>
+      <span><i class="sw trap"></i> barricade</span>
+      <span><i class="sw free"></i> free</span>
+      <span><i class="ln pos"></i> weight +</span>
+      <span><i class="ln neg"></i> weight −</span>
+      <span><i class="ln off"></i> disabled · thickness = strength</span>
     </div>
     <div class="rank-footer">
-      <button class="btn" id="net-close" onclick="closeNetwork()"><span class="ico ico-x" aria-hidden="true"></span>FECHAR</button>
-      <button class="btn btn-red" id="net-next" onclick="nextMatch()" style="display:none"><span class="ico ico-swords" aria-hidden="true"></span>PRÓXIMA PARTIDA</button>
+      <button class="btn" id="net-close" onclick="closeNetwork()"><span class="ico ico-x" aria-hidden="true"></span>CLOSE</button>
+      <button class="btn btn-red" id="net-next" onclick="nextMatch()" style="display:none"><span class="ico ico-swords" aria-hidden="true"></span>NEXT MATCH</button>
     </div>
   </div>
 </div>
 
-<script src="sprites.js?v=20"></script>
-<script src="icons.js?v=20"></script>
-<script src="neat.js?v=20"></script>
-<script src="main.js?v=20"></script>
+<!-- GUIA: COMO A EVOLUÇÃO FUNCIONA -->
+<div class="rank-overlay" id="guide-overlay" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+  <div class="rank-box guide-box">
+    <div class="rank-header">
+      <h2 class="rank-title" id="guide-title">How evolution works</h2>
+    </div>
+    <p class="guide-lead">Nobody programs these creatures. They start with random brains and get better on their own, through four simple rules repeated over and over:</p>
+    <ol class="guide-steps">
+      <li><b>Variation</b> — every creature is born with a different brain: a tiny neural network wired at random. No two think alike.</li>
+      <li><b>Selection</b> — each generation, the ones that get closest to the castle are kept; the rest are removed. That distance is their <b>fitness</b>.</li>
+      <li><b>Heredity</b> — the survivors become parents. Their brains are copied and combined, so good wiring is passed on to the next generation.</li>
+      <li><b>Mutation</b> — copies are never perfect: weights drift, and new neurons and links appear at random. Most changes hurt; the rare ones that help survive.</li>
+      <li><b>Repeat</b> — do this for many generations and behavior no one designed emerges: the swarm learns to dodge towers and home in on the sword.</li>
+    </ol>
+    <p class="guide-note"><b>You are the environment.</b> The defenses you build are the selection pressure. Change them and evolution adapts to the new challenge — exactly like life adapts to its surroundings. There is no hidden training and no goal in any single brain: only survival of whoever happens to do a little better.</p>
+    <div class="rank-footer">
+      <button class="btn btn-red" onclick="closeGuide()"><span class="ico ico-x" aria-hidden="true"></span>GOT IT</button>
+    </div>
+  </div>
+</div>
+
+<script src="sprites.js?v=24"></script>
+<script src="icons.js?v=24"></script>
+<script src="neat.js?v=24"></script>
+<script src="main.js?v=24"></script>
 </body>
 </html>

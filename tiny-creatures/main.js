@@ -138,6 +138,8 @@ let paused   = false;
 let trail    = [];
 let genEndTimer = null;
 let neat     = null;
+let bestEverDist = Infinity;   // menor distância já alcançada (didático: "recorde")
+let stagnantGens = 0;          // gerações seguidas sem novo recorde (didático: "platô")
 
 let phase    = 'build';        // 'build' | 'watch'
 let tool     = 'tower';        // ferramenta de construção atual
@@ -170,6 +172,7 @@ const listEl   = document.getElementById('pop-list');
 const overlayEl= document.getElementById('overlay');
 const pauseBtn = document.getElementById('pause-btn');
 const toastEl  = document.getElementById('gen-toast');
+const coachEl  = document.getElementById('coach');   // narração didática (voz do "professor")
 
 // ══ BUILD DOM ════════════════════════════════════
 // A ilha inteira (TERRAIN×TERRAIN): praia nas bordas, grama no miolo. Fica atrás
@@ -213,9 +216,9 @@ function buildGrid() {
       c.id = 'c' + key(x, y);
       if (x===GOAL.x && y===GOAL.y) {
         c.classList.add('goal-cell');
-        c.innerHTML = '<span class="goal-mark" aria-label="Castelo — objetivo a defender"></span>';
+        c.innerHTML = '<span class="goal-mark" aria-label="Castle — the objective to defend"></span>';
       } else if (x===START.x && y===START.y) {
-        c.innerHTML = '<span class="start-mark" aria-label="Quartel dos invasores"></span>';
+        c.innerHTML = '<span class="start-mark" aria-label="Barracks of the invaders"></span>';
       } else {
         const d = decorAt(x, y);
         if (d) c.innerHTML = `<span class="decor decor-${d.kind} v${d.variant}" aria-hidden="true"></span>`;
@@ -348,15 +351,22 @@ function sensors(a) {
   for (const c of CONE) {                                  // cone (olhar à frente, 2 de alcance)
     s.push(cellSense(x + v.fx*c.f + v.px*c.l, y + v.fy*c.f + v.py*c.l));
   }
-  // Faro DIRECIONAL: a proximidade do castelo em CADA vizinha relativa ao rosto
-  // (frente, esquerda, direita, trás). 1 = castelo ali; ~0 = longe. O campo-custo
-  // já contorna torres/barricadas e foge da linha de tiro, então o gradiente entre
-  // as quatro direções diz PARA QUE LADO virar — é o que a rede aprende a seguir.
-  // Parede/fora da grade não têm cheiro: 0.
+  // Faro DELTA-relativo: para CADA vizinha relativa ao rosto (frente, esquerda,
+  // direita, trás), quanto ela MELHORA (+) ou PIORA (−) o custo até o castelo em
+  // relação à célula ATUAL. Centrado em zero: +≈ladeira abaixo rumo à espada,
+  // −≈ladeira acima, ~0 lateral. O campo-custo já contorna torres/barricadas e
+  // foge da linha de tiro, então esse delta diz PARA QUE LADO virar — é o que a
+  // rede aprende a seguir. Antes era a proximidade ABSOLUTA (bfsMax-dist)/bfsMax,
+  // que longe do castelo dava quatro valores altos e quase iguais (contraste
+  // fraco); o delta dá o mesmo ±0.5 de contraste em qualquer ponto do mapa. Saltos
+  // de perigo (entrar no alcance de torre) saturam em ±1. Parede/fora da grade: 0.
   const rel = [f, TURN_L[f], TURN_R[f], TURN_B[f]];         // frente, esquerda, direita, trás
-  const scent = (cx, cy) =>
-    (cx < 0 || cy < 0 || cx > MAXI || cy > MAXI || towers.has(key(cx, cy)))
-      ? 0 : (bfsMax - bfsDistOf(cx, cy)) / bfsMax;
+  const here = bfsDistOf(x, y);
+  const scent = (cx, cy) => {
+    if (cx < 0 || cy < 0 || cx > MAXI || cy > MAXI || towers.has(key(cx, cy))) return 0;
+    const d = here - bfsDistOf(cx, cy);                     // >0: vizinha mais perto do objetivo
+    return Math.max(-1, Math.min(1, d / 2));                // normaliza e satura
+  };
   rel.forEach(d => s.push(scent(x + DIRVEC[d].fx, y + DIRVEC[d].fy)));
   s.push(a.brain.seed || 0);                                // traço "aleatório" fixo por criatura (sim. determinística)
   return s;
@@ -475,14 +485,14 @@ function buildScenarioText() {
   const coords = (set) => [...set].map(k => { const i = k.indexOf('_'); return '(' + k.slice(0, i) + ',' + k.slice(i + 1) + ')'; });
   const t = coords(towers), a = coords(traps), e = enemyStarts.map(p => '(' + p.x + ',' + p.y + ')');
   return [
-    'Tiny Creatures - cenario ' + N + 'x' + N + ' (y=0 topo/espada, y=' + MAXI + ' base)',
+    'Tiny Creatures - scenario ' + N + 'x' + N + ' (y=0 top/sword, y=' + MAXI + ' base)',
     '',
     ...rows,
     '',
-    'Legenda: *=espada  S=base  T=torre  A=armadilha  E=inimigo  .=livre',
-    'Torres (' + t.length + '): ' + (t.join(' ') || '-'),
-    'Armadilhas (' + a.length + '): ' + (a.join(' ') || '-'),
-    'Inimigos (' + e.length + '): ' + (e.join(' ') || '-'),
+    'Legend: *=sword  S=base  T=tower  A=trap  E=enemy  .=free',
+    'Towers (' + t.length + '): ' + (t.join(' ') || '-'),
+    'Traps (' + a.length + '): ' + (a.join(' ') || '-'),
+    'Enemies (' + e.length + '): ' + (e.join(' ') || '-'),
   ].join('\n');
 }
 
@@ -492,7 +502,7 @@ function flashCopy() {
   const b = document.getElementById('copy-btn');
   if (!b) return;
   if (!b.dataset.html) b.dataset.html = b.innerHTML;
-  b.innerHTML = '<span class="ico ico-play" aria-hidden="true"></span>COPIADO!';
+  b.innerHTML = '<span class="ico ico-play" aria-hidden="true"></span>COPIED!';
   clearTimeout(flashCopy._t);
   flashCopy._t = setTimeout(() => { b.innerHTML = b.dataset.html; }, 1300);
 }
@@ -510,7 +520,7 @@ function fallbackCopy(text) {
     document.body.removeChild(ta);
     flashCopy();
   } catch (err) {
-    window.prompt('Copie o cenário (Ctrl+C, Enter):', text);
+    window.prompt('Copy the scenario (Ctrl+C, Enter):', text);
   }
 }
 
@@ -543,7 +553,7 @@ function startBuild() {
   document.body.classList.add('phase-build');
   overlayEl.style.display = 'none';
   if (toastEl) toastEl.classList.remove('show');
-  pauseBtn.textContent = 'PAUSAR';
+  pauseBtn.textContent = 'PAUSE';
   pauseBtn.classList.remove('active');
 
   pop = [];
@@ -561,7 +571,8 @@ function startBuild() {
   renderDefenses();
   renderEnemies(enemyStarts);
   updateBudget();
-  setStatus('CONSTRUÇÃO · POSICIONE AS DEFESAS', 'building');
+  setStatus('BUILD · PLACE YOUR DEFENSES', 'building');
+  setCoach('<b>You are the environment.</b> Build defenses between the barracks and the castle, then press <b>Start the siege</b>. The invaders begin knowing nothing — you will watch them learn to break through by natural selection alone.');
 }
 
 // ══ FASE 2 · ASSISTIR ════════════════════════════
@@ -584,7 +595,10 @@ function startDefense() {
   // Começa direto na GERAÇÃO 1 com cérebros aleatórios: o jogador assiste a IA
   // aprender do zero, geração após geração, pela seleção natural.
   showGenToast(gen);
-  setStatus('GERAÇÃO 1 · CÉREBROS ALEATÓRIOS', 'running');
+  setStatus('GENERATION 1 · RANDOM BRAINS', 'running');
+  bestEverDist = Infinity;
+  stagnantGens = 0;
+  setCoach('<b>Generation 1.</b> Every brain is 100% random, so most creatures wander, spin in place, or freeze. That is fine: evolution needs a crowd of failures to pick the rare lucky ones from.');
   startGen();
 }
 
@@ -812,7 +826,11 @@ function resetPositions() {
 function onGenEnd() {
   const bestD = Math.min(...pop.map(a => dist(a.pos)));
   const survivors = pop.filter(a => !a.dead).length;
-  setStatus(`GEN ${gen} · MELHOR ${bestD} · VIVAS ${survivors}`, 'evolving');
+  setStatus(`GEN ${gen} · BEST ${bestD} · ALIVE ${survivors}`, 'evolving');
+  // marcos didáticos: recorde (nova melhor distância) e platô (gerações sem melhora)
+  const record = bestD < bestEverDist;
+  if (record) { bestEverDist = bestD; stagnantGens = 0; } else { stagnantGens++; }
+  if (!inFastForward()) narrateGenEnd(bestD, record);   // no fast-forward a narração fica muda
   // Sem limite de gerações: evolui pra sempre até a IA alcançar a espada.
   genEndTimer = setTimeout(() => {
     evolve();
@@ -825,8 +843,14 @@ function continueToNextGeneration() {
   genEl.textContent = String(gen).padStart(3,'0');
   showGenToast(gen);
   setStatus(inFastForward()
-    ? `GERAÇÃO ${gen} · ACELERANDO A EVOLUÇÃO ⏩`
-    : `GERAÇÃO ${gen}`, 'running');
+    ? `GENERATION ${gen} · FAST-FORWARDING EVOLUTION ⏩`
+    : `GENERATION ${gen}`, 'running');
+  if (inFastForward()) {
+    setCoach(`<b>Fast-forwarding</b> the first ${FAST_GENS} generations — the early flailing is normal. Good instincts only build up after many rounds of selection.`);
+  } else if (gen === FAST_GENS + 1) {
+    setCoach('<b>Normal speed now.</b> The chaos is over: from here each generation inherits the best brains of the last one, so watch the improvement pile up round by round.');
+  }
+  // (nas gerações normais seguintes, quem narra é onGenEnd — uma mensagem por geração)
   startGen();
 }
 
@@ -834,7 +858,8 @@ function finishWatch() {
   if (handle) clearInterval(handle);
   if (genEndTimer) { clearTimeout(genEndTimer); genEndTimer = null; }
   render();
-  setStatus(`IA VENCEU · ESPADA TOMADA NA GEN ${gen}`, 'success');
+  setStatus(`AI WON · SWORD TAKEN ON GEN ${gen}`, 'success');
+  setCoach(`<b>Solved on generation ${gen}!</b> Starting from pure noise, four rules — variation, selection, heredity, mutation — taught a brain to storm your castle. Nobody designed that path; natural selection found it. Rebuild your defenses and evolution will adapt all over again.`);
   // Em vez do cartaz genérico, mostra o CÉREBRO da criatura que venceu; o botão
   // "PRÓXIMA PARTIDA" dentro do inspetor é que devolve à construção.
   const wi = pop.findIndex(a => a.reached);
@@ -850,9 +875,43 @@ function showEnd(title, desc) {
 }
 
 // ══ INSPETOR DE REDE NEURAL ══════════════════════
-const OUT_LABELS = ['andar', 'virar esq', 'virar dir', 'meia-volta'];
+const OUT_LABELS = ['walk', 'turn left', 'turn right', 'u-turn'];
+
+// Descrições (SEMPRE em inglês — regra do projeto) que aparecem no tooltip ao
+// CLICAR cada neurônio de entrada/saída no inspetor. %POS%/%DIR% são preenchidos
+// por posição. Nós ocultos não têm descrição (sem significado fixo).
+const TIP_VISION_POS = [
+  '1 cell straight ahead',
+  '2 cells ahead and 1 to the left',
+  '2 cells straight ahead',
+  '2 cells ahead and 1 to the right',
+];
+const TIP_VISION = 'VISION (cone of sight). This neuron looks at ONE cell, %POS%, always relative to the way the creature faces, so the whole cone rotates when it turns. The value encodes what sits in that cell: +1 = the sword (the goal), 0 = open grass, -0.6 = barricade, -0.8 = sentinel, -1 = a tower or the edge of the map.';
+const TIP_SCENT_DIR = ['directly ahead', 'to the left', 'to the right', 'behind'];
+const TIP_SCENT = "SCENT toward the castle (faro). A homing sense that follows a safe cost-field already routed around towers and barricades and away from their line of fire. This neuron reads the neighbour cell %DIR% (relative to the facing) as a DELTA against the creature's own cell: how much moving there improves (+) or worsens (-) the distance to the goal. Positive is downhill toward the sword, negative is uphill, near zero is sideways. Stepping into a tower's range saturates to -1; a wall or an off-grid cell has no smell (0).";
+const TIP_BIAS = 'BIAS. A constant input locked at 1, wired into the network like any sensor. It lets a neuron shift its own threshold, so it can fire (or stay quiet) even when every real sensor reads 0. A standard neural-network building block; it is always on.';
+const TIP_RANDOM = "IDENTITY TRAIT (the 'random' input). A single number drawn once when the creature is born (about -1 to +1) and fed in unchanged every frame — it is NOT per-step noise. Being constant for that individual, the brain can use it to break ties between equally good options or to lean into a personal style. It can drift a little from parent to child across generations.";
+const TIP_OUT_GEN = 'ACTION output. Each frame all four actions get an activation from -1 to +1 (tanh); the highest one is executed and gets the orange frame and the marker.';
+const TIP_OUT = [
+  'WALK one cell forward, along the facing direction. If the cell ahead is a tower or the edge of the map, the step is refused and the second-highest action runs instead — and bumping a standing tower chips its health.',
+  'TURN LEFT 90 degrees on the spot, without moving. The cone of vision and every scent reading rotate with the new facing.',
+  'TURN RIGHT 90 degrees on the spot, without moving. The cone of vision and every scent reading rotate with the new facing.',
+  'U-TURN: flip the facing 180 degrees on the spot. Handy for backing out of a dead end when the scent behind reads stronger than the scent ahead.',
+];
 
 function fmtVal(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+// Escapa texto para caber com segurança num atributo HTML de aspas duplas.
+function escTip(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+// Envolve o desenho de um neurônio num alvo clicável: data-tip carrega a descrição
+// e o <rect> transparente por cima garante uma área de toque cheia (mobile).
+function tipNode(inner, tip, cx, cy, w, h) {
+  return `<g class="tip-node" data-tip="${escTip(tip)}">${inner}` +
+    `<rect x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" fill="#000" opacity="0"/></g>`;
+}
 
 // Desenha um ícone do icons.js centrado em (cx,cy), escalado da grade 24×24 para
 // `size`, tingido de `color` (via currentColor). Cada neurônio do inspetor usa um.
@@ -892,7 +951,7 @@ function showNetwork(i, victory) {
 
   // pausa a simulação para inspecionar
   paused = true;
-  pauseBtn.textContent = 'CONTINUAR';
+  pauseBtn.textContent = 'RESUME';
   pauseBtn.classList.add('active');
   pauseBtn.setAttribute('aria-pressed', 'true');
 
@@ -901,15 +960,15 @@ function showNetwork(i, victory) {
   const outVals = neat.activate(g, inputs);
   const hidden = g.nodes.filter(n => n.type === 'hidden').length;
   const activeC = g.conns.filter(c => c.enabled).length;
-  const st = a.reached ? 'chegou à espada' : (a.dead ? 'eliminada' : 'viva');
+  const st = a.reached ? 'reached the sword' : (a.dead ? 'eliminated' : 'alive');
 
   document.getElementById('net-title').textContent =
-    (victory ? 'Cérebro vencedor · ' : 'Rede neural · ') + a.name;
+    (victory ? 'Winning brain · ' : 'Neural network · ') + a.name;
   document.getElementById('net-sub').innerHTML = victory
-    ? `<span>${a.name}</span> tomou a espada na geração <span>${gen}</span> · ` +
-      `${g.nodes.length} neurônios, ${activeC} conexões`
-    : `${g.nodes.length} neurônios (${hidden} ocultos) · ${activeC} conexões ativas · ` +
-      `distância ${dist(a.pos)} · <span>${st}</span>`;
+    ? `<span>${a.name}</span> took the sword on generation <span>${gen}</span> · ` +
+      `${g.nodes.length} neurons, ${activeC} connections`
+    : `${g.nodes.length} neurons (${hidden} hidden) · ${activeC} active connections · ` +
+      `distance ${dist(a.pos)} · <span>${st}</span>`;
   document.getElementById('net-diagram').innerHTML = buildNetSVG(g, inputs, outVals, a.facing);
 
   // no fim de partida o rodapé oferece "próxima partida"; na inspeção manual, só "fechar"
@@ -957,12 +1016,23 @@ function buildNetSVG(g, inputs, outVals, facing) {
   const selfP = cellXY(0, 0);
 
   const gridBottom = oy0 + (maxy - miny) * gs;
-  const belowY = gridBottom + 48;
-  // bias + faro (4 direções) + aleatorio (1) em uma linha abaixo do cone
-  const belowNodes = g.nodes
-    .filter(n => n.type === 'bias' || (n.type === 'in' && n.id >= CONE.length))
-    .sort((p, q) => (p.type === 'bias' ? -1 : p.id) - (q.type === 'bias' ? -1 : q.id));
-  belowNodes.forEach((n, i) => { pos[n.id] = { x: ox0 + i * gs * 1.1, y: belowY }; });
+  const belowY = gridBottom + 54;
+  // Abaixo do cone: os 4 faro numa BÚSSOLA (frente/trás na vertical, esq/dir na
+  // horizontal — igual às direções que representam) e viés + aleatório numa coluna
+  // à esquerda. Antes era tudo numa linha só de 33px: os rótulos ("faro trás 0.42",
+  // ~70px) colidiam e viravam uma pilha ilegível. Espalhar em 2D resolve e ainda
+  // deixa o cheiro casar com o lado pra onde ele aponta.
+  const armH = 46, armV = 34;                 // braços da bússola (horizontal/vertical)
+  const compassX = ox0 + 150, compassY = belowY + armV;
+  const faro0 = CONE.length;                  // id da 1ª entrada de faro (frente)
+  pos[faro0]     = { x: compassX,        y: compassY - armV }; // frente (cima)
+  pos[faro0 + 1] = { x: compassX - armH, y: compassY };        // esquerda
+  pos[faro0 + 2] = { x: compassX + armH, y: compassY };        // direita
+  pos[faro0 + 3] = { x: compassX,        y: compassY + armV }; // trás (baixo)
+  const biasNode = g.nodes.find(n => n.type === 'bias');
+  if (biasNode) pos[biasNode.id] = { x: ox0, y: compassY - armV };
+  pos[faro0 + 4] = { x: ox0, y: compassY + armV };             // aleatório (canto inferior esq.)
+  const compassBottom = compassY + armV;      // baseline p/ o cálculo de altura
 
   // ── colunas da direita: ocultos por profundidade + saídas ──
   const hiddenNodes = g.nodes.filter(n => n.type === 'hidden');
@@ -975,7 +1045,7 @@ function buildNetSVG(g, inputs, outVals, facing) {
   const rightX0 = ox0 + (maxx - minx) * gs + 150;
   const colGap = 130, vgap = 36, top = 44;
   const maxRightRows = Math.max(1, ...rightCols.map(a => a.length));
-  const height = Math.max(belowY + 40, top * 2 + (maxRightRows - 1) * vgap);
+  const height = Math.max(compassBottom + 26, top * 2 + (maxRightRows - 1) * vgap);
   const width = rightX0 + (rightCols.length - 1) * colGap + 190;
 
   rightCols.forEach((arr, ci) => {
@@ -1014,19 +1084,20 @@ function buildNetSVG(g, inputs, outVals, facing) {
                   { ic: 'leaf',   c: '#7cc85f' };   // livre
   coneOff.forEach((o, i) => {
     const p = pos[i], m = coneMeta(inputs[i]);
-    nodes += `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="4" fill="#16233f" stroke="#000" stroke-width="1"/>`;
-    nodes += iconSVG(m.ic, p.x, p.y, sq * 0.72, m.c);
+    const inner = `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="4" fill="#16233f" stroke="#000" stroke-width="1"/>`
+      + iconSVG(m.ic, p.x, p.y, sq * 0.72, m.c);
+    nodes += tipNode(inner, TIP_VISION.replace('%POS%', TIP_VISION_POS[i]), p.x, p.y, sq + 12, sq + 12);
   });
 
   // viés + entradas não-espaciais: cada uma é um QUADRADO com um ícone vetorial
   // dentro (o cone acima já é a "visão"). Faro = alvo (proximidade do objetivo),
   // aleatório = dado, viés = "+". O número embaixo é o valor atual da entrada.
   const IN_META = [
-    { lbl: 'faro fr',   ic: 'target', c: '#5cc8ff' },  // proximidade do castelo à frente
-    { lbl: 'faro esq',  ic: 'target', c: '#5cc8ff' },  // à esquerda
-    { lbl: 'faro dir',  ic: 'target', c: '#5cc8ff' },  // à direita
-    { lbl: 'faro trás', ic: 'target', c: '#5cc8ff' },  // atrás
-    { lbl: 'aleatório', ic: 'dice',   c: '#5cc8ff' },  // traço fixo por criatura (quebra empates)
+    { lbl: 'front', ic: 'target', c: '#5cc8ff' },  // Δ custo até o castelo à frente
+    { lbl: 'left',  ic: 'target', c: '#5cc8ff' },  // à esquerda
+    { lbl: 'right', ic: 'target', c: '#5cc8ff' },  // à direita
+    { lbl: 'back',  ic: 'target', c: '#5cc8ff' },  // atrás
+    { lbl: 'random', ic: 'dice', c: '#5cc8ff' },   // traço fixo por criatura (quebra empates)
   ];
   const nodeSquare = (p, icName, icColor, icScale, label, strokeCol) => {
     let out = `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="4" fill="#16233f" stroke="${strokeCol || '#000'}" stroke-width="1.5"/>`;
@@ -1038,10 +1109,19 @@ function buildNetSVG(g, inputs, outVals, facing) {
     const p = pos[n.id];
     if (!p) return;
     if (n.type === 'bias') {
-      nodes += nodeSquare(p, 'plus', '#c7bca4', 0.6, 'viés');
+      nodes += tipNode(nodeSquare(p, 'plus', '#c7bca4', 0.6, 'bias'), TIP_BIAS, p.x, p.y, sq + 12, sq + 26);
     } else if (n.type === 'in' && n.id >= CONE.length) {
-      const m = IN_META[n.id - CONE.length] || { lbl: 'in', ic: 'plus', c: '#5cc8ff' };
-      nodes += nodeSquare(p, m.ic, m.c, 0.72, `${m.lbl} <tspan class="nv">${fmtVal(inputs[n.id])}</tspan>`);
+      const idx = n.id - CONE.length;
+      const m = IN_META[idx] || { lbl: 'in', ic: 'plus', c: '#5cc8ff' };
+      const val = inputs[n.id];
+      // faro (idx 0..3): tinge pelo sinal do delta — verde = melhora (vai por aqui),
+      // vermelho = piora, azul = lateral/neutro. Deixa a bússola legível num relance.
+      const col = idx < 4
+        ? (val > 0.12 ? '#00E436' : val < -0.12 ? '#FF004D' : '#5cc8ff')
+        : m.c;
+      const tip = idx < 4 ? TIP_SCENT.replace('%DIR%', TIP_SCENT_DIR[idx]) : TIP_RANDOM;
+      const inner = nodeSquare(p, m.ic, col, 0.72, `${m.lbl} <tspan class="nv">${fmtVal(val)}</tspan>`);
+      nodes += tipNode(inner, tip, p.x, p.y, sq + 12, sq + 26);
     }
   });
 
@@ -1059,19 +1139,21 @@ function buildNetSVG(g, inputs, outVals, facing) {
     const p = pos[n.id];
     if (!p) return;
     const o = n.id - firstOut, pick = (o === chosen);
-    nodes += `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="5" fill="#123a1c" stroke="${pick ? '#FFA300' : '#000'}" stroke-width="${pick ? 2.5 : 1.5}"/>`;
-    nodes += iconSVG(OUT_ICONS[o] || 'walk', p.x, p.y, sq * 0.72, pick ? '#9dff7e' : '#00E436');
-    nodes += `<text x="${p.x + sq/2 + 7}" y="${p.y + 4}" text-anchor="start" class="nl${pick ? ' pick' : ''}">${OUT_LABELS[o] || ('s' + o)} <tspan class="nv">${fmtVal(outVals[o])}</tspan>${pick ? ' ◀' : ''}</text>`;
+    const inner = `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="5" fill="#123a1c" stroke="${pick ? '#FFA300' : '#000'}" stroke-width="${pick ? 2.5 : 1.5}"/>`
+      + iconSVG(OUT_ICONS[o] || 'walk', p.x, p.y, sq * 0.72, pick ? '#9dff7e' : '#00E436')
+      + `<text x="${p.x + sq/2 + 7}" y="${p.y + 4}" text-anchor="start" class="nl${pick ? ' pick' : ''}">${OUT_LABELS[o] || ('s' + o)} <tspan class="nv">${fmtVal(outVals[o])}</tspan>${pick ? ' ◀' : ''}</text>`;
+    nodes += tipNode(inner, TIP_OUT_GEN + ' ' + (TIP_OUT[o] || ''), p.x + 22, p.y, sq + 78, sq + 12);
   });
 
   // legendas de seção (com o ícone de olho vetorial antes do rótulo da visão)
   const capX = ox0 - sq/2, capY = oy0 - sq/2 - 12;
   const caps =
     iconSVG('eye', capX + 7, capY - 5, 15, '#b9d2c6') +
-    `<text x="${capX + 18}" y="${capY}" class="cap">VISÃO EM CONE (segue o olhar)</text>` +
-    `<text x="${rightX0}" y="${top - 18}" text-anchor="middle" class="cap">decisão</text>`;
+    `<text x="${capX + 18}" y="${capY}" class="cap">CONE OF VISION (follows the gaze)</text>` +
+    `<text x="${compassX}" y="${compassY - armV - 20}" text-anchor="middle" class="cap">SCENT (smell of the castle)</text>` +
+    `<text x="${rightX0}" y="${top - 18}" text-anchor="middle" class="cap">decision</text>`;
 
-  return `<svg viewBox="0 0 ${width} ${height}" class="net-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Visão em cone e rede neural da criatura">${lines}${nodes}${caps}</svg>`;
+  return `<svg viewBox="0 0 ${width} ${height}" class="net-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Creature's cone of vision and neural network">${lines}${nodes}${caps}</svg>`;
 }
 
 // ══ RENDER ═══════════════════════════════════════
@@ -1166,14 +1248,14 @@ function spawnDust(cx, cy) {
 let lastBrain = 0;
 function updateBrainLive(a) {
   if (!brainLiveEl) return;
-  if (!a || !a.brain || !neat) { brainLiveEl.innerHTML = '<div class="brain-empty">Inicie a defesa para ver o cérebro do líder em tempo real.</div>'; if (brainSubEl) brainSubEl.textContent = '—'; return; }
+  if (!a || !a.brain || !neat) { brainLiveEl.innerHTML = '<div class="brain-empty">Start the defense to watch the leader\'s brain in real time.</div>'; if (brainSubEl) brainSubEl.textContent = '—'; return; }
   const inputs = sensors(a);
   const outVals = neat.activate(a.brain, inputs);
   brainLiveEl.innerHTML = buildNetSVG(a.brain, inputs, outVals, a.facing);
   if (brainSubEl) {
     const hidden = a.brain.nodes.filter(n => n.type === 'hidden').length;
-    const st = a.reached ? 'chegou' : (a.dead ? 'morta' : 'viva');
-    brainSubEl.innerHTML = `<span>${a.name}</span> · dist ${dist(a.pos)} · ${hidden} ocultos · ${st}`;
+    const st = a.reached ? 'reached' : (a.dead ? 'dead' : 'alive');
+    brainSubEl.innerHTML = `<span>${a.name}</span> · dist ${dist(a.pos)} · ${hidden} hidden · ${st}`;
   }
 }
 
@@ -1260,7 +1342,7 @@ function render() {
 }
 
 function renderList(ranked) {
-  listEl.innerHTML = '<div class="list-hdr">Companhia invasora</div>';
+  listEl.innerHTML = '<div class="list-hdr">Invading company</div>';
   ranked.forEach(({a,d}) => {
     const color = a.color;
     const pct   = Math.round(Math.max(0, (MAXDIST-d)/MAXDIST*100));
@@ -1283,10 +1365,40 @@ function setStatus(msg, cls) {
   statusEl.className   = 'status-line ' + cls;
 }
 
+// ══ DIDÁTICA (voz do "professor") ════════════════
+// Narração em inglês que conta a história da seleção natural em tempo real. Aceita
+// <b>/<i> (conteúdo estático, sem entrada do usuário → innerHTML é seguro).
+function setCoach(html) { if (coachEl) coachEl.innerHTML = html; }
+
+// Facetas da evolução, rodadas por geração (`gen % N`) para não repetir sempre a
+// mesma ideia. Recorde e platô entram como exceções em narrateGenEnd.
+const COACH_INSIGHTS = [
+  "<b>Selection.</b> The creatures that reached furthest just became parents; their brains are copied, blended, and mutated to fill this generation. The rest leave no offspring.",
+  "<b>Heredity.</b> This generation carries the best brains of the last round, plus small mutations. Watch them hesitate a little less than before.",
+  "<b>Mutation.</b> Copies are never perfect — a weight drifts, a new neuron appears. Most changes make things worse; selection quietly keeps the few that help.",
+  "<b>Variation is the fuel.</b> With a whole population of slightly different brains, selection always has something a bit better to choose from.",
+  "No brain <i>knows</i> the map. The clever-looking path is just thousands of tiny life-or-death choices piling up across the generations.",
+];
+
+function narrateGenEnd(bestD, record) {
+  if (bestD === 0) return;                     // chegou à espada: finishWatch narra
+  if (record) {
+    setCoach(`<b>New record — distance ${bestD}.</b> A brain just got closer than any before. Selection keeps it: whatever it did right is copied into the next generation.`);
+  } else if (stagnantGens >= 4) {
+    setCoach(`<b>Stuck for ${stagnantGens} generations.</b> Evolution is not planning — it is stacking random mutations until one happens to slip past your defenses.`);
+  } else {
+    setCoach(COACH_INSIGHTS[gen % COACH_INSIGHTS.length]);
+  }
+}
+
+// Modal "How evolution works" (chamado pelos onclick do HTML → precisa ser global).
+function openGuide()  { const g = document.getElementById('guide-overlay'); if (g) g.style.display = 'flex'; }
+function closeGuide() { const g = document.getElementById('guide-overlay'); if (g) g.style.display = 'none'; }
+
 let toastTimer = null;
 function showGenToast(n) {
   if (!toastEl) return;
-  toastEl.textContent = `GERAÇÃO ${n}`;
+  toastEl.textContent = `GENERATION ${n}`;
   toastEl.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1200);
@@ -1295,7 +1407,7 @@ function showGenToast(n) {
 function togglePause() {
   if (phase !== 'watch') return;
   paused = !paused;
-  pauseBtn.textContent = paused ? 'CONTINUAR' : 'PAUSAR';
+  pauseBtn.textContent = paused ? 'RESUME' : 'PAUSE';
   pauseBtn.classList.toggle('active', paused);
   pauseBtn.setAttribute('aria-pressed', String(paused));
 }
@@ -1378,6 +1490,32 @@ gridEl.addEventListener('pointerleave', () => { painting = false; });
 gridEl.addEventListener('click', onGridClick);
 const netOverlay = document.getElementById('net-overlay');
 if (netOverlay) netOverlay.addEventListener('click', (e) => { if (e.target === netOverlay) closeNetwork(); });
+const guideOverlay = document.getElementById('guide-overlay');
+if (guideOverlay) guideOverlay.addEventListener('click', (e) => { if (e.target === guideOverlay) closeGuide(); });
+
+// Tooltip dos neurônios: clicar um input/output no inspetor mostra a descrição
+// (em inglês) numa caixinha presa ao ponto do clique. Vive no <body> (fora do
+// overflow do diagrama) e sobrevive ao re-render do cérebro ao vivo.
+let netTipEl = null;
+function hideNetTip() { if (netTipEl) netTipEl.classList.remove('show'); }
+function showNetTip(text, clientX, clientY) {
+  if (!netTipEl) { netTipEl = document.createElement('div'); netTipEl.className = 'net-tip'; document.body.appendChild(netTipEl); }
+  netTipEl.textContent = text;
+  netTipEl.classList.add('show');
+  const pad = 10, w = netTipEl.offsetWidth, h = netTipEl.offsetHeight;
+  let x = clientX + 14, y = clientY + 14;
+  if (x + w + pad > window.innerWidth)  x = clientX - w - 14;   // vira para o lado se estourar
+  if (y + h + pad > window.innerHeight) y = clientY - h - 14;
+  netTipEl.style.left = Math.max(pad, x) + 'px';
+  netTipEl.style.top  = Math.max(pad, y) + 'px';
+}
+document.addEventListener('click', (e) => {
+  const node = e.target.closest ? e.target.closest('.tip-node') : null;
+  if (node && node.dataset && node.dataset.tip) { showNetTip(node.dataset.tip, e.clientX, e.clientY); e.stopPropagation(); return; }
+  hideNetTip();   // clique em qualquer outro lugar fecha o tooltip
+});
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape') { hideNetTip(); closeGuide(); } });
+
 setTool('tower');
 setSpeed(2);   // default mais rápido: sem pré-treino, as primeiras gerações passam ligeiro
 startBuild();

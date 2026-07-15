@@ -255,6 +255,29 @@ body.phase-build .cell:hover{box-shadow:inset 0 0 0 3px #ffe081b0;z-index:20}
 .status-line.success{color:#b6f08e}
 .status-line.evolving{color:#ffd36b}
 
+/* ── Voz do "professor": narração didática da evolução (frases completas) ── */
+.coach{
+  margin:7px 0 2px;padding:8px 11px;
+  border-left:3px solid #ffcf72;border-radius:4px;
+  background:#0c2229cc;color:#e9f1d8;
+  font:400 12.5px/1.5 Georgia,serif;text-align:left;
+}
+.coach:empty{display:none}
+.coach b{color:#ffd36b;font-weight:800}
+.coach i{color:#bfe0a8;font-style:italic}
+
+/* dica sob o card "Best distance": ensina o conceito de fitness */
+.card-hint{margin-top:2px;font-size:9.5px;line-height:1.2;color:#9a6a3f;letter-spacing:.02em}
+
+/* modal "How evolution works" (base = .rank-box, papel escuro) */
+.guide-box{width:min(620px,100%);max-height:92dvh;overflow:auto;text-align:left}
+.guide-lead{color:#f0e6c8;font-size:14px;line-height:1.55;margin:4px 0 12px}
+.guide-steps{margin:0 0 12px;padding-left:22px;display:flex;flex-direction:column;gap:9px}
+.guide-steps li{color:#e6dcc0;font-size:13px;line-height:1.5}
+.guide-steps b{color:#ffd86f}
+.guide-note{border:2px solid #6a6456;background:#ffffff12;border-radius:5px;padding:10px 12px;color:#e9dfc4;font-size:12.5px;line-height:1.55}
+.guide-note b{color:#ffb84d}
+
 /* ══ PAINÉIS (papel 9-slice, fatia de 32 px desenhada 1:1) ════════════════ */
 .panel,.build-panel,.brain-panel,.rank-box,.overlay-box{
   border:26px solid transparent;
@@ -393,6 +416,16 @@ body.phase-watch .build-panel{display:none}
 .net-svg .nl{fill:#f6e5bc;font:11px Arial,sans-serif}
 .net-svg .nv,.net-svg .nl.pick{fill:#ffd86f}
 .net-svg .cap{fill:#b9d2c6;font:700 10px Arial,sans-serif}
+/* neurônios clicáveis + tooltip da descrição (aparece ao clicar o input/output) */
+.net-svg .tip-node{cursor:pointer}
+.net-tip{
+  position:fixed;z-index:9999;max-width:280px;
+  padding:9px 11px;border:2px solid #4a4740;border-radius:6px;
+  background:#182a2c;color:#f2e6c6;
+  font:12px/1.45 Arial,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.5);
+  pointer-events:none;opacity:0;transform:translateY(4px);
+  transition:opacity .12s,transform .12s}
+.net-tip.show{opacity:1;transform:none}
 .net-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin:10px 0;font-size:12px}
 .net-legend span{display:flex;align-items:center;gap:5px}
 .sw{width:12px;height:12px;border:1px solid #402618}
