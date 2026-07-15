@@ -45,6 +45,11 @@ const START  = {x:CENTER, y:MAXI}; // base central — partida
 const DIRS   = ['U','D','L','R'];
 const SPEEDS = [220, 120, 70, 35, 12, 2]; // ms por passo
 const GEN_PAUSE   = 650; // ms entre gerações (pra dar pra acompanhar)
+// Fast-forward inicial: as primeiras gerações são só tateio aleatório, então
+// rolam aceleradas e SEM pausa entre gerações — feito um filme adiantado. Depois
+// o ritmo abranda (delay do jogador + GEN_PAUSE) pra dar pra acompanhar.
+const FAST_GENS   = 30;  // até esta geração roda em fast-forward
+const FAST_DELAY  = 12;  // ms por passo no fast-forward (equivale a "muito rápida")
 const BUDGET      = 14;  // total de peças na construção (~14% do tabuleiro, como no 15×15)
 const TOWER_RANGE = 2;   // alcance (Manhattan) da torre
 const ENEMY_MAX_KILLS = 2; // o inimigo (monstro) mata só isso e morre
@@ -577,13 +582,21 @@ function startDefense() {
   startGen();
 }
 
+// Enquanto estamos nas primeiras gerações, roda em fast-forward.
+function inFastForward() { return gen <= FAST_GENS; }
+// Passo do relógio: no fast-forward, no mínimo FAST_DELAY (mas respeita o jogador
+// se ele já escolheu algo mais rápido). Depois, o delay escolhido.
+function tickInterval() { return inFastForward() ? Math.min(FAST_DELAY, delay) : delay; }
+// Pausa entre gerações: zero no fast-forward (não trava o filme), GEN_PAUSE depois.
+function genPauseMs()   { return inFastForward() ? 0 : GEN_PAUSE; }
+
 function startGen() {
   if (genEndTimer) { clearTimeout(genEndTimer); genEndTimer = null; }
   if (fxEl) fxEl.innerHTML = '';
   resetPositions();
   render();
   if (handle) clearInterval(handle);
-  handle = setInterval(tick, delay);
+  handle = setInterval(tick, tickInterval());
 }
 
 function stepEnemies() {
@@ -787,14 +800,16 @@ function onGenEnd() {
   genEndTimer = setTimeout(() => {
     evolve();
     continueToNextGeneration();
-  }, GEN_PAUSE);
+  }, genPauseMs());
 }
 
 function continueToNextGeneration() {
   gen++;
   genEl.textContent = String(gen).padStart(3,'0');
   showGenToast(gen);
-  setStatus(`GERAÇÃO ${gen}`, 'running');
+  setStatus(inFastForward()
+    ? `GERAÇÃO ${gen} · ACELERANDO A EVOLUÇÃO ⏩`
+    : `GERAÇÃO ${gen}`, 'running');
   startGen();
 }
 
@@ -1270,7 +1285,7 @@ function togglePause() {
 
 function setSpeed(level) {
   delay = SPEEDS[level];
-  if (handle) { clearInterval(handle); handle = setInterval(tick, delay); }
+  if (handle) { clearInterval(handle); handle = setInterval(tick, tickInterval()); }
   for (let i=0; i<SPEEDS.length; i++) {
     const btn = document.getElementById(`s${i}`);
     if (!btn) continue;
