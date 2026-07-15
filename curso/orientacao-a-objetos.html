@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 03 · Fundamentos — Orientação a Objetos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink: #1e1e1e;
+      --mid: #4a4a4a;
+      --soft: #7a7a7a;
+      --line: #e8e4df;
+      --line-strong: #d9d3ca;
+      --paper: #f4f1ec;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    /* ── Deck ── */
+    .slides {
+      position: fixed;
+      inset: 0;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(16px);
+      transition: opacity .5s ease, transform .5s ease, visibility 0s linear .5s;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity .55s ease .08s, transform .55s ease .08s, visibility 0s;
+    }
+
+    .slide-inner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1280px;
+      height: 720px;
+      transform: translate(-50%, -50%) scale(var(--stage-scale, 1));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 76px 88px 84px;
+    }
+
+    /* ── Type ── */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 96px;
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+    }
+
+    h1 em {
+      font-style: italic;
+    }
+
+    .slide h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 54px;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+    }
+
+    .sub-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin: 28px 0 4px;
+    }
+
+    .sub-label:first-child {
+      margin-top: 0;
+    }
+
+    .quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 31px;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      max-width: 26ch;
+    }
+
+    .quote em {
+      font-style: normal;
+    }
+
+    .quote-credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .05em;
+      color: var(--soft);
+      margin-top: 28px;
+      line-height: 1.8;
+      max-width: 48ch;
+    }
+
+    /* ── Pseudocódigo ── */
+    pre.code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 16.5px;
+      line-height: 1.85;
+      color: var(--mid);
+      border: 1px solid var(--line-strong);
+      padding: 30px 38px;
+      white-space: pre;
+      align-self: flex-start;
+      margin-top: 34px;
+    }
+
+    .code .kw { color: var(--ink); font-weight: 500; }
+    .code .cm { color: var(--soft); }
+    .code .hi { color: var(--ink); }
+
+    .cols pre.code {
+      align-self: stretch;
+      width: 100%;
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 26px 28px;
+      margin-top: 14px;
+    }
+
+    .credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+      letter-spacing: .04em;
+      color: var(--soft);
+      margin-top: 44px;
+      max-width: 78ch;
+      line-height: 1.7;
+    }
+
+    .credit.tight {
+      margin-top: 22px;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      z-index: 1;
+    }
+
+    #net {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .cover-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-top: 32px;
+    }
+
+    .cover-hint {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+      color: var(--soft);
+      margin-top: 72px;
+    }
+
+    /* ── Diagram wrap ── */
+    .dwrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 36px;
+    }
+
+    .dwrap svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── SVG language ── */
+    svg text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      fill: var(--mid);
+    }
+
+    svg .t-ink { fill: var(--ink); font-size: 14.5px; }
+    svg .t-soft { fill: var(--soft); }
+    svg .t-sm { font-size: 12.5px; }
+    svg .t-caption { font-size: 13px; letter-spacing: .14em; fill: var(--soft); }
+    svg .serif {
+      font-family: 'Playfair Display', serif;
+      font-size: 27px;
+      fill: var(--ink);
+    }
+
+    svg .box {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.3;
+    }
+
+    svg .box.solid {
+      fill: var(--paper);
+    }
+
+    svg .wire {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.2;
+      stroke-linecap: round;
+    }
+
+    svg .wire-soft {
+      fill: none;
+      stroke: var(--line-strong);
+      stroke-width: 1.1;
+    }
+
+    svg .tick {
+      stroke: var(--soft);
+      stroke-width: 1;
+      opacity: .55;
+    }
+
+    svg .dot {
+      fill: var(--paper);
+      stroke: var(--ink);
+      stroke-width: 1.4;
+    }
+
+    svg .dot-fill {
+      fill: var(--ink);
+    }
+
+    svg .pulse {
+      fill: var(--ink);
+      opacity: 0;
+    }
+
+    svg .dashed {
+      stroke-dasharray: 5 5;
+    }
+
+    /* ── Entry choreography ── */
+    .draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+
+    .slide.active .draw {
+      animation: drawIn 1.1s cubic-bezier(.4, 0, .2, 1) forwards;
+      animation-delay: .15s;
+    }
+
+    .fade, .dlabel {
+      opacity: 0;
+    }
+
+    .slide.active .fade,
+    .slide.active .dlabel {
+      animation: fadeIn .7s ease forwards;
+      animation-delay: .65s;
+    }
+
+    .d1 { animation-delay: .25s !important; }
+    .d2 { animation-delay: .4s !important; }
+    .d3 { animation-delay: .55s !important; }
+    .f1 { animation-delay: .55s !important; }
+    .f2 { animation-delay: .7s !important; }
+    .f3 { animation-delay: .85s !important; }
+    .f4 { animation-delay: 1s !important; }
+    .f5 { animation-delay: 1.15s !important; }
+
+    .rise {
+      opacity: 0;
+    }
+
+    .slide.active .rise {
+      animation: riseIn .65s cubic-bezier(.2, .6, .2, 1) forwards;
+    }
+
+    .r1 { animation-delay: .1s; }
+    .r2 { animation-delay: .22s; }
+    .r3 { animation-delay: .34s; }
+    .r4 { animation-delay: .46s; }
+
+    @keyframes drawIn {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* ── Lists, grids ── */
+    .item-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .item-list li {
+      font-size: 17px;
+      color: var(--mid);
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      line-height: 1.6;
+    }
+
+    .item-list li::before {
+      content: "–";
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--soft);
+      flex-shrink: 0;
+    }
+
+    .item-list li:last-child {
+      border-bottom: none;
+    }
+
+    .cols {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      margin-top: 8px;
+    }
+
+    .cols > :first-child {
+      align-self: center;
+    }
+
+    .cols.top > :first-child {
+      align-self: start;
+    }
+
+    .cols .dwrap {
+      margin-top: 0;
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* ── Pillar map ── */
+    .map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px 56px;
+      margin-top: 48px;
+    }
+
+    .map-cell {
+      border-top: 1px solid var(--line-strong);
+      padding-top: 22px;
+    }
+
+    .map-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .map-head svg {
+      color: var(--soft);
+      flex-shrink: 0;
+    }
+
+    .map-head h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .map-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--soft);
+      margin-left: auto;
+    }
+
+    .map-cell p {
+      font-size: 15.5px;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 42ch;
+    }
+
+    /* ── Contact ── */
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 44px;
+    }
+
+    .contact-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: .06em;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 12px 20px;
+      border: 1px solid var(--ink);
+      transition: background .15s, color .15s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .contact-links a:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .contact-links a:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    /* ── Progress ── */
+    .progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      z-index: 11;
+    }
+
+    #progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--ink);
+      transition: width .5s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .slide {
+        transition: none;
+        transform: none;
+      }
+
+      .draw, .slide.active .draw {
+        animation: none;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+      }
+
+      .fade, .dlabel, .rise,
+      .slide.active .fade,
+      .slide.active .dlabel,
+      .slide.active .rise {
+        animation: none;
+        opacity: 1;
+      }
+
+      svg .pulse {
+        display: none;
+      }
+
+      #progress-fill {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="slides" aria-live="polite">
+
+    <!-- 01 · Capa -->
+    <section class="slide active" data-title="Capa" aria-label="Capa">
+      <canvas id="net" aria-hidden="true"></canvas>
+      <div class="slide-inner cover">
+        <h1 class="rise r1">Orientação<br>a <em>Objetos</em></h1>
+        <p class="cover-meta rise r2">Aula 03 · Fundamentos — André N. Darcie</p>
+        <p class="cover-hint rise r3">← → para navegar &nbsp;·&nbsp; F para tela cheia</p>
+      </div>
+    </section>
+
+    <!-- 02 · A origem -->
+    <section class="slide" data-title="A origem" aria-label="A origem">
+      <div class="slide-inner">
+        <h2 class="rise r1">A origem</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 220" role="img" aria-label="Linha do tempo: Simula 67 com Dahl e Nygaard, Smalltalk-80 com Alan Kay, C++ em 1985 com Stroustrup, Java em 1995 com Gosling e C# em 2002 com Hejlsberg">
+            <line class="wire draw d1" pathLength="1" x1="60" y1="110" x2="860" y2="110"/>
+
+            <circle class="dot fade f1" cx="150" cy="110" r="4.5"/>
+            <text class="dlabel f1" x="150" y="68" text-anchor="middle">Simula 67</text>
+            <text class="t-sm t-soft dlabel f1" x="150" y="88" text-anchor="middle">Dahl e Nygaard · classes e herança</text>
+
+            <circle class="dot fade f2" cx="300" cy="110" r="4.5"/>
+            <text class="dlabel f2" x="300" y="144" text-anchor="middle">Smalltalk-80</text>
+            <text class="t-sm t-soft dlabel f2" x="300" y="164" text-anchor="middle">Alan Kay · tudo é mensagem</text>
+
+            <circle class="dot fade f3" cx="460" cy="110" r="4.5"/>
+            <text class="dlabel f3" x="460" y="68" text-anchor="middle">C++ · 1985</text>
+            <text class="t-sm t-soft dlabel f3" x="460" y="88" text-anchor="middle">Stroustrup · objetos em escala</text>
+
+            <circle class="dot fade f4" cx="620" cy="110" r="4.5"/>
+            <text class="dlabel f4" x="620" y="144" text-anchor="middle">Java · 1995</text>
+            <text class="t-sm t-soft dlabel f4" x="620" y="164" text-anchor="middle">Gosling · OO vira mainstream</text>
+
+            <circle class="dot fade f5" cx="775" cy="110" r="4.5"/>
+            <text class="dlabel f5" x="775" y="68" text-anchor="middle">C# · 2002</text>
+            <text class="t-sm t-soft dlabel f5" x="775" y="88" text-anchor="middle">Hejlsberg · a linguagem do curso</text>
+
+            <path id="l-m1" d="M60,110 H860" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="7s" repeatCount="indefinite"><mpath href="#l-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.55;.55;0" keyTimes="0;.1;.9;1" dur="7s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">O termo “orientação a objetos” é de Alan Kay, inspirado em biologia: células independentes que cooperam trocando sinais.</p>
+      </div>
+    </section>
+
+    <!-- 03 · A grande ideia -->
+    <section class="slide" data-title="A grande ideia" aria-label="A grande ideia">
+      <div class="slide-inner">
+        <h2 class="rise r1">A grande ideia</h2>
+        <div class="cols">
+          <div class="rise r2">
+            <p class="quote">“Lamento ter cunhado, há tanto tempo, o termo ‘objetos’, porque ele leva muita gente a focar na ideia menor. A grande ideia é <em>mensagens</em>.”</p>
+            <p class="quote-credit">— Alan Kay, criador do Smalltalk e do termo “orientação a objetos” · e-mail à lista Squeak, 1998 · tradução livre</p>
+          </div>
+          <div class="dwrap rise r3">
+            <svg class="diagram" viewBox="0 0 760 470" role="img" aria-label="Cinco células desenhadas como círculos trocando mensagens por setas; uma seta em destaque leva o rótulo mensagem">
+              <defs>
+                <marker id="ar-msg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+                </marker>
+              </defs>
+
+              <circle class="box draw d1" pathLength="1" cx="180" cy="120" r="40"/>
+              <circle class="box draw d2" pathLength="1" cx="420" cy="90" r="34"/>
+              <circle class="box draw d2" pathLength="1" cx="600" cy="200" r="40"/>
+              <circle class="box draw d1" pathLength="1" cx="300" cy="300" r="46"/>
+              <circle class="box draw d3" pathLength="1" cx="540" cy="370" r="34"/>
+
+              <line class="wire fade f2" x1="220" y1="115" x2="386" y2="94" marker-end="url(#ar-msg)"/>
+              <text class="t-sm dlabel f3" x="300" y="86" text-anchor="middle">mensagem</text>
+
+              <line class="wire fade f3" x1="449" y1="108" x2="566" y2="179" marker-end="url(#ar-msg)"/>
+              <line class="wire fade f3" x1="274" y1="262" x2="202" y2="153" marker-end="url(#ar-msg)"/>
+              <line class="wire fade f4" x1="344" y1="313" x2="507" y2="360" marker-end="url(#ar-msg)"/>
+              <line class="wire fade f4" x1="551" y1="338" x2="587" y2="238" marker-end="url(#ar-msg)"/>
+
+              <text class="serif dlabel f4" x="410" y="248" text-anchor="middle">mensagens</text>
+
+              <text class="t-caption dlabel f5" x="380" y="452" text-anchor="middle">OBJETOS COMO CÉLULAS · ESTADO OCULTO, SINAIS ENTRE ELAS</text>
+
+              <path id="k-m1" d="M220,115 L386,94" fill="none" stroke="none"/>
+              <circle class="pulse" r="3">
+                <animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#k-m1"/></animateMotion>
+                <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.8s" repeatCount="indefinite"/>
+              </circle>
+              <path id="k-m2" d="M344,313 L507,360" fill="none" stroke="none"/>
+              <circle class="pulse" r="3">
+                <animateMotion dur="3.6s" repeatCount="indefinite"><mpath href="#k-m2"/></animateMotion>
+                <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3.6s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 · Mensagens, em código -->
+    <section class="slide" data-title="Mensagens · código" aria-label="Mensagens em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Mensagens, <em>em código</em></h2>
+        <pre class="code rise r2"><span class="cm">// orientação a objetos não é chamar funções sobre dados —
+// é enviar mensagens e deixar o objeto decidir</span>
+
+impressora.<span class="hi">imprimir</span>(relatório)
+
+<span class="cm">// como imprimir é segredo da impressora;
+// quem pede só conhece a mensagem</span></pre>
+      </div>
+    </section>
+
+    <!-- 05 · O objeto -->
+    <section class="slide" data-title="O objeto" aria-label="O que é um objeto">
+      <div class="slide-inner">
+        <h2 class="rise r1">O que é um objeto</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 340" role="img" aria-label="Um objeto pedido: caixa com estado privado dentro, métodos adicionar e fechar na borda, uma mensagem chegando; anotações apontam identidade, estado e comportamento">
+            <defs>
+              <marker id="ar-obj" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire fade f2" x1="60" y1="170" x2="192" y2="170" marker-end="url(#ar-obj)"/>
+            <text class="t-sm t-soft dlabel f2" x="126" y="152" text-anchor="middle">mensagem</text>
+
+            <rect class="box draw d1" pathLength="1" x="200" y="50" width="300" height="240"/>
+            <text class="t-ink dlabel f1" x="350" y="84" text-anchor="middle">pedido #4821</text>
+
+            <rect class="box dashed fade f2" x="240" y="104" width="220" height="96"/>
+            <text class="t-sm t-soft dlabel f2" x="350" y="128" text-anchor="middle">estado privado</text>
+            <text class="t-sm dlabel f3" x="350" y="154" text-anchor="middle">itens: 3</text>
+            <text class="t-sm dlabel f3" x="350" y="176" text-anchor="middle">total: 189,90</text>
+
+            <rect class="box solid draw d2" pathLength="1" x="228" y="270" width="116" height="40"/>
+            <text class="t-sm dlabel f3" x="286" y="295" text-anchor="middle">adicionar()</text>
+            <rect class="box solid draw d2" pathLength="1" x="364" y="270" width="110" height="40"/>
+            <text class="t-sm dlabel f3" x="419" y="295" text-anchor="middle">fechar()</text>
+
+            <circle class="dot-fill fade f3" cx="500" cy="84" r="3"/>
+            <line class="wire-soft fade f3" x1="500" y1="84" x2="620" y2="84"/>
+            <text class="dlabel f3" x="632" y="89" text-anchor="start"><tspan class="t-ink">identidade</tspan><tspan class="t-soft"> · quem ele é</tspan></text>
+
+            <circle class="dot-fill fade f4" cx="460" cy="152" r="3"/>
+            <line class="wire-soft fade f4" x1="460" y1="152" x2="620" y2="152"/>
+            <text class="dlabel f4" x="632" y="157" text-anchor="start"><tspan class="t-ink">estado</tspan><tspan class="t-soft"> · o que ele sabe</tspan></text>
+
+            <circle class="dot-fill fade f5" cx="474" cy="300" r="3"/>
+            <line class="wire-soft fade f5" x1="474" y1="300" x2="620" y2="300"/>
+            <text class="dlabel f5" x="632" y="305" text-anchor="start"><tspan class="t-ink">comportamento</tspan><tspan class="t-soft"> · o que ele faz</tspan></text>
+
+            <path id="o-m1" d="M60,170 H192" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#o-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Um objeto tem estado, comportamento e identidade.” — Grady Booch, Object-Oriented Analysis and Design with Applications (1991) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 06 · O objeto, em código -->
+    <section class="slide" data-title="O objeto · código" aria-label="O objeto em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">O objeto, <em>em código</em></h2>
+        <pre class="code rise r2"><span class="kw">classe</span> Pedido                          <span class="cm">// identidade</span>
+
+  <span class="kw">privado</span> itens  = []                  <span class="cm">// estado</span>
+  <span class="kw">privado</span> status = ABERTO
+
+  <span class="kw">método</span> adicionar(item)               <span class="cm">// comportamento</span>
+    <span class="kw">se</span> status ≠ ABERTO <span class="kw">então falha</span> "pedido fechado"
+    itens.acrescenta(item)
+
+  <span class="kw">método</span> fechar()
+    <span class="kw">se</span> itens.vazio <span class="kw">então falha</span> "pedido sem itens"
+    status = FECHADO</pre>
+      </div>
+    </section>
+
+    <!-- 07 · Os quatro pilares -->
+    <section class="slide" data-title="Os quatro pilares" aria-label="Os quatro pilares">
+      <div class="slide-inner">
+        <h2 class="rise r1">Os quatro pilares</h2>
+        <div class="map rise r2">
+          <div class="map-cell">
+            <div class="map-head">
+              <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="11" height="11"/>
+                <circle cx="8" cy="8" r="2.2"/>
+              </svg>
+              <h3>Encapsulamento</h3>
+              <span class="map-num">01</span>
+            </div>
+            <p>O estado é privado. O mundo conversa com o objeto pela interface pública — e só por ela.</p>
+          </div>
+          <div class="map-cell">
+            <div class="map-head">
+              <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="1" y="11.5" width="14" height="3"/>
+                <rect x="3.5" y="6.5" width="9" height="3"/>
+                <rect x="6" y="1.5" width="4" height="3"/>
+              </svg>
+              <h3>Abstração</h3>
+              <span class="map-num">02</span>
+            </div>
+            <p>Expor o essencial, esconder o detalhe. Quem usa conhece o contrato, não a implementação.</p>
+          </div>
+          <div class="map-cell">
+            <div class="map-head">
+              <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="2.5" r="1.5"/>
+                <line x1="8" y1="4" x2="4" y2="10"/>
+                <line x1="8" y1="4" x2="12" y2="10"/>
+                <circle cx="4" cy="11.5" r="1.5"/>
+                <circle cx="12" cy="11.5" r="1.5"/>
+              </svg>
+              <h3>Herança</h3>
+              <span class="map-num">03</span>
+            </div>
+            <p>Uma classe nasce de outra e ganha sua estrutura. Poderosa — e a mais fácil de usar errado.</p>
+          </div>
+          <div class="map-cell">
+            <div class="map-head">
+              <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="1.5" y1="8" x2="6" y2="8"/>
+                <line x1="6" y1="8" x2="13.5" y2="2.5"/>
+                <line x1="6" y1="8" x2="14" y2="8"/>
+                <line x1="6" y1="8" x2="13.5" y2="13.5"/>
+              </svg>
+              <h3>Polimorfismo</h3>
+              <span class="map-num">04</span>
+            </div>
+            <p>A mesma mensagem, respostas diferentes. Cada objeto responde do seu próprio jeito.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 · Encapsulamento -->
+    <section class="slide" data-title="Encapsulamento" aria-label="Encapsulamento">
+      <div class="slide-inner">
+        <h2 class="rise r1">Encapsulamento</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 340" role="img" aria-label="Comparação: à esquerda, setas atravessam a parede do objeto e mexem no estado direto; à direita, o estado só muda por métodos como depositar e sacar">
+            <defs>
+              <marker id="ar-enc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="300"/>
+
+            <!-- sem encapsulamento -->
+            <rect class="box draw d1" pathLength="1" x="90" y="80" width="240" height="150"/>
+            <rect class="box dashed fade f2" x="135" y="110" width="150" height="90"/>
+            <text class="t-sm t-soft dlabel f2" x="210" y="134" text-anchor="middle">estado</text>
+            <text class="t-sm dlabel f2" x="210" y="160" text-anchor="middle">saldo: 120</text>
+
+            <line class="wire fade f3" x1="30" y1="140" x2="131" y2="140" marker-end="url(#ar-enc)"/>
+            <line class="wire fade f3" x1="30" y1="185" x2="131" y2="185" marker-end="url(#ar-enc)"/>
+            <line class="wire fade f4" x1="85" y1="117" x2="95" y2="127"/>
+            <line class="wire fade f4" x1="95" y1="117" x2="85" y2="127"/>
+            <line class="wire fade f4" x1="85" y1="162" x2="95" y2="172"/>
+            <line class="wire fade f4" x1="95" y1="162" x2="85" y2="172"/>
+
+            <text class="t-caption dlabel f4" x="210" y="282" text-anchor="middle">SEM ENCAPSULAMENTO</text>
+            <text class="t-sm t-soft dlabel f4" x="210" y="306" text-anchor="middle">qualquer código altera o estado direto</text>
+
+            <!-- com encapsulamento -->
+            <rect class="box draw d2" pathLength="1" x="560" y="80" width="240" height="150"/>
+            <rect class="box dashed fade f3" x="650" y="110" width="130" height="90"/>
+            <text class="t-sm t-soft dlabel f3" x="715" y="134" text-anchor="middle">estado</text>
+            <text class="t-sm dlabel f3" x="715" y="160" text-anchor="middle">saldo: 120</text>
+
+            <rect class="box solid draw d3" pathLength="1" x="490" y="118" width="120" height="36"/>
+            <text class="t-sm dlabel f4" x="550" y="141" text-anchor="middle">depositar()</text>
+            <rect class="box solid draw d3" pathLength="1" x="490" y="166" width="120" height="36"/>
+            <text class="t-sm dlabel f4" x="550" y="189" text-anchor="middle">sacar()</text>
+
+            <line class="wire-soft fade f4" x1="610" y1="136" x2="646" y2="136"/>
+            <line class="wire-soft fade f4" x1="610" y1="184" x2="646" y2="184"/>
+
+            <line class="wire fade f4" x1="452" y1="136" x2="486" y2="136" marker-end="url(#ar-enc)"/>
+            <line class="wire fade f4" x1="452" y1="184" x2="486" y2="184" marker-end="url(#ar-enc)"/>
+
+            <text class="t-caption dlabel f5" x="680" y="282" text-anchor="middle">COM ENCAPSULAMENTO</text>
+            <text class="t-sm t-soft dlabel f5" x="680" y="306" text-anchor="middle">o estado só muda pelas mensagens</text>
+
+            <path id="n-m1" d="M30,140 H131" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#n-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <path id="n-m2" d="M30,185 H131" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="3.1s" repeatCount="indefinite"><mpath href="#n-m2"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3.1s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">Ocultação de informação: “cada módulo esconde uma decisão de projeto que pode mudar” — David L. Parnas, “On the Criteria to Be Used in Decomposing Systems into Modules” (1972) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 09 · Encapsulamento, em código -->
+    <section class="slide" data-title="Encapsulamento · código" aria-label="Encapsulamento em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Encapsulamento, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Estado exposto</p>
+            <pre class="code">conta.saldo = conta.saldo - 100
+
+<span class="cm">// compila e roda — e nada garante nada:
+// qualquer código, de qualquer lugar,
+// pode deixar o saldo inválido</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Estado protegido</p>
+            <pre class="code"><span class="kw">classe</span> Conta
+  <span class="kw">privado</span> saldo
+
+  <span class="kw">método</span> sacar(valor)
+    <span class="kw">se</span> valor > saldo
+      <span class="kw">então falha</span> "saldo insuficiente"
+    saldo = saldo - valor</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · Abstração -->
+    <section class="slide" data-title="Abstração" aria-label="Abstração">
+      <div class="slide-inner">
+        <h2 class="rise r1">Abstração</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 300" role="img" aria-label="Um pedido depende do contrato notificador; três implementações — por e-mail, por sms e por push — implementam esse contrato">
+            <defs>
+              <marker id="ar-abs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <rect class="box draw d1" pathLength="1" x="60" y="126" width="150" height="48"/>
+            <text class="t-ink dlabel f1" x="135" y="155" text-anchor="middle">pedido</text>
+            <text class="t-sm t-soft dlabel f2" x="135" y="198" text-anchor="middle">conhece só o contrato</text>
+
+            <line class="wire fade f2" x1="210" y1="150" x2="316" y2="150" marker-end="url(#ar-abs)"/>
+
+            <text class="t-sm t-soft dlabel f2" x="435" y="102" text-anchor="middle">o contrato</text>
+            <rect class="box dashed fade f2" x="320" y="114" width="230" height="72"/>
+            <text class="t-ink dlabel f3" x="435" y="142" text-anchor="middle">notificador</text>
+            <text class="t-sm t-soft dlabel f3" x="435" y="166" text-anchor="middle">notificar(mensagem)</text>
+
+            <rect class="box draw d2" pathLength="1" x="700" y="54" width="160" height="40"/>
+            <text class="t-sm dlabel f4" x="780" y="79" text-anchor="middle">por e-mail</text>
+            <rect class="box draw d2" pathLength="1" x="700" y="130" width="160" height="40"/>
+            <text class="t-sm dlabel f4" x="780" y="155" text-anchor="middle">por sms</text>
+            <rect class="box draw d3" pathLength="1" x="700" y="206" width="160" height="40"/>
+            <text class="t-sm dlabel f4" x="780" y="231" text-anchor="middle">por push</text>
+
+            <line class="wire dashed fade f4" x1="696" y1="74" x2="558" y2="132" marker-end="url(#ar-abs)"/>
+            <line class="wire dashed fade f4" x1="696" y1="150" x2="558" y2="150" marker-end="url(#ar-abs)"/>
+            <line class="wire dashed fade f4" x1="696" y1="226" x2="558" y2="168" marker-end="url(#ar-abs)"/>
+            <text class="t-sm t-soft dlabel f5" x="648" y="100" text-anchor="middle">implementam</text>
+
+            <text class="t-sm t-soft dlabel f5" x="435" y="264" text-anchor="middle">o pedido não sabe qual implementação responde — e não precisa</text>
+
+            <path id="b-m1" d="M210,150 H316" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#b-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Programe para uma interface, não para uma implementação.” — Gamma, Helm, Johnson e Vlissides, Design Patterns (1994) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 11 · Abstração, em código -->
+    <section class="slide" data-title="Abstração · código" aria-label="Abstração em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Abstração, <em>em código</em></h2>
+        <pre class="code rise r2"><span class="kw">interface</span> Notificador
+  <span class="kw">método</span> notificar(mensagem)
+
+<span class="kw">classe</span> Pedido
+  <span class="kw">privado</span> notificador: Notificador     <span class="cm">// o contrato — não a implementação</span>
+
+  <span class="kw">método</span> fechar()
+    …
+    notificador.<span class="hi">notificar</span>("pedido fechado")
+
+pedido = <span class="kw">novo</span> Pedido(<span class="kw">novo</span> PorEmail())   <span class="cm">// qualquer implementação serve</span></pre>
+      </div>
+    </section>
+
+    <!-- 12 · Herança -->
+    <section class="slide" data-title="Herança" aria-label="Herança">
+      <div class="slide-inner">
+        <h2 class="rise r1">Herança</h2>
+        <div class="cols">
+          <ul class="item-list rise r2">
+            <li>Reuso máximo, acoplamento máximo: o par vem junto</li>
+            <li>Só quando é “é-um” de verdade: todo círculo é uma forma</li>
+            <li>Classe-base frágil: mudou o pai, quebraram os filhos</li>
+            <li>Prefira herdar de abstrações a herdar de concretos</li>
+          </ul>
+          <div class="dwrap rise r3">
+            <svg class="diagram" viewBox="0 0 460 470" role="img" aria-label="Hierarquia: forma abstrata no topo; círculo e retângulo herdam dela; abaixo do círculo, um nível a mais tracejado, círculo com borda">
+              <defs>
+                <marker id="ar-her" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+                </marker>
+              </defs>
+
+              <text class="t-sm t-soft dlabel f2" x="230" y="44" text-anchor="middle">abstrata</text>
+              <rect class="box dashed fade f1" x="130" y="60" width="200" height="64"/>
+              <text class="t-ink dlabel f1" x="230" y="88" text-anchor="middle">forma</text>
+              <text class="t-sm t-soft dlabel f1" x="230" y="110" text-anchor="middle">área()</text>
+
+              <path class="wire fade f2" d="M120,244 V210 H230" fill="none"/>
+              <path class="wire fade f2" d="M340,244 V210 H230" fill="none"/>
+              <line class="wire fade f2" x1="230" y1="210" x2="230" y2="128" marker-end="url(#ar-her)"/>
+              <text class="t-sm t-soft dlabel f3" x="246" y="176" text-anchor="start">é-um</text>
+
+              <rect class="box draw d2" pathLength="1" x="40" y="244" width="160" height="48"/>
+              <text class="t-sm dlabel f3" x="120" y="273" text-anchor="middle">círculo</text>
+              <rect class="box draw d2" pathLength="1" x="260" y="244" width="160" height="48"/>
+              <text class="t-sm dlabel f3" x="340" y="273" text-anchor="middle">retângulo</text>
+
+              <line class="wire dashed fade f4" x1="120" y1="356" x2="120" y2="296" marker-end="url(#ar-her)"/>
+              <rect class="box dashed fade f4" x="40" y="356" width="160" height="44"/>
+              <text class="t-sm dlabel f4" x="120" y="383" text-anchor="middle">círculo com borda</text>
+
+              <text class="t-sm t-soft dlabel f5" x="230" y="448" text-anchor="middle">cada nível herda tudo — até o que não quer</text>
+
+              <path id="h-m1" d="M120,244 V210 H230 V128" fill="none" stroke="none"/>
+              <circle class="pulse" r="3">
+                <animateMotion dur="3s" repeatCount="indefinite"><mpath href="#h-m1"/></animateMotion>
+                <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+        <p class="credit tight rise r4">“Herança é, no fundo, um mecanismo de delegação automática de mensagens.” — Sandi Metz, Practical Object-Oriented Design (2012) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 13 · Herança, em código -->
+    <section class="slide" data-title="Herança · código" aria-label="Herança em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Herança, <em>em código</em></h2>
+        <pre class="code rise r2"><span class="kw">classe abstrata</span> Forma
+  <span class="kw">método abstrato</span> área()
+
+<span class="kw">classe</span> Círculo <span class="kw">herda de</span> Forma         <span class="cm">// todo círculo É uma forma</span>
+  <span class="kw">privado</span> raio
+
+  <span class="kw">método</span> área()
+    <span class="kw">retorna</span> π · raio²
+
+<span class="cm">// se a frase “X é um Y” soa falsa, não herde</span></pre>
+      </div>
+    </section>
+
+    <!-- 14 · Polimorfismo -->
+    <section class="slide" data-title="Polimorfismo" aria-label="Polimorfismo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Polimorfismo</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 320" role="img" aria-label="A mensagem área é enviada a círculo, retângulo e triângulo; cada um responde com sua própria fórmula">
+            <defs>
+              <marker id="ar-pol" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <text class="t-sm t-soft dlabel f2" x="145" y="120" text-anchor="middle">a mesma mensagem</text>
+            <rect class="box draw d1" pathLength="1" x="60" y="136" width="170" height="48"/>
+            <text class="t-ink dlabel f1" x="145" y="165" text-anchor="middle">área()</text>
+
+            <line class="wire fade f2" x1="230" y1="160" x2="426" y2="84" marker-end="url(#ar-pol)"/>
+            <line class="wire fade f2" x1="230" y1="160" x2="426" y2="160" marker-end="url(#ar-pol)"/>
+            <line class="wire fade f3" x1="230" y1="160" x2="426" y2="236" marker-end="url(#ar-pol)"/>
+
+            <rect class="box draw d2" pathLength="1" x="430" y="60" width="170" height="48"/>
+            <text class="t-sm dlabel f3" x="515" y="89" text-anchor="middle">círculo</text>
+            <rect class="box draw d2" pathLength="1" x="430" y="136" width="170" height="48"/>
+            <text class="t-sm dlabel f3" x="515" y="165" text-anchor="middle">retângulo</text>
+            <rect class="box draw d3" pathLength="1" x="430" y="212" width="170" height="48"/>
+            <text class="t-sm dlabel f3" x="515" y="241" text-anchor="middle">triângulo</text>
+
+            <line class="wire-soft fade f4" x1="600" y1="84" x2="650" y2="84"/>
+            <text class="dlabel f4" x="662" y="89" text-anchor="start">π · r²</text>
+            <line class="wire-soft fade f4" x1="600" y1="160" x2="650" y2="160"/>
+            <text class="dlabel f4" x="662" y="165" text-anchor="start">b · h</text>
+            <line class="wire-soft fade f4" x1="600" y1="236" x2="650" y2="236"/>
+            <text class="dlabel f4" x="662" y="241" text-anchor="start">b · h / 2</text>
+
+            <text class="t-sm t-soft dlabel f5" x="430" y="300" text-anchor="middle">cada forma responde do seu jeito — quem envia não muda nada</text>
+
+            <path id="p-m1" d="M230,160 L426,84" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#p-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            <path id="p-m2" d="M230,160 L426,236" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#p-m2"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">Princípio da substituição: todo subtipo deve poder substituir seu tipo-base sem quebrar o programa — Barbara Liskov, “Data Abstraction and Hierarchy” (1987) · Turing Award 2008.</p>
+      </div>
+    </section>
+
+    <!-- 15 · Polimorfismo, em código -->
+    <section class="slide" data-title="Polimorfismo · código" aria-label="Polimorfismo em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Polimorfismo, <em>em código</em></h2>
+        <pre class="code rise r2">formas = [ <span class="kw">novo</span> Círculo(2), <span class="kw">novo</span> Retângulo(3, 4), <span class="kw">novo</span> Triângulo(3, 4) ]
+
+<span class="kw">para cada</span> forma <span class="kw">em</span> formas
+  imprime forma.<span class="hi">área()</span>                 <span class="cm">// a mesma mensagem…</span>
+
+<span class="cm">// saída: 12,56…   12   6              — três respostas diferentes</span></pre>
+      </div>
+    </section>
+
+    <!-- 16 · Composição -->
+    <section class="slide" data-title="Composição" aria-label="Composição sobre herança">
+      <div class="slide-inner">
+        <h2 class="rise r1">Composição sobre herança</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 360" role="img" aria-label="Comparação: à esquerda, uma torre de herança com uma classe por combinação; à direita, uma forma composta por borda, sombra e o que vier">
+            <defs>
+              <marker id="ar-cmp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="320"/>
+
+            <!-- herança -->
+            <rect class="box draw d1" pathLength="1" x="110" y="48" width="220" height="44"/>
+            <text class="t-sm dlabel f1" x="220" y="75" text-anchor="middle">forma</text>
+            <line class="wire fade f2" x1="220" y1="124" x2="220" y2="96" marker-end="url(#ar-cmp)"/>
+            <rect class="box draw d2" pathLength="1" x="110" y="124" width="220" height="44"/>
+            <text class="t-sm dlabel f2" x="220" y="151" text-anchor="middle">forma com borda</text>
+            <line class="wire fade f3" x1="220" y1="200" x2="220" y2="172" marker-end="url(#ar-cmp)"/>
+            <rect class="box draw d3" pathLength="1" x="110" y="200" width="220" height="44"/>
+            <text class="t-sm dlabel f3" x="220" y="227" text-anchor="middle">forma com borda e sombra</text>
+            <line class="wire dashed fade f4" x1="220" y1="268" x2="220" y2="248" marker-end="url(#ar-cmp)"/>
+            <rect class="box dashed fade f4" x="110" y="268" width="220" height="40"/>
+            <text class="t-sm t-soft dlabel f4" x="220" y="293" text-anchor="middle">e cada combinação nova…</text>
+
+            <text class="t-caption dlabel f5" x="220" y="344" text-anchor="middle">HERANÇA · RÍGIDA NA COMPILAÇÃO</text>
+
+            <!-- composição -->
+            <rect class="box draw d2" pathLength="1" x="590" y="120" width="150" height="56"/>
+            <text class="t-ink dlabel f2" x="665" y="152" text-anchor="middle">forma</text>
+
+            <rect class="box draw d3" pathLength="1" x="790" y="64" width="110" height="40"/>
+            <text class="t-sm dlabel f3" x="845" y="89" text-anchor="middle">borda</text>
+            <rect class="box draw d3" pathLength="1" x="790" y="196" width="110" height="40"/>
+            <text class="t-sm dlabel f3" x="845" y="221" text-anchor="middle">sombra</text>
+            <rect class="box dashed fade f4" x="520" y="250" width="130" height="40"/>
+            <text class="t-sm t-soft dlabel f4" x="585" y="275" text-anchor="middle">o que vier</text>
+
+            <text class="t-sm t-soft dlabel f4" x="700" y="96" text-anchor="middle">tem-um</text>
+            <line class="wire fade f3" x1="740" y1="134" x2="786" y2="90" marker-end="url(#ar-cmp)"/>
+            <line class="wire fade f3" x1="740" y1="162" x2="786" y2="212" marker-end="url(#ar-cmp)"/>
+            <line class="wire dashed fade f4" x1="620" y1="176" x2="592" y2="246" marker-end="url(#ar-cmp)"/>
+
+            <text class="t-caption dlabel f5" x="680" y="344" text-anchor="middle">COMPOSIÇÃO · FLEXÍVEL NA EXECUÇÃO</text>
+
+            <path id="q-m1" d="M740,162 L786,212" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#q-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Prefira composição de objetos a herança de classes.” — GoF, Design Patterns (1994). “Você queria uma banana, mas ganhou um gorila segurando a banana — e a floresta inteira.” — Joe Armstrong, sobre herança, em Coders at Work (2009) · traduções livres.</p>
+      </div>
+    </section>
+
+    <!-- 17 · Composição, em código -->
+    <section class="slide" data-title="Composição · código" aria-label="Composição em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">Composição, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Herança · uma classe por combinação</p>
+            <pre class="code"><span class="kw">classe</span> Forma
+<span class="kw">classe</span> FormaComBorda
+  <span class="kw">herda de</span> Forma
+<span class="kw">classe</span> FormaComBordaESombra
+  <span class="kw">herda de</span> FormaComBorda
+
+<span class="cm">// e a forma com sombra, sem borda?
+// mais uma classe — para sempre</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Composição · peças combinadas</p>
+            <pre class="code"><span class="kw">classe</span> Forma
+  <span class="kw">privado</span> efeitos = []
+
+  <span class="kw">método</span> com(efeito)
+    efeitos.acrescenta(efeito)
+    <span class="kw">retorna</span> isto
+
+forma.com(borda).com(sombra)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 · Diga, não pergunte -->
+    <section class="slide" data-title="Diga, não pergunte" aria-label="Diga, não pergunte">
+      <div class="slide-inner">
+        <h2 class="rise r1">Diga, não pergunte</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 360" role="img" aria-label="Comparação: à esquerda, o serviço pergunta o saldo, decide fora e grava de volta; à direita, o serviço envia sacar(100) e a conta decide por dentro">
+            <defs>
+              <marker id="ar-tda" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="320"/>
+
+            <!-- pergunte -->
+            <rect class="box draw d1" pathLength="1" x="60" y="80" width="140" height="110"/>
+            <text class="t-ink dlabel f1" x="130" y="140" text-anchor="middle">serviço</text>
+            <rect class="box draw d1" pathLength="1" x="290" y="80" width="130" height="110"/>
+            <text class="t-ink dlabel f1" x="355" y="140" text-anchor="middle">conta</text>
+
+            <line class="wire fade f2" x1="200" y1="105" x2="286" y2="105" marker-end="url(#ar-tda)"/>
+            <text class="t-sm t-soft dlabel f2" x="243" y="95" text-anchor="middle">saldo?</text>
+            <line class="wire fade f3" x1="286" y1="135" x2="204" y2="135" marker-end="url(#ar-tda)"/>
+            <text class="t-sm t-soft dlabel f3" x="243" y="125" text-anchor="middle">120</text>
+            <line class="wire fade f4" x1="200" y1="165" x2="286" y2="165" marker-end="url(#ar-tda)"/>
+            <text class="t-sm t-soft dlabel f4" x="243" y="155" text-anchor="middle">saldo = 20</text>
+
+            <line class="wire-soft fade f4" x1="130" y1="194" x2="130" y2="212"/>
+            <text class="t-sm t-soft dlabel f4" x="130" y="236" text-anchor="middle">a regra de negócio vaza pra cá</text>
+
+            <text class="t-caption dlabel f5" x="240" y="298" text-anchor="middle">PERGUNTE · MODELO ANÊMICO</text>
+            <text class="t-sm t-soft dlabel f5" x="240" y="322" text-anchor="middle">getters, setters e decisões espalhadas</text>
+
+            <!-- diga -->
+            <rect class="box draw d2" pathLength="1" x="500" y="80" width="140" height="110"/>
+            <text class="t-ink dlabel f2" x="570" y="140" text-anchor="middle">serviço</text>
+            <rect class="box draw d2" pathLength="1" x="740" y="80" width="140" height="110"/>
+            <text class="t-ink dlabel f2" x="810" y="122" text-anchor="middle">conta</text>
+            <rect class="box dashed fade f3" x="760" y="140" width="100" height="34"/>
+            <text class="t-sm dlabel f3" x="810" y="161" text-anchor="middle">regras</text>
+
+            <line class="wire fade f3" x1="640" y1="135" x2="736" y2="135" marker-end="url(#ar-tda)"/>
+            <text class="t-sm t-soft dlabel f3" x="688" y="123" text-anchor="middle">sacar(100)</text>
+
+            <line class="wire-soft fade f4" x1="810" y1="196" x2="810" y2="212"/>
+            <text class="t-sm t-soft dlabel f4" x="810" y="236" text-anchor="middle">a regra mora com os dados</text>
+
+            <text class="t-caption dlabel f5" x="690" y="298" text-anchor="middle">DIGA · MODELO RICO</text>
+            <text class="t-sm t-soft dlabel f5" x="690" y="322" text-anchor="middle">uma mensagem — o objeto decide</text>
+
+            <path id="t-m1" d="M640,135 H736" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#t-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">Tell, Don’t Ask — Andy Hunt e Dave Thomas (The Pragmatic Programmer, 1999). O “modelo de domínio anêmico” é anti-padrão — Martin Fowler (2003).</p>
+      </div>
+    </section>
+
+    <!-- 19 · “Diga”, em código -->
+    <section class="slide" data-title="Diga · código" aria-label="Diga, não pergunte em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">“Diga”, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Pergunte · a regra vaza</p>
+            <pre class="code"><span class="cm">// no serviço</span>
+saldo  = conta.saldo()
+limite = conta.limite()
+<span class="kw">se</span> saldo + limite ≥ 100
+  conta.definirSaldo(saldo - 100)</pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Diga · a regra mora na conta</p>
+            <pre class="code"><span class="cm">// no serviço</span>
+conta.<span class="hi">sacar(100)</span>
+
+<span class="cm">// a decisão inteira acontece
+// dentro do objeto</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20 · As fontes -->
+    <section class="slide" data-title="As fontes" aria-label="As fontes">
+      <div class="slide-inner">
+        <h2 class="rise r1">As fontes</h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Livros</p>
+            <ul class="item-list">
+              <li>Design Patterns — Gamma, Helm, Johnson e Vlissides · 1994</li>
+              <li>Object-Oriented Analysis and Design — Grady Booch · 1991</li>
+              <li>Practical Object-Oriented Design — Sandi Metz · 2012</li>
+              <li>The Pragmatic Programmer — Hunt e Thomas · 1999</li>
+              <li>Object Thinking — David West · 2004</li>
+            </ul>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Artigos e palestras</p>
+            <ul class="item-list">
+              <li>On the Criteria to Be Used in Decomposing Systems into Modules — David Parnas · 1972</li>
+              <li>Data Abstraction and Hierarchy — Barbara Liskov · 1987</li>
+              <li>The Early History of Smalltalk — Alan Kay · 1993</li>
+              <li>Anemic Domain Model — Martin Fowler · 2003</li>
+            </ul>
+          </div>
+        </div>
+        <p class="credit tight rise r4">Todas as fontes são em inglês — as citações desta aula são traduções livres.</p>
+      </div>
+    </section>
+
+    <!-- 21 · Praticar -->
+    <section class="slide" data-title="Praticar" aria-label="Vamos praticar">
+      <div class="slide-inner">
+        <h2 class="rise r1">Vamos praticar?</h2>
+        <ul class="item-list rise r2" style="max-width: 680px;">
+          <li>Modele um carrinho de compras só com mensagens públicas — nenhum getter</li>
+          <li>Refatore um serviço que pergunta demais: mova a regra para dentro do objeto</li>
+          <li>Encontre uma herança que não é “é-um” — e troque por composição</li>
+        </ul>
+        <div class="contact-links rise r3">
+          <a href="mailto:andrendarcie@gmail.com">E-mail</a>
+          <a href="https://linkedin.com/in/andredarcie" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/andredarcie" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="progress" aria-hidden="true"><div id="progress-fill"></div></div>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const fill = document.getElementById('progress-fill');
+      let current = -1;
+
+      function setScale() {
+        const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        document.documentElement.style.setProperty('--stage-scale', s);
+      }
+      setScale();
+      window.addEventListener('resize', setScale);
+
+      function go(i) {
+        i = Math.max(0, Math.min(slides.length - 1, i));
+        if (i === current) return;
+        slides.forEach((s, j) => s.classList.toggle('active', j === i));
+        current = i;
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          go(current + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          go(current - 1);
+        } else if (e.key === 'Home') {
+          go(0);
+        } else if (e.key === 'End') {
+          go(slides.length - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      let tx = 0, ty = 0;
+      document.addEventListener('touchstart', e => {
+        tx = e.changedTouches[0].clientX;
+        ty = e.changedTouches[0].clientY;
+      }, { passive: true });
+      document.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        const dy = e.changedTouches[0].clientY - ty;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          go(dx < 0 ? current + 1 : current - 1);
+        }
+      }, { passive: true });
+
+      window.addEventListener('hashchange', () => {
+        const h = parseInt(location.hash.slice(1), 10);
+        if (!isNaN(h)) go(h - 1);
+      });
+
+      const h = parseInt(location.hash.slice(1), 10);
+      go(isNaN(h) ? 0 : h - 1);
+      if (current === -1) go(0);
+    })();
+
+    (function () {
+      const canvas = document.getElementById('net');
+      if (!canvas || !canvas.getContext) return;
+      const slide = canvas.closest('.slide');
+      const ctx = canvas.getContext('2d');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const NUM_NODES = 18;
+      const CONNECT_DIST = 170;
+      const DRIFT = 0.18;
+      let w = 0, h = 0, t = 0;
+      let nodes = [], pulses = [];
+
+      function resize() {
+        const r = slide.getBoundingClientRect();
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        w = r.width;
+        h = r.height;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function init() {
+        nodes = [];
+        pulses = [];
+        for (let i = 0; i < NUM_NODES; i++) {
+          nodes.push({
+            x: w * (0.05 + 0.9 * Math.random()),
+            y: h * (0.1 + 0.8 * Math.random()),
+            base: Math.random() * Math.PI * 2,
+            spd: 0.002 + Math.random() * 0.003,
+            ph: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+
+      function step() {
+        t++;
+        ctx.clearRect(0, 0, w, h);
+
+        for (const nd of nodes) {
+          const dir = nd.base + Math.sin(t * nd.spd + nd.ph) * 2.2;
+          nd.x += Math.cos(dir) * DRIFT;
+          nd.y += Math.sin(dir) * DRIFT;
+          const m = 50;
+          if (nd.x < m) nd.x += (m - nd.x) * 0.03;
+          if (nd.x > w - m) nd.x -= (nd.x - (w - m)) * 0.03;
+          if (nd.y < m) nd.y += (m - nd.y) * 0.03;
+          if (nd.y > h - m) nd.y -= (nd.y - (h - m)) * 0.03;
+        }
+
+        ctx.lineWidth = 0.6;
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+            if (d < CONNECT_DIST) {
+              ctx.strokeStyle = 'rgba(30,30,30,' + (0.12 * (1 - d / CONNECT_DIST)).toFixed(3) + ')';
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        for (let i = pulses.length - 1; i >= 0; i--) {
+          const pu = pulses[i];
+          pu.t += pu.spd;
+          if (pu.t >= 1) {
+            pulses.splice(i, 1);
+            continue;
+          }
+          const x = nodes[pu.a].x + (nodes[pu.b].x - nodes[pu.a].x) * pu.t;
+          const y = nodes[pu.a].y + (nodes[pu.b].y - nodes[pu.a].y) * pu.t;
+          const a = pu.t < 0.5 ? pu.t / 0.5 * 0.27 : (1 - pu.t) / 0.5 * 0.27;
+          ctx.fillStyle = 'rgba(30,30,30,' + a.toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(x, y, 1.75, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = 'rgba(30,30,30,0.18)';
+        for (const nd of nodes) {
+          ctx.beginPath();
+          ctx.arc(nd.x, nd.y, 1.75, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (t % 80 === 0 && Math.random() < 0.7) {
+          const i = Math.floor(Math.random() * nodes.length);
+          const nearby = [];
+          for (let j = 0; j < nodes.length; j++) {
+            if (j !== i && Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y) < CONNECT_DIST) {
+              nearby.push(j);
+            }
+          }
+          if (nearby.length) {
+            const j = nearby[Math.floor(Math.random() * nearby.length)];
+            pulses.push({ a: i, b: j, t: 0, spd: 0.007 + Math.random() * 0.005 });
+          }
+        }
+      }
+
+      function loop() {
+        if (slide.classList.contains('active') && !document.hidden) step();
+        requestAnimationFrame(loop);
+      }
+
+      resize();
+      init();
+      if (reduced) {
+        step();
+      } else {
+        requestAnimationFrame(loop);
+      }
+
+      window.addEventListener('resize', () => {
+        resize();
+        init();
+        if (reduced) step();
+      });
+    })();
+  </script>
+
+</body>
+</html>

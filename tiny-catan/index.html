@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>Tiny Catan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <button class="brand" id="new-game" aria-label="Novo jogo"><span class="brand-mark">t</span><span>Tiny Catan</span></button>
+        <div class="turn-pill"><span id="turn-dot"></span><span id="turn-label">Preparando ilha</span></div>
+        <button class="icon-btn" id="rules-btn" aria-label="Regras"><i data-lucide="book-open"></i></button>
+      </header>
+
+      <main>
+        <section class="score-strip" id="score-strip" aria-label="Jogadores"></section>
+        <section class="board-card">
+          <svg id="board" viewBox="0 0 720 650" role="img" aria-label="Tabuleiro de Tiny Catan"></svg>
+          <div id="dice" class="dice-float hidden"><span class="die" id="die-a">1</span><span class="die" id="die-b">1</span></div>
+          <div id="toast" class="toast hidden"></div>
+        </section>
+
+        <section class="resource-bar" id="resource-bar" aria-label="Seus recursos"></section>
+        <section class="action-panel">
+          <div class="phase-copy"><small id="phase-kicker">PREPARAÇÃO</small><strong id="phase-title">Escolha uma encruzilhada</strong><span id="phase-help">Toque em um ponto livre da ilha.</span></div>
+          <div id="actions" class="actions"></div>
+        </section>
+        <section class="log-card"><button id="log-toggle"><span><i data-lucide="scroll-text"></i> Diário da ilha</span><i data-lucide="chevron-down"></i></button><div id="game-log" class="game-log"></div></section>
+      </main>
+    </div>
+
+    <dialog id="sheet"><form method="dialog"><div class="sheet-head"><div><small id="sheet-kicker"></small><h2 id="sheet-title"></h2></div><button value="cancel" class="icon-btn"><i data-lucide="x"></i></button></div><div id="sheet-body"></div></form></dialog>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>

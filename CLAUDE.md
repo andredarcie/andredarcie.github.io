@@ -6,6 +6,10 @@
   manualmente pelo usuário, que reporta os bugs de volta.
 - Checagem de sintaxe (`node --check`) é permitida, nada além disso.
 
+## Curso (curso/)
+- **Aula nova do curso: SEMPRE usar a skill `criar-aula`** (`.claude/skills/criar-aula/SKILL.md`) — nunca montar um deck sem ela.
+- A referência de qualidade é `curso/orientacao-a-objetos.html`; as regras completas estão em `curso/CLAUDE.md`.
+
 ## Convenções do projeto (tiny-gta)
 - Cache-busting é centralizado no import map do `index.html`: cada módulo local é
   mapeado para sua URL com `?v=N`. Os arquivos `.js` usam imports SEM query string

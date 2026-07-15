@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 05 · Fundamentos — Princípios SOLID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink: #1e1e1e;
+      --mid: #4a4a4a;
+      --soft: #7a7a7a;
+      --line: #e8e4df;
+      --line-strong: #d9d3ca;
+      --paper: #f4f1ec;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    /* ── Deck ── */
+    .slides {
+      position: fixed;
+      inset: 0;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(16px);
+      transition: opacity .5s ease, transform .5s ease, visibility 0s linear .5s;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity .55s ease .08s, transform .55s ease .08s, visibility 0s;
+    }
+
+    .slide-inner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1280px;
+      height: 720px;
+      transform: translate(-50%, -50%) scale(var(--stage-scale, 1));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 76px 88px 84px;
+    }
+
+    /* ── Type ── */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 96px;
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+    }
+
+    h1 em {
+      font-style: italic;
+    }
+
+    .slide h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 54px;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+    }
+
+    .sub-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin: 28px 0 4px;
+    }
+
+    .sub-label:first-child {
+      margin-top: 0;
+    }
+
+    .quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 31px;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      max-width: 26ch;
+    }
+
+    .quote em {
+      font-style: normal;
+    }
+
+    .quote-credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .05em;
+      color: var(--soft);
+      margin-top: 28px;
+      line-height: 1.8;
+      max-width: 48ch;
+    }
+
+    /* ── Pseudocódigo ── */
+    pre.code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 16.5px;
+      line-height: 1.85;
+      color: var(--mid);
+      border: 1px solid var(--line-strong);
+      padding: 30px 38px;
+      white-space: pre;
+      align-self: flex-start;
+      margin-top: 34px;
+    }
+
+    .code .kw { color: var(--ink); font-weight: 500; }
+    .code .cm { color: var(--soft); }
+    .code .hi { color: var(--ink); }
+
+    .cols pre.code {
+      align-self: stretch;
+      width: 100%;
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 26px 28px;
+      margin-top: 14px;
+    }
+
+    .credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+      letter-spacing: .04em;
+      color: var(--soft);
+      margin-top: 44px;
+      max-width: 78ch;
+      line-height: 1.7;
+    }
+
+    .credit.tight {
+      margin-top: 22px;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      z-index: 1;
+    }
+
+    #net {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .cover-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-top: 32px;
+    }
+
+    .cover-hint {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+      color: var(--soft);
+      margin-top: 72px;
+    }
+
+    /* ── Diagram wrap ── */
+    .dwrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 36px;
+    }
+
+    .dwrap svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── SVG language ── */
+    svg text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      fill: var(--mid);
+    }
+
+    svg .t-ink { fill: var(--ink); font-size: 14.5px; }
+    svg .t-soft { fill: var(--soft); }
+    svg .t-sm { font-size: 12.5px; }
+    svg .t-caption { font-size: 13px; letter-spacing: .14em; fill: var(--soft); }
+    svg .serif {
+      font-family: 'Playfair Display', serif;
+      font-size: 27px;
+      fill: var(--ink);
+    }
+
+    svg .box {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.3;
+    }
+
+    svg .box.solid {
+      fill: var(--paper);
+    }
+
+    svg .wire {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.2;
+      stroke-linecap: round;
+    }
+
+    svg .wire-soft {
+      fill: none;
+      stroke: var(--line-strong);
+      stroke-width: 1.1;
+    }
+
+    svg .tick {
+      stroke: var(--soft);
+      stroke-width: 1;
+      opacity: .55;
+    }
+
+    svg .dot {
+      fill: var(--paper);
+      stroke: var(--ink);
+      stroke-width: 1.4;
+    }
+
+    svg .dot-fill {
+      fill: var(--ink);
+    }
+
+    svg .pulse {
+      fill: var(--ink);
+      opacity: 0;
+    }
+
+    svg .dashed {
+      stroke-dasharray: 5 5;
+    }
+
+    /* ── Entry choreography ── */
+    .draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+
+    .slide.active .draw {
+      animation: drawIn 1.1s cubic-bezier(.4, 0, .2, 1) forwards;
+      animation-delay: .15s;
+    }
+
+    .fade, .dlabel {
+      opacity: 0;
+    }
+
+    .slide.active .fade,
+    .slide.active .dlabel {
+      animation: fadeIn .7s ease forwards;
+      animation-delay: .65s;
+    }
+
+    .d1 { animation-delay: .25s !important; }
+    .d2 { animation-delay: .4s !important; }
+    .d3 { animation-delay: .55s !important; }
+    .f1 { animation-delay: .55s !important; }
+    .f2 { animation-delay: .7s !important; }
+    .f3 { animation-delay: .85s !important; }
+    .f4 { animation-delay: 1s !important; }
+    .f5 { animation-delay: 1.15s !important; }
+
+    .rise {
+      opacity: 0;
+    }
+
+    .slide.active .rise {
+      animation: riseIn .65s cubic-bezier(.2, .6, .2, 1) forwards;
+    }
+
+    .r1 { animation-delay: .1s; }
+    .r2 { animation-delay: .22s; }
+    .r3 { animation-delay: .34s; }
+    .r4 { animation-delay: .46s; }
+
+    @keyframes drawIn {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* ── Lists, grids ── */
+    .item-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .item-list li {
+      font-size: 17px;
+      color: var(--mid);
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      line-height: 1.6;
+    }
+
+    .item-list li::before {
+      content: "–";
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--soft);
+      flex-shrink: 0;
+    }
+
+    .item-list li:last-child {
+      border-bottom: none;
+    }
+
+    .cols {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      margin-top: 8px;
+    }
+
+    .cols > :first-child {
+      align-self: center;
+    }
+
+    .cols.top > :first-child {
+      align-self: start;
+    }
+
+    .cols .dwrap {
+      margin-top: 0;
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* ── Contact ── */
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 44px;
+    }
+
+    .contact-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: .06em;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 12px 20px;
+      border: 1px solid var(--ink);
+      transition: background .15s, color .15s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .contact-links a:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .contact-links a:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    /* ── Progress ── */
+    .progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      z-index: 11;
+    }
+
+    #progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--ink);
+      transition: width .5s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .slide {
+        transition: none;
+        transform: none;
+      }
+
+      .draw, .slide.active .draw {
+        animation: none;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+      }
+
+      .fade, .dlabel, .rise,
+      .slide.active .fade,
+      .slide.active .dlabel,
+      .slide.active .rise {
+        animation: none;
+        opacity: 1;
+      }
+
+      svg .pulse {
+        display: none;
+      }
+
+      #progress-fill {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="slides" aria-live="polite">
+
+    <!-- 01 · Capa -->
+    <section class="slide active" data-title="Capa" aria-label="Capa">
+      <canvas id="net" aria-hidden="true"></canvas>
+      <div class="slide-inner cover">
+        <h1 class="rise r1">Princípios<br><em>SOLID</em></h1>
+        <p class="cover-meta rise r2">Aula 05 · Fundamentos — André N. Darcie</p>
+        <p class="cover-hint rise r3">← → para navegar &nbsp;·&nbsp; F para tela cheia</p>
+      </div>
+    </section>
+
+    <!-- 02 · A origem -->
+    <section class="slide" data-title="A origem" aria-label="A origem">
+      <div class="slide-inner">
+        <h2 class="rise r1">A origem</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 220" role="img" aria-label="Linha do tempo: Parnas em 1972 com módulos que escondem decisões, Liskov em 1987 com substituição segura, Meyer em 1988 com aberto/fechado, Martin em 2000 reunindo os princípios e Feathers em 2004 batizando a sigla">
+            <line class="wire draw d1" pathLength="1" x1="60" y1="110" x2="860" y2="110"/>
+
+            <circle class="dot fade f1" cx="150" cy="110" r="4.5"/>
+            <text class="dlabel f1" x="150" y="68" text-anchor="middle">Parnas · 1972</text>
+            <text class="t-sm t-soft dlabel f1" x="150" y="88" text-anchor="middle">módulos que escondem decisões</text>
+
+            <circle class="dot fade f2" cx="310" cy="110" r="4.5"/>
+            <text class="dlabel f2" x="310" y="144" text-anchor="middle">Liskov · 1987</text>
+            <text class="t-sm t-soft dlabel f2" x="310" y="164" text-anchor="middle">substituição segura de subtipos</text>
+
+            <circle class="dot fade f3" cx="465" cy="110" r="4.5"/>
+            <text class="dlabel f3" x="465" y="68" text-anchor="middle">Meyer · 1988</text>
+            <text class="t-sm t-soft dlabel f3" x="465" y="88" text-anchor="middle">aberto/fechado</text>
+
+            <circle class="dot fade f4" cx="620" cy="110" r="4.5"/>
+            <text class="dlabel f4" x="620" y="144" text-anchor="middle">Martin · 2000</text>
+            <text class="t-sm t-soft dlabel f4" x="620" y="164" text-anchor="middle">reúne os cinco princípios</text>
+
+            <circle class="dot fade f5" cx="775" cy="110" r="4.5"/>
+            <text class="dlabel f5" x="775" y="68" text-anchor="middle">Feathers · 2004</text>
+            <text class="t-sm t-soft dlabel f5" x="775" y="88" text-anchor="middle">batiza a sigla SOLID</text>
+
+            <path id="tl-m1" d="M60,110 H860" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="7s" repeatCount="indefinite"><mpath href="#tl-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.55;.55;0" keyTimes="0;.1;.9;1" dur="7s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">Os princípios foram reunidos por Robert C. Martin em “Design Principles and Design Patterns” (2000); a ordem que forma a sigla SOLID é de Michael Feathers.</p>
+      </div>
+    </section>
+
+    <!-- 03 · A grande ideia -->
+    <section class="slide" data-title="A grande ideia" aria-label="A grande ideia">
+      <div class="slide-inner">
+        <h2 class="rise r1">A grande ideia</h2>
+        <div class="cols">
+          <div class="rise r2">
+            <p class="quote">“O único jeito de ir rápido é ir <em>bem</em>.”</p>
+            <p class="quote-credit">— Robert C. Martin (“Uncle Bob”), Clean Architecture (2017) · tradução livre. SOLID existe para uma coisa: gerir as dependências entre módulos antes que elas giram você.</p>
+          </div>
+          <div class="dwrap rise r3">
+            <svg class="diagram" viewBox="0 0 760 470" role="img" aria-label="Cinco módulos emaranhados por setas de dependência; uma mudança no módulo pedidos propaga quebras em estoque e relatórios">
+              <defs>
+                <marker id="ar-rot" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+                </marker>
+              </defs>
+
+              <rect class="box draw d1" pathLength="1" x="60" y="60" width="150" height="44"/>
+              <text class="t-sm dlabel f1" x="135" y="87" text-anchor="middle">pedidos</text>
+              <text class="t-sm t-soft dlabel f4" x="135" y="44" text-anchor="middle">muda aqui</text>
+
+              <rect class="box draw d1" pathLength="1" x="420" y="50" width="150" height="44"/>
+              <text class="t-sm dlabel f1" x="495" y="77" text-anchor="middle">clientes</text>
+
+              <rect class="box draw d2" pathLength="1" x="560" y="170" width="150" height="44"/>
+              <text class="t-sm dlabel f2" x="635" y="197" text-anchor="middle">estoque</text>
+
+              <rect class="box draw d2" pathLength="1" x="180" y="200" width="150" height="44"/>
+              <text class="t-sm dlabel f2" x="255" y="227" text-anchor="middle">pagamentos</text>
+
+              <rect class="box draw d3" pathLength="1" x="420" y="320" width="150" height="44"/>
+              <text class="t-sm dlabel f3" x="495" y="347" text-anchor="middle">relatórios</text>
+
+              <line class="wire fade f2" x1="214" y1="78" x2="416" y2="72" marker-end="url(#ar-rot)"/>
+              <line class="wire fade f2" x1="150" y1="108" x2="230" y2="196" marker-end="url(#ar-rot)"/>
+              <line class="wire fade f3" x1="450" y1="98" x2="325" y2="198" marker-end="url(#ar-rot)"/>
+              <line class="wire fade f3" x1="530" y1="98" x2="610" y2="166" marker-end="url(#ar-rot)"/>
+              <line class="wire fade f3" x1="620" y1="218" x2="530" y2="316" marker-end="url(#ar-rot)"/>
+              <line class="wire fade f3" x1="300" y1="248" x2="430" y2="318" marker-end="url(#ar-rot)"/>
+              <line class="wire fade f2" x1="170" y1="108" x2="450" y2="316" marker-end="url(#ar-rot)"/>
+
+              <line class="wire fade f4" x1="713" y1="163" x2="723" y2="173"/>
+              <line class="wire fade f4" x1="723" y1="163" x2="713" y2="173"/>
+              <text class="t-sm t-soft dlabel f4" x="718" y="150" text-anchor="middle">quebra</text>
+
+              <line class="wire fade f4" x1="585" y1="298" x2="595" y2="308"/>
+              <line class="wire fade f4" x1="595" y1="298" x2="585" y2="308"/>
+              <text class="t-sm t-soft dlabel f4" x="590" y="286" text-anchor="middle">quebra</text>
+
+              <text class="t-caption dlabel f5" x="380" y="430" text-anchor="middle">O DESIGN APODRECE</text>
+              <text class="t-sm t-soft dlabel f5" x="380" y="456" text-anchor="middle">rigidez · fragilidade · imobilidade · viscosidade</text>
+
+              <path id="rot-m1" d="M170,108 L450,316" fill="none" stroke="none"/>
+              <circle class="pulse" r="3">
+                <animateMotion dur="3.4s" repeatCount="indefinite"><mpath href="#rot-m1"/></animateMotion>
+                <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3.4s" repeatCount="indefinite"/>
+              </circle>
+              <path id="rot-m2" d="M150,108 L230,196" fill="none" stroke="none"/>
+              <circle class="pulse" r="3">
+                <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#rot-m2"/></animateMotion>
+                <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+        <p class="credit tight rise r4">Os sintomas do design que apodrece — rigidez, fragilidade, imobilidade e viscosidade — são de Robert C. Martin, “Design Principles and Design Patterns” (2000).</p>
+      </div>
+    </section>
+
+    <!-- 04 · As cinco letras -->
+    <section class="slide" data-title="As cinco letras" aria-label="As cinco letras de SOLID">
+      <div class="slide-inner">
+        <h2 class="rise r1">As cinco letras</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 300" role="img" aria-label="As letras S, O, L, I e D em fila, com seus nomes: responsabilidade única, aberto para estender e fechado para modificar, substituição de Liskov, segregação de interfaces e inversão de dependência">
+            <text class="serif dlabel f1" style="font-size:64px" x="110" y="120" text-anchor="middle">S</text>
+            <text class="t-sm dlabel f1" x="110" y="170" text-anchor="middle">responsabilidade</text>
+            <text class="t-sm dlabel f1" x="110" y="192" text-anchor="middle">única</text>
+
+            <text class="serif dlabel f2" style="font-size:64px" x="285" y="120" text-anchor="middle">O</text>
+            <text class="t-sm dlabel f2" x="285" y="170" text-anchor="middle">aberto para estender,</text>
+            <text class="t-sm dlabel f2" x="285" y="192" text-anchor="middle">fechado para modificar</text>
+
+            <text class="serif dlabel f3" style="font-size:64px" x="460" y="120" text-anchor="middle">L</text>
+            <text class="t-sm dlabel f3" x="460" y="170" text-anchor="middle">substituição</text>
+            <text class="t-sm dlabel f3" x="460" y="192" text-anchor="middle">de liskov</text>
+
+            <text class="serif dlabel f4" style="font-size:64px" x="635" y="120" text-anchor="middle">I</text>
+            <text class="t-sm dlabel f4" x="635" y="170" text-anchor="middle">segregação de</text>
+            <text class="t-sm dlabel f4" x="635" y="192" text-anchor="middle">interfaces</text>
+
+            <text class="serif dlabel f5" style="font-size:64px" x="810" y="120" text-anchor="middle">D</text>
+            <text class="t-sm dlabel f5" x="810" y="170" text-anchor="middle">inversão de</text>
+            <text class="t-sm dlabel f5" x="810" y="192" text-anchor="middle">dependência</text>
+
+            <line class="wire draw d2" pathLength="1" x1="80" y1="240" x2="840" y2="240"/>
+            <circle class="dot fade f1" cx="110" cy="240" r="4"/>
+            <circle class="dot fade f2" cx="285" cy="240" r="4"/>
+            <circle class="dot fade f3" cx="460" cy="240" r="4"/>
+            <circle class="dot fade f4" cx="635" cy="240" r="4"/>
+            <circle class="dot fade f5" cx="810" cy="240" r="4"/>
+
+            <text class="t-caption dlabel f5" x="460" y="288" text-anchor="middle">CINCO PRINCÍPIOS · UM OBJETIVO: GERIR DEPENDÊNCIAS</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 · S — Responsabilidade única -->
+    <section class="slide" data-title="S" aria-label="S: responsabilidade única">
+      <div class="slide-inner">
+        <h2 class="rise r1">S · Responsabilidade única</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 340" role="img" aria-label="Comparação: à esquerda, financeiro, design e dba puxam a mesma classe relatório de vendas; à direita, três módulos separados, cada um respondendo a um único ator">
+            <defs>
+              <marker id="ar-srp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="300"/>
+
+            <!-- três motivos -->
+            <rect class="box draw d1" pathLength="1" x="210" y="60" width="195" height="180"/>
+            <text class="t-ink dlabel f1" x="307" y="92" text-anchor="middle">relatório de vendas</text>
+            <text class="t-sm dlabel f2" x="307" y="139" text-anchor="middle">calcular os totais</text>
+            <text class="t-sm dlabel f2" x="307" y="169" text-anchor="middle">formatar o html</text>
+            <text class="t-sm dlabel f2" x="307" y="199" text-anchor="middle">gravar no banco</text>
+
+            <text class="t-sm t-soft dlabel f3" x="92" y="139" text-anchor="end">financeiro</text>
+            <line class="wire fade f3" x1="98" y1="135" x2="206" y2="135" marker-end="url(#ar-srp)"/>
+            <text class="t-sm t-soft dlabel f3" x="92" y="169" text-anchor="end">design</text>
+            <line class="wire fade f3" x1="98" y1="165" x2="206" y2="165" marker-end="url(#ar-srp)"/>
+            <text class="t-sm t-soft dlabel f3" x="92" y="199" text-anchor="end">dba</text>
+            <line class="wire fade f3" x1="98" y1="195" x2="206" y2="195" marker-end="url(#ar-srp)"/>
+
+            <text class="t-caption dlabel f4" x="220" y="282" text-anchor="middle">TRÊS MOTIVOS PARA MUDAR</text>
+            <text class="t-sm t-soft dlabel f4" x="220" y="306" text-anchor="middle">financeiro, design e dba puxam o mesmo módulo</text>
+
+            <!-- um motivo cada -->
+            <rect class="box draw d2" pathLength="1" x="610" y="60" width="210" height="44"/>
+            <text class="t-sm dlabel f3" x="715" y="87" text-anchor="middle">calculadora de totais</text>
+            <rect class="box draw d2" pathLength="1" x="610" y="130" width="210" height="44"/>
+            <text class="t-sm dlabel f3" x="715" y="157" text-anchor="middle">formatador de html</text>
+            <rect class="box draw d3" pathLength="1" x="610" y="200" width="210" height="44"/>
+            <text class="t-sm dlabel f3" x="715" y="227" text-anchor="middle">repositório de vendas</text>
+
+            <text class="t-sm t-soft dlabel f4" x="524" y="86" text-anchor="end">financeiro</text>
+            <line class="wire fade f4" x1="530" y1="82" x2="606" y2="82" marker-end="url(#ar-srp)"/>
+            <text class="t-sm t-soft dlabel f4" x="524" y="156" text-anchor="end">design</text>
+            <line class="wire fade f4" x1="530" y1="152" x2="606" y2="152" marker-end="url(#ar-srp)"/>
+            <text class="t-sm t-soft dlabel f4" x="524" y="226" text-anchor="end">dba</text>
+            <line class="wire fade f4" x1="530" y1="222" x2="606" y2="222" marker-end="url(#ar-srp)"/>
+
+            <text class="t-caption dlabel f5" x="640" y="282" text-anchor="middle">UM MOTIVO POR MÓDULO</text>
+            <text class="t-sm t-soft dlabel f5" x="640" y="306" text-anchor="middle">cada classe responde a um único ator</text>
+
+            <path id="srp-m1" d="M98,135 H206" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#srp-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <path id="srp-m2" d="M530,82 H606" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="3s" repeatCount="indefinite"><mpath href="#srp-m2"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Uma classe deve ter um, e apenas um, motivo para mudar.” — Robert C. Martin, Agile Software Development: Principles, Patterns, and Practices (2002) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 06 · S, em código -->
+    <section class="slide" data-title="S · código" aria-label="Responsabilidade única em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">S, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Três motivos para mudar</p>
+            <pre class="code"><span class="kw">classe</span> RelatórioDeVendas
+  <span class="kw">método</span> calcularTotais()
+  <span class="kw">método</span> formatarHtml()
+  <span class="kw">método</span> gravarNoBanco()
+
+<span class="cm">// finanças, design e dba
+// mexem na mesma classe —
+// e um quebra o outro</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Um motivo por classe</p>
+            <pre class="code"><span class="kw">classe</span> CalculadoraDeTotais
+  <span class="kw">método</span> calcular(vendas)
+
+<span class="kw">classe</span> FormatadorDeHtml
+  <span class="kw">método</span> formatar(totais)
+
+<span class="kw">classe</span> RepositórioDeVendas
+  <span class="kw">método</span> gravar(relatório)</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 · O — Aberto/fechado -->
+    <section class="slide" data-title="O" aria-label="O: aberto/fechado">
+      <div class="slide-inner">
+        <h2 class="rise r1">O · Aberto/fechado</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 340" role="img" aria-label="Comparação: à esquerda, cada campanha nova reabre a calculadora de desconto cheia de se/senão; à direita, um contrato promoção recebe implementações novas sem tocar no código existente">
+            <defs>
+              <marker id="ar-ocp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="300"/>
+
+            <!-- modificação -->
+            <rect class="box draw d1" pathLength="1" x="124" y="70" width="240" height="140"/>
+            <text class="t-ink dlabel f1" x="244" y="98" text-anchor="middle">calculadora de desconto</text>
+            <text class="t-sm t-soft dlabel f2" x="148" y="128" text-anchor="start">se natal → 10%</text>
+            <text class="t-sm t-soft dlabel f2" x="148" y="152" text-anchor="start">senão se cyber → 25%</text>
+            <text class="t-sm t-soft dlabel f2" x="148" y="176" text-anchor="start">senão se aniversário …</text>
+
+            <text class="t-sm t-soft dlabel f3" x="68" y="124" text-anchor="middle">campanha nova</text>
+            <line class="wire fade f3" x1="30" y1="140" x2="120" y2="140" marker-end="url(#ar-ocp)"/>
+            <line class="wire fade f4" x1="119" y1="119" x2="129" y2="129"/>
+            <line class="wire fade f4" x1="129" y1="119" x2="119" y2="129"/>
+
+            <text class="t-caption dlabel f4" x="230" y="282" text-anchor="middle">MODIFICAÇÃO</text>
+            <text class="t-sm t-soft dlabel f4" x="230" y="306" text-anchor="middle">reabrir código que já funciona em produção</text>
+
+            <!-- extensão -->
+            <rect class="box dashed fade f2" x="530" y="60" width="240" height="64"/>
+            <text class="t-ink dlabel f2" x="650" y="88" text-anchor="middle">promoção</text>
+            <text class="t-sm t-soft dlabel f2" x="650" y="108" text-anchor="middle">desconto(pedido)</text>
+
+            <rect class="box draw d2" pathLength="1" x="460" y="200" width="130" height="44"/>
+            <text class="t-sm dlabel f3" x="525" y="227" text-anchor="middle">de natal</text>
+            <rect class="box draw d2" pathLength="1" x="610" y="200" width="130" height="44"/>
+            <text class="t-sm dlabel f3" x="675" y="227" text-anchor="middle">de cyber</text>
+            <rect class="box dashed fade f4" x="760" y="200" width="130" height="44"/>
+            <text class="t-sm t-soft dlabel f4" x="825" y="227" text-anchor="middle">a próxima…</text>
+            <text class="t-sm t-soft dlabel f4" x="825" y="268" text-anchor="middle">sem reabrir nada</text>
+
+            <line class="wire fade f3" x1="525" y1="196" x2="586" y2="128" marker-end="url(#ar-ocp)"/>
+            <line class="wire fade f3" x1="675" y1="196" x2="660" y2="128" marker-end="url(#ar-ocp)"/>
+            <line class="wire dashed fade f4" x1="825" y1="196" x2="734" y2="128" marker-end="url(#ar-ocp)"/>
+
+            <text class="t-caption dlabel f5" x="650" y="282" text-anchor="middle">EXTENSÃO</text>
+            <text class="t-sm t-soft dlabel f5" x="650" y="306" text-anchor="middle">campanha nova = classe nova, código velho intacto</text>
+
+            <path id="ocp-m1" d="M825,196 L734,128" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#ocp-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Entidades de software devem ser abertas para extensão, mas fechadas para modificação.” — Bertrand Meyer, Object-Oriented Software Construction (1988) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 08 · O, em código -->
+    <section class="slide" data-title="O · código" aria-label="Aberto/fechado em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">O, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Modificação · reabre o que funciona</p>
+            <pre class="code"><span class="kw">método</span> desconto(pedido, tipo)
+  <span class="kw">se</span> tipo = "natal"
+    <span class="kw">retorna</span> pedido.total · 0,10
+  <span class="kw">senão se</span> tipo = "cyber"
+    <span class="kw">retorna</span> pedido.total · 0,25
+  <span class="kw">senão se</span> …
+
+<span class="cm">// cada campanha nova
+// reabre esta função</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Extensão · só adiciona</p>
+            <pre class="code"><span class="kw">interface</span> Promoção
+  <span class="kw">método</span> desconto(pedido)
+
+<span class="kw">classe</span> PromoçãoDeNatal
+  <span class="kw">implementa</span> Promoção
+  <span class="kw">método</span> desconto(pedido)
+    <span class="kw">retorna</span> pedido.total · 0,10
+
+<span class="cm">// campanha nova = classe nova</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 · L — Substituição de Liskov -->
+    <section class="slide" data-title="L" aria-label="L: substituição de Liskov">
+      <div class="slide-inner">
+        <h2 class="rise r1">L · Substituição de Liskov</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 340" role="img" aria-label="Comparação: à esquerda, quadrado herda de retângulo e quebra o contrato ao mudar a largura junto com a altura; à direita, retângulo e quadrado são irmãos sob o contrato forma">
+            <defs>
+              <marker id="ar-lsp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="300"/>
+
+            <!-- herda mas quebra -->
+            <rect class="box draw d1" pathLength="1" x="140" y="60" width="180" height="48"/>
+            <text class="t-sm dlabel f1" x="230" y="89" text-anchor="middle">retângulo</text>
+
+            <line class="wire fade f2" x1="230" y1="180" x2="230" y2="112" marker-end="url(#ar-lsp)"/>
+            <text class="t-sm t-soft dlabel f2" x="246" y="150" text-anchor="start">é-um?</text>
+
+            <rect class="box draw d2" pathLength="1" x="140" y="184" width="180" height="48"/>
+            <text class="t-sm dlabel f2" x="230" y="213" text-anchor="middle">quadrado</text>
+
+            <text class="t-sm t-soft dlabel f3" x="230" y="262" text-anchor="middle">altura 5 muda a largura junto</text>
+            <line class="wire fade f4" x1="347" y1="252" x2="357" y2="262"/>
+            <line class="wire fade f4" x1="357" y1="252" x2="347" y2="262"/>
+
+            <text class="t-caption dlabel f4" x="230" y="306" text-anchor="middle">HERDA, MAS QUEBRA O CONTRATO</text>
+
+            <!-- irmãos -->
+            <rect class="box dashed fade f2" x="560" y="60" width="240" height="56"/>
+            <text class="t-ink dlabel f2" x="680" y="84" text-anchor="middle">forma</text>
+            <text class="t-sm t-soft dlabel f2" x="680" y="104" text-anchor="middle">área()</text>
+
+            <rect class="box draw d2" pathLength="1" x="490" y="200" width="170" height="48"/>
+            <text class="t-sm dlabel f3" x="575" y="229" text-anchor="middle">retângulo</text>
+            <rect class="box draw d3" pathLength="1" x="700" y="200" width="170" height="48"/>
+            <text class="t-sm dlabel f3" x="785" y="229" text-anchor="middle">quadrado</text>
+
+            <line class="wire fade f3" x1="575" y1="196" x2="627" y2="120" marker-end="url(#ar-lsp)"/>
+            <line class="wire fade f3" x1="785" y1="196" x2="733" y2="120" marker-end="url(#ar-lsp)"/>
+
+            <text class="t-sm t-soft dlabel f4" x="575" y="276" text-anchor="middle">largura · altura</text>
+            <text class="t-sm t-soft dlabel f4" x="785" y="276" text-anchor="middle">lado</text>
+
+            <text class="t-caption dlabel f5" x="680" y="306" text-anchor="middle">IRMÃOS SOB O MESMO CONTRATO</text>
+
+            <path id="lsp-m1" d="M575,196 L627,120" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#lsp-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Objetos de um subtipo devem poder substituir objetos do tipo-base sem alterar as propriedades do programa.” — Barbara Liskov e Jeannette Wing, “A Behavioral Notion of Subtyping” (1994) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 10 · L, em código -->
+    <section class="slide" data-title="L · código" aria-label="Substituição de Liskov em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">L, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Parece é-um…</p>
+            <pre class="code"><span class="kw">classe</span> Quadrado <span class="kw">herda de</span> Retângulo
+  <span class="kw">método</span> definirAltura(v)
+    altura  = v
+    largura = v            <span class="cm">// surpresa</span>
+
+r = <span class="kw">novo</span> Quadrado()
+r.definirLargura(4)
+r.definirAltura(5)
+r.área()                   <span class="cm">// 25, não 20</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">…mas não se comporta como um</p>
+            <pre class="code"><span class="kw">interface</span> Forma
+  <span class="kw">método</span> área()
+
+<span class="kw">classe</span> Retângulo <span class="kw">implementa</span> Forma
+  <span class="kw">privado</span> largura, altura
+
+<span class="kw">classe</span> Quadrado <span class="kw">implementa</span> Forma
+  <span class="kw">privado</span> lado
+
+<span class="cm">// irmãos: nenhum contrato quebrado</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · I — Segregação de interfaces -->
+    <section class="slide" data-title="I" aria-label="I: segregação de interfaces">
+      <div class="slide-inner">
+        <h2 class="rise r1">I · Segregação de interfaces</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 340" role="img" aria-label="Comparação: à esquerda, a impressora simples é forçada a implementar a interface gorda máquina, com um método grampear sem sentido; à direita, interfaces enxutas e cada cliente implementa só o que usa">
+            <defs>
+              <marker id="ar-isp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="300"/>
+
+            <!-- interface gorda -->
+            <rect class="box dashed fade f1" x="120" y="54" width="220" height="110"/>
+            <text class="t-ink dlabel f1" x="230" y="80" text-anchor="middle">máquina</text>
+            <text class="t-sm t-soft dlabel f2" x="230" y="104" text-anchor="middle">imprimir()</text>
+            <text class="t-sm t-soft dlabel f2" x="230" y="124" text-anchor="middle">digitalizar()</text>
+            <text class="t-sm t-soft dlabel f2" x="230" y="144" text-anchor="middle">grampear()</text>
+
+            <line class="wire fade f3" x1="230" y1="224" x2="230" y2="168" marker-end="url(#ar-isp)"/>
+            <line class="wire fade f4" x1="201" y1="191" x2="211" y2="201"/>
+            <line class="wire fade f4" x1="211" y1="191" x2="201" y2="201"/>
+            <text class="t-sm t-soft dlabel f4" x="248" y="201" text-anchor="start">grampear() sem sentido</text>
+
+            <rect class="box draw d2" pathLength="1" x="140" y="228" width="180" height="48"/>
+            <text class="t-sm dlabel f3" x="230" y="257" text-anchor="middle">impressora simples</text>
+
+            <text class="t-caption dlabel f5" x="230" y="306" text-anchor="middle">DEPENDE DO QUE NÃO USA</text>
+
+            <!-- interfaces enxutas -->
+            <rect class="box dashed fade f2" x="470" y="54" width="130" height="44"/>
+            <text class="t-sm dlabel f2" x="535" y="81" text-anchor="middle">imprime</text>
+            <rect class="box dashed fade f2" x="620" y="54" width="130" height="44"/>
+            <text class="t-sm dlabel f2" x="685" y="81" text-anchor="middle">digitaliza</text>
+            <rect class="box dashed fade f2" x="770" y="54" width="130" height="44"/>
+            <text class="t-sm dlabel f2" x="835" y="81" text-anchor="middle">grampeia</text>
+
+            <rect class="box draw d2" pathLength="1" x="445" y="228" width="180" height="48"/>
+            <text class="t-sm dlabel f3" x="535" y="257" text-anchor="middle">impressora simples</text>
+            <rect class="box draw d3" pathLength="1" x="700" y="228" width="170" height="48"/>
+            <text class="t-sm dlabel f3" x="785" y="257" text-anchor="middle">multifuncional</text>
+
+            <line class="wire fade f3" x1="535" y1="224" x2="535" y2="102" marker-end="url(#ar-isp)"/>
+            <line class="wire fade f4" x1="740" y1="224" x2="585" y2="102" marker-end="url(#ar-isp)"/>
+            <line class="wire fade f4" x1="785" y1="224" x2="685" y2="102" marker-end="url(#ar-isp)"/>
+            <line class="wire fade f4" x1="830" y1="224" x2="835" y2="102" marker-end="url(#ar-isp)"/>
+
+            <text class="t-caption dlabel f5" x="690" y="306" text-anchor="middle">CADA CLIENTE, SÓ O QUE USA</text>
+
+            <path id="isp-m1" d="M535,224 V102" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#isp-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Clientes não devem ser forçados a depender de interfaces que não usam.” — Robert C. Martin, Agile Software Development: Principles, Patterns, and Practices (2002) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 12 · I, em código -->
+    <section class="slide" data-title="I · código" aria-label="Segregação de interfaces em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">I, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Interface gorda</p>
+            <pre class="code"><span class="kw">interface</span> Máquina
+  <span class="kw">método</span> imprimir(doc)
+  <span class="kw">método</span> digitalizar(doc)
+  <span class="kw">método</span> grampear(doc)
+
+<span class="kw">classe</span> ImpressoraSimples
+  <span class="kw">implementa</span> Máquina
+
+  <span class="kw">método</span> grampear(doc)
+    <span class="kw">falha</span> "não suportado"   <span class="cm">// cheiro</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Interfaces enxutas</p>
+            <pre class="code"><span class="kw">interface</span> Impressora
+  <span class="kw">método</span> imprimir(doc)
+
+<span class="kw">interface</span> Grampeadora
+  <span class="kw">método</span> grampear(doc)
+
+<span class="kw">classe</span> ImpressoraSimples
+  <span class="kw">implementa</span> Impressora    <span class="cm">// só o que usa</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 · D — Inversão de dependência -->
+    <section class="slide" data-title="D" aria-label="D: inversão de dependência">
+      <div class="slide-inner">
+        <h2 class="rise r1">D · Inversão de dependência</h2>
+        <div class="dwrap rise r2">
+          <svg class="diagram" viewBox="0 0 920 360" role="img" aria-label="Comparação: à esquerda, a regra de negócio pedido depende direto do banco relacional; à direita, pedido e banco dependem ambos do contrato repositório, e a seta do detalhe aponta para cima">
+            <defs>
+              <marker id="ar-dip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e1e1e" stroke-width="1.4" stroke-linecap="round"/>
+              </marker>
+            </defs>
+
+            <line class="wire-soft draw" pathLength="1" x1="440" y1="40" x2="440" y2="320"/>
+
+            <!-- dependência direta -->
+            <rect class="box draw d1" pathLength="1" x="130" y="60" width="200" height="56"/>
+            <text class="t-ink dlabel f1" x="230" y="84" text-anchor="middle">pedido</text>
+            <text class="t-sm t-soft dlabel f1" x="230" y="104" text-anchor="middle">regra de negócio</text>
+
+            <line class="wire fade f2" x1="230" y1="116" x2="230" y2="196" marker-end="url(#ar-dip)"/>
+            <text class="t-sm t-soft dlabel f2" x="246" y="160" text-anchor="start">conhece o concreto</text>
+
+            <rect class="box draw d2" pathLength="1" x="130" y="200" width="200" height="56"/>
+            <text class="t-ink dlabel f3" x="230" y="224" text-anchor="middle">banco relacional</text>
+            <text class="t-sm t-soft dlabel f3" x="230" y="244" text-anchor="middle">detalhe de infraestrutura</text>
+
+            <text class="t-caption dlabel f4" x="230" y="322" text-anchor="middle">A POLÍTICA REFÉM DO DETALHE</text>
+
+            <!-- dependência invertida -->
+            <rect class="box draw d2" pathLength="1" x="600" y="48" width="200" height="52"/>
+            <text class="t-ink dlabel f2" x="700" y="79" text-anchor="middle">pedido</text>
+
+            <line class="wire fade f3" x1="700" y1="100" x2="700" y2="136" marker-end="url(#ar-dip)"/>
+            <text class="t-sm t-soft dlabel f3" x="716" y="122" text-anchor="start">depende do contrato</text>
+
+            <rect class="box dashed fade f3" x="590" y="140" width="220" height="56"/>
+            <text class="t-ink dlabel f3" x="700" y="164" text-anchor="middle">repositório</text>
+            <text class="t-sm t-soft dlabel f3" x="700" y="184" text-anchor="middle">salvar(pedido)</text>
+
+            <line class="wire fade f4" x1="700" y1="240" x2="700" y2="200" marker-end="url(#ar-dip)"/>
+            <text class="t-sm t-soft dlabel f4" x="716" y="224" text-anchor="start">a seta virou</text>
+
+            <rect class="box draw d3" pathLength="1" x="600" y="244" width="200" height="48"/>
+            <text class="t-sm dlabel f4" x="700" y="273" text-anchor="middle">banco relacional</text>
+
+            <text class="t-caption dlabel f5" x="700" y="322" text-anchor="middle">AMBOS DEPENDEM DA ABSTRAÇÃO</text>
+
+            <path id="dip-m1" d="M700,100 V136" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#dip-m1"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            <path id="dip-m2" d="M700,240 V200" fill="none" stroke="none"/>
+            <circle class="pulse" r="3">
+              <animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#dip-m2"/></animateMotion>
+              <animate attributeName="opacity" values="0;.6;.6;0" keyTimes="0;.15;.85;1" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+        <p class="credit tight rise r3">“Módulos de alto nível não devem depender de módulos de baixo nível. Ambos devem depender de abstrações.” — Robert C. Martin, “Design Principles and Design Patterns” (2000) · tradução livre.</p>
+      </div>
+    </section>
+
+    <!-- 14 · D, em código -->
+    <section class="slide" data-title="D · código" aria-label="Inversão de dependência em pseudocódigo">
+      <div class="slide-inner">
+        <h2 class="rise r1">D, <em>em código</em></h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Dependência direta</p>
+            <pre class="code"><span class="kw">classe</span> Pedido
+  <span class="kw">privado</span> banco = <span class="kw">novo</span> BancoSql()
+
+  <span class="kw">método</span> fechar()
+    banco.executar("insert …")
+
+<span class="cm">// trocar o banco (ou testar)
+// = reescrever a regra</span></pre>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Dependência invertida</p>
+            <pre class="code"><span class="kw">interface</span> Repositório
+  <span class="kw">método</span> salvar(pedido)
+
+<span class="kw">classe</span> Pedido
+  <span class="kw">privado</span> repo: Repositório
+
+  <span class="kw">método</span> fechar()
+    repo.<span class="hi">salvar(isto)</span>
+
+<span class="cm">// o detalhe é que se ajusta</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 · Princípios, não leis -->
+    <section class="slide" data-title="Princípios, não leis" aria-label="Princípios, não leis">
+      <div class="slide-inner">
+        <h2 class="rise r1">Princípios, não leis</h2>
+        <div class="cols">
+          <div class="rise r2">
+            <p class="quote">“A duplicação é bem mais barata que a abstração <em>errada</em>.”</p>
+            <p class="quote-credit">— Sandi Metz, “The Wrong Abstraction” (2016) · tradução livre</p>
+          </div>
+          <ul class="item-list rise r3">
+            <li>SOLID gerencia dependências — não é checklist de cartório</li>
+            <li>Abstração especulativa custa caro: espere a segunda razão real</li>
+            <li>YAGNI e simplicidade também são princípios</li>
+            <li>O sênior sabe quando um princípio não se aplica</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 · As fontes -->
+    <section class="slide" data-title="As fontes" aria-label="As fontes">
+      <div class="slide-inner">
+        <h2 class="rise r1">As fontes</h2>
+        <div class="cols top">
+          <div class="rise r2">
+            <p class="sub-label">Livros</p>
+            <ul class="item-list">
+              <li>Agile Software Development: Principles, Patterns, and Practices — Robert C. Martin · 2002</li>
+              <li>Object-Oriented Software Construction — Bertrand Meyer · 1988</li>
+              <li>Clean Architecture — Robert C. Martin · 2017</li>
+              <li>Practical Object-Oriented Design — Sandi Metz · 2012</li>
+            </ul>
+          </div>
+          <div class="rise r3">
+            <p class="sub-label">Artigos e palestras</p>
+            <ul class="item-list">
+              <li>Design Principles and Design Patterns — Robert C. Martin · 2000</li>
+              <li>A Behavioral Notion of Subtyping — Barbara Liskov e Jeannette Wing · 1994</li>
+              <li>Data Abstraction and Hierarchy — Barbara Liskov · 1987</li>
+              <li>The Wrong Abstraction — Sandi Metz · 2016</li>
+            </ul>
+          </div>
+        </div>
+        <p class="credit tight rise r4">Todas as fontes são em inglês — as citações desta aula são traduções livres.</p>
+      </div>
+    </section>
+
+    <!-- 17 · Praticar -->
+    <section class="slide" data-title="Praticar" aria-label="Vamos praticar">
+      <div class="slide-inner">
+        <h2 class="rise r1">Vamos praticar?</h2>
+        <ul class="item-list rise r2" style="max-width: 680px;">
+          <li>Ache uma classe com dois motivos de mudança — e separe os atores</li>
+          <li>Troque uma cadeia de se/senão de regras por implementações de um contrato</li>
+          <li>Cace um “novo” de infraestrutura dentro de regra de negócio e inverta a seta</li>
+        </ul>
+        <div class="contact-links rise r3">
+          <a href="mailto:andrendarcie@gmail.com">E-mail</a>
+          <a href="https://linkedin.com/in/andredarcie" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/andredarcie" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="progress" aria-hidden="true"><div id="progress-fill"></div></div>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const fill = document.getElementById('progress-fill');
+      let current = -1;
+
+      function setScale() {
+        const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        document.documentElement.style.setProperty('--stage-scale', s);
+      }
+      setScale();
+      window.addEventListener('resize', setScale);
+
+      function go(i) {
+        i = Math.max(0, Math.min(slides.length - 1, i));
+        if (i === current) return;
+        slides.forEach((s, j) => s.classList.toggle('active', j === i));
+        current = i;
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        history.replaceState(null, '', '#' + (i + 1));
+      }
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          go(current + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          go(current - 1);
+        } else if (e.key === 'Home') {
+          go(0);
+        } else if (e.key === 'End') {
+          go(slides.length - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      let tx = 0, ty = 0;
+      document.addEventListener('touchstart', e => {
+        tx = e.changedTouches[0].clientX;
+        ty = e.changedTouches[0].clientY;
+      }, { passive: true });
+      document.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        const dy = e.changedTouches[0].clientY - ty;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          go(dx < 0 ? current + 1 : current - 1);
+        }
+      }, { passive: true });
+
+      window.addEventListener('hashchange', () => {
+        const h = parseInt(location.hash.slice(1), 10);
+        if (!isNaN(h)) go(h - 1);
+      });
+
+      const h = parseInt(location.hash.slice(1), 10);
+      go(isNaN(h) ? 0 : h - 1);
+      if (current === -1) go(0);
+    })();
+
+    (function () {
+      const canvas = document.getElementById('net');
+      if (!canvas || !canvas.getContext) return;
+      const slide = canvas.closest('.slide');
+      const ctx = canvas.getContext('2d');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const NUM_NODES = 18;
+      const CONNECT_DIST = 170;
+      const DRIFT = 0.18;
+      let w = 0, h = 0, t = 0;
+      let nodes = [], pulses = [];
+
+      function resize() {
+        const r = slide.getBoundingClientRect();
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        w = r.width;
+        h = r.height;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function init() {
+        nodes = [];
+        pulses = [];
+        for (let i = 0; i < NUM_NODES; i++) {
+          nodes.push({
+            x: w * (0.05 + 0.9 * Math.random()),
+            y: h * (0.1 + 0.8 * Math.random()),
+            base: Math.random() * Math.PI * 2,
+            spd: 0.002 + Math.random() * 0.003,
+            ph: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+
+      function step() {
+        t++;
+        ctx.clearRect(0, 0, w, h);
+
+        for (const nd of nodes) {
+          const dir = nd.base + Math.sin(t * nd.spd + nd.ph) * 2.2;
+          nd.x += Math.cos(dir) * DRIFT;
+          nd.y += Math.sin(dir) * DRIFT;
+          const m = 50;
+          if (nd.x < m) nd.x += (m - nd.x) * 0.03;
+          if (nd.x > w - m) nd.x -= (nd.x - (w - m)) * 0.03;
+          if (nd.y < m) nd.y += (m - nd.y) * 0.03;
+          if (nd.y > h - m) nd.y -= (nd.y - (h - m)) * 0.03;
+        }
+
+        ctx.lineWidth = 0.6;
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+            if (d < CONNECT_DIST) {
+              ctx.strokeStyle = 'rgba(30,30,30,' + (0.12 * (1 - d / CONNECT_DIST)).toFixed(3) + ')';
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        for (let i = pulses.length - 1; i >= 0; i--) {
+          const pu = pulses[i];
+          pu.t += pu.spd;
+          if (pu.t >= 1) {
+            pulses.splice(i, 1);
+            continue;
+          }
+          const x = nodes[pu.a].x + (nodes[pu.b].x - nodes[pu.a].x) * pu.t;
+          const y = nodes[pu.a].y + (nodes[pu.b].y - nodes[pu.a].y) * pu.t;
+          const a = pu.t < 0.5 ? pu.t / 0.5 * 0.27 : (1 - pu.t) / 0.5 * 0.27;
+          ctx.fillStyle = 'rgba(30,30,30,' + a.toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(x, y, 1.75, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = 'rgba(30,30,30,0.18)';
+        for (const nd of nodes) {
+          ctx.beginPath();
+          ctx.arc(nd.x, nd.y, 1.75, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (t % 80 === 0 && Math.random() < 0.7) {
+          const i = Math.floor(Math.random() * nodes.length);
+          const nearby = [];
+          for (let j = 0; j < nodes.length; j++) {
+            if (j !== i && Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y) < CONNECT_DIST) {
+              nearby.push(j);
+            }
+          }
+          if (nearby.length) {
+            const j = nearby[Math.floor(Math.random() * nearby.length)];
+            pulses.push({ a: i, b: j, t: 0, spd: 0.007 + Math.random() * 0.005 });
+          }
+        }
+      }
+
+      function loop() {
+        if (slide.classList.contains('active') && !document.hidden) step();
+        requestAnimationFrame(loop);
+      }
+
+      resize();
+      init();
+      if (reduced) {
+        step();
+      } else {
+        requestAnimationFrame(loop);
+      }
+
+      window.addEventListener('resize', () => {
+        resize();
+        init();
+        if (reduced) step();
+      });
+    })();
+  </script>
+
+</body>
+</html>
