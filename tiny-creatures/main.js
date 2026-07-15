@@ -30,9 +30,11 @@ const DIRVEC = {
 const TURN_L = { U: 'L', L: 'D', D: 'R', R: 'U' };
 const TURN_R = { U: 'R', R: 'D', D: 'L', L: 'U' };
 const TURN_B = { U: 'D', D: 'U', L: 'R', R: 'L' };
-// Entradas: visão (cone à frente, 4) + faro (1 escalar: quanto maior, mais perto
-// do castelo, na célula à frente) + 1 aleatório = 6.
-const NUM_INPUTS  = CONE.length + 1 + 1; // 6
+// Entradas: visão (cone à frente, 4) + faro DIRECIONAL até o castelo (frente/esq/
+// dir/trás, relativo ao rosto, 4) + 1 aleatório = 9. O faro precisa ser direcional:
+// com um único escalar (só a frente) a rede não distingue esquerda de direita e
+// trava girando no lugar sem nunca virar para o castelo.
+const NUM_INPUTS  = CONE.length + 4 + 1; // 9
 const NUM_OUTPUTS = 4;     // saídas: U / D / L / R
 const N       = 10;          // tabuleiro N×N
 const MAXI    = N - 1;       // índice máximo (0..MAXI)
@@ -328,7 +330,8 @@ function cellSense(cx, cy) {
   return 0;                                                 // grama livre
 }
 
-// Sensores EGOCÊNTRICOS (tudo relativo ao rosto): cone à frente + faro (1 escalar).
+// Sensores EGOCÊNTRICOS (tudo relativo ao rosto): cone à frente +
+// faro DIRECIONAL (frente/esquerda/direita/trás).
 function sensors(a) {
   const x = a.pos.x, y = a.pos.y, f = a.facing;
   const v = DIRVEC[f] || DIRVEC.U;
@@ -336,14 +339,16 @@ function sensors(a) {
   for (const c of CONE) {                                  // cone (olhar à frente, 2 de alcance)
     s.push(cellSense(x + v.fx*c.f + v.px*c.l, y + v.fy*c.f + v.py*c.l));
   }
-  // Faro: UM número — a proximidade do castelo na célula logo à frente. 1 = o
-  // castelo está ali; ~0 = longe; negativo = célula sem rota. O campo-custo já
-  // contorna torres/barricadas e foge da linha de tiro, então virar para farejar
-  // (o valor sobe) é o gradiente que a rede aprende a seguir. Parede/fora da
-  // grade não têm cheiro: 0.
-  const fx = x + v.fx, fy = y + v.fy;
-  const blocked = fx < 0 || fy < 0 || fx > MAXI || fy > MAXI || towers.has(key(fx, fy));
-  s.push(blocked ? 0 : (bfsMax - bfsDistOf(fx, fy)) / bfsMax);
+  // Faro DIRECIONAL: a proximidade do castelo em CADA vizinha relativa ao rosto
+  // (frente, esquerda, direita, trás). 1 = castelo ali; ~0 = longe. O campo-custo
+  // já contorna torres/barricadas e foge da linha de tiro, então o gradiente entre
+  // as quatro direções diz PARA QUE LADO virar — é o que a rede aprende a seguir.
+  // Parede/fora da grade não têm cheiro: 0.
+  const rel = [f, TURN_L[f], TURN_R[f], TURN_B[f]];         // frente, esquerda, direita, trás
+  const scent = (cx, cy) =>
+    (cx < 0 || cy < 0 || cx > MAXI || cy > MAXI || towers.has(key(cx, cy)))
+      ? 0 : (bfsMax - bfsDistOf(cx, cy)) / bfsMax;
+  rel.forEach(d => s.push(scent(x + DIRVEC[d].fx, y + DIRVEC[d].fy)));
   s.push(a.brain.seed || 0);                                // traço "aleatório" fixo por criatura (sim. determinística)
   return s;
 }
@@ -954,11 +959,11 @@ function buildNetSVG(g, inputs, outVals, facing) {
 
   const gridBottom = oy0 + (maxy - miny) * gs;
   const belowY = gridBottom + 48;
-  // bias + faro (1) + aleatorio (1) em uma linha abaixo do cone
+  // bias + faro (4 direções) + aleatorio (1) em uma linha abaixo do cone
   const belowNodes = g.nodes
     .filter(n => n.type === 'bias' || (n.type === 'in' && n.id >= CONE.length))
     .sort((p, q) => (p.type === 'bias' ? -1 : p.id) - (q.type === 'bias' ? -1 : q.id));
-  belowNodes.forEach((n, i) => { pos[n.id] = { x: ox0 + sq/2 + i * gs * 2.7, y: belowY }; });
+  belowNodes.forEach((n, i) => { pos[n.id] = { x: ox0 + i * gs * 1.1, y: belowY }; });
 
   // ── colunas da direita: ocultos por profundidade + saídas ──
   const hiddenNodes = g.nodes.filter(n => n.type === 'hidden');
@@ -1018,7 +1023,10 @@ function buildNetSVG(g, inputs, outVals, facing) {
   // dentro (o cone acima já é a "visão"). Faro = alvo (proximidade do objetivo),
   // aleatório = dado, viés = "+". O número embaixo é o valor atual da entrada.
   const IN_META = [
-    { lbl: 'faro',      ic: 'target', c: '#5cc8ff' },  // proximidade do castelo à frente
+    { lbl: 'faro fr',   ic: 'target', c: '#5cc8ff' },  // proximidade do castelo à frente
+    { lbl: 'faro esq',  ic: 'target', c: '#5cc8ff' },  // à esquerda
+    { lbl: 'faro dir',  ic: 'target', c: '#5cc8ff' },  // à direita
+    { lbl: 'faro trás', ic: 'target', c: '#5cc8ff' },  // atrás
     { lbl: 'aleatório', ic: 'dice',   c: '#5cc8ff' },  // traço fixo por criatura (quebra empates)
   ];
   const nodeSquare = (p, icName, icColor, icScale, label, strokeCol) => {
