@@ -1,0 +1,44 @@
+# ── Sistema operacional ──────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+__MACOSX/
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ── Editores / IDEs ───────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Python (tools/build-assets.py) ────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ── Node (se algum dia entrarem ferramentas JS) ───────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ── Diversos ──────────────────────────────────────────────────────────
+*.log
+.env
+.env.*
+
+# ── tiny-creatures ────────────────────────────────────────────────────
+# O jogo carrega assets/tiny-swords/{game,ui}/ — esses ficam versionados.
+# O .zip é o pacote bruto baixado: redundante (a pasta source/ já é a entrada
+# do build-assets.py) e não deve ser publicado como arquivo avulso.
+tiny-creatures/assets/tiny-swords/*.zip
+
+# Artefatos de review/automação (prints e JSONs); não fazem parte do site.
+tiny-creatures/output/
+tiny-creatures/screenshots/

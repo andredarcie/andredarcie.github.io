@@ -3,47 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tiny Creatures — Algoritmo Genético</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=7">
+<title>Crown Circuit — Cerco Evolutivo</title>
+<link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body class="phase-build">
 
 <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
 
 <main id="main-content">
-<div class="app">
 
-  <!-- GRID -->
-  <section class="grid-area" aria-label="Grade de simulação">
-    <div class="win-bar board-bar"><span class="win-ico" aria-hidden="true">🐾</span>Tiny Creatures <small class="build-tag">build 7</small><span class="win-btns" aria-hidden="true"><i class="wb wb-min"></i><i class="wb wb-max"></i><i class="wb wb-close"></i></span></div>
-    <div class="coord-wrap">
-      <div class="coord-corner"></div>
-      <div class="coord-cols" id="coord-cols"></div>
-      <div class="coord-rows" id="coord-rows"></div>
-      <div class="grid-wrap">
+  <!-- CENÁRIO: ocupa a tela toda. A ilha fica centrada e a água preenche o resto. -->
+  <div class="stage" aria-label="Grade de simulação">
+    <div class="board">
+      <div id="terrain" class="terrain" aria-hidden="true"></div>
+      <div class="play">
         <div id="grid" class="grid"
              role="img"
-             aria-label="Grade 15×15: criaturas partem da base no centro inferior e tentam alcançar a espada no centro do topo">
+             aria-label="Grade 10×10: as criaturas partem do quartel na base e tentam alcançar o castelo no topo">
         </div>
         <div id="vision" class="vision-layer" aria-hidden="true"></div>
-        <div id="agents" class="agents" aria-hidden="true"></div>
         <div id="enemies" class="enemies-layer" aria-hidden="true"></div>
+        <div id="agents" class="agents" aria-hidden="true"></div>
         <div id="fx" class="fx-layer" aria-hidden="true"></div>
       </div>
     </div>
+  </div>
+
+  <!-- JANELA FLUTUANTE: arrasta pela fita, minimiza no botão (ou tecla H). -->
+  <section class="hud" id="hud" aria-label="Painel de comando">
+    <div class="hud-bar" id="hud-bar">
+      <span class="ico ico-swords" aria-hidden="true"></span>
+      <span class="hud-title">Crown Circuit</span>
+      <small class="build-tag">build 16</small>
+      <button class="hud-min" id="hud-min" onclick="toggleHud()"
+              aria-expanded="true" aria-controls="hud-body"
+              aria-label="Minimizar painel de comando">▾</button>
+    </div>
+
+    <div class="hud-body" id="hud-body">
+
     <div class="phase-wrap" role="progressbar" aria-label="Progresso da geração" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0" id="phase-bar">
-      <div id="phase" class="phase-fill"></div>
+      <div class="phase-track"><div id="phase" class="phase-fill"></div></div>
     </div>
     <div id="status" class="status-line running" role="status" aria-live="polite" aria-atomic="true">INICIALIZANDO...</div>
-  </section>
 
-  <div class="side">
+    <div class="side">
 
   <!-- BRAIN (cérebro do líder, tempo real) -->
   <aside class="brain-panel" aria-label="Cérebro do líder em tempo real">
-    <div class="build-hdr">Cérebro do líder</div>
+    <div class="build-hdr"><span class="ico ico-info" aria-hidden="true"></span>Estratégia do líder</div>
     <div class="brain-sub" id="brain-sub">—</div>
     <div class="brain-live" id="brain-live"><div class="brain-empty">Inicie a defesa para ver o cérebro do líder em tempo real.</div></div>
   </aside>
@@ -53,10 +61,10 @@
 
     <div class="card" aria-label="Geração atual">
       <div class="card-label" id="lbl-gen">Geração</div>
-      <div id="gen-val" class="card-val orange" aria-labelledby="lbl-gen" aria-live="polite">001</div>
+      <div id="gen-val" class="card-val" aria-labelledby="lbl-gen" aria-live="polite">001</div>
     </div>
 
-    <div class="card" aria-label="Melhor distância até a espada">
+    <div class="card" aria-label="Melhor distância até o castelo">
       <div class="card-label" id="lbl-dist">Melhor distância</div>
       <div id="dist-val" class="card-val" aria-labelledby="lbl-dist" aria-live="polite">—</div>
     </div>
@@ -67,7 +75,7 @@
     </div>
 
     <div id="pop-list" class="pop-list" role="list" aria-label="Ranking de criaturas por distância">
-      <div class="list-hdr" role="heading" aria-level="2">Criaturas</div>
+      <div class="list-hdr" role="heading" aria-level="2">Companhia invasora</div>
     </div>
 
     <div class="controls" role="group" aria-label="Controles de simulação">
@@ -80,32 +88,32 @@
         <button class="sdot" onclick="setSpeed(4)" id="s4" aria-label="Velocidade 5 — muito rápida" aria-pressed="false"></button>
         <button class="sdot" onclick="setSpeed(5)" id="s5" aria-label="Velocidade 6 — máxima"      aria-pressed="false"></button>
       </div>
-      <button class="btn" id="pause-btn" onclick="togglePause()" aria-pressed="false">⏸ PAUSAR</button>
-      <button class="btn" onclick="reset()">↺ CONSTRUÇÃO</button>
+      <button class="btn" id="pause-btn" onclick="togglePause()" aria-pressed="false">PAUSAR</button>
+      <button class="btn" onclick="reset()"><span class="ico ico-back" aria-hidden="true"></span>CONSTRUÇÃO</button>
     </div>
 
   </aside>
 
   <!-- BUILD PANEL (fase 1) -->
   <aside class="build-panel" aria-label="Construção da defesa">
-    <div class="build-hdr">Fase 1 · Construção</div>
-    <p class="build-tip">Posicione defesas entre a base (▼) e a espada (⚔). Clique ou arraste na grade. Depois inicie e assista a IA evoluir tentando passar.</p>
-    <div id="budget" class="budget">Peças <span id="budget-left">30</span> / 30</div>
+    <div class="build-hdr"><span class="ico ico-hammer" aria-hidden="true"></span>Fase I · Fortifique a coroa</div>
+    <p class="build-tip">Erga as defesas entre o quartel invasor e o castelo. Clique ou arraste no campo; depois observe a companhia aprender a invadir.</p>
+    <div id="budget" class="budget">Guarnições <span id="budget-left">–</span> / <span id="budget-total">–</span></div>
     <div class="tool-grid" role="group" aria-label="Ferramentas de construção">
       <button class="tool on" id="tool-tower" onclick="setTool('tower')" aria-pressed="true">
         <span class="tool-ico tower" aria-hidden="true"></span>
-        <span class="tool-name">Torre</span>
-        <span class="tool-desc">bloqueia · 1 tiro</span>
+        <span class="tool-name">Torre de vigia</span>
+        <span class="tool-desc">bloqueia · 1 flecha</span>
       </button>
       <button class="tool" id="tool-trap" onclick="setTool('trap')" aria-pressed="false">
         <span class="tool-ico trap" aria-hidden="true"></span>
-        <span class="tool-name">Armadilha</span>
-        <span class="tool-desc">mata 1 e quebra</span>
+        <span class="tool-name">Barricada</span>
+        <span class="tool-desc">derruba 1 e quebra</span>
       </button>
       <button class="tool" id="tool-enemy" onclick="setTool('enemy')" aria-pressed="false">
         <span class="tool-ico enemy" aria-hidden="true"></span>
-        <span class="tool-name">Inimigo</span>
-        <span class="tool-desc">persegue · mata 2</span>
+        <span class="tool-name">Sentinela</span>
+        <span class="tool-desc">persegue · derruba 2</span>
       </button>
       <button class="tool" id="tool-erase" onclick="setTool('erase')" aria-pressed="false">
         <span class="tool-ico erase" aria-hidden="true"></span>
@@ -113,24 +121,28 @@
         <span class="tool-desc">remove peça</span>
       </button>
     </div>
-    <button class="btn" onclick="clearDefenses()">✕ LIMPAR TUDO</button>
-    <button class="btn" id="copy-btn" onclick="copyMap()">⧉ COPIAR MAPA</button>
-    <button class="btn" id="start-btn" onclick="startDefense()">▶ INICIAR DEFESA</button>
+    <button class="btn" onclick="clearDefenses()"><span class="ico ico-x" aria-hidden="true"></span>LIMPAR TUDO</button>
+    <button class="btn" id="copy-btn" onclick="copyMap()"><span class="ico ico-wood" aria-hidden="true"></span>COPIAR MAPA</button>
+    <button class="btn btn-red" id="start-btn" onclick="startDefense()"><span class="ico ico-swords" aria-hidden="true"></span>COMEÇAR O CERCO</button>
   </aside>
 
-  </div><!-- .side -->
-</div>
+    </div><!-- .side -->
+    </div><!-- .hud-body -->
+  </section><!-- .hud -->
+
 </main>
 
-<!-- TOAST DE GERAÇÃO (substitui os modais de fim de geração) -->
+<!-- TOAST DE GERAÇÃO -->
 <div id="gen-toast" class="gen-toast" role="status" aria-live="polite" aria-hidden="true"></div>
 
 <!-- FIM DE PARTIDA -->
 <div class="overlay" id="overlay"
      role="alertdialog" aria-modal="true" aria-labelledby="ov-title" aria-describedby="ov-desc">
-  <div class="overlay-title" id="ov-title"></div>
-  <div class="overlay-sub" id="ov-desc"></div>
-  <button class="btn" id="ov-btn" onclick="backToBuild()">↺ NOVA DEFESA</button>
+  <div class="overlay-box">
+    <div class="overlay-title" id="ov-title"></div>
+    <div class="overlay-sub" id="ov-desc"></div>
+    <button class="btn btn-red" id="ov-btn" onclick="backToBuild()"><span class="ico ico-back" aria-hidden="true"></span>NOVA DEFESA</button>
+  </div>
 </div>
 
 <!-- INSPETOR DE REDE NEURAL -->
@@ -142,30 +154,25 @@
     <div class="net-sub" id="net-sub"></div>
     <div class="net-diagram" id="net-diagram"></div>
     <div class="net-legend" aria-hidden="true">
-      <span><i class="sw goal"></i> espada</span>
-      <span><i class="sw wall"></i> parede/torre</span>
-      <span><i class="sw enemy"></i> inimigo</span>
-      <span><i class="sw trap"></i> armadilha</span>
+      <span><i class="sw goal"></i> castelo</span>
+      <span><i class="sw wall"></i> torre</span>
+      <span><i class="sw enemy"></i> sentinela</span>
+      <span><i class="sw trap"></i> barricada</span>
       <span><i class="sw free"></i> livre</span>
       <span><i class="ln pos"></i> peso +</span>
       <span><i class="ln neg"></i> peso −</span>
       <span><i class="ln off"></i> desativada · espessura = força</span>
     </div>
     <div class="rank-footer">
-      <button class="btn" id="net-close" onclick="closeNetwork()">✕ FECHAR</button>
+      <button class="btn" id="net-close" onclick="closeNetwork()"><span class="ico ico-x" aria-hidden="true"></span>FECHAR</button>
+      <button class="btn btn-red" id="net-next" onclick="nextMatch()" style="display:none"><span class="ico ico-swords" aria-hidden="true"></span>PRÓXIMA PARTIDA</button>
     </div>
   </div>
 </div>
 
-<!-- TASKBAR (decorativa, estilo Windows XP) -->
-<div class="xp-taskbar" aria-hidden="true">
-  <div class="xp-start"><span class="xp-flag"></span>iniciar</div>
-  <div class="xp-tasks"><div class="xp-task active">🐾 Tiny Creatures</div></div>
-  <div class="xp-tray"><span class="xp-tray-ico">🔉</span><span class="xp-clock">10:24</span></div>
-</div>
-
-<script src="sprites.js?v=7"></script>
-<script src="neat.js?v=7"></script>
-<script src="main.js?v=7"></script>
+<script src="sprites.js?v=16"></script>
+<script src="icons.js?v=16"></script>
+<script src="neat.js?v=16"></script>
+<script src="main.js?v=16"></script>
 </body>
 </html>

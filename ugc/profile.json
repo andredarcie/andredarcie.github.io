@@ -1,0 +1,100 @@
+{
+  "name": "Riane Freire",
+  "handle": "@rifreireugc",
+  "tagline": "Criadora de conteúdo UGC",
+  "bio": "Focada em mostrar o uso real de produto ou serviço, produzo vídeos claros, leves e autênticos. Com tom de voz amigável e seguro, consigo gerar autoridade e confiança, com narrativa que gera identificação, conduzindo para a ação.",
+  "photo": "assets/riane-hero.jpg",
+  "photos": [
+    "assets/riane-sobre-1.jpg",
+    "assets/riane-sobre-2.jpg",
+    "assets/riane-sobre-3.jpg"
+  ],
+  "contact": {
+    "email": "rianecontato@gmail.com",
+    "phone": "+55 71 98127-2345",
+    "whatsapp": "https://wa.me/message/6CCLGPMAH37QO1",
+    "instagram": "https://www.instagram.com/rifreireugc",
+    "site": "https://rifreireugc.my.canva.site/"
+  },
+  "services": [
+    {
+      "title": "UGC (Orgânico)",
+      "desc": "Vídeos de uso real para os canais da marca",
+      "photo": "assets/invest-organico.jpg",
+      "price": null,
+      "note": "Sob consulta"
+    },
+    {
+      "title": "UGC (Ads)",
+      "desc": "Criativos prontos para tráfego pago",
+      "photo": "assets/invest-ads.jpg",
+      "price": null,
+      "note": "Sob consulta"
+    },
+    {
+      "title": "Influencer",
+      "desc": "Publicação no perfil @rifreireugc",
+      "photo": "assets/invest-influencer.jpg",
+      "price": null,
+      "note": "Sob consulta"
+    }
+  ],
+  "portfolio": [
+    {
+      "category": "Tech",
+      "items": [
+        { "title": "Teclado e mouse portátil", "format": "Problema x solução", "video": "https://rifreireugc.my.canva.site/_assets/video/00a161952066693400e2082de8518472.mp4", "poster": "assets/poster-teclado-mouse.jpg" },
+        { "title": "FinnZap", "format": "Ads", "video": "https://rifreireugc.my.canva.site/_assets/video/67a8940c59235752315e2fdb5b4c3fff.mp4", "poster": "assets/poster-finnzap.jpg" },
+        { "title": "App 12min", "format": "Ads", "video": "https://rifreireugc.my.canva.site/_assets/video/7af8f596f3cd529113b3bc27b0660b90.mp4", "poster": "assets/poster-app-12min.jpg" },
+        { "title": "App de companhia elétrica", "format": "Storytelling", "video": "https://rifreireugc.my.canva.site/_assets/video/d1f45086586c1513230e707149315a3d.mp4", "poster": "assets/poster-companhia-eletrica.jpg" },
+        { "title": "App de aluguel de roupas", "format": "Problema x solução", "video": "https://rifreireugc.my.canva.site/_assets/video/388dd87d38e5c54426bd5ef7e7e9f3d1.mp4", "poster": "assets/poster-aluguel-roupas.jpg" },
+        { "title": "Site de compras pet", "format": "Storytelling", "video": "https://rifreireugc.my.canva.site/_assets/video/99dbd84e543a46b3d2cb2e8ebc3c8cd8.mp4", "poster": "assets/poster-compras-pet.jpg" }
+      ]
+    },
+    {
+      "category": "Saúde e bem-estar",
+      "items": [
+        { "title": "Melatonina", "format": "Lifestyle", "video": "https://rifreireugc.my.canva.site/_assets/video/ce0600b18f646bcd4eb92e59689ea184.mp4", "poster": null },
+        { "title": "Polivitamínico", "format": "Storytelling", "video": "https://rifreireugc.my.canva.site/_assets/video/b19114c5c0b97a028904f79a49a5746a.mp4", "poster": "assets/poster-polivitaminico.jpg" },
+        { "title": "Caldo de ossos", "format": "Problema x solução", "video": "https://rifreireugc.my.canva.site/_assets/video/9d71ad5a0f4aeca0ba6c040479c54158.mp4", "poster": "assets/poster-caldo-ossos.jpg" }
+      ]
+    },
+    {
+      "category": "Skincare",
+      "items": [
+        { "title": "Kit skincare", "format": "Estético", "video": "https://rifreireugc.my.canva.site/_assets/video/41d97f16505ff186d0429346b1628d2f.mp4", "poster": null },
+        { "title": "Sérum clareador", "format": "Depoimento", "video": "https://rifreireugc.my.canva.site/_assets/video/9a1bfd13747e18567cf3ea35741973b9.mp4", "poster": "assets/poster-serum-clareador.jpg" },
+        { "title": "Sérum 12 em 1", "format": "Estético", "video": "https://rifreireugc.my.canva.site/_assets/video/4fb34d864de262331e8e5025d3e7e910.mp4", "poster": "assets/poster-serum-12em1.jpg" }
+      ]
+    },
+    {
+      "category": "Hair care",
+      "items": [
+        { "title": "Div Cosmetics", "format": "Storytelling", "video": "https://rifreireugc.my.canva.site/_assets/video/c3d12106d000de30a107cbd7b9ac4a83.mp4", "poster": null },
+        { "title": "Hanova", "format": "Depoimento", "video": "https://rifreireugc.my.canva.site/_assets/video/ed699bdbab500417886c7c16cc1eb157.mp4", "poster": null },
+        { "title": "Hanova", "format": "Rotina", "video": "https://rifreireugc.my.canva.site/_assets/video/f84f8bd8cc98ec62bf86f056e5d683d9.mp4", "poster": null }
+      ]
+    },
+    {
+      "category": "Maquiagem",
+      "items": [
+        { "title": "Lip combo MAC Cosmetics", "format": "Experiência", "video": "https://rifreireugc.my.canva.site/_assets/video/ed589ba8c93331129dac78986bdd9d2d.mp4", "poster": null },
+        { "title": "Lip combo MAC Cosmetics", "format": "Uso", "video": "https://rifreireugc.my.canva.site/_assets/video/0416247b9382ba26a08e763f00525404.mp4", "poster": null }
+      ]
+    },
+    {
+      "category": "Acessórios",
+      "items": [
+        { "title": "Acessórios", "format": "Estético", "video": "https://rifreireugc.my.canva.site/_assets/video/c17000e4fa7895d55492c6a09a3b0ccd.mp4", "poster": "assets/poster-acessorios.jpg" }
+      ]
+    },
+    {
+      "category": "Moda e calçados",
+      "items": [
+        { "title": "Foco em detalhes", "format": "", "video": "https://rifreireugc.my.canva.site/_assets/video/063346fe001bbf7c28092a19569090b9.mp4", "poster": null },
+        { "title": "Aplicado à rotina", "format": "", "video": "https://rifreireugc.my.canva.site/_assets/video/253f156cb474f189deaa29d3186238df.mp4", "poster": "assets/poster-moda-rotina.jpg" },
+        { "title": "Estético", "format": "", "video": "https://rifreireugc.my.canva.site/_assets/video/90c75f4b1a1b1ea2cff1d71829d34192.mp4", "poster": "assets/poster-moda-estetico.jpg" }
+      ]
+    }
+  ]
+}

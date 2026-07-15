@@ -1,1224 +1,439 @@
-/* Tiny Creatures — estilos
-   Tema: Windows XP (Luna Blue). A MOLDURA/UI imita o Windows XP — papel de
-   parede "Bliss", janelas com barra de título azul, botões 3D, campos
-   rebaixados, barra de progresso verde segmentada e diálogos clássicos.
-   O TABULEIRO em si continua pixel-art (grama + sprites PICO-8): é o conteúdo.
-   Fonte da UI: Tahoma. 100% responsivo, mobile-first, toques >=40px. */
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  /* ── Paleta PICO-8 (usada pelos sprites do tabuleiro e pela legenda) ── */
-  --p8-black:#000000; --p8-dblue:#1d2b53; --p8-dpurple:#7e2553; --p8-dgreen:#008751;
-  --p8-brown:#ab5236; --p8-dgrey:#5f574f; --p8-lgrey:#c2c3c7; --p8-white:#fff1e8;
-  --p8-red:#ff004d;   --p8-orange:#ffa300; --p8-yellow:#ffec27; --p8-green:#00e436;
-  --p8-blue:#29adff;  --p8-indigo:#83769c; --p8-pink:#ff77a8;   --p8-peach:#ffccaa;
-
-  /* Cores do conteúdo pixel-art (tabuleiro/efeitos) — mantidas */
-  --nes-black:#000000; --nes-white:#fff1e8; --nes-grey:#c2c3c7; --nes-dkgrey:#5f574f;
-  --gold:#ffa300; --gold-lt:#ffec27; --red:#ff004d; --blue:#29adff;
-  --green:#00e436; --orange:#ffa300; --purple:#7e2553;
-  --grass-a:#3c8d3c; --grass-b:#3c8d3c; --tree:#008751; --trunk:#ab5236;
-  --path:#caa46a; --path-dk:#9c7b46; --cave:#000000;
-
-  /* ── Windows XP (Luna) ── */
-  --ui: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
-  --xp-face:#ece9d8;          /* superfície bege das janelas/diálogos */
-  --xp-face-dk:#d6d2bd;
-  --xp-hi:#ffffff;            /* brilho do bevel */
-  --xp-sh:#aca899;            /* sombra do bevel */
-  --xp-sh-dk:#716f64;
-  --xp-win-border:#0a51d0;    /* moldura azul da janela */
-  --xp-ink:#101010;           /* texto principal */
-  --xp-muted:#5a5648;         /* texto secundário */
-  --xp-sel:#316ac5;           /* azul de seleção XP */
-  --xp-sunken:#7f9db9;        /* borda de campo rebaixado */
-  --xp-green:#43a047;         /* verde do Start/progresso */
-  --xp-green-lt:#73c350;
-  --xp-green-dk:#2f7d24;
-  /* barra de título Luna (azul brilhante com faixa de brilho no topo) */
-  --xp-title-bg: linear-gradient(to bottom,
-      #2f8eef 0%, #1f7cec 8%, #0f66e2 16%, #0a5cdb 42%,
-      #0e63e1 76%, #1d70e9 90%, #0c4fce 96%, #0a3fc2 100%);
-  --xp-taskbar: linear-gradient(180deg,
-      #3f93f4 0%, #2c79e3 9%, #2462db 48%, #2160da 90%, #163d9e 100%);
-  --taskbar-h: 32px;
-
-  --fs-base:12px;
-  --cell:    clamp(13px, calc((100vw - 44px) / 15), 84px);
-  --chrome:  clamp(14px, 3.2vw, 18px);
-  --shell:   100%;
-}
-
-html { -webkit-text-size-adjust: 100%; }
-
-body {
-  /* Papel de parede estilo "Bliss": céu azul descendo para colina verde */
-  background:
-    radial-gradient(150% 70% at 50% 120%, #8ec63f 0%, #5fa92e 36%, rgba(95,169,46,0) 60%),
-    linear-gradient(180deg, #1c5cae 0%, #3f86d4 36%, #79b0e4 58%, #bcd9b0 76%, #8ec63f 100%);
-  background-attachment: fixed;
-  color: var(--xp-ink);
-  font-family: var(--ui);
-  font-size: var(--fs-base);
-  line-height: 1.5;
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: clamp(8px, 2vw, 16px) clamp(6px, 2vw, 12px) calc(var(--taskbar-h) + 16px);
-  user-select: none;
-  overflow-x: hidden;
-}
-
-:focus-visible {
-  outline: 1px dotted #000;
-  outline-offset: 2px;
-}
-
-.skip-link {
-  position: absolute;
-  top: -999px; left: 8px;
-  background: var(--xp-sel);
-  color: #fff;
-  font-family: var(--ui);
-  font-size: 12px;
-  padding: 8px 14px;
-  border-radius: 3px;
-  z-index: 9999;
-  text-decoration: none;
-}
-.skip-link:focus { top: 8px; }
-
-/* ── LAYOUT ── */
-#main-content { width: 100%; }
-
-.side {
-  width: 100%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.app {
-  width: var(--shell);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: stretch;
-}
-
-/* ── BARRA DE TÍTULO XP (reutilizável) ── */
-.win-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--ui);
-  font-weight: bold;
-  font-size: 12px;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-  background: var(--xp-title-bg);
-  border: 1px solid var(--xp-win-border);
-  border-bottom: none;
-  border-radius: 7px 7px 0 0;
-  padding: 4px 6px 4px 8px;
-  letter-spacing: 0.02em;
-}
-.win-ico { font-size: 13px; line-height: 1; filter: drop-shadow(0 1px 0 rgba(0,0,0,0.4)); }
-.build-tag {
-  font-size: 10px;
-  font-weight: normal;
-  color: rgba(255,255,255,0.8);
-  background: rgba(0,0,0,0.18);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 3px;
-  padding: 0 4px;
-  margin-left: 2px;
-}
-.win-btns { margin-left: auto; display: flex; gap: 3px; }
-.wb {
-  width: 16px; height: 14px;
-  border: 1px solid rgba(255,255,255,0.85);
-  border-radius: 2px;
-  background: linear-gradient(180deg, #5fa0f4, #1a63dd);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
-  position: relative;
-  flex-shrink: 0;
-}
-.wb-close { background: linear-gradient(180deg, #f08a6c, #d33b1e); }
-.wb-min::after { content:''; position:absolute; left:3px; right:3px; bottom:2px; height:2px; background:#fff; }
-.wb-max::after { content:''; position:absolute; inset:2px 3px; border:1px solid #fff; border-top-width:2px; }
-.wb-close::after { content:'✕'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:9px; font-weight:bold; line-height:1; }
-
-/* ── JANELA DO TABULEIRO ── */
-.grid-area {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-  min-width: 0;
-  background: var(--xp-face);
-  border: 1px solid var(--xp-win-border);
-  border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
-  padding: 0 8px 10px;
-}
-.board-bar {
-  align-self: stretch;
-  margin: 0 -8px 6px;
-}
-
-.grid-wrap {
-  position: relative;
-  border: 2px solid #41617f;
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.45);
-  background: var(--grass-a);
-  border-radius: 2px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(15, var(--cell));
-  grid-template-rows: repeat(15, var(--cell));
-}
-
-.cell {
-  width: var(--cell);
-  height: var(--cell);
-  position: relative;
-}
-
-.cell-a { background: var(--grass-a); }
-.cell-b { background: var(--grass-b); }
-
-/* ── COORDENADAS ── */
-.coord-wrap {
-  display: inline-grid;
-  grid-template-columns: var(--chrome) auto;
-  grid-template-rows: var(--chrome) auto;
-  width: fit-content;
-  max-width: 100%;
-}
-.coord-corner,
-.coord-cols,
-.coord-rows { background: transparent; }
-.coord-cols { display: flex; }
-.coord-rows { display: flex; flex-direction: column; }
-.coord-num {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--ui);
-  font-weight: bold;
-  font-size: clamp(6px, 1.5vw, 9px);
-  color: var(--xp-muted);
-  flex-shrink: 0;
-}
-.coord-cols .coord-num { width: var(--cell); height: var(--chrome); }
-.coord-rows .coord-num { width: var(--chrome); height: var(--cell); }
-
-/* Rastro do melhor caminho — trilha de terra batida */
-.cell.trail {
-  background: var(--path) !important;
-  box-shadow: inset 0 0 0 2px var(--path-dk);
-}
-
-/* Objetivo: entrada de caverna onde repousa a espada */
-.cell.goal-cell {
-  background: var(--cave) !important;
-  box-shadow: inset 0 0 0 2px #6b8e6b;
-}
-
-/* Espada em pixel-art */
-.sword-mark {
-  position: absolute;
-  inset: 0;
-  font-size: 0;
-  z-index: 2;
-  background: var(--spr-sword) center / 62% no-repeat;
-  image-rendering: pixelated;
-  animation: sword-shine 1.1s steps(2, jump-none) infinite;
-}
-@keyframes sword-shine { 50% { filter: brightness(1.45); } }
-
-/* Ponto de partida — bandeira da base */
-.start-mark {
-  position: absolute;
-  inset: 0;
-  font-size: 0;
-  background: var(--spr-base) center / 72% no-repeat;
-  image-rendering: pixelated;
-  z-index: 2;
-}
-
-/* Enfeites decorativos do mapa (grama, arbusto, árvore) — só efeito visual */
-.decor {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  image-rendering: pixelated;
-  opacity: 0.85;
-}
-.decor-grass { background: var(--spr-grass) center bottom / 55% no-repeat; }
-.decor-bush  { background: var(--spr-bush)  center bottom / 72% no-repeat; }
-.decor-tree  { background: var(--spr-tree)  center bottom / 88% no-repeat; }
-.cell.tower .decor,
-.cell.trap .decor,
-.cell.trail .decor { display: none; }
-
-/* Árvore (pinheiro em pixel-art CSS — não usado atualmente) */
-.tree-mark {
-  position: absolute;
-  inset: 0;
-  font-size: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-}
-.tree-mark::before {
-  content: '';
-  width: 0; height: 0;
-  border-left: calc(var(--cell) * 0.28) solid transparent;
-  border-right: calc(var(--cell) * 0.28) solid transparent;
-  border-bottom: calc(var(--cell) * 0.5) solid var(--tree);
-}
-.tree-mark::after {
-  content: '';
-  position: absolute;
-  bottom: 14%;
-  width: 16%; height: 18%;
-  background: var(--trunk);
-}
-
-/* Camada das criaturas */
-.agents { position: absolute; inset: 0; pointer-events: none; }
-
-.agent {
-  position: absolute;
-  z-index: 10;
-  transform: translateX(-50%);
-  transition: left 0.09s linear, top 0.09s linear;
-}
-
-.dot {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  filter:
-    drop-shadow(1px 0 0 #000)
-    drop-shadow(-1px 0 0 #000)
-    drop-shadow(0 1px 0 #000)
-    drop-shadow(0 -1px 0 #000);
-}
-
-/* Etiqueta de nome — tooltip estilo XP (amarelo claro) */
-.dot-label {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 3px);
-  transform: translateX(-50%);
-  font-family: var(--ui);
-  font-size: clamp(7px, 1.6vw, 9px);
-  line-height: 1.2;
-  color: #000;
-  background: #ffffe1;
-  border: 1px solid #000;
-  border-radius: 2px;
-  padding: 1px 4px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.dot.best {
-  z-index: 12;
-  animation: dot-pulse 0.5s steps(2, jump-none) infinite;
-}
-@keyframes dot-pulse {
-  50% {
-    filter:
-      drop-shadow(1px 0 0 var(--gold-lt))
-      drop-shadow(-1px 0 0 var(--gold-lt))
-      drop-shadow(0 1px 0 var(--gold-lt))
-      drop-shadow(0 -1px 0 var(--gold-lt));
-  }
-}
-
-.dot.reached {
-  z-index: 15;
-  animation: dot-win 0.2s steps(2, jump-none) infinite;
-}
-@keyframes dot-win {
-  50% {
-    transform: scale(1.5);
-    filter:
-      drop-shadow(1px 0 0 var(--gold))
-      drop-shadow(-1px 0 0 var(--gold))
-      drop-shadow(0 1px 0 var(--gold))
-      drop-shadow(0 -1px 0 var(--gold));
-  }
-}
-
-/* ── BARRA DE PROGRESSO (estilo XP — blocos verdes num sulco branco) ── */
-.phase-wrap {
-  width: 100%;
-  max-width: calc(var(--chrome) + 15 * var(--cell) + 6px);
-  height: 17px;
-  background: #fff;
-  border: 1px solid var(--xp-sunken);
-  border-radius: 3px;
-  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.2);
-  padding: 2px;
-  overflow: hidden;
-}
-.phase-fill {
-  height: 100%;
-  width: 0%;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 55%),
-    repeating-linear-gradient(90deg,
-      var(--xp-green) 0, var(--xp-green) 7px,
-      rgba(0,0,0,0) 7px, rgba(0,0,0,0) 9px);
-  border-radius: 1px;
-  transition: width 0.08s linear;
-}
-
-/* ── BARRA DE STATUS (campo rebaixado) ── */
-.status-line {
-  width: 100%;
-  max-width: calc(var(--chrome) + 15 * var(--cell) + 6px);
-  font-family: var(--ui);
-  font-size: clamp(10px, 2vw, 12px);
-  font-weight: bold;
-  letter-spacing: 0.01em;
-  text-align: center;
-  min-height: 20px;
-  color: var(--xp-muted);
-  background: var(--xp-face);
-  border: 1px solid var(--xp-sh);
-  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.18);
-  border-radius: 2px;
-  padding: 3px 8px;
-  line-height: 1.4;
-}
-.status-line.running  { color: #1a7d1a; }
-.status-line.evolving { color: #15489c; }
-.status-line.success  { color: #167a16; }
-.status-line.building { color: #15489c; }
-
-/* ── JANELA: PAINEL DE ESTATÍSTICAS ── */
-.panel {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(8px, 2.4vw, 10px);
-  align-self: stretch;
-  background: var(--xp-face);
-  border: 1px solid var(--xp-win-border);
-  border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  padding: 0 10px 12px;
-}
-.panel::before {
-  content: "📊 Estatísticas";
-  grid-column: 1 / -1;
-  margin: 0 -10px 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: bold;
-  font-size: 12px;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-  background: var(--xp-title-bg);
-  border: 1px solid var(--xp-win-border);
-  border-bottom: none;
-  border-radius: 7px 7px 0 0;
-  padding: 4px 8px;
-}
-
-/* Campos rebaixados (XP) */
-.card {
-  border: 1px solid var(--xp-sunken);
-  background: #fff;
-  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.12);
-  border-radius: 3px;
-  padding: 10px 12px;
-  min-height: 70px;
-  min-width: 0;
-}
-.card:first-of-type { border-color: var(--xp-sel); }
-
-.card-label {
-  font-family: var(--ui);
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 0.02em;
-  color: var(--xp-muted);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.card-val {
-  font-family: var(--ui);
-  font-weight: bold;
-  font-size: clamp(20px, 5vw, 26px);
-  color: var(--xp-ink);
-  line-height: 1.1;
-}
-.card-val.orange { color: var(--xp-sel); }
-.card-val.small  { font-size: clamp(13px, 3.4vw, 16px); }
-
-/* Lista da população (campo rebaixado) */
-.pop-list {
-  grid-column: 1 / -1;
-  border: 1px solid var(--xp-sunken);
-  background: #fff;
-  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.12);
-  border-radius: 3px;
-  padding: 8px 10px;
-  min-height: 160px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-.pop-list::-webkit-scrollbar { width: 16px; }
-.pop-list::-webkit-scrollbar-track { background: #e7e4d3; }
-.pop-list::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #cfe0f6, #97b9e6);
-  border: 1px solid #6b8fc4;
-  border-radius: 2px;
-}
-
-.list-hdr {
-  font-family: var(--ui);
-  font-size: 11px;
-  font-weight: bold;
-  color: var(--xp-muted);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #d8d4c2;
-  padding-bottom: 4px;
-}
-
-.list-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 5px;
-  padding: 2px 3px;
-  border-radius: 2px;
-}
-.list-row.reached-row { background: #e3f0d4; }
-
-.list-dot {
-  width: 10px; height: 10px;
-  border: 1px solid #555;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.list-bar-bg {
-  flex: 1;
-  min-width: 0;
-  height: 9px;
-  background: #fff;
-  border: 1px solid var(--xp-sunken);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.list-bar { height: 100%; transition: width 0.3s ease; }
-
-.list-dist {
-  font-family: var(--ui);
-  font-size: 11px;
-  font-weight: bold;
-  width: 24px;
-  text-align: right;
-  color: var(--xp-muted);
-  flex-shrink: 0;
-}
-
-.list-name {
-  font-family: var(--ui);
-  font-size: 11px;
-  color: var(--xp-ink);
-  width: clamp(64px, 18vw, 84px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-shrink: 0;
-}
-
-/* Controles (grupo dentro do painel) */
-.controls {
-  grid-column: 1 / -1;
-  border: 1px solid var(--xp-sh);
-  background: var(--xp-face);
-  border-radius: 3px;
-  box-shadow: inset 1px 1px 0 #fff;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.speed-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-  font-family: var(--ui);
-  font-size: 11px;
-  font-weight: bold;
-  color: var(--xp-muted);
-  letter-spacing: 0.04em;
-}
-
-.sdot {
-  width: 14px; height: 14px;
-  background: linear-gradient(180deg, #fff, #d7d2bd);
-  border: 1px solid #8d8a7c;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background 0.1s, border-color 0.1s;
-  flex-shrink: 0;
-  padding: 6px;
-  margin: -5px;
-  box-sizing: content-box;
-}
-.sdot.on {
-  background: linear-gradient(180deg, var(--xp-green-lt), var(--xp-green-dk));
-  border-color: var(--xp-green-dk);
-}
-
-/* ── BOTÕES XP (3D) ── */
-.btn {
-  background: linear-gradient(180deg, #ffffff 0%, #f2f0e6 46%, #ddd8c4 92%, #d0cab1 100%);
-  border: 1px solid #8c8a7e;
-  border-radius: 4px;
-  color: var(--xp-ink);
-  font-family: var(--ui);
-  font-size: 12px;
-  font-weight: bold;
-  padding: 8px 12px;
-  min-height: 40px;
-  cursor: pointer;
-  letter-spacing: 0.01em;
-  box-shadow: inset 0 0 0 1px #fff, 0 1px 1px rgba(0,0,0,0.18);
-  transition: border-color 0.1s, box-shadow 0.1s, background 0.1s;
-  text-align: center;
-  width: 100%;
-  line-height: 1.4;
-}
-.btn:hover {
-  border-color: #d79b00;
-  box-shadow: inset 0 0 0 1px #fff, 0 0 5px 1px rgba(255,179,0,0.55);
-}
-.btn:active {
-  background: linear-gradient(180deg, #d9d4c0, #efece0);
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.28);
-}
-.btn.active {
-  background: linear-gradient(180deg, #cfe0f6, #9cc0ee);
-  border-color: var(--xp-sel);
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
-}
-
-/* CTA primária — botão "verde Start" do XP */
-.overlay .btn,
-#start-btn {
-  background: linear-gradient(180deg, #8ed46f 0%, #5cb13b 45%, #439a2a 92%, #347d20 100%);
-  border: 1px solid #2f7d24;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 2px rgba(0,0,0,0.25);
-}
-.overlay .btn:hover,
-#start-btn:hover {
-  background: linear-gradient(180deg, #a0e07f 0%, #69c047 45%, #4caa30 92%, #3c8c25 100%);
-  border-color: #2f7d24;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 0 6px 1px rgba(120,210,90,0.6);
-}
-
-/* ── OVERLAYS / DIÁLOGOS XP ── */
-.rank-overlay {
-  position: fixed; inset: 0;
-  background: rgba(20,40,90,0.45);
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  z-index: 150;
-  animation: fade-in 0.18s ease;
-  padding: 10px;
-  overflow: auto;
-}
-
-.rank-box {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  max-height: calc(100dvh - 20px);
-  overflow: hidden;
-  border: 1px solid var(--xp-win-border);
-  background: var(--xp-face);
-  border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 8px 26px rgba(0,0,0,0.5);
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* O cabeçalho do diálogo vira a barra de título azul */
-.rank-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--xp-title-bg);
-  border-radius: 7px 7px 0 0;
-  padding: 4px 8px;
-  flex-shrink: 0;
-}
-.rank-title {
-  font-family: var(--ui);
-  font-size: clamp(12px, 2.6vw, 13px);
-  font-weight: bold;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-  letter-spacing: 0.01em;
-  line-height: 1.4;
-}
-.rank-title span { color: #ffec27; }
-
-/* corpo do diálogo (rolável) */
-.net-sub,
-.net-diagram,
-.net-legend { margin-left: 12px; margin-right: 12px; }
-.rank-box > .net-sub { margin-top: 12px; }
-
-.rank-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  border-top: 1px solid var(--xp-sh);
-  box-shadow: inset 0 1px 0 #fff;
-  padding: 12px;
-  gap: 10px;
-  flex-shrink: 0;
-  background: var(--xp-face);
-}
-
-/* ── OVERLAY DE SUCESSO (diálogo XP centralizado) ── */
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(20,40,90,0.5);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  z-index: 200;
-  padding: 24px;
-  animation: fade-in 0.18s ease;
-}
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-
-.overlay-title {
-  font-family: var(--ui);
-  font-size: clamp(16px, 5vw, 22px);
-  font-weight: bold;
-  color: var(--xp-green-dk);
-  text-align: center;
-  line-height: 1.7;
-  border: 1px solid var(--xp-win-border);
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  padding: clamp(20px, 5vw, 30px) clamp(22px, 6vw, 36px);
-  background: var(--xp-face);
-  box-shadow: inset 0 1px 0 #fff;
-}
-.overlay-title .ico { color: var(--xp-green); }
-
-.overlay-sub {
-  font-family: var(--ui);
-  font-size: clamp(11px, 2.6vw, 13px);
-  color: var(--xp-muted);
-  text-align: center;
-  line-height: 1.7;
-  background: var(--xp-face);
-  border: 1px solid var(--xp-win-border);
-  border-top: none;
-  padding: 14px 22px;
-  width: min(420px, 86vw);
-}
-.overlay-sub span { color: var(--xp-sel); font-weight: bold; }
-.overlay .btn { width: min(420px, 86vw); border-radius: 0 0 6px 6px; margin-top: -1px; }
-
-/* ── BALÃO DE GERAÇÃO (tooltip XP) ── */
-.gen-toast {
-  position: fixed;
-  top: clamp(10px, 4vh, 28px);
-  left: 50%;
-  transform: translate(-50%, -10px) scale(0.96);
-  z-index: 320;
-  font-family: var(--ui);
-  font-size: clamp(12px, 2.6vw, 15px);
-  font-weight: bold;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
-  background: var(--xp-title-bg);
-  border: 1px solid var(--xp-win-border);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  padding: 8px 18px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-.gen-toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0) scale(1);
-}
-
-/* ── FASES: construção × assistir ── */
-.build-panel { display: none; }
-body.phase-build .panel { display: none; }
-body.phase-build .brain-panel { display: none; }
-body.phase-build .build-panel {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: var(--xp-face);
-  border: 1px solid var(--xp-win-border);
-  border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  padding: 0 12px 12px;
-  min-width: 0;
-}
-body.phase-build .phase-wrap { display: none; }
-body.phase-build .grid { touch-action: none; cursor: crosshair; }
-body.phase-build .cell:hover { box-shadow: inset 0 0 0 2px var(--gold-lt); }
-
-/* Cabeçalho de janela: a primeira .build-hdr vira barra de título azul */
-.brain-panel > .build-hdr:first-child,
-body.phase-build .build-panel > .build-hdr:first-child {
-  margin: 0 -12px 8px;
-  border-radius: 7px 7px 0 0;
-  background: var(--xp-title-bg);
-  border: 1px solid var(--xp-win-border);
-  border-bottom: none;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-  text-transform: none;
-  padding: 4px 8px;
-  letter-spacing: 0.01em;
-}
-
-.build-hdr {
-  font-family: var(--ui);
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 0.02em;
-  color: var(--xp-ink);
-  text-transform: uppercase;
-}
-.build-tip {
-  font-family: var(--ui);
-  font-size: 12px;
-  color: var(--xp-muted);
-  line-height: 1.5;
-}
-.budget {
-  font-family: var(--ui);
-  font-size: 12px;
-  font-weight: bold;
-  color: var(--xp-ink);
-  background: #fff;
-  border: 1px solid var(--xp-sunken);
-  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.12);
-  border-radius: 3px;
-  padding: 8px;
-  text-align: center;
-}
-.budget span { color: var(--xp-sel); }
-.budget.empty { color: var(--red); border-color: var(--red); }
-
-/* ── PALETA DE FERRAMENTAS (refeita do zero) ──
-   Lista vertical. Cada item = ícone (esquerda) + nome/descrição (direita).
-   Layout em GRID explícito: o ícone ocupa as duas linhas da coluna esquerda,
-   o texto fica na direita. Sem nó de texto solto, sem coluna apertada. */
-.tool-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.tool {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  grid-template-areas:
-    "ico name"
-    "ico desc";
-  align-items: center;
-  column-gap: 10px;
-  width: 100%;
-  text-align: left;
-  background: linear-gradient(180deg, #ffffff 0%, #f2f0e6 46%, #ddd8c4 100%);
-  border: 1px solid #8c8a7e;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px #fff;
-  color: var(--xp-ink);
-  font-family: var(--ui);
-  padding: 7px 11px;
-  min-height: 46px;
-  cursor: pointer;
-  transition: border-color 0.1s, box-shadow 0.1s, background 0.1s;
-}
-.tool:hover {
-  border-color: #d79b00;
-  box-shadow: inset 0 0 0 1px #fff, 0 0 5px 1px rgba(255,179,0,0.5);
-}
-.tool.on {
-  background: linear-gradient(180deg, #cfe0f6, #9cc0ee);
-  border-color: var(--xp-sel);
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
-}
-
-.tool-ico {
-  grid-area: ico;
-  width: 26px;
-  height: 26px;
-  align-self: center;
-  image-rendering: pixelated;
-}
-.tool-ico.tower { background: var(--spr-tower) center / contain no-repeat; }
-.tool-ico.trap  { background: var(--spr-trap)  center / contain no-repeat; }
-.tool-ico.enemy { background: var(--spr-enemy) center / contain no-repeat; }
-.tool-ico.erase { background: transparent; border: 2px dashed var(--xp-muted); border-radius: 3px; }
-
-.tool-name { grid-area: name; font-size: 12px; font-weight: bold; line-height: 1.25; }
-.tool-desc { grid-area: desc; font-size: 11px; color: var(--xp-muted); line-height: 1.25; }
-.tool.on .tool-name { color: #14306b; }
-.tool.on .tool-desc { color: #1a3f80; }
-
-/* ── DEFESAS NA GRADE (sprites pixel-art) ── */
-.cell.tower::before {
-  content: '';
-  position: absolute;
-  inset: 4%;
-  background: var(--spr-tower) center bottom / contain no-repeat;
-  image-rendering: pixelated;
-  z-index: 3;
-}
-/* Torre danificada: leve inclinação + rachaduras escuras por cima */
-.cell.tower.cracked::before { transform: rotate(-3deg); filter: brightness(0.82); }
-.cell.tower.cracked::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background:
-    linear-gradient(122deg, transparent 43%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.72) 49%, transparent 51%),
-    linear-gradient(54deg, transparent 55%, rgba(0,0,0,0.5) 57%, rgba(0,0,0,0.5) 60%, transparent 62%);
-}
-.cell.trap::before {
-  content: '';
-  position: absolute;
-  inset: 10%;
-  background: var(--spr-trap) center bottom / contain no-repeat;
-  image-rendering: pixelated;
-  z-index: 1;
-}
-
-/* ── CAMADA DE VISÃO (cone translúcido) ── */
-.vision-layer { position: absolute; inset: 0; pointer-events: none; z-index: 13; }
-.vision-cell {
-  position: absolute;
-  background: #ffec27;
-  box-shadow: inset 0 0 6px rgba(255,236,39,0.55);
-}
-
-/* ── INIMIGOS (sprite monstrinho pixel-art) ── */
-.enemies-layer { position: absolute; inset: 0; pointer-events: none; z-index: 11; }
-.enemy {
-  position: absolute;
-  background: var(--spr-enemy) center / contain no-repeat;
-  image-rendering: pixelated;
-  transition: left 0.12s linear, top 0.12s linear;
-}
-
-/* ── EFEITOS: tiro da torre + bolha de sangue ── */
-.fx-layer { position: absolute; inset: 0; pointer-events: none; z-index: 14; overflow: visible; }
-
-.shot {
-  position: absolute;
-  width: 6px; height: 6px;
-  margin: -3px 0 0 -3px;
-  background: var(--gold-lt);
-  box-shadow: 0 0 0 1px var(--nes-black), 0 0 5px 2px var(--orange);
-  image-rendering: pixelated;
-  animation: shot-fly 0.16s linear forwards;
-}
-@keyframes shot-fly { to { transform: translate(var(--dx), var(--dy)); } }
-
-.impact {
-  position: absolute;
-  width: 12px; height: 12px;
-  margin: -6px 0 0 -6px;
-  background: var(--gold-lt);
-  box-shadow: 0 0 0 2px var(--orange), 0 0 8px 3px var(--red);
-  animation: impact-pop 0.22s steps(3, jump-none) forwards;
-}
-@keyframes impact-pop {
-  0%   { transform: scale(0.3); opacity: 1; }
-  100% { transform: scale(2);   opacity: 0; }
-}
-
-.blood {
-  position: absolute;
-  border-radius: 50%;
-  background: var(--red);
-  box-shadow: inset -2px -2px 0 var(--purple), inset 3px 3px 0 var(--p8-pink), 0 0 0 1px var(--nes-black);
-  transform: translate(-50%, -50%) scale(0.2);
-  animation: blood-pop 0.5s steps(6, jump-none) forwards;
-}
-@keyframes blood-pop {
-  0%   { transform: translate(-50%,-50%) scale(0.2);  opacity: 1; }
-  45%  { transform: translate(-50%,-50%) scale(1.35); opacity: 1; }
-  62%  { transform: translate(-50%,-50%) scale(1.05); opacity: 1; }
-  100% { transform: translate(-50%,-50%) scale(1.6);  opacity: 0; }
-}
-
-.droplet {
-  position: absolute;
-  width: 4px; height: 4px;
-  margin: -2px 0 0 -2px;
-  background: var(--red);
-  box-shadow: 0 0 0 1px var(--nes-black);
-  animation: droplet-fly 0.45s ease-out forwards;
-}
-@keyframes droplet-fly {
-  0%   { transform: translate(0,0) scale(1);   opacity: 1; }
-  100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
-}
-
-/* ── CRIATURA MORTA ── */
-.dot.dead { opacity: 0.28; }
-.list-row.dead-row { opacity: 0.42; }
-.list-row.reached-row .list-dist { color: var(--xp-green-dk); }
-
-body.phase-watch .agents { pointer-events: none; }
-body.phase-watch .grid { cursor: pointer; }
-
-/* ── JANELA: CÉREBRO DO LÍDER ── */
-.brain-panel {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: var(--xp-face);
-  border: 1px solid var(--xp-win-border);
-  border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  padding: 0 12px 12px;
-  min-width: 0;
-}
-.brain-sub { font-family: var(--ui); font-size: 11px; color: var(--xp-muted); }
-.brain-sub span { color: var(--xp-sel); font-weight: bold; }
-/* tela rebaixada escura para o diagrama (texto branco do SVG fica legível) */
-.brain-live {
-  overflow: auto;
-  background: #0a0a16;
-  border: 1px solid var(--xp-sunken);
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.6);
-  border-radius: 3px;
-  padding: 6px;
-}
-.brain-live .net-svg { width: 100%; height: auto; display: block; }
-.brain-empty { font-family: var(--ui); font-size: 12px; color: #9aa0b0; line-height: 1.5; padding: 8px 4px; }
-
-/* ── INSPETOR DE REDE NEURAL ── */
-.net-box { width: min(840px, 100%); }
-
-.net-sub {
-  font-family: var(--ui);
-  font-size: 12px;
-  color: var(--xp-muted);
-  margin-bottom: 12px;
-}
-.net-sub span { color: var(--xp-sel); font-weight: bold; }
-
-.net-diagram {
-  overflow: auto;
-  border: 1px solid var(--xp-sunken);
-  background: #0a0a16;
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.6);
-  border-radius: 3px;
-  padding: 8px;
-  margin-bottom: 12px;
-}
-.net-svg { width: 100%; height: auto; display: block; }
-.net-diagram .net-svg { min-width: 460px; }
-.net-svg .nl { font-family: var(--ui); font-size: 11px; fill: var(--nes-white); }
-.net-svg .nv { fill: var(--gold-lt); }
-.net-svg .nl.pick { fill: var(--gold-lt); }
-.net-svg .cap { font-family: var(--ui); font-weight: bold; font-size: 9px; fill: #9aa0b0; }
-
-.net-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  font-family: var(--ui);
-  font-size: 11px;
-  color: var(--xp-muted);
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--xp-sh);
-}
-.net-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.net-legend .sw { width: 13px; height: 13px; border: 1px solid #000; display: inline-block; flex-shrink: 0; }
-.net-legend .sw.goal  { background: #00e436; }
-.net-legend .sw.wall  { background: #c2c3c7; }
-.net-legend .sw.enemy { background: #7e2553; }
-.net-legend .sw.trap  { background: #ff004d; }
-.net-legend .sw.free  { background: #1d2b53; }
-.net-legend .ln { width: 18px; height: 0; border-top: 3px solid; display: inline-block; flex-shrink: 0; }
-.net-legend .ln.pos { border-top-color: #00e436; }
-.net-legend .ln.neg { border-top-color: #ff004d; }
-.net-legend .ln.off { border-top: 3px dashed #5f574f; }
-
-/* ── BARRA DE TAREFAS (estilo Windows XP, decorativa) ── */
-.xp-taskbar {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  height: var(--taskbar-h);
-  display: flex;
-  align-items: stretch;
-  z-index: 140;
-  background: var(--xp-taskbar);
-  box-shadow: inset 0 1px 0 #5a9bf0, inset 0 2px 0 rgba(255,255,255,0.25);
-  border-top: 1px solid #0b3aa0;
-  font-family: var(--ui);
-}
-.xp-start {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 100%;
-  padding: 0 26px 3px 9px;
-  font-style: italic;
-  font-weight: bold;
-  font-size: 15px;
-  color: #fff;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.55);
-  background: radial-gradient(130% 90% at 28% 22%, #84cf6e 0%, #4faa3a 42%, #2f8f24 76%, #1d7a16 100%);
-  border-radius: 0 13px 14px 0 / 0 16px 18px 0;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset -3px -2px 5px rgba(0,0,0,0.22);
-}
-.xp-flag {
-  width: 17px; height: 16px;
-  flex-shrink: 0;
-  transform: skewX(-9deg);
-  border-radius: 3px;
-  background:
-    linear-gradient(#fff,#fff) center / 100% 2px no-repeat,
-    linear-gradient(#fff,#fff) center / 2px 100% no-repeat,
-    conic-gradient(from 0deg, #f7491e 0 90deg, #7fbb00 90deg 180deg, #ffb900 180deg 270deg, #00a4ef 270deg 360deg);
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
-}
-.xp-tasks { flex: 1; display: flex; align-items: center; padding: 0 6px; min-width: 0; }
-.xp-task {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  max-width: 220px;
-  height: 23px;
-  padding: 0 12px;
-  color: #fff;
-  font-size: 11px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 3px;
-}
-.xp-task.active {
-  background: linear-gradient(180deg, #1e54c0, #295fd0 50%, #1c4cb4);
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12);
-}
-.xp-tray {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  margin-left: auto;
-  color: #fff;
-  font-size: 11px;
-  background: linear-gradient(180deg, #16a0e9 0%, #0f86dd 12%, #0d77d4 60%, #0e6fcf 100%);
-  box-shadow: inset 2px 0 3px rgba(0,0,0,0.28), inset 1px 0 0 rgba(255,255,255,0.18);
-}
-.xp-tray-ico { font-size: 12px; line-height: 1; }
-.xp-clock { font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.4); }
-
-/* ── MOVIMENTO REDUZIDO ── */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  .dot { transition: none !important; }
-  .phase-fill { transition: none !important; }
-}
-
-/* ── DESKTOP (>=900px): tabuleiro + barra lateral ── */
-@media (min-width: 900px) {
-  body { min-height: 100dvh; }
-
-  :root {
-    --cell: clamp(20px, min(calc((100vw - 440px) / 15), calc((100dvh - 150px - var(--taskbar-h)) / 15)), 44px);
-  }
-
-  .app {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: clamp(16px, 2vw, 28px);
-  }
-
-  .grid-area { flex: 0 0 auto; }
-
-  .side {
-    flex: 0 0 clamp(300px, 30vw, 360px);
-    max-height: calc(100dvh - 24px - var(--taskbar-h));
-    overflow-y: auto;
-  }
-
-  .pop-list { max-height: 240px; }
-  .card { min-height: auto; }
-}
-
-/* ── DESKTOP (>=900px): diálogo centralizado ── */
-@media (min-width: 900px) {
-  .rank-overlay {
-    align-items: center;
-    padding: clamp(16px, 3vw, 24px);
-  }
-
-  .rank-box {
-    width: min(900px, 100%);
-    max-height: 92dvh;
-  }
-
-  .rank-footer {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .rank-footer .btn { width: auto; min-width: 120px; }
+/* ═══════════════════════════════════════════════════════════════════════════
+   Crown Circuit — visual Tiny Swords (Pixel Frog)
+
+   REGRAS DE ESCALA (o pacote inteiro é modulado em 64 px):
+
+   • Terreno e unidades: 1:1. A célula do jogo É o tile de 64 px. O frame de
+     unidade tem 192×192 com o personagem (~52×71) centrado — então o sprite é
+     desenhado numa caixa de 3×3 células CENTRADA na célula, transbordando de
+     propósito. Espremer o frame de 192 px dentro da célula encolhe o boneco a
+     um terço do tamanho: era esse o bug da versão anterior.
+
+   • Construções e árvores: 1/2. Uma torre nativa mede 2×4 células; a 1:1 um
+     punhado delas cobriria o tabuleiro. Meia escala é uma redução exata 2:1
+     (nearest-neighbor, sem borrão) e mantém a leitura tática.
+
+   9-SLICE: no pacote as peças de UI vêm espalhadas num grid de 64 px com
+   gutters transparentes; tools/build-assets.py as remonta contíguas. O CSS usa
+   `border-width` para o espaço do LAYOUT e `border-image-width` para a escala
+   da ARTE — as duas são independentes, e a borda pinta ABAIXO do conteúdo, então
+   a arte pode avançar sobre a área de texto sem escondê-lo.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+*,*::before,*::after{box-sizing:border-box;margin:0}
+
+:root{
+  /* O cenário é a tela inteira. Não há mais "chrome" reservado: o painel virou
+     janela flutuante POR CIMA do tabuleiro, então a célula é simplesmente o
+     maior valor que faz a ilha (12×12 = campo 10×10 + o anel de praia) caber na
+     menor dimensão da janela. A dimensão que sobra é preenchida pela água do
+     <body>, que é cenário também.
+     O tile nativo é de 64 px, mas não há teto: `image-rendering:pixelated`
+     mantém o pixel duro ao ampliar. */
+  --n:10;    /* campo jogável — tem de bater com o N do main.js */
+  --tn:12;   /* ilha = N + 2 (1 célula de praia de cada lado) */
+  --cell:min(calc(100vw / 12), calc(100dvh / 12));
+  --board:calc(var(--cell) * var(--tn));
+  --ink:#43301c;
+  --ink-soft:#6f5233;
+  --cream:#f4e3b6;
+  --gold:#e8b448;
+  --rust:#8e3225;
+
+  --paper:url(assets/tiny-swords/ui/paper.png);
+  --paper-dark:url(assets/tiny-swords/ui/paper-special.png);
+  --btn-blue:url(assets/tiny-swords/ui/btn-blue.png);
+  --btn-blue-down:url(assets/tiny-swords/ui/btn-blue-down.png);
+  --btn-red:url(assets/tiny-swords/ui/btn-red.png);
+  --btn-red-down:url(assets/tiny-swords/ui/btn-red-down.png);
+}
+
+html{-webkit-text-size-adjust:100%}
+body{
+  height:100dvh;overflow:hidden;          /* a página nunca rola: o jogo é a tela */
+  /* A água do mar continua para além da ilha e cobre o que sobrar da janela. */
+  background:#0e3a4a url(assets/tiny-swords/game/water.png) 0 0/var(--cell) var(--cell) repeat;
+  color:var(--ink);
+  font:600 14px/1.45 "Segoe UI",Roboto,Arial,sans-serif;
+}
+.skip-link{position:absolute;left:8px;top:-90px;background:#fff;color:#111;padding:8px;z-index:999}
+.skip-link:focus{top:8px}
+
+/* Palco: a tela toda, com a ilha centrada. */
+.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+
+/* Animação de sprite-sheet horizontal.
+   ATENÇÃO ao jump-none: `steps(8)` amostra a posição em k/8 (0%, 12,5%, 25%…),
+   mas os 8 frames de um sheet ficam em k/7 (0%, 14,28%, 28,57%…) — o resultado
+   é o navegador parando ENTRE dois frames e desenhando meio boneco/meia árvore.
+   `steps(8,jump-none)` amostra 0…100% inclusive, caindo exatamente nos frames. */
+@keyframes frames{to{background-position:100% 0}}
+
+/* ══ JANELA FLUTUANTE ══════════════════════════════════════════════════════
+   O painel não divide mais a tela com o tabuleiro: ele flutua por cima. A fita
+   do pacote (3-slice horizontal, 64 px de altura na arte) é a barra de título —
+   arrasta-se por ela e o botão a minimiza. Minimizada, sobra só a fita e o
+   cenário fica sem nada na frente. */
+.hud{
+  position:fixed;z-index:40;top:12px;right:12px;
+  width:min(380px, calc(100vw - 24px));
+  max-height:calc(100dvh - 24px);
+  display:flex;flex-direction:column;
+  filter:drop-shadow(0 8px 18px #04202b90);
+}
+.hud-bar{
+  display:flex;align-items:center;gap:9px;
+  height:64px;flex:0 0 auto;
+  border:0 solid transparent;border-left-width:56px;border-right-width:56px;
+  border-image:url(assets/tiny-swords/ui/ribbon-red.png) 0 64 fill stretch;
+  border-image-width:0 56px;
+  image-rendering:pixelated;
+  color:#fff3d2;font:800 19px/1 Georgia,"Times New Roman",serif;
+  letter-spacing:.04em;text-shadow:2px 2px 0 #52201c;
+  cursor:grab;touch-action:none;user-select:none;
+}
+.hud.dragging .hud-bar{cursor:grabbing}
+.hud-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.build-tag{color:#ffd9a3;font:700 10px/1 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.hud-min{
+  margin-left:auto;flex:0 0 auto;width:30px;height:30px;
+  background:#0000003d;border:2px solid #ffd9a370;border-radius:4px;
+  color:#ffe9b8;font:800 13px/1 Arial,sans-serif;cursor:pointer;
+}
+.hud-min:hover{background:#00000066}
+.hud-min:focus-visible{outline:3px solid #ffe081;outline-offset:2px}
+/* O painel rola por dentro; quem não rola é a página. */
+.hud-body{
+  flex:1 1 auto;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:10px;
+  padding:2px 4px 4px;
+}
+.hud.min .hud-body{display:none}
+.side{display:flex;flex-direction:column;gap:12px}
+
+/* ══ TABULEIRO: ilha de 12×12 tiles; o campo jogável 10×10 fica no miolo, com
+      1 célula de margem para a praia e para o transbordo das construções. ═══ */
+.board{
+  position:relative;
+  width:var(--board);height:var(--board);
+  overflow:hidden;
+  background:url(assets/tiny-swords/game/water.png) 0 0/var(--cell) var(--cell) repeat;
+  box-shadow:0 10px 30px #04202bb0;
+  image-rendering:pixelated;
+}
+.terrain{position:absolute;inset:0;display:grid;grid-template:repeat(var(--tn),var(--cell))/repeat(var(--tn),var(--cell))}
+/* Tilemap 9×6 de 64 px: o autotile da praia ocupa as colunas 0-3 / linhas 0-3.
+   Só o tile (1,1) é o preenchimento; os índices 2 já carregam contorno de borda
+   (o main.js escolhe o pedaço certo e injeta o background-position).
+   A posição é percentual como o background-size, então escala junto com --cell. */
+.tile{background:url(assets/tiny-swords/game/tilemap.png) 0 0/900% 600% no-repeat;image-rendering:pixelated}
+.sheep{
+  position:absolute;width:calc(var(--cell)*2);height:calc(var(--cell)*2);
+  transform:translate(-50%,-50%);
+  background:url(assets/tiny-swords/game/sheep.png) 0 0/600% 100% no-repeat;
+  image-rendering:pixelated;animation:frames 1.6s steps(6,jump-none) infinite;pointer-events:none;
+}
+
+.play{position:absolute;left:var(--cell);top:var(--cell);width:calc(var(--cell)*var(--n));height:calc(var(--cell)*var(--n))}
+.grid{
+  display:grid;grid-template:repeat(var(--n),var(--cell))/repeat(var(--n),var(--cell));
+  width:100%;height:100%;touch-action:none;
+  cursor:url(assets/tiny-swords/ui/cursor.png) 24 18,crosshair;
+}
+.cell{position:relative;min-width:0;min-height:0}
+body.phase-build .cell:hover{box-shadow:inset 0 0 0 3px #ffe081b0;z-index:20}
+.cell.trail::before{content:'';position:absolute;inset:22%;border-radius:50%;background:#fff0b055;pointer-events:none}
+
+/* Peças do tabuleiro. Tudo ancorado no rodapé da célula (as construções "pisam"
+   no tile e crescem para cima), a 1/2 da escala nativa. */
+.goal-mark,.start-mark,.cell.tower::after,.cell.trap::after,.decor{
+  position:absolute;pointer-events:none;image-rendering:pixelated;
+  background-repeat:no-repeat;background-size:100% 100%;
+}
+.goal-mark,.start-mark,.cell.tower::after,.decor-tree{left:50%;bottom:0;transform:translateX(-50%)}
+
+/* castelo 320×256 -> 2,5×2 células */
+.goal-mark{width:calc(var(--cell)*2.5);height:calc(var(--cell)*2);background-image:url(assets/tiny-swords/game/castle.png);font-size:0;z-index:2}
+/* quartel 192×256 -> 1,5×2 células */
+.start-mark{width:calc(var(--cell)*1.5);height:calc(var(--cell)*2);background-image:url(assets/tiny-swords/game/barracks.png);font-size:0;z-index:2}
+/* torre 128×256 -> 1×2 células */
+.cell.tower::after{content:'';width:var(--cell);height:calc(var(--cell)*2);background-image:url(assets/tiny-swords/game/tower.png);z-index:3}
+.cell.tower.cracked::after{filter:saturate(.45) brightness(.75)}
+/* barricada: a rocha já é 64×64 = 1 tile exato, então vai a 1:1 */
+.cell.trap::after{content:'';inset:0;width:var(--cell);height:var(--cell);background-image:url(assets/tiny-swords/game/rock.png);z-index:3}
+
+/* Arbusto: frame 128×128 com o desenho pequeno e centrado -> caixa de 2×2
+   células centrada na célula, igual às unidades. Árvore: 192×256 a 1/2. */
+.decor-bush{left:50%;top:50%;width:calc(var(--cell)*2);height:calc(var(--cell)*2);transform:translate(-50%,-50%);background-size:800% 100%;animation:frames 1.2s steps(8,jump-none) infinite;z-index:1}
+.decor-tree{width:calc(var(--cell)*1.5);height:calc(var(--cell)*2);background-size:800% 100%;animation:frames 1.4s steps(8,jump-none) infinite;z-index:2}
+.decor-bush.v1{background-image:url(assets/tiny-swords/game/bush1.png)}
+.decor-bush.v2{background-image:url(assets/tiny-swords/game/bush2.png)}
+.decor-bush.v3{background-image:url(assets/tiny-swords/game/bush3.png)}
+.decor-bush.v4{background-image:url(assets/tiny-swords/game/bush4.png)}
+.decor-tree.v1{background-image:url(assets/tiny-swords/game/tree1.png)}
+.decor-tree.v2{background-image:url(assets/tiny-swords/game/tree2.png)}
+
+/* ══ UNIDADES (1:1) ═══════════════════════════════════════════════════════
+   .agent/.enemy ocupam exatamente 1 célula e carregam a posição; o sprite e a
+   sombra são caixas de 3×3 células centradas nessa célula — que é como o frame
+   de 192 px do pacote foi desenhado para ser lido. */
+.agents,.enemies-layer,.vision-layer,.fx-layer{position:absolute;inset:0;pointer-events:none}
+.enemies-layer{z-index:10}
+.agents{z-index:11}
+.vision-layer{z-index:9}
+.fx-layer{z-index:15}
+
+.agent,.mob{position:absolute;width:var(--cell);height:var(--cell);transition:left .12s linear,top .12s linear}
+.agent::before,.mob::before,.dot,.mob::after{
+  position:absolute;left:50%;top:50%;
+  width:calc(var(--cell)*3);height:calc(var(--cell)*3);
+  transform:translate(-50%,-50%);
+  background-repeat:no-repeat;image-rendering:pixelated;
+}
+/* sombra: Shadow.png é 192×192, a mesma moldura do frame da unidade */
+.agent::before,.mob::before{content:'';background-image:url(assets/tiny-swords/game/shadow.png);background-size:100% 100%}
+
+.dot{background-image:url(assets/tiny-swords/game/pawn-idle.png);background-size:800% 100%;animation:frames .8s steps(8,jump-none) infinite}
+.dot.running{background-image:url(assets/tiny-swords/game/pawn-run.png);background-size:600% 100%;animation:frames .55s steps(6,jump-none) infinite}
+.dot.flip{transform:translate(-50%,-50%) scaleX(-1)}
+.dot.dead{opacity:.3;filter:grayscale(1);animation:none}
+.agent.dead::before{opacity:.3}
+.dot.reached{filter:drop-shadow(0 0 6px #ffe27a) drop-shadow(0 0 3px #fff)}
+.dot.best{filter:drop-shadow(0 0 4px #ffe27a)}
+
+.mob::after{content:'';background-image:url(assets/tiny-swords/game/warrior-idle.png);background-size:800% 100%;animation:frames .8s steps(8,jump-none) infinite}
+.mob.flip::after{transform:translate(-50%,-50%) scaleX(-1)}
+.mob.running::after{background-image:url(assets/tiny-swords/game/warrior-run.png);background-size:600% 100%;animation:frames .55s steps(6,jump-none) infinite}
+
+.dot-label{position:absolute;left:50%;top:-9px;transform:translateX(-50%);z-index:3;padding:1px 4px;border-radius:3px;background:#1d2a20cc;color:#fff0c4;font:700 9px Arial,sans-serif;white-space:nowrap}
+
+.vision-cell{position:absolute;background:#ffe674;box-shadow:inset 0 0 0 2px #fff3a066}
+
+/* ══ EFEITOS ══════════════════════════════════════════════════════════════ */
+.shot{
+  position:absolute;width:var(--cell);height:var(--cell);
+  margin:calc(var(--cell)/-2) 0 0 calc(var(--cell)/-2);
+  background:url(assets/tiny-swords/game/arrow.png) 0 0/100% 100% no-repeat;
+  image-rendering:pixelated;
+  transform:rotate(var(--ang));
+  animation:shot-fly .18s linear forwards;
+}
+@keyframes shot-fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--ang))}}
+
+.impact{
+  position:absolute;width:calc(var(--cell)*3);height:calc(var(--cell)*3);
+  margin:calc(var(--cell)*-1.5) 0 0 calc(var(--cell)*-1.5);
+  background:url(assets/tiny-swords/game/explosion.png) 0 0/800% 100% no-repeat;
+  image-rendering:pixelated;animation:frames .48s steps(8,jump-none) forwards;
+}
+/* poeira no lugar do sangue: o pacote é cartunesco, respingo vermelho destoava */
+.dust{
+  position:absolute;width:calc(var(--cell)*1.4);height:calc(var(--cell)*1.4);
+  margin:calc(var(--cell)*-0.7) 0 0 calc(var(--cell)*-0.7);
+  background:url(assets/tiny-swords/game/dust.png) 0 0/800% 100% no-repeat;
+  image-rendering:pixelated;animation:frames .42s steps(8,jump-none) forwards;
+}
+
+/* ══ BARRA DE PROGRESSO (BigBar do pacote: base 3-slice + textura de enchimento)
+      A base tem ~40 px transparentes antes da ponta desenhada; por isso a
+      trilha invade a borda (inset negativo) e para no encaixe real do sulco. */
+.phase-wrap{
+  position:relative;width:100%;height:48px;flex:0 0 auto;
+  border:0 solid transparent;border-left-width:48px;border-right-width:48px;
+  border-image:url(assets/tiny-swords/ui/bar-base.png) 0 64 fill stretch;
+  border-image-width:0 48px;                 /* 64 -> 48 = escala uniforme de 0,75 */
+  image-rendering:pixelated;
+}
+.phase-track{position:absolute;inset:0 -15px;overflow:hidden}
+.phase-fill{
+  width:0;height:100%;
+  background:url(assets/tiny-swords/ui/bar-fill.png) 0 0/48px 48px repeat-x;
+  image-rendering:pixelated;transition:width .15s;
+}
+
+.status-line{margin-top:5px;text-align:center;color:#ffeaad;font:700 12px Georgia,serif;letter-spacing:.1em;text-shadow:1px 1px 2px #06222c}
+.status-line.success{color:#b6f08e}
+.status-line.evolving{color:#ffd36b}
+
+/* ══ PAINÉIS (papel 9-slice, fatia de 32 px desenhada 1:1) ════════════════ */
+.panel,.build-panel,.brain-panel,.rank-box,.overlay-box{
+  border:26px solid transparent;
+  border-image:var(--paper) 32 fill stretch;
+  border-image-width:32px;
+  image-rendering:pixelated;
+  color:var(--ink);
+}
+.panel{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.brain-panel{display:flex;flex-direction:column;gap:8px}
+.build-panel{display:none}
+body.phase-build .panel,body.phase-build .brain-panel{display:none}
+body.phase-build .build-panel{display:flex;flex-direction:column;gap:11px}
+body.phase-watch .build-panel{display:none}
+
+.brain-panel,.rank-box{border-image-source:var(--paper-dark);color:#f2e6c6}
+.brain-panel .build-hdr,.rank-box .rank-title{color:#ffeec0;text-shadow:1px 2px #2b2f38;border-color:#8f8878}
+.brain-panel .brain-sub,.rank-box .net-sub{color:#ddd6c0}
+.brain-live,.net-diagram{padding:8px;border:2px solid #4a4740;background:#182a2c;overflow:auto}
+.brain-empty{color:#e7d6ac;font-size:13px}
+
+.build-hdr,.list-hdr{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font:800 17px Georgia,serif;color:#7b3421;text-align:center;
+  text-transform:uppercase;letter-spacing:.05em;text-shadow:1px 1px #ffe9a0;
+  border-bottom:2px solid #c08c46;padding-bottom:8px;
+}
+.build-tip{text-align:center;color:var(--ink-soft);font-size:13.5px;line-height:1.55}
+.budget{text-align:center;border:2px solid #b8813f;background:#fff2bd8c;padding:9px;color:#7a3520;font:700 15px Georgia,serif}
+.budget span{color:#b72f28;font-size:19px}
+.budget.empty span{color:#8d1f1c}
+
+/* ══ ÍCONES DO PACOTE (64 px desenhados a 32 = 1/2 exato) ═════════════════ */
+.ico{display:inline-block;width:32px;height:32px;flex:0 0 auto;vertical-align:middle;
+     background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated}
+.ico-swords{background-image:url(assets/tiny-swords/ui/icon-swords.png)}
+.ico-hammer{background-image:url(assets/tiny-swords/ui/icon-hammer.png)}
+.ico-shield{background-image:url(assets/tiny-swords/ui/icon-shield.png)}
+.ico-x     {background-image:url(assets/tiny-swords/ui/icon-x.png)}
+.ico-back  {background-image:url(assets/tiny-swords/ui/icon-back.png)}
+.ico-play  {background-image:url(assets/tiny-swords/ui/icon-play.png)}
+.ico-info  {background-image:url(assets/tiny-swords/ui/icon-info.png)}
+.ico-wood  {background-image:url(assets/tiny-swords/ui/icon-wood.png)}
+
+/* ══ FERRAMENTAS ══════════════════════════════════════════════════════════ */
+.tool-grid{display:grid;grid-template-columns:1fr;gap:9px}
+.tool{
+  display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-areas:'ico name' 'ico desc';
+  column-gap:12px;align-items:center;min-height:78px;padding:10px 14px;
+  border:12px solid transparent;
+  border-image:var(--paper) 32 fill stretch;
+  border-image-width:32px;
+  image-rendering:pixelated;
+  color:#4a2b18;cursor:pointer;text-align:left;
+}
+.tool:hover{filter:brightness(1.06)}
+.tool.on{border-image:var(--btn-blue) 64 fill stretch;border-image-width:32px;color:#fff7cf;text-shadow:1px 1px #23505f}
+.tool.on .tool-desc{color:#e2f1ec}
+/* Caixa QUADRADA: o frame do guerreiro é 192×192; numa caixa 46×52 ele esticava. */
+.tool-ico{grid-area:ico;width:52px;height:52px;background:center bottom/contain no-repeat;image-rendering:pixelated}
+.tool-ico.tower{background-image:url(assets/tiny-swords/game/tower.png)}
+.tool-ico.trap {background-image:url(assets/tiny-swords/game/rock.png);background-size:80% auto}
+.tool-ico.enemy{background-image:url(assets/tiny-swords/game/warrior-idle.png);background-size:800% 100%;background-position:0 0;animation:frames .8s steps(8,jump-none) infinite}
+.tool-ico.erase{background-image:url(assets/tiny-swords/ui/icon-x.png);background-size:70% auto;background-position:center}
+.tool-name{grid-area:name;font:700 15px/1.2 Georgia,serif}
+.tool-desc{grid-area:desc;color:#7a5738;font-size:12px;line-height:1.35}
+
+/* ══ BOTÕES ═══════════════════════════════════════════════════════════════
+   A fatia é a célula cheia (64 px) porque o canto do botão do pacote tem raio
+   grande — cortá-lo em 32 achataria o relevo. `border-image-width:32px` desenha
+   essa fatia a 1/2 (redução exata), enquanto `border-width` (10px) é só o recuo
+   do layout: assim o texto continua cabendo num botão de 64 px de altura. */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;min-height:64px;padding:8px 16px;
+  border:10px solid transparent;
+  border-image:var(--btn-blue) 64 fill stretch;
+  border-image-width:32px;
+  image-rendering:pixelated;
+  color:#fff6d0;font:800 15px Georgia,serif;letter-spacing:.05em;
+  text-shadow:1px 2px #1b3d4a;cursor:pointer;
+}
+.btn:hover{filter:brightness(1.1)}
+.btn:active{border-image-source:var(--btn-blue-down)}
+.btn-red{border-image-source:var(--btn-red);text-shadow:1px 2px #5a1918}
+.btn-red:active{border-image-source:var(--btn-red-down)}
+.btn:focus-visible{outline:3px solid #ffe081;outline-offset:2px}
+
+.controls{grid-column:1/-1;display:flex;flex-direction:column;gap:9px;margin-top:2px}
+.speed-row{display:flex;align-items:center;justify-content:center;gap:10px;color:#6f3a21;font:700 13px Georgia,serif}
+.sdot{width:18px;height:18px;border:2px solid #8a5527;border-radius:50%;background:#ead291;padding:0;cursor:pointer}
+.sdot.on{background:#b23725;box-shadow:0 0 0 2px #f9e49c}
+
+/* ══ CARDS E LISTA ════════════════════════════════════════════════════════ */
+.card{
+  padding:10px 6px;text-align:center;
+  border:12px solid transparent;
+  border-image:var(--paper) 32 fill stretch;
+  border-image-width:32px;
+  image-rendering:pixelated;
+}
+.card-label{font-size:11px;color:#7c502d;text-transform:uppercase;letter-spacing:.04em}
+.card-val{color:#8a2f20;font:800 24px Georgia,serif}
+.card-val.small{font-size:17px}
+
+.pop-list{
+  grid-column:1/-1;max-height:270px;overflow:auto;
+  padding:2px 8px 6px;                 /* afasta as linhas da moldura do papel */
+  border:12px solid transparent;
+  border-image:var(--paper) 32 fill stretch;
+  border-image-width:32px;
+  image-rendering:pixelated;
+}
+.list-hdr{font-size:13px;padding:0 0 7px;border-bottom:2px solid #c08c46;margin-bottom:4px}
+.list-row{display:flex;align-items:center;gap:6px;padding:6px 2px;border-top:1px solid #d7b77788;font-size:13px}
+.list-dot{width:11px;height:11px;border-radius:50%;border:1px solid #4a2b18;flex:0 0 auto}
+.list-name{width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-bar-bg{flex:1;height:8px;background:#3c2a17;border:1px solid #6d4d27;overflow:hidden}
+.list-bar{height:100%;background:#c8452f}
+.list-dist{width:26px;text-align:right}
+.dead-row{opacity:.45}
+.reached-row{background:#d9f19b66}
+
+/* ══ CÉREBRO / REDE ═══════════════════════════════════════════════════════ */
+.brain-sub,.net-sub{font-size:13px;text-align:center;color:#765033}
+.brain-sub span,.net-sub span{color:#a8342a;font-weight:800}
+.brain-panel .brain-sub span{color:#ffcf72}
+.net-svg{display:block;width:100%;min-width:430px}
+.net-svg .nl{fill:#f6e5bc;font:11px Arial,sans-serif}
+.net-svg .nv,.net-svg .nl.pick{fill:#ffd86f}
+.net-svg .cap{fill:#b9d2c6;font:700 10px Arial,sans-serif}
+.net-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin:10px 0;font-size:12px}
+.net-legend span{display:flex;align-items:center;gap:5px}
+.sw{width:12px;height:12px;border:1px solid #402618}
+.sw.goal{background:#f4c856}.sw.wall{background:#477e9a}.sw.enemy{background:#b13c31}
+.sw.trap{background:#8a4f22}.sw.free{background:#62ae52}
+.ln{width:18px;border-top:3px solid}
+.ln.pos{border-color:#59ad63}.ln.neg{border-color:#c34438}
+.ln.off{border-top-style:dashed;border-color:#886f5c}
+.rank-header{border-bottom:2px solid #8f8878;padding-bottom:8px}
+.rank-title{text-align:center;font:800 19px Georgia,serif}
+.rank-footer{display:flex;justify-content:flex-end;margin-top:10px}
+.rank-footer .btn{width:auto;min-width:180px}
+
+/* ══ OVERLAYS ═════════════════════════════════════════════════════════════ */
+.rank-overlay,.overlay{position:fixed;inset:0;z-index:50;background:#0a2a33d0;padding:18px;display:none;align-items:center;justify-content:center}
+.rank-box{width:min(850px,100%);max-height:92dvh;overflow:auto}
+.overlay-box{width:min(430px,100%);display:flex;flex-direction:column;gap:12px;text-align:center}
+.overlay-title{font:800 23px Georgia,serif;color:#7f2f22}
+.overlay-sub{color:#6b4527;font-size:14px}
+.overlay-sub span{color:#a8342a;font-weight:800}
+
+.gen-toast{
+  position:fixed;left:50%;top:14px;z-index:60;
+  display:flex;align-items:center;justify-content:center;
+  min-width:240px;height:64px;
+  transform:translate(-50%,-14px);opacity:0;
+  border:0 solid transparent;border-left-width:64px;border-right-width:64px;
+  border-image:url(assets/tiny-swords/ui/ribbon-teal.png) 0 64 fill stretch;
+  border-image-width:0 64px;
+  image-rendering:pixelated;
+  color:#fff4d4;font:800 14px Georgia,serif;text-shadow:1px 2px #24454f;
+  transition:.2s;pointer-events:none;
+}
+.gen-toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ══ RESPONSIVO ═══════════════════════════════════════════════════════════ */
+/* Não há mais layout em duas colunas: o cenário é sempre a tela inteira e a
+   janela flutua por cima. No celular ela só encolhe. */
+@media(max-width:640px){
+  .hud{top:8px;right:8px;width:min(340px, calc(100vw - 16px));max-height:calc(100dvh - 16px)}
+  .hud-bar{font-size:15px;gap:7px;height:48px;border-left-width:44px;border-right-width:44px;border-image-width:0 44px}
+  .hud-bar .ico{width:24px;height:24px}
+  .build-tag{display:none}
+  .dot-label{display:none}
+  .panel{gap:7px}
+  .card-val{font-size:19px}
+  .btn{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }

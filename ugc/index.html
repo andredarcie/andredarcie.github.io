@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>UGC Studio — Riane Freire</title>
+  <meta name="description" content="O estúdio da Riane Freire: jobs com marcas, entregas, prazos, pagamentos e mídia kit. Todos os dados ficam no seu navegador.">
+  <meta name="theme-color" content="#191B1F">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="clapper" aria-hidden="true"></div>
+      <div class="logo">
+        <div class="logo-name">UGC Studio</div>
+        <div class="logo-sub">Riane Freire · UGC</div>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn" data-action="nav" data-view="dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Painel</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="pipeline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="5" height="16"/><rect x="9.5" y="4" width="5" height="10"/><rect x="16" y="4" width="5" height="13"/></svg>
+          <span>Pipeline</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="deals">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="1"/><path d="M3 9l1.2-4L20.5 6.8 20 9"/><path d="M8.2 5.4l1 3.2M13 6l1 3M17.6 6.6l.9 2.4"/></svg>
+          <span>Jobs</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="brands">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+          <span>Marcas</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="content">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.1 5.1l2.1 2.1M16.8 16.8l2.1 2.1M18.9 5.1 16.8 7.2M7.2 16.8 5.1 18.9"/></svg>
+          <span>Conteúdo</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="calendar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span>Agenda</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="finances">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="1"/><circle cx="12" cy="12" r="2.6"/><path d="M6.2 12h.01M17.8 12h.01"/></svg>
+          <span>Finanças</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="rates">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21z"/><path d="M9.5 8.5h5M9.5 12.5h5"/></svg>
+          <span>Preços</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.8 3.9-5.5 7-5.5s5.8 1.7 7 5.5"/></svg>
+          <span>Perfil</span>
+        </button>
+        <button class="nav-btn" data-action="nav" data-view="settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="17" r="2"/></svg>
+          <span>Ajustes</span>
+        </button>
+      </nav>
+      <div class="sidebar-foot">
+        <span class="rec-dot" aria-hidden="true"></span>
+        <span class="rec-label">REC</span>
+        <span class="rec-date" id="rec-date"></span>
+        <span class="build">BUILD 4</span>
+      </div>
+    </aside>
+    <main id="main" class="main"></main>
+  </div>
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toasts"></div>
+  <script src="app.js?v=4"></script>
+</body>
+</html>

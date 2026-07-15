@@ -15,6 +15,7 @@ const POP    = 40;   // população maior → busca mais ampla (resolve mapas di
 const GLEN   = 80;   // máximo de passos por geração (orçamento de tempo)
 const SPRITES = window.TinyCreaturesSprites;
 const NEAT    = window.TinyCreaturesNEAT;
+const ICONS   = window.TinyCreaturesIcons;   // ícones vetoriais do inspetor (icons.js)
 // Visão em cone, à frente da direção que a criatura encara.
 // Em coordenadas "de quem olha": f = passos à frente, l = lateral.
 const CONE = [ {f:1, l:0}, {f:2, l:-1}, {f:2, l:0}, {f:2, l:1} ]; // 4 blocos
@@ -29,10 +30,11 @@ const DIRVEC = {
 const TURN_L = { U: 'L', L: 'D', D: 'R', R: 'U' };
 const TURN_R = { U: 'R', R: 'D', D: 'L', L: 'U' };
 const TURN_B = { U: 'D', D: 'U', L: 'R', R: 'L' };
-// Entradas: visão (cone à frente, 4) + faro até a bandeira (relativo, 4) + 1 aleatório = 9.
-const NUM_INPUTS  = CONE.length + 4 + 1; // 9
+// Entradas: visão (cone à frente, 4) + faro (1 escalar: quanto maior, mais perto
+// do castelo, na célula à frente) + 1 aleatório = 6.
+const NUM_INPUTS  = CONE.length + 1 + 1; // 6
 const NUM_OUTPUTS = 4;     // saídas: U / D / L / R
-const N       = 15;          // tabuleiro N×N
+const N       = 10;          // tabuleiro N×N
 const MAXI    = N - 1;       // índice máximo (0..MAXI)
 const CENTER  = (N - 1) >> 1;// coluna central
 const MAXDIST = CENTER + MAXI; // maior distância possível até o objetivo
@@ -41,7 +43,7 @@ const START  = {x:CENTER, y:MAXI}; // base central — partida
 const DIRS   = ['U','D','L','R'];
 const SPEEDS = [220, 120, 70, 35, 12, 2]; // ms por passo
 const GEN_PAUSE   = 650; // ms entre gerações (pra dar pra acompanhar)
-const BUDGET      = 30;  // total de peças na construção
+const BUDGET      = 14;  // total de peças na construção (~14% do tabuleiro, como no 15×15)
 const TOWER_RANGE = 2;   // alcance (Manhattan) da torre
 const ENEMY_MAX_KILLS = 2; // o inimigo (monstro) mata só isso e morre
 const TOWER_HP = 2;        // batidas de criatura até a torre ser destruída (1ª racha)
@@ -52,14 +54,17 @@ const GOAL_VISION_BONUS = 14;    // passos extras concedidos enquanto o objetivo
 const STEP_LIMIT_MAX = GLEN * 3; // teto da extensão de passos por geração
 const PRETRAIN_GENS = 50;        // gerações pré-treinadas (ocultas) antes da "geração 1" visível
 
-const SPRITES_DIR = SPRITES.getCreatureSprites();
 const createCreatureColor = SPRITES.createCreatureColor;
 const createCreatureName = SPRITES.createCreatureName;
-const getResponsiveRenderMetrics = SPRITES.getResponsiveRenderMetrics;
+
+// A ilha (terreno) é maior que o campo jogável: 1 célula de margem em volta.
+// Ela dá a praia do autotile e o espaço para as construções transbordarem para
+// cima sem serem cortadas pela borda do tabuleiro.
+const TERRAIN = N + 2;
 
 function key(x, y) { return x + '_' + y; }
 
-// Enfeites decorativos (grama, arbusto, árvore) — só visual, sem efeito no jogo.
+// Enfeites decorativos (arbusto, árvore) — só visual, sem efeito no jogo.
 // Posição determinística por célula (estável entre renders, não usa random).
 function decorHash(x, y) {
   let h = (x * 374761393 + y * 668265263) >>> 0;
@@ -68,32 +73,23 @@ function decorHash(x, y) {
 }
 function decorAt(x, y) {
   const h = decorHash(x, y);
-  if (h % 100 >= 32) return null;          // ~32% das gramas ganham um enfeite
-  const r = (h >>> 8) % 10;
-  if (r < 5) return 'grass';               // graminha (mais comum)
-  if (r < 8) return 'bush';                // arbusto
-  return 'tree';                           // arvorezinha
+  if (h % 100 >= 24) return null;               // ~24% das células ganham um enfeite
+  const bush = { kind: 'bush', variant: 1 + ((h >>> 16) % 4) };
+  if ((h >>> 8) % 10 < 7) return bush;          // arbusto (mais comum, cabe num tile)
+  if (y === 0) return bush;                     // linha do castelo fica limpa
+  return { kind: 'tree', variant: 1 + ((h >>> 20) % 2) };
 }
 
-function darkenHex(hex, f) {
-  const n = parseInt(hex.replace('#',''), 16);
-  const r = Math.min(255, Math.round(((n>>16)&0xff)*f));
-  const g = Math.min(255, Math.round(((n>>8)&0xff)*f));
-  const b = Math.min(255, Math.round((n&0xff)*f));
-  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
-}
-
-function spriteBoxShadow(bodyCol, facing) {
-  const scale = getRenderMetrics().spriteScale;
-  const darkCol = darkenHex(bodyCol, 0.55); // contorno/sombra
-  const liteCol = darkenHex(bodyCol, 1.45); // brilho (fator > 1 clareia)
-  const cm = { 1: bodyCol, 2: darkCol, 3: '#FFF1E8', 4: '#000000', 5: liteCol };
-  const sprite = SPRITES_DIR[facing] || SPRITES_DIR.U;
-  const parts = [];
-  sprite.forEach((row, y) => row.forEach((px, x) => {
-    if (px && cm[px]) parts.push(`${x * scale}px ${y * scale}px 0 ${cm[px]}`);
-  }));
-  return parts.join(',');
+// Autotile da praia: o bloco 4×4 do Tilemap é um nine-slice nas colunas/linhas
+// 0..2 (0 = borda inicial, 1 = miolo, 2 = borda final) MAIS uma quarta faixa de
+// variantes "ilha de 1 tile de largura", que trazem o contorno escuro dos DOIS
+// lados. Fechar a ilha com o índice 3 desenhava justamente essa tira isolada e
+// deixava um contorno sobrando para dentro do gramado na última coluna/linha.
+// O índice 2 é a borda de verdade: contorno só no lado de fora.
+function tileIndex(a, max) {
+  if (a === 0) return 0;
+  if (a === max) return 2;
+  return 1;
 }
 
 function getCellSize() {
@@ -101,15 +97,27 @@ function getCellSize() {
   return sampleCell ? sampleCell.getBoundingClientRect().width : 40;
 }
 
+// Espalha as POP criaturas dentro da célula para elas não empilharem exatamente
+// no mesmo pixel quando estão todas no mesmo bloco.
+let subCache = { size: -1, list: [] };
+function subPositions(cellSize) {
+  if (subCache.size === cellSize) return subCache.list;
+  const cols = 5, rows = Math.ceil(POP / cols);
+  const step = Math.max(1, Math.round(cellSize * 0.085));
+  const list = [];
+  for (let i = 0; i < POP; i++) {
+    list.push({
+      x: ((i % cols) - (cols - 1) / 2) * step,
+      y: (Math.floor(i / cols) - (rows - 1) / 2) * step,
+    });
+  }
+  subCache = { size: cellSize, list };
+  return list;
+}
+
 function getRenderMetrics() {
   const cellSize = getCellSize();
-  const metrics = getResponsiveRenderMetrics({ cellSize, population: POP });
-  return {
-    cellSize,
-    spriteScale: metrics.spriteScale,
-    spriteInset: metrics.spriteInset,
-    subPositions: metrics.subPositions,
-  };
+  return { cellSize, subPositions: subPositions(cellSize) };
 }
 
 // ══ STATE ════════════════════════════════════════
@@ -158,42 +166,53 @@ const pauseBtn = document.getElementById('pause-btn');
 const toastEl  = document.getElementById('gen-toast');
 
 // ══ BUILD DOM ════════════════════════════════════
-function buildGrid() {
-  const colsEl = document.getElementById('coord-cols');
-  const rowsEl = document.getElementById('coord-rows');
-  if (colsEl) {
-    colsEl.innerHTML = '';
-    for (let x=0; x<N; x++) {
-      const n = document.createElement('div');
-      n.className = 'coord-num';
-      n.textContent = x+1;
-      colsEl.appendChild(n);
+// A ilha inteira (TERRAIN×TERRAIN): praia nas bordas, grama no miolo. Fica atrás
+// do campo jogável, que é um N×N deslocado de 1 célula (ver .play no CSS).
+function buildTerrain() {
+  const t = document.getElementById('terrain');
+  if (!t) return;
+  t.innerHTML = '';
+  const max = TERRAIN - 1;
+  for (let ty = 0; ty < TERRAIN; ty++) {
+    for (let tx = 0; tx < TERRAIN; tx++) {
+      const d = document.createElement('div');
+      d.className = 'tile';
+      const col = tileIndex(tx, max);
+      const row = tileIndex(ty, max);
+      // Sheet de 9×6 tiles: em background-position percentual, o índice i da
+      // coluna vira i/(9-1) e o da linha, i/(6-1).
+      d.style.backgroundPosition = `${(col / 8) * 100}% ${(row / 5) * 100}%`;
+      t.appendChild(d);
     }
   }
-  if (rowsEl) {
-    rowsEl.innerHTML = '';
-    for (let y=0; y<N; y++) {
-      const n = document.createElement('div');
-      n.className = 'coord-num';
-      n.textContent = y+1;
-      rowsEl.appendChild(n);
-    }
-  }
+  // Ovelhas pastando na praia — o anel de margem da ilha, fora do campo jogável.
+  // As coordenadas seguem TERRAIN: fixá-las quebraria a cada mudança de N.
+  const edge = TERRAIN - 1;
+  [[0, 3], [edge, edge - 4], [2, edge], [edge - 3, 0]].forEach(([tx, ty]) => {
+    const s = document.createElement('div');
+    s.className = 'sheep';
+    s.style.left = `calc(var(--cell) * ${tx + 0.5})`;
+    s.style.top  = `calc(var(--cell) * ${ty + 0.5})`;
+    t.appendChild(s);
+  });
+}
 
+function buildGrid() {
+  buildTerrain();
   gridEl.innerHTML = '';
   for (let y=0; y<N; y++) {
     for (let x=0; x<N; x++) {
       const c = document.createElement('div');
-      c.className = 'cell ' + ((x+y)%2===0 ? 'cell-a' : 'cell-b');
+      c.className = 'cell';
       c.id = 'c' + key(x, y);
       if (x===GOAL.x && y===GOAL.y) {
         c.classList.add('goal-cell');
-        c.innerHTML = '<span class="sword-mark" aria-label="Espada — objetivo a defender">⚔</span>';
+        c.innerHTML = '<span class="goal-mark" aria-label="Castelo — objetivo a defender"></span>';
       } else if (x===START.x && y===START.y) {
-        c.innerHTML = '<span class="start-mark" aria-label="Base das criaturas">▼</span>';
+        c.innerHTML = '<span class="start-mark" aria-label="Quartel dos invasores"></span>';
       } else {
         const d = decorAt(x, y);
-        if (d) c.innerHTML = `<span class="decor decor-${d}" aria-hidden="true"></span>`;
+        if (d) c.innerHTML = `<span class="decor decor-${d.kind} v${d.variant}" aria-hidden="true"></span>`;
       }
       gridEl.appendChild(c);
     }
@@ -202,7 +221,6 @@ function buildGrid() {
 
 function buildDots() {
   agEl.innerHTML = '';
-  const metrics = getRenderMetrics();
   for (let i=0; i<POP; i++) {
     const agent = document.createElement('div');
     agent.className = 'agent';
@@ -212,11 +230,11 @@ function buildDots() {
     label.className = 'dot-label';
     label.id = `n${i}`;
 
+    // O tamanho do sprite vem do CSS (caixa de 3×3 células centrada na célula,
+    // que é a moldura de 192 px do pacote). Nada de dimensão inline aqui.
     const d = document.createElement('div');
     d.className = 'dot';
     d.id = `d${i}`;
-    d.style.width = metrics.spriteScale + 'px';
-    d.style.height = metrics.spriteScale + 'px';
 
     agent.appendChild(label);
     agent.appendChild(d);
@@ -310,8 +328,7 @@ function cellSense(cx, cy) {
   return 0;                                                 // grama livre
 }
 
-// Sensores EGOCÊNTRICOS (tudo relativo ao rosto): cone à frente +
-// faro (frente/esq/dir/trás) + o que ela vê em cada direção relativa.
+// Sensores EGOCÊNTRICOS (tudo relativo ao rosto): cone à frente + faro (1 escalar).
 function sensors(a) {
   const x = a.pos.x, y = a.pos.y, f = a.facing;
   const v = DIRVEC[f] || DIRVEC.U;
@@ -319,12 +336,15 @@ function sensors(a) {
   for (const c of CONE) {                                  // cone (olhar à frente, 2 de alcance)
     s.push(cellSense(x + v.fx*c.f + v.px*c.l, y + v.fy*c.f + v.py*c.l));
   }
-  const rel = [f, TURN_L[f], TURN_R[f], TURN_B[f]];        // frente, esquerda, direita, trás
-  const scent = (cx, cy) =>
-    (cx < 0 || cy < 0 || cx > MAXI || cy > MAXI || towers.has(key(cx, cy)))
-      ? 0 : (bfsMax - bfsDistOf(cx, cy)) / bfsMax;
-  rel.forEach(d => s.push(scent(x + DIRVEC[d].fx, y + DIRVEC[d].fy)));       // faro até a bandeira (relativo)
-  s.push(a.brain.seed || 0);                                                // traço "aleatório" fixo por criatura (sim. determinística)
+  // Faro: UM número — a proximidade do castelo na célula logo à frente. 1 = o
+  // castelo está ali; ~0 = longe; negativo = célula sem rota. O campo-custo já
+  // contorna torres/barricadas e foge da linha de tiro, então virar para farejar
+  // (o valor sobe) é o gradiente que a rede aprende a seguir. Parede/fora da
+  // grade não têm cheiro: 0.
+  const fx = x + v.fx, fy = y + v.fy;
+  const blocked = fx < 0 || fy < 0 || fx > MAXI || fy > MAXI || towers.has(key(fx, fy));
+  s.push(blocked ? 0 : (bfsMax - bfsDistOf(fx, fy)) / bfsMax);
+  s.push(a.brain.seed || 0);                                // traço "aleatório" fixo por criatura (sim. determinística)
   return s;
 }
 
@@ -380,6 +400,8 @@ function updateBudget() {
   const left = BUDGET - budgetUsed();
   const el = document.getElementById('budget-left');
   if (el) el.textContent = left;
+  const total = document.getElementById('budget-total');
+  if (total) total.textContent = BUDGET;   // o total sai do BUDGET, não do HTML
   const wrap = document.getElementById('budget');
   if (wrap) wrap.classList.toggle('empty', left <= 0);
 }
@@ -450,13 +472,15 @@ function buildScenarioText() {
   ].join('\n');
 }
 
+// Guarda/repõe o innerHTML: o botão carrega um <span class="ico">, e mexer em
+// textContent apagaria o ícone de vez.
 function flashCopy() {
   const b = document.getElementById('copy-btn');
   if (!b) return;
-  if (!b.dataset.label) b.dataset.label = b.textContent;
-  b.textContent = '✓ COPIADO!';
+  if (!b.dataset.html) b.dataset.html = b.innerHTML;
+  b.innerHTML = '<span class="ico ico-play" aria-hidden="true"></span>COPIADO!';
   clearTimeout(flashCopy._t);
-  flashCopy._t = setTimeout(() => { b.textContent = b.dataset.label; }, 1300);
+  flashCopy._t = setTimeout(() => { b.innerHTML = b.dataset.html; }, 1300);
 }
 
 function fallbackCopy(text) {
@@ -505,7 +529,7 @@ function startBuild() {
   document.body.classList.add('phase-build');
   overlayEl.style.display = 'none';
   if (toastEl) toastEl.classList.remove('show');
-  pauseBtn.textContent = '⏸ PAUSAR';
+  pauseBtn.textContent = 'PAUSAR';
   pauseBtn.classList.remove('active');
 
   pop = [];
@@ -590,7 +614,10 @@ function stepEnemies() {
     }
     nx = Math.max(0, Math.min(MAXI, nx));
     ny = Math.max(0, Math.min(MAXI, ny));
-    if (!towers.has(key(nx, ny))) { e.x = nx; e.y = ny; }
+    if (!towers.has(key(nx, ny))) {
+      if (nx !== e.x) e.face = Math.sign(nx - e.x); // sprite do pacote encara a direita
+      e.x = nx; e.y = ny;
+    }
   });
 }
 
@@ -681,14 +708,14 @@ function advance(headless) {
       a.dead = true;
       a.hidden = true;
       liveTraps.delete(k);
-      if (!headless) spawnBlood(a.pos.x, a.pos.y);
+      if (!headless) spawnDust(a.pos.x, a.pos.y);
       return;
     }
     const mob = enemies.find(e => e.x === a.pos.x && e.y === a.pos.y && e.kills < ENEMY_MAX_KILLS);
     if (mob) { a.dead = true; mob.kills++; } // o monstro contabiliza a morte
   });
   // monstro que atingiu o limite de mortes também morre (some do tabuleiro)
-  if (!headless) enemies.forEach(e => { if (e.kills >= ENEMY_MAX_KILLS) spawnBlood(e.x, e.y); });
+  if (!headless) enemies.forEach(e => { if (e.kills >= ENEMY_MAX_KILLS) spawnDust(e.x, e.y); });
   enemies = enemies.filter(e => e.kills < ENEMY_MAX_KILLS);
 
   // torres atiram (1 tiro por torre na geração inteira; só as que ainda estão de pé)
@@ -804,8 +831,10 @@ function finishWatch() {
   if (genEndTimer) { clearTimeout(genEndTimer); genEndTimer = null; }
   render();
   setStatus(`IA VENCEU · ESPADA TOMADA NA GEN ${gen}`, 'success');
-  showEnd('<span class="ico" aria-hidden="true">⚔</span><br>IA VENCEU!',
-          `A defesa caiu na geração <span>${gen}</span>.`);
+  // Em vez do cartaz genérico, mostra o CÉREBRO da criatura que venceu; o botão
+  // "PRÓXIMA PARTIDA" dentro do inspetor é que devolve à construção.
+  const wi = pop.findIndex(a => a.reached);
+  setTimeout(() => showNetwork(wi >= 0 ? wi : 0, true), 500);
 }
 
 function showEnd(title, desc) {
@@ -821,6 +850,17 @@ const OUT_LABELS = ['andar', 'virar esq', 'virar dir', 'meia-volta'];
 
 function fmtVal(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
 
+// Desenha um ícone do icons.js centrado em (cx,cy), escalado da grade 24×24 para
+// `size`, tingido de `color` (via currentColor). Cada neurônio do inspetor usa um.
+function iconSVG(name, cx, cy, size, color) {
+  const inner = ICONS && ICONS[name];
+  if (!inner) return '';
+  const s = size / 24, x = cx - size / 2, y = cy - size / 2;
+  return `<g transform="translate(${x} ${y}) scale(${s})" color="${color}" ` +
+    `fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ` +
+    `stroke-linejoin="round">${inner}</g>`;
+}
+
 // Acha a criatura mais próxima do clique na grade e abre o inspetor.
 function onGridClick(e) {
   if (phase !== 'watch') return;
@@ -831,8 +871,8 @@ function onGridClick(e) {
   let bi = -1, best = 1e9;
   pop.forEach((a, i) => {
     const sub = m.subPositions[i];
-    const cx = a.pos.x * m.cellSize + sub.x + m.spriteScale / 2;
-    const cy = a.pos.y * m.cellSize + sub.y + m.spriteScale / 2;
+    const cx = a.pos.x * m.cellSize + sub.x + m.cellSize / 2;
+    const cy = a.pos.y * m.cellSize + sub.y + m.cellSize / 2;
     const d = (cx - px) * (cx - px) + (cy - py) * (cy - py);
     if (d < best) { best = d; bi = i; }
   });
@@ -840,13 +880,15 @@ function onGridClick(e) {
   if (bi >= 0 && best <= limit) showNetwork(bi);
 }
 
-function showNetwork(i) {
+let netVictory = false;   // true quando o inspetor é o cérebro vencedor no fim da partida
+function showNetwork(i, victory) {
   const a = pop[i];
   if (!a || !a.brain || !neat) return;
+  netVictory = !!victory;
 
   // pausa a simulação para inspecionar
   paused = true;
-  pauseBtn.textContent = '▶ CONTINUAR';
+  pauseBtn.textContent = 'CONTINUAR';
   pauseBtn.classList.add('active');
   pauseBtn.setAttribute('aria-pressed', 'true');
 
@@ -857,17 +899,30 @@ function showNetwork(i) {
   const activeC = g.conns.filter(c => c.enabled).length;
   const st = a.reached ? 'chegou à espada' : (a.dead ? 'eliminada' : 'viva');
 
-  document.getElementById('net-title').textContent = 'Rede neural · ' + a.name;
-  document.getElementById('net-sub').innerHTML =
-    `${g.nodes.length} neurônios (${hidden} ocultos) · ${activeC} conexões ativas · ` +
-    `distância ${dist(a.pos)} · <span>${st}</span>`;
+  document.getElementById('net-title').textContent =
+    (victory ? 'Cérebro vencedor · ' : 'Rede neural · ') + a.name;
+  document.getElementById('net-sub').innerHTML = victory
+    ? `<span>${a.name}</span> tomou a espada na geração <span>${gen}</span> · ` +
+      `${g.nodes.length} neurônios, ${activeC} conexões`
+    : `${g.nodes.length} neurônios (${hidden} ocultos) · ${activeC} conexões ativas · ` +
+      `distância ${dist(a.pos)} · <span>${st}</span>`;
   document.getElementById('net-diagram').innerHTML = buildNetSVG(g, inputs, outVals, a.facing);
+
+  // no fim de partida o rodapé oferece "próxima partida"; na inspeção manual, só "fechar"
+  const nextBtn = document.getElementById('net-next');
+  const closeBtn = document.getElementById('net-close');
+  if (nextBtn)  nextBtn.style.display  = victory ? '' : 'none';
+  if (closeBtn) closeBtn.style.display = victory ? 'none' : '';
+
   document.getElementById('net-overlay').style.display = 'flex';
 }
 
 function closeNetwork() {
   document.getElementById('net-overlay').style.display = 'none';
+  // fechar o cérebro vencedor = seguir para a próxima partida (volta à construção)
+  if (netVictory) { netVictory = false; backToBuild(); }
 }
+function nextMatch() { closeNetwork(); }
 
 function buildNetSVG(g, inputs, outVals, facing) {
   const firstOut = NUM_INPUTS + 1;
@@ -899,11 +954,11 @@ function buildNetSVG(g, inputs, outVals, facing) {
 
   const gridBottom = oy0 + (maxy - miny) * gs;
   const belowY = gridBottom + 48;
-  // bias + faro (4 entradas) em uma linha abaixo do cone
+  // bias + faro (1) + aleatorio (1) em uma linha abaixo do cone
   const belowNodes = g.nodes
     .filter(n => n.type === 'bias' || (n.type === 'in' && n.id >= CONE.length))
     .sort((p, q) => (p.type === 'bias' ? -1 : p.id) - (q.type === 'bias' ? -1 : q.id));
-  belowNodes.forEach((n, i) => { pos[n.id] = { x: ox0 + i * gs * 1.1, y: belowY }; });
+  belowNodes.forEach((n, i) => { pos[n.id] = { x: ox0 + sq/2 + i * gs * 2.7, y: belowY }; });
 
   // ── colunas da direita: ocultos por profundidade + saídas ──
   const hiddenNodes = g.nodes.filter(n => n.type === 'hidden');
@@ -914,7 +969,7 @@ function buildNetSVG(g, inputs, outVals, facing) {
   const rightCols = hiddenDepths.map(d => hiddenNodes.filter(n => depth(n.id) === d)).concat([outputs]);
 
   const rightX0 = ox0 + (maxx - minx) * gs + 150;
-  const colGap = 130, vgap = 30, top = 44;
+  const colGap = 130, vgap = 36, top = 44;
   const maxRightRows = Math.max(1, ...rightCols.map(a => a.length));
   const height = Math.max(belowY + 40, top * 2 + (maxRightRows - 1) * vgap);
   const width = rightX0 + (rightCols.length - 1) * colGap + 190;
@@ -939,37 +994,47 @@ function buildNetSVG(g, inputs, outVals, facing) {
   });
 
   // ── nós ──
-  const visColor = (val) => {
-    if (val > 0.5) return '#00E436';   // espada
-    if (val <= -1) return '#C2C3C7';   // parede/torre
-    if (val <= -0.7) return '#7E2553'; // inimigo
-    if (val < -0.3) return '#FF004D';  // armadilha
-    return '#1D2B53';                  // livre
-  };
   let nodes = '';
 
   // "ela" no centro + seta da direção que encara
   nodes += `<rect x="${selfP.x - sq/2}" y="${selfP.y - sq/2}" width="${sq}" height="${sq}" fill="#1D2B53" stroke="#FFA300" stroke-width="2"/>`;
   nodes += `<line x1="${selfP.x - v.fx*2}" y1="${selfP.y - v.fy*2}" x2="${selfP.x + v.fx*(sq/2-1)}" y2="${selfP.y + v.fy*(sq/2-1)}" stroke="#FFA300" stroke-width="3"/>`;
 
-  // blocos do cone (o que ela enxerga à frente)
+  // blocos do cone: cada célula vira o ÍCONE do que ela enxerga ali (castelo,
+  // torre, sentinela, barricada ou grama), tingido pela cor da categoria.
+  const coneMeta = (val) =>
+    val > 0.5   ? { ic: 'crown',  c: '#f4c856' } :  // castelo (objetivo)
+    val <= -1   ? { ic: 'wall',   c: '#8fb7cf' } :  // torre/parede
+    val <= -0.7 ? { ic: 'swords', c: '#e0637a' } :  // sentinela
+    val < -0.3  ? { ic: 'alert',  c: '#d68a3f' } :  // barricada
+                  { ic: 'leaf',   c: '#7cc85f' };   // livre
   coneOff.forEach((o, i) => {
-    const p = pos[i];
-    nodes += `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" fill="${visColor(inputs[i])}" stroke="#000" stroke-width="1"/>`;
+    const p = pos[i], m = coneMeta(inputs[i]);
+    nodes += `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="4" fill="#16233f" stroke="#000" stroke-width="1"/>`;
+    nodes += iconSVG(m.ic, p.x, p.y, sq * 0.72, m.c);
   });
 
-  // bias + bússola
+  // viés + entradas não-espaciais: cada uma é um QUADRADO com um ícone vetorial
+  // dentro (o cone acima já é a "visão"). Faro = alvo (proximidade do objetivo),
+  // aleatório = dado, viés = "+". O número embaixo é o valor atual da entrada.
+  const IN_META = [
+    { lbl: 'faro',      ic: 'target', c: '#5cc8ff' },  // proximidade do castelo à frente
+    { lbl: 'aleatório', ic: 'dice',   c: '#5cc8ff' },  // traço fixo por criatura (quebra empates)
+  ];
+  const nodeSquare = (p, icName, icColor, icScale, label, strokeCol) => {
+    let out = `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="4" fill="#16233f" stroke="${strokeCol || '#000'}" stroke-width="1.5"/>`;
+    out += iconSVG(icName, p.x, p.y, sq * icScale, icColor);
+    if (label) out += `<text x="${p.x}" y="${p.y + sq/2 + 13}" text-anchor="middle" class="nl">${label}</text>`;
+    return out;
+  };
   g.nodes.forEach(n => {
     const p = pos[n.id];
     if (!p) return;
     if (n.type === 'bias') {
-      nodes += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="#5F574F" stroke="#000" stroke-width="1.5"/>`;
-      nodes += `<text x="${p.x}" y="${p.y + 19}" text-anchor="middle" class="nl">viés</text>`;
+      nodes += nodeSquare(p, 'plus', '#c7bca4', 0.6, 'viés');
     } else if (n.type === 'in' && n.id >= CONE.length) {
-      const ci = n.id - CONE.length;
-      const lbl = ['faro frente', 'faro esq', 'faro dir', 'faro tras', 'aleatorio'][ci] || ('in' + ci);
-      nodes += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="#29ADFF" stroke="#000" stroke-width="1.5"/>`;
-      nodes += `<text x="${p.x}" y="${p.y + 19}" text-anchor="middle" class="nl">${lbl} <tspan class="nv">${fmtVal(inputs[n.id])}</tspan></text>`;
+      const m = IN_META[n.id - CONE.length] || { lbl: 'in', ic: 'plus', c: '#5cc8ff' };
+      nodes += nodeSquare(p, m.ic, m.c, 0.72, `${m.lbl} <tspan class="nv">${fmtVal(inputs[n.id])}</tspan>`);
     }
   });
 
@@ -979,19 +1044,24 @@ function buildNetSVG(g, inputs, outVals, facing) {
     if (p) nodes += `<circle cx="${p.x}" cy="${p.y}" r="6" fill="#FFA300" stroke="#000" stroke-width="1.5"/>`;
   });
 
-  // saídas
+  // saídas: cada ação é um QUADRADO com ícone direcional. A escolhida (maior
+  // ativação) ganha moldura laranja e o marcador ◀.
+  const OUT_ICONS = ['walk', 'turnLeft', 'turnRight', 'uturn']; // andar/esq/dir/meia-volta
   const chosen = outVals.indexOf(Math.max.apply(null, outVals));
   outputs.forEach(n => {
     const p = pos[n.id];
     if (!p) return;
     const o = n.id - firstOut, pick = (o === chosen);
-    nodes += `<circle cx="${p.x}" cy="${p.y}" r="8" fill="#00E436" stroke="${pick ? '#FFA300' : '#000'}" stroke-width="${pick ? 2.5 : 1.5}"/>`;
-    nodes += `<text x="${p.x + 13}" y="${p.y + 3}" text-anchor="start" class="nl${pick ? ' pick' : ''}">${OUT_LABELS[o] || ('s' + o)} <tspan class="nv">${fmtVal(outVals[o])}</tspan>${pick ? ' ◀' : ''}</text>`;
+    nodes += `<rect x="${p.x - sq/2}" y="${p.y - sq/2}" width="${sq}" height="${sq}" rx="5" fill="#123a1c" stroke="${pick ? '#FFA300' : '#000'}" stroke-width="${pick ? 2.5 : 1.5}"/>`;
+    nodes += iconSVG(OUT_ICONS[o] || 'walk', p.x, p.y, sq * 0.72, pick ? '#9dff7e' : '#00E436');
+    nodes += `<text x="${p.x + sq/2 + 7}" y="${p.y + 4}" text-anchor="start" class="nl${pick ? ' pick' : ''}">${OUT_LABELS[o] || ('s' + o)} <tspan class="nv">${fmtVal(outVals[o])}</tspan>${pick ? ' ◀' : ''}</text>`;
   });
 
-  // legendas de seção
+  // legendas de seção (com o ícone de olho vetorial antes do rótulo da visão)
+  const capX = ox0 - sq/2, capY = oy0 - sq/2 - 12;
   const caps =
-    `<text x="${ox0 - sq/2}" y="${oy0 - sq/2 - 12}" class="cap">VISÃO EM CONE (segue o olhar)</text>` +
+    iconSVG('eye', capX + 7, capY - 5, 15, '#b9d2c6') +
+    `<text x="${capX + 18}" y="${capY}" class="cap">VISÃO EM CONE (segue o olhar)</text>` +
     `<text x="${rightX0}" y="${top - 18}" text-anchor="middle" class="cap">decisão</text>`;
 
   return `<svg viewBox="0 0 ${width} ${height}" class="net-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Visão em cone e rede neural da criatura">${lines}${nodes}${caps}</svg>`;
@@ -1013,28 +1083,27 @@ function renderDefenses() {
 
 function renderEnemies(list) {
   const m = getRenderMetrics();
-  const sz = Math.max(6, Math.round(m.cellSize * 0.62));
   // Cada inimigo tem um nó FIXO (chave por eid na fase de assistir; índice na
   // construção). Assim nascer/morrer não recria a camada inteira — sem o nó
   // novo "voar" do canto (0,0) até a célula por causa da transição CSS.
-  const off = (m.cellSize - sz) / 2;       // canto já centralizado (sem depender de transform)
+  // O nó tem o tamanho de UMA célula; o sprite de 192 px é centrado nela via CSS.
   const wanted = new Map();
   list.forEach((e, i) => wanted.set(e.eid != null ? 'e' + e.eid : 'i' + i, e));
   Array.from(enemyEl.children).forEach(d => { if (!wanted.has(d.dataset.eid)) d.remove(); });
   wanted.forEach((e, k) => {
-    const left = (e.x * m.cellSize + off) + 'px';
-    const top  = (e.y * m.cellSize + off) + 'px';
+    const left = (e.x * m.cellSize) + 'px';
+    const top  = (e.y * m.cellSize) + 'px';
     let d = enemyEl.querySelector('[data-eid="' + k + '"]');
     if (!d) {
       d = document.createElement('div');
-      d.className = 'enemy';
+      d.className = 'mob';   // 'enemy' colidia com .tool-ico.enemy e .sw.enemy
       d.dataset.eid = k;
       d.style.left = left;   // nasce já posicionado (não anima a partir do canto)
       d.style.top  = top;
       enemyEl.appendChild(d);
     }
-    d.style.width  = sz + 'px';
-    d.style.height = sz + 'px';
+    d.classList.toggle('flip', e.face === -1);
+    d.classList.toggle('running', phase === 'watch');
     d.style.left = left;
     d.style.top  = top;
   });
@@ -1045,7 +1114,8 @@ function fxCenter(cx, cy, m) {
   return { x: cx * m.cellSize + m.cellSize / 2, y: cy * m.cellSize + m.cellSize / 2 };
 }
 
-// Projétil que sai da torre e voa até o alvo, terminando num clarão.
+// Flecha que sai da torre e voa até o alvo, terminando numa explosão.
+// O sprite Arrow.png do pacote aponta para +X, então o ângulo é o atan2 direto.
 function spawnShot(fromX, fromY, toX, toY) {
   if (!fxEl) return;
   const m = getRenderMetrics();
@@ -1056,6 +1126,7 @@ function spawnShot(fromX, fromY, toX, toY) {
   s.style.top  = a.y + 'px';
   s.style.setProperty('--dx', (b.x - a.x) + 'px');
   s.style.setProperty('--dy', (b.y - a.y) + 'px');
+  s.style.setProperty('--ang', (Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI).toFixed(1) + 'deg');
   fxEl.appendChild(s);
   s.addEventListener('animationend', () => { s.remove(); spawnImpact(b.x, b.y); });
 }
@@ -1070,33 +1141,18 @@ function spawnImpact(px, py) {
   d.addEventListener('animationend', () => d.remove());
 }
 
-// A criatura vira uma bolha de sangue que incha, estoura e espalha gotas.
-function spawnBlood(cx, cy) {
+// Quem cai vira uma nuvem de poeira (Dust_01 do pacote). O respingo de sangue
+// da versão anterior destoava do traço cartunesco do Tiny Swords.
+function spawnDust(cx, cy) {
   if (!fxEl) return;
   const m = getRenderMetrics();
   const c = fxCenter(cx, cy, m);
-  const sz = Math.max(10, Math.round(m.cellSize * 0.7));
-  const b = document.createElement('div');
-  b.className = 'blood';
-  b.style.left = c.x + 'px';
-  b.style.top  = c.y + 'px';
-  b.style.width = sz + 'px';
-  b.style.height = sz + 'px';
-  fxEl.appendChild(b);
-  b.addEventListener('animationend', () => b.remove());
-  const n = 6;
-  for (let i = 0; i < n; i++) {
-    const ang = (Math.PI * 2 * i) / n + Math.random() * 0.7;
-    const dd  = m.cellSize * (0.5 + Math.random() * 0.6);
-    const drop = document.createElement('div');
-    drop.className = 'droplet';
-    drop.style.left = c.x + 'px';
-    drop.style.top  = c.y + 'px';
-    drop.style.setProperty('--dx', Math.cos(ang) * dd + 'px');
-    drop.style.setProperty('--dy', Math.sin(ang) * dd + 'px');
-    fxEl.appendChild(drop);
-    drop.addEventListener('animationend', () => drop.remove());
-  }
+  const d = document.createElement('div');
+  d.className = 'dust';
+  d.style.left = c.x + 'px';
+  d.style.top  = c.y + 'px';
+  fxEl.appendChild(d);
+  d.addEventListener('animationend', () => d.remove());
 }
 
 // Cérebro do líder (quem está mais perto da espada) em tempo real.
@@ -1170,7 +1226,6 @@ function render() {
     .sort((x,y) => x.f - y.f);
 
   ranked.forEach(({a,i}, rank) => {
-    const color = a.color;
     const sub   = metrics.subPositions[i];
     const agent = document.getElementById(`a${i}`);
     const dot   = document.getElementById(`d${i}`);
@@ -1178,15 +1233,15 @@ function render() {
     if (!agent || !dot) return;
 
     agent.style.display = a.hidden ? 'none' : '';   // pego por armadilha → some do tabuleiro
-    dot.style.width     = metrics.spriteScale + 'px';
-    dot.style.height    = metrics.spriteScale + 'px';
-    agent.style.left    = (a.pos.x * metrics.cellSize + sub.x + metrics.spriteScale / 2) + 'px';
+    agent.style.left    = (a.pos.x * metrics.cellSize + sub.x) + 'px';
     agent.style.top     = (a.pos.y * metrics.cellSize + sub.y) + 'px';
-    dot.style.boxShadow = spriteBoxShadow(color, a.facing);
+    agent.classList.toggle('dead', a.dead);
     if (label) label.textContent = a.name;
     dot.classList.toggle('best',    rank === 0 && !a.reached && !a.dead);
     dot.classList.toggle('reached', a.reached);
     dot.classList.toggle('dead',    a.dead);
+    dot.classList.toggle('running', phase === 'watch' && !a.dead && !a.reached);
+    dot.classList.toggle('flip',    a.facing === 'L');  // o peão do pacote encara a direita
   });
 
   distEl.textContent = Math.min(...pop.map(a => dist(a.pos)));
@@ -1198,7 +1253,7 @@ function render() {
 }
 
 function renderList(ranked) {
-  listEl.innerHTML = '<div class="list-hdr">Criaturas</div>';
+  listEl.innerHTML = '<div class="list-hdr">Companhia invasora</div>';
   ranked.forEach(({a,d}) => {
     const color = a.color;
     const pct   = Math.round(Math.max(0, (MAXDIST-d)/MAXDIST*100));
@@ -1233,7 +1288,7 @@ function showGenToast(n) {
 function togglePause() {
   if (phase !== 'watch') return;
   paused = !paused;
-  pauseBtn.textContent = paused ? '▶ CONTINUAR' : '⏸ PAUSAR';
+  pauseBtn.textContent = paused ? 'CONTINUAR' : 'PAUSAR';
   pauseBtn.classList.toggle('active', paused);
   pauseBtn.setAttribute('aria-pressed', String(paused));
 }
@@ -1256,23 +1311,58 @@ function reset() { startBuild(); }
 // Botão do modal de fim de partida.
 function backToBuild() { startBuild(); }
 
-// Gera os sprites do tabuleiro a partir das matrizes (BOARD_SPRITES em
-// sprites.js) e injeta como variáveis CSS (--spr-*) que os backgrounds usam.
-function installSprites() {
-  const root = document.documentElement.style;
-  const B = SPRITES.BOARD_SPRITES;
-  root.setProperty('--spr-sword', SPRITES.spriteToDataURL(B.sword));
-  root.setProperty('--spr-base',  SPRITES.spriteToDataURL(B.base));
-  root.setProperty('--spr-tower', SPRITES.spriteToDataURL(B.tower));
-  root.setProperty('--spr-trap',  SPRITES.spriteToDataURL(B.trap));
-  root.setProperty('--spr-enemy', SPRITES.spriteToDataURL(B.enemy));
-  root.setProperty('--spr-grass', SPRITES.spriteToDataURL(B.grass));
-  root.setProperty('--spr-bush',  SPRITES.spriteToDataURL(B.bush));
-  root.setProperty('--spr-tree',  SPRITES.spriteToDataURL(B.tree));
+// ══ JANELA FLUTUANTE (HUD) ═══════════════════════
+// O tabuleiro ocupa a tela inteira; o painel é uma janela por cima dele, que se
+// minimiza (só a fita do título) e se arrasta pela fita. Enquanto ela estiver
+// fechada o cenário aparece sem nada na frente.
+const hudEl    = document.getElementById('hud');
+const hudBarEl = document.getElementById('hud-bar');
+const hudMinEl = document.getElementById('hud-min');
+
+function toggleHud() {
+  const min = hudEl.classList.toggle('min');
+  hudMinEl.setAttribute('aria-expanded', String(!min));
+  hudMinEl.setAttribute('aria-label', min ? 'Abrir painel de comando' : 'Minimizar painel de comando');
+  hudMinEl.textContent = min ? '▴' : '▾';
 }
 
+// Arrastar: a janela nasce ancorada à direita (right/top). No primeiro arrasto ela
+// passa a viver em left/top, presa aos limites da tela.
+let hudDrag = null;
+function hudClamp(x, y) {
+  const w = hudEl.offsetWidth, h = hudBarEl.offsetHeight; // basta a fita continuar visível
+  return {
+    x: Math.min(Math.max(x, 8 - w + 60), window.innerWidth - 60),
+    y: Math.min(Math.max(y, 0), window.innerHeight - h),
+  };
+}
+hudBarEl.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('.hud-min')) return;   // o botão de minimizar não arrasta
+  const r = hudEl.getBoundingClientRect();
+  hudDrag = { dx: e.clientX - r.left, dy: e.clientY - r.top };
+  hudEl.classList.add('dragging');
+  hudBarEl.setPointerCapture(e.pointerId);
+});
+hudBarEl.addEventListener('pointermove', (e) => {
+  if (!hudDrag) return;
+  const p = hudClamp(e.clientX - hudDrag.dx, e.clientY - hudDrag.dy);
+  hudEl.style.right = 'auto';
+  hudEl.style.left = p.x + 'px';
+  hudEl.style.top  = p.y + 'px';
+});
+hudBarEl.addEventListener('pointerup', () => { hudDrag = null; hudEl.classList.remove('dragging'); });
+
+// H fecha/abre o painel — o jeito rápido de ver o mapa inteiro.
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'h' || e.key === 'H') {
+    if (e.target.closest('input,textarea')) return;
+    toggleHud();
+  }
+});
+
 // ══ BOOT ═════════════════════════════════════════
-installSprites();
+// O tabuleiro é desenhado com os sprites do Tiny Swords (ver styles.css); os
+// BOARD_SPRITES em matriz de sprites.js não são mais usados.
 buildGrid();
 gridEl.addEventListener('pointerdown', onGridPointer);
 gridEl.addEventListener('pointermove', onGridPointer);
@@ -1284,3 +1374,20 @@ if (netOverlay) netOverlay.addEventListener('click', (e) => { if (e.target === n
 setTool('tower');
 setSpeed(0);
 startBuild();
+
+// Interfaces de observação determinística para a automação e depuração.
+window.render_game_to_text = () => JSON.stringify({
+  coordinateSystem: 'origem no canto superior esquerdo; x cresce para a direita, y para baixo',
+  phase,
+  generation: gen,
+  step: stepN,
+  stepLimit,
+  playerObjective: { goal: GOAL, start: START },
+  defenses: { towers: [...towers], traps: [...traps], sentinels: enemyStarts },
+  agents: pop.filter(a => !a.hidden).map(a => ({ x: a.pos.x, y: a.pos.y, dead: a.dead, reached: a.reached })),
+  enemies: enemies.map(e => ({ x: e.x, y: e.y, kills: e.kills })),
+});
+window.advanceTime = (ms) => {
+  const steps = Math.max(1, Math.round(ms / Math.max(16, delay)));
+  for (let i = 0; i < steps && phase === 'watch' && !paused; i++) tick();
+};

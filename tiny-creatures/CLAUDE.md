@@ -6,6 +6,9 @@
 - `styles.css` — todo o CSS.
 - `sprites.js` — sprite, `CREATURE_NAMES`, `CREATURE_COLORS` e helpers do GA.
   Módulo UMD que expõe `window.TinyCreaturesSprites`. Não tem dependência de DOM.
+- `icons.js` — ícones vetoriais (estilo Lucide, 24×24, EMBUTIDOS, sem CDN) do
+  inspetor de rede neural. Expõe `window.TinyCreaturesIcons` (nome → miolo SVG).
+  Sem dependência de DOM.
 - `main.js` — loop, algoritmo genético, render e controles.
 
 ## Convenções
@@ -16,8 +19,8 @@
   (`setSpeed`, `togglePause`, `reset`) precisam ser globais porque os botões do
   HTML as chamam via `onclick=`. Não converter para módulo sem reescrever esses
   handlers (ex.: `addEventListener`).
-- A ordem dos `<script>` importa: `sprites.js` antes de `main.js` (o segundo lê
-  `window.TinyCreaturesSprites`).
+- A ordem dos `<script>` importa: `sprites.js` e `icons.js` antes de `main.js`
+  (o último lê `window.TinyCreaturesSprites` e `window.TinyCreaturesIcons`).
 - Editar arquivos sempre com a ferramenta Edit (nunca reescrever via PowerShell —
   o projeto tem muitos acentos e emojis UTF-8 que já corromperam uma vez).
 
