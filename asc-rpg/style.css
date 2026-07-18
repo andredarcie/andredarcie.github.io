@@ -1,0 +1,81 @@
+/* ASCII Dungeon - visual "fosforo de terminal", mobile-first */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  background:#0b0b10;color:#c8c8dc;
+  font-family:"Cascadia Mono",Consolas,Menlo,"Courier New",monospace;
+  overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation;
+}
+#game{
+  height:100dvh;max-width:600px;margin:0 auto;
+  display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px 4px;font-size:13px;letter-spacing:2px}
+#hd-title{color:#ffe27a}
+#hd-floor{color:#8888a6}
+
+#screen-wrap{flex:1;min-height:0;position:relative;overflow:hidden;touch-action:none}
+#screen{display:block;width:100%;height:100%}
+#fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .25s ease}
+
+/* cores dos glifos (usadas na legenda das telas) */
+.c-player{color:#ffe27a;text-shadow:0 0 8px rgba(255,226,122,.5)}
+.c-stairs{color:#64d8ff}
+.c-potion{color:#ff6b9d}
+.c-gold{color:#ffd75e}
+.c-gear{color:#9ecbff}
+.mob-mid{color:#ffa657}
+.mob-boss{color:#d2a8ff;text-shadow:0 0 8px rgba(210,168,255,.6)}
+
+/* log de mensagens */
+#log{padding:2px 12px;font-size:12px;line-height:1.35;height:4.4em;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.log-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#a8a8c0}
+.log-line.old{opacity:.45}
+.log-line.good{color:#8ce99a}
+.log-line.bad{color:#ff7b72}
+
+/* status */
+#stats{padding:2px 12px 4px;font-size:12px}
+.stats-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.stats-row span{white-space:nowrap}
+.hp-ok{color:#8ce99a}
+.hp-warn{color:#ffa657}
+.hp-low{color:#ff7b72}
+#st-gold{color:#ffd75e}
+#btn-potion{
+  font-family:inherit;font-size:12px;color:#ff6b9d;
+  background:#16161f;border:1px solid #3a2430;border-radius:8px;padding:6px 10px;
+  white-space:nowrap;
+}
+#btn-potion.empty{opacity:.4}
+#btn-potion:active{background:#232336}
+
+/* d-pad */
+#controls{display:flex;justify-content:center;padding:6px 0 12px;touch-action:none}
+.dpad{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px}
+.dpad button{
+  font-family:inherit;font-size:20px;color:#c8c8dc;
+  background:#14141c;border:1px solid #2a2a3a;border-radius:12px;padding:0;touch-action:none;
+}
+.dpad button:active{background:#26263a}
+@media (max-height:640px){
+  .dpad{grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px)}
+  #log{height:3.2em}
+}
+
+/* overlays (titulo / morte / vitoria) */
+#overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;background:rgba(11,11,16,.9);padding:16px;
+}
+.ov-inner{line-height:1.8;font-size:13px}
+.ov-title{font-size:22px;letter-spacing:4px;color:#ffe27a;margin-bottom:10px;text-shadow:0 0 12px rgba(255,226,122,.35)}
+.ov-title.bad-t{color:#ff7b72;text-shadow:0 0 12px rgba(255,123,114,.4)}
+.ov-title.win-t{color:#8ce99a;text-shadow:0 0 12px rgba(140,233,154,.4)}
+.ov-legend{color:#a8a8c0}
+.ov-sub{color:#a8a8c0;margin-top:8px}
+.ov-tap{margin-top:14px;color:#e8e8f8;letter-spacing:2px;animation:pulse 1.4s ease-in-out infinite}
+.ov-build{margin-top:10px;font-size:11px;color:#55556a;letter-spacing:1px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}

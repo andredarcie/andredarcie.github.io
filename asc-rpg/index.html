@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b10">
+<title>ASCII Dungeon</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13' font-family='monospace' fill='%23ffe27a'>@</text></svg>">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<div id="game">
+  <header>
+    <span id="hd-title">ASCII DUNGEON</span>
+    <span id="hd-floor">FLOOR 1/5</span>
+  </header>
+
+  <div id="screen-wrap">
+    <canvas id="screen"></canvas>
+    <div id="fade"></div>
+    <div id="overlay"></div>
+  </div>
+
+  <div id="log"></div>
+
+  <div id="stats">
+    <div class="stats-row">
+      <span id="st-hp"></span>
+      <button id="btn-potion" type="button">! POTION ×0</button>
+    </div>
+    <div class="stats-row">
+      <span id="st-lv"></span>
+      <span id="st-xp"></span>
+      <span id="st-atk"></span>
+      <span id="st-def"></span>
+      <span id="st-gold"></span>
+    </div>
+  </div>
+
+  <div id="controls">
+    <div class="dpad">
+      <div></div><button id="btn-up" type="button" aria-label="Move up">&#9650;</button><div></div>
+      <button id="btn-left" type="button" aria-label="Move left">&#9664;</button><button id="btn-wait" type="button" aria-label="Wait">&#8226;</button><button id="btn-right" type="button" aria-label="Move right">&#9654;</button>
+      <div></div><button id="btn-down" type="button" aria-label="Move down">&#9660;</button><div></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="main.js?v=2"></script>
+</body>
+</html>
