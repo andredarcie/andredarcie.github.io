@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>House Walkthrough</title>
+<style>
+  :root { color-scheme: dark; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0d0f12;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; touch-action:none; }
+  #c { position:fixed; inset:0; width:100%; height:100%; display:block; }
+
+  /* HUD */
+  #build { position:fixed; top:10px; left:12px; font-size:11px; letter-spacing:1px;
+    color:#cde3ff; background:rgba(0,0,0,.4); padding:3px 8px; border-radius:6px; z-index:5; }
+  #room { position:fixed; top:10px; left:50%; transform:translateX(-50%); z-index:5;
+    color:#fff; font-size:15px; font-weight:600; background:rgba(0,0,0,.45);
+    padding:5px 14px; border-radius:20px; white-space:nowrap; }
+  #mini { position:fixed; bottom:12px; right:12px; z-index:5; border:2px solid rgba(255,255,255,.35);
+    border-radius:6px; background:#1c2530; width:120px; height:240px; }
+  #touchhint { display:none; position:fixed; bottom:82px; left:50%; transform:translateX(-50%);
+    z-index:5; color:#dfe8f2; font-size:12px; background:rgba(0,0,0,.4); padding:6px 12px; border-radius:16px; }
+  #toast { display:none; position:fixed; top:46px; left:50%; transform:translateX(-50%); z-index:7;
+    color:#0d1218; background:#ffd34d; font-size:12px; font-weight:700; padding:6px 14px;
+    border-radius:14px; white-space:nowrap; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+
+  /* modo topografia: mira + botões */
+  #cross { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:5;
+    pointer-events:none; text-align:center; }
+  #cross .tick { font-size:24px; line-height:1; color:#fff; text-shadow:0 0 4px #000; opacity:.9; }
+  #crosslbl { margin-top:8px; font-size:12px; font-weight:700; color:#ffe27a; white-space:nowrap;
+    background:rgba(0,0,0,.5); padding:3px 10px; border-radius:12px; }
+  #tools { position:fixed; top:42px; right:10px; z-index:6; display:flex; flex-direction:column; gap:5px; }
+  .tbtn { font:700 10px/1 inherit; letter-spacing:.4px; color:#eaf2fb; background:rgba(15,22,32,.75);
+    border:1px solid rgba(255,255,255,.25); padding:8px 7px; border-radius:7px; min-width:70px;
+    cursor:pointer; -webkit-appearance:none; }
+  .tbtn:active { background:rgba(127,196,255,.35); }
+  .tbtn.on { background:#7fc4ff; color:#0d1218; border-color:#7fc4ff; }
+  #btnStake { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:6;
+    font:800 14px/1 inherit; letter-spacing:1.5px; color:#0d1218; background:#ffd34d; border:none;
+    padding:16px 32px; border-radius:28px; box-shadow:0 6px 18px rgba(0,0,0,.45); cursor:pointer; }
+  #btnStake:active { background:#ffbe00; }
+  #copybox { display:none; position:fixed; inset:0; z-index:11; background:rgba(8,11,16,.94);
+    padding:18px; flex-direction:column; gap:12px; }
+  #copytext { flex:1; width:100%; background:#111820; color:#d8e6f5; border:1px solid #2b3a4a;
+    border-radius:8px; padding:12px; resize:none; font:12px/1.6 ui-monospace,Menlo,Consolas,monospace; }
+  #copyclose { align-self:center; font:700 14px/1 inherit; color:#0d1218; background:#7fc4ff;
+    border:none; padding:13px 32px; border-radius:24px; cursor:pointer; }
+
+  /* joystick de toque */
+  #stick { display:none; position:fixed; width:120px; height:120px; border-radius:50%;
+    background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.3); z-index:4; }
+  #nub { position:absolute; width:60px; height:60px; border-radius:50%;
+    background:rgba(255,255,255,.35); left:30px; top:30px; }
+
+  /* overlay inicial */
+  #overlay { position:fixed; inset:0; z-index:10; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:24px;
+    background:radial-gradient(circle at 50% 35%, #26405c, #0d1218 75%); color:#eaf2fb; }
+  #overlay h1 { font-size:30px; font-weight:800; letter-spacing:.5px; margin-bottom:6px; }
+  #overlay .sub { font-size:14px; color:#9fb6cf; margin-bottom:22px; }
+  #startbtn { font-size:17px; font-weight:700; color:#0d1218; background:#7fc4ff;
+    border:none; padding:14px 34px; border-radius:30px; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.4); }
+  #startbtn:active { transform:translateY(1px); }
+  #overlay .ctrl { margin-top:24px; font-size:13px; color:#8ba1ba; line-height:1.7; max-width:340px; }
+  #overlay .ctrl b { color:#cfe0f2; }
+</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div id="build">BUILD 15</div>
+  <div id="room">Living Room</div>
+  <canvas id="mini"></canvas>
+  <div id="touchhint"><b>Left</b> to walk &nbsp;·&nbsp; <b>Right</b> to look around</div>
+  <div id="toast"></div>
+
+  <div id="cross"><div class="tick">+</div><div id="crosslbl">aim down</div></div>
+
+  <div id="tools">
+    <button class="tbtn" id="btnUp">EYE &#9650;</button>
+    <button class="tbtn" id="btnDown">EYE &#9660;</button>
+    <button class="tbtn" id="btnUndo">UNDO</button>
+    <button class="tbtn" id="btnCopy">COPY</button>
+    <button class="tbtn" id="btnClear">CLEAR</button>
+    <button class="tbtn" id="btnClip">WALLS OFF</button>
+    <button class="tbtn on" id="btnShadow">SHADOW ON</button>
+    <button class="tbtn" id="btnExpo">LIGHT</button>
+  </div>
+
+  <button id="btnStake">STAKE</button>
+
+  <div id="copybox">
+    <textarea id="copytext" readonly></textarea>
+    <button id="copyclose">CLOSE</button>
+  </div>
+
+  <div id="stick"><div id="nub"></div></div>
+
+  <div id="overlay">
+    <h1>House Walkthrough</h1>
+    <div class="sub">A faithful 3D walk-through of the floor plan</div>
+    <button id="startbtn">Enter the house</button>
+    <div class="ctrl">
+      <span id="desktopctrl"><b>W A S D</b> or arrows to move &nbsp;·&nbsp; <b>Mouse</b> to look &nbsp;·&nbsp; <b>Shift</b> to run</span>
+      <div style="margin-top:14px; font-size:12px; color:#7d93ab">
+        Survey mode: aim at the floor and drop stakes, then <b>COPY</b> the coordinates.<br>
+        Keys: <b>Space/E</b> stake &nbsp;·&nbsp; <b>Z</b> undo &nbsp;·&nbsp; <b>C</b> copy &nbsp;·&nbsp;
+        <b>X</b> clear &nbsp;·&nbsp; <b>R/F</b> eye up/down &nbsp;·&nbsp; <b>N</b> walls &nbsp;·&nbsp;
+        <b>G</b> shadows &nbsp;·&nbsp; <b>B</b> exposure
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  { "imports": { "three": "./lib/three.module.min.js?v=15" } }
+  </script>
+  <script type="module" src="./game.js?v=15"></script>
+  <script>
+    // ajusta a dica de controles conforme o dispositivo
+    if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
+      document.getElementById('desktopctrl').innerHTML =
+        'Use the <b>left side</b> of the screen to walk<br>and the <b>right side</b> to look around';
+    }
+  </script>
+</body>
+</html>
