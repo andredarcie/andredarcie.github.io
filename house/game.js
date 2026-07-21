@@ -3,7 +3,7 @@
 // Comentários/variáveis em português DE PROPÓSITO.
 import * as THREE from 'three';
 
-const BUILD = 15;
+const BUILD = 16;
 
 // ============================================================
 //  DADOS DA PLANTA  (metros)
@@ -14,6 +14,10 @@ const BUILD = 15;
 const H    = 2.70;   // pé-direito interno
 const MURO = 2.20;   // altura dos muros de divisa
 const CEIL = H;
+// Fundo do lote. A planta tem 20,00 m, mas o André pediu o quintal com o DOBRO
+// da profundidade; como a suíte foi cravada por estacas, o muro dos fundos é que
+// recuou (17.35 -> 22.65 = 5,30 m de quintal) em vez de empurrar a casa pra frente.
+const ZMAX = 22.65;
 
 // ============================================================
 //  CALIBRAÇÃO Z — casa estava ~2m adiantada vs planta real.
@@ -71,7 +75,7 @@ const ROOMS = [
   { k:'wcsuite',  name:'Ensuite Bathroom',  x0:L.wOeste, z0:zi(L.zWcSul), x1:L.wWcDiv, z1:zi(L.zFundo), fy:0.00, col:0xd2dad9, indoor:true  },
   { k:'suite',    name:'Master Suite',      x0:L.wOeste, z0:zi(L.zSuite), x1:L.wSuiteL, z1:zi(L.zFundo), fy:0.00, col:0xb98a57, indoor:true  },
   { k:'servico',  name:'Laundry Yard',      x0:L.wSuiteL, z0:zi(L.zSuite), x1:9.90, z1:zi(L.zFundo), fy:-0.02,col:0xcacdc9, indoor:false },
-  { k:'backyard', name:'Backyard',          x0:0.00, z0:zi(L.zFundo), x1:10.00, z1:20.00, fy:-0.05, col:0x4f8a41, indoor:false },
+  { k:'backyard', name:'Backyard',          x0:0.00, z0:zi(L.zFundo), x1:10.00, z1:ZMAX, fy:-0.05, col:0x4f8a41, indoor:false },
 ];
 
 // Portas/janelas — helpers de vão (coord "at" = posição no eixo que varia)
@@ -83,9 +87,9 @@ const glassdoor = (at,w)    => ({ at, w, y0:0.00, y1:2.10, glass:true });     //
 // Lista de paredes: [ax,az, bx,bz, altura, vãos]
 const WALLS = [
   // ---- Muros de divisa + frente com portões ----
-  [0,0, 0,20, MURO, []],
-  [10,0, 10,20, MURO, []],
-  [0,20, 10,20, MURO, []],
+  [0,0, 0,ZMAX, MURO, []],
+  [10,0, 10,ZMAX, MURO, []],
+  [0,ZMAX, 10,ZMAX, MURO, []],
   [0,0, 10,0, MURO, [opening(2.15,3.60), opening(8.00,1.00)]], // portão basculante + portão social
 
   // ---- Garagem (aberta): ÚNICA porta -> corredor ----
@@ -350,9 +354,9 @@ sun.target.position.set(5, 0, 10);
 scene.add(sun); scene.add(sun.target);
 sun.castShadow = true;
 sun.shadow.mapSize.set(isTouch ? 1024 : 2048, isTouch ? 1024 : 2048);
-sun.shadow.camera.left = -16; sun.shadow.camera.right = 16;
-sun.shadow.camera.top  =  22; sun.shadow.camera.bottom = -22;
-sun.shadow.camera.near = 1;   sun.shadow.camera.far = 70;
+sun.shadow.camera.left = -18; sun.shadow.camera.right = 18;
+sun.shadow.camera.top  =  27; sun.shadow.camera.bottom = -27;  // cobre o lote esticado
+sun.shadow.camera.near = 1;   sun.shadow.camera.far = 80;
 sun.shadow.bias = -0.0007;
 sun.shadow.normalBias = 0.025;
 
@@ -485,7 +489,7 @@ for(const w of WALLS) buildWall(w[0],w[1],w[2],w[3],w[4],w[5]);
 // Base do lote. O TOPO dela precisa ficar abaixo do piso mais baixo dos ambientes
 // (quintal e corredor têm fy -0.05 -> plano em -0.045); com o topo em -0.02 a laje
 // engolia a grama do quintal. Topo agora em -0.06.
-box(5, -0.12, 10, 10.4, 0.12, 20.4, std({ map:texConcrete, color:0xd2ccbe, roughness:0.9 }), false);
+box(5, -0.12, (ZMAX+0.4)/2 - 0.2, 10.4, 0.12, ZMAX + 0.6, std({ map:texConcrete, color:0xd2ccbe, roughness:0.9 }), false);
 // rua na frente
 box(5, -0.10, -4, 20, 0.06, 8, std({ map:texAsphalt, roughness:0.95 }), false);
 
@@ -1147,26 +1151,37 @@ function sink(cx, mz, nx, nz){
   const bush = (x,z,r,tint)=> put(new THREE.Mesh(new THREE.SphereGeometry(r,10,8),
       tint || matGreen), x, r*0.62, z, 0.78);
 
-  // árvore
-  put(new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.22,1.7,10), matTrunk), 7.5, 0.77, 18.80);
-  put(new THREE.Mesh(new THREE.SphereGeometry(1.15,14,12), matGreen), 7.5, 2.10, 18.80);
-  put(new THREE.Mesh(new THREE.SphereGeometry(0.82,14,12), matGreen), 8.15, 1.80, 19.25);
-  put(new THREE.Mesh(new THREE.SphereGeometry(0.78,14,12), matGreen), 6.85, 1.85, 19.30);
-
-  // canteiro de terra rente ao muro dos fundos, com arbustos e flores
   const matSoil  = std({ color:0x4b3a2a, roughness:1.0 });
   const matBloom = std({ color:0xd9556b, roughness:0.85 });
   const matBloom2= std({ color:0xe8c341, roughness:0.85 });
-  box(5.0, -0.02, 19.55, 9.4, 0.10, 0.80, matSoil, false);
+  const matSlab  = std({ color:0xbdb7a8, roughness:0.92 });
+
+  // duas árvores, espalhadas na profundidade nova
+  const tree = (x,z,s)=>{
+    put(new THREE.Mesh(new THREE.CylinderGeometry(0.16*s,0.22*s,1.7*s,10), matTrunk), x, 0.77*s, z);
+    put(new THREE.Mesh(new THREE.SphereGeometry(1.15*s,14,12), matGreen), x, 2.10*s, z);
+    put(new THREE.Mesh(new THREE.SphereGeometry(0.82*s,14,12), matGreen), x+0.65*s, 1.80*s, z+0.45*s);
+    put(new THREE.Mesh(new THREE.SphereGeometry(0.78*s,14,12), matGreen), x-0.65*s, 1.85*s, z+0.50*s);
+  };
+  tree(7.60, 19.30, 1.00);
+  tree(2.10, 21.10, 0.82);
+
+  // caminho de pedras do beiral até o fundo do quintal
+  for(let i=0;i<8;i++)
+    box(5.10 + Math.sin(i*0.9)*0.55, -0.028, 17.85 + i*0.62, 0.62, 0.06, 0.44, matSlab, false);
+
+  // canteiro de terra rente ao NOVO muro dos fundos, com arbustos e flores
+  box(5.0, -0.02, 22.18, 9.4, 0.10, 0.84, matSoil, false);
   for(let i=0;i<11;i++){
     const x = 0.7 + i*0.86;
-    bush(x, 19.40 + (i%2)*0.28, 0.26 + (i%3)*0.06);
+    bush(x, 22.02 + (i%2)*0.28, 0.26 + (i%3)*0.06);
     const f = new THREE.Mesh(new THREE.SphereGeometry(0.07,8,6), i%2 ? matBloom : matBloom2);
-    put(f, x + 0.18, 0.42, 19.62);
+    put(f, x + 0.18, 0.42, 22.26);
   }
-  // moitas soltas no gramado
-  [[1.3,18.2,0.40],[2.6,18.9,0.32],[3.9,18.1,0.36],[9.2,18.5,0.42],[0.8,17.8,0.30]]
-    .forEach(([x,z,r])=> bush(x,z,r));
+  // moitas soltas espalhadas por toda a profundidade do gramado
+  [[1.3,18.2,0.40],[3.9,18.1,0.36],[9.2,18.6,0.42],[0.8,17.9,0.30],
+   [9.35,20.4,0.38],[0.85,20.2,0.34],[3.5,20.9,0.30],[8.6,21.6,0.32],
+   [6.4,20.5,0.36],[1.6,19.4,0.28]].forEach(([x,z,r])=> bush(x,z,r));
 
   // canteiro lateral no corredor oeste
   box(0.95, -0.02, 14.0, 1.30, 0.10, 5.0, matSoil, false);
@@ -1215,7 +1230,7 @@ function resolve(px,pz,dx,dz){
   }
   // limites do mundo (folgados no noclip, p/ dar a volta na casa)
   const xlo = noclip ? -4.0 : 0.25, xhi = noclip ? 14.0 : 9.75;
-  const zlo = noclip ? -8.0 : -3.5, zhi = noclip ? 24.0 : 19.75;
+  const zlo = noclip ? -8.0 : -3.5, zhi = noclip ? ZMAX + 4 : ZMAX - 0.25;
   nx = Math.max(xlo, Math.min(xhi, nx));
   nz = Math.max(zlo, Math.min(zhi, nz));
   return [nx,nz];
@@ -1291,29 +1306,33 @@ canvas.addEventListener('touchcancel',onTouchEnd);
 const roomEl = document.getElementById('room');
 const mini = document.getElementById('mini');
 const mctx = mini.getContext('2d');
-const MW = 120, MH = 240;          // px do minimapa (proporção 10:20 do lote)
+const MW = 120, MH = 240;          // px do minimapa
 mini.width = MW; mini.height = MH;
 
 // Minimapa usa a PRÓPRIA planta (house.jpeg). Calibração do lote em pixels da imagem:
 // canto sup-esq da região = mundo (x=0, z=20/fundos); canto inf-dir = mundo (x=10, z=0/frente).
+// A planta cobre só os 20 m originais; o quintal esticado (20 -> ZMAX) vira uma
+// faixa verde no topo do minimapa.
 const LOT = { x0:47, y0:155, x1:660, y1:1481 };
+const PLANH = Math.round(MH * 20 / ZMAX);   // altura do recorte da planta, em px
 const planImg = new Image();
 let planReady = false;
 const planCanvas = document.createElement('canvas'); // recorte já escalado (offscreen)
-planCanvas.width = MW; planCanvas.height = MH;
+planCanvas.width = MW; planCanvas.height = PLANH;
 planImg.onload = ()=>{
   planCanvas.getContext('2d').drawImage(
-    planImg, LOT.x0, LOT.y0, LOT.x1-LOT.x0, LOT.y1-LOT.y0, 0, 0, MW, MH);
+    planImg, LOT.x0, LOT.y0, LOT.x1-LOT.x0, LOT.y1-LOT.y0, 0, 0, MW, PLANH);
   planReady = true;
 };
-planImg.src = './house.jpeg?v=15';
+planImg.src = './house.jpeg?v=16';
 
 function drawMini(){
-  if(planReady) mctx.drawImage(planCanvas, 0, 0);
-  else { mctx.fillStyle='#1c2530'; mctx.fillRect(0,0,MW,MH); }
+  mctx.fillStyle = planReady ? '#4f8a41' : '#1c2530';   // faixa do quintal esticado
+  mctx.fillRect(0, 0, MW, MH);
+  if(planReady) mctx.drawImage(planCanvas, 0, MH - PLANH);
   // estacas: polilinha + pontos (dá pra ver o contorno se formando)
   if(stakes.length){
-    const px = s => (s.x/10)*MW, py = s => (1 - s.z/20)*MH;
+    const px = s => (s.x/10)*MW, py = s => (1 - s.z/ZMAX)*MH;
     if(stakes.length > 1){
       mctx.strokeStyle='rgba(255,211,77,.9)'; mctx.lineWidth=1.5;
       mctx.beginPath(); mctx.moveTo(px(stakes[0]), py(stakes[0]));
@@ -1323,9 +1342,9 @@ function drawMini(){
     mctx.fillStyle='#ffd34d';
     for(const s of stakes){ mctx.beginPath(); mctx.arc(px(s),py(s),2.6,0,7); mctx.fill(); }
   }
-  // jogador: x -> direita, z=0 (frente) embaixo, z=20 (fundos) em cima (igual à planta)
+  // jogador: x -> direita, z=0 (frente) embaixo, fundos em cima (igual à planta)
   const cx = (player.x/10) * MW;
-  const cy = (1 - player.z/20) * MH;
+  const cy = (1 - player.z/ZMAX) * MH;
   mctx.strokeStyle='#ff2b2b'; mctx.lineWidth=2;
   mctx.beginPath(); mctx.moveTo(cx,cy);
   mctx.lineTo(cx + Math.sin(player.yaw)*13, cy - Math.cos(player.yaw)*13);
