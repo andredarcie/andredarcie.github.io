@@ -1,0 +1,443 @@
+- generic [active] [ref=e1]:
+  - link "Pular para o conteúdo" [ref=e2] [cursor=pointer]:
+    - /url: "#conteudo"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Quilombo do Careca — início" [ref=e5] [cursor=pointer]:
+        - /url: "#inicio"
+        - generic [ref=e11]:
+          - strong [ref=e12]: Quilombo do Careca
+          - generic [ref=e13]: memória de Divinolândia
+      - navigation "Navegação principal" [ref=e14]:
+        - link "História" [ref=e15] [cursor=pointer]:
+          - /url: "#historia"
+        - link "Território" [ref=e16] [cursor=pointer]:
+          - /url: "#territorio"
+        - link "Evidências" [ref=e17] [cursor=pointer]:
+          - /url: "#evidencias"
+        - link "Linha do tempo" [ref=e18] [cursor=pointer]:
+          - /url: "#linha-do-tempo"
+        - link "Fontes" [ref=e19] [cursor=pointer]:
+          - /url: "#fontes"
+          - text: Fontes
+          - generic [ref=e20]: ↗
+  - main [ref=e21]:
+    - region [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - paragraph [ref=e25]: Serra da Mantiqueira · século XVIII
+          - heading [level=1] [ref=e27]:
+            - text: Uma história
+            - emphasis [ref=e28]: sob a paisagem.
+          - paragraph [ref=e29]:
+            - text: "Antes de Divinolândia ser Sapecado, as cabeceiras do Rio Pardo abrigaram um grande assentamento negro: o"
+            - strong [ref=e30]: Quilombo do Careca
+            - text: . Sua história sobrevive em mapas, processos, nomes de lugares e memórias locais.
+          - generic [ref=e31]:
+            - link "Começar a história" [ref=e32] [cursor=pointer]:
+              - /url: "#historia"
+              - text: Começar a história
+              - generic [ref=e33]: ↓
+            - link "Como esta página foi apurada" [ref=e34] [cursor=pointer]:
+              - /url: "#metodo"
+          - generic "Informações sobre a leitura" [ref=e35]:
+            - generic [ref=e36]: 8 min de leitura
+            - generic [ref=e41]: pesquisa referenciada
+        - generic [ref=e45]:
+          - generic [ref=e46]: "1759"
+          - generic [ref=e54]:
+            - generic [ref=e55]: Cabeceiras do
+            - strong [ref=e56]: Rio Pardo
+            - generic [ref=e57]: entre as atuais Divinolândia e Caconde
+          - paragraph [ref=e58]: Altitude, água e distância dos centros coloniais.
+    - region "Dados centrais" [ref=e60]:
+      - generic [ref=e61]:
+        - article [ref=e62]:
+          - generic [ref=e63]: séc. XVIII
+          - paragraph [ref=e64]: período de formação e resistência
+        - article [ref=e65]:
+          - generic [ref=e66]: 197–220
+          - paragraph [ref=e67]: casas registradas em duas fontes
+        - article [ref=e68]:
+          - generic [ref=e69]: "1759"
+          - paragraph [ref=e70]: ano do ataque documentado
+        - article [ref=e71]:
+          - generic [ref=e72]: Rio Pardo
+          - paragraph [ref=e73]: referência territorial decisiva
+    - complementary [ref=e74]:
+      - generic [ref=e75]: i
+      - generic [ref=e76]:
+        - heading "Uma distinção importante" [level=2] [ref=e77]
+        - paragraph [ref=e78]:
+          - text: O Quilombo do Careca é tratado pelas pesquisas citadas como um
+          - strong [ref=e79]: assentamento histórico extinto no século XVIII
+          - text: . Esta página não afirma a existência de uma comunidade quilombola contemporânea certificada em Divinolândia. “Quilombo histórico” e “comunidade remanescente atual” são categorias relacionadas, mas não equivalentes.
+    - region [ref=e80]:
+      - generic [ref=e81]: "01"
+      - generic [ref=e82]:
+        - paragraph [ref=e83]: A presença que veio antes
+        - heading "Antes do município, um território de liberdade." [level=2] [ref=e85]: Antes do município,um território de liberdade.
+      - generic [ref=e86]:
+        - paragraph [ref=e87]: Quando o atual nordeste paulista ainda era uma fronteira disputada entre as capitanias de São Paulo e Minas Gerais, pessoas negras escravizadas que escapavam do cativeiro e outros grupos submetidos à ordem colonial construíram comunidades autônomas pelos sertões.
+        - paragraph [ref=e88]:
+          - text: Uma delas foi chamada, nos registros, de
+          - strong [ref=e89]: Quilombo do Careca
+          - text: ou
+          - strong [ref=e90]: Quilombo das Cabeceiras do Rio Pardo
+          - text: . A equivalência entre esses nomes foi proposta pelo pesquisador Tarcísio José Martins e retomada no estudo de Marjorie Prado Junqueira de Faria, realizado entre Caconde e Divinolândia.
+          - link "Ver fonte 1" [ref=e91] [cursor=pointer]:
+            - /url: "#fonte-faria"
+            - text: "[1]"
+        - paragraph [ref=e92]:
+          - text: Dois registros dão uma dimensão incomum ao povoado. O mapa atribuído ao capitão Antônio Francisco França indica
+          - strong [ref=e93]: 220 casas
+          - text: ; depoimentos reunidos décadas depois, no processo do neto de Bartolomeu Bueno do Prado, mencionam
+          - strong [ref=e94]: 197 casas “barreadas e de beira alta”
+          - text: .
+          - link "Ver fonte 1" [ref=e95] [cursor=pointer]:
+            - /url: "#fonte-faria"
+            - text: "[1]"
+    - region [ref=e96]:
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - generic [ref=e99]:
+            - paragraph [ref=e100]: Geografia também é história
+            - heading "As cabeceiras como abrigo." [level=2] [ref=e102]: As cabeceirascomo abrigo.
+          - paragraph [ref=e103]:
+            - text: O relevo acidentado da Mantiqueira, as muitas nascentes e a distância das vilas coloniais ajudavam a sustentar comunidades e dificultavam a aproximação de tropas. A prefeitura ainda descreve Divinolândia por suas grandes altitudes, cachoeiras e mirantes.
+            - link "Ver fonte 7" [ref=e104] [cursor=pointer]:
+              - /url: "#fonte-prefeitura"
+              - text: "[7]"
+        - generic [ref=e105]:
+          - article [ref=e106]:
+            - generic [ref=e114]:
+              - text: Leitura do terreno
+              - heading "Água, altitude e visão" [level=3] [ref=e115]
+              - paragraph [ref=e116]: As nascentes forneciam água; os vales permitiam cultivo; os pontos altos ampliavam a vigilância. São condições compatíveis com a escolha de refúgios, embora não provem, sozinhas, uma localização arqueológica.
+          - article [ref=e117]:
+            - generic [ref=e118]: 1.490m
+            - heading "O ponto mais alto atual" [level=3] [ref=e119]
+            - paragraph [ref=e120]: O Morro do Canelá ilustra a altitude do município. Não é apresentado aqui como o local do quilombo.
+          - article [ref=e121]:
+            - blockquote [ref=e124]: A paisagem não é apenas cenário. Ela guarda nomes, caminhos e vestígios que orientam novas perguntas.
+            - paragraph [ref=e125]: Leitura editorial a partir das pesquisas locais
+    - region [ref=e126]:
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - paragraph [ref=e130]: Uma rede pelo sertão
+          - heading "O Careca fazia parte de algo maior." [level=2] [ref=e132]
+          - paragraph [ref=e133]:
+            - text: “Campo Grande” nomeava uma extensa zona entre rios, serras e caminhos que hoje atravessa Minas Gerais e alcança o nordeste paulista. O mapa histórico registra
+            - strong [ref=e134]: 24 núcleos quilombolas
+            - text: localizados ou atacados em diferentes expedições.
+            - link "Ver fonte 2" [ref=e135] [cursor=pointer]:
+              - /url: "#fonte-cartografia"
+              - text: "[2]"
+          - paragraph [ref=e136]:
+            - text: Martins interpreta esses núcleos como uma grande confederação. A historiografia acadêmica confirma a amplitude territorial e as conexões regionais, mas recomenda cautela com números populacionais e com a ideia de um comando único para todos os povoados.
+            - link "Ver fonte 4" [ref=e137] [cursor=pointer]:
+              - /url: "#fonte-melo"
+              - text: "[4]"
+          - link "Conheça as linhas de pesquisa" [ref=e138] [cursor=pointer]:
+            - /url: "#fontes"
+        - generic "Representação conceitual da rede do Campo Grande" [ref=e139]:
+          - generic [ref=e152]:
+            - strong [ref=e154]: Careca
+            - generic [ref=e155]: cabeceiras do Rio Pardo
+          - generic [ref=e156]:
+            - strong [ref=e157]: "24"
+            - generic [ref=e158]: núcleos desenhadosno mapa histórico
+    - region [ref=e159]:
+      - generic [ref=e160]:
+        - generic [ref=e161]:
+          - paragraph [ref=e162]: Documento-chave
+          - heading "Um mapa feito para a conquista." [level=2] [ref=e164]: Um mapa feitopara a conquista.
+        - paragraph [ref=e166]:
+          - text: O
+          - emphasis [ref=e167]: Mappa de todo o Campo grande
+          - text: ", produzido a partir das campanhas da década de 1750, registra rios, serras, caminhos, núcleos e quantidade de casas. O original relacionado está sob guarda do Instituto de Estudos Brasileiros da USP."
+      - figure "Mappa de todo o Campo grande Cópia histórica, séc. XVIII · Arquivo Histórico do Exército / ArPDF domínio público" [ref=e168]:
+        - generic [ref=e169]:
+          - img "Mapa manuscrito do século XVIII mostrando rios, serras e núcleos quilombolas do Campo Grande" [ref=e170]
+          - button "Ampliar mapa" [ref=e171] [cursor=pointer]
+        - generic [ref=e174]:
+          - generic [ref=e175]:
+            - strong [ref=e176]: Mappa de todo o Campo grande
+            - generic [ref=e177]: Cópia histórica, séc. XVIII · Arquivo Histórico do Exército / ArPDF
+          - generic [ref=e178]: domínio público
+      - complementary [ref=e179]:
+        - generic [ref=e180]: "!"
+        - generic [ref=e181]:
+          - heading "A fonte não é neutra" [level=3] [ref=e182]
+          - paragraph [ref=e183]:
+            - text: O mapa foi produzido pela administração colonial para orientar campanhas contra os quilombos. Ele é valioso justamente quando lido também como instrumento de vigilância e repressão — não como um retrato completo da vida quilombola.
+            - link "Ver fonte 5" [ref=e184] [cursor=pointer]:
+              - /url: "#fonte-relatos"
+              - text: "[5]"
+    - region [ref=e185]:
+      - generic [ref=e186]:
+        - generic [ref=e187]:
+          - paragraph [ref=e188]: Uma leitura honesta das fontes
+          - heading "O que sabemos. E com que segurança." [level=2] [ref=e190]: O que sabemos.E com que segurança.
+          - paragraph [ref=e191]: História se constrói por aproximação. Aqui, cada afirmação é apresentada segundo a natureza de sua evidência.
+        - generic [ref=e192]:
+          - article [ref=e193]:
+            - strong [ref=e196]: Documentado
+            - generic [ref=e197]: "01"
+            - heading "O povoado existiu e foi atacado." [level=3] [ref=e198]
+            - paragraph [ref=e199]: Mapa, registro de posse e depoimentos de um processo posterior convergem para um grande quilombo nas cabeceiras do Rio Pardo, destruído pela expedição de Bartolomeu Bueno do Prado em 1759.
+            - list [ref=e200]:
+              - listitem [ref=e201]: 197 a 220 casas nos registros citados
+              - listitem [ref=e202]: Casas descritas como barreadas e de beira alta
+              - listitem [ref=e203]: Campanha militar e tomada de posse registradas
+          - article [ref=e204]:
+            - strong [ref=e207]: Interpretação histórica
+            - generic [ref=e208]: "02"
+            - heading "Careca e Cabeceiras seriam o mesmo lugar." [level=3] [ref=e209]
+            - paragraph [ref=e210]: A associação dos dois nomes e a localização no território atual de Divinolândia resultam do cruzamento entre roteiro fluvial, toponímia e documentos da campanha. É uma tese fundamentada, não uma coordenada produzida por escavação arqueológica.
+            - list [ref=e211]:
+              - listitem [ref=e212]: Margem esquerda e curva do Rio Pardo
+              - listitem [ref=e213]: Região antes pertencente a Caconde
+              - listitem [ref=e214]: Compatibilidade entre nomes históricos
+          - article [ref=e215]:
+            - strong [ref=e218]: Memória e hipótese
+            - generic [ref=e219]: "03"
+            - heading "A paisagem preserva possíveis vestígios." [level=3] [ref=e220]
+            - paragraph [ref=e221]: Bairro Quilombo, Córrego do Quilombo, Morro do Pontal, uma capela e relatos sobre ossadas aparecem na pesquisa oral de 2014. São pistas relevantes para investigação, mas não substituem laudo arqueológico ou antropológico.
+            - list [ref=e222]:
+              - listitem [ref=e223]: Topônimos transmitidos localmente
+              - listitem [ref=e224]: Capela e cruzeiro na área rural
+              - listitem [ref=e225]: Necessidade de pesquisa de campo especializada
+    - region [ref=e226]:
+      - generic [ref=e227]:
+        - generic [ref=e228]:
+          - paragraph [ref=e229]: Vida e autonomia
+          - heading "Uma comunidade, não um esconderijo." [level=2] [ref=e231]: Uma comunidade,não um esconderijo.
+          - paragraph [ref=e232]: Quilombos eram espaços de moradia, produção, parentesco, circulação e defesa. Mas os documentos do Careca foram escritos por seus perseguidores; quase nada preservam das vozes de quem vivia ali.
+        - generic [ref=e233]:
+          - article [ref=e234]:
+            - generic [ref=e238]:
+              - heading "Arquitetura" [level=3] [ref=e239]
+              - paragraph [ref=e240]: A descrição de 197 casas barreadas e de beira alta indica planejamento, trabalho coletivo e permanência — uma povoação estruturada.
+          - article [ref=e241]:
+            - generic [ref=e245]:
+              - heading "Produção" [level=3] [ref=e246]
+              - paragraph [ref=e247]: A região tinha água e condições agrícolas. Estudos do Campo Grande mostram que lavouras e redes de troca sustentavam núcleos semelhantes; para o Careca, os cultivos específicos ainda não estão estabelecidos.
+          - article [ref=e248]:
+            - generic [ref=e254]:
+              - heading "Comunidade diversa" [level=3] [ref=e255]
+              - paragraph [ref=e256]: Pesquisas recentes entendem os quilombos mineiros como sociedades conectadas ao entorno e potencialmente formadas por pessoas de diferentes condições. A composição exata do Careca permanece desconhecida.
+      - generic [ref=e257]:
+        - generic [ref=e258]: ✦
+        - paragraph [ref=e259]:
+          - strong [ref=e260]: "O limite também informa:"
+          - text: não conhecemos os nomes das lideranças do Careca, as tradições religiosas praticadas ali nem o destino individual de seus moradores. Inventar esses detalhes repetiria o apagamento que a pesquisa busca enfrentar.
+    - region [ref=e261]:
+      - generic [ref=e262]:
+        - generic [ref=e263]:
+          - generic [ref=e264]:
+            - paragraph [ref=e265]: Cronologia essencial
+            - heading "Da resistência ao silêncio." [level=2] [ref=e267]: Da resistênciaao silêncio.
+          - paragraph [ref=e268]: As datas abaixo aproximam a história ampla do Campo Grande dos registros associados ao Quilombo do Careca.
+        - list [ref=e269]:
+          - listitem [ref=e270]:
+            - generic [ref=e271]: c. 1726
+            - generic [ref=e274]:
+              - heading "Quilombos consolidados" [level=3] [ref=e275]
+              - paragraph [ref=e276]:
+                - text: Em carta de 1746, o governador Gomes Freire de Andrade dizia que grupos do Campo Grande estavam havia mais de vinte anos no sertão.
+                - link "Ver fonte 4" [ref=e277] [cursor=pointer]:
+                  - /url: "#fonte-melo"
+                  - text: "[4]"
+          - listitem [ref=e278]:
+            - generic [ref=e279]: "1746"
+            - generic [ref=e282]:
+              - heading "Escalada repressiva" [level=3] [ref=e283]
+              - paragraph [ref=e284]: A Coroa organiza grandes expedições contra núcleos do Campo Grande. Os relatos de campanha transformam povoados em alvos e o sertão em território a conquistar.
+          - listitem [ref=e285]:
+            - generic [ref=e286]: "1759"
+            - generic [ref=e289]:
+              - generic [ref=e290]: Quilombo do Careca
+              - heading "Ataque às cabeceiras" [level=3] [ref=e291]
+              - paragraph [ref=e292]: A expedição de Bartolomeu Bueno do Prado alcança o povoado, incendeia suas casas e formaliza a posse colonial da área. As fontes consultadas não permitem fixar com segurança o total de mortos, presos ou sobreviventes.
+          - listitem [ref=e293]:
+            - generic [ref=e294]: 1760–65
+            - generic [ref=e297]:
+              - heading "O território vira mapa" [level=3] [ref=e298]
+              - paragraph [ref=e299]: Registros das campanhas são reunidos em cartografia que localiza núcleos e anota quantidades de casas. O Careca aparece na rede do Campo Grande.
+          - listitem [ref=e300]:
+            - generic [ref=e301]: "1953"
+            - generic [ref=e304]:
+              - heading "Nasce o município" [level=3] [ref=e305]
+              - paragraph [ref=e306]:
+                - text: Muito depois dos acontecimentos quilombolas, a localidade então chamada Sapecado emancipa-se de São José do Rio Pardo e torna-se Divinolândia.
+                - link "Ver fonte 7" [ref=e307] [cursor=pointer]:
+                  - /url: "#fonte-prefeitura"
+                  - text: "[7]"
+          - listitem [ref=e308]:
+            - generic [ref=e309]: "2014"
+            - generic [ref=e312]:
+              - heading "A memória é interrogada" [level=3] [ref=e313]
+              - paragraph [ref=e314]: Marjorie Faria reúne bibliografia, visita a paisagem e entrevista moradores e pesquisadores de Caconde e Divinolândia, chamando atenção para o silêncio em torno do Careca.
+          - listitem [ref=e315]:
+            - generic [ref=e316]: Agora
+            - generic [ref=e319]:
+              - heading "Uma história em aberto" [level=3] [ref=e320]
+              - paragraph [ref=e321]: A documentação existe, mas a localização precisa, a arqueologia do sítio e as trajetórias de seus moradores ainda pedem investigação pública e interdisciplinar.
+    - region [ref=e322]:
+      - generic [ref=e323]:
+        - paragraph [ref=e324]: O território como testemunha
+        - heading "Quando o arquivo encontra a memória." [level=2] [ref=e326]: Quando o arquivoencontra a memória.
+      - generic [ref=e327]:
+        - generic [ref=e328]:
+          - paragraph [ref=e329]: Na pesquisa de campo de 2014, nomes e marcos da área rural aparecem como fios capazes de ligar presente e passado.
+          - list [ref=e330]:
+            - listitem [ref=e331]:
+              - generic [ref=e332]: "01"
+              - generic [ref=e333]:
+                - strong [ref=e334]: Bairro Quilombo
+                - paragraph [ref=e335]: Topônimo relatado na área do Morro do Pontal.
+            - listitem [ref=e336]:
+              - generic [ref=e337]: "02"
+              - generic [ref=e338]:
+                - strong [ref=e339]: Córrego do Quilombo
+                - paragraph [ref=e340]: Nome de curso d’água registrado pela pesquisa local.
+            - listitem [ref=e341]:
+              - generic [ref=e342]: "03"
+              - generic [ref=e343]:
+                - strong [ref=e344]: Capela e cruzeiro
+                - paragraph [ref=e345]: Marcos religiosos sobre bases antigas de pedra.
+            - listitem [ref=e346]:
+              - generic [ref=e347]: "04"
+              - generic [ref=e348]:
+                - strong [ref=e349]: Morro do Pontal
+                - paragraph [ref=e350]: Local sugerido como possível correspondência ao Morro do Careca.
+        - complementary [ref=e351]:
+          - generic [ref=e359]:
+            - text: Cuidado metodológico
+            - heading "Pista não é prova final." [level=3] [ref=e360]
+            - paragraph [ref=e361]: Topônimos, relatos orais, capelas e ossadas mencionadas por moradores podem orientar pesquisa. Para afirmar que um ponto é o sítio do quilombo ou uma área funerária, são necessários arqueologia, proteção legal e diálogo com a comunidade.
+    - region [ref=e362]:
+      - generic [ref=e363]:
+        - generic [ref=e364]:
+          - paragraph [ref=e365]: Para entender melhor
+          - heading "Perguntas essenciais." [level=2] [ref=e367]: Perguntasessenciais.
+        - generic [ref=e368]:
+          - group [ref=e369]:
+            - generic "Quilombo do Careca e Quilombo do Campo Grande são a mesma coisa?" [ref=e370] [cursor=pointer]
+          - group [ref=e373]:
+            - generic "Onde ficava o Quilombo do Careca?" [ref=e374] [cursor=pointer]
+          - group [ref=e377]:
+            - generic "Quantas pessoas viviam ali?" [ref=e378] [cursor=pointer]
+          - group [ref=e381]:
+            - generic "O que aconteceu com os moradores depois do ataque?" [ref=e382] [cursor=pointer]
+          - group [ref=e385]:
+            - generic "Por que essa história é pouco conhecida?" [ref=e386] [cursor=pointer]
+    - region [ref=e389]:
+      - generic [ref=e390]:
+        - generic [ref=e391]:
+          - generic [ref=e392]:
+            - paragraph [ref=e393]: Leia, confira, continue
+            - heading "Fontes e caminhos de pesquisa." [level=2] [ref=e395]: Fontes e caminhosde pesquisa.
+          - paragraph [ref=e396]: Esta página cruza pesquisa local, cartografia histórica, produção acadêmica e fontes institucionais. Os links levam aos materiais consultados.
+        - generic [ref=e397]:
+          - article [ref=e398]:
+            - generic [ref=e399]: "01"
+            - generic [ref=e400]: Pesquisa local · 2014
+            - generic [ref=e401]:
+              - 'heading "Quilombo do Careca: o silêncio inquietante de uma memória esquecida" [level=3] [ref=e402]'
+              - paragraph [ref=e403]: Marjorie Prado Junqueira de Faria · CELACC/ECA-USP. Principal síntese sobre Careca, Divinolândia, Caconde e a pesquisa de memória oral.
+            - link "Abrir pesquisa de Marjorie Faria em nova aba" [ref=e404] [cursor=pointer]:
+              - /url: https://www.mgquilombo.com.br/wp-content/uploads/2016/05/quilombo_do_careca_17122014.pdf
+              - generic [ref=e405]: PDF
+          - article [ref=e406]:
+            - generic [ref=e407]: "02"
+            - generic [ref=e408]: Cartografia histórica · 2011
+            - generic [ref=e409]:
+              - heading "A contextualização histórica e geográfica dos quilombos do Campo Grande" [level=3] [ref=e410]
+              - paragraph [ref=e411]: Edson da Silva Filho, Oswaldo Bueno Amorim Filho e José Flávio Morais Castro · I Simpósio Brasileiro de Cartografia Histórica, UFMG.
+            - link "Abrir artigo de cartografia histórica em nova aba" [ref=e412] [cursor=pointer]:
+              - /url: https://www.ufmg.br/rededemuseus/crch/simposio/SILVA_FILHO_EDSON_ET_AL.pdf
+              - generic [ref=e413]: PDF
+          - article [ref=e414]:
+            - generic [ref=e415]: "03"
+            - generic [ref=e416]: Fonte cartográfica · séc. XVIII
+            - generic [ref=e417]:
+              - heading "Mappa de todo o Campo Grande" [level=3] [ref=e418]
+              - paragraph [ref=e419]: Arquivo Histórico do Exército, reprodução e leitura paleográfica publicadas pelo Arquivo Público do Distrito Federal. Imagem em domínio público.
+            - link "Abrir mapa no Arquivo Público do Distrito Federal em nova aba" [ref=e420] [cursor=pointer]:
+              - /url: https://www.arquivopublico.df.gov.br/mapa-de-todo-o-campo-grande-cabeceiras-do-rio-de-sao-francisco-e-goiazes
+              - generic [ref=e421]: WEB
+          - article [ref=e422]:
+            - generic [ref=e423]: "04"
+            - generic [ref=e424]: Artigo acadêmico · 2023
+            - generic [ref=e425]:
+              - 'heading "Quilombolas: história, memória e ficção" [level=3] [ref=e426]'
+              - paragraph [ref=e427]: Renato da Silva Melo · Revista Tempo / SciELO. Contextualiza a documentação, a liderança de Ambrósio e os debates historiográficos sobre Campo Grande.
+            - link "Abrir artigo na SciELO em nova aba" [ref=e428] [cursor=pointer]:
+              - /url: https://doi.org/10.1590/TEM-1980542X2023v290208
+              - generic [ref=e429]: DOI
+          - article [ref=e430]:
+            - generic [ref=e431]: "05"
+            - generic [ref=e432]: Artigo acadêmico · 2021
+            - generic [ref=e433]:
+              - 'heading "Relatos de campanha: a expansão colonial portuguesa sobre os quilombos" [level=3] [ref=e434]'
+              - paragraph [ref=e435]: Fabiano Gomes da Silva · Anais do Museu Paulista. Analisa os documentos militares como narrativas e instrumentos da expansão colonial.
+            - link "Abrir artigo nos Anais do Museu Paulista em nova aba" [ref=e436] [cursor=pointer]:
+              - /url: https://revistas.usp.br/anaismp/article/view/172163
+              - generic [ref=e437]: USP
+          - article [ref=e438]:
+            - generic [ref=e439]: "06"
+            - generic [ref=e440]: Livro · 1995 / edições ampliadas
+            - generic [ref=e441]:
+              - 'heading "Quilombo do Campo Grande: a história de Minas roubada do povo" [level=3] [ref=e442]'
+              - paragraph [ref=e443]: Tarcísio José Martins. Obra pioneira na localização do Careca; suas teses sobre extensão, população e confederação integram um debate ainda aberto.
+            - link "Abrir referência do livro no Google Books em nova aba" [ref=e444] [cursor=pointer]:
+              - /url: https://books.google.com/books/about/Quilombo_do_Campo_Grande.html?id=COkrAAAAYAAJ
+              - generic [ref=e445]: LIVRO
+          - article [ref=e446]:
+            - generic [ref=e447]: "07"
+            - generic [ref=e448]: Fonte institucional
+            - generic [ref=e449]:
+              - heading "História e geografia de Divinolândia" [level=3] [ref=e450]
+              - paragraph [ref=e451]: Prefeitura Municipal de Divinolândia. Referência para emancipação, antigo nome Sapecado, relevo, altitude e características atuais do município.
+            - link "Abrir página da Prefeitura de Divinolândia em nova aba" [ref=e452] [cursor=pointer]:
+              - /url: https://www.divinolandia.sp.gov.br/cidade
+              - generic [ref=e453]: WEB
+          - article [ref=e454]:
+            - generic [ref=e455]: "08"
+            - generic [ref=e456]: Referência oficial
+            - generic [ref=e457]:
+              - heading "Certificação quilombola e autodefinição" [level=3] [ref=e458]
+              - paragraph [ref=e459]: Fundação Cultural Palmares. Explica o reconhecimento de comunidades contemporâneas e ajuda a não confundi-lo com a identificação de um sítio histórico.
+            - link "Abrir página da Fundação Cultural Palmares em nova aba" [ref=e460] [cursor=pointer]:
+              - /url: https://www.gov.br/palmares/pt-br/departamentos/protecao-preservacao-e-articulacao/certificacao-quilombola
+              - generic [ref=e461]: GOV
+        - generic [ref=e462]:
+          - heading "Critério editorial" [level=3] [ref=e463]
+          - paragraph [ref=e464]: Os números foram mantidos próximos aos registros de origem; estimativas foram identificadas como tal; hipóteses territoriais não foram apresentadas como achados arqueológicos. Texto e seleção de fontes revistos em julho de 2026.
+    - region [ref=e465]:
+      - generic [ref=e467]:
+        - generic [ref=e468]: ✦
+        - paragraph [ref=e469]: Conhecer é uma forma de preservar.
+        - heading [level=2] [ref=e470]:
+          - text: A história de Divinolândia também é
+          - emphasis [ref=e471]: história negra.
+        - link "Voltar ao início" [ref=e472] [cursor=pointer]:
+          - /url: "#inicio"
+          - text: Voltar ao início
+          - generic [ref=e473]: ↑
+  - contentinfo [ref=e474]:
+    - generic [ref=e475]:
+      - link "Quilombo do Careca memória de Divinolândia" [ref=e476] [cursor=pointer]:
+        - /url: "#inicio"
+        - generic [ref=e482]:
+          - strong [ref=e483]: Quilombo do Careca
+          - generic [ref=e484]: memória de Divinolândia
+      - paragraph [ref=e485]: Projeto educativo independente, baseado nas fontes indicadas. Sem coleta de dados pessoais e sem rastreadores.
+      - generic [ref=e486]:
+        - link "Metodologia" [ref=e487] [cursor=pointer]:
+          - /url: "#metodo"
+        - link "Fontes" [ref=e488] [cursor=pointer]:
+          - /url: "#fontes"
+        - generic [ref=e489]: "2026"
