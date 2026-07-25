@@ -1,22 +1,22 @@
 # Melhores livros para desenvolvimento de software
 
-Levantamento realizado em **2026-07-25** com **36 fontes**, **453 menções**
-e **145 títulos normalizados**.
+Levantamento realizado em **2026-07-25** com **56 fontes**, **690 menções**
+e **241 títulos normalizados**.
 
 ## Resultado rápido
 
 | Rank | Livro | Fontes | Peso acumulado | Bônus médio | Pontuação final |
 |---:|---|---:|---:|---:|---:|
-| 1 | Clean Code | 33 | 29.259384 | 0.886648 | 33.886648 |
-| 2 | The Pragmatic Programmer | 32 | 23.982540 | 0.749454 | 32.749454 |
-| 3 | Refactoring | 25 | 13.211685 | 0.528467 | 25.528467 |
-| 4 | Design Patterns | 22 | 13.551429 | 0.615974 | 22.615974 |
-| 5 | Code Complete | 19 | 13.795000 | 0.726053 | 19.726053 |
-| 6 | Designing Data-Intensive Applications | 15 | 7.705128 | 0.513675 | 15.513675 |
-| 7 | Cracking the Coding Interview | 13 | 4.556667 | 0.350513 | 13.350513 |
-| 8 | The Clean Coder | 11 | 5.940182 | 0.540017 | 11.540017 |
-| 9 | Introduction to Algorithms | 11 | 5.160952 | 0.469177 | 11.469177 |
-| 10 | The Mythical Man-Month | 10 | 7.690476 | 0.769048 | 10.769048 |
+| 1 | The Pragmatic Programmer | 44 | 31.394156 | 0.713504 | 44.713504 |
+| 2 | Clean Code | 43 | 36.723020 | 0.854024 | 43.854024 |
+| 3 | Refactoring | 31 | 16.026836 | 0.516995 | 31.516995 |
+| 4 | Design Patterns | 30 | 17.923651 | 0.597455 | 30.597455 |
+| 5 | Code Complete | 27 | 20.578333 | 0.762160 | 27.762160 |
+| 6 | Designing Data-Intensive Applications | 20 | 9.255128 | 0.462756 | 20.462756 |
+| 7 | The Mythical Man-Month | 19 | 13.301587 | 0.700084 | 19.700084 |
+| 8 | Introduction to Algorithms | 16 | 7.760952 | 0.485060 | 16.485060 |
+| 9 | Cracking the Coding Interview | 15 | 6.165758 | 0.411051 | 15.411051 |
+| 10 | Code | 14 | 6.543810 | 0.467415 | 14.467415 |
 
 O ranking completo está em [`ranking_final.csv`](ranking_final.csv). O índice das fontes
 está em [`fontes.csv`](fontes.csv), e a pasta [`fontes/`](fontes/) contém uma subpasta
@@ -48,10 +48,10 @@ desempatar o consenso. Todas as fontes recebem o mesmo peso-base.
   explícito de Pierre de Wulf manteve seus 25 itens.
 - Edições, subtítulos e abreviações foram consolidados sob um título canônico.
 - Um livro conta no máximo uma vez por fonte.
-- A base contém 3 meta-rankings, 2 rankings explícitos,
-  15 listas numeradas e 16 listas em ordem editorial.
+- A base contém 3 meta-rankings, 4 rankings explícitos,
+  20 listas numeradas e 29 listas em ordem editorial.
 - CSVs usam vírgula como delimitador e UTF-8 com BOM para facilitar abertura no Excel.
-- As 36 URLs responderam com HTTP 200 na checagem final de 2026-07-25.
+- As 56 URLs responderam com HTTP 200 na checagem final de 2026-07-25.
 
 ## Como interpretar
 
@@ -63,7 +63,7 @@ meta-rankings e algumas fontes primárias. A coluna `natureza` em `fontes.csv` e
 ## Página web
 
 A página responsiva em `index.html` apresenta o ranking, permite buscar e filtrar livros,
-expande as fontes de cada resultado e reúne as 36 fontes pesquisadas. Como os dados são
+expande as fontes de cada resultado e reúne as 56 fontes pesquisadas. Como os dados são
 carregados dos CSVs, abra a pasta por um servidor local:
 
 ```powershell

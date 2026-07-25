@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Agile Project Management with Kanban,Agile Project Management with Kanban,Eric Brechner,1.000000,https://shapingsoftware.com/best-software-books/
+2,"Agile Software Development: Principles, Patterns, and Practices","Agile Software Development: Principles, Patterns, and Practices",Robert C. Martin,0.950000,https://shapingsoftware.com/best-software-books/
+3,Clean Code,Clean Code,Robert C. Martin,0.900000,https://shapingsoftware.com/best-software-books/
+4,Code Complete,Code Complete,Steve McConnell,0.850000,https://shapingsoftware.com/best-software-books/
+5,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.800000,https://shapingsoftware.com/best-software-books/
+6,Designing Secure Software,Designing Secure Software,Loren Kohnfelder,0.750000,https://shapingsoftware.com/best-software-books/
+7,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.700000,https://shapingsoftware.com/best-software-books/
+8,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.650000,https://shapingsoftware.com/best-software-books/
+9,Managing the Design Factory,Managing the Design Factory,Donald G. Reinertsen,0.600000,https://shapingsoftware.com/best-software-books/
+10,More Effective Agile,More Effective Agile,Steve McConnell,0.550000,https://shapingsoftware.com/best-software-books/
+11,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.500000,https://shapingsoftware.com/best-software-books/
+12,Refactoring,Refactoring,Martin Fowler,0.450000,https://shapingsoftware.com/best-software-books/
+13,Requirements-led Project Management,Requirements-led Project Management,Suzanne Robertson; James Robertson,0.400000,https://shapingsoftware.com/best-software-books/
+14,"Scenarios, Stories, Use Cases","Scenarios, Stories, Use Cases",Ian F. Alexander; Neil Maiden,0.350000,https://shapingsoftware.com/best-software-books/
+15,Soft Skills,Soft Skills,John Sonmez,0.300000,https://shapingsoftware.com/best-software-books/
+16,Software Development Pearls,Software Development Pearls,Karl E. Wiegers,0.250000,https://shapingsoftware.com/best-software-books/
+17,The Design of Sites,The Design of Sites,Douglas K. van Duyne; James A. Landay; Jason I. Hong,0.200000,https://shapingsoftware.com/best-software-books/
+18,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.150000,https://shapingsoftware.com/best-software-books/
+19,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.100000,https://shapingsoftware.com/best-software-books/
+20,Writing Effective Use Cases,Writing Effective Use Cases,Alistair Cockburn,0.050000,https://shapingsoftware.com/best-software-books/

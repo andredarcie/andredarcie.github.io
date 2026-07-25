@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Apprenticeship Patterns,Apprenticeship Patterns,Dave Hoover; Adewale Oshineye,1.000000,https://www.programmingbooks.dev/
+2,The Art of Unit Testing,The Art of Unit Testing,Roy Osherove,0.950000,https://www.programmingbooks.dev/
+3,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.900000,https://www.programmingbooks.dev/
+4,Grokking Simplicity,Grokking Simplicity,Eric Normand,0.850000,https://www.programmingbooks.dev/
+5,The Object-Oriented Thought Process,The Object-Oriented Thought Process,Matt Weisfeld,0.800000,https://www.programmingbooks.dev/
+6,"Small, Sharp Software Tools","Small, Sharp Software Tools",Brian P. Hogan,0.750000,https://www.programmingbooks.dev/
+7,The Art of Agile Development,The Art of Agile Development,James Shore; Shane Warden,0.700000,https://www.programmingbooks.dev/
+8,Code,Code,Charles Petzold,0.650000,https://www.programmingbooks.dev/
+9,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.600000,https://www.programmingbooks.dev/
+10,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.550000,https://www.programmingbooks.dev/
+11,The Manga Guide to Databases,The Manga Guide to Databases,Mana Takahashi; Shoko Azuma,0.500000,https://www.programmingbooks.dev/
+12,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.450000,https://www.programmingbooks.dev/
+13,Refactoring,Refactoring,Martin Fowler,0.400000,https://www.programmingbooks.dev/
+14,Seven Languages in Seven Weeks,Seven Languages in Seven Weeks,Bruce A. Tate,0.350000,https://www.programmingbooks.dev/
+15,System Design Interview,System Design Interview,Alex Xu,0.300000,https://www.programmingbooks.dev/
+16,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.250000,https://www.programmingbooks.dev/
+17,Coders at Work,Coders at Work,Peter Seibel,0.200000,https://www.programmingbooks.dev/
+18,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.150000,https://www.programmingbooks.dev/
+19,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.100000,https://www.programmingbooks.dev/
+20,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.050000,https://www.programmingbooks.dev/

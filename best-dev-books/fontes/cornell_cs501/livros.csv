@@ -1,0 +1,11 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,1.000000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+2,Software Engineering,Software Engineering,Ian Sommerville,0.900000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+3,Software Engineering: Theory and Practice,Software Engineering: Theory and Practice,Shari Lawrence Pfleeger; Joanne M. Atlee,0.800000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+4,An Introduction to Formal Specification and Z,An Introduction to Formal Specification and Z,Ben Potter; Jane Sinclair; David Till,0.700000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+5,Object-Oriented Analysis and Design with Applications,Object-Oriented Analysis and Design with Applications,Grady Booch,0.600000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+6,The Unified Modeling Language User Guide,The Unified Modeling Language User Guide,Grady Booch; James Rumbaugh; Ivar Jacobson,0.500000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+7,Using UML: Software Engineering with Objects and Components,Using UML: Software Engineering with Objects and Components,Rob Pooley; Perdita Stevens,0.400000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+8,"Object-Oriented Software Engineering Using UML, Patterns, and Java","Object-Oriented Software Engineering Using UML, Patterns, and Java",Bernd Bruegge; Allen H. Dutoit,0.300000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+9,Software Architecture: Perspectives on an Emerging Discipline,Software Architecture: Perspectives on an Emerging Discipline,Mary Shaw; David Garlan,0.200000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html
+10,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.100000,https://www.cs.cornell.edu/courses/cs501/2007sp/readings.html

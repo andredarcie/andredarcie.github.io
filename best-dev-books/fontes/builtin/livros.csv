@@ -1,0 +1,19 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+2,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.944444,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+3,A Philosophy of Software Design,A Philosophy of Software Design,John Ousterhout,0.888889,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+4,Code Complete,Code Complete,Steve McConnell,0.833333,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+5,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.777778,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+6,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.722222,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+7,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.666667,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+8,Pro Git,Pro Git,Scott Chacon; Ben Straub,0.611111,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+9,The DevOps Handbook,The DevOps Handbook,Gene Kim; Jez Humble; Patrick Debois; John Willis,0.555556,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+10,The Web Application Hacker's Handbook,The Web Application Hacker's Handbook,Dafydd Stuttard; Marcus Pinto,0.500000,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+11,CSS in Depth,CSS in Depth,Keith J. Grant,0.444444,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+12,Inclusive Design Patterns,Inclusive Design Patterns,Heydon Pickering,0.388889,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+13,You Don't Know JS Yet,You Don't Know JS Yet,Kyle Simpson,0.333333,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+14,Rapid Development,Rapid Development,Steve McConnell,0.277778,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+15,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.222222,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+16,Code,Code,Charles Petzold,0.166667,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+17,The Algorithm Design Manual,The Algorithm Design Manual,Steven S. Skiena,0.111111,https://builtin.com/software-engineering-perspectives/best-software-engineering-books
+18,The C Programming Language,The C Programming Language,Brian W. Kernighan; Dennis M. Ritchie,0.055556,https://builtin.com/software-engineering-perspectives/best-software-engineering-books

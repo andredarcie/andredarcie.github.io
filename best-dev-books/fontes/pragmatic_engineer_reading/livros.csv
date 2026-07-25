@@ -1,0 +1,10 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,A Philosophy of Software Design,A Philosophy of Software Design,John Ousterhout,1.000000,https://blog.pragmaticengineer.com/my-reading-list/
+2,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.888889,https://blog.pragmaticengineer.com/my-reading-list/
+3,Tidy First?,Tidy First?,Kent Beck,0.777778,https://blog.pragmaticengineer.com/my-reading-list/
+4,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.666667,https://blog.pragmaticengineer.com/my-reading-list/
+5,C# in Depth,C# in Depth,Jon Skeet,0.555556,https://blog.pragmaticengineer.com/my-reading-list/
+6,JavaScript: The Good Parts,JavaScript: The Good Parts,Douglas Crockford,0.444444,https://blog.pragmaticengineer.com/my-reading-list/
+7,Release It!,Release It!,Michael T. Nygard,0.333333,https://blog.pragmaticengineer.com/my-reading-list/
+8,Site Reliability Engineering,Site Reliability Engineering,Betsy Beyer; Chris Jones; Jennifer Petoff; Niall Richard Murphy,0.222222,https://blog.pragmaticengineer.com/my-reading-list/
+9,Framework Design Guidelines,Framework Design Guidelines,Krzysztof Cwalina; Brad Abrams,0.111111,https://blog.pragmaticengineer.com/my-reading-list/

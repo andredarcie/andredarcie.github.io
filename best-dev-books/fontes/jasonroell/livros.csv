@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Code Complete,Code Complete,Steve McConnell,1.000000,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.916667,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+3,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,0.833333,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+4,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.750000,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+5,Clean Code,Clean Code,Robert C. Martin,0.666667,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+6,Refactoring,Refactoring,Martin Fowler,0.583333,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+7,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.500000,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+8,Code,Code,Charles Petzold,0.416667,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+9,Programming Pearls,Programming Pearls,Jon Bentley,0.333333,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+10,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.250000,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+11,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.166667,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/
+12,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.083333,https://jasonroell.com/2015/03/16/12-most-infuential-books-every-software-engineer-needs-to-read/

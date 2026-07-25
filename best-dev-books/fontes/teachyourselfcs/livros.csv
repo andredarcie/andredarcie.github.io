@@ -1,0 +1,10 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,1.000000,https://teachyourselfcs.com/
+2,Computer Systems: A Programmer's Perspective,Computer Systems: A Programmer's Perspective,Randal E. Bryant; David R. O'Hallaron,0.888889,https://teachyourselfcs.com/
+3,The Algorithm Design Manual,The Algorithm Design Manual,Steven S. Skiena,0.777778,https://teachyourselfcs.com/
+4,Mathematics for Computer Science,Mathematics for Computer Science,Eric Lehman; F. Thomson Leighton; Albert R. Meyer,0.666667,https://teachyourselfcs.com/
+5,Operating Systems: Three Easy Pieces,Operating Systems: Three Easy Pieces,Remzi H. Arpaci-Dusseau; Andrea C. Arpaci-Dusseau,0.555556,https://teachyourselfcs.com/
+6,Computer Networking: A Top-Down Approach,Computer Networking: A Top-Down Approach,James F. Kurose; Keith W. Ross,0.444444,https://teachyourselfcs.com/
+7,Readings in Database Systems,Readings in Database Systems,Peter Bailis; Joseph M. Hellerstein; Michael Stonebraker (editors),0.333333,https://teachyourselfcs.com/
+8,Crafting Interpreters,Crafting Interpreters,Robert Nystrom,0.222222,https://teachyourselfcs.com/
+9,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.111111,https://teachyourselfcs.com/
