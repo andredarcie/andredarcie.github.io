@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.916667,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+3,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.833333,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+4,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.750000,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+5,Refactoring,Refactoring,Martin Fowler,0.666667,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+6,Code Complete,Code Complete,Steve McConnell,0.583333,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+7,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.500000,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+8,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.416667,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+9,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.333333,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+10,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.250000,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+11,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.166667,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+12,Code,Code,Charles Petzold,0.083333,https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read

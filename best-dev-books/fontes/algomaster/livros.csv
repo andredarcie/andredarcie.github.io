@@ -1,0 +1,6 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://blog.algomaster.io/p/5-best-software-engineering-books
+2,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.800000,https://blog.algomaster.io/p/5-best-software-engineering-books
+3,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.600000,https://blog.algomaster.io/p/5-best-software-engineering-books
+4,Building Microservices,Building Microservices,Sam Newman,0.400000,https://blog.algomaster.io/p/5-best-software-engineering-books
+5,Designing Web APIs,Designing Web APIs,Brenda Jin; Saurabh Sahni; Amir Shevat,0.200000,https://blog.algomaster.io/p/5-best-software-engineering-books

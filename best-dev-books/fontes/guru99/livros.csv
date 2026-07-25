@@ -1,0 +1,16 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://www.guru99.com/software-engineer-book.html
+2,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.933333,https://www.guru99.com/software-engineer-book.html
+3,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.866667,https://www.guru99.com/software-engineer-book.html
+4,Enterprise Integration Patterns,Enterprise Integration Patterns,Gregor Hohpe; Bobby Woolf,0.800000,https://www.guru99.com/software-engineer-book.html
+5,Code Complete,Code Complete,Steve McConnell,0.733333,https://www.guru99.com/software-engineer-book.html
+6,Refactoring,Refactoring,Martin Fowler,0.666667,https://www.guru99.com/software-engineer-book.html
+7,Soft Skills,Soft Skills,John Sonmez,0.600000,https://www.guru99.com/software-engineer-book.html
+8,User Stories Applied,User Stories Applied,Mike Cohn,0.533333,https://www.guru99.com/software-engineer-book.html
+9,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.466667,https://www.guru99.com/software-engineer-book.html
+10,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.400000,https://www.guru99.com/software-engineer-book.html
+11,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.333333,https://www.guru99.com/software-engineer-book.html
+12,The Clean Coder,The Clean Coder,Robert C. Martin,0.266667,https://www.guru99.com/software-engineer-book.html
+13,Working in Public,Working in Public,Nadia Eghbal,0.200000,https://www.guru99.com/software-engineer-book.html
+14,The DevOps Handbook,The DevOps Handbook,Gene Kim; Jez Humble; Patrick Debois; John Willis,0.133333,https://www.guru99.com/software-engineer-book.html
+15,Artificial Intelligence for Dummies,Artificial Intelligence for Dummies,John Paul Mueller; Luca Massaron,0.066667,https://www.guru99.com/software-engineer-book.html

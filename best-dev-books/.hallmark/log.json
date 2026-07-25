@@ -1,0 +1,13 @@
+[
+  {
+    "date": "2026-07-25",
+    "macrostructure": "Index-First",
+    "theme": "Newsprint",
+    "enrichment": "none",
+    "brief": "Best Dev Books · índice técnico de ranking e fontes",
+    "nav": "N6 Newspaper masthead",
+    "footer": "Ft4 Dense colophon",
+    "slop_test": "58/58 pass",
+    "responsive_test": "320–1920 px; required viewports 320, 375, 414 and 768 px"
+  }
+]

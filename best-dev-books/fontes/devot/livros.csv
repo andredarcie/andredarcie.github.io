@@ -1,0 +1,10 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,1.000000,https://devot.team/blog/software-engineering-books
+2,You Don't Know JS Yet,You Don't Know JS Yet,Kyle Simpson,0.888889,https://devot.team/blog/software-engineering-books
+3,RxJS in Action,RxJS in Action,Paul P. Daniels; Luis Atencio,0.777778,https://devot.team/blog/software-engineering-books
+4,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.666667,https://devot.team/blog/software-engineering-books
+5,Succinctly book series,Succinctly book series,Syncfusion authors,0.555556,https://devot.team/blog/software-engineering-books
+6,Clean Code,Clean Code,Robert C. Martin,0.444444,https://devot.team/blog/software-engineering-books
+7,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.333333,https://devot.team/blog/software-engineering-books
+8,Mastering PostgreSQL,Mastering PostgreSQL,Hans-Jürgen Schönig,0.222222,https://devot.team/blog/software-engineering-books
+9,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.111111,https://devot.team/blog/software-engineering-books

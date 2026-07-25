@@ -1,0 +1,8 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,A Philosophy of Software Design,A Philosophy of Software Design,John Ousterhout,1.000000,https://mentorcruise.com/books/softwaredevelopment/
+2,Code,Code,Charles Petzold,0.857143,https://mentorcruise.com/books/softwaredevelopment/
+3,Automate the Boring Stuff with Python,Automate the Boring Stuff with Python,Al Sweigart,0.714286,https://mentorcruise.com/books/softwaredevelopment/
+4,System Design Interview,System Design Interview,Alex Xu,0.571429,https://mentorcruise.com/books/softwaredevelopment/
+5,Python Crash Course,Python Crash Course,Eric Matthes,0.428571,https://mentorcruise.com/books/softwaredevelopment/
+6,Build a Large Language Model (From Scratch),Build a Large Language Model (From Scratch),Sebastian Raschka,0.285714,https://mentorcruise.com/books/softwaredevelopment/
+7,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.142857,https://mentorcruise.com/books/softwaredevelopment/

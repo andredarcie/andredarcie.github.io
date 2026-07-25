@@ -1,0 +1,5 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://gitdailies.com/articles/classic-software-engineering-books/
+2,Clean Code,Clean Code,Robert C. Martin,0.750000,https://gitdailies.com/articles/classic-software-engineering-books/
+3,Refactoring,Refactoring,Martin Fowler,0.500000,https://gitdailies.com/articles/classic-software-engineering-books/
+4,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.250000,https://gitdailies.com/articles/classic-software-engineering-books/

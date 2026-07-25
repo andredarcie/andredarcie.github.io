@@ -1,0 +1,18 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://sizovs.net/books/
+2,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.941176,https://sizovs.net/books/
+3,Head First Object-Oriented Analysis and Design,Head First Object-Oriented Analysis and Design,Brett McLaughlin; Gary Pollice; David West,0.882353,https://sizovs.net/books/
+4,Clean Code,Clean Code,Robert C. Martin,0.823529,https://sizovs.net/books/
+5,The Clean Coder,The Clean Coder,Robert C. Martin,0.764706,https://sizovs.net/books/
+6,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.705882,https://sizovs.net/books/
+7,"Growing Object-Oriented Software, Guided by Tests","Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,0.647059,https://sizovs.net/books/
+8,The Phoenix Project,The Phoenix Project,Gene Kim; Kevin Behr; George Spafford,0.588235,https://sizovs.net/books/
+9,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.529412,https://sizovs.net/books/
+10,Soft Skills,Soft Skills,John Sonmez,0.470588,https://sizovs.net/books/
+11,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.411765,https://sizovs.net/books/
+12,Release It!,Release It!,Michael T. Nygard,0.352941,https://sizovs.net/books/
+13,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.294118,https://sizovs.net/books/
+14,Extreme Ownership,Extreme Ownership,Jocko Willink; Leif Babin,0.235294,https://sizovs.net/books/
+15,Nonviolent Communication,Nonviolent Communication,Marshall B. Rosenberg,0.176471,https://sizovs.net/books/
+16,The Goal,The Goal,Eliyahu M. Goldratt; Jeff Cox,0.117647,https://sizovs.net/books/
+17,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.058824,https://sizovs.net/books/

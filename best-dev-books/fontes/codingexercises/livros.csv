@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+2,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.950000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+3,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.900000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+4,Refactoring,Refactoring,Martin Fowler,0.850000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+5,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.800000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+6,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.750000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+7,"Growing Object-Oriented Software, Guided by Tests","Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,0.700000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+8,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.650000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+9,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.600000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+10,Murphy's Law and Other Reasons Why Things Go Wrong,Murphy's Law and Other Reasons Why Things Go Wrong,Arthur Bloch,0.550000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+11,Effective Java,Effective Java,Joshua Bloch,0.500000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+12,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.450000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+13,Thinking in Java,Thinking in Java,Bruce Eckel,0.400000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+14,The Macintosh Way,The Macintosh Way,Guy Kawasaki,0.350000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+15,The Hitchhiker's Guide to the Galaxy,The Hitchhiker's Guide to the Galaxy,Douglas Adams,0.300000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+16,A Discipline of Programming,A Discipline of Programming,Edsger W. Dijkstra,0.250000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+17,Code Complete,Code Complete,Steve McConnell,0.200000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+18,Extreme Programming Explained,Extreme Programming Explained,Kent Beck; Cynthia Andres,0.150000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+19,97 Things Every Programmer Should Know,97 Things Every Programmer Should Know,Kevlin Henney (editor),0.100000,https://www.codingexercises.com/reviews/books-every-developer-should-read
+20,Clean Architecture,Clean Architecture,Robert C. Martin,0.050000,https://www.codingexercises.com/reviews/books-every-developer-should-read

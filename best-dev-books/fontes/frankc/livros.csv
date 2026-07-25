@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,So Good They Can't Ignore You,So Good They Can't Ignore You,Cal Newport,1.000000,https://frankc.net/dev-reading-list
+2,Zero to One,Zero to One,Peter Thiel; Blake Masters,0.950000,https://frankc.net/dev-reading-list
+3,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.900000,https://frankc.net/dev-reading-list
+4,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.850000,https://frankc.net/dev-reading-list
+5,Effective Java,Effective Java,Joshua Bloch,0.800000,https://frankc.net/dev-reading-list
+6,The War of Art,The War of Art,Steven Pressfield,0.750000,https://frankc.net/dev-reading-list
+7,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.700000,https://frankc.net/dev-reading-list
+8,JavaScript: The Good Parts,JavaScript: The Good Parts,Douglas Crockford,0.650000,https://frankc.net/dev-reading-list
+9,Hackers & Painters,Hackers & Painters,Paul Graham,0.600000,https://frankc.net/dev-reading-list
+10,Clean Code,Clean Code,Robert C. Martin,0.550000,https://frankc.net/dev-reading-list
+11,Being Geek,Being Geek,Michael Lopp,0.500000,https://frankc.net/dev-reading-list
+12,The Start-up of You,The Start-up of You,Reid Hoffman; Ben Casnocha,0.450000,https://frankc.net/dev-reading-list
+13,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.400000,https://frankc.net/dev-reading-list
+14,Managing Humans,Managing Humans,Michael Lopp,0.350000,https://frankc.net/dev-reading-list
+15,The Five Dysfunctions of a Team,The Five Dysfunctions of a Team,Patrick Lencioni,0.300000,https://frankc.net/dev-reading-list
+16,The Advantage,The Advantage,Patrick Lencioni,0.250000,https://frankc.net/dev-reading-list
+17,Rework,Rework,Jason Fried; David Heinemeier Hansson,0.200000,https://frankc.net/dev-reading-list
+18,Refactoring,Refactoring,Martin Fowler,0.150000,https://frankc.net/dev-reading-list
+19,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.100000,https://frankc.net/dev-reading-list
+20,Clean Architecture,Clean Architecture,Robert C. Martin,0.050000,https://frankc.net/dev-reading-list

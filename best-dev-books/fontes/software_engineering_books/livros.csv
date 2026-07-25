@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://software-engineering-books.com/
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.916667,https://software-engineering-books.com/
+3,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.833333,https://software-engineering-books.com/
+4,Release It!,Release It!,Michael T. Nygard,0.750000,https://software-engineering-books.com/
+5,Essential Scrum,Essential Scrum,Kenneth S. Rubin,0.666667,https://software-engineering-books.com/
+6,Code Complete,Code Complete,Steve McConnell,0.583333,https://software-engineering-books.com/
+7,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.500000,https://software-engineering-books.com/
+8,Refactoring,Refactoring,Martin Fowler,0.416667,https://software-engineering-books.com/
+9,Code,Code,Charles Petzold,0.333333,https://software-engineering-books.com/
+10,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.250000,https://software-engineering-books.com/
+11,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.166667,https://software-engineering-books.com/
+12,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.083333,https://software-engineering-books.com/

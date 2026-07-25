@@ -1,0 +1,1012 @@
+- generic [active] [ref=f1e1]:
+  - link "Pular para o ranking" [ref=f1e2] [cursor=pointer]:
+    - /url: "#ranking"
+  - banner [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - link "Best Dev Books — início" [ref=f1e5] [cursor=pointer]:
+        - /url: "#inicio"
+        - generic [ref=f1e10]: Best Dev Books
+      - navigation "Navegação principal" [ref=f1e11]:
+        - link "Ranking" [ref=f1e12] [cursor=pointer]:
+          - /url: "#ranking"
+        - link "Fontes" [ref=f1e13] [cursor=pointer]:
+          - /url: "#fontes"
+        - link "Metodologia" [ref=f1e14] [cursor=pointer]:
+          - /url: "#metodologia"
+      - link "Baixar CSV" [ref=f1e15] [cursor=pointer]:
+        - /url: ./ranking_final.csv
+        - text: Baixar CSV
+        - generic [ref=f1e16]: ↓
+  - main [ref=f1e17]:
+    - generic [ref=f1e18]:
+      - generic [ref=f1e19]:
+        - generic [ref=f1e20]:
+          - paragraph [ref=f1e21]: Pesquisa consolidada · julho de 2026
+          - heading "Os livros que mais aparecem quando devs recomendam o que ler." [level=1] [ref=f1e23]
+          - paragraph [ref=f1e24]: Cruzamos listas editoriais, comunidades e meta-rankings para encontrar os títulos com o consenso mais forte em desenvolvimento de software.
+          - generic [ref=f1e25]:
+            - link "Explorar o ranking" [ref=f1e26] [cursor=pointer]:
+              - /url: "#ranking"
+              - text: Explorar o ranking
+              - generic [ref=f1e27]: ↘
+            - link "Como calculamos" [ref=f1e28] [cursor=pointer]:
+              - /url: "#metodologia"
+        - generic "Resumo da pesquisa" [ref=f1e29]:
+          - generic [ref=f1e30]:
+            - generic [ref=f1e31]: CODE
+            - generic [ref=f1e33]: CRAFT
+            - generic [ref=f1e35]: DESIGN
+            - generic [ref=f1e37]: BUILD
+          - generic [ref=f1e39]:
+            - generic [ref=f1e40]: O consenso importa
+            - strong [ref=f1e41]: 1º lugar em 91,7% das fontes
+            - generic [ref=f1e42]: Clean Code · Robert C. Martin
+      - generic "Números da pesquisa" [ref=f1e43]:
+        - generic [ref=f1e44]:
+          - strong [ref=f1e45]: "36"
+          - generic [ref=f1e46]: fontes analisadas
+        - generic [ref=f1e47]:
+          - strong [ref=f1e48]: "453"
+          - generic [ref=f1e49]: recomendações
+        - generic [ref=f1e50]:
+          - strong [ref=f1e51]: "145"
+          - generic [ref=f1e52]: livros únicos
+        - paragraph [ref=f1e55]: Dados auditáveis, com posição e fonte de cada recomendação.
+    - region [ref=f1e56]:
+      - generic [ref=f1e57]:
+        - generic [ref=f1e58]:
+          - generic [ref=f1e59]:
+            - paragraph [ref=f1e60]: O pódio
+            - heading "O topo do consenso" [level=2] [ref=f1e62]
+          - paragraph [ref=f1e63]: Frequência primeiro. A posição em cada lista entra como bônus para separar recomendações igualmente recorrentes.
+        - generic [ref=f1e64]:
+          - article [ref=f1e65]:
+            - generic [ref=f1e66]: "1"
+            - generic [ref=f1e67]: Líder do ranking
+            - heading "Clean Code" [level=3] [ref=f1e68]
+            - paragraph [ref=f1e69]: Robert C. Martin
+            - generic [ref=f1e71]:
+              - strong [ref=f1e72]: 33/36
+              - text: 91,7% das fontes
+          - article [ref=f1e74]:
+            - generic [ref=f1e75]: "2"
+            - generic [ref=f1e76]: Top 3
+            - heading "The Pragmatic Programmer" [level=3] [ref=f1e77]
+            - paragraph [ref=f1e78]: Andrew Hunt; David Thomas
+            - generic [ref=f1e80]:
+              - strong [ref=f1e81]: 32/36
+              - text: 88,9% das fontes
+          - article [ref=f1e83]:
+            - generic [ref=f1e84]: "3"
+            - generic [ref=f1e85]: Top 3
+            - heading "Refactoring" [level=3] [ref=f1e86]
+            - paragraph [ref=f1e87]: Martin Fowler
+            - generic [ref=f1e89]:
+              - strong [ref=f1e90]: 25/36
+              - text: 69,4% das fontes
+    - region [ref=f1e92]:
+      - generic [ref=f1e93]:
+        - generic [ref=f1e94]:
+          - generic [ref=f1e95]:
+            - paragraph [ref=f1e96]: Lista completa
+            - heading "Ranking dos livros" [level=2] [ref=f1e98]
+          - paragraph [ref=f1e99]: Busque por título ou autor e abra cada item para conferir exatamente quais fontes o recomendaram.
+        - search "Filtrar ranking" [ref=f1e100]:
+          - generic [ref=f1e101]:
+            - generic [ref=f1e102]: Buscar livro ou autor
+            - generic [ref=f1e103]:
+              - generic [ref=f1e104]: ⌕
+              - searchbox "Buscar livro ou autor" [ref=f1e105]
+          - generic [ref=f1e106]:
+            - generic [ref=f1e107]: Mínimo de fontes
+            - combobox "Mínimo de fontes" [ref=f1e108]:
+              - option "Todas as recorrências" [selected]
+              - option "2 fontes ou mais"
+              - option "5 fontes ou mais"
+              - option "10 fontes ou mais"
+              - option "20 fontes ou mais"
+          - button "Limpar filtros" [ref=f1e109] [cursor=pointer]
+        - generic [ref=f1e110]:
+          - paragraph [ref=f1e111]: 145 livros encontrados
+          - generic "Legenda" [ref=f1e112]:
+            - generic [ref=f1e113]: presença nas fontes
+            - generic [ref=f1e115]: pontuação final
+        - generic [ref=f1e117]:
+          - generic [ref=f1e118]: "#"
+          - generic [ref=f1e119]: Livro
+          - generic [ref=f1e120]: Recorrência
+          - generic [ref=f1e121]: Pontuação
+          - generic [ref=f1e122]: Posição média
+        - generic [ref=f1e123]:
+          - article [ref=f1e124]:
+            - generic [ref=f1e125]:
+              - generic [ref=f1e126]: "1"
+              - generic [ref=f1e127]:
+                - heading "Clean Code" [level=3] [ref=f1e128]
+                - generic [ref=f1e129]: Robert C. Martin
+              - generic [ref=f1e130]:
+                - strong [ref=f1e131]: 33 de 36
+                - text: 91,7% das fontes
+              - generic [ref=f1e134]:
+                - strong [ref=f1e135]: 33,89
+                - text: pontos
+              - generic [ref=f1e136]:
+                - strong [ref=f1e137]: 2,4º
+                - text: nas listas
+            - group [ref=f1e138]:
+              - generic "Ver 33 fontes +" [ref=f1e139] [cursor=pointer]
+          - article [ref=f1e140]:
+            - generic [ref=f1e141]:
+              - generic [ref=f1e142]: "2"
+              - generic [ref=f1e143]:
+                - heading "The Pragmatic Programmer" [level=3] [ref=f1e144]
+                - generic [ref=f1e145]: Andrew Hunt; David Thomas
+              - generic [ref=f1e146]:
+                - strong [ref=f1e147]: 32 de 36
+                - text: 88,9% das fontes
+              - generic [ref=f1e150]:
+                - strong [ref=f1e151]: 32,75
+                - text: pontos
+              - generic [ref=f1e152]:
+                - strong [ref=f1e153]: 4,2º
+                - text: nas listas
+            - group [ref=f1e154]:
+              - generic "Ver 32 fontes +" [ref=f1e155] [cursor=pointer]
+          - article [ref=f1e156]:
+            - generic [ref=f1e157]:
+              - generic [ref=f1e158]: "3"
+              - generic [ref=f1e159]:
+                - heading "Refactoring" [level=3] [ref=f1e160]
+                - generic [ref=f1e161]: Martin Fowler
+              - generic [ref=f1e162]:
+                - strong [ref=f1e163]: 25 de 36
+                - text: 69,4% das fontes
+              - generic [ref=f1e166]:
+                - strong [ref=f1e167]: 25,53
+                - text: pontos
+              - generic [ref=f1e168]:
+                - strong [ref=f1e169]: 6,9º
+                - text: nas listas
+            - group [ref=f1e170]:
+              - generic "Ver 25 fontes +" [ref=f1e171] [cursor=pointer]
+          - article [ref=f1e172]:
+            - generic [ref=f1e173]:
+              - generic [ref=f1e174]: "4"
+              - generic [ref=f1e175]:
+                - heading "Design Patterns" [level=3] [ref=f1e176]
+                - generic [ref=f1e177]: Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides
+              - generic [ref=f1e178]:
+                - strong [ref=f1e179]: 22 de 36
+                - text: 61,1% das fontes
+              - generic [ref=f1e182]:
+                - strong [ref=f1e183]: 22,62
+                - text: pontos
+              - generic [ref=f1e184]:
+                - strong [ref=f1e185]: 5,4º
+                - text: nas listas
+            - group [ref=f1e186]:
+              - generic "Ver 22 fontes +" [ref=f1e187] [cursor=pointer]
+          - article [ref=f1e188]:
+            - generic [ref=f1e189]:
+              - generic [ref=f1e190]: "5"
+              - generic [ref=f1e191]:
+                - heading "Code Complete" [level=3] [ref=f1e192]
+                - generic [ref=f1e193]: Steve McConnell
+              - generic [ref=f1e194]:
+                - strong [ref=f1e195]: 19 de 36
+                - text: 52,8% das fontes
+              - generic [ref=f1e198]:
+                - strong [ref=f1e199]: 19,73
+                - text: pontos
+              - generic [ref=f1e200]:
+                - strong [ref=f1e201]: 5,1º
+                - text: nas listas
+            - group [ref=f1e202]:
+              - generic "Ver 19 fontes +" [ref=f1e203] [cursor=pointer]
+          - article [ref=f1e204]:
+            - generic [ref=f1e205]:
+              - generic [ref=f1e206]: "6"
+              - generic [ref=f1e207]:
+                - heading "Designing Data-Intensive Applications" [level=3] [ref=f1e208]
+                - generic [ref=f1e209]: Martin Kleppmann
+              - generic [ref=f1e210]:
+                - strong [ref=f1e211]: 15 de 36
+                - text: 41,7% das fontes
+              - generic [ref=f1e214]:
+                - strong [ref=f1e215]: 15,51
+                - text: pontos
+              - generic [ref=f1e216]:
+                - strong [ref=f1e217]: 6,5º
+                - text: nas listas
+            - group [ref=f1e218]:
+              - generic "Ver 15 fontes +" [ref=f1e219] [cursor=pointer]
+          - article [ref=f1e220]:
+            - generic [ref=f1e221]:
+              - generic [ref=f1e222]: "7"
+              - generic [ref=f1e223]:
+                - heading "Cracking the Coding Interview" [level=3] [ref=f1e224]
+                - generic [ref=f1e225]: Gayle Laakmann McDowell
+              - generic [ref=f1e226]:
+                - strong [ref=f1e227]: 13 de 36
+                - text: 36,1% das fontes
+              - generic [ref=f1e230]:
+                - strong [ref=f1e231]: 13,35
+                - text: pontos
+              - generic [ref=f1e232]:
+                - strong [ref=f1e233]: 10,4º
+                - text: nas listas
+            - group [ref=f1e234]:
+              - generic "Ver 13 fontes +" [ref=f1e235] [cursor=pointer]
+          - article [ref=f1e236]:
+            - generic [ref=f1e237]:
+              - generic [ref=f1e238]: "8"
+              - generic [ref=f1e239]:
+                - heading "The Clean Coder" [level=3] [ref=f1e240]
+                - generic [ref=f1e241]: Robert C. Martin
+              - generic [ref=f1e242]:
+                - strong [ref=f1e243]: 11 de 36
+                - text: 30,6% das fontes
+              - generic [ref=f1e246]:
+                - strong [ref=f1e247]: 11,54
+                - text: pontos
+              - generic [ref=f1e248]:
+                - strong [ref=f1e249]: 7,8º
+                - text: nas listas
+            - group [ref=f1e250]:
+              - generic "Ver 11 fontes +" [ref=f1e251] [cursor=pointer]
+          - article [ref=f1e252]:
+            - generic [ref=f1e253]:
+              - generic [ref=f1e254]: "9"
+              - generic [ref=f1e255]:
+                - heading "Introduction to Algorithms" [level=3] [ref=f1e256]
+                - generic [ref=f1e257]: Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein
+              - generic [ref=f1e258]:
+                - strong [ref=f1e259]: 11 de 36
+                - text: 30,6% das fontes
+              - generic [ref=f1e262]:
+                - strong [ref=f1e263]: 11,47
+                - text: pontos
+              - generic [ref=f1e264]:
+                - strong [ref=f1e265]: 7,7º
+                - text: nas listas
+            - group [ref=f1e266]:
+              - generic "Ver 11 fontes +" [ref=f1e267] [cursor=pointer]
+          - article [ref=f1e268]:
+            - generic [ref=f1e269]:
+              - generic [ref=f1e270]: "10"
+              - generic [ref=f1e271]:
+                - heading "The Mythical Man-Month" [level=3] [ref=f1e272]
+                - generic [ref=f1e273]: Frederick P. Brooks Jr.
+              - generic [ref=f1e274]:
+                - strong [ref=f1e275]: 10 de 36
+                - text: 27,8% das fontes
+              - generic [ref=f1e278]:
+                - strong [ref=f1e279]: 10,77
+                - text: pontos
+              - generic [ref=f1e280]:
+                - strong [ref=f1e281]: 4,3º
+                - text: nas listas
+            - group [ref=f1e282]:
+              - generic "Ver 10 fontes +" [ref=f1e283] [cursor=pointer]
+          - article [ref=f1e284]:
+            - generic [ref=f1e285]:
+              - generic [ref=f1e286]: "11"
+              - generic [ref=f1e287]:
+                - heading "Code" [level=3] [ref=f1e288]
+                - generic [ref=f1e289]: Charles Petzold
+              - generic [ref=f1e290]:
+                - strong [ref=f1e291]: 10 de 36
+                - text: 27,8% das fontes
+              - generic [ref=f1e294]:
+                - strong [ref=f1e295]: 10,43
+                - text: pontos
+              - generic [ref=f1e296]:
+                - strong [ref=f1e297]: 9,0º
+                - text: nas listas
+            - group [ref=f1e298]:
+              - generic "Ver 10 fontes +" [ref=f1e299] [cursor=pointer]
+          - article [ref=f1e300]:
+            - generic [ref=f1e301]:
+              - generic [ref=f1e302]: "12"
+              - generic [ref=f1e303]:
+                - heading "Head First Design Patterns" [level=3] [ref=f1e304]
+                - generic [ref=f1e305]: Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra
+              - generic [ref=f1e306]:
+                - strong [ref=f1e307]: 9 de 36
+                - text: 25,0% das fontes
+              - generic [ref=f1e310]:
+                - strong [ref=f1e311]: 9,63
+                - text: pontos
+              - generic [ref=f1e312]:
+                - strong [ref=f1e313]: 6,9º
+                - text: nas listas
+            - group [ref=f1e314]:
+              - generic "Ver 9 fontes +" [ref=f1e315] [cursor=pointer]
+          - article [ref=f1e316]:
+            - generic [ref=f1e317]:
+              - generic [ref=f1e318]: "13"
+              - generic [ref=f1e319]:
+                - heading "Working Effectively with Legacy Code" [level=3] [ref=f1e320]
+                - generic [ref=f1e321]: Michael C. Feathers
+              - generic [ref=f1e322]:
+                - strong [ref=f1e323]: 9 de 36
+                - text: 25,0% das fontes
+              - generic [ref=f1e326]:
+                - strong [ref=f1e327]: 9,56
+                - text: pontos
+              - generic [ref=f1e328]:
+                - strong [ref=f1e329]: 8,0º
+                - text: nas listas
+            - group [ref=f1e330]:
+              - generic "Ver 9 fontes +" [ref=f1e331] [cursor=pointer]
+          - article [ref=f1e332]:
+            - generic [ref=f1e333]:
+              - generic [ref=f1e334]: "14"
+              - generic [ref=f1e335]:
+                - heading "Domain-Driven Design" [level=3] [ref=f1e336]
+                - generic [ref=f1e337]: Eric Evans
+              - generic [ref=f1e338]:
+                - strong [ref=f1e339]: 9 de 36
+                - text: 25,0% das fontes
+              - generic [ref=f1e342]:
+                - strong [ref=f1e343]: 9,38
+                - text: pontos
+              - generic [ref=f1e344]:
+                - strong [ref=f1e345]: 10,7º
+                - text: nas listas
+            - group [ref=f1e346]:
+              - generic "Ver 9 fontes +" [ref=f1e347] [cursor=pointer]
+          - article [ref=f1e348]:
+            - generic [ref=f1e349]:
+              - generic [ref=f1e350]: "15"
+              - generic [ref=f1e351]:
+                - heading "Clean Architecture" [level=3] [ref=f1e352]
+                - generic [ref=f1e353]: Robert C. Martin
+              - generic [ref=f1e354]:
+                - strong [ref=f1e355]: 8 de 36
+                - text: 22,2% das fontes
+              - generic [ref=f1e358]:
+                - strong [ref=f1e359]: 8,44
+                - text: pontos
+              - generic [ref=f1e360]:
+                - strong [ref=f1e361]: 11,3º
+                - text: nas listas
+            - group [ref=f1e362]:
+              - generic "Ver 8 fontes +" [ref=f1e363] [cursor=pointer]
+          - article [ref=f1e364]:
+            - generic [ref=f1e365]:
+              - generic [ref=f1e366]: "16"
+              - generic [ref=f1e367]:
+                - heading "Peopleware" [level=3] [ref=f1e368]
+                - generic [ref=f1e369]: Tom DeMarco; Tim Lister
+              - generic [ref=f1e370]:
+                - strong [ref=f1e371]: 8 de 36
+                - text: 22,2% das fontes
+              - generic [ref=f1e374]:
+                - strong [ref=f1e375]: 8,35
+                - text: pontos
+              - generic [ref=f1e376]:
+                - strong [ref=f1e377]: 11,6º
+                - text: nas listas
+            - group [ref=f1e378]:
+              - generic "Ver 8 fontes +" [ref=f1e379] [cursor=pointer]
+          - article [ref=f1e380]:
+            - generic [ref=f1e381]:
+              - generic [ref=f1e382]: "17"
+              - generic [ref=f1e383]:
+                - heading "Patterns of Enterprise Application Architecture" [level=3] [ref=f1e384]
+                - generic [ref=f1e385]: Martin Fowler
+              - generic [ref=f1e386]:
+                - strong [ref=f1e387]: 6 de 36
+                - text: 16,7% das fontes
+              - generic [ref=f1e390]:
+                - strong [ref=f1e391]: 6,38
+                - text: pontos
+              - generic [ref=f1e392]:
+                - strong [ref=f1e393]: 13,2º
+                - text: nas listas
+            - group [ref=f1e394]:
+              - generic "Ver 6 fontes +" [ref=f1e395] [cursor=pointer]
+          - article [ref=f1e396]:
+            - generic [ref=f1e397]:
+              - generic [ref=f1e398]: "18"
+              - generic [ref=f1e399]:
+                - heading "A Philosophy of Software Design" [level=3] [ref=f1e400]
+                - generic [ref=f1e401]: John Ousterhout
+              - generic [ref=f1e402]:
+                - strong [ref=f1e403]: 5 de 36
+                - text: 13,9% das fontes
+              - generic [ref=f1e406]:
+                - strong [ref=f1e407]: 5,62
+                - text: pontos
+              - generic [ref=f1e408]:
+                - strong [ref=f1e409]: 5,6º
+                - text: nas listas
+            - group [ref=f1e410]:
+              - generic "Ver 5 fontes +" [ref=f1e411] [cursor=pointer]
+          - article [ref=f1e412]:
+            - generic [ref=f1e413]:
+              - generic [ref=f1e414]: "19"
+              - generic [ref=f1e415]:
+                - heading "Soft Skills" [level=3] [ref=f1e416]
+                - generic [ref=f1e417]: John Sonmez
+              - generic [ref=f1e418]:
+                - strong [ref=f1e419]: 5 de 36
+                - text: 13,9% das fontes
+              - generic [ref=f1e422]:
+                - strong [ref=f1e423]: 5,62
+                - text: pontos
+              - generic [ref=f1e424]:
+                - strong [ref=f1e425]: 8,2º
+                - text: nas listas
+            - group [ref=f1e426]:
+              - generic "Ver 5 fontes +" [ref=f1e427] [cursor=pointer]
+          - article [ref=f1e428]:
+            - generic [ref=f1e429]:
+              - generic [ref=f1e430]: "20"
+              - generic [ref=f1e431]:
+                - heading "Programming Pearls" [level=3] [ref=f1e432]
+                - generic [ref=f1e433]: Jon Bentley
+              - generic [ref=f1e434]:
+                - strong [ref=f1e435]: 5 de 36
+                - text: 13,9% das fontes
+              - generic [ref=f1e438]:
+                - strong [ref=f1e439]: 5,44
+                - text: pontos
+              - generic [ref=f1e440]:
+                - strong [ref=f1e441]: 9,4º
+                - text: nas listas
+            - group [ref=f1e442]:
+              - generic "Ver 5 fontes +" [ref=f1e443] [cursor=pointer]
+          - article [ref=f1e444]:
+            - generic [ref=f1e445]:
+              - generic [ref=f1e446]: "21"
+              - generic [ref=f1e447]:
+                - heading "Structure and Interpretation of Computer Programs" [level=3] [ref=f1e448]
+                - generic [ref=f1e449]: Harold Abelson; Gerald Jay Sussman; Julie Sussman
+              - generic [ref=f1e450]:
+                - strong [ref=f1e451]: 5 de 36
+                - text: 13,9% das fontes
+              - generic [ref=f1e454]:
+                - strong [ref=f1e455]: 5,40
+                - text: pontos
+              - generic [ref=f1e456]:
+                - strong [ref=f1e457]: 9,2º
+                - text: nas listas
+            - group [ref=f1e458]:
+              - generic "Ver 5 fontes +" [ref=f1e459] [cursor=pointer]
+          - article [ref=f1e460]:
+            - generic [ref=f1e461]:
+              - generic [ref=f1e462]: "22"
+              - generic [ref=f1e463]:
+                - heading "The Art of Computer Programming" [level=3] [ref=f1e464]
+                - generic [ref=f1e465]: Donald E. Knuth
+              - generic [ref=f1e466]:
+                - strong [ref=f1e467]: 5 de 36
+                - text: 13,9% das fontes
+              - generic [ref=f1e470]:
+                - strong [ref=f1e471]: 5,39
+                - text: pontos
+              - generic [ref=f1e472]:
+                - strong [ref=f1e473]: 11,2º
+                - text: nas listas
+            - group [ref=f1e474]:
+              - generic "Ver 5 fontes +" [ref=f1e475] [cursor=pointer]
+          - article [ref=f1e476]:
+            - generic [ref=f1e477]:
+              - generic [ref=f1e478]: "23"
+              - generic [ref=f1e479]:
+                - heading "Continuous Delivery" [level=3] [ref=f1e480]
+                - generic [ref=f1e481]: Jez Humble; David Farley
+              - generic [ref=f1e482]:
+                - strong [ref=f1e483]: 5 de 36
+                - text: 13,9% das fontes
+              - generic [ref=f1e486]:
+                - strong [ref=f1e487]: 5,35
+                - text: pontos
+              - generic [ref=f1e488]:
+                - strong [ref=f1e489]: 13,6º
+                - text: nas listas
+            - group [ref=f1e490]:
+              - generic "Ver 5 fontes +" [ref=f1e491] [cursor=pointer]
+          - article [ref=f1e492]:
+            - generic [ref=f1e493]:
+              - generic [ref=f1e494]: "24"
+              - generic [ref=f1e495]:
+                - heading "Effective Java" [level=3] [ref=f1e496]
+                - generic [ref=f1e497]: Joshua Bloch
+              - generic [ref=f1e498]:
+                - strong [ref=f1e499]: 4 de 36
+                - text: 11,1% das fontes
+              - generic [ref=f1e502]:
+                - strong [ref=f1e503]: 4,66
+                - text: pontos
+              - generic [ref=f1e504]:
+                - strong [ref=f1e505]: 7,3º
+                - text: nas listas
+            - group [ref=f1e506]:
+              - generic "Ver 4 fontes +" [ref=f1e507] [cursor=pointer]
+          - article [ref=f1e508]:
+            - generic [ref=f1e509]:
+              - generic [ref=f1e510]: "25"
+              - generic [ref=f1e511]:
+                - heading "Growing Object-Oriented Software, Guided by Tests" [level=3] [ref=f1e512]
+                - generic [ref=f1e513]: Steve Freeman; Nat Pryce
+              - generic [ref=f1e514]:
+                - strong [ref=f1e515]: 4 de 36
+                - text: 11,1% das fontes
+              - generic [ref=f1e518]:
+                - strong [ref=f1e519]: 4,65
+                - text: pontos
+              - generic [ref=f1e520]:
+                - strong [ref=f1e521]: 7,8º
+                - text: nas listas
+            - group [ref=f1e522]:
+              - generic "Ver 4 fontes +" [ref=f1e523] [cursor=pointer]
+        - button "Mostrar mais 25 livros ↓" [ref=f1e525] [cursor=pointer]
+    - region [ref=f1e526]:
+      - generic [ref=f1e527]:
+        - generic [ref=f1e528]:
+          - generic [ref=f1e529]:
+            - paragraph [ref=f1e530]: Rastreabilidade
+            - heading "As 36 fontes" [level=2] [ref=f1e532]
+          - paragraph [ref=f1e533]: Cada fonte mantém sua URL, natureza, critério de ordenação e quantidade de livros utilizada no levantamento.
+        - search "Filtrar fontes" [ref=f1e534]:
+          - generic [ref=f1e535]:
+            - generic [ref=f1e536]: Buscar fonte ou domínio
+            - generic [ref=f1e537]:
+              - generic [ref=f1e538]: ⌕
+              - searchbox "Buscar fonte ou domínio" [ref=f1e539]
+          - generic [ref=f1e540]:
+            - generic [ref=f1e541]: Tipo de lista
+            - combobox "Tipo de lista" [ref=f1e542]:
+              - option "Todos os tipos" [selected]
+              - option "Meta-ranking"
+              - option "Ranking explícito"
+              - option "Lista numerada"
+              - option "Ordem editorial"
+        - paragraph [ref=f1e543]: 36 fontes encontradas
+        - generic [ref=f1e544]:
+          - article [ref=f1e545]:
+            - generic [ref=f1e546]:
+              - generic [ref=f1e547]: Lista numerada
+              - generic [ref=f1e548]: HTTP 200
+            - heading "5 Books Every Software Engineer Should Read (at least once)" [level=3] [ref=f1e549]
+            - paragraph [ref=f1e550]: AlgoMaster · blog.algomaster.io
+            - paragraph [ref=f1e551]: Fundamentos independentes de linguagem, arquitetura e APIs.
+            - generic [ref=f1e552]:
+              - generic [ref=f1e553]: 5 livros · 2025-02-25
+              - link "Visitar fonte ↗" [ref=f1e554] [cursor=pointer]:
+                - /url: https://blog.algomaster.io/p/5-best-software-engineering-books
+          - article [ref=f1e555]:
+            - generic [ref=f1e556]:
+              - generic [ref=f1e557]: Ordem editorial
+              - generic [ref=f1e558]: HTTP 200
+            - heading "10 Books for Software Developers" [level=3] [ref=f1e559]
+            - paragraph [ref=f1e560]: ByteByteGo · bytebytego.com
+            - paragraph [ref=f1e561]: Programação, arquitetura, padrões, algoritmos e entrevistas.
+            - generic [ref=f1e562]:
+              - generic [ref=f1e563]: 10 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e564] [cursor=pointer]:
+                - /url: https://bytebytego.com/guides/guides/10-books-for-software-developers/
+          - article [ref=f1e565]:
+            - generic [ref=f1e566]:
+              - generic [ref=f1e567]: Ordem editorial
+              - generic [ref=f1e568]: HTTP 200
+            - heading "Professional Programming — Must-read books" [level=3] [ref=f1e569]
+            - paragraph [ref=f1e570]: charlax / GitHub · github.com
+            - paragraph [ref=f1e571]: Livros essenciais de programação profissional e sistemas.
+            - generic [ref=f1e572]:
+              - generic [ref=f1e573]: 6 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e574] [cursor=pointer]:
+                - /url: https://github.com/charlax/professional-programming
+          - article [ref=f1e575]:
+            - generic [ref=f1e576]:
+              - generic [ref=f1e577]: Lista numerada
+              - generic [ref=f1e578]: HTTP 200
+            - heading "Best Books Every Developer Should Read (2026 Guide)" [level=3] [ref=f1e579]
+            - paragraph [ref=f1e580]: CodeAlchemy · codealchemy.in
+            - paragraph [ref=f1e581]: Boas práticas, sistemas de dados, refatoração e JavaScript.
+            - generic [ref=f1e582]:
+              - generic [ref=f1e583]: 5 livros · 2026-04
+              - link "Visitar fonte ↗" [ref=f1e584] [cursor=pointer]:
+                - /url: https://codealchemy.in/blog/best-books-every-developer-should-read-2026-guide
+          - article [ref=f1e585]:
+            - generic [ref=f1e586]:
+              - generic [ref=f1e587]: Lista numerada
+              - generic [ref=f1e588]: HTTP 200
+            - heading "40+ books every developer should read" [level=3] [ref=f1e589]
+            - paragraph [ref=f1e590]: Coding Exercises · www.codingexercises.com
+            - paragraph [ref=f1e591]: Lista ampla de desenvolvimento, carreira e cultura.
+            - generic [ref=f1e592]:
+              - generic [ref=f1e593]: 20 livros · 2018-10-18
+              - link "Visitar fonte ↗" [ref=f1e594] [cursor=pointer]:
+                - /url: https://www.codingexercises.com/reviews/books-every-developer-should-read
+          - article [ref=f1e595]:
+            - generic [ref=f1e596]:
+              - generic [ref=f1e597]: Lista numerada
+              - generic [ref=f1e598]: HTTP 200
+            - heading "12 Best Software Engineering Books for Developers" [level=3] [ref=f1e599]
+            - paragraph [ref=f1e600]: daily.dev · daily.dev
+            - paragraph [ref=f1e601]: Qualidade de código, arquitetura, algoritmos, DevOps e entrevistas.
+            - generic [ref=f1e602]:
+              - generic [ref=f1e603]: 12 livros · 2024-09-04
+              - link "Visitar fonte ↗" [ref=f1e604] [cursor=pointer]:
+                - /url: https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+          - article [ref=f1e605]:
+            - generic [ref=f1e606]:
+              - generic [ref=f1e607]: Meta-ranking
+              - generic [ref=f1e608]: HTTP 200
+            - heading "20 Most-Recommended Books for Software Developers" [level=3] [ref=f1e609]
+            - paragraph [ref=f1e610]: DEV Community / Andrew (awwsmm) · dev.to
+            - paragraph [ref=f1e611]: Meta-lista de 36 fontes e 297 livros únicos.
+            - generic [ref=f1e612]:
+              - generic [ref=f1e613]: 20 livros · 2019-10-19
+              - link "Visitar fonte ↗" [ref=f1e614] [cursor=pointer]:
+                - /url: https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+          - article [ref=f1e615]:
+            - generic [ref=f1e616]:
+              - generic [ref=f1e617]: Lista numerada
+              - generic [ref=f1e618]: HTTP 200
+            - 'heading "Top Software Engineering Books: Recommended by Devōt" [level=3] [ref=f1e619]'
+            - paragraph [ref=f1e620]: Devōt · devot.team
+            - paragraph [ref=f1e621]: Recomendações da equipe, incluindo programação, dados e carreira.
+            - generic [ref=f1e622]:
+              - generic [ref=f1e623]: 9 livros · 2024-07-23
+              - link "Visitar fonte ↗" [ref=f1e624] [cursor=pointer]:
+                - /url: https://devot.team/blog/software-engineering-books
+          - article [ref=f1e625]:
+            - generic [ref=f1e626]:
+              - generic [ref=f1e627]: Lista numerada
+              - generic [ref=f1e628]: HTTP 200
+            - heading "7 Books Every Software Developer Must Read Right Now" [level=3] [ref=f1e629]
+            - paragraph [ref=f1e630]: Ellow · ellow.io
+            - paragraph [ref=f1e631]: Fundamentos de código, gestão de projetos, padrões e algoritmos.
+            - generic [ref=f1e632]:
+              - generic [ref=f1e633]: 7 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e634] [cursor=pointer]:
+                - /url: https://ellow.io/7-books-every-software-developer-must-read-right-now/
+          - article [ref=f1e635]:
+            - generic [ref=f1e636]:
+              - generic [ref=f1e637]: Ordem editorial
+              - generic [ref=f1e638]: HTTP 200
+            - heading "The Top 12 Best Software Engineering Books You Need To Read" [level=3] [ref=f1e639]
+            - paragraph [ref=f1e640]: Exponent · www.tryexponent.com
+            - paragraph [ref=f1e641]: Livros gerais de engenharia de software e preparação profissional.
+            - generic [ref=f1e642]:
+              - generic [ref=f1e643]: 12 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e644] [cursor=pointer]:
+                - /url: https://www.tryexponent.com/blog/the-top-12-best-software-engineering-books-you-need-to-read
+          - article [ref=f1e645]:
+            - generic [ref=f1e646]:
+              - generic [ref=f1e647]: Ordem editorial
+              - generic [ref=f1e648]: HTTP 200
+            - heading "A Timeless Software Developer Reading List" [level=3] [ref=f1e649]
+            - paragraph [ref=f1e650]: Frank Chen · frankc.net
+            - paragraph [ref=f1e651]: "Lista ampla: técnica, carreira, produto e colaboração."
+            - generic [ref=f1e652]:
+              - generic [ref=f1e653]: 20 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e654] [cursor=pointer]:
+                - /url: https://frankc.net/dev-reading-list
+          - article [ref=f1e655]:
+            - generic [ref=f1e656]:
+              - generic [ref=f1e657]: Lista numerada
+              - generic [ref=f1e658]: HTTP 200
+            - heading "10 Programming Books That Every Programmer Must Read Once in 2025" [level=3] [ref=f1e659]
+            - paragraph [ref=f1e660]: GeeksforGeeks · www.geeksforgeeks.org
+            - paragraph [ref=f1e661]: Clássicos de programação, construção, algoritmos e design.
+            - generic [ref=f1e662]:
+              - generic [ref=f1e663]: 10 livros · 2025-07-28
+              - link "Visitar fonte ↗" [ref=f1e664] [cursor=pointer]:
+                - /url: https://www.geeksforgeeks.org/blogs/best-programming-books/
+          - article [ref=f1e665]:
+            - generic [ref=f1e666]:
+              - generic [ref=f1e667]: Ordem editorial
+              - generic [ref=f1e668]: HTTP 200
+            - heading "4 Classic Books on Software Engineering" [level=3] [ref=f1e669]
+            - paragraph [ref=f1e670]: GitDailies · gitdailies.com
+            - paragraph [ref=f1e671]: Quatro clássicos duráveis de engenharia de software.
+            - generic [ref=f1e672]:
+              - generic [ref=f1e673]: 4 livros · 2022-03-16
+              - link "Visitar fonte ↗" [ref=f1e674] [cursor=pointer]:
+                - /url: https://gitdailies.com/articles/classic-software-engineering-books/
+          - article [ref=f1e675]:
+            - generic [ref=f1e676]:
+              - generic [ref=f1e677]: Lista numerada
+              - generic [ref=f1e678]: HTTP 200
+            - heading "15 BEST Software Engineering Books (2026 Update)" [level=3] [ref=f1e679]
+            - paragraph [ref=f1e680]: Guru99 · www.guru99.com
+            - paragraph [ref=f1e681]: Engenharia de software, padrões, carreira, Agile, DevOps e IA.
+            - generic [ref=f1e682]:
+              - generic [ref=f1e683]: 15 livros · 2024-12-20
+              - link "Visitar fonte ↗" [ref=f1e684] [cursor=pointer]:
+                - /url: https://www.guru99.com/software-engineer-book.html
+          - article [ref=f1e685]:
+            - generic [ref=f1e686]:
+              - generic [ref=f1e687]: Ordem editorial
+              - generic [ref=f1e688]: HTTP 200
+            - heading "The 34 Best Software Engineering Books" [level=3] [ref=f1e689]
+            - paragraph [ref=f1e690]: HappyCoders.eu · www.happycoders.eu
+            - paragraph [ref=f1e691]: Engenharia, design, testes, arquitetura, DevOps e carreira.
+            - generic [ref=f1e692]:
+              - generic [ref=f1e693]: 20 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e694] [cursor=pointer]:
+                - /url: https://www.happycoders.eu/books/genres/software-engineering/
+          - article [ref=f1e695]:
+            - generic [ref=f1e696]:
+              - generic [ref=f1e697]: Lista numerada
+              - generic [ref=f1e698]: HTTP 200
+            - heading "10 Best Software Engineering Books" [level=3] [ref=f1e699]
+            - paragraph [ref=f1e700]: InterviewBit · www.interviewbit.com
+            - paragraph [ref=f1e701]: "Do iniciante ao especialista: entrevistas, algoritmos, código e design."
+            - generic [ref=f1e702]:
+              - generic [ref=f1e703]: 10 livros · 2023-06-05
+              - link "Visitar fonte ↗" [ref=f1e704] [cursor=pointer]:
+                - /url: https://www.interviewbit.com/blog/software-engineering-books/
+          - article [ref=f1e705]:
+            - generic [ref=f1e706]:
+              - generic [ref=f1e707]: Lista numerada
+              - generic [ref=f1e708]: HTTP 200
+            - heading "Best Programming Books for Self-Taught Developers (2026 Reading List)" [level=3] [ref=f1e709]
+            - paragraph [ref=f1e710]: ITSourceCode · itsourcecode.com
+            - paragraph [ref=f1e711]: Fundamentos, Python, Java, web, arquitetura e IA/ML.
+            - generic [ref=f1e712]:
+              - generic [ref=f1e713]: 15 livros · 2026-06-22
+              - link "Visitar fonte ↗" [ref=f1e714] [cursor=pointer]:
+                - /url: https://itsourcecode.com/blogs/best-programming-books-for-self-taught-developers-2026/
+          - article [ref=f1e715]:
+            - generic [ref=f1e716]:
+              - generic [ref=f1e717]: Lista numerada
+              - generic [ref=f1e718]: HTTP 200
+            - heading "10 Must-Read Books for Every Software Engineer" [level=3] [ref=f1e719]
+            - paragraph [ref=f1e720]: Java Guides · www.javaguides.net
+            - paragraph [ref=f1e721]: Conselhos gerais, qualidade, arquitetura, padrões e algoritmos.
+            - generic [ref=f1e722]:
+              - generic [ref=f1e723]: 10 livros · 2024-12
+              - link "Visitar fonte ↗" [ref=f1e724] [cursor=pointer]:
+                - /url: https://www.javaguides.net/2024/12/10-must-read-books-for-every-software-engineer.html
+          - article [ref=f1e725]:
+            - generic [ref=f1e726]:
+              - generic [ref=f1e727]: Ordem editorial
+              - generic [ref=f1e728]: HTTP 200
+            - heading "Software Engineering Reading List" [level=3] [ref=f1e729]
+            - paragraph [ref=f1e730]: kiview / GitHub Gist · gist.github.com
+            - paragraph [ref=f1e731]: OOP, testes, arquitetura, cultura e carreira.
+            - generic [ref=f1e732]:
+              - generic [ref=f1e733]: 8 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e734] [cursor=pointer]:
+                - /url: https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+          - article [ref=f1e735]:
+            - generic [ref=f1e736]:
+              - generic [ref=f1e737]: Ordem editorial
+              - generic [ref=f1e738]: HTTP 200
+            - heading "Books Every Software Engineer Must Read in 2023" [level=3] [ref=f1e739]
+            - paragraph [ref=f1e740]: Engineering with Utsav / Listium · listium.com
+            - paragraph [ref=f1e741]: Algoritmos, práticas de código, sistemas distribuídos, DevOps e ML.
+            - generic [ref=f1e742]:
+              - generic [ref=f1e743]: 8 livros · 2023-10-26
+              - link "Visitar fonte ↗" [ref=f1e744] [cursor=pointer]:
+                - /url: https://listium.com/@engineeringwithutsav/91417/books-every-software-engineer-must-read-in-2023
+          - article [ref=f1e745]:
+            - generic [ref=f1e746]:
+              - generic [ref=f1e747]: Ordem editorial
+              - generic [ref=f1e748]: HTTP 200
+            - heading "Top Software Development books curated by experts" [level=3] [ref=f1e749]
+            - paragraph [ref=f1e750]: MentorCruise · mentorcruise.com
+            - paragraph [ref=f1e751]: Fundamentos, automação, system design, Python, LLMs e sistemas de dados.
+            - generic [ref=f1e752]:
+              - generic [ref=f1e753]: 7 livros · 2026
+              - link "Visitar fonte ↗" [ref=f1e754] [cursor=pointer]:
+                - /url: https://mentorcruise.com/books/softwaredevelopment/
+          - article [ref=f1e755]:
+            - generic [ref=f1e756]:
+              - generic [ref=f1e757]: Ordem editorial
+              - generic [ref=f1e758]: HTTP 200
+            - heading "The Software Engineering Books I keep recommending" [level=3] [ref=f1e759]
+            - paragraph [ref=f1e760]: Tech World With Milan · newsletter.techworld-with-milan.com
+            - paragraph [ref=f1e761]: Código, princípios, arquitetura, dados, IA, testes, entrega e carreira.
+            - generic [ref=f1e762]:
+              - generic [ref=f1e763]: 13 livros · 2026-06-04
+              - link "Visitar fonte ↗" [ref=f1e764] [cursor=pointer]:
+                - /url: https://newsletter.techworld-with-milan.com/p/best-software-engineering-books-2026
+          - article [ref=f1e765]:
+            - generic [ref=f1e766]:
+              - generic [ref=f1e767]: Meta-ranking
+              - generic [ref=f1e768]: HTTP 200
+            - heading "12 Best Programming Books" [level=3] [ref=f1e769]
+            - paragraph [ref=f1e770]: Most Recommended Books · mostrecommendedbooks.com
+            - paragraph [ref=f1e771]: Consenso de listas especializadas e recomendações públicas.
+            - generic [ref=f1e772]:
+              - generic [ref=f1e773]: 12 livros · 2025-08-02
+              - link "Visitar fonte ↗" [ref=f1e774] [cursor=pointer]:
+                - /url: https://mostrecommendedbooks.com/lists/best-programming-books
+          - article [ref=f1e775]:
+            - generic [ref=f1e776]:
+              - generic [ref=f1e777]: Lista numerada
+              - generic [ref=f1e778]: HTTP 200
+            - heading "15 Best Books for Software Developers (2026)" [level=3] [ref=f1e779]
+            - paragraph [ref=f1e780]: Rockstar Developer University · rockstardeveloperuniversity.com
+            - paragraph [ref=f1e781]: Código, carreira, design, legado, entrega e IA.
+            - generic [ref=f1e782]:
+              - generic [ref=f1e783]: 15 livros · 2026-02-19
+              - link "Visitar fonte ↗" [ref=f1e784] [cursor=pointer]:
+                - /url: https://rockstardeveloperuniversity.com/best-books-for-software-developers/
+          - article [ref=f1e785]:
+            - generic [ref=f1e786]:
+              - generic [ref=f1e787]: Ordem editorial
+              - generic [ref=f1e788]: HTTP 200
+            - heading "7 Must Read Books for Becoming a Better Software Developer" [level=3] [ref=f1e789]
+            - paragraph [ref=f1e790]: Serverless Framework · www.serverless.com
+            - paragraph [ref=f1e791]: Qualidade, profissionalismo, DevOps, práticas, padrões e legado.
+            - generic [ref=f1e792]:
+              - generic [ref=f1e793]: 7 livros · 2017-04-17
+              - link "Visitar fonte ↗" [ref=f1e794] [cursor=pointer]:
+                - /url: https://www.serverless.com/blog/software-engineering-resources
+          - article [ref=f1e795]:
+            - generic [ref=f1e796]:
+              - generic [ref=f1e797]: Ranking explícito
+              - generic [ref=f1e798]: HTTP 200
+            - heading "100 Best Software Engineering Books of All Time" [level=3] [ref=f1e799]
+            - paragraph [ref=f1e800]: Shortform · www.shortform.com
+            - paragraph [ref=f1e801]: Ranking baseado em recomendações, vendas e avaliações de leitores.
+            - generic [ref=f1e802]:
+              - generic [ref=f1e803]: 20 livros · 2025
+              - link "Visitar fonte ↗" [ref=f1e804] [cursor=pointer]:
+                - /url: https://www.shortform.com/best-books/genre/best-software-engineering-books-of-all-time
+          - article [ref=f1e805]:
+            - generic [ref=f1e806]:
+              - generic [ref=f1e807]: Ordem editorial
+              - generic [ref=f1e808]: HTTP 200
+            - heading "The best books for software developers 2026" [level=3] [ref=f1e809]
+            - paragraph [ref=f1e810]: Eduard Sizov · sizovs.net
+            - paragraph [ref=f1e811]: Prática profissional, testes, entrega, pessoas e comunicação.
+            - generic [ref=f1e812]:
+              - generic [ref=f1e813]: 17 livros · 2026
+              - link "Visitar fonte ↗" [ref=f1e814] [cursor=pointer]:
+                - /url: https://sizovs.net/books/
+          - article [ref=f1e815]:
+            - generic [ref=f1e816]:
+              - generic [ref=f1e817]: Ordem editorial
+              - generic [ref=f1e818]: HTTP 200
+            - heading "Software Engineering Books" [level=3] [ref=f1e819]
+            - paragraph [ref=f1e820]: software-engineering-books.com · software-engineering-books.com
+            - paragraph [ref=f1e821]: Núcleo de engenharia e referências rápidas relevantes a desenvolvedores.
+            - generic [ref=f1e822]:
+              - generic [ref=f1e823]: 12 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e824] [cursor=pointer]:
+                - /url: https://software-engineering-books.com/
+          - article [ref=f1e825]:
+            - generic [ref=f1e826]:
+              - generic [ref=f1e827]: Ordem editorial
+              - generic [ref=f1e828]: HTTP 200
+            - heading "24 influential books programmers should read" [level=3] [ref=f1e829]
+            - paragraph [ref=f1e830]: Squash.io · www.squash.io
+            - paragraph [ref=f1e831]: Escrita de código, engenharia de software e mentalidade.
+            - generic [ref=f1e832]:
+              - generic [ref=f1e833]: 20 livros · 2023-06-02
+              - link "Visitar fonte ↗" [ref=f1e834] [cursor=pointer]:
+                - /url: https://www.squash.io/24-influential-books-programmers-should-read/
+          - article [ref=f1e835]:
+            - generic [ref=f1e836]:
+              - generic [ref=f1e837]: Ranking explícito
+              - generic [ref=f1e838]: HTTP 200
+            - heading "Best Software Engineering Books in 2026" [level=3] [ref=f1e839]
+            - paragraph [ref=f1e840]: Student Project Code · studentprojectcode.com
+            - paragraph [ref=f1e841]: Livros atuais de fundamentos, sistemas, carreira, liderança e IA.
+            - generic [ref=f1e842]:
+              - generic [ref=f1e843]: 10 livros · 2025-09-20
+              - link "Visitar fonte ↗" [ref=f1e844] [cursor=pointer]:
+                - /url: https://studentprojectcode.com/blog/best-software-engineering-books-in-year
+          - article [ref=f1e845]:
+            - generic [ref=f1e846]:
+              - generic [ref=f1e847]: Lista numerada
+              - generic [ref=f1e848]: HTTP 200
+            - heading "The 7 Most Important Books Every Aspiring Software Engineer Must Read in 2025" [level=3] [ref=f1e849]
+            - paragraph [ref=f1e850]: The SGN · www.thesgn.blog
+            - paragraph [ref=f1e851]: Código, dados, system design, algoritmos e confiabilidade.
+            - generic [ref=f1e852]:
+              - generic [ref=f1e853]: 7 livros · 2025
+              - link "Visitar fonte ↗" [ref=f1e854] [cursor=pointer]:
+                - /url: https://www.thesgn.blog/blog/csbook
+          - article [ref=f1e855]:
+            - generic [ref=f1e856]:
+              - generic [ref=f1e857]: Meta-ranking
+              - generic [ref=f1e858]: HTTP 200
+            - heading "The 25 most recommended programming books of all-time" [level=3] [ref=f1e859]
+            - paragraph [ref=f1e860]: Pierre de Wulf / Thread Reader · threadreaderapp.com
+            - paragraph [ref=f1e861]: Meta-ranking de mais de 1.200 recomendações coletadas em 68 listas.
+            - generic [ref=f1e862]:
+              - generic [ref=f1e863]: 25 livros · 2020-02-18
+              - link "Visitar fonte ↗" [ref=f1e864] [cursor=pointer]:
+                - /url: https://threadreaderapp.com/thread/1229731043332231169.html
+          - article [ref=f1e865]:
+            - generic [ref=f1e866]:
+              - generic [ref=f1e867]: Lista numerada
+              - generic [ref=f1e868]: HTTP 200
+            - heading "Top 10 Software Engineering Books Every Developer Should Read" [level=3] [ref=f1e869]
+            - paragraph [ref=f1e870]: upGrad · www.upgrad.com
+            - paragraph [ref=f1e871]: Código, arquitetura, sistemas de dados, fundamentos e legado.
+            - generic [ref=f1e872]:
+              - generic [ref=f1e873]: 10 livros · 2026-07-07
+              - link "Visitar fonte ↗" [ref=f1e874] [cursor=pointer]:
+                - /url: https://www.upgrad.com/blog/top-software-engineering-books-to-read-to-improve-your-skills/
+          - article [ref=f1e875]:
+            - generic [ref=f1e876]:
+              - generic [ref=f1e877]: Ordem editorial
+              - generic [ref=f1e878]: HTTP 200
+            - heading "The Ultimate Developer Reading List for 2023" [level=3] [ref=f1e879]
+            - paragraph [ref=f1e880]: WeAreDevelopers · www.wearedevelopers.com
+            - paragraph [ref=f1e881]: Programação, testes, arquitetura, distribuídos, DevOps, ML e equipes.
+            - generic [ref=f1e882]:
+              - generic [ref=f1e883]: 20 livros · 2023
+              - link "Visitar fonte ↗" [ref=f1e884] [cursor=pointer]:
+                - /url: https://www.wearedevelopers.com/en/magazine/best-software-development-books
+          - article [ref=f1e885]:
+            - generic [ref=f1e886]:
+              - generic [ref=f1e887]: Lista numerada
+              - generic [ref=f1e888]: HTTP 200
+            - heading "Ultimate List of 110 Must Read Software Development Books" [level=3] [ref=f1e889]
+            - paragraph [ref=f1e890]: Xebia · xebia.com
+            - paragraph [ref=f1e891]: Lista extensa e eclética de linguagens, design, IA e desenvolvimento.
+            - generic [ref=f1e892]:
+              - generic [ref=f1e893]: 20 livros · 2026-01-28
+              - link "Visitar fonte ↗" [ref=f1e894] [cursor=pointer]:
+                - /url: https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+          - article [ref=f1e895]:
+            - generic [ref=f1e896]:
+              - generic [ref=f1e897]: Ordem editorial
+              - generic [ref=f1e898]: HTTP 200
+            - heading "Top Books on Software Engineering" [level=3] [ref=f1e899]
+            - paragraph [ref=f1e900]: DevBooks / GitHub · github.com
+            - paragraph [ref=f1e901]: Fundamentos modernos de código, arquitetura, legado e microserviços.
+            - generic [ref=f1e902]:
+              - generic [ref=f1e903]: 12 livros · data não identificada
+              - link "Visitar fonte ↗" [ref=f1e904] [cursor=pointer]:
+                - /url: https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+    - region [ref=f1e905]:
+      - generic [ref=f1e906]:
+        - generic [ref=f1e907]:
+          - paragraph [ref=f1e908]: Metodologia
+          - heading "Consenso com contexto, não uma nota subjetiva." [level=2] [ref=f1e910]
+          - paragraph [ref=f1e911]: Cada aparição soma um ponto. A posição do livro dentro de cada fonte gera um bônus normalizado, sem permitir que poucas posições altas superem um título encontrado em mais listas.
+          - link "Ler metodologia detalhada" [ref=f1e912] [cursor=pointer]:
+            - /url: ./README.md
+            - text: Ler metodologia detalhada
+            - generic [ref=f1e913]: →
+        - generic [ref=f1e914]:
+          - generic [ref=f1e915]:
+            - generic [ref=f1e916]: "01"
+            - generic [ref=f1e917]:
+              - generic [ref=f1e918]: Peso da posição
+              - code [ref=f1e919]: (N − posição + 1) ÷ N
+          - generic [ref=f1e920]:
+            - generic [ref=f1e921]: "02"
+            - generic [ref=f1e922]:
+              - generic [ref=f1e923]: Bônus médio
+              - code [ref=f1e924]: Σ pesos ÷ ocorrências
+          - generic [ref=f1e925]:
+            - generic [ref=f1e926]: "03"
+            - generic [ref=f1e927]:
+              - generic [ref=f1e928]: Pontuação final
+              - code [ref=f1e929]: ocorrências + bônus médio
+      - generic [ref=f1e930]:
+        - generic [ref=f1e931]:
+          - text: Quer analisar por conta própria?
+          - heading "Baixe os dados completos da pesquisa." [level=3] [ref=f1e932]
+        - generic [ref=f1e933]:
+          - link "Ranking final" [ref=f1e934] [cursor=pointer]:
+            - /url: ./ranking_final.csv
+            - text: Ranking final
+            - generic [ref=f1e935]: ↓
+          - link "Índice de fontes" [ref=f1e936] [cursor=pointer]:
+            - /url: ./fontes.csv
+            - text: Índice de fontes
+            - generic [ref=f1e937]: ↓
+  - contentinfo [ref=f1e938]:
+    - generic [ref=f1e939]:
+      - link "Best Dev Books" [ref=f1e940] [cursor=pointer]:
+        - /url: "#inicio"
+      - paragraph [ref=f1e946]: Pesquisa aberta sobre os livros mais recomendados para desenvolvimento de software.
+      - link "GitHub" [ref=f1e947] [cursor=pointer]:
+        - /url: https://github.com/andredarcie/andredarcie.github.io
+        - text: GitHub ↗

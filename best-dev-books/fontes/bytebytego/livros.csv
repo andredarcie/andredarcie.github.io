@@ -1,0 +1,11 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+2,Code Complete,Code Complete,Steve McConnell,0.900000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+3,Clean Code,Clean Code,Robert C. Martin,0.800000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+4,Refactoring,Refactoring,Martin Fowler,0.700000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+5,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.600000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+6,System Design Interview,System Design Interview,Alex Xu,0.500000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+7,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.400000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+8,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.300000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+9,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.200000,https://bytebytego.com/guides/guides/10-books-for-software-developers/
+10,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.100000,https://bytebytego.com/guides/guides/10-books-for-software-developers/

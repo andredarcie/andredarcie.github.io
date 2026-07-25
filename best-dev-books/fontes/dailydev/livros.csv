@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+2,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.916667,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+3,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.833333,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+4,Code Complete,Code Complete,Steve McConnell,0.750000,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+5,Refactoring,Refactoring,Martin Fowler,0.666667,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+6,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.583333,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+7,The Clean Coder,The Clean Coder,Robert C. Martin,0.500000,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+8,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.416667,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+9,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.333333,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+10,Building Microservices,Building Microservices,Sam Newman,0.250000,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+11,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.166667,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/
+12,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.083333,https://daily.dev/blog/12-best-software-engineering-books-for-developers-in-2024/

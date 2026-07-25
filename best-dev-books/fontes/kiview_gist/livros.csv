@@ -1,0 +1,9 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,1.000000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+2,Code Complete,Code Complete,Steve McConnell,0.875000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+3,Clean Code,Clean Code,Robert C. Martin,0.750000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+4,The Art of Unit Testing,The Art of Unit Testing,Roy Osherove,0.625000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+5,Software Architecture for Developers,Software Architecture for Developers,Simon Brown,0.500000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+6,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.375000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+7,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.250000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18
+8,The Clean Coder,The Clean Coder,Robert C. Martin,0.125000,https://gist.github.com/kiview/dd636f4ece4f677c812e37863c1ecc18

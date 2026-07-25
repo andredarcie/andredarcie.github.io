@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.950000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+3,Code Complete,Code Complete,Steve McConnell,0.900000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+4,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.850000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+5,Refactoring,Refactoring,Martin Fowler,0.800000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+6,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.750000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+7,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.700000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+8,Programming Pearls,Programming Pearls,Jon Bentley,0.650000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+9,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.600000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+10,Soft Skills,Soft Skills,John Sonmez,0.550000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+11,The Clean Coder,The Clean Coder,Robert C. Martin,0.500000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+12,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.450000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+13,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.400000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+14,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.350000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+15,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.300000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+16,"Agile Software Development: Principles, Patterns, and Practices","Agile Software Development: Principles, Patterns, and Practices",Robert C. Martin,0.250000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+17,Code,Code,Charles Petzold,0.200000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+18,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.150000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+19,Clean Architecture,Clean Architecture,Robert C. Martin,0.100000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578
+20,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.050000,https://dev.to/awwsmm/20-most-recommended-books-for-software-developers-5578

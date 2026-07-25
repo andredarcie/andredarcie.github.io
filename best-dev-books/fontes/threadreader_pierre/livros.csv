@@ -1,0 +1,26 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://threadreaderapp.com/thread/1229731043332231169.html
+2,Clean Code,Clean Code,Robert C. Martin,0.960000,https://threadreaderapp.com/thread/1229731043332231169.html
+3,Code Complete,Code Complete,Steve McConnell,0.920000,https://threadreaderapp.com/thread/1229731043332231169.html
+4,Refactoring,Refactoring,Martin Fowler,0.880000,https://threadreaderapp.com/thread/1229731043332231169.html
+5,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.840000,https://threadreaderapp.com/thread/1229731043332231169.html
+6,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.800000,https://threadreaderapp.com/thread/1229731043332231169.html
+7,The Clean Coder,The Clean Coder,Robert C. Martin,0.760000,https://threadreaderapp.com/thread/1229731043332231169.html
+8,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.720000,https://threadreaderapp.com/thread/1229731043332231169.html
+9,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.680000,https://threadreaderapp.com/thread/1229731043332231169.html
+10,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.640000,https://threadreaderapp.com/thread/1229731043332231169.html
+11,Soft Skills,Soft Skills,John Sonmez,0.600000,https://threadreaderapp.com/thread/1229731043332231169.html
+12,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.560000,https://threadreaderapp.com/thread/1229731043332231169.html
+13,Code,Code,Charles Petzold,0.520000,https://threadreaderapp.com/thread/1229731043332231169.html
+14,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.480000,https://threadreaderapp.com/thread/1229731043332231169.html
+15,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.440000,https://threadreaderapp.com/thread/1229731043332231169.html
+16,Programming Pearls,Programming Pearls,Jon Bentley,0.400000,https://threadreaderapp.com/thread/1229731043332231169.html
+17,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.360000,https://threadreaderapp.com/thread/1229731043332231169.html
+18,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,0.320000,https://threadreaderapp.com/thread/1229731043332231169.html
+19,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.280000,https://threadreaderapp.com/thread/1229731043332231169.html
+20,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.240000,https://threadreaderapp.com/thread/1229731043332231169.html
+21,Coders at Work,Coders at Work,Peter Seibel,0.200000,https://threadreaderapp.com/thread/1229731043332231169.html
+22,Rapid Development,Rapid Development,Steve McConnell,0.160000,https://threadreaderapp.com/thread/1229731043332231169.html
+23,The Self-Taught Programmer,The Self-Taught Programmer,Cory Althoff,0.120000,https://threadreaderapp.com/thread/1229731043332231169.html
+24,Algorithms,Algorithms,Robert Sedgewick; Kevin Wayne,0.080000,https://threadreaderapp.com/thread/1229731043332231169.html
+25,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.040000,https://threadreaderapp.com/thread/1229731043332231169.html

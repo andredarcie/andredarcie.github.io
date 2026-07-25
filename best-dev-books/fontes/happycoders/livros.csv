@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://www.happycoders.eu/books/genres/software-engineering/
+2,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.950000,https://www.happycoders.eu/books/genres/software-engineering/
+3,Refactoring,Refactoring,Martin Fowler,0.900000,https://www.happycoders.eu/books/genres/software-engineering/
+4,Clean Craftsmanship,Clean Craftsmanship,Robert C. Martin,0.850000,https://www.happycoders.eu/books/genres/software-engineering/
+5,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.800000,https://www.happycoders.eu/books/genres/software-engineering/
+6,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.750000,https://www.happycoders.eu/books/genres/software-engineering/
+7,"Growing Object-Oriented Software, Guided by Tests","Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,0.700000,https://www.happycoders.eu/books/genres/software-engineering/
+8,Pattern Hatching,Pattern Hatching,John Vlissides,0.650000,https://www.happycoders.eu/books/genres/software-engineering/
+9,The Clean Coder,The Clean Coder,Robert C. Martin,0.600000,https://www.happycoders.eu/books/genres/software-engineering/
+10,"Agile Software Development: Principles, Patterns, and Practices","Agile Software Development: Principles, Patterns, and Practices",Robert C. Martin,0.550000,https://www.happycoders.eu/books/genres/software-engineering/
+11,Clean Architecture,Clean Architecture,Robert C. Martin,0.500000,https://www.happycoders.eu/books/genres/software-engineering/
+12,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.450000,https://www.happycoders.eu/books/genres/software-engineering/
+13,Implementing Domain-Driven Design,Implementing Domain-Driven Design,Vaughn Vernon,0.400000,https://www.happycoders.eu/books/genres/software-engineering/
+14,Extreme Programming Explained,Extreme Programming Explained,Kent Beck; Cynthia Andres,0.350000,https://www.happycoders.eu/books/genres/software-engineering/
+15,The Unicorn Project,The Unicorn Project,Gene Kim,0.300000,https://www.happycoders.eu/books/genres/software-engineering/
+16,Accelerate,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,0.250000,https://www.happycoders.eu/books/genres/software-engineering/
+17,Get Your Hands Dirty on Clean Architecture,Get Your Hands Dirty on Clean Architecture,Tom Hombergs,0.200000,https://www.happycoders.eu/books/genres/software-engineering/
+18,Domain-Driven Design Distilled,Domain-Driven Design Distilled,Vaughn Vernon,0.150000,https://www.happycoders.eu/books/genres/software-engineering/
+19,Clean Agile,Clean Agile,Robert C. Martin,0.100000,https://www.happycoders.eu/books/genres/software-engineering/
+20,The Complete Software Developer's Career Guide,The Complete Software Developer's Career Guide,John Sonmez,0.050000,https://www.happycoders.eu/books/genres/software-engineering/

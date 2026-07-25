@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://mostrecommendedbooks.com/lists/best-programming-books
+2,Clean Code,Clean Code,Robert C. Martin,0.916667,https://mostrecommendedbooks.com/lists/best-programming-books
+3,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.833333,https://mostrecommendedbooks.com/lists/best-programming-books
+4,Code Complete,Code Complete,Steve McConnell,0.750000,https://mostrecommendedbooks.com/lists/best-programming-books
+5,Code,Code,Charles Petzold,0.666667,https://mostrecommendedbooks.com/lists/best-programming-books
+6,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.583333,https://mostrecommendedbooks.com/lists/best-programming-books
+7,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.500000,https://mostrecommendedbooks.com/lists/best-programming-books
+8,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,0.416667,https://mostrecommendedbooks.com/lists/best-programming-books
+9,Programming Pearls,Programming Pearls,Jon Bentley,0.333333,https://mostrecommendedbooks.com/lists/best-programming-books
+10,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.250000,https://mostrecommendedbooks.com/lists/best-programming-books
+11,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.166667,https://mostrecommendedbooks.com/lists/best-programming-books
+12,Refactoring,Refactoring,Martin Fowler,0.083333,https://mostrecommendedbooks.com/lists/best-programming-books

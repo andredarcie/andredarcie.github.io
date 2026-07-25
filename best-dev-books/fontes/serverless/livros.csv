@@ -1,0 +1,8 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://www.serverless.com/blog/software-engineering-resources
+2,The Clean Coder,The Clean Coder,Robert C. Martin,0.857143,https://www.serverless.com/blog/software-engineering-resources
+3,The Phoenix Project,The Phoenix Project,Gene Kim; Kevin Behr; George Spafford,0.714286,https://www.serverless.com/blog/software-engineering-resources
+4,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.571429,https://www.serverless.com/blog/software-engineering-resources
+5,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.428571,https://www.serverless.com/blog/software-engineering-resources
+6,The Imposter's Handbook,The Imposter's Handbook,Rob Conery,0.285714,https://www.serverless.com/blog/software-engineering-resources
+7,Refactoring,Refactoring,Martin Fowler,0.142857,https://www.serverless.com/blog/software-engineering-resources

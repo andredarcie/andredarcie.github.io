@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Types and Programming Languages,Types and Programming Languages,Benjamin C. Pierce,1.000000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+2,C++ and Patterns,C++ and Patterns,James O. Coplien,0.950000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+3,Software Patterns,Software Patterns,James O. Coplien,0.900000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+4,Multi-Paradigm Design for C++,Multi-Paradigm Design for C++,James O. Coplien,0.850000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+5,Lean Architecture,Lean Architecture,James O. Coplien; Gertrud Bjørnvig,0.800000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+6,Effective Java,Effective Java,Joshua Bloch,0.750000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+7,Java Concurrency in Practice,Java Concurrency in Practice,Brian Goetz; Tim Peierls; Joshua Bloch; Joseph Bowbeer; David Holmes; Doug Lea,0.700000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+8,Beautiful Data,Beautiful Data,Toby Segaran; Jeff Hammerbacher (editors),0.650000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+9,Artificial Intelligence: A Modern Approach,Artificial Intelligence: A Modern Approach,Stuart Russell; Peter Norvig,0.600000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+10,Paradigms of Artificial Intelligence Programming,Paradigms of Artificial Intelligence Programming,Peter Norvig,0.550000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+11,On Lisp,On Lisp,Paul Graham,0.500000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+12,Refactoring,Refactoring,Martin Fowler,0.450000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+13,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.400000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+14,"A Little Java, A Few Patterns","A Little Java, A Few Patterns",Matthias Felleisen; Daniel P. Friedman,0.350000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+15,A Pattern Language,A Pattern Language,Christopher Alexander; Sara Ishikawa; Murray Silverstein,0.300000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+16,Code Complete,Code Complete,Steve McConnell,0.250000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+17,The C Programming Language,The C Programming Language,Brian W. Kernighan; Dennis M. Ritchie,0.200000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+18,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.150000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+19,Programming Clojure,Programming Clojure,Stuart Halloway,0.100000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/
+20,Head First book series,Head First book series,Kathy Sierra; Bert Bates,0.050000,https://xebia.com/blog/ultimate-list-of-110-must-read-software-development-books/

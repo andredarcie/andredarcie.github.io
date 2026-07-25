@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Modern C++ Design,Modern C++ Design,Andrei Alexandrescu,1.000000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.950000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+3,Clean Code,Clean Code,Robert C. Martin,0.900000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+4,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.850000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+5,Refactoring,Refactoring,Martin Fowler,0.800000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+6,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.750000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+7,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.700000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+8,The Art of Unit Testing,The Art of Unit Testing,Roy Osherove,0.650000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+9,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.600000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+10,"Growing Object-Oriented Software, Guided by Tests","Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,0.550000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+11,Fundamentals of Software Architecture,Fundamentals of Software Architecture,Mark Richards; Neal Ford,0.500000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+12,Software Architecture: The Hard Parts,Software Architecture: The Hard Parts,Neal Ford; Mark Richards; Pramod Sadalage; Zhamak Dehghani,0.450000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+13,Distributed Systems for Fun and Profit,Distributed Systems for Fun and Profit,Mikito Takada,0.400000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+14,The DevOps Handbook,The DevOps Handbook,Gene Kim; Jez Humble; Patrick Debois; John Willis,0.350000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+15,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.300000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+16,Accelerate,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,0.250000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+17,The 100-Page Machine Learning Book,The 100-Page Machine Learning Book,Andriy Burkov,0.200000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+18,The Five Dysfunctions of a Team,The Five Dysfunctions of a Team,Patrick Lencioni,0.150000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+19,Team Topologies,Team Topologies,Matthew Skelton; Manuel Pais,0.100000,https://www.wearedevelopers.com/en/magazine/best-software-development-books
+20,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.050000,https://www.wearedevelopers.com/en/magazine/best-software-development-books

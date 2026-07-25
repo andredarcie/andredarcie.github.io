@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+2,Code Complete,Code Complete,Steve McConnell,0.916667,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+3,Clean Code,Clean Code,Robert C. Martin,0.833333,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+4,Clean Architecture,Clean Architecture,Robert C. Martin,0.750000,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+5,A Philosophy of Software Design,A Philosophy of Software Design,John Ousterhout,0.666667,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+6,Refactoring,Refactoring,Martin Fowler,0.583333,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+7,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.500000,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+8,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.416667,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+9,Fundamentals of Software Architecture,Fundamentals of Software Architecture,Mark Richards; Neal Ford,0.333333,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+10,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.250000,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+11,The Clean Coder,The Clean Coder,Robert C. Martin,0.166667,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
+12,Building Microservices,Building Microservices,Sam Newman,0.083333,https://github.com/devtoolsd/DevBooks/blob/main/data/software-engineering.md
