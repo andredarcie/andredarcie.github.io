@@ -1,0 +1,16 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Clean Coder,The Clean Coder,Robert C. Martin,1.000000,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+2,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.933333,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+3,Clean Code,Clean Code,Robert C. Martin,0.866667,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+4,Refactoring,Refactoring,Martin Fowler,0.800000,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+5,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.733333,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+6,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.666667,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+7,Clean Architecture,Clean Architecture,Robert C. Martin,0.600000,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+8,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.533333,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+9,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.466667,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+10,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.400000,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+11,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.333333,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+12,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.266667,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+13,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.200000,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+14,Clean Agile,Clean Agile,Robert C. Martin,0.133333,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao
+15,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.066667,https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao

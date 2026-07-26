@@ -1,17 +1,17 @@
-# Cinque libri di programmazione
+# I libri da leggere se ami programmare
 
-- **Publicador/curador:** Aulab
-- **URL:** https://aulab.it/blog/cinque-libri-di-programmazione
-- **Domínio:** aulab.it
-- **Data de publicação/atualização identificada:** 2022-06-10
-- **Data de acesso:** 2026-07-26
-- **Acessibilidade na checagem final:** HTTP 200 em 2026-07-26
+- **Publicador/curador:** Shellrent
+- **URL:** https://www.shellrent.com/blog/i-libri-da-leggere-se-ami-programmare/
+- **Domínio:** www.shellrent.com
+- **Data de publicação/atualização identificada:** 2022-04-22
+- **Data de acesso:** 2026-07-27
+- **Acessibilidade na checagem final:** HTTP 200 em 2026-07-27
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `ordem_editorial`
 - **Idioma:** `it`
 - **Quantidade usada:** 5
-- **Escopo:** Ágil, história da computação, formação em desenvolvimento e design de software.
-- **Observações:** Fonte em italiano; inclui títulos publicados somente em italiano, mantidos com o título original.
+- **Escopo:** Código limpo, padrões, ofício, decisão algorítmica e gestão de projetos.
+- **Observações:** Fonte em italiano, com cinco indicações em ordem editorial.
 
 ## Critério de extração
 

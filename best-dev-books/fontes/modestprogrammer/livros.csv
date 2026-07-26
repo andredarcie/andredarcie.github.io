@@ -1,0 +1,13 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+2,The Clean Coder,The Clean Coder,Robert C. Martin,0.916667,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+3,Clean Architecture,Clean Architecture,Robert C. Martin,0.833333,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+4,Coders at Work,Coders at Work,Peter Seibel,0.750000,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+5,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.666667,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+6,The Complete Software Developer's Career Guide,The Complete Software Developer's Career Guide,John Sonmez,0.583333,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+7,Getting Things Programmed,Getting Things Programmed,Michał Bartyzel,0.500000,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+8,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.416667,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+9,Refactoring,Refactoring,Martin Fowler,0.333333,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+10,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.250000,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+11,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.166667,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista
+12,Code Complete,Code Complete,Steve McConnell,0.083333,https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista

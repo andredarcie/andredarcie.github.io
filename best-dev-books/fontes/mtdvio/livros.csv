@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Computer Science Distilled,Computer Science Distilled,Wladston Ferreira Filho,1.000000,https://github.com/mtdvio/every-programmer-should-know
+2,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.950000,https://github.com/mtdvio/every-programmer-should-know
+3,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.900000,https://github.com/mtdvio/every-programmer-should-know
+4,How to Count,How to Count,Steven Frank,0.850000,https://github.com/mtdvio/every-programmer-should-know
+5,Understanding Distributed Systems,Understanding Distributed Systems,Roberto Vitillo,0.800000,https://github.com/mtdvio/every-programmer-should-know
+6,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.750000,https://github.com/mtdvio/every-programmer-should-know
+7,Secure Programming HOWTO,Secure Programming HOWTO,David A. Wheeler,0.700000,https://github.com/mtdvio/every-programmer-should-know
+8,Foundations of Security,Foundations of Security,Neil Daswani; Christoph Kern; Anita Kesavan,0.650000,https://github.com/mtdvio/every-programmer-should-know
+9,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.600000,https://github.com/mtdvio/every-programmer-should-know
+10,Practical Object-Oriented Design in Ruby,Practical Object-Oriented Design in Ruby,Sandi Metz,0.550000,https://github.com/mtdvio/every-programmer-should-know
+11,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.500000,https://github.com/mtdvio/every-programmer-should-know
+12,The Art of Readable Code,The Art of Readable Code,Dustin Boswell; Trevor Foucher,0.450000,https://github.com/mtdvio/every-programmer-should-know
+13,Code Complete,Code Complete,Steve McConnell,0.400000,https://github.com/mtdvio/every-programmer-should-know
+14,Clean Code,Clean Code,Robert C. Martin,0.350000,https://github.com/mtdvio/every-programmer-should-know
+15,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.300000,https://github.com/mtdvio/every-programmer-should-know
+16,Release It!,Release It!,Michael T. Nygard,0.250000,https://github.com/mtdvio/every-programmer-should-know
+17,Mostly Adequate Guide to Functional Programming,Mostly Adequate Guide to Functional Programming,Brian Lonsdorf,0.200000,https://github.com/mtdvio/every-programmer-should-know
+18,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,0.150000,https://github.com/mtdvio/every-programmer-should-know
+19,Site Reliability Engineering,Site Reliability Engineering,Betsy Beyer; Chris Jones; Jennifer Petoff; Niall Richard Murphy,0.100000,https://github.com/mtdvio/every-programmer-should-know
+20,The Passionate Programmer,The Passionate Programmer,Chad Fowler,0.050000,https://github.com/mtdvio/every-programmer-should-know

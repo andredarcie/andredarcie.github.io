@@ -1,17 +1,17 @@
-# Die 5 besten Programmier-Bücher, die Du lesen musst
+# 10 libros esenciales para desarrolladores y programadores
 
-- **Publicador/curador:** datamines
-- **URL:** https://datamines.de/programmierer-buchtipps/
-- **Domínio:** datamines.de
+- **Publicador/curador:** Profile Software Services
+- **URL:** https://profile.es/blog/libros-esenciales-para-desarrolladores-y-programadores/
+- **Domínio:** profile.es
 - **Data de publicação/atualização identificada:** não identificada
-- **Data de acesso:** 2026-07-26
-- **Acessibilidade na checagem final:** HTTP 200 em 2026-07-26
-- **Natureza:** `curadoria_individual`
+- **Data de acesso:** 2026-07-27
+- **Acessibilidade na checagem final:** HTTP 200 em 2026-07-27
+- **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `lista_numerada`
-- **Idioma:** `de`
-- **Quantidade usada:** 5
-- **Escopo:** Python para iniciantes, código legível e prática deliberada.
-- **Observações:** Fonte em alemão; edições alemãs foram mapeadas para o título canônico.
+- **Idioma:** `es`
+- **Quantidade usada:** 10
+- **Escopo:** Construção, algoritmos, padrões, fundamentos e legado.
+- **Observações:** Fonte em espanhol, com dez itens numerados e sem links de afiliado.
 
 ## Critério de extração
 

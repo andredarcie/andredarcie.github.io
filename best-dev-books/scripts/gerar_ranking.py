@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCES_DIR = ROOT / "fontes"
 ACCESS_DATE = date(2026, 7, 25).isoformat()
 LATEST_ACCESS_DATE = date(2026, 7, 26).isoformat()
+# Fontes que substituíram as descartadas na revisão de escopo.
+NEW_ACCESS_DATE = date(2026, 7, 27).isoformat()
 MAX_EDITORIAL_ITEMS = 20
 
 
@@ -34,7 +36,6 @@ AUTHORS: dict[str, str] = {
     "Apprenticeship Patterns": "Dave Hoover; Adewale Oshineye",
     "Automate the Boring Stuff with Python": "Al Sweigart",
     "Beautiful Data": "Toby Segaran; Jeff Hammerbacher (editors)",
-    "Become an Effective Software Engineering Manager": "James Stanier",
     "Being Geek": "Michael Lopp",
     "Build a Large Language Model (From Scratch)": "Sebastian Raschka",
     "Building Microservices": "Sam Newman",
@@ -96,7 +97,6 @@ AUTHORS: dict[str, str] = {
     "Patterns of Enterprise Application Architecture": "Martin Fowler",
     "Peopleware": "Tom DeMarco; Tim Lister",
     "Perfect Software": "Gerald M. Weinberg",
-    "PHP & MySQL: Server-side Web Development": "Jon Duckett",
     "Programming Clojure": "Stuart Halloway",
     "Programming Pearls": "Jon Bentley",
     "Python Crash Course": "Eric Matthes",
@@ -110,9 +110,11 @@ AUTHORS: dict[str, str] = {
     "Soft Skills": "John Sonmez",
     "Software Architecture for Developers": "Simon Brown",
     "Software Architecture: The Hard Parts": "Neal Ford; Mark Richards; Pramod Sadalage; Zhamak Dehghani",
+    "Software Engineering": "Ian Sommerville",
     "Software Engineering at Google": "Titus Winters; Tom Manshreck; Hyrum Wright",
-    "Software Engineering for Absolute Beginners": "Nico Loubser",
     "Software Engineering: A Practitioner's Approach": "Roger S. Pressman; Bruce R. Maxim",
+    "Software Engineering: Principles and Practice": "Hans van Vliet",
+    "Software Engineering: Theory and Practice": "Shari Lawrence Pfleeger; Joanne M. Atlee",
     "Software Estimation": "Steve McConnell",
     "Software Patterns": "James O. Coplien",
     "Software Project Survival Guide": "Steve McConnell",
@@ -414,18 +416,6 @@ SOURCES: list[Source] = [
         books("Cracking the Coding Interview", "Introduction to Algorithms", "Clean Code", "Clean Architecture", "Code Complete", "Code", "The Art of Computer Programming", "Programming Pearls", "A Philosophy of Software Design", "The Pragmatic Programmer"),
     ),
     Source(
-        "itsourcecode",
-        "Best Programming Books for Self-Taught Developers (2026 Reading List)",
-        "ITSourceCode",
-        "https://itsourcecode.com/blogs/best-programming-books-for-self-taught-developers-2026/",
-        "2026-06-22",
-        "curadoria_comercial",
-        "lista_numerada",
-        "Fundamentos, Python, Java, web, arquitetura e IA/ML.",
-        "A página informa links de afiliados e foi atualizada em 2026-07-01.",
-        books("The Pragmatic Programmer", "Clean Code", "Cracking the Coding Interview", "Python Crash Course", "Automate the Boring Stuff with Python", "Fluent Python", "Effective Java", "Head First Java", "Eloquent JavaScript", "You Don't Know JS Yet", "PHP & MySQL: Server-side Web Development", "Designing Data-Intensive Applications", "System Design Interview", "Hands-On Machine Learning", "AI Engineering"),
-    ),
-    Source(
         "javaguides",
         "10 Must-Read Books for Every Software Engineer",
         "Java Guides",
@@ -568,18 +558,6 @@ SOURCES: list[Source] = [
         "Escrita de código, engenharia de software e mentalidade.",
         "A fonte possui 24 itens; foram usados os 20 primeiros.",
         books("Code Craft", "Solid Code", "The Clean Coder", "Debugging the Development Process", "Refactoring", "Code Complete", "Clean Code", "Code Simplicity", "Rapid Development", "Software Project Survival Guide", "Agile Software Development: The Cooperative Game", "Getting Real", "Perfect Software", "Coder to Developer", "Software Estimation", "Software Engineering: A Practitioner's Approach", "Facts and Fallacies of Software Engineering", "The Intentional Stance", "The Back of the Napkin", "The Timeless Way of Building"),
-    ),
-    Source(
-        "studentprojectcode",
-        "Best Software Engineering Books in 2026",
-        "Student Project Code",
-        "https://studentprojectcode.com/blog/best-software-engineering-books-in-year",
-        "2025-09-20",
-        "lista_comercial_dinamica",
-        "ranking_explicito",
-        "Livros atuais de fundamentos, sistemas, carreira, liderança e IA.",
-        "A página exibe uma lista de compra dinâmica para julho de 2026.",
-        books("The Pragmatic Programmer", "Designing Data-Intensive Applications", "AI Engineering", "The Software Engineer's Guidebook", "Software Engineering at Google", "Clean Code", "Design Patterns", "Become an Effective Software Engineering Manager", "Modern Software Engineering", "Software Engineering for Absolute Beginners"),
     ),
     Source(
         "thesgn",
@@ -773,24 +751,6 @@ SOURCES: list[Source] = [
             "Tidy First?", "Working Effectively with Legacy Code", "C# in Depth",
             "JavaScript: The Good Parts", "Release It!", "Site Reliability Engineering",
             "Framework Design Guidelines",
-        ),
-    ),
-    Source(
-        "bootdev_web",
-        "The Best 10 Web Development Books",
-        "Boot.dev",
-        "https://www.boot.dev/blog/education/best-web-dev-books",
-        "2026-02-21",
-        "curadoria_editorial",
-        "lista_numerada",
-        "Front-end, entrevistas, práticas, back-end e bancos de dados.",
-        "Os dez lugares do ranking publicado foram preservados.",
-        books(
-            "HTML & CSS: Design and Build Websites",
-            "JavaScript and jQuery: Interactive Front-End Web Development",
-            "You Don't Know JS Yet", "Cracking the Coding Interview",
-            "The Pragmatic Programmer", "Web Design: A Beginner's Guide", "Clean Code",
-            "PHP & MySQL: Server-side Web Development", "Database Internals", "Let's Go!",
         ),
     ),
     Source(
@@ -1126,27 +1086,6 @@ SOURCES: list[Source] = [
             "The C Programming Language", "A Book on C", "Programming Interviews Exposed",
             "Head First Java", "Effective Java", "Eloquent JavaScript", "JavaScript: The Good Parts",
             "JavaScript and jQuery: Interactive Front-End Web Development",
-        ),
-        LATEST_ACCESS_DATE,
-    ),
-    Source(
-        "goodreads_listopia",
-        "Software Development (Listopia)",
-        "Goodreads",
-        "https://www.goodreads.com/list/show/8112.software_development",
-        "",
-        "ranking_votos_comunidade",
-        "ranking_explicito",
-        "Desenvolvimento de software, algoritmos, arquitetura e ciência da computação.",
-        "Ranking por votos da comunidade, recalculado continuamente; foram usados os 20 primeiros colocados na data de acesso. A lista inclui títulos autopublicados que sobem por votação.",
-        books(
-            "The C Programming Language", "Introduction to Algorithms", "Clean Code", "Code Complete",
-            "Design Patterns", "The Pragmatic Programmer", "Refactoring", "The Mythical Man-Month",
-            "Structure and Interpretation of Computer Programs",
-            "Patterns of Enterprise Application Architecture", "Introduction to System Design",
-            "Head First Design Patterns", "Software Estimation", "The Art of Computer Programming",
-            "Domain-Driven Design", "Joel on Software", "Literate Programming",
-            "Applied Cryptography", "Fundamental Kotlin", "The Algorithm Design Manual",
         ),
         LATEST_ACCESS_DATE,
     ),
@@ -1536,43 +1475,6 @@ SOURCES: list[Source] = [
         LATEST_ACCESS_DATE,
     ),
     Source(
-        "thedigitaltalents",
-        "10 Bücher, die jeder Programmierer mal gelesen haben sollte",
-        "The Digital Talents",
-        "https://www.thedigitaltalents.com/10-buecher-fuer-programmierer/",
-        "2023-08-15",
-        "curadoria_empresa",
-        "lista_numerada",
-        "Introdução à programação, linguagens, redes neurais e boas práticas.",
-        "Fonte em alemão; edições alemãs de livros internacionais foram mapeadas para o título canônico.",
-        books(
-            "Programmieren lernen – Eine grundlegende Einführung mit Java",
-            "Swift 4: Das umfassende Handbuch", "IT-Handbuch für Fachinformatiker",
-            "Neuronale Netze selbst programmieren", "The Pragmatic Programmer", "Clean Code",
-            "Besser coden", "97 Things Every Programmer Should Know", "Head First Java",
-            "C# 7.0 in a Nutshell",
-        ),
-        LATEST_ACCESS_DATE,
-        "de",
-    ),
-    Source(
-        "datamines",
-        "Die 5 besten Programmier-Bücher, die Du lesen musst",
-        "datamines",
-        "https://datamines.de/programmierer-buchtipps/",
-        "",
-        "curadoria_individual",
-        "lista_numerada",
-        "Python para iniciantes, código legível e prática deliberada.",
-        "Fonte em alemão; edições alemãs foram mapeadas para o título canônico.",
-        books(
-            "Python Crash Course", "Weniger schlecht programmieren", "Clean Code",
-            "The Pragmatic Programmer", "The Big Book of Small Python Projects",
-        ),
-        LATEST_ACCESS_DATE,
-        "de",
-    ),
-    Source(
         "mindsers",
         "La liste de livres à lire d'un développeur sénior",
         "Nathanaël Cherrier / Mindsers Blog",
@@ -1728,61 +1630,6 @@ SOURCES: list[Source] = [
         "it",
     ),
     Source(
-        "aulab",
-        "Cinque libri di programmazione",
-        "Aulab",
-        "https://aulab.it/blog/cinque-libri-di-programmazione",
-        "2022-06-10",
-        "curadoria_empresa",
-        "ordem_editorial",
-        "Ágil, história da computação, formação em desenvolvimento e design de software.",
-        "Fonte em italiano; inclui títulos publicados somente em italiano, mantidos com o título original.",
-        books(
-            "Scrum: The Art of Doing Twice the Work in Half the Time", "Non è nato in un garage",
-            "Ottenere il massimo da un corso Full-Stack Developer", "A Philosophy of Software Design",
-            "Programming Machine Learning",
-        ),
-        LATEST_ACCESS_DATE,
-        "it",
-    ),
-    Source(
-        "droptica",
-        "Książki dla programistów, które polecamy przeczytać",
-        "Droptica",
-        "https://www.kariera.droptica.pl/blog/lista-najlepszych-ksiazek-dla-programistow/",
-        "2021-12-16",
-        "curadoria_empresa",
-        "ordem_editorial",
-        "Código limpo, arquitetura, PHP, carreira e Drupal.",
-        "Fonte em polonês; edições polonesas de livros internacionais foram mapeadas para o título canônico.",
-        books(
-            "Clean Code", "Clean Architecture", "Modern PHP",
-            "The Complete Software Developer's Career Guide", "Drupal 9 Module Development",
-            "The Pragmatic Programmer", "Coders at Work",
-        ),
-        LATEST_ACCESS_DATE,
-        "pl",
-    ),
-    Source(
-        "it_leaders",
-        "Książki, po które chętnie sięgają programiści",
-        "IT-Leaders",
-        "https://blog.it-leaders.pl/ksiazki-ktore-chetnie-siegaja-programisci-2/",
-        "2022-09-13",
-        "curadoria_empresa",
-        "ordem_editorial",
-        "C++, C#, padrões, ágil, gestão de projetos e cultura da indústria.",
-        "Fonte em polonês; edições polonesas foram mapeadas para o título canônico e os títulos publicados apenas em polonês foram mantidos no original.",
-        books(
-            "C++ Primer Plus", "Clean Code", "Design Patterns", "Learning Agile",
-            "The Pragmatic Programmer", "Symfonia C++ Standard", "Head First C#",
-            "Zrozumieć programowanie", "Joel on Software", "Regular Expression Pocket Reference",
-            "Steve Jobs", "Are You Smart Enough to Work at Google?",
-        ),
-        LATEST_ACCESS_DATE,
-        "pl",
-    ),
-    Source(
         "devto_sandordargo",
         "8 books every junior developer should read",
         "DEV Community / Sandor Dargo",
@@ -1836,25 +1683,206 @@ SOURCES: list[Source] = [
         LATEST_ACCESS_DATE,
     ),
     Source(
-        "lorenzoneri",
-        "I migliori libri sulla programmazione",
-        "Lorenzo Neri",
-        "https://lorenzoneri.com/i-migliori-libri-sulla-programmazione/",
-        "2021-05-31",
+        "profile_es",
+        "10 libros esenciales para desarrolladores y programadores",
+        "Profile Software Services",
+        "https://profile.es/blog/libros-esenciales-para-desarrolladores-y-programadores/",
+        "",
+        "curadoria_empresa",
+        "lista_numerada",
+        "Construção, algoritmos, padrões, fundamentos e legado.",
+        "Fonte em espanhol, com dez itens numerados e sem links de afiliado.",
+        books(
+            "Code Complete", "Introduction to Algorithms", "Design Patterns",
+            "The Mythical Man-Month", "Structure and Interpretation of Computer Programs",
+            "Clean Code", "Code Simplicity", "Working Effectively with Legacy Code",
+            "The Pragmatic Programmer", "The Art of Computer Programming",
+        ),
+        NEW_ACCESS_DATE,
+        "es",
+    ),
+    Source(
+        "shellrent",
+        "I libri da leggere se ami programmare",
+        "Shellrent",
+        "https://www.shellrent.com/blog/i-libri-da-leggere-se-ami-programmare/",
+        "2022-04-22",
+        "curadoria_empresa",
+        "ordem_editorial",
+        "Código limpo, padrões, ofício, decisão algorítmica e gestão de projetos.",
+        "Fonte em italiano, com cinco indicações em ordem editorial.",
+        books(
+            "Clean Code", "Design Patterns", "The Pragmatic Programmer",
+            "Algorithms to Live By", "The Mythical Man-Month",
+        ),
+        NEW_ACCESS_DATE,
+        "it",
+    ),
+    Source(
+        "modestprogrammer",
+        "5 Książek, Które Powinien Przeczytać Każdy Programista",
+        "Modest Programmer",
+        "https://modestprogrammer.pl/5-ksiazek-ktore-powinien-przeczytac-kazdy-programista",
+        "2022-06-17",
         "curadoria_individual",
         "ordem_editorial",
-        "Linguagens, especialização em IA e jogos, e competências profissionais.",
-        "Fonte em italiano, dividida em livros de linguagens, de especialização e de competências profissionais.",
+        "Código limpo, profissionalismo, arquitetura, ofício e legado.",
+        "Fonte em polonês; a seção final de livros de programação para crianças não foi contada. Edições polonesas foram mapeadas para o título canônico e o título publicado apenas em polonês foi mantido no original.",
         books(
-            "JavaScript and jQuery: Interactive Front-End Web Development", "C How to Program",
-            "Learning Python", "PHP & MySQL: Server-side Web Development",
-            "Java: The Complete Reference", "Artificial Intelligence: A Modern Approach",
-            "Hands-On Machine Learning", "Artificial Intelligence for Games",
-            "A Theory of Fun for Game Design",
-            "Scrum: The Art of Doing Twice the Work in Half the Time", "Clean Code", "Refactoring",
+            "Clean Code", "The Clean Coder", "Clean Architecture", "Coders at Work",
+            "The Pragmatic Programmer", "The Complete Software Developer's Career Guide",
+            "Getting Things Programmed", "Design Patterns", "Refactoring",
+            "The Software Craftsman", "Working Effectively with Legacy Code", "Code Complete",
         ),
-        LATEST_ACCESS_DATE,
-        "it",
+        NEW_ACCESS_DATE,
+        "pl",
+    ),
+    Source(
+        "tabnews_d3vlopes",
+        "Top 15 livros de programação",
+        "TabNews / D3vlopes",
+        "https://www.tabnews.com.br/D3vlopes/top-15-livros-de-programacao",
+        "",
+        "curadoria_individual",
+        "ranking_explicito",
+        "Ofício, código limpo, padrões, arquitetura, legado e algoritmos.",
+        "Fonte em português. A página exibe a contagem do 15º ao 1º lugar; o CSV a reorganiza do 1º ao 15º.",
+        books(
+            "The Clean Coder", "The Art of Computer Programming", "Clean Code", "Refactoring",
+            "Head First Design Patterns", "Test-Driven Development: By Example",
+            "Clean Architecture", "Design Patterns", "Domain-Driven Design",
+            "The Pragmatic Programmer", "The Mythical Man-Month",
+            "Working Effectively with Legacy Code",
+            "Patterns of Enterprise Application Architecture", "Clean Agile",
+            "Grokking Algorithms",
+        ),
+        NEW_ACCESS_DATE,
+        "pt",
+    ),
+    Source(
+        "danieldcs",
+        "16 livros para desenvolvedores em 2022",
+        "Daniel Castro",
+        "https://danieldcs.com/16-livros-para-desenvolvedores-ler-em-2022/",
+        "2022-01-27",
+        "curadoria_individual",
+        "lista_numerada",
+        "Padrões, produtividade, ágil, testes, domínio, arquitetura e microsserviços.",
+        "Fonte em português, com dezesseis itens numerados; livros publicados somente em português mantêm o título original como canônico.",
+        books(
+            "Design Patterns", "14 Hábitos de Desenvolvedores Altamente Produtivos",
+            "Estruturas de Dados e Algoritmos com JavaScript",
+            "Orientação a Objetos e SOLID para Ninjas", "Grokking Algorithms",
+            "Extreme Programming Explained", "Clean Code",
+            "Microsserviços prontos para a produção", "Building Micro-Frontends",
+            "Test-Driven Development: Teste e Design no Mundo Real", "Refactoring",
+            "Domain-Driven Design", "Esteja, viva, permaneça 100% Presente",
+            "The Pragmatic Programmer", "Arquitetura Limpa na Prática",
+            "Monolith to Microservices",
+        ),
+        NEW_ACCESS_DATE,
+        "pt",
+    ),
+    Source(
+        "clean_code_developer",
+        "Clean Code Developer — Literatur",
+        "Clean Code Developer Initiative",
+        "https://clean-code-developer.de/mehr-infos/literatur/",
+        "",
+        "curadoria_especialista",
+        "ordem_editorial",
+        "Código limpo, profissionalismo, arquitetura, padrões, refatoração e legado.",
+        "Fonte em alemão. A página lista a edição original e a tradução alemã do mesmo livro em entradas separadas; cada título foi contado uma única vez. Inclui um livro de um dos mantenedores da iniciativa.",
+        books(
+            "Clean Code", "The Clean Coder", "Clean Architecture", "The Pragmatic Programmer",
+            "Head First Design Patterns", "Refactoring", "Code Complete",
+            "Working Effectively with Legacy Code", "Java by Comparison",
+            "The Art of Readable Code", "Mit Flow Design zu Clean Code",
+        ),
+        NEW_ACCESS_DATE,
+        "de",
+    ),
+    Source(
+        "kent_comp5480",
+        "COMP5480 Software Engineering Process — Indicative Reading",
+        "University of Kent",
+        "https://www.kent.ac.uk/courses/modules/module/COMP5480",
+        "",
+        "curadoria_academica",
+        "ordem_editorial",
+        "Livros-texto de processo e prática de engenharia de software.",
+        "Bibliografia indicativa do módulo; a ordem publicada foi preservada.",
+        books(
+            "Software Engineering", "Software Engineering: A Practitioner's Approach",
+            "Software Engineering: Theory and Practice",
+            "Software Engineering: Principles and Practice",
+        ),
+        NEW_ACCESS_DATE,
+    ),
+    Source(
+        "mtdvio",
+        "Every Programmer Should Know",
+        "mtdvio / GitHub",
+        "https://github.com/mtdvio/every-programmer-should-know",
+        "",
+        "curadoria_open_source",
+        "ordem_editorial",
+        "Algoritmos, distribuídos, segurança, usabilidade, práticas e confiabilidade.",
+        "Repositório versionado. Foram contados apenas os itens marcados como livro, na ordem do arquivo, limitados aos 20 primeiros; artigos e vídeos ficaram de fora.",
+        books(
+            "Computer Science Distilled", "Grokking Algorithms", "Introduction to Algorithms",
+            "How to Count", "Understanding Distributed Systems",
+            "Designing Data-Intensive Applications", "Secure Programming HOWTO",
+            "Foundations of Security", "Don't Make Me Think",
+            "Practical Object-Oriented Design in Ruby", "Working Effectively with Legacy Code",
+            "The Art of Readable Code", "Code Complete", "Clean Code",
+            "Test-Driven Development: By Example", "Release It!",
+            "Mostly Adequate Guide to Functional Programming",
+            "Structure and Interpretation of Computer Programs", "Site Reliability Engineering",
+            "The Passionate Programmer",
+        ),
+        NEW_ACCESS_DATE,
+    ),
+    Source(
+        "daninouai_classics",
+        "Classic Software Engineering Resources",
+        "daninouai / GitHub",
+        "https://github.com/daninouai/classic-software-engineering-resources",
+        "",
+        "curadoria_open_source",
+        "ordem_editorial",
+        "Clássicos anteriores a 2010: construção, modelagem, arquitetura, testes e processo.",
+        "Repositório versionado que reúne material clássico de engenharia de software; a ordem das seções foi preservada e a lista foi limitada aos 20 primeiros livros.",
+        books(
+            "Code Complete", "The Unified Modeling Language User Guide",
+            "The Pragmatic Programmer", "Clean Code", "The Clean Coder",
+            "A Philosophy of Software Design", "Working Effectively with Legacy Code",
+            "Software Engineering: A Practitioner's Approach", "The Computer and the Brain",
+            "Design Patterns", "Software Architecture in Practice",
+            "Head First Design Patterns", "Refactoring",
+            "Object-Oriented Analysis and Design with Applications",
+            "Patterns of Enterprise Application Architecture", "Domain-Driven Design",
+            "Modern Structured Analysis", "Designing the User Interface",
+            "Testing Computer Software", "xUnit Test Patterns",
+        ),
+        NEW_ACCESS_DATE,
+    ),
+    Source(
+        "habr",
+        "10 Books Every Developer Should Read in 2025 to Level Up",
+        "Habr",
+        "https://habr.com/en/articles/871432/",
+        "2025-01-27",
+        "curadoria_individual",
+        "lista_numerada",
+        "Código limpo, depuração, foco, refatoração, system design e domínio.",
+        "Publicação da comunidade Habr, em sua versão em inglês; os dez lugares numerados foram preservados.",
+        books(
+            "Clean Code", "The Pragmatic Programmer", "Code Complete", "Why Programs Fail",
+            "Deep Work", "Refactoring", "System Design Interview", "Don't Make Me Think",
+            "Design Patterns", "Domain-Driven Design",
+        ),
+        NEW_ACCESS_DATE,
     ),
 ]
 
@@ -1880,7 +1908,6 @@ AUTHORS.update(
         "Computer Systems: A Programmer's Perspective": "Randal E. Bryant; David R. O'Hallaron",
         "Conceptual Blockbusting": "James L. Adams",
         "Crafting Interpreters": "Robert Nystrom",
-        "Database Internals": "Alex Petrov",
         "Design Paradigms": "Henry Petroski",
         "Designing Secure Software": "Loren Kohnfelder",
         "Distributed Systems: Principles and Paradigms": "Andrew S. Tanenbaum; Maarten van Steen",
@@ -1888,13 +1915,11 @@ AUTHORS.update(
         "Exploring Requirements": "Donald C. Gause; Gerald M. Weinberg",
         "Framework Design Guidelines": "Krzysztof Cwalina; Brad Abrams",
         "Grokking Simplicity": "Eric Normand",
-        "HTML & CSS: Design and Build Websites": "Jon Duckett",
         "Handbook of Software Quality Assurance": "Gordon G. Schulmeyer; James I. McManus",
         "Handbook of Walkthroughs, Inspections, and Technical Reviews": "Daniel P. Freedman; Gerald M. Weinberg",
         "Implementing Lean Software Development": "Mary Poppendieck; Tom Poppendieck",
         "Inclusive Design Patterns": "Heydon Pickering",
         "JavaScript and jQuery: Interactive Front-End Web Development": "Jon Duckett",
-        "Let's Go!": "Alex Edwards",
         "Letters to a New Developer": "Dan Moore",
         "Logic in Computer Science": "Michael Huth; Mark Ryan",
         "Manager's Handbook for Software Development": "NASA Goddard Space Flight Center",
@@ -1959,7 +1984,6 @@ AUTHORS.update(
         "UML Toolkit": "Hans-Erik Eriksson; Magnus Penker",
         "Using UML: Software Engineering with Objects and Components": "Rob Pooley; Perdita Stevens",
         "Version Control with Git": "Jon Loeliger; Matthew McCullough",
-        "Web Design: A Beginner's Guide": "Wendy Willard",
         "Writing Effective Use Cases": "Alistair Cockburn",
         "xUnit Test Patterns": "Gerard Meszaros",
     }
@@ -1973,7 +1997,6 @@ AUTHORS.update(
         "About Face": "Alan Cooper; Robert Reimann; David Cronin",
         "Algoritmos e Lógica da Programação": "Marco A. Furlan de Souza",
         "Algoritmos: Lógica para Desenvolvimento de Programação de Computadores": "José Augusto N. G. Manzano; Jayr Figueiredo de Oliveira",
-        "Applied Cryptography": "Bruce Schneier",
         "Aprenda Programação Orientada a Objetos em 21 Dias": "Anthony Sintes",
         "Beautiful Evidence": "Edward R. Tufte",
         "Becoming a Better Programmer": "Pete Goodliffe",
@@ -1981,12 +2004,9 @@ AUTHORS.update(
         "Designing Web Usability": "Jakob Nielsen",
         "Envisioning Information": "Edward R. Tufte",
         "Explore It!": "Elisabeth Hendrickson",
-        "Fundamental Kotlin": "Miloš Vasić",
         "Introduction to Software Testing": "Paul Ammann; Jeff Offutt",
-        "Introduction to System Design": "Shivam Singh",
         "Joel on Software": "Joel Spolsky",
         "Kubernetes in Action": "Marko Lukša",
-        "Literate Programming": "Donald E. Knuth",
         "Object-Oriented and Classical Software Engineering": "Stephen R. Schach",
         "Programming Interviews Exposed": "John Mongan; Noah Suojanen Kindler; Eric Giguère",
         "Project-Based Software Engineering": "Evelyn Stiller; Cathie LeBlanc",
@@ -2011,20 +2031,13 @@ AUTHORS.update(
 AUTHORS.update(
     {
         "A Common-Sense Guide to Data Structures and Algorithms": "Jay Wengrow",
-        "A Theory of Fun for Game Design": "Raph Koster",
         "Algorithms to Live By": "Brian Christian; Tom Griffiths",
         "An Embedded Software Primer": "David E. Simon",
         "Analysis Patterns": "Martin Fowler",
         "Androids": "Chet Haase",
         "Aprende SQL en un fin de semana": "Antonio Padial Solier",
-        "Are You Smart Enough to Work at Google?": "William Poundstone",
-        "Artificial Intelligence for Games": "Ian Millington; John Funge",
         "Artificial Intelligence: A Guide to Intelligent Systems": "Michael Negnevitsky",
-        "Besser coden": "Uwe Post",
         "Building a Career in Software": "Daniel Heller",
-        "C How to Program": "Paul Deitel; Harvey Deitel",
-        "C# 7.0 in a Nutshell": "Joseph Albahari; Ben Albahari",
-        "C++ Primer Plus": "Stephen Prata",
         "Cloud Native DevOps with Kubernetes": "John Arundel; Justin Domingus",
         "Communication for Engineers": "Chris Laffra",
         "Computer Networks": "Andrew S. Tanenbaum; David J. Wetherall",
@@ -2039,7 +2052,6 @@ AUTHORS.update(
         "Docker in Action": "Jeff Nickoloff; Stephen Kuenzli",
         "Docs Like Code": "Anne Gentle",
         "Doing Hard Time": "Bruce Powell Douglass",
-        "Drupal 9 Module Development": "Daniel Sipos",
         "Effective DevOps": "Jennifer Davis; Katherine Daniels",
         "Effective Software Testing": "Maurício Aniche",
         "El gran libro de HTML5, CSS3 y JavaScript": "Juan Diego Gauchat",
@@ -2049,51 +2061,34 @@ AUTHORS.update(
         "Game Programming Patterns": "Robert Nystrom",
         "Git & GitHub desde cero": "Brais Moure",
         "Growing as a Mobile Engineer": "Gergely Orosz",
-        "Head First C#": "Andrew Stellman; Jennifer Greene",
         "High Output Management": "Andrew S. Grove",
         "High Tech Start Up": "John L. Nesheim",
-        "IT-Handbuch für Fachinformatiker": "Sascha Kersken",
         "Java in a Nutshell": "Benjamin J. Evans; David Flanagan",
-        "Java: The Complete Reference": "Herbert Schildt",
-        "Learning Agile": "Andrew Stellman; Jennifer Greene",
         "Learning Domain-Driven Design": "Vlad Khononov",
-        "Learning Python": "Mark Lutz",
         "Learning SQL": "Alan Beaulieu",
         "Lean Enterprise": "Jez Humble; Joanne Molesky; Barry O'Reilly",
         "Machine Learning": "Ethem Alpaydin",
         "Machine Learning: The Art and Science of Algorithms that Make Sense of Data": "Peter Flach",
         "Modern Operating Systems": "Andrew S. Tanenbaum; Herbert Bos",
-        "Modern PHP": "Josh Lockhart",
         "Monolith to Microservices": "Sam Newman",
         "More Programming Pearls": "Jon Bentley",
-        "Neuronale Netze selbst programmieren": "Tariq Rashid",
-        "Non è nato in un garage": "Fabio Carletti",
         "Object Solutions": "Grady Booch",
         "Operating Systems: Design and Implementation": "Andrew S. Tanenbaum; Albert S. Woodhull",
-        "Ottenere il massimo da un corso Full-Stack Developer": "Luca Solfanelli",
         "Practical Object-Oriented Design in Ruby": "Sandi Metz",
         "Principles of Software Engineering Management": "Tom Gilb",
         "Problem Frames and Methods": "Michael Jackson",
         "Professional Software Development": "Steve McConnell",
-        "Programmieren lernen – Eine grundlegende Einführung mit Java": "Peter Pepper",
-        "Programming Machine Learning": "Paolo Perrotta",
         "Programming in Scala": "Martin Odersky; Lex Spoon; Bill Venners",
-        "Regular Expression Pocket Reference": "Tony Stubblebine",
         "Scaling Teams": "Alexander Grosse; David Loftesness",
-        "Scrum: The Art of Doing Twice the Work in Half the Time": "Jeff Sutherland",
         "Software Architecture Patterns": "Mark Richards",
         "Software Cost Estimation with COCOMO II": "Barry W. Boehm",
         "Software Engineering Economics": "Barry W. Boehm",
         "Software Fundamentals: Collected Papers": "David L. Parnas",
         "Software Product-Line Engineering": "David M. Weiss; Chi Tau Robert Lai",
-        "Steve Jobs": "Walter Isaacson",
         "Streaming Systems": "Tyler Akidau; Slava Chernyak; Reuven Lax",
         "Structured Computer Organization": "Andrew S. Tanenbaum; Todd Austin",
-        "Swift 4: Das umfassende Handbuch": "Michael Kofler",
-        "Symfonia C++ Standard": "Jerzy Grębosz",
         "Technically Wrong": "Sara Wachter-Boettcher",
         "The Art of Doing Science and Engineering": "Richard W. Hamming",
-        "The Big Book of Small Python Projects": "Al Sweigart",
         "The C++ Programming Language": "Bjarne Stroustrup",
         "The Coming Wave": "Mustafa Suleyman",
         "The Elements of Style": "William Strunk Jr.; E. B. White",
@@ -2101,8 +2096,34 @@ AUTHORS.update(
         "The Staff Engineer's Path": "Tanya Reilly",
         "The Tangled Web": "Michal Zalewski",
         "Thinking in Systems": "Donella H. Meadows",
-        "Weniger schlecht programmieren": "Kathrin Passig; Johannes Jander",
-        "Zrozumieć programowanie": "Gynvael Coldwind",
+    }
+)
+
+
+# Títulos trazidos pelas fontes que entraram na revisão de escopo.
+AUTHORS.update(
+    {
+        "14 Hábitos de Desenvolvedores Altamente Produtivos": "Zeno Rocha",
+        "Arquitetura Limpa na Prática": "Otávio Lemos",
+        "Building Micro-Frontends": "Luca Mezzalira",
+        "Computer Science Distilled": "Wladston Ferreira Filho",
+        "Esteja, viva, permaneça 100% Presente": "Joel Moraes",
+        "Estruturas de Dados e Algoritmos com JavaScript": "Loiane Groner",
+        "Foundations of Security": "Neil Daswani; Christoph Kern; Anita Kesavan",
+        "Getting Things Programmed": "Michał Bartyzel",
+        "How to Count": "Steven Frank",
+        "Java by Comparison": "Simon Harrer; Jörg Lenhard; Linus Dietz",
+        "Microsserviços prontos para a produção": "Susan J. Fowler",
+        "Mit Flow Design zu Clean Code": "Stefan Lieser",
+        "Modern Structured Analysis": "Edward Yourdon",
+        "Mostly Adequate Guide to Functional Programming": "Brian Lonsdorf",
+        "Orientação a Objetos e SOLID para Ninjas": "Maurício Aniche",
+        "Secure Programming HOWTO": "David A. Wheeler",
+        "Software Architecture in Practice": "Len Bass; Paul Clements; Rick Kazman",
+        "Test-Driven Development: Teste e Design no Mundo Real": "Maurício Aniche",
+        "The Art of Readable Code": "Dustin Boswell; Trevor Foucher",
+        "The Computer and the Brain": "John von Neumann",
+        "Why Programs Fail": "Andreas Zeller",
     }
 )
 
@@ -2299,12 +2320,19 @@ def write_readme(source_index: list[dict[str, object]], ranking: list[dict[str, 
         for row in top
     )
 
-    new_sources = sum(1 for source in SOURCES if source.access_date)
     english_sources = sum(1 for source in SOURCES if source.language == "en")
     other_languages = sorted({source.language for source in SOURCES if source.language != "en"})
+    # As fontes entraram em levas; a contagem por data de acesso é montada a partir dos dados.
+    per_access_date = defaultdict(int)
+    for source in SOURCES:
+        per_access_date[source.access_date or ACCESS_DATE] += 1
+    access_summary = ", ".join(
+        f"{count} em {day}" for day, count in sorted(per_access_date.items())
+    )
+    last_access = max(per_access_date)
     readme = f"""# Melhores livros para desenvolvimento de software
 
-Levantamento iniciado em **{ACCESS_DATE}** e atualizado em **{LATEST_ACCESS_DATE}**, com
+Levantamento iniciado em **{ACCESS_DATE}** e atualizado em **{last_access}**, com
 **{len(SOURCES)} fontes**, **{mentions} menções** e **{len(ranking)} títulos normalizados**.
 
 ## Resultado rápido
@@ -2335,10 +2363,43 @@ Esse desenho garante que a recorrência entre fontes seja o componente dominante
 contá-la duas vezes. As posições altas fornecem um bônus entre 0 e 1 para reforçar e
 desempatar o consenso. Todas as fontes recebem o mesmo peso-base.
 
+## Coleta das fontes
+
+As fontes vieram de busca na web em sete idiomas, variando as chaves em torno de
+"melhores livros" e "livros que todo programador deveria ler", mais os links citados
+pelos meta-rankings já existentes:
+
+```
+en  best programming books
+    best books for software developers
+    books every programmer should read
+    top software engineering books
+    software engineering reading list        (ementas de universidade)
+    awesome programming books site:github.com
+    most recommended programming books       (meta-rankings)
+pt  melhores livros de programação
+    livros que todo desenvolvedor deveria ler
+es  mejores libros de programación
+    libros para programadores
+fr  meilleurs livres pour développeur
+    livres à lire développeur
+it  migliori libri di programmazione
+    libri che ogni programmatore dovrebbe leggere
+de  beste Programmierbücher
+    Bücher für Softwareentwickler
+pl  najlepsze książki dla programistów
+```
+
 ## Seleção e tratamento
 
 - Foram incluídas páginas que recomendam livros para programação ou engenharia de software
   de forma geral e cuja ordem é reproduzível.
+- Uma revisão de escopo descartou 10 fontes: 8 que eram, na maior parte, listas de nicho ou
+  de linguagem específica, e 2 cuja ordem não era reproduzível (ranking por votos recalculado
+  continuamente e vitrine comercial dinâmica). Outras 10 fontes entraram no lugar.
+- O corte usado nessa revisão foi de pelo menos **70% de livros de programação ou engenharia
+  de software de escopo geral** por fonte, descontando manuais de linguagem, autoajuda,
+  biografias e ficção.
 - Listas editoriais muito longas foram limitadas aos **20 primeiros itens**. O meta-ranking
   explícito de Pierre de Wulf manteve seus 25 itens.
 - Edições, subtítulos e abreviações foram consolidados sob um título canônico. Fontes em
@@ -2349,7 +2410,7 @@ desempatar o consenso. Todas as fontes recebem o mesmo peso-base.
   {numbered} listas numeradas e {editorial} listas em ordem editorial.
 - CSVs usam vírgula como delimitador e UTF-8 com BOM para facilitar abertura no Excel.
 - Todas as URLs responderam com HTTP 200 na data registrada em `data_acesso`:
-  {len(SOURCES) - new_sources} fontes em {ACCESS_DATE} e {new_sources} em {LATEST_ACCESS_DATE}.
+  {access_summary}.
 
 ## Como interpretar
 

@@ -1,0 +1,11 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://habr.com/en/articles/871432/
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.900000,https://habr.com/en/articles/871432/
+3,Code Complete,Code Complete,Steve McConnell,0.800000,https://habr.com/en/articles/871432/
+4,Why Programs Fail,Why Programs Fail,Andreas Zeller,0.700000,https://habr.com/en/articles/871432/
+5,Deep Work,Deep Work,Cal Newport,0.600000,https://habr.com/en/articles/871432/
+6,Refactoring,Refactoring,Martin Fowler,0.500000,https://habr.com/en/articles/871432/
+7,System Design Interview,System Design Interview,Alex Xu,0.400000,https://habr.com/en/articles/871432/
+8,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.300000,https://habr.com/en/articles/871432/
+9,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.200000,https://habr.com/en/articles/871432/
+10,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.100000,https://habr.com/en/articles/871432/
