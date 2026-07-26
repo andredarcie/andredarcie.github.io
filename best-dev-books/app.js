@@ -24,6 +24,11 @@ const elements = {
   statSources: document.querySelector("#stat-sources"),
   statMentions: document.querySelector("#stat-mentions"),
   statBooks: document.querySelector("#stat-books"),
+  heroBooks: document.querySelector("#hero-books"),
+  heroSources: document.querySelector("#hero-sources"),
+  sourcesTotal: document.querySelector("#sources-total"),
+  footerSources: document.querySelector("#footer-sources"),
+  footerMentions: document.querySelector("#footer-mentions"),
 };
 
 const orderLabels = {
@@ -31,6 +36,22 @@ const orderLabels = {
   ranking_explicito: "Ranking explícito",
   lista_numerada: "Lista numerada",
   ordem_editorial: "Ordem editorial",
+};
+
+const podiumLabels = {
+  1: "Líder do ranking",
+  2: "2º lugar",
+  3: "3º lugar",
+};
+
+const languageLabels = {
+  en: "Fonte em inglês",
+  pt: "Fonte em português",
+  es: "Fonte em espanhol",
+  it: "Fonte em italiano",
+  fr: "Fonte em francês",
+  de: "Fonte em alemão",
+  pl: "Fonte em polonês",
 };
 
 function parseCsv(text) {
@@ -129,9 +150,20 @@ function renderStats() {
     (sum, book) => sum + book.ocorrencias,
     0,
   );
-  elements.statSources.textContent = number(state.sources.length);
-  elements.statMentions.textContent = number(totalMentions);
-  elements.statBooks.textContent = number(state.ranking.length);
+  const sources = number(state.sources.length);
+  const books = number(state.ranking.length);
+  const mentions = number(totalMentions);
+
+  elements.statSources.textContent = sources;
+  elements.statMentions.textContent = mentions;
+  elements.statBooks.textContent = books;
+
+  // Os números no texto da página vêm dos CSVs para não envelhecerem a cada coleta.
+  elements.heroBooks.textContent = books;
+  elements.heroSources.textContent = sources;
+  elements.sourcesTotal.textContent = sources;
+  elements.footerSources.textContent = sources;
+  elements.footerMentions.textContent = mentions;
 }
 
 function renderPodium() {
@@ -141,7 +173,7 @@ function renderPodium() {
       (book) => `
         <article class="podium-card ${book.rank_final === 1 ? "rank-one" : ""}">
           <span class="podium-number">${book.rank_final}</span>
-          <span class="podium-label">${book.rank_final === 1 ? "Líder do ranking" : "Top 3"}</span>
+          <span class="podium-label">${podiumLabels[book.rank_final] || `${book.rank_final}º lugar`}</span>
           <h3 class="podium-title">${escapeHtml(book.titulo_normalizado)}</h3>
           <p class="podium-author">${escapeHtml(book.autor)}</p>
           <div class="podium-footer">
@@ -270,7 +302,12 @@ function sourceCard(source) {
     <article class="source-card" data-testid="source-card">
       <div class="source-card-top">
         <span class="source-badge">${escapeHtml(orderLabels[source.tipo_ordem] || source.tipo_ordem)}</span>
-        <span class="source-http">HTTP ${escapeHtml(source.status_http_na_coleta)}</span>
+        <span class="source-http">
+          <abbr title="${escapeHtml(languageLabels[source.idioma] || source.idioma)}"
+            >${escapeHtml((source.idioma || "").toUpperCase())}</abbr
+          >
+          · HTTP ${escapeHtml(source.status_http_na_coleta)}
+        </span>
       </div>
       <h3>${escapeHtml(source.titulo)}</h3>
       <p class="source-publisher">${escapeHtml(source.publicador)} · ${escapeHtml(source.dominio)}</p>

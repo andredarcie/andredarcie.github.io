@@ -90,7 +90,6 @@ AUTHORS: dict[str, str] = {
     "Multi-Paradigm Design for C++": "James O. Coplien",
     "Murphy's Law and Other Reasons Why Things Go Wrong": "Arthur Bloch",
     "Nonviolent Communication": "Marshall B. Rosenberg",
-    "Object-Oriented Software Engineering": "Bernd Bruegge; Allen H. Dutoit",
     "On Lisp": "Paul Graham",
     "Paradigms of Artificial Intelligence Programming": "Peter Norvig",
     "Pattern Hatching": "John Vlissides",
@@ -111,7 +110,6 @@ AUTHORS: dict[str, str] = {
     "Soft Skills": "John Sonmez",
     "Software Architecture for Developers": "Simon Brown",
     "Software Architecture: The Hard Parts": "Neal Ford; Mark Richards; Pramod Sadalage; Zhamak Dehghani",
-    "Software Design Decoded": "Marian Petre; André van der Hoek",
     "Software Engineering at Google": "Titus Winters; Tom Manshreck; Hyrum Wright",
     "Software Engineering for Absolute Beginners": "Nico Loubser",
     "Software Engineering: A Practitioner's Approach": "Roger S. Pressman; Bruce R. Maxim",
@@ -147,8 +145,6 @@ AUTHORS: dict[str, str] = {
     "The Mythical Man-Month": "Frederick P. Brooks Jr.",
     "The Phoenix Project": "Gene Kim; Kevin Behr; George Spafford",
     "The Pragmatic Programmer": "Andrew Hunt; David Thomas",
-    "The Problem with Software": "Adam Barr",
-    "The Productive Programmer": "Neal Ford",
     "The Self-Taught Programmer": "Cory Althoff",
     "The Software Architect's Handbook": "Joseph Ingeno",
     "The Software Craftsman": "Sandro Mancuso",
@@ -628,7 +624,7 @@ SOURCES: list[Source] = [
         "lista_numerada",
         "Código, arquitetura, sistemas de dados, fundamentos e legado.",
         "O artigo promove cursos da empresa; a lista de livros foi extraída separadamente.",
-        books("Clean Code", "The Pragmatic Programmer", "Designing Data-Intensive Applications", "Software Engineering at Google", "The Software Architect's Handbook", "Object-Oriented Software Engineering", "Structure and Interpretation of Computer Programs", "Working Effectively with Legacy Code", "Code", "Refactoring"),
+        books("Clean Code", "The Pragmatic Programmer", "Designing Data-Intensive Applications", "Software Engineering at Google", "The Software Architect's Handbook", "Object-Oriented Software Engineering Using UML, Patterns, and Java", "Structure and Interpretation of Computer Programs", "Working Effectively with Legacy Code", "Code", "Refactoring"),
     ),
     Source(
         "wearedevelopers",
@@ -2146,6 +2142,12 @@ def validate_sources() -> None:
         missing = [title for title in source.book_titles if title not in AUTHORS]
         if missing:
             raise ValueError(f"Autores ausentes em {source.source_id}: {missing}")
+
+    # Um título em AUTHORS sem nenhuma fonte indica renomeação ou erro de digitação.
+    cited = {title for source in SOURCES for title in source.book_titles}
+    orphans = sorted(set(AUTHORS) - cited)
+    if orphans:
+        raise ValueError(f"Títulos em AUTHORS sem fonte que os cite: {orphans}")
 
 
 def write_source_files() -> tuple[list[dict[str, object]], list[dict[str, object]]]:

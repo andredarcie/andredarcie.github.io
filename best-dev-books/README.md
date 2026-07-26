@@ -1,7 +1,7 @@
 # Melhores livros para desenvolvimento de software
 
 Levantamento iniciado em **2026-07-25** e atualizado em **2026-07-26**, com
-**100 fontes**, **1162 menções** e **370 títulos normalizados**.
+**100 fontes**, **1162 menções** e **369 títulos normalizados**.
 
 ## Resultado rápido
 

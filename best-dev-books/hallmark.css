@@ -928,6 +928,11 @@ select:active {
   font-weight: 700;
 }
 
+.source-http abbr {
+  text-decoration: none;
+  font-weight: 700;
+}
+
 .source-card h3 {
   max-width: 28ch;
   color: var(--color-paper);
