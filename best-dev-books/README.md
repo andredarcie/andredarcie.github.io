@@ -69,6 +69,9 @@ pl  najlepsze książki dla programistów
 
 ## Seleção e tratamento
 
+Os critérios completos estão em [`PROTOCOLO-FONTES.md`](PROTOCOLO-FONTES.md), que define os
+portões eliminatórios, a grade de qualidade e as regras de extração. Resumo:
+
 - Foram incluídas páginas que recomendam livros para programação ou engenharia de software
   de forma geral e cuja ordem é reproduzível.
 - Uma revisão de escopo descartou 10 fontes: 8 que eram, na maior parte, listas de nicho ou

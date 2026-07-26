@@ -950,6 +950,92 @@ select:active {
   color: var(--color-dark-muted);
 }
 
+/* Grade de qualidade da fonte */
+.quality-panel {
+  border-block-start: var(--rule-hair) solid var(--color-dark-rule);
+}
+
+.quality-panel > summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-block: var(--space-sm);
+  color: var(--color-dark-muted);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  list-style: none;
+}
+
+.quality-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.quality-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  color: var(--color-paper);
+  font-weight: 700;
+  text-transform: lowercase;
+}
+
+.quality-tier::before {
+  content: "";
+  inline-size: 0.55rem;
+  block-size: 0.55rem;
+  background: var(--color-dark-muted);
+  border-radius: 50%;
+}
+
+.quality-panel[data-tier="sólida"] .quality-tier::before {
+  background: var(--color-accent-soft);
+}
+
+.quality-panel[data-tier="frágil"] .quality-tier::before {
+  background: var(--color-error);
+}
+
+.quality-panel > summary::after {
+  content: "mostrar";
+  color: var(--color-accent-soft);
+}
+
+.quality-panel[open] > summary::after {
+  content: "ocultar";
+}
+
+.quality-score {
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.quality-list {
+  display: grid;
+  gap: var(--space-2xs);
+  margin: 0;
+  padding: 0 0 var(--space-md);
+  list-style: none;
+}
+
+.quality-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+}
+
+.quality-label {
+  color: var(--color-dark-muted);
+}
+
+.quality-dots {
+  color: var(--color-accent-soft);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
 .source-card-footer {
   display: flex;
   align-items: center;
@@ -1270,7 +1356,7 @@ select:active {
   }
 
   .toolbar-dark {
-    grid-template-columns: minmax(16rem, 1fr) minmax(13rem, 0.45fr);
+    grid-template-columns: minmax(14rem, 1fr) minmax(11rem, 0.4fr) minmax(11rem, 0.4fr);
   }
 
   .download-panel {

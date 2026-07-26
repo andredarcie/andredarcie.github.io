@@ -7,6 +7,7 @@ const state = {
   minMentions: 0,
   sourceQuery: "",
   sourceOrder: "all",
+  sourceTier: "all",
 };
 
 const elements = {
@@ -20,6 +21,7 @@ const elements = {
   loadMore: document.querySelector("#load-more"),
   sourceSearch: document.querySelector("#source-search"),
   sourceOrder: document.querySelector("#source-order"),
+  sourceTier: document.querySelector("#source-tier"),
   sourceResultCount: document.querySelector("#source-result-count"),
   statSources: document.querySelector("#stat-sources"),
   statMentions: document.querySelector("#stat-mentions"),
@@ -291,13 +293,41 @@ function filteredSources() {
     return (
       (state.sourceOrder === "all" ||
         source.tipo_ordem === state.sourceOrder) &&
+      (state.sourceTier === "all" ||
+        source.qualidade_faixa === state.sourceTier) &&
       (!query || searchable.includes(query))
     );
   });
 }
 
+const qualityCriteria = [
+  ["qualidade_q1", "Autoridade de quem produziu"],
+  ["qualidade_q2", "Método declarado"],
+  ["qualidade_q3", "Objetividade"],
+  ["qualidade_q4", "Datação"],
+  ["qualidade_q5", "Controle editorial do veículo"],
+  ["qualidade_q6", "Posição frente a outras fontes"],
+  ["qualidade_q7", "Autopromoção"],
+];
+
+function qualityBars(source) {
+  return qualityCriteria
+    .map(([field, label]) => {
+      const score = Number(source[field] || 0);
+      return `
+        <li>
+          <span class="quality-label">${escapeHtml(label)}</span>
+          <span class="quality-dots" role="img"
+            aria-label="${score} de 2">${"●".repeat(score)}${"○".repeat(2 - score)}</span>
+        </li>
+      `;
+    })
+    .join("");
+}
+
 function sourceCard(source) {
   const date = source.data_publicacao_atualizacao || "data não identificada";
+  const tier = source.qualidade_faixa || "";
   return `
     <article class="source-card" data-testid="source-card">
       <div class="source-card-top">
@@ -312,6 +342,13 @@ function sourceCard(source) {
       <h3>${escapeHtml(source.titulo)}</h3>
       <p class="source-publisher">${escapeHtml(source.publicador)} · ${escapeHtml(source.dominio)}</p>
       <p class="source-scope">${escapeHtml(source.escopo)}</p>
+      <details class="quality-panel" data-tier="${escapeHtml(tier)}">
+        <summary>
+          <span class="quality-tier">${escapeHtml(tier)}</span>
+          <span class="quality-score">${escapeHtml(source.qualidade_total)}/14</span>
+        </summary>
+        <ul class="quality-list">${qualityBars(source)}</ul>
+      </details>
       <div class="source-card-footer">
         <span>${source.quantidade_livros} livros · ${escapeHtml(date)}</span>
         <a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">
@@ -389,6 +426,11 @@ function bindEvents() {
 
   elements.sourceOrder.addEventListener("change", (event) => {
     state.sourceOrder = event.target.value;
+    renderSources();
+  });
+
+  elements.sourceTier.addEventListener("change", (event) => {
+    state.sourceTier = event.target.value;
     renderSources();
   });
 }

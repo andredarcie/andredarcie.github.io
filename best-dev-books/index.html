@@ -207,7 +207,8 @@
             </div>
             <p>
               URL, natureza, critério de ordenação e quantidade de livros permanecem
-              visíveis.
+              visíveis. Cada fonte traz a grade de qualidade de sete critérios definida no
+              <a href="./PROTOCOLO-FONTES.md">protocolo de inclusão</a>.
             </p>
           </div>
 
@@ -233,6 +234,15 @@
                 <option value="ordem_editorial">Ordem editorial</option>
               </select>
             </div>
+            <div class="field">
+              <label for="source-tier">Faixa de qualidade</label>
+              <select id="source-tier">
+                <option value="all">Todas as faixas</option>
+                <option value="sólida">Sólida (10 a 14)</option>
+                <option value="aceitável">Aceitável (5 a 9)</option>
+                <option value="frágil">Frágil (0 a 4)</option>
+              </select>
+            </div>
           </div>
 
           <p class="source-count" id="source-result-count" aria-live="polite">
@@ -256,6 +266,9 @@
               superem um título encontrado em mais listas.
             </p>
             <a class="text-link" href="./README.md">Ler método completo →</a>
+            <a class="text-link" href="./PROTOCOLO-FONTES.md">
+              Protocolo de inclusão de fontes →
+            </a>
           </div>
 
           <div class="formula-panel">

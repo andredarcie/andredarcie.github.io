@@ -18,6 +18,11 @@ LATEST_ACCESS_DATE = date(2026, 7, 26).isoformat()
 # Fontes que substituíram as descartadas na revisão de escopo.
 NEW_ACCESS_DATE = date(2026, 7, 27).isoformat()
 MAX_EDITORIAL_ITEMS = 20
+# Portões do PROTOCOLO-FONTES.md que dá para reaplicar por conta própria sobre a base.
+MIN_BOOKS_PER_SOURCE = 3
+G5_OVERLAP = 0.80
+# Sobreposição só é evidência de cópia entre listas de tamanho parecido.
+G5_MIN_LIST = 8
 
 
 AUTHORS: dict[str, str] = {
@@ -2171,6 +2176,162 @@ def validate_sources() -> None:
         raise ValueError(f"Títulos em AUTHORS sem fonte que os cite: {orphans}")
 
 
+# Grade de qualidade da seção 4 do PROTOCOLO-FONTES.md.
+#
+# A pontuação é derivada por regra a partir dos campos já registrados de cada fonte, para que
+# outra pessoa chegue ao mesmo número sem depender de julgamento. Onde a evidência anotada em
+# `notes` contradiz a regra geral, a fonte aparece em QUALITY_OVERRIDES com o motivo.
+QUALITY_CRITERIA = {
+    "q1": "Autoridade de quem produziu",
+    "q2": "Método declarado",
+    "q3": "Objetividade",
+    "q4": "Datação",
+    "q5": "Controle editorial do veículo",
+    "q6": "Posição frente a outras fontes",
+    "q7": "Autopromoção",
+}
+
+_AUTORIDADE_ALTA = {
+    "curadoria_especialista",
+    "curadoria_especialistas",
+    "curadoria_academica",
+    "curadoria_curricular",
+    "ranking_recomendacoes_especialistas",
+    "ranking_dados_e_especialistas",
+}
+_REVISAO_INSTITUCIONAL = {"curadoria_academica", "curadoria_curricular"}
+_VEICULO_COM_LINHA_EDITORIAL = {
+    "curadoria_editorial",
+    "curadoria_empresa",
+    "curadoria_comercial",
+    "curadoria_equipe",
+}
+
+# fonte_id -> {criterio: (nota, motivo)}
+QUALITY_OVERRIDES: dict[str, dict[str, tuple[int, str]]] = {
+    "exponent": {"q3": (2, "A página declara não usar links de afiliados nesta seleção.")},
+    "profile_es": {"q3": (2, "Página sem links de afiliado.")},
+    "serverless": {"q3": (2, "A página declara não ter associação com autores ou plataformas.")},
+    "guru99": {"q3": (0, "Links comerciais e de afiliado na própria lista.")},
+    "hackr": {"q3": (0, "Links de afiliado na própria lista.")},
+    "upgrad": {"q3": (0, "O artigo promove cursos da empresa que publica a lista.")},
+    "mentorcruise": {"q4": (2, "A página declara atualização anual.")},
+    "sizovs": {"q4": (2, "Lista mantida e atualizada pelo autor.")},
+    "dinahosting": {"q4": (2, "Traz seção de atualização de 2025.")},
+    "dailydev": {"q4": (2, "Publicado em 2024 com nota editorial para 2026.")},
+    "milan_2026": {"q7": (1, "Inclui um livro do próprio autor, identificado na fonte.")},
+    "rockstar": {"q7": (1, "Recomenda dois livros do próprio autor, relação documentada.")},
+    "clean_code_developer": {"q7": (1, "Inclui livro de um dos mantenedores da iniciativa.")},
+    "shapingsoftware": {"q2": (1, "Declara que a numeração não é ordem comparativa.")},
+    "roscoe_bartlett": {"q2": (1, "Declara que a seção está em ordem de importância relativa.")},
+}
+
+
+def quality_grade(source: Source) -> dict[str, object]:
+    scores = {
+        # Q1: veículo e autor identificados valem 1; trajetória verificável na área vale 2.
+        "q1": 2 if source.nature in _AUTORIDADE_ALTA else 1,
+        # Q2: só pontua quem explica como a lista foi montada.
+        "q2": 2
+        if source.order_type == "meta_ranking" or source.nature.startswith("ranking_")
+        else (1 if source.nature in _REVISAO_INSTITUCIONAL else 0),
+        # Q3: interesse comercial direto na indicação derruba a nota.
+        "q3": 0 if source.nature == "curadoria_comercial" else (
+            1 if source.nature in {"curadoria_empresa", "curadoria_editorial"} else 2
+        ),
+        # Q4: sem data não pontua; atualização declarada vira 2 via override.
+        "q4": 1 if source.publication_date else 0,
+        "q5": 2
+        if source.nature in _REVISAO_INSTITUCIONAL
+        else (1 if source.nature in _VEICULO_COM_LINHA_EDITORIAL else 0),
+        # Q6: agregar e ordenar outras listas é a forma mais forte de se posicionar.
+        "q6": 2
+        if source.order_type == "meta_ranking"
+        else (1 if source.nature.startswith("ranking_") else 0),
+        "q7": 2,
+    }
+    reasons: dict[str, str] = {}
+    for criterion, (score, reason) in QUALITY_OVERRIDES.get(source.source_id, {}).items():
+        scores[criterion] = score
+        reasons[criterion] = reason
+
+    total = sum(scores.values())
+    if total <= 4:
+        tier = "frágil"
+    elif total <= 9:
+        tier = "aceitável"
+    else:
+        tier = "sólida"
+    return {**scores, "total": total, "faixa": tier, "motivos": reasons}
+
+
+# Identidade autoral por trás da URL, para o portão G6. Só precisa constar aqui quem publica
+# em mais de um lugar: sem entrada, a fonte é tratada como voz única.
+# Cursos distintos da mesma universidade não entram, porque têm ementa e responsável próprios.
+AUTHOR_IDENTITIES = {
+    "devto_javinpaul": "javinpaul",
+    "medium_javinpaul": "javinpaul",
+    "pragmatic_engineer_reading": "gergely-orosz",
+    "pragmatic_engineer_holiday": "gergely-orosz",
+}
+
+
+def audit_gates() -> list[str]:
+    """Reaplica os portões mecânicos do protocolo sobre a base montada.
+
+    Devolve as violações encontradas. Serve para impedir que a base se afaste do protocolo
+    sem que isso apareça em algum lugar.
+    """
+    findings: list[str] = []
+    by_id = {source.source_id: source for source in SOURCES}
+
+    for source in SOURCES:
+        if len(source.book_titles) < MIN_BOOKS_PER_SOURCE:
+            findings.append(
+                f"G4 · {source.source_id}: {len(source.book_titles)} livros, "
+                f"mínimo é {MIN_BOOKS_PER_SOURCE}."
+            )
+
+    # G5 só é conclusivo entre listas de tamanho comparável; abaixo disso a sobreposição alta
+    # é artefato de uma lista curta caber dentro de uma longa.
+    ids = sorted(by_id)
+    for i, first_id in enumerate(ids):
+        for second_id in ids[i + 1 :]:
+            first, second = by_id[first_id], by_id[second_id]
+            if min(len(first.book_titles), len(second.book_titles)) < G5_MIN_LIST:
+                continue
+            shared = set(first.book_titles) & set(second.book_titles)
+            fraction = len(shared) / min(len(first.book_titles), len(second.book_titles))
+            if fraction < G5_OVERLAP:
+                continue
+            same_order = [t for t in first.book_titles if t in shared] == [
+                t for t in second.book_titles if t in shared
+            ]
+            if same_order:
+                findings.append(
+                    f"G5 · {first_id} x {second_id}: {len(shared)} títulos "
+                    f"({fraction:.0%} da menor lista) na mesma ordem."
+                )
+
+    # G6 é sobre o autor, não sobre o domínio: dev.to, Medium e GitHub hospedam autores
+    # distintos, e duas páginas ali não são a mesma voz. Por isso a checagem usa identidades
+    # declaradas em AUTHOR_IDENTITIES em vez de comparar o host.
+    seen_author: dict[str, str] = {}
+    for source in SOURCES:
+        identity = AUTHOR_IDENTITIES.get(source.source_id)
+        if not identity:
+            continue
+        if identity in seen_author:
+            findings.append(
+                f"G6 · {source.source_id} e {seen_author[identity]} são do mesmo autor "
+                f"({identity})."
+            )
+        else:
+            seen_author[identity] = source.source_id
+
+    return findings
+
+
 def write_source_files() -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     mention_rows: list[dict[str, object]] = []
     source_index: list[dict[str, object]] = []
@@ -2210,6 +2371,24 @@ def write_source_files() -> tuple[list[dict[str, object]], list[dict[str, object
             rows,
         )
 
+        grade = quality_grade(source)
+        grade_rows = "\n".join(
+            f"| {key.upper()} | {label} | {grade[key]} |"
+            + (f" {grade['motivos'][key]}" if key in grade["motivos"] else "")
+            for key, label in QUALITY_CRITERIA.items()
+        )
+        grade_block = f"""
+## Grade de qualidade
+
+Critérios da seção 4 do [protocolo](../../PROTOCOLO-FONTES.md), de 0 a 2 cada.
+
+| # | Critério | Nota |
+|---|---|---:|
+{grade_rows}
+
+**Total: {grade["total"]}/14 · faixa {grade["faixa"]}.**
+"""
+
         info = f"""# {source.title}
 
 - **Publicador/curador:** {source.publisher}
@@ -2236,7 +2415,7 @@ O peso de cada posição é:
 `peso_posicao = (quantidade_da_lista - posicao + 1) / quantidade_da_lista`
 
 Assim, o primeiro item recebe peso 1 e o último recebe `1 / quantidade_da_lista`.
-"""
+{grade_block}"""
         (source_dir / "fonte.md").write_text(info, encoding="utf-8")
 
         source_index.append(
@@ -2255,6 +2434,9 @@ Assim, o primeiro item recebe peso 1 e o último recebe `1 / quantidade_da_lista
                 "quantidade_livros": total,
                 "escopo": source.scope,
                 "observacoes": source.notes,
+                **{f"qualidade_{key}": grade[key] for key in QUALITY_CRITERIA},
+                "qualidade_total": grade["total"],
+                "qualidade_faixa": grade["faixa"],
             }
         )
 
@@ -2392,6 +2574,9 @@ pl  najlepsze książki dla programistów
 
 ## Seleção e tratamento
 
+Os critérios completos estão em [`PROTOCOLO-FONTES.md`](PROTOCOLO-FONTES.md), que define os
+portões eliminatórios, a grade de qualidade e as regras de extração. Resumo:
+
 - Foram incluídas páginas que recomendam livros para programação ou engenharia de software
   de forma geral e cuja ordem é reproduzível.
 - Uma revisão de escopo descartou 10 fontes: 8 que eram, na maior parte, listas de nicho ou
@@ -2457,6 +2642,8 @@ def main() -> None:
             "data_publicacao_atualizacao", "data_acesso", "status_http_na_coleta",
             "natureza", "tipo_ordem", "idioma",
             "quantidade_livros", "escopo", "observacoes",
+            *(f"qualidade_{key}" for key in QUALITY_CRITERIA),
+            "qualidade_total", "qualidade_faixa",
         ],
         source_index,
     )
@@ -2483,6 +2670,28 @@ def main() -> None:
     print(f"Menções: {len(mentions)}")
     print(f"Títulos únicos: {len(ranking)}")
     print(f"Top 1: {ranking[0]['titulo_normalizado']} ({ranking[0]['pontuacao_final']})")
+
+    tiers = defaultdict(int)
+    for row in source_index:
+        tiers[row["qualidade_faixa"]] += 1
+    print(
+        "Qualidade: "
+        + ", ".join(f"{count} {tier}" for tier, count in sorted(tiers.items()))
+    )
+
+    findings = audit_gates()
+    csv_write(
+        ROOT / "auditoria.csv",
+        ["portao", "detalhe"],
+        [
+            {"portao": finding.split(" · ", 1)[0], "detalhe": finding.split(" · ", 1)[1]}
+            for finding in findings
+        ],
+    )
+    if findings:
+        print(f"\nAuditoria dos portões: {len(findings)} pendência(s) registrada(s)")
+        for finding in findings:
+            print(f"  {finding}")
 
 
 if __name__ == "__main__":
