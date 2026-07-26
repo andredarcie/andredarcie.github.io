@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Prática profissional, construção, história, carreira e psicologia.
 - **Observações:** Foram preservados os dez livros na ordem em que aparecem no artigo.

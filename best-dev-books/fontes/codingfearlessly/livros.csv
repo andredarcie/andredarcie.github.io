@@ -1,0 +1,16 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Effective Engineer,The Effective Engineer,Edmond Lau,1.000000,https://codingfearlessly.com/recommended-software-engineering-books
+2,The Missing README,The Missing README,Chris Riccomini; Dmitriy Ryaboy,0.933333,https://codingfearlessly.com/recommended-software-engineering-books
+3,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.866667,https://codingfearlessly.com/recommended-software-engineering-books
+4,Peopleware,Peopleware,Tom DeMarco; Tim Lister,0.800000,https://codingfearlessly.com/recommended-software-engineering-books
+5,Code Complete,Code Complete,Steve McConnell,0.733333,https://codingfearlessly.com/recommended-software-engineering-books
+6,The Elements of Style,The Elements of Style,William Strunk Jr.; E. B. White,0.666667,https://codingfearlessly.com/recommended-software-engineering-books
+7,Thinking in Systems,Thinking in Systems,Donella H. Meadows,0.600000,https://codingfearlessly.com/recommended-software-engineering-books
+8,Fundamentals of Software Architecture,Fundamentals of Software Architecture,Mark Richards; Neal Ford,0.533333,https://codingfearlessly.com/recommended-software-engineering-books
+9,Learning Domain-Driven Design,Learning Domain-Driven Design,Vlad Khononov,0.466667,https://codingfearlessly.com/recommended-software-engineering-books
+10,The Manager's Path,The Manager's Path,Camille Fournier,0.400000,https://codingfearlessly.com/recommended-software-engineering-books
+11,High Output Management,High Output Management,Andrew S. Grove,0.333333,https://codingfearlessly.com/recommended-software-engineering-books
+12,The Five Dysfunctions of a Team,The Five Dysfunctions of a Team,Patrick Lencioni,0.266667,https://codingfearlessly.com/recommended-software-engineering-books
+13,Scaling Teams,Scaling Teams,Alexander Grosse; David Loftesness,0.200000,https://codingfearlessly.com/recommended-software-engineering-books
+14,Team Topologies,Team Topologies,Matthew Skelton; Manuel Pais,0.133333,https://codingfearlessly.com/recommended-software-engineering-books
+15,Lean Enterprise,Lean Enterprise,Jez Humble; Joanne Molesky; Barry O'Reilly,0.066667,https://codingfearlessly.com/recommended-software-engineering-books

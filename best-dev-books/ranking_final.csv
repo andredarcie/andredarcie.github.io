@@ -1,242 +1,371 @@
 ﻿rank_final,titulo_normalizado,autor,ocorrencias,total_fontes,percentual_fontes,peso_posicao_somado,peso_posicao_medio,pontuacao_final,melhor_posicao,posicao_media,fontes
-1,The Pragmatic Programmer,Andrew Hunt; David Thomas,44,56,78.57,31.394156,0.713504,44.713504,1,4.84,bootdev_web|builtin|bytebytego|charlax_professional_programming|codealchemy|codingexercises|cornell_cs5150|dailydev|devbooks_github|devot|devto_meta_36|devto_xteam|ellow|exponent|frankc|geeksforgeeks|gitdailies|guru99|hackernoon_tanaka|happycoders|hassan_agmir|interviewbit|itsourcecode|jasonroell|javaguides|kiview_gist|milan_2026|mostrecommendedbooks|philosophical_geek|programmingbooks_dev|rockstar|serverless|shapingsoftware|shortform|sizovs|software_engineering_books|studentprojectcode|techgig_2026|thesgn|threadreader_pierre|unibo_software_engineering|upgrad|wearedevelopers|xebia
-2,Clean Code,Robert C. Martin,43,56,76.79,36.72302,0.854024,43.854024,1,2.74,algomaster|bootdev_web|builtin|bytebytego|codealchemy|codingexercises|dailydev|devbooks_github|devot|devto_meta_36|devto_xteam|ellow|exponent|frankc|gauravtiwari|geeksforgeeks|gitdailies|guru99|hackernoon_tanaka|happycoders|hassan_agmir|interviewbit|itsourcecode|jasonroell|javaguides|kiview_gist|listium_utsav|milan_2026|mostrecommendedbooks|rockstar|serverless|shapingsoftware|shortform|sizovs|software_engineering_books|squash|studentprojectcode|techgig_2026|thesgn|threadreader_pierre|unibo_software_engineering|upgrad|wearedevelopers
-3,Refactoring,Martin Fowler,31,56,55.36,16.026836,0.516995,31.516995,3,7.13,bytebytego|codealchemy|codingexercises|dailydev|devbooks_github|devto_meta_36|ellow|exponent|frankc|geeksforgeeks|gitdailies|guru99|hackernoon_tanaka|happycoders|hassan_agmir|jasonroell|javaguides|milan_2026|mostrecommendedbooks|programmingbooks_dev|rockstar|serverless|shapingsoftware|shortform|software_engineering_books|squash|techgig_2026|threadreader_pierre|upgrad|wearedevelopers|xebia
-4,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,30,56,53.57,17.923651,0.597455,30.597455,1,5.9,builtin|bytebytego|codingexercises|cornell_cs501|dailydev|devbooks_github|devot|devto_meta_36|ellow|exponent|frankc|gauravtiwari|geeksforgeeks|gitdailies|guru99|happycoders|hassan_agmir|jasonroell|javaguides|kiview_gist|mostrecommendedbooks|programmingbooks_dev|rockstar|serverless|shapingsoftware|shortform|studentprojectcode|thesgn|threadreader_pierre|unibo_software_engineering
-5,Code Complete,Steve McConnell,27,56,48.21,20.578333,0.76216,27.76216,1,4.44,builtin|bytebytego|charlax_professional_programming|codingexercises|dailydev|devbooks_github|devto_meta_36|devto_xteam|exponent|gauravtiwari|geeksforgeeks|guru99|hassan_agmir|interviewbit|jasonroell|javaguides|kiview_gist|mostrecommendedbooks|philosophical_geek|rockstar|roscoe_bartlett|shapingsoftware|shortform|software_engineering_books|squash|threadreader_pierre|xebia
-6,Designing Data-Intensive Applications,Martin Kleppmann,20,56,35.71,9.255128,0.462756,20.462756,2,7.7,algomaster|bytebytego|codealchemy|dailydev|hassan_agmir|itsourcecode|javaguides|listium_utsav|mentorcruise|milan_2026|pragmatic_engineer_reading|programmingbooks_dev|shortform|software_engineering_books|studentprojectcode|teachyourselfcs|thesgn|unibo_software_engineering|upgrad|wearedevelopers
-7,The Mythical Man-Month,Frederick P. Brooks Jr.,19,56,33.93,13.301587,0.700084,19.700084,1,5.26,builtin|cornell_cs501|cornell_cs5150|devbooks_github|devto_meta_36|devto_xteam|ellow|exponent|gauravtiwari|geeksforgeeks|jasonroell|mostrecommendedbooks|philosophical_geek|rockstar|shapingsoftware|shortform|software_engineering_books|threadreader_pierre|unibo_software_engineering
-8,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,16,56,28.57,7.760952,0.48506,16.48506,2,7.69,bytebytego|dailydev|devto_meta_36|ellow|frankc|gauravtiwari|geeksforgeeks|hassan_agmir|interviewbit|jasonroell|mostrecommendedbooks|philosophical_geek|shapingsoftware|software_engineering_books|thesgn|threadreader_pierre
-9,Cracking the Coding Interview,Gayle Laakmann McDowell,15,56,26.79,6.165758,0.411051,15.411051,1,9.4,bootdev_web|bytebytego|dailydev|devto_meta_36|exponent|hackernoon_tanaka|interviewbit|itsourcecode|javaguides|mostrecommendedbooks|rockstar|shortform|software_engineering_books|threadreader_pierre|wearedevelopers
-10,Code,Charles Petzold,14,56,25.0,6.54381,0.467415,14.467415,1,8.79,builtin|devto_meta_36|exponent|geeksforgeeks|interviewbit|jasonroell|mentorcruise|mostrecommendedbooks|programmingbooks_dev|shortform|software_engineering_books|threadreader_pierre|upgrad|uppsala_se_fundamentals
-11,Working Effectively with Legacy Code,Michael C. Feathers,13,56,23.21,7.347778,0.565214,13.565214,2,7.31,builtin|codingexercises|devbooks_github|devto_meta_36|exponent|happycoders|jasonroell|pragmatic_engineer_reading|rockstar|roscoe_bartlett|shortform|threadreader_pierre|upgrad
-12,Domain-Driven Design,Eric Evans,13,56,23.21,4.46549,0.343499,13.343499,4,10.23,bytebytego|dailydev|devot|exponent|gauravtiwari|happycoders|javaguides|programmingbooks_dev|roscoe_bartlett|shortform|sizovs|techgig_2026|threadreader_pierre
-13,The Clean Coder,Robert C. Martin,12,56,21.43,6.840182,0.570015,12.570015,2,7.33,dailydev|devbooks_github|devto_meta_36|devto_xteam|guru99|happycoders|kiview_gist|serverless|shortform|sizovs|squash|threadreader_pierre
-14,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,11,56,19.64,7.06451,0.642228,11.642228,2,6.91,algomaster|builtin|codingexercises|devot|devto_meta_36|guru99|shapingsoftware|shortform|sizovs|threadreader_pierre|wearedevelopers
-15,Clean Architecture,Robert C. Martin,9,56,16.07,4.0,0.444444,9.444444,3,11.22,codingexercises|devbooks_github|devto_meta_36|frankc|happycoders|interviewbit|listium_utsav|shortform|unibo_software_engineering
-16,Programming Pearls,Jon Bentley,9,56,16.07,3.916667,0.435185,9.435185,3,8.44,devto_meta_36|gauravtiwari|geeksforgeeks|hassan_agmir|interviewbit|jasonroell|mostrecommendedbooks|philosophical_geek|threadreader_pierre
-17,A Philosophy of Software Design,John Ousterhout,8,56,14.29,5.668376,0.708547,8.708547,1,4.38,builtin|devbooks_github|interviewbit|mentorcruise|milan_2026|pragmatic_engineer_reading|rockstar|techgig_2026
-18,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,8,56,14.29,4.236667,0.529583,8.529583,1,7.12,charlax_professional_programming|hassan_agmir|jasonroell|mostrecommendedbooks|shortform|teachyourselfcs|threadreader_pierre|upgrad
-19,Patterns of Enterprise Application Architecture,Martin Fowler,8,56,14.29,2.926667,0.365833,8.365833,3,13.5,devto_meta_36|guru99|philosophical_geek|shapingsoftware|shortform|software_engineering_books|threadreader_pierre|xebia
-20,Peopleware,Tom DeMarco; Tim Lister,8,56,14.29,2.793641,0.349205,8.349205,7,11.62,devto_meta_36|ellow|exponent|frankc|guru99|shortform|sizovs|threadreader_pierre
-21,Soft Skills,John Sonmez,7,56,12.5,4.023619,0.574803,7.574803,3,8.71,devto_meta_36|guru99|hackernoon_tanaka|rockstar|shapingsoftware|sizovs|threadreader_pierre
-22,Test-Driven Development: By Example,Kent Beck,7,56,12.5,3.089216,0.441317,7.441317,6,11.29,codingexercises|exponent|philosophical_geek|programmingbooks_dev|sizovs|unibo_software_engineering|wearedevelopers
-23,Continuous Delivery,Jez Humble; David Farley,7,56,12.5,2.085098,0.297871,7.297871,8,14.71,codingexercises|dailydev|programmingbooks_dev|sizovs|threadreader_pierre|unibo_software_engineering|wearedevelopers
-24,You Don't Know JS Yet,Kyle Simpson,6,56,10.71,2.822222,0.47037,6.47037,2,7,bootdev_web|builtin|codealchemy|devot|hassan_agmir|itsourcecode
-25,The Art of Computer Programming,Donald E. Knuth,6,56,10.71,2.43,0.405,6.405,5,10.5,devto_meta_36|geeksforgeeks|interviewbit|jasonroell|mostrecommendedbooks|threadreader_pierre
-26,Effective Java,Joshua Bloch,5,56,8.93,3.55,0.71,5.71,2,6.2,codingexercises|frankc|gauravtiwari|itsourcecode|xebia
-27,Don't Make Me Think,Steve Krug,5,56,8.93,2.31,0.462,5.462,7,12.2,devto_meta_36|frankc|programmingbooks_dev|shortform|threadreader_pierre
-28,System Design Interview,Alex Xu,5,56,8.93,2.071429,0.414286,5.414286,4,8.8,bytebytego|itsourcecode|javaguides|mentorcruise|programmingbooks_dev
-29,Software Engineering,Ian Sommerville,4,56,7.14,3.0,0.75,4.75,2,3.5,cornell_cs501|cornell_cs5150|toronto_csc444|unibo_software_engineering
-30,"Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,4,56,7.14,2.597059,0.649265,4.649265,7,7.75,codingexercises|happycoders|sizovs|wearedevelopers
-31,The Art of Unit Testing,Roy Osherove,4,56,7.14,2.455769,0.613942,4.613942,2,6.25,kiview_gist|milan_2026|programmingbooks_dev|wearedevelopers
-32,"Agile Software Development: Principles, Patterns, and Practices",Robert C. Martin,4,56,7.14,2.35,0.5875,4.5875,2,7.75,devto_meta_36|happycoders|roscoe_bartlett|shapingsoftware
-33,Release It!,Michael T. Nygard,4,56,7.14,2.102941,0.525735,4.525735,3,6.5,charlax_professional_programming|pragmatic_engineer_reading|sizovs|software_engineering_books
-34,Fundamentals of Software Architecture,Mark Richards; Neal Ford,4,56,7.14,1.692308,0.423077,4.423077,5,7.75,devbooks_github|milan_2026|techgig_2026|wearedevelopers
-35,Rapid Development,Steve McConnell,4,56,7.14,1.337778,0.334444,4.334444,9,15,builtin|philosophical_geek|squash|threadreader_pierre
-36,AI Engineering,Chip Huyen,4,56,7.14,1.241026,0.310256,4.310256,3,10.75,itsourcecode|milan_2026|rockstar|studentprojectcode
-37,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,4,56,7.14,0.920513,0.230128,4.230128,12,14,happycoders|milan_2026|rockstar|wearedevelopers
-38,Grokking Algorithms,Aditya Y. Bhargava,3,56,5.36,2.65,0.883333,3.883333,1,3.33,listium_utsav|programmingbooks_dev|wearedevelopers
-39,Software Engineering at Google,Titus Winters; Tom Manshreck; Hyrum Wright,3,56,5.36,2.3,0.766667,3.766667,1,3.33,cornell_cs5150|studentprojectcode|upgrad
-40,Software Architecture: Perspectives on an Emerging Discipline,Mary Shaw; David Garlan,3,56,5.36,2.1,0.7,3.7,1,4.33,cmu_mary_shaw|cornell_cs501|toronto_csc444
-41,Software Engineering: A Practitioner's Approach,Roger S. Pressman; Bruce R. Maxim,3,56,5.36,2.05,0.683333,3.683333,1,7.33,squash|toronto_csc444|unibo_software_engineering
-42,The Software Craftsman,Sandro Mancuso,3,56,5.36,1.804412,0.601471,3.601471,3,6,codingexercises|kiview_gist|sizovs
-43,UML Distilled,Martin Fowler,3,56,5.36,1.705556,0.568519,3.568519,5,8,cmu_mary_shaw|philosophical_geek|unibo_software_engineering
-44,The Phoenix Project,Gene Kim; Kevin Behr; George Spafford,3,56,5.36,1.452521,0.484174,3.484174,3,9.67,serverless|shortform|sizovs
-45,Software Architecture: The Hard Parts,Neal Ford; Mark Richards; Pramod Sadalage; Zhamak Dehghani,3,56,5.36,1.440385,0.480128,3.480128,6,8,listium_utsav|milan_2026|wearedevelopers
-46,Coders at Work,Peter Seibel,3,56,5.36,1.1,0.366667,3.366667,4,14,devto_xteam|programmingbooks_dev|threadreader_pierre
-47,The DevOps Handbook,Gene Kim; Jez Humble; Patrick Debois; John Willis,3,56,5.36,1.038889,0.346296,3.346296,9,12.33,builtin|guru99|wearedevelopers
-48,Extreme Programming Explained,Kent Beck; Cynthia Andres,3,56,5.36,0.954545,0.318182,3.318182,7,13,codingexercises|hackernoon_tanaka|happycoders
-49,Building Microservices,Sam Newman,3,56,5.36,0.733333,0.244444,3.244444,4,8.67,algomaster|dailydev|devbooks_github
-50,Software Engineering: Theory and Practice,Shari Lawrence Pfleeger; Joanne M. Atlee,2,56,3.57,1.65,0.825,2.825,3,3.5,cornell_cs501|toronto_csc444
-51,Automate the Boring Stuff with Python,Al Sweigart,2,56,3.57,1.447619,0.72381,2.72381,3,4,itsourcecode|mentorcruise
-52,Pro Git,Scott Chacon; Ben Straub,2,56,3.57,1.361111,0.680556,2.680556,6,7,builtin|unibo_software_engineering
-53,Python Crash Course,Eric Matthes,2,56,3.57,1.228571,0.614286,2.614286,4,4.5,itsourcecode|mentorcruise
-54,So Good They Can't Ignore You,Cal Newport,2,56,3.57,1.1,0.55,2.55,1,5.5,devto_xteam|frankc
-55,JavaScript: The Good Parts,Douglas Crockford,2,56,3.57,1.094444,0.547222,2.547222,6,7,frankc|pragmatic_engineer_reading
-56,Understanding Distributed Systems,Roberto Vitillo,2,56,3.57,1.086538,0.543269,2.543269,4,6,listium_utsav|milan_2026
-57,Facts and Fallacies of Software Engineering,Robert L. Glass,2,56,3.57,1.05,0.525,2.525,4,10.5,philosophical_geek|squash
-58,Applying UML and Patterns,Craig Larman,2,56,3.57,1.05,0.525,2.525,8,10.5,philosophical_geek|unibo_software_engineering
-59,Software Requirements and Specifications,Michael Jackson,2,56,3.57,0.927778,0.463889,2.463889,3,10.5,cmu_mary_shaw|toronto_csc444
-60,Tidy First?,Kent Beck,2,56,3.57,0.911111,0.455556,2.455556,3,8.5,pragmatic_engineer_reading|rockstar
-61,The Software Engineer's Guidebook,Gergely Orosz,2,56,3.57,0.9,0.45,2.45,4,8.5,rockstar|studentprojectcode
-62,The Algorithm Design Manual,Steven S. Skiena,2,56,3.57,0.888889,0.444444,2.444444,3,10,builtin|teachyourselfcs
-63,PHP & MySQL: Server-side Web Development,Jon Duckett,2,56,3.57,0.633333,0.316667,2.316667,8,9.5,bootdev_web|itsourcecode
-64,The Complete Software Developer's Career Guide,John Sonmez,2,56,3.57,0.516667,0.258333,2.258333,9,14.5,happycoders|rockstar
-65,The Five Dysfunctions of a Team,Patrick Lencioni,2,56,3.57,0.45,0.225,2.225,15,16.5,frankc|wearedevelopers
-66,Site Reliability Engineering,Betsy Beyer; Chris Jones; Jennifer Petoff; Niall Richard Murphy,2,56,3.57,0.365079,0.18254,2.18254,7,7.5,pragmatic_engineer_reading|thesgn
-67,The 100-Page Machine Learning Book,Andriy Burkov,2,56,3.57,0.325,0.1625,2.1625,8,12.5,listium_utsav|wearedevelopers
-68,Algorithms,Robert Sedgewick; Kevin Wayne,2,56,3.57,0.28,0.14,2.14,9,16.5,javaguides|threadreader_pierre
-69,The C Programming Language,Brian W. Kernighan; Dennis M. Ritchie,2,56,3.57,0.255556,0.127778,2.127778,17,17.5,builtin|xebia
-70,Agile Project Management with Kanban,Eric Brechner,1,56,1.79,1.0,1.0,2.0,1,1,shapingsoftware
-71,Apprenticeship Patterns,Dave Hoover; Adewale Oshineye,1,56,1.79,1.0,1.0,2.0,1,1,programmingbooks_dev
-72,Code Craft,Pete Goodliffe,1,56,1.79,1.0,1.0,2.0,1,1,squash
-73,HTML & CSS: Design and Build Websites,Jon Duckett,1,56,1.79,1.0,1.0,2.0,1,1,bootdev_web
-74,Modern C++ Design,Andrei Alexandrescu,1,56,1.79,1.0,1.0,2.0,1,1,wearedevelopers
-75,Software Engineering: Principles and Practice,Hans van Vliet,1,56,1.79,1.0,1.0,2.0,1,1,toronto_csc444
-76,The Tech Resume Inside Out,Gergely Orosz,1,56,1.79,1.0,1.0,2.0,1,1,hackernoon_tanaka
-77,Types and Programming Languages,Benjamin C. Pierce,1,56,1.79,1.0,1.0,2.0,1,1,xebia
-78,C++ and Patterns,James O. Coplien,1,56,1.79,0.95,0.95,1.95,2,2,xebia
-79,Conceptual Blockbusting,James L. Adams,1,56,1.79,0.95,0.95,1.95,2,2,philosophical_geek
-80,Program Development in Java,Barbara Liskov; John Guttag,1,56,1.79,0.95,0.95,1.95,2,2,toronto_csc444
-81,Solid Code,Donis Marshall,1,56,1.79,0.95,0.95,1.95,2,2,squash
-82,Zero to One,Peter Thiel; Blake Masters,1,56,1.79,0.95,0.95,1.95,2,2,frankc
-83,JavaScript and jQuery: Interactive Front-End Web Development,Jon Duckett,1,56,1.79,0.9,0.9,1.9,2,2,bootdev_web
-84,Software Patterns,James O. Coplien,1,56,1.79,0.9,0.9,1.9,3,3,xebia
-85,Computer Systems: A Programmer's Perspective,Randal E. Bryant; David R. O'Hallaron,1,56,1.79,0.888889,0.888889,1.888889,2,2,teachyourselfcs
-86,Pattern-Oriented Software Architecture,Frank Buschmann; Regine Meunier; Hans Rohnert; Peter Sommerlad; Michael Stal,1,56,1.79,0.888889,0.888889,1.888889,2,2,cmu_mary_shaw
-87,Head First Object-Oriented Analysis and Design,Brett McLaughlin; Gary Pollice; David West,1,56,1.79,0.882353,0.882353,1.882353,3,3,sizovs
-88,Clean Craftsmanship,Robert C. Martin,1,56,1.79,0.85,0.85,1.85,4,4,happycoders
-89,Debugging the Development Process,Steve Maguire,1,56,1.79,0.85,0.85,1.85,4,4,squash
-90,Grokking Simplicity,Eric Normand,1,56,1.79,0.85,0.85,1.85,4,4,programmingbooks_dev
-91,Multi-Paradigm Design for C++,James O. Coplien,1,56,1.79,0.85,0.85,1.85,4,4,xebia
-92,Things They Don't Teach You in Software School,Shane Neubauer,1,56,1.79,0.818182,0.818182,1.818182,3,3,hackernoon_tanaka
-93,Better Embedded System Software,Philip Koopman,1,56,1.79,0.8,0.8,1.8,2,2,cornell_cs5150
-94,Enterprise Integration Patterns,Gregor Hohpe; Bobby Woolf,1,56,1.79,0.8,0.8,1.8,4,4,guru99
-95,Lean Architecture,James O. Coplien; Gertrud Bjørnvig,1,56,1.79,0.8,0.8,1.8,5,5,xebia
-96,The Lean Startup,Eric Ries,1,56,1.79,0.8,0.8,1.8,5,5,shortform
-97,The Object-Oriented Thought Process,Matt Weisfeld,1,56,1.79,0.8,0.8,1.8,5,5,programmingbooks_dev
-98,RxJS in Action,Paul P. Daniels; Luis Atencio,1,56,1.79,0.777778,0.777778,1.777778,3,3,devot
-99,Laws of Software Engineering,Milan Milanović,1,56,1.79,0.769231,0.769231,1.769231,4,4,milan_2026
-100,Designing Secure Software,Loren Kohnfelder,1,56,1.79,0.75,0.75,1.75,6,6,shapingsoftware
-101,Object-Oriented Design Heuristics,Arthur J. Riel,1,56,1.79,0.75,0.75,1.75,6,6,philosophical_geek
-102,"Small, Sharp Software Tools",Brian P. Hogan,1,56,1.79,0.75,0.75,1.75,6,6,programmingbooks_dev
-103,The War of Art,Steven Pressfield,1,56,1.79,0.75,0.75,1.75,6,6,frankc
-104,Letters to a New Developer,Dan Moore,1,56,1.79,0.727273,0.727273,1.727273,4,4,hackernoon_tanaka
-105,Grokking the System Design Interview,Design Gurus,1,56,1.79,0.714286,0.714286,1.714286,3,3,thesgn
-106,An Introduction to Formal Specification and Z,Ben Potter; Jane Sinclair; David Till,1,56,1.79,0.7,0.7,1.7,4,4,cornell_cs501
-107,Java Concurrency in Practice,Brian Goetz; Tim Peierls; Joshua Bloch; Joseph Bowbeer; David Holmes; Doug Lea,1,56,1.79,0.7,0.7,1.7,7,7,xebia
-108,Software Engineering with Abstractions,Valdis Berzins; Luqi,1,56,1.79,0.7,0.7,1.7,7,7,toronto_csc444
-109,The Art of Agile Development,James Shore; Shane Warden,1,56,1.79,0.7,0.7,1.7,7,7,programmingbooks_dev
-110,Version Control with Git,Jon Loeliger; Matthew McCullough,1,56,1.79,0.7,0.7,1.7,7,7,unibo_software_engineering
-111,Computer Science: An Overview,J. Glenn Brookshear; Dennis Brylow,1,56,1.79,0.666667,0.666667,1.666667,2,2,uppsala_se_fundamentals
-112,Bringing Design to Software,Terry Winograd (editor),1,56,1.79,0.666667,0.666667,1.666667,4,4,cmu_mary_shaw
-113,Mathematics for Computer Science,Eric Lehman; F. Thomson Leighton; Albert R. Meyer,1,56,1.79,0.666667,0.666667,1.666667,4,4,teachyourselfcs
-114,Essential Scrum,Kenneth S. Rubin,1,56,1.79,0.666667,0.666667,1.666667,5,5,software_engineering_books
-115,Fluent Python,Luciano Ramalho,1,56,1.79,0.666667,0.666667,1.666667,6,6,itsourcecode
-116,Beautiful Data,Toby Segaran; Jeff Hammerbacher (editors),1,56,1.79,0.65,0.65,1.65,8,8,xebia
-117,Code Simplicity,Max Kanat-Alexander,1,56,1.79,0.65,0.65,1.65,8,8,squash
-118,Pattern Hatching,John Vlissides,1,56,1.79,0.65,0.65,1.65,8,8,happycoders
-119,Programming from First Principles,Richard Bornat,1,56,1.79,0.65,0.65,1.65,8,8,toronto_csc444
-120,Python Object-Oriented Programming,Steven F. Lott; Dusty Phillips,1,56,1.79,0.65,0.65,1.65,8,8,unibo_software_engineering
-121,Object-Oriented Analysis and Design with Applications,Grady Booch,1,56,1.79,0.6,0.6,1.6,5,5,cornell_cs501
-122,Python Programming: An Introduction to Computer Science,John M. Zelle,1,56,1.79,0.6,0.6,1.6,5,5,gauravtiwari
-123,The Software Architect's Handbook,Joseph Ingeno,1,56,1.79,0.6,0.6,1.6,5,5,upgrad
-124,Artificial Intelligence: A Modern Approach,Stuart Russell; Peter Norvig,1,56,1.79,0.6,0.6,1.6,9,9,xebia
-125,Hackers & Painters,Paul Graham,1,56,1.79,0.6,0.6,1.6,9,9,frankc
-126,Managing the Design Factory,Donald G. Reinertsen,1,56,1.79,0.6,0.6,1.6,9,9,shapingsoftware
-127,Refactoring Workbook,William C. Wake,1,56,1.79,0.6,0.6,1.6,9,9,philosophical_geek
-128,Software Testing Techniques,Boris Beizer,1,56,1.79,0.6,0.6,1.6,9,9,toronto_csc444
-129,C# in Depth,Jon Skeet,1,56,1.79,0.555556,0.555556,1.555556,5,5,pragmatic_engineer_reading
-130,Operating Systems: Three Easy Pieces,Remzi H. Arpaci-Dusseau; Andrea C. Arpaci-Dusseau,1,56,1.79,0.555556,0.555556,1.555556,5,5,teachyourselfcs
-131,Succinctly book series,Syncfusion authors,1,56,1.79,0.555556,0.555556,1.555556,5,5,devot
-132,Effective Python,Brett Slatkin,1,56,1.79,0.55,0.55,1.55,10,10,unibo_software_engineering
-133,More Effective Agile,Steve McConnell,1,56,1.79,0.55,0.55,1.55,10,10,shapingsoftware
-134,Murphy's Law and Other Reasons Why Things Go Wrong,Arthur Bloch,1,56,1.79,0.55,0.55,1.55,10,10,codingexercises
-135,Paradigms of Artificial Intelligence Programming,Peter Norvig,1,56,1.79,0.55,0.55,1.55,10,10,xebia
-136,Software Project Survival Guide,Steve McConnell,1,56,1.79,0.55,0.55,1.55,10,10,squash
-137,The Complete Guide to Software Testing,William C. Hetzel,1,56,1.79,0.55,0.55,1.55,10,10,toronto_csc444
-138,14 Habits of Highly Productive Developers,Zeno Rocha,1,56,1.79,0.545455,0.545455,1.545455,6,6,hackernoon_tanaka
-139,Head First Java,Kathy Sierra; Bert Bates,1,56,1.79,0.533333,0.533333,1.533333,8,8,itsourcecode
-140,User Stories Applied,Mike Cohn,1,56,1.79,0.533333,0.533333,1.533333,8,8,guru99
-141,Scalability Rules,Martin L. Abbott; Michael T. Fisher,1,56,1.79,0.5,0.5,1.5,4,4,charlax_professional_programming
-142,Software Architecture for Developers,Simon Brown,1,56,1.79,0.5,0.5,1.5,5,5,kiview_gist
-143,Object-Oriented Software Engineering,Bernd Bruegge; Allen H. Dutoit,1,56,1.79,0.5,0.5,1.5,6,6,upgrad
-144,The Unified Modeling Language User Guide,Grady Booch; James Rumbaugh; Ivar Jacobson,1,56,1.79,0.5,0.5,1.5,6,6,cornell_cs501
-145,Web Design: A Beginner's Guide,Wendy Willard,1,56,1.79,0.5,0.5,1.5,6,6,bootdev_web
-146,The Web Application Hacker's Handbook,Dafydd Stuttard; Marcus Pinto,1,56,1.79,0.5,0.5,1.5,10,10,builtin
-147,Agile Software Development: The Cooperative Game,Alistair Cockburn,1,56,1.79,0.5,0.5,1.5,11,11,squash
-148,Being Geek,Michael Lopp,1,56,1.79,0.5,0.5,1.5,11,11,frankc
-149,On Lisp,Paul Graham,1,56,1.79,0.5,0.5,1.5,11,11,xebia
-150,Software Product Assurance,William L. Bryan; Stanley G. Siegel,1,56,1.79,0.5,0.5,1.5,11,11,toronto_csc444
-151,The Manga Guide to Databases,Mana Takahashi; Shoko Azuma,1,56,1.79,0.5,0.5,1.5,11,11,programmingbooks_dev
-152,Eloquent JavaScript,Marijn Haverbeke,1,56,1.79,0.466667,0.466667,1.466667,9,9,itsourcecode
-153,Getting Real,Jason Fried; David Heinemeier Hansson; Matthew Linderman,1,56,1.79,0.45,0.45,1.45,12,12,squash
-154,Handbook of Software Quality Assurance,Gordon G. Schulmeyer; James I. McManus,1,56,1.79,0.45,0.45,1.45,12,12,toronto_csc444
-155,Software Configuration Management Patterns,Stephen P. Berczuk; Brad Appleton,1,56,1.79,0.45,0.45,1.45,12,12,philosophical_geek
-156,The Start-up of You,Reid Hoffman; Ben Casnocha,1,56,1.79,0.45,0.45,1.45,12,12,frankc
-157,Computer Networking: A Top-Down Approach,James F. Kurose; Keith W. Ross,1,56,1.79,0.444444,0.444444,1.444444,6,6,teachyourselfcs
-158,UML Toolkit,Hans-Erik Eriksson; Magnus Penker,1,56,1.79,0.444444,0.444444,1.444444,6,6,cmu_mary_shaw
-159,CSS in Depth,Keith J. Grant,1,56,1.79,0.444444,0.444444,1.444444,11,11,builtin
-160,The Art of Unix Programming,Eric S. Raymond,1,56,1.79,0.4,0.4,1.4,7,7,devto_xteam
-161,Using UML: Software Engineering with Objects and Components,Rob Pooley; Perdita Stevens,1,56,1.79,0.4,0.4,1.4,7,7,cornell_cs501
-162,Distributed Systems for Fun and Profit,Mikito Takada,1,56,1.79,0.4,0.4,1.4,13,13,wearedevelopers
-163,"Handbook of Walkthroughs, Inspections, and Technical Reviews",Daniel P. Freedman; Gerald M. Weinberg,1,56,1.79,0.4,0.4,1.4,13,13,toronto_csc444
-164,Implementing Domain-Driven Design,Vaughn Vernon,1,56,1.79,0.4,0.4,1.4,13,13,happycoders
-165,Perfect Software,Gerald M. Weinberg,1,56,1.79,0.4,0.4,1.4,13,13,squash
-166,Requirements-led Project Management,Suzanne Robertson; James Robertson,1,56,1.79,0.4,0.4,1.4,13,13,shapingsoftware
-167,Software Creativity 2.0,Robert L. Glass,1,56,1.79,0.4,0.4,1.4,13,13,philosophical_geek
-168,Thinking in Java,Bruce Eckel,1,56,1.79,0.4,0.4,1.4,13,13,codingexercises
-169,Inclusive Design Patterns,Heydon Pickering,1,56,1.79,0.388889,0.388889,1.388889,12,12,builtin
-170,The Hundred-Page Language Models Book,Andriy Burkov,1,56,1.79,0.384615,0.384615,1.384615,9,9,milan_2026
-171,"A Little Java, A Few Patterns",Matthias Felleisen; Daniel P. Friedman,1,56,1.79,0.35,0.35,1.35,14,14,xebia
-172,Coder to Developer,Mike Gunderloy,1,56,1.79,0.35,0.35,1.35,14,14,squash
-173,Managing Humans,Michael Lopp,1,56,1.79,0.35,0.35,1.35,14,14,frankc
-174,"Scenarios, Stories, Use Cases",Ian F. Alexander; Neil Maiden,1,56,1.79,0.35,0.35,1.35,14,14,shapingsoftware
-175,Seven Languages in Seven Weeks,Bruce A. Tate,1,56,1.79,0.35,0.35,1.35,14,14,programmingbooks_dev
-176,Software Requirements: Analysis and Specification,Alan M. Davis,1,56,1.79,0.35,0.35,1.35,14,14,toronto_csc444
-177,Testing Computer Software,Cem Kaner; Jack Falk; Hung Quoc Nguyen,1,56,1.79,0.35,0.35,1.35,14,14,philosophical_geek
-178,The Macintosh Way,Guy Kawasaki,1,56,1.79,0.35,0.35,1.35,14,14,codingexercises
-179,Att studera på högskolan,Marina Bergman,1,56,1.79,0.333333,0.333333,1.333333,3,3,uppsala_se_fundamentals
-180,The Linux Programming Interface,Michael Kerrisk,1,56,1.79,0.333333,0.333333,1.333333,5,5,charlax_professional_programming
-181,Readings in Database Systems,Peter Bailis; Joseph M. Hellerstein; Michael Stonebraker (editors),1,56,1.79,0.333333,0.333333,1.333333,7,7,teachyourselfcs
-182,The Art of Systems Architecting,Eberhardt Rechtin; Mark W. Maier,1,56,1.79,0.333333,0.333333,1.333333,7,7,cmu_mary_shaw
-183,Become an Effective Software Engineering Manager,James Stanier,1,56,1.79,0.3,0.3,1.3,8,8,studentprojectcode
-184,"Object-Oriented Software Engineering Using UML, Patterns, and Java",Bernd Bruegge; Allen H. Dutoit,1,56,1.79,0.3,0.3,1.3,8,8,cornell_cs501
-185,Prefactoring,Ken Pugh,1,56,1.79,0.3,0.3,1.3,8,8,devto_xteam
-186,A Pattern Language,Christopher Alexander; Sara Ishikawa; Murray Silverstein,1,56,1.79,0.3,0.3,1.3,15,15,xebia
-187,Mastering the Requirements Process,Suzanne Robertson; James Robertson,1,56,1.79,0.3,0.3,1.3,15,15,toronto_csc444
-188,Software Estimation,Steve McConnell,1,56,1.79,0.3,0.3,1.3,15,15,squash
-189,The Art of Software Testing,Glenford J. Myers; Corey Sandler; Tom Badgett,1,56,1.79,0.3,0.3,1.3,15,15,unibo_software_engineering
-190,The Hitchhiker's Guide to the Galaxy,Douglas Adams,1,56,1.79,0.3,0.3,1.3,15,15,codingexercises
-191,The Unicorn Project,Gene Kim,1,56,1.79,0.3,0.3,1.3,15,15,happycoders
-192,Build a Large Language Model (From Scratch),Sebastian Raschka,1,56,1.79,0.285714,0.285714,1.285714,6,6,mentorcruise
-193,The Imposter's Handbook,Rob Conery,1,56,1.79,0.285714,0.285714,1.285714,6,6,serverless
-194,Lean DevOps,Robert Benefield,1,56,1.79,0.25,0.25,1.25,7,7,listium_utsav
-195,A Discipline of Programming,Edsger W. Dijkstra,1,56,1.79,0.25,0.25,1.25,16,16,codingexercises
-196,Requirements Engineering and Rapid Development,Ian Graham,1,56,1.79,0.25,0.25,1.25,16,16,toronto_csc444
-197,Software Development Pearls,Karl E. Wiegers,1,56,1.79,0.25,0.25,1.25,16,16,shapingsoftware
-198,Software Requirements,Karl E. Wiegers,1,56,1.79,0.25,0.25,1.25,16,16,philosophical_geek
-199,The Advantage,Patrick Lencioni,1,56,1.79,0.25,0.25,1.25,16,16,frankc
-200,xUnit Test Patterns,Gerard Meszaros,1,56,1.79,0.25,0.25,1.25,16,16,unibo_software_engineering
-201,Extreme Ownership,Jocko Willink; Leif Babin,1,56,1.79,0.235294,0.235294,1.235294,14,14,sizovs
-202,Crafting Interpreters,Robert Nystrom,1,56,1.79,0.222222,0.222222,1.222222,8,8,teachyourselfcs
-203,Design Paradigms,Henry Petroski,1,56,1.79,0.222222,0.222222,1.222222,8,8,cmu_mary_shaw
-204,Mastering PostgreSQL,Hans-Jürgen Schönig,1,56,1.79,0.222222,0.222222,1.222222,8,8,devot
-205,Designing Web APIs,Brenda Jin; Saurabh Sahni; Amir Shevat,1,56,1.79,0.2,0.2,1.2,5,5,algomaster
-206,Implementing Lean Software Development,Mary Poppendieck; Tom Poppendieck,1,56,1.79,0.2,0.2,1.2,5,5,roscoe_bartlett
-207,Database Internals,Alex Petrov,1,56,1.79,0.2,0.2,1.2,9,9,bootdev_web
-208,Modern Software Engineering,David Farley,1,56,1.79,0.2,0.2,1.2,9,9,studentprojectcode
-209,The Psychology of Computer Programming,Gerald M. Weinberg,1,56,1.79,0.2,0.2,1.2,9,9,devto_xteam
-210,Working in Public,Nadia Eghbal,1,56,1.79,0.2,0.2,1.2,13,13,guru99
-211,Exploring Requirements,Donald C. Gause; Gerald M. Weinberg,1,56,1.79,0.2,0.2,1.2,17,17,toronto_csc444
-212,Get Your Hands Dirty on Clean Architecture,Tom Hombergs,1,56,1.79,0.2,0.2,1.2,17,17,happycoders
-213,Manager's Handbook for Software Development,NASA Goddard Space Flight Center,1,56,1.79,0.2,0.2,1.2,17,17,philosophical_geek
-214,Rework,Jason Fried; David Heinemeier Hansson,1,56,1.79,0.2,0.2,1.2,17,17,frankc
-215,The Design of Sites,Douglas K. van Duyne; James A. Landay; Jason I. Hong,1,56,1.79,0.2,0.2,1.2,17,17,shapingsoftware
-216,Nonviolent Communication,Marshall B. Rosenberg,1,56,1.79,0.176471,0.176471,1.176471,15,15,sizovs
-217,Domain-Driven Design Distilled,Vaughn Vernon,1,56,1.79,0.15,0.15,1.15,18,18,happycoders
-218,The Intentional Stance,Daniel C. Dennett,1,56,1.79,0.15,0.15,1.15,18,18,squash
-219,Hands-On Machine Learning,Aurélien Géron,1,56,1.79,0.133333,0.133333,1.133333,14,14,itsourcecode
-220,The Self-Taught Programmer,Cory Althoff,1,56,1.79,0.12,0.12,1.12,23,23,threadreader_pierre
-221,The Goal,Eliyahu M. Goldratt; Jeff Cox,1,56,1.79,0.117647,0.117647,1.117647,16,16,sizovs
-222,Framework Design Guidelines,Krzysztof Cwalina; Brad Abrams,1,56,1.79,0.111111,0.111111,1.111111,9,9,pragmatic_engineer_reading
-223,The Tender Ship,Arthur M. Squires,1,56,1.79,0.111111,0.111111,1.111111,9,9,cmu_mary_shaw
-224,Let's Go!,Alex Edwards,1,56,1.79,0.1,0.1,1.1,10,10,bootdev_web
-225,Python Programming for the Absolute Beginner,Michael Dawson,1,56,1.79,0.1,0.1,1.1,10,10,gauravtiwari
-226,Software Engineering for Absolute Beginners,Nico Loubser,1,56,1.79,0.1,0.1,1.1,10,10,studentprojectcode
-227,97 Things Every Programmer Should Know,Kevlin Henney (editor),1,56,1.79,0.1,0.1,1.1,19,19,codingexercises
-228,Clean Agile,Robert C. Martin,1,56,1.79,0.1,0.1,1.1,19,19,happycoders
-229,Distributed Systems: Principles and Paradigms,Andrew S. Tanenbaum; Maarten van Steen,1,56,1.79,0.1,0.1,1.1,19,19,unibo_software_engineering
-230,Programming Clojure,Stuart Halloway,1,56,1.79,0.1,0.1,1.1,19,19,xebia
-231,Software Design,David Budgen,1,56,1.79,0.1,0.1,1.1,19,19,toronto_csc444
-232,Team Topologies,Matthew Skelton; Manuel Pais,1,56,1.79,0.1,0.1,1.1,19,19,wearedevelopers
-233,The Back of the Napkin,Dan Roam,1,56,1.79,0.1,0.1,1.1,19,19,squash
-234,The Nature of Software Development,Ron Jeffries,1,56,1.79,0.090909,0.090909,1.090909,11,11,hackernoon_tanaka
-235,Artificial Intelligence for Dummies,John Paul Mueller; Luca Massaron,1,56,1.79,0.066667,0.066667,1.066667,15,15,guru99
-236,Head First book series,Kathy Sierra; Bert Bates,1,56,1.79,0.05,0.05,1.05,20,20,xebia
-237,Logic in Computer Science,Michael Huth; Mark Ryan,1,56,1.79,0.05,0.05,1.05,20,20,toronto_csc444
-238,Pragmatic Unit Testing in C# with NUnit,Andy Hunt; Dave Thomas; Matt Hargett,1,56,1.79,0.05,0.05,1.05,20,20,philosophical_geek
-239,RESTful Web APIs,Leonard Richardson; Mike Amundsen; Sam Ruby,1,56,1.79,0.05,0.05,1.05,20,20,unibo_software_engineering
-240,The Timeless Way of Building,Christopher Alexander,1,56,1.79,0.05,0.05,1.05,20,20,squash
-241,Writing Effective Use Cases,Alistair Cockburn,1,56,1.79,0.05,0.05,1.05,20,20,shapingsoftware
+1,Clean Code,Robert C. Martin,76,100,76.0,63.615895,0.837051,76.837051,1,2.83,adatechschool|algomaster|amigoscode|aprenderbigdata|bebee|bookauthority|bootdev_web|builtin|bytebytego|codealchemy|codeforest|codingexercises|comment_devenir_developpeur|crehana|dailydev|datamines|devbooks_github|devot|devto_javinpaul|devto_marcosplusplus|devto_meta_36|devto_sandordargo|devto_xteam|dinahosting|droptica|ellow|exponent|frankc|freecodecamp|gauravtiwari|geekandjob|geekhunter|geeksforgeeks|gitdailies|goodreads_listopia|guru99|hackernoon_tanaka|hackr|hackreactor|happycoders|hassan_agmir|impulso|interviewbit|it_leaders|itsourcecode|jasonroell|javaguides|kiview_gist|laramind|listium_utsav|lorenzoneri|medium_dootrix|medium_javinpaul|medium_mcrcodes|milan_2026|mindsers|mostrecommendedbooks|pesto|rockstar|serverless|shapingsoftware|shortform|simplilearn|sizovs|software_engineering_books|squash|studentprojectcode|superdevacademy|techgig_2026|thedigitaltalents|thepower|thesgn|threadreader_pierre|unibo_software_engineering|upgrad|wearedevelopers
+2,The Pragmatic Programmer,Andrew Hunt; David Thomas,73,100,73.0,50.948175,0.69792,73.69792,1,4.71,amigoscode|aprenderbigdata|bootdev_web|builtin|bytebytego|charlax_professional_programming|codealchemy|codeforest|codingexercises|codingfearlessly|codinghorror|cornell_cs5150|crehana|dailydev|datamines|devbooks_github|devot|devto_javinpaul|devto_marcosplusplus|devto_meta_36|devto_xteam|dinahosting|droptica|ellow|exponent|frankc|freecodecamp|geekandjob|geekhunter|geeksforgeeks|gitdailies|goodreads_listopia|guru99|hackernoon_tanaka|hackr|hackreactor|happycoders|hassan_agmir|impulso|interviewbit|it_leaders|itsourcecode|jasonroell|javaguides|kiview_gist|laramind|medium_dootrix|milan_2026|mindsers|mostrecommendedbooks|pasksoftware|pesto|philosophical_geek|pragmatic_engineer_holiday|programmingbooks_dev|rockstar|serverless|shapingsoftware|shortform|simplilearn|sizovs|software_engineering_books|studentprojectcode|superdevacademy|techgig_2026|thedigitaltalents|thepower|thesgn|threadreader_pierre|unibo_software_engineering|upgrad|wearedevelopers|xebia
+3,Refactoring,Martin Fowler,47,100,47.0,25.257285,0.537389,47.537389,1,6.79,bytebytego|codealchemy|codeforest|codingexercises|dailydev|devbooks_github|devto_javinpaul|devto_marcosplusplus|devto_meta_36|devto_sandordargo|dinahosting|ellow|exponent|frankc|geekhunter|geeksforgeeks|gitdailies|goodreads_listopia|guru99|hackernoon_tanaka|hackr|happycoders|hassan_agmir|jasonroell|javaguides|laramind|lorenzoneri|medium_javinpaul|medium_mcrcodes|milan_2026|mostrecommendedbooks|pesto|programmingbooks_dev|rockstar|serverless|shapingsoftware|shortform|software_engineering_books|squash|superdevacademy|taoxie_illinois|techgig_2026|thepower|threadreader_pierre|upgrad|wearedevelopers|xebia
+4,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,45,100,45.0,25.878647,0.575081,45.575081,1,6.02,builtin|bytebytego|codingexercises|comment_devenir_developpeur|cornell_cs501|crehana|dailydev|devbooks_github|devot|devto_javinpaul|devto_meta_36|ellow|exponent|frankc|gauravtiwari|geekhunter|geeksforgeeks|gitdailies|goodreads_listopia|guru99|hackr|happycoders|hassan_agmir|it_leaders|jasonroell|javaguides|kiview_gist|medium_dootrix|medium_javinpaul|medium_mcrcodes|mostrecommendedbooks|pasksoftware|pesto|programmingbooks_dev|rockstar|serverless|shapingsoftware|shortform|studentprojectcode|superdevacademy|taoxie_illinois|thepower|thesgn|threadreader_pierre|unibo_software_engineering
+5,Code Complete,Steve McConnell,44,100,44.0,31.749018,0.721569,44.721569,1,4.59,amigoscode|aprenderbigdata|builtin|bytebytego|charlax_professional_programming|codingexercises|codingfearlessly|codinghorror|dailydev|devbooks_github|devto_javinpaul|devto_meta_36|devto_sandordargo|devto_xteam|exponent|gauravtiwari|geekandjob|geeksforgeeks|goodreads_listopia|guru99|hackr|hassan_agmir|inquisition|interviewbit|jasonroell|javaguides|kiview_gist|laramind|medium_dootrix|mindsers|mostrecommendedbooks|pesto|philosophical_geek|rockstar|roscoe_bartlett|shapingsoftware|shortform|simplilearn|software_engineering_books|squash|taoxie_illinois|thepower|threadreader_pierre|xebia
+6,The Mythical Man-Month,Frederick P. Brooks Jr.,33,100,33.0,20.746363,0.628678,33.628678,1,5.73,bookauthority|builtin|codinghorror|cornell_cs501|cornell_cs5150|devbooks_github|devto_meta_36|devto_xteam|ellow|exponent|gauravtiwari|geekandjob|geekhunter|geeksforgeeks|goodreads_listopia|hackreactor|impulso|inquisition|jasonroell|medium_javinpaul|mostrecommendedbooks|pasksoftware|pesto|philosophical_geek|rockstar|shapingsoftware|shortform|software_engineering_books|superdevacademy|taoxie_illinois|thepower|threadreader_pierre|unibo_software_engineering
+7,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,26,100,26.0,12.553173,0.482814,26.482814,2,7.62,bytebytego|crehana|dailydev|devto_javinpaul|devto_marcosplusplus|devto_meta_36|ellow|findjobit|frankc|freecodecamp|gauravtiwari|geekandjob|geekhunter|geeksforgeeks|goodreads_listopia|hackr|hassan_agmir|interviewbit|jasonroell|mostrecommendedbooks|philosophical_geek|shapingsoftware|software_engineering_books|thepower|thesgn|threadreader_pierre
+8,Designing Data-Intensive Applications,Martin Kleppmann,26,100,26.0,12.05235,0.463552,26.463552,2,8,algomaster|bebee|bytebytego|codealchemy|dailydev|devto_javinpaul|dinahosting|findjobit|hassan_agmir|holasoymalva|itsourcecode|javaguides|listium_utsav|mentorcruise|milan_2026|pragmatic_engineer_holiday|pragmatic_engineer_reading|programmingbooks_dev|shortform|software_engineering_books|studentprojectcode|teachyourselfcs|thesgn|unibo_software_engineering|upgrad|wearedevelopers
+9,Cracking the Coding Interview,Gayle Laakmann McDowell,25,100,25.0,10.388485,0.415539,25.415539,1,8.76,aprenderbigdata|bootdev_web|bytebytego|comment_devenir_developpeur|dailydev|devto_javinpaul|devto_meta_36|exponent|freecodecamp|geekandjob|geekhunter|hackernoon_tanaka|hackreactor|interviewbit|itsourcecode|javaguides|mostrecommendedbooks|pesto|pragmatic_engineer_holiday|rockstar|shortform|software_engineering_books|superdevacademy|threadreader_pierre|wearedevelopers
+10,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,20,100,20.0,11.54021,0.577011,20.577011,2,6.55,algomaster|amigoscode|aprenderbigdata|builtin|codingexercises|comment_devenir_developpeur|devot|devto_meta_36|dinahosting|goodreads_listopia|guru99|hackr|hackreactor|laramind|medium_dootrix|shapingsoftware|shortform|sizovs|threadreader_pierre|wearedevelopers
+11,The Clean Coder,Robert C. Martin,19,100,19.0,11.500896,0.60531,19.60531,2,6.21,dailydev|devbooks_github|devto_meta_36|devto_sandordargo|devto_xteam|dinahosting|guru99|hackr|happycoders|kiview_gist|medium_javinpaul|mindsers|pasksoftware|serverless|shortform|simplilearn|sizovs|squash|threadreader_pierre
+12,Code,Charles Petzold,19,100,19.0,10.432271,0.549067,19.549067,1,7.47,builtin|crehana|devto_meta_36|exponent|freecodecamp|geekandjob|geeksforgeeks|interviewbit|jasonroell|medium_dootrix|mentorcruise|mostrecommendedbooks|programmingbooks_dev|shortform|software_engineering_books|thepower|threadreader_pierre|upgrad|uppsala_se_fundamentals
+13,Domain-Driven Design,Eric Evans,19,100,19.0,6.803585,0.358083,19.358083,4,9.79,bytebytego|dailydev|devot|devto_javinpaul|exponent|gauravtiwari|geekhunter|goodreads_listopia|happycoders|javaguides|medium_javinpaul|medium_mcrcodes|mindsers|programmingbooks_dev|roscoe_bartlett|shortform|sizovs|techgig_2026|threadreader_pierre
+14,Working Effectively with Legacy Code,Michael C. Feathers,18,100,18.0,9.858889,0.547716,18.547716,2,6.67,builtin|codeforest|codingexercises|devbooks_github|devto_meta_36|devto_sandordargo|exponent|geekhunter|happycoders|impulso|jasonroell|laramind|pragmatic_engineer_reading|rockstar|roscoe_bartlett|shortform|threadreader_pierre|upgrad
+15,Clean Architecture,Robert C. Martin,14,100,14.0,7.090476,0.506463,14.506463,2,8.64,amigoscode|codingexercises|devbooks_github|devto_marcosplusplus|devto_meta_36|droptica|frankc|happycoders|holasoymalva|impulso|interviewbit|listium_utsav|shortform|unibo_software_engineering
+16,Programming Pearls,Jon Bentley,14,100,14.0,6.865385,0.490385,14.490385,3,8.29,codinghorror|devto_meta_36|freecodecamp|gauravtiwari|geeksforgeeks|hassan_agmir|inquisition|interviewbit|jasonroell|medium_javinpaul|mostrecommendedbooks|philosophical_geek|thepower|threadreader_pierre
+17,A Philosophy of Software Design,John Ousterhout,12,100,12.0,6.964805,0.5804,12.5804,1,5.67,aulab|builtin|devbooks_github|hackreactor|interviewbit|laramind|mentorcruise|milan_2026|pragmatic_engineer_holiday|pragmatic_engineer_reading|rockstar|techgig_2026
+18,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,12,100,12.0,6.686667,0.557222,12.557222,1,6.75,charlax_professional_programming|freecodecamp|goodreads_listopia|hackr|hassan_agmir|jasonroell|mostrecommendedbooks|pesto|shortform|teachyourselfcs|threadreader_pierre|upgrad
+19,The Art of Computer Programming,Donald E. Knuth,12,100,12.0,5.37458,0.447882,12.447882,2,8.92,aprenderbigdata|devto_meta_36|geekandjob|geeksforgeeks|goodreads_listopia|hackr|interviewbit|jasonroell|mostrecommendedbooks|pesto|thepower|threadreader_pierre
+20,Soft Skills,John Sonmez,11,100,11.0,5.164528,0.469503,11.469503,3,8.73,adatechschool|crehana|devto_meta_36|freecodecamp|geekandjob|guru99|hackernoon_tanaka|rockstar|shapingsoftware|sizovs|threadreader_pierre
+21,Peopleware,Tom DeMarco; Tim Lister,11,100,11.0,4.968641,0.451695,11.451695,4,9.64,codingfearlessly|codinghorror|devto_meta_36|ellow|exponent|frankc|guru99|laramind|shortform|sizovs|threadreader_pierre
+22,System Design Interview,Alex Xu,10,100,10.0,5.521429,0.552143,10.552143,1,6.9,bebee|bytebytego|devto_javinpaul|itsourcecode|javaguides|medium_javinpaul|mentorcruise|pasksoftware|pragmatic_engineer_holiday|programmingbooks_dev
+23,You Don't Know JS Yet,Kyle Simpson,10,100,10.0,5.322222,0.532222,10.532222,2,6.5,bootdev_web|builtin|codealchemy|devot|freecodecamp|hassan_agmir|itsourcecode|medium_mcrcodes|pesto|superdevacademy
+24,Patterns of Enterprise Application Architecture,Martin Fowler,10,100,10.0,3.81,0.381,10.381,3,12.5,codeforest|devto_meta_36|goodreads_listopia|guru99|philosophical_geek|shapingsoftware|shortform|software_engineering_books|threadreader_pierre|xebia
+25,Don't Make Me Think,Steve Krug,9,100,9.0,5.295924,0.588436,9.588436,3,8.56,codinghorror|devto_meta_36|frankc|freecodecamp|hackreactor|medium_dootrix|programmingbooks_dev|shortform|threadreader_pierre
+26,Grokking Algorithms,Aditya Y. Bhargava,9,100,9.0,4.404304,0.489367,9.489367,1,8,devto_marcosplusplus|findjobit|impulso|listium_utsav|mindsers|pragmatic_engineer_holiday|programmingbooks_dev|thepower|wearedevelopers
+27,Test-Driven Development: By Example,Kent Beck,9,100,9.0,3.996359,0.44404,9.44404,6,11,codingexercises|dinahosting|exponent|mindsers|philosophical_geek|programmingbooks_dev|sizovs|unibo_software_engineering|wearedevelopers
+28,Effective Java,Joshua Bloch,8,100,8.0,4.783333,0.597917,8.597917,2,7.62,codingexercises|crehana|frankc|freecodecamp|gauravtiwari|itsourcecode|medium_javinpaul|xebia
+29,Continuous Delivery,Jez Humble; David Farley,8,100,8.0,2.735098,0.341887,8.341887,8,13.88,codingexercises|dailydev|dinahosting|programmingbooks_dev|sizovs|threadreader_pierre|unibo_software_engineering|wearedevelopers
+30,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,8,100,8.0,2.583608,0.322951,8.322951,3,10.62,bebee|bookauthority|codeforest|happycoders|milan_2026|mindsers|rockstar|wearedevelopers
+31,The Software Craftsman,Sandro Mancuso,7,100,7.0,4.807983,0.686855,7.686855,1,5.29,codingexercises|devto_sandordargo|kiview_gist|mindsers|pasksoftware|pragmatic_engineer_holiday|sizovs
+32,The Phoenix Project,Gene Kim; Kevin Behr; George Spafford,7,100,7.0,3.645577,0.520797,7.520797,3,8.43,codeforest|dinahosting|findjobit|serverless|shortform|sizovs|superdevacademy
+33,JavaScript: The Good Parts,Douglas Crockford,7,100,7.0,3.35915,0.479879,7.479879,5,9,dinahosting|frankc|freecodecamp|medium_dootrix|medium_mcrcodes|pragmatic_engineer_reading|superdevacademy
+34,Software Engineering at Google,Titus Winters; Tom Manshreck; Hyrum Wright,6,100,6.0,4.194444,0.699074,6.699074,1,4,amigoscode|bookauthority|cornell_cs5150|medium_javinpaul|studentprojectcode|upgrad
+35,Rapid Development,Steve McConnell,6,100,6.0,2.800278,0.466713,6.466713,4,12,builtin|codinghorror|inquisition|philosophical_geek|squash|threadreader_pierre
+36,The Complete Software Developer's Career Guide,John Sonmez,6,100,6.0,2.376732,0.396122,6.396122,2,8.5,comment_devenir_developpeur|devto_sandordargo|droptica|geekandjob|happycoders|rockstar
+37,Software Engineering,Ian Sommerville,5,100,5.0,3.75,0.75,5.75,2,3.2,cornell_cs501|cornell_cs5150|toronto_csc444|umd_cmsc435|unibo_software_engineering
+38,"Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,5,100,5.0,3.222059,0.644412,5.644412,4,7,codingexercises|devto_sandordargo|happycoders|sizovs|wearedevelopers
+39,Automate the Boring Stuff with Python,Al Sweigart,5,100,5.0,3.128388,0.625678,5.625678,1,6.4,dinahosting|freecodecamp|itsourcecode|mentorcruise|thepower
+40,Fundamentals of Software Architecture,Mark Richards; Neal Ford,5,100,5.0,2.225641,0.445128,5.445128,5,7.8,codingfearlessly|devbooks_github|milan_2026|techgig_2026|wearedevelopers
+41,Coders at Work,Peter Seibel,5,100,5.0,1.32619,0.265238,5.265238,4,12.2,devto_xteam|droptica|medium_javinpaul|programmingbooks_dev|threadreader_pierre
+42,Software Engineering: A Practitioner's Approach,Roger S. Pressman; Bruce R. Maxim,4,100,4.0,3.05,0.7625,4.7625,1,5.75,squash|toronto_csc444|umd_cmsc435|unibo_software_engineering
+43,Software Architecture: Perspectives on an Emerging Discipline,Mary Shaw; David Garlan,4,100,4.0,2.9125,0.728125,4.728125,1,4.25,cmu_mary_shaw|cornell_cs501|taoxie_illinois|toronto_csc444
+44,The Software Engineer's Guidebook,Gergely Orosz,4,100,4.0,2.65,0.6625,4.6625,1,5.25,pasksoftware|pragmatic_engineer_holiday|rockstar|studentprojectcode
+45,The Art of Unit Testing,Roy Osherove,4,100,4.0,2.455769,0.613942,4.613942,2,6.25,kiview_gist|milan_2026|programmingbooks_dev|wearedevelopers
+46,"Agile Software Development: Principles, Patterns, and Practices",Robert C. Martin,4,100,4.0,2.35,0.5875,4.5875,2,7.75,devto_meta_36|happycoders|roscoe_bartlett|shapingsoftware
+47,Release It!,Michael T. Nygard,4,100,4.0,2.102941,0.525735,4.525735,3,6.5,charlax_professional_programming|pragmatic_engineer_reading|sizovs|software_engineering_books
+48,UML Distilled,Martin Fowler,4,100,4.0,2.080556,0.520139,4.520139,5,8.75,cmu_mary_shaw|philosophical_geek|taoxie_illinois|unibo_software_engineering
+49,Joel on Software,Joel Spolsky,4,100,4.0,1.853922,0.46348,4.46348,2,9.25,adatechschool|goodreads_listopia|it_leaders|medium_dootrix
+50,The C Programming Language,Brian W. Kernighan; Dennis M. Ritchie,4,100,4.0,1.655556,0.413889,4.413889,1,12.25,builtin|freecodecamp|goodreads_listopia|xebia
+51,The Algorithm Design Manual,Steven S. Skiena,4,100,4.0,1.653175,0.413294,4.413294,3,11.25,builtin|goodreads_listopia|mindsers|teachyourselfcs
+52,The DevOps Handbook,Gene Kim; Jez Humble; Patrick Debois; John Willis,4,100,4.0,1.261111,0.315278,4.315278,8,11.25,amigoscode|builtin|guru99|wearedevelopers
+53,AI Engineering,Chip Huyen,4,100,4.0,1.241026,0.310256,4.310256,3,10.75,itsourcecode|milan_2026|rockstar|studentprojectcode
+54,Extreme Programming Explained,Kent Beck; Cynthia Andres,4,100,4.0,1.065657,0.266414,4.266414,7,12,codeforest|codingexercises|hackernoon_tanaka|happycoders
+55,Clean Craftsmanship,Robert C. Martin,3,100,3.0,2.75,0.916667,3.916667,1,2.67,bookauthority|dinahosting|happycoders
+56,Python Crash Course,Eric Matthes,3,100,3.0,2.228571,0.742857,3.742857,1,3.33,datamines|itsourcecode|mentorcruise
+57,Software Engineering: Theory and Practice,Shari Lawrence Pfleeger; Joanne M. Atlee,3,100,3.0,2.15,0.716667,3.716667,3,3.33,cornell_cs501|toronto_csc444|umd_cmsc435
+58,Understanding Distributed Systems,Roberto Vitillo,3,100,3.0,2.024038,0.674679,3.674679,2,4.67,findjobit|listium_utsav|milan_2026
+59,JavaScript and jQuery: Interactive Front-End Web Development,Jon Duckett,3,100,3.0,1.95,0.65,3.65,1,7.67,bootdev_web|freecodecamp|lorenzoneri
+60,Software Project Survival Guide,Steve McConnell,3,100,3.0,1.75,0.583333,3.583333,2,6.33,calpoly_cpe205|inquisition|squash
+61,The Missing README,Chris Riccomini; Dmitriy Ryaboy,3,100,3.0,1.633333,0.544444,3.544444,2,7,bookauthority|codingfearlessly|pragmatic_engineer_holiday
+62,Software Requirements and Specifications,Michael Jackson,3,100,3.0,1.490278,0.496759,3.496759,3,9.67,cmu_mary_shaw|taoxie_illinois|toronto_csc444
+63,Software Architecture: The Hard Parts,Neal Ford; Mark Richards; Pramod Sadalage; Zhamak Dehghani,3,100,3.0,1.440385,0.480128,3.480128,6,8,listium_utsav|milan_2026|wearedevelopers
+64,PHP & MySQL: Server-side Web Development,Jon Duckett,3,100,3.0,1.383333,0.461111,3.461111,4,7.67,bootdev_web|itsourcecode|lorenzoneri
+65,Hands-On Machine Learning,Aurélien Géron,3,100,3.0,1.258333,0.419444,3.419444,4,8.33,bebee|itsourcecode|lorenzoneri
+66,Tidy First?,Kent Beck,3,100,3.0,1.161111,0.387037,3.387037,3,11,pragmatic_engineer_holiday|pragmatic_engineer_reading|rockstar
+67,The Art of Unix Programming,Eric S. Raymond,3,100,3.0,1.058824,0.352941,3.352941,3,9,adatechschool|devto_xteam|medium_dootrix
+68,Distributed Systems: Principles and Paradigms,Andrew S. Tanenbaum; Maarten van Steen,3,100,3.0,1.033333,0.344444,3.344444,7,11.67,holasoymalva|inquisition|unibo_software_engineering
+69,Head First Java,Kathy Sierra; Bert Bates,3,100,3.0,0.983333,0.327778,3.327778,8,11,freecodecamp|itsourcecode|thedigitaltalents
+70,The 100-Page Machine Learning Book,Andriy Burkov,3,100,3.0,0.95,0.316667,3.316667,7,10.67,findjobit|listium_utsav|wearedevelopers
+71,Eloquent JavaScript,Marijn Haverbeke,3,100,3.0,0.770513,0.256838,3.256838,9,13,freecodecamp|itsourcecode|thepower
+72,Building Microservices,Sam Newman,3,100,3.0,0.733333,0.244444,3.244444,4,8.67,algomaster|dailydev|devbooks_github
+73,The Five Dysfunctions of a Team,Patrick Lencioni,3,100,3.0,0.716667,0.238889,3.238889,12,15,codingfearlessly|frankc|wearedevelopers
+74,Site Reliability Engineering,Betsy Beyer; Chris Jones; Jennifer Petoff; Niall Richard Murphy,3,100,3.0,0.47619,0.15873,3.15873,7,8,holasoymalva|pragmatic_engineer_reading|thesgn
+75,Apprenticeship Patterns,Dave Hoover; Adewale Oshineye,2,100,2.0,1.8,0.9,2.9,1,2,medium_mcrcodes|programmingbooks_dev
+76,The Effective Engineer,Edmond Lau,2,100,2.0,1.8,0.9,2.9,1,3,codingfearlessly|pragmatic_engineer_holiday
+77,Dive into Design Patterns,Alexander Shvets,2,100,2.0,1.527778,0.763889,2.763889,3,4.5,dinahosting|holasoymalva
+78,Object-Oriented Analysis and Design with Applications,Grady Booch,2,100,2.0,1.5,0.75,2.75,3,4,cornell_cs501|inquisition
+79,Code Craft,Pete Goodliffe,2,100,2.0,1.411765,0.705882,2.705882,1,6,medium_dootrix|squash
+80,Distributed Systems for Fun and Profit,Mikito Takada,2,100,2.0,1.4,0.7,2.7,1,7,findjobit|wearedevelopers
+81,The Lean Startup,Eric Ries,2,100,2.0,1.388235,0.694118,2.694118,5,6.5,medium_dootrix|shortform
+82,Pro Git,Scott Chacon; Ben Straub,2,100,2.0,1.361111,0.680556,2.680556,6,7,builtin|unibo_software_engineering
+83,The Staff Engineer's Path,Tanya Reilly,2,100,2.0,1.325,0.6625,2.6625,2,4,pasksoftware|pragmatic_engineer_holiday
+84,Scrum: The Art of Doing Twice the Work in Half the Time,Jeff Sutherland,2,100,2.0,1.25,0.625,2.625,1,5.5,aulab|lorenzoneri
+85,Artificial Intelligence: A Modern Approach,Stuart Russell; Peter Norvig,2,100,2.0,1.183333,0.591667,2.591667,6,7.5,lorenzoneri|xebia
+86,Staff Engineer,Will Larson,2,100,2.0,1.15,0.575,2.575,3,5,bebee|pragmatic_engineer_holiday
+87,The Design of Everyday Things,Don Norman,2,100,2.0,1.104167,0.552083,2.552083,6,7,codinghorror|medium_javinpaul
+88,So Good They Can't Ignore You,Cal Newport,2,100,2.0,1.1,0.55,2.55,1,5.5,devto_xteam|frankc
+89,Modern Software Engineering,David Farley,2,100,2.0,1.1,0.55,2.55,2,5.5,bookauthority|studentprojectcode
+90,Pattern-Oriented Software Architecture,Frank Buschmann; Regine Meunier; Hans Rohnert; Peter Sommerlad; Michael Stal,2,100,2.0,1.076389,0.538194,2.538194,2,8,cmu_mary_shaw|taoxie_illinois
+91,Facts and Fallacies of Software Engineering,Robert L. Glass,2,100,2.0,1.05,0.525,2.525,4,10.5,philosophical_geek|squash
+92,Applying UML and Patterns,Craig Larman,2,100,2.0,1.05,0.525,2.525,8,10.5,philosophical_geek|unibo_software_engineering
+93,The Visual Display of Quantitative Information,Edward R. Tufte,2,100,2.0,1.018382,0.509191,2.509191,6,9,codinghorror|medium_dootrix
+94,Fluent Python,Luciano Ramalho,2,100,2.0,0.966667,0.483333,2.483333,6,7,crehana|itsourcecode
+95,Hackers & Painters,Paul Graham,2,100,2.0,0.835294,0.417647,2.417647,9,11.5,frankc|medium_dootrix
+96,The Manager's Path,Camille Fournier,2,100,2.0,0.775,0.3875,2.3875,6,8,bebee|codingfearlessly
+97,The Self-Taught Programmer,Cory Althoff,2,100,2.0,0.77,0.385,2.385,8,15.5,freecodecamp|threadreader_pierre
+98,The Web Application Hacker's Handbook,Dafydd Stuttard; Marcus Pinto,2,100,2.0,0.75,0.375,2.375,10,13,builtin|dinahosting
+99,Regular Expressions Cookbook,Jan Goyvaerts; Steven Levithan,2,100,2.0,0.705357,0.352679,2.352679,6,11,codinghorror|mindsers
+100,Software Estimation,Steve McConnell,2,100,2.0,0.7,0.35,2.35,13,14,goodreads_listopia|squash
+101,Algorithms to Live By,Brian Christian; Tom Griffiths,2,100,2.0,0.686364,0.343182,2.343182,5,12.5,dinahosting|geekandjob
+102,Lean DevOps,Robert Benefield,2,100,2.0,0.625,0.3125,2.3125,7,9,findjobit|listium_utsav
+103,The Imposter's Handbook,Rob Conery,2,100,2.0,0.485714,0.242857,2.242857,6,7.5,medium_mcrcodes|serverless
+104,97 Things Every Programmer Should Know,Kevlin Henney (editor),2,100,2.0,0.4,0.2,2.2,8,13.5,codingexercises|thedigitaltalents
+105,Algorithms,Robert Sedgewick; Kevin Wayne,2,100,2.0,0.28,0.14,2.14,9,16.5,javaguides|threadreader_pierre
+106,Team Topologies,Matthew Skelton; Manuel Pais,2,100,2.0,0.233333,0.116667,2.116667,14,16.5,codingfearlessly|wearedevelopers
+107,The Nature of Software Development,Ron Jeffries,2,100,2.0,0.190909,0.095455,2.095455,10,10.5,hackernoon_tanaka|medium_mcrcodes
+108,Agile Project Management with Kanban,Eric Brechner,1,100,1.0,1.0,1.0,2.0,1,1,shapingsoftware
+109,C++ Primer Plus,Stephen Prata,1,100,1.0,1.0,1.0,2.0,1,1,it_leaders
+110,Design Patterns Explained,Alan Shalloway; James R. Trott,1,100,1.0,1.0,1.0,2.0,1,1,holasoymalva
+111,HTML & CSS: Design and Build Websites,Jon Duckett,1,100,1.0,1.0,1.0,2.0,1,1,bootdev_web
+112,Modern C++ Design,Andrei Alexandrescu,1,100,1.0,1.0,1.0,2.0,1,1,wearedevelopers
+113,Practical Object-Oriented Design in Ruby,Sandi Metz,1,100,1.0,1.0,1.0,2.0,1,1,medium_mcrcodes
+114,Programmieren lernen – Eine grundlegende Einführung mit Java,Peter Pepper,1,100,1.0,1.0,1.0,2.0,1,1,thedigitaltalents
+115,Project-Based Software Engineering,Evelyn Stiller; Cathie LeBlanc,1,100,1.0,1.0,1.0,2.0,1,1,calpoly_cpe205
+116,Software Engineering: Principles and Practice,Hans van Vliet,1,100,1.0,1.0,1.0,2.0,1,1,toronto_csc444
+117,The Tech Resume Inside Out,Gergely Orosz,1,100,1.0,1.0,1.0,2.0,1,1,hackernoon_tanaka
+118,Types and Programming Languages,Benjamin C. Pierce,1,100,1.0,1.0,1.0,2.0,1,1,xebia
+119,C++ and Patterns,James O. Coplien,1,100,1.0,0.95,0.95,1.95,2,2,xebia
+120,Conceptual Blockbusting,James L. Adams,1,100,1.0,0.95,0.95,1.95,2,2,philosophical_geek
+121,Program Development in Java,Barbara Liskov; John Guttag,1,100,1.0,0.95,0.95,1.95,2,2,toronto_csc444
+122,Solid Code,Donis Marshall,1,100,1.0,0.95,0.95,1.95,2,2,squash
+123,The C++ Programming Language,Bjarne Stroustrup,1,100,1.0,0.95,0.95,1.95,2,2,inquisition
+124,Zero to One,Peter Thiel; Blake Masters,1,100,1.0,0.95,0.95,1.95,2,2,frankc
+125,Software Fundamentals: Collected Papers,David L. Parnas,1,100,1.0,0.9375,0.9375,1.9375,2,2,taoxie_illinois
+126,C How to Program,Paul Deitel; Harvey Deitel,1,100,1.0,0.916667,0.916667,1.916667,2,2,lorenzoneri
+127,"El gran libro de HTML5, CSS3 y JavaScript",Juan Diego Gauchat,1,100,1.0,0.9,0.9,1.9,2,2,crehana
+128,Swift 4: Das umfassende Handbuch,Michael Kofler,1,100,1.0,0.9,0.9,1.9,2,2,thedigitaltalents
+129,Software Patterns,James O. Coplien,1,100,1.0,0.9,0.9,1.9,3,3,xebia
+130,Computer Systems: A Programmer's Perspective,Randal E. Bryant; David R. O'Hallaron,1,100,1.0,0.888889,0.888889,1.888889,2,2,teachyourselfcs
+131,Game Programming Patterns,Robert Nystrom,1,100,1.0,0.888889,0.888889,1.888889,2,2,holasoymalva
+132,Head First Object-Oriented Analysis and Design,Brett McLaughlin; Gary Pollice; David West,1,100,1.0,0.882353,0.882353,1.882353,3,3,sizovs
+133,Software Product-Line Engineering,David M. Weiss; Chi Tau Robert Lai,1,100,1.0,0.875,0.875,1.875,3,3,taoxie_illinois
+134,Building a Career in Software,Daniel Heller,1,100,1.0,0.85,0.85,1.85,4,4,pragmatic_engineer_holiday
+135,Debugging the Development Process,Steve Maguire,1,100,1.0,0.85,0.85,1.85,4,4,squash
+136,Grokking Simplicity,Eric Normand,1,100,1.0,0.85,0.85,1.85,4,4,programmingbooks_dev
+137,Multi-Paradigm Design for C++,James O. Coplien,1,100,1.0,0.85,0.85,1.85,4,4,xebia
+138,Structured Computer Organization,Andrew S. Tanenbaum; Todd Austin,1,100,1.0,0.85,0.85,1.85,4,4,inquisition
+139,Learning Python,Mark Lutz,1,100,1.0,0.833333,0.833333,1.833333,3,3,lorenzoneri
+140,Rocket Surgery Made Easy,Steve Krug,1,100,1.0,0.823529,0.823529,1.823529,4,4,medium_dootrix
+141,Things They Don't Teach You in Software School,Shane Neubauer,1,100,1.0,0.818182,0.818182,1.818182,3,3,hackernoon_tanaka
+142,Fundamentals of Data Engineering,Joe Reis; Matt Housley,1,100,1.0,0.8125,0.8125,1.8125,4,4,findjobit
+143,Better Embedded System Software,Philip Koopman,1,100,1.0,0.8,0.8,1.8,2,2,cornell_cs5150
+144,Non è nato in un garage,Fabio Carletti,1,100,1.0,0.8,0.8,1.8,2,2,aulab
+145,Think Like a Programmer,V. Anton Spraul,1,100,1.0,0.8,0.8,1.8,2,2,simplilearn
+146,Weniger schlecht programmieren,Kathrin Passig; Johannes Jander,1,100,1.0,0.8,0.8,1.8,2,2,datamines
+147,IT-Handbuch für Fachinformatiker,Sascha Kersken,1,100,1.0,0.8,0.8,1.8,3,3,thedigitaltalents
+148,Enterprise Integration Patterns,Gregor Hohpe; Bobby Woolf,1,100,1.0,0.8,0.8,1.8,4,4,guru99
+149,El libro negro del Programador,Rafael Gómez Blanes,1,100,1.0,0.8,0.8,1.8,5,5,dinahosting
+150,Lean Architecture,James O. Coplien; Gertrud Bjørnvig,1,100,1.0,0.8,0.8,1.8,5,5,xebia
+151,Modern Operating Systems,Andrew S. Tanenbaum; Herbert Bos,1,100,1.0,0.8,0.8,1.8,5,5,inquisition
+152,The Object-Oriented Thought Process,Matt Weisfeld,1,100,1.0,0.8,0.8,1.8,5,5,programmingbooks_dev
+153,RxJS in Action,Paul P. Daniels; Luis Atencio,1,100,1.0,0.777778,0.777778,1.777778,3,3,devot
+154,Laws of Software Engineering,Milan Milanović,1,100,1.0,0.769231,0.769231,1.769231,4,4,milan_2026
+155,Learning Agile,Andrew Stellman; Jennifer Greene,1,100,1.0,0.75,0.75,1.75,4,4,it_leaders
+156,Software Engineering Economics,Barry W. Boehm,1,100,1.0,0.75,0.75,1.75,5,5,taoxie_illinois
+157,Streaming Systems,Tyler Akidau; Slava Chernyak; Reuven Lax,1,100,1.0,0.75,0.75,1.75,5,5,findjobit
+158,Computer Networks,Andrew S. Tanenbaum; David J. Wetherall,1,100,1.0,0.75,0.75,1.75,6,6,inquisition
+159,Designing Secure Software,Loren Kohnfelder,1,100,1.0,0.75,0.75,1.75,6,6,shapingsoftware
+160,Object-Oriented Design Heuristics,Arthur J. Riel,1,100,1.0,0.75,0.75,1.75,6,6,philosophical_geek
+161,"Small, Sharp Software Tools",Brian P. Hogan,1,100,1.0,0.75,0.75,1.75,6,6,programmingbooks_dev
+162,The War of Art,Steven Pressfield,1,100,1.0,0.75,0.75,1.75,6,6,frankc
+163,Letters to a New Developer,Dan Moore,1,100,1.0,0.727273,0.727273,1.727273,4,4,hackernoon_tanaka
+164,Grokking the System Design Interview,Design Gurus,1,100,1.0,0.714286,0.714286,1.714286,3,3,thesgn
+165,Modern PHP,Josh Lockhart,1,100,1.0,0.714286,0.714286,1.714286,3,3,droptica
+166,An Introduction to Formal Specification and Z,Ben Potter; Jane Sinclair; David Till,1,100,1.0,0.7,0.7,1.7,4,4,cornell_cs501
+167,Neuronale Netze selbst programmieren,Tariq Rashid,1,100,1.0,0.7,0.7,1.7,4,4,thedigitaltalents
+168,Java Concurrency in Practice,Brian Goetz; Tim Peierls; Joshua Bloch; Joseph Bowbeer; David Holmes; Doug Lea,1,100,1.0,0.7,0.7,1.7,7,7,xebia
+169,Software Engineering with Abstractions,Valdis Berzins; Luqi,1,100,1.0,0.7,0.7,1.7,7,7,toronto_csc444
+170,The Art of Agile Development,James Shore; Shane Warden,1,100,1.0,0.7,0.7,1.7,7,7,programmingbooks_dev
+171,Version Control with Git,Jon Loeliger; Matthew McCullough,1,100,1.0,0.7,0.7,1.7,7,7,unibo_software_engineering
+172,Machine Learning,Ethem Alpaydin,1,100,1.0,0.6875,0.6875,1.6875,6,6,findjobit
+173,Software Cost Estimation with COCOMO II,Barry W. Boehm,1,100,1.0,0.6875,0.6875,1.6875,6,6,taoxie_illinois
+174,Computer Science: An Overview,J. Glenn Brookshear; Dennis Brylow,1,100,1.0,0.666667,0.666667,1.666667,2,2,uppsala_se_fundamentals
+175,Bringing Design to Software,Terry Winograd (editor),1,100,1.0,0.666667,0.666667,1.666667,4,4,cmu_mary_shaw
+176,Mathematics for Computer Science,Eric Lehman; F. Thomson Leighton; Albert R. Meyer,1,100,1.0,0.666667,0.666667,1.666667,4,4,teachyourselfcs
+177,Software Architecture Patterns,Mark Richards,1,100,1.0,0.666667,0.666667,1.666667,4,4,holasoymalva
+178,Essential Scrum,Kenneth S. Rubin,1,100,1.0,0.666667,0.666667,1.666667,5,5,software_engineering_books
+179,Java: The Complete Reference,Herbert Schildt,1,100,1.0,0.666667,0.666667,1.666667,5,5,lorenzoneri
+180,The Elements of Style,William Strunk Jr.; E. B. White,1,100,1.0,0.666667,0.666667,1.666667,6,6,codingfearlessly
+181,Beautiful Data,Toby Segaran; Jeff Hammerbacher (editors),1,100,1.0,0.65,0.65,1.65,8,8,xebia
+182,Code Simplicity,Max Kanat-Alexander,1,100,1.0,0.65,0.65,1.65,8,8,squash
+183,Pattern Hatching,John Vlissides,1,100,1.0,0.65,0.65,1.65,8,8,happycoders
+184,Programming from First Principles,Richard Bornat,1,100,1.0,0.65,0.65,1.65,8,8,toronto_csc444
+185,Python Object-Oriented Programming,Steven F. Lott; Dusty Phillips,1,100,1.0,0.65,0.65,1.65,8,8,unibo_software_engineering
+186,The Passionate Programmer,Chad Fowler,1,100,1.0,0.65,0.65,1.65,8,8,pragmatic_engineer_holiday
+187,About Face,Alan Cooper; Robert Reimann; David Cronin,1,100,1.0,0.625,0.625,1.625,7,7,codinghorror
+188,Design Rules: The Power of Modularity,Carliss Y. Baldwin; Kim B. Clark,1,100,1.0,0.625,0.625,1.625,7,7,taoxie_illinois
+189,Ottenere il massimo da un corso Full-Stack Developer,Luca Solfanelli,1,100,1.0,0.6,0.6,1.6,3,3,aulab
+190,Becoming a Better Programmer,Pete Goodliffe,1,100,1.0,0.6,0.6,1.6,5,5,devto_marcosplusplus
+191,But How Do It Know?,J. Clark Scott,1,100,1.0,0.6,0.6,1.6,5,5,geekhunter
+192,Explore It!,Elisabeth Hendrickson,1,100,1.0,0.6,0.6,1.6,5,5,bookauthority
+193,Python Programming: An Introduction to Computer Science,John M. Zelle,1,100,1.0,0.6,0.6,1.6,5,5,gauravtiwari
+194,The Software Architect's Handbook,Joseph Ingeno,1,100,1.0,0.6,0.6,1.6,5,5,upgrad
+195,Thinking in Systems,Donella H. Meadows,1,100,1.0,0.6,0.6,1.6,7,7,codingfearlessly
+196,Managing the Design Factory,Donald G. Reinertsen,1,100,1.0,0.6,0.6,1.6,9,9,shapingsoftware
+197,Refactoring Workbook,William C. Wake,1,100,1.0,0.6,0.6,1.6,9,9,philosophical_geek
+198,Software Testing Techniques,Boris Beizer,1,100,1.0,0.6,0.6,1.6,9,9,toronto_csc444
+199,Symfonia C++ Standard,Jerzy Grębosz,1,100,1.0,0.583333,0.583333,1.583333,6,6,it_leaders
+200,Machine Learning: The Art and Science of Algorithms that Make Sense of Data,Peter Flach,1,100,1.0,0.5625,0.5625,1.5625,8,8,findjobit
+201,The Inmates Are Running the Asylum,Alan Cooper,1,100,1.0,0.5625,0.5625,1.5625,8,8,codinghorror
+202,C# in Depth,Jon Skeet,1,100,1.0,0.555556,0.555556,1.555556,5,5,pragmatic_engineer_reading
+203,Learning SQL,Alan Beaulieu,1,100,1.0,0.555556,0.555556,1.555556,5,5,amigoscode
+204,Operating Systems: Three Easy Pieces,Remzi H. Arpaci-Dusseau; Andrea C. Arpaci-Dusseau,1,100,1.0,0.555556,0.555556,1.555556,5,5,teachyourselfcs
+205,Succinctly book series,Syncfusion authors,1,100,1.0,0.555556,0.555556,1.555556,5,5,devot
+206,Effective Python,Brett Slatkin,1,100,1.0,0.55,0.55,1.55,10,10,unibo_software_engineering
+207,Growing as a Mobile Engineer,Gergely Orosz,1,100,1.0,0.55,0.55,1.55,10,10,pragmatic_engineer_holiday
+208,More Effective Agile,Steve McConnell,1,100,1.0,0.55,0.55,1.55,10,10,shapingsoftware
+209,Murphy's Law and Other Reasons Why Things Go Wrong,Arthur Bloch,1,100,1.0,0.55,0.55,1.55,10,10,codingexercises
+210,Paradigms of Artificial Intelligence Programming,Peter Norvig,1,100,1.0,0.55,0.55,1.55,10,10,xebia
+211,Professional Software Development,Steve McConnell,1,100,1.0,0.55,0.55,1.55,10,10,inquisition
+212,The Complete Guide to Software Testing,William C. Hetzel,1,100,1.0,0.55,0.55,1.55,10,10,toronto_csc444
+213,14 Habits of Highly Productive Developers,Zeno Rocha,1,100,1.0,0.545455,0.545455,1.545455,6,6,hackernoon_tanaka
+214,User Stories Applied,Mike Cohn,1,100,1.0,0.533333,0.533333,1.533333,8,8,guru99
+215,Scalability Rules,Martin L. Abbott; Michael T. Fisher,1,100,1.0,0.5,0.5,1.5,4,4,charlax_professional_programming
+216,Kubernetes in Action,Marko Lukša,1,100,1.0,0.5,0.5,1.5,5,5,bebee
+217,Software Architecture for Developers,Simon Brown,1,100,1.0,0.5,0.5,1.5,5,5,kiview_gist
+218,Algoritmos e Lógica da Programação,Marco A. Furlan de Souza,1,100,1.0,0.5,0.5,1.5,6,6,devto_marcosplusplus
+219,Object-Oriented Software Engineering,Bernd Bruegge; Allen H. Dutoit,1,100,1.0,0.5,0.5,1.5,6,6,upgrad
+220,The Unified Modeling Language User Guide,Grady Booch; James Rumbaugh; Ivar Jacobson,1,100,1.0,0.5,0.5,1.5,6,6,cornell_cs501
+221,Web Design: A Beginner's Guide,Wendy Willard,1,100,1.0,0.5,0.5,1.5,6,6,bootdev_web
+222,Head First C#,Andrew Stellman; Jennifer Greene,1,100,1.0,0.5,0.5,1.5,7,7,it_leaders
+223,Effective DevOps,Jennifer Davis; Katherine Daniels,1,100,1.0,0.5,0.5,1.5,8,8,mindsers
+224,Deep Learning,Ian Goodfellow; Yoshua Bengio; Aaron Courville,1,100,1.0,0.5,0.5,1.5,9,9,findjobit
+225,Problem Frames and Methods,Michael Jackson,1,100,1.0,0.5,0.5,1.5,9,9,taoxie_illinois
+226,Agile Software Development: The Cooperative Game,Alistair Cockburn,1,100,1.0,0.5,0.5,1.5,11,11,squash
+227,Being Geek,Michael Lopp,1,100,1.0,0.5,0.5,1.5,11,11,frankc
+228,Communication for Engineers,Chris Laffra,1,100,1.0,0.5,0.5,1.5,11,11,pragmatic_engineer_holiday
+229,Introduction to System Design,Shivam Singh,1,100,1.0,0.5,0.5,1.5,11,11,goodreads_listopia
+230,On Lisp,Paul Graham,1,100,1.0,0.5,0.5,1.5,11,11,xebia
+231,Operating Systems: Design and Implementation,Andrew S. Tanenbaum; Albert S. Woodhull,1,100,1.0,0.5,0.5,1.5,11,11,inquisition
+232,Software Product Assurance,William L. Bryan; Stanley G. Siegel,1,100,1.0,0.5,0.5,1.5,11,11,toronto_csc444
+233,The Manga Guide to Databases,Mana Takahashi; Shoko Azuma,1,100,1.0,0.5,0.5,1.5,11,11,programmingbooks_dev
+234,Learning Domain-Driven Design,Vlad Khononov,1,100,1.0,0.466667,0.466667,1.466667,9,9,codingfearlessly
+235,An Embedded Software Primer,David E. Simon,1,100,1.0,0.45,0.45,1.45,12,12,inquisition
+236,Getting Real,Jason Fried; David Heinemeier Hansson; Matthew Linderman,1,100,1.0,0.45,0.45,1.45,12,12,squash
+237,Handbook of Software Quality Assurance,Gordon G. Schulmeyer; James I. McManus,1,100,1.0,0.45,0.45,1.45,12,12,toronto_csc444
+238,Software Configuration Management Patterns,Stephen P. Berczuk; Brad Appleton,1,100,1.0,0.45,0.45,1.45,12,12,philosophical_geek
+239,The Start-up of You,Reid Hoffman; Ben Casnocha,1,100,1.0,0.45,0.45,1.45,12,12,frankc
+240,Computer Networking: A Top-Down Approach,James F. Kurose; Keith W. Ross,1,100,1.0,0.444444,0.444444,1.444444,6,6,teachyourselfcs
+241,The Architecture of Open Source Applications,Amy Brown; Greg Wilson (editors),1,100,1.0,0.444444,0.444444,1.444444,6,6,holasoymalva
+242,UML Toolkit,Hans-Erik Eriksson; Magnus Penker,1,100,1.0,0.444444,0.444444,1.444444,6,6,cmu_mary_shaw
+243,CSS in Depth,Keith J. Grant,1,100,1.0,0.444444,0.444444,1.444444,11,11,builtin
+244,Drupal 9 Module Development,Daniel Sipos,1,100,1.0,0.428571,0.428571,1.428571,5,5,droptica
+245,Artificial Intelligence for Games,Ian Millington; John Funge,1,100,1.0,0.416667,0.416667,1.416667,8,8,lorenzoneri
+246,Zrozumieć programowanie,Gynvael Coldwind,1,100,1.0,0.416667,0.416667,1.416667,8,8,it_leaders
+247,Besser coden,Uwe Post,1,100,1.0,0.4,0.4,1.4,7,7,thedigitaltalents
+248,Introduction to Software Testing,Paul Ammann; Jeff Offutt,1,100,1.0,0.4,0.4,1.4,7,7,bookauthority
+249,Using UML: Software Engineering with Objects and Components,Rob Pooley; Perdita Stevens,1,100,1.0,0.4,0.4,1.4,7,7,cornell_cs501
+250,Doing Hard Time,Bruce Powell Douglass,1,100,1.0,0.4,0.4,1.4,13,13,inquisition
+251,"Handbook of Walkthroughs, Inspections, and Technical Reviews",Daniel P. Freedman; Gerald M. Weinberg,1,100,1.0,0.4,0.4,1.4,13,13,toronto_csc444
+252,Implementing Domain-Driven Design,Vaughn Vernon,1,100,1.0,0.4,0.4,1.4,13,13,happycoders
+253,Perfect Software,Gerald M. Weinberg,1,100,1.0,0.4,0.4,1.4,13,13,squash
+254,Requirements-led Project Management,Suzanne Robertson; James Robertson,1,100,1.0,0.4,0.4,1.4,13,13,shapingsoftware
+255,Software Creativity 2.0,Robert L. Glass,1,100,1.0,0.4,0.4,1.4,13,13,philosophical_geek
+256,Thinking in Java,Bruce Eckel,1,100,1.0,0.4,0.4,1.4,13,13,codingexercises
+257,Inclusive Design Patterns,Heydon Pickering,1,100,1.0,0.388889,0.388889,1.388889,12,12,builtin
+258,The Hundred-Page Language Models Book,Andriy Burkov,1,100,1.0,0.384615,0.384615,1.384615,9,9,milan_2026
+259,Designing Web Usability,Jakob Nielsen,1,100,1.0,0.375,0.375,1.375,11,11,codinghorror
+260,A Book on C,Al Kelley; Ira Pohl,1,100,1.0,0.35,0.35,1.35,14,14,freecodecamp
+261,"A Little Java, A Few Patterns",Matthias Felleisen; Daniel P. Friedman,1,100,1.0,0.35,0.35,1.35,14,14,xebia
+262,Coder to Developer,Mike Gunderloy,1,100,1.0,0.35,0.35,1.35,14,14,squash
+263,Fundamentals of Database Systems,Ramez Elmasri; Shamkant B. Navathe,1,100,1.0,0.35,0.35,1.35,14,14,inquisition
+264,Managing Humans,Michael Lopp,1,100,1.0,0.35,0.35,1.35,14,14,frankc
+265,"Scenarios, Stories, Use Cases",Ian F. Alexander; Neil Maiden,1,100,1.0,0.35,0.35,1.35,14,14,shapingsoftware
+266,Seven Languages in Seven Weeks,Bruce A. Tate,1,100,1.0,0.35,0.35,1.35,14,14,programmingbooks_dev
+267,Software Requirements: Analysis and Specification,Alan M. Davis,1,100,1.0,0.35,0.35,1.35,14,14,toronto_csc444
+268,Testing Computer Software,Cem Kaner; Jack Falk; Hung Quoc Nguyen,1,100,1.0,0.35,0.35,1.35,14,14,philosophical_geek
+269,The Macintosh Way,Guy Kawasaki,1,100,1.0,0.35,0.35,1.35,14,14,codingexercises
+270,The Tangled Web,Michal Zalewski,1,100,1.0,0.35,0.35,1.35,14,14,dinahosting
+271,Att studera på högskolan,Marina Bergman,1,100,1.0,0.333333,0.333333,1.333333,3,3,uppsala_se_fundamentals
+272,The Linux Programming Interface,Michael Kerrisk,1,100,1.0,0.333333,0.333333,1.333333,5,5,charlax_professional_programming
+273,Designing Distributed Systems,Brendan Burns,1,100,1.0,0.333333,0.333333,1.333333,7,7,amigoscode
+274,Readings in Database Systems,Peter Bailis; Joseph M. Hellerstein; Michael Stonebraker (editors),1,100,1.0,0.333333,0.333333,1.333333,7,7,teachyourselfcs
+275,The Art of Systems Architecting,Eberhardt Rechtin; Mark W. Maier,1,100,1.0,0.333333,0.333333,1.333333,7,7,cmu_mary_shaw
+276,A Theory of Fun for Game Design,Raph Koster,1,100,1.0,0.333333,0.333333,1.333333,9,9,lorenzoneri
+277,High Output Management,Andrew S. Grove,1,100,1.0,0.333333,0.333333,1.333333,11,11,codingfearlessly
+278,Docker in Action,Jeff Nickoloff; Stephen Kuenzli,1,100,1.0,0.3125,0.3125,1.3125,12,12,findjobit
+279,Algoritmos: Lógica para Desenvolvimento de Programação de Computadores,José Augusto N. G. Manzano; Jayr Figueiredo de Oliveira,1,100,1.0,0.3,0.3,1.3,8,8,devto_marcosplusplus
+280,Become an Effective Software Engineering Manager,James Stanier,1,100,1.0,0.3,0.3,1.3,8,8,studentprojectcode
+281,"Object-Oriented Software Engineering Using UML, Patterns, and Java",Bernd Bruegge; Allen H. Dutoit,1,100,1.0,0.3,0.3,1.3,8,8,cornell_cs501
+282,Prefactoring,Ken Pugh,1,100,1.0,0.3,0.3,1.3,8,8,devto_xteam
+283,The Agile Samurai,Jonathan Rasmusson,1,100,1.0,0.3,0.3,1.3,8,8,bookauthority
+284,A Common-Sense Guide to Data Structures and Algorithms,Jay Wengrow,1,100,1.0,0.3,0.3,1.3,15,15,pragmatic_engineer_holiday
+285,A Pattern Language,Christopher Alexander; Sara Ishikawa; Murray Silverstein,1,100,1.0,0.3,0.3,1.3,15,15,xebia
+286,Designing the User Interface,Ben Shneiderman; Catherine Plaisant,1,100,1.0,0.3,0.3,1.3,15,15,inquisition
+287,Git & GitHub desde cero,Brais Moure,1,100,1.0,0.3,0.3,1.3,15,15,dinahosting
+288,Mastering the Requirements Process,Suzanne Robertson; James Robertson,1,100,1.0,0.3,0.3,1.3,15,15,toronto_csc444
+289,Programming Interviews Exposed,John Mongan; Noah Suojanen Kindler; Eric Giguère,1,100,1.0,0.3,0.3,1.3,15,15,freecodecamp
+290,The Art of Software Testing,Glenford J. Myers; Corey Sandler; Tom Badgett,1,100,1.0,0.3,0.3,1.3,15,15,unibo_software_engineering
+291,The Hitchhiker's Guide to the Galaxy,Douglas Adams,1,100,1.0,0.3,0.3,1.3,15,15,codingexercises
+292,The Unicorn Project,Gene Kim,1,100,1.0,0.3,0.3,1.3,15,15,happycoders
+293,Seven Databases in Seven Weeks,Luc Perkins; Eric Redmond; Jim R. Wilson,1,100,1.0,0.294118,0.294118,1.294118,13,13,medium_dootrix
+294,Build a Large Language Model (From Scratch),Sebastian Raschka,1,100,1.0,0.285714,0.285714,1.285714,6,6,mentorcruise
+295,Object-Oriented and Classical Software Engineering,Stephen R. Schach,1,100,1.0,0.25,0.25,1.25,4,4,umd_cmsc435
+296,Programming in Scala,Martin Odersky; Lex Spoon; Bill Venners,1,100,1.0,0.25,0.25,1.25,7,7,aprenderbigdata
+297,Regular Expression Pocket Reference,Tony Stubblebine,1,100,1.0,0.25,0.25,1.25,10,10,it_leaders
+298,Analysis Patterns,Martin Fowler,1,100,1.0,0.25,0.25,1.25,13,13,taoxie_illinois
+299,Cloud Native DevOps with Kubernetes,John Arundel; Justin Domingus,1,100,1.0,0.25,0.25,1.25,13,13,findjobit
+300,Visual Explanations,Edward R. Tufte,1,100,1.0,0.25,0.25,1.25,13,13,codinghorror
+301,A Discipline of Programming,Edsger W. Dijkstra,1,100,1.0,0.25,0.25,1.25,16,16,codingexercises
+302,Requirements Engineering and Rapid Development,Ian Graham,1,100,1.0,0.25,0.25,1.25,16,16,toronto_csc444
+303,Software Development Pearls,Karl E. Wiegers,1,100,1.0,0.25,0.25,1.25,16,16,shapingsoftware
+304,Software Requirements,Karl E. Wiegers,1,100,1.0,0.25,0.25,1.25,16,16,philosophical_geek
+305,The Advantage,Patrick Lencioni,1,100,1.0,0.25,0.25,1.25,16,16,frankc
+306,xUnit Test Patterns,Gerard Meszaros,1,100,1.0,0.25,0.25,1.25,16,16,unibo_software_engineering
+307,Extreme Ownership,Jocko Willink; Leif Babin,1,100,1.0,0.235294,0.235294,1.235294,14,14,sizovs
+308,Crafting Interpreters,Robert Nystrom,1,100,1.0,0.222222,0.222222,1.222222,8,8,teachyourselfcs
+309,Design Paradigms,Henry Petroski,1,100,1.0,0.222222,0.222222,1.222222,8,8,cmu_mary_shaw
+310,Mastering PostgreSQL,Hans-Jürgen Schönig,1,100,1.0,0.222222,0.222222,1.222222,8,8,devot
+311,Monolith to Microservices,Sam Newman,1,100,1.0,0.222222,0.222222,1.222222,8,8,codeforest
+312,Docs Like Code,Anne Gentle,1,100,1.0,0.214286,0.214286,1.214286,12,12,mindsers
+313,Deep Work,Cal Newport,1,100,1.0,0.2,0.2,1.2,5,5,adatechschool
+314,Designing Web APIs,Brenda Jin; Saurabh Sahni; Amir Shevat,1,100,1.0,0.2,0.2,1.2,5,5,algomaster
+315,Implementing Lean Software Development,Mary Poppendieck; Tom Poppendieck,1,100,1.0,0.2,0.2,1.2,5,5,roscoe_bartlett
+316,Programming Machine Learning,Paolo Perrotta,1,100,1.0,0.2,0.2,1.2,5,5,aulab
+317,The Big Book of Small Python Projects,Al Sweigart,1,100,1.0,0.2,0.2,1.2,5,5,datamines
+318,Androids,Chet Haase,1,100,1.0,0.2,0.2,1.2,9,9,crehana
+319,Database Internals,Alex Petrov,1,100,1.0,0.2,0.2,1.2,9,9,bootdev_web
+320,The Psychology of Computer Programming,Gerald M. Weinberg,1,100,1.0,0.2,0.2,1.2,9,9,devto_xteam
+321,Scaling Teams,Alexander Grosse; David Loftesness,1,100,1.0,0.2,0.2,1.2,13,13,codingfearlessly
+322,Working in Public,Nadia Eghbal,1,100,1.0,0.2,0.2,1.2,13,13,guru99
+323,Exploring Requirements,Donald C. Gause; Gerald M. Weinberg,1,100,1.0,0.2,0.2,1.2,17,17,toronto_csc444
+324,Get Your Hands Dirty on Clean Architecture,Tom Hombergs,1,100,1.0,0.2,0.2,1.2,17,17,happycoders
+325,Literate Programming,Donald E. Knuth,1,100,1.0,0.2,0.2,1.2,17,17,goodreads_listopia
+326,Manager's Handbook for Software Development,NASA Goddard Space Flight Center,1,100,1.0,0.2,0.2,1.2,17,17,philosophical_geek
+327,More Programming Pearls,Jon Bentley,1,100,1.0,0.2,0.2,1.2,17,17,inquisition
+328,Rework,Jason Fried; David Heinemeier Hansson,1,100,1.0,0.2,0.2,1.2,17,17,frankc
+329,The Design of Sites,Douglas K. van Duyne; James A. Landay; Jason I. Hong,1,100,1.0,0.2,0.2,1.2,17,17,shapingsoftware
+330,Designing Machine Learning Systems,Chip Huyen,1,100,1.0,0.1875,0.1875,1.1875,14,14,findjobit
+331,Envisioning Information,Edward R. Tufte,1,100,1.0,0.1875,0.1875,1.1875,14,14,codinghorror
+332,Nonviolent Communication,Marshall B. Rosenberg,1,100,1.0,0.176471,0.176471,1.176471,15,15,sizovs
+333,Steve Jobs,Walter Isaacson,1,100,1.0,0.166667,0.166667,1.166667,11,11,it_leaders
+334,Applied Cryptography,Bruce Schneier,1,100,1.0,0.15,0.15,1.15,18,18,goodreads_listopia
+335,Aprende SQL en un fin de semana,Antonio Padial Solier,1,100,1.0,0.15,0.15,1.15,18,18,dinahosting
+336,Domain-Driven Design Distilled,Vaughn Vernon,1,100,1.0,0.15,0.15,1.15,18,18,happycoders
+337,Principles of Software Engineering Management,Tom Gilb,1,100,1.0,0.15,0.15,1.15,18,18,inquisition
+338,The Intentional Stance,Daniel C. Dennett,1,100,1.0,0.15,0.15,1.15,18,18,squash
+339,Technically Wrong,Sara Wachter-Boettcher,1,100,1.0,0.142857,0.142857,1.142857,13,13,mindsers
+340,Java in a Nutshell,Benjamin J. Evans; David Flanagan,1,100,1.0,0.125,0.125,1.125,8,8,aprenderbigdata
+341,Beautiful Evidence,Edward R. Tufte,1,100,1.0,0.125,0.125,1.125,15,15,codinghorror
+342,The Cathedral and the Bazaar,Eric S. Raymond,1,100,1.0,0.117647,0.117647,1.117647,16,16,medium_dootrix
+343,The Goal,Eliyahu M. Goldratt; Jeff Cox,1,100,1.0,0.117647,0.117647,1.117647,16,16,sizovs
+344,Framework Design Guidelines,Krzysztof Cwalina; Brad Abrams,1,100,1.0,0.111111,0.111111,1.111111,9,9,pragmatic_engineer_reading
+345,The Tender Ship,Arthur M. Squires,1,100,1.0,0.111111,0.111111,1.111111,9,9,cmu_mary_shaw
+346,Aprenda Programação Orientada a Objetos em 21 Dias,Anthony Sintes,1,100,1.0,0.1,0.1,1.1,10,10,devto_marcosplusplus
+347,Artificial Intelligence: A Guide to Intelligent Systems,Michael Negnevitsky,1,100,1.0,0.1,0.1,1.1,10,10,superdevacademy
+348,C# 7.0 in a Nutshell,Joseph Albahari; Ben Albahari,1,100,1.0,0.1,0.1,1.1,10,10,thedigitaltalents
+349,Let's Go!,Alex Edwards,1,100,1.0,0.1,0.1,1.1,10,10,bootdev_web
+350,Python Programming for the Absolute Beginner,Michael Dawson,1,100,1.0,0.1,0.1,1.1,10,10,gauravtiwari
+351,Software Engineering for Absolute Beginners,Nico Loubser,1,100,1.0,0.1,0.1,1.1,10,10,studentprojectcode
+352,Clean Agile,Robert C. Martin,1,100,1.0,0.1,0.1,1.1,19,19,happycoders
+353,Fundamental Kotlin,Miloš Vasić,1,100,1.0,0.1,0.1,1.1,19,19,goodreads_listopia
+354,Programming Clojure,Stuart Halloway,1,100,1.0,0.1,0.1,1.1,19,19,xebia
+355,Software Design,David Budgen,1,100,1.0,0.1,0.1,1.1,19,19,toronto_csc444
+356,The Art of Doing Science and Engineering,Richard W. Hamming,1,100,1.0,0.1,0.1,1.1,19,19,pragmatic_engineer_holiday
+357,The Back of the Napkin,Dan Roam,1,100,1.0,0.1,0.1,1.1,19,19,squash
+358,The Coming Wave,Mustafa Suleyman,1,100,1.0,0.1,0.1,1.1,19,19,dinahosting
+359,Are You Smart Enough to Work at Google?,William Poundstone,1,100,1.0,0.083333,0.083333,1.083333,12,12,it_leaders
+360,Artificial Intelligence for Dummies,John Paul Mueller; Luca Massaron,1,100,1.0,0.066667,0.066667,1.066667,15,15,guru99
+361,Lean Enterprise,Jez Humble; Joanne Molesky; Barry O'Reilly,1,100,1.0,0.066667,0.066667,1.066667,15,15,codingfearlessly
+362,High Tech Start Up,John L. Nesheim,1,100,1.0,0.0625,0.0625,1.0625,16,16,taoxie_illinois
+363,Effective Software Testing,Maurício Aniche,1,100,1.0,0.05,0.05,1.05,20,20,pragmatic_engineer_holiday
+364,Head First book series,Kathy Sierra; Bert Bates,1,100,1.0,0.05,0.05,1.05,20,20,xebia
+365,Logic in Computer Science,Michael Huth; Mark Ryan,1,100,1.0,0.05,0.05,1.05,20,20,toronto_csc444
+366,Object Solutions,Grady Booch,1,100,1.0,0.05,0.05,1.05,20,20,inquisition
+367,Pragmatic Unit Testing in C# with NUnit,Andy Hunt; Dave Thomas; Matt Hargett,1,100,1.0,0.05,0.05,1.05,20,20,philosophical_geek
+368,RESTful Web APIs,Leonard Richardson; Mike Amundsen; Sam Ruby,1,100,1.0,0.05,0.05,1.05,20,20,unibo_software_engineering
+369,The Timeless Way of Building,Christopher Alexander,1,100,1.0,0.05,0.05,1.05,20,20,squash
+370,Writing Effective Use Cases,Alistair Cockburn,1,100,1.0,0.05,0.05,1.05,20,20,shapingsoftware

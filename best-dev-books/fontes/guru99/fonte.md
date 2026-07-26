@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_comercial`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 15
 - **Escopo:** Engenharia de software, padrões, carreira, Agile, DevOps e IA.
 - **Observações:** A página possui links comerciais/afiliados; a data exibida é anterior ao ano do título.

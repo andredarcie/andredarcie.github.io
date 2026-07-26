@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Clássicos de programação, construção, algoritmos e design.
 - **Observações:** O item bônus 'Coders at Work' não foi contado.

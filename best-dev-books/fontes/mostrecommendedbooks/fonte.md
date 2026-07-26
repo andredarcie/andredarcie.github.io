@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `meta_ranking_5_mais_fontes`
 - **Tipo de ordem:** `meta_ranking`
+- **Idioma:** `en`
 - **Quantidade usada:** 12
 - **Escopo:** Consenso de listas especializadas e recomendações públicas.
 - **Observações:** A página informa que cada livro apareceu em pelo menos duas fontes.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Lista extensa e eclética de linguagens, design, IA e desenvolvimento.
 - **Observações:** A fonte possui 110 itens; foram usados os 20 primeiros.

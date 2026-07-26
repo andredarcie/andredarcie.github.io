@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_academica`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Engenharia de software, métodos formais, orientação a objetos, UML e arquitetura.
 - **Observações:** A página contém dez livros; todos foram preservados na ordem publicada.

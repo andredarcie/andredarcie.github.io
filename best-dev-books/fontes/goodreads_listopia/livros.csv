@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The C Programming Language,The C Programming Language,Brian W. Kernighan; Dennis M. Ritchie,1.000000,https://www.goodreads.com/list/show/8112.software_development
+2,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.950000,https://www.goodreads.com/list/show/8112.software_development
+3,Clean Code,Clean Code,Robert C. Martin,0.900000,https://www.goodreads.com/list/show/8112.software_development
+4,Code Complete,Code Complete,Steve McConnell,0.850000,https://www.goodreads.com/list/show/8112.software_development
+5,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.800000,https://www.goodreads.com/list/show/8112.software_development
+6,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.750000,https://www.goodreads.com/list/show/8112.software_development
+7,Refactoring,Refactoring,Martin Fowler,0.700000,https://www.goodreads.com/list/show/8112.software_development
+8,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.650000,https://www.goodreads.com/list/show/8112.software_development
+9,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,0.600000,https://www.goodreads.com/list/show/8112.software_development
+10,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.550000,https://www.goodreads.com/list/show/8112.software_development
+11,Introduction to System Design,Introduction to System Design,Shivam Singh,0.500000,https://www.goodreads.com/list/show/8112.software_development
+12,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.450000,https://www.goodreads.com/list/show/8112.software_development
+13,Software Estimation,Software Estimation,Steve McConnell,0.400000,https://www.goodreads.com/list/show/8112.software_development
+14,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.350000,https://www.goodreads.com/list/show/8112.software_development
+15,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.300000,https://www.goodreads.com/list/show/8112.software_development
+16,Joel on Software,Joel on Software,Joel Spolsky,0.250000,https://www.goodreads.com/list/show/8112.software_development
+17,Literate Programming,Literate Programming,Donald E. Knuth,0.200000,https://www.goodreads.com/list/show/8112.software_development
+18,Applied Cryptography,Applied Cryptography,Bruce Schneier,0.150000,https://www.goodreads.com/list/show/8112.software_development
+19,Fundamental Kotlin,Fundamental Kotlin,Miloš Vasić,0.100000,https://www.goodreads.com/list/show/8112.software_development
+20,The Algorithm Design Manual,The Algorithm Design Manual,Steven S. Skiena,0.050000,https://www.goodreads.com/list/show/8112.software_development

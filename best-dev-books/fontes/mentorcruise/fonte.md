@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_especialistas`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 7
 - **Escopo:** Fundamentos, automação, system design, Python, LLMs e sistemas de dados.
 - **Observações:** A página afirma que os títulos vêm de mentores profissionais e são atualizados anualmente.

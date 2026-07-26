@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 7
 - **Escopo:** Fundamentos de código, gestão de projetos, padrões e algoritmos.
 - **Observações:** A recomendação bônus 'The Lean Startup' foi excluída.

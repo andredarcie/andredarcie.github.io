@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_equipe`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 7
 - **Escopo:** Qualidade, profissionalismo, DevOps, práticas, padrões e legado.
 - **Observações:** A página diz não ter associação com autores ou plataformas listadas.

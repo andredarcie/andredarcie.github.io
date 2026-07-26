@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Lista ampla: técnica, carreira, produto e colaboração.
 - **Observações:** A fonte possui 24 livros; foram usados os 20 primeiros na ordem publicada.

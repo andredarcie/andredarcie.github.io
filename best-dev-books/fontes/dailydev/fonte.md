@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 12
 - **Escopo:** Qualidade de código, arquitetura, algoritmos, DevOps e entrevistas.
 - **Observações:** O artigo foi publicado em 2024 e contém nota editorial para 2026.

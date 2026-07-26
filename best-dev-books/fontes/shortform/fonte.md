@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `ranking_dados_e_especialistas`
 - **Tipo de ordem:** `ranking_explicito`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Ranking baseado em recomendações, vendas e avaliações de leitores.
 - **Observações:** A fonte possui 100 itens; foram usados os 20 primeiros.

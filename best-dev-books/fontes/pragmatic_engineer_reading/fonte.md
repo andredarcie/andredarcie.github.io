@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_especialista`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 9
 - **Escopo:** Design, dados, legado, linguagens, confiabilidade e APIs.
 - **Observações:** Foram usados somente os nove títulos principais da seção 'Software Engineering Books'.

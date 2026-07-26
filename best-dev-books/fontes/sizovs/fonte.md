@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_especialista`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 17
 - **Escopo:** Prática profissional, testes, entrega, pessoas e comunicação.
 - **Observações:** A lista é mantida e atualizada pelo autor; todos os 17 itens visíveis foram usados.

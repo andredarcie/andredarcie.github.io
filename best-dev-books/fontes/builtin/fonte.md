@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_editorial`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 18
 - **Escopo:** Fundamentos, estilo de código, padrões, DevOps, segurança, front-end e gestão.
 - **Observações:** Foram preservados os 18 livros e a ordem visual das seções da página.

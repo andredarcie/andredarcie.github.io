@@ -1,0 +1,14 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://thepower.education/blog/tech/10-libros-de-programacion
+2,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.923077,https://thepower.education/blog/tech/10-libros-de-programacion
+3,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.846154,https://thepower.education/blog/tech/10-libros-de-programacion
+4,Code Complete,Code Complete,Steve McConnell,0.769231,https://thepower.education/blog/tech/10-libros-de-programacion
+5,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.692308,https://thepower.education/blog/tech/10-libros-de-programacion
+6,Programming Pearls,Programming Pearls,Jon Bentley,0.615385,https://thepower.education/blog/tech/10-libros-de-programacion
+7,Code,Code,Charles Petzold,0.538462,https://thepower.education/blog/tech/10-libros-de-programacion
+8,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.461538,https://thepower.education/blog/tech/10-libros-de-programacion
+9,Refactoring,Refactoring,Martin Fowler,0.384615,https://thepower.education/blog/tech/10-libros-de-programacion
+10,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.307692,https://thepower.education/blog/tech/10-libros-de-programacion
+11,Automate the Boring Stuff with Python,Automate the Boring Stuff with Python,Al Sweigart,0.230769,https://thepower.education/blog/tech/10-libros-de-programacion
+12,Eloquent JavaScript,Eloquent JavaScript,Marijn Haverbeke,0.153846,https://thepower.education/blog/tech/10-libros-de-programacion
+13,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.076923,https://thepower.education/blog/tech/10-libros-de-programacion

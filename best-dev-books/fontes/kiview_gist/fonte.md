@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_open_source`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 8
 - **Escopo:** OOP, testes, arquitetura, cultura e carreira.
 - **Observações:** Foram preservadas as seções e a ordem do Gist.

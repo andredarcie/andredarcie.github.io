@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Construção, criatividade, requisitos, testes, arquitetura e gestão.
 - **Observações:** A lista é extensa; foram usados os 20 primeiros livros das seções introdutória e intermediária.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Programação, arquitetura, padrões, algoritmos e entrevistas.
 - **Observações:** A página agrupa os livros por assunto; a ordem de exibição foi preservada.

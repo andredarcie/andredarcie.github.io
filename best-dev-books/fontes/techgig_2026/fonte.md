@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_editorial`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 6
 - **Escopo:** Práticas profissionais, código, complexidade, refatoração, domínio e arquitetura.
 - **Observações:** A lista numerada contém seis recomendações voltadas ao crescimento para funções seniores.

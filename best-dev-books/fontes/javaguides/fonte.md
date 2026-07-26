@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Conselhos gerais, qualidade, arquitetura, padrões e algoritmos.
 - **Observações:** A lista é geral apesar do foco habitual do site em Java.

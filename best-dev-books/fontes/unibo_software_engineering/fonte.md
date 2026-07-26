@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_academica`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Engenharia, práticas, Git, orientação a objetos, UML, testes e sistemas distribuídos.
 - **Observações:** Somente livros foram considerados; artigos e documentação foram excluídos, e a lista foi limitada aos 20 primeiros.

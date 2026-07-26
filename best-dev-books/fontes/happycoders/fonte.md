@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Engenharia, design, testes, arquitetura, DevOps e carreira.
 - **Observações:** A fonte contém 34 itens; foram usados os 20 primeiros.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Trilha de aprendiz a mestre sobre programação e engenharia de software.
 - **Observações:** A página separa livros principais de leituras complementares; foram usados os 20 primeiros títulos principais.

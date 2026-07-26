@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ranking_explicito`
+- **Idioma:** `en`
 - **Quantidade usada:** 12
 - **Escopo:** Construção, fundamentos, algoritmos, design, história e legado.
 - **Observações:** A página exibe os itens do 12º ao 1º; o CSV os reorganiza do 1º ao 12º lugar.

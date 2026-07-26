@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_academica`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 3
 - **Escopo:** Fundamentos de computação e técnicas de estudo do curso de engenharia de software.
 - **Observações:** Foram preservados os três livros obrigatórios da lista válida para 2026.

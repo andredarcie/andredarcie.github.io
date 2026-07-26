@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Software Engineer's Guidebook,The Software Engineer's Guidebook,Gergely Orosz,1.000000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+2,The Staff Engineer's Path,The Staff Engineer's Path,Tanya Reilly,0.950000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+3,Staff Engineer,Staff Engineer,Will Larson,0.900000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+4,Building a Career in Software,Building a Career in Software,Daniel Heller,0.850000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+5,The Effective Engineer,The Effective Engineer,Edmond Lau,0.800000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+6,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.750000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+7,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.700000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+8,The Passionate Programmer,The Passionate Programmer,Chad Fowler,0.650000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+9,The Missing README,The Missing README,Chris Riccomini; Dmitriy Ryaboy,0.600000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+10,Growing as a Mobile Engineer,Growing as a Mobile Engineer,Gergely Orosz,0.550000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+11,Communication for Engineers,Communication for Engineers,Chris Laffra,0.500000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+12,System Design Interview,System Design Interview,Alex Xu,0.450000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+13,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.400000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+14,Cracking the Coding Interview,Cracking the Coding Interview,Gayle Laakmann McDowell,0.350000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+15,A Common-Sense Guide to Data Structures and Algorithms,A Common-Sense Guide to Data Structures and Algorithms,Jay Wengrow,0.300000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+16,Tidy First?,Tidy First?,Kent Beck,0.250000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+17,A Philosophy of Software Design,A Philosophy of Software Design,John Ousterhout,0.200000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+18,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.150000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+19,The Art of Doing Science and Engineering,The Art of Doing Science and Engineering,Richard W. Hamming,0.100000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/
+20,Effective Software Testing,Effective Software Testing,Maurício Aniche,0.050000,https://blog.pragmaticengineer.com/holiday-tech-book-recommendations/

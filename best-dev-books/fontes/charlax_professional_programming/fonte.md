@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_open_source`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 6
 - **Escopo:** Livros essenciais de programação profissional e sistemas.
 - **Observações:** Foram usados somente os itens da seção 'Must-read books'.

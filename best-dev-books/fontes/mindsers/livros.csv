@@ -1,0 +1,15 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,1.000000,https://mindsers.blog/readings/
+2,Clean Code,Clean Code,Robert C. Martin,0.928571,https://mindsers.blog/readings/
+3,Code Complete,Code Complete,Steve McConnell,0.857143,https://mindsers.blog/readings/
+4,The Clean Coder,The Clean Coder,Robert C. Martin,0.785714,https://mindsers.blog/readings/
+5,The Algorithm Design Manual,The Algorithm Design Manual,Steven S. Skiena,0.714286,https://mindsers.blog/readings/
+6,Regular Expressions Cookbook,Regular Expressions Cookbook,Jan Goyvaerts; Steven Levithan,0.642857,https://mindsers.blog/readings/
+7,Domain-Driven Design,Domain-Driven Design,Eric Evans,0.571429,https://mindsers.blog/readings/
+8,Effective DevOps,Effective DevOps,Jennifer Davis; Katherine Daniels,0.500000,https://mindsers.blog/readings/
+9,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.428571,https://mindsers.blog/readings/
+10,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.357143,https://mindsers.blog/readings/
+11,Grokking Algorithms,Grokking Algorithms,Aditya Y. Bhargava,0.285714,https://mindsers.blog/readings/
+12,Docs Like Code,Docs Like Code,Anne Gentle,0.214286,https://mindsers.blog/readings/
+13,Technically Wrong,Technically Wrong,Sara Wachter-Boettcher,0.142857,https://mindsers.blog/readings/
+14,Accelerate,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,0.071429,https://mindsers.blog/readings/

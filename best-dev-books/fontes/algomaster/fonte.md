@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 5
 - **Escopo:** Fundamentos independentes de linguagem, arquitetura e APIs.
 - **Observações:** Lista curta baseada nos livros relidos pelo autor.

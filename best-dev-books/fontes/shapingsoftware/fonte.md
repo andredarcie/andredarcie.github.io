@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_especialista`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Agilidade, construção, design, segurança, requisitos, UX e gestão.
 - **Observações:** A página numera os 20 livros, mas declara que eles não estão em ordem comparativa.

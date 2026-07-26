@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_equipe`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 9
 - **Escopo:** Recomendações da equipe, incluindo programação, dados e carreira.
 - **Observações:** A recomendação bônus 'Rework' não foi contada na lista principal de nove itens.

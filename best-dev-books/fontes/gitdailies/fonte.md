@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 4
 - **Escopo:** Quatro clássicos duráveis de engenharia de software.
 - **Observações:** A ordem da seção 'The Must-Read Books' foi preservada.

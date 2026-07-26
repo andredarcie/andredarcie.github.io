@@ -1,0 +1,11 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://hackr.io/blog/best-programming-books
+2,Introduction to Algorithms,Introduction to Algorithms,Thomas H. Cormen; Charles E. Leiserson; Ronald L. Rivest; Clifford Stein,0.900000,https://hackr.io/blog/best-programming-books
+3,Structure and Interpretation of Computer Programs,Structure and Interpretation of Computer Programs,Harold Abelson; Gerald Jay Sussman; Julie Sussman,0.800000,https://hackr.io/blog/best-programming-books
+4,The Clean Coder,The Clean Coder,Robert C. Martin,0.700000,https://hackr.io/blog/best-programming-books
+5,Code Complete,Code Complete,Steve McConnell,0.600000,https://hackr.io/blog/best-programming-books
+6,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.500000,https://hackr.io/blog/best-programming-books
+7,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.400000,https://hackr.io/blog/best-programming-books
+8,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.300000,https://hackr.io/blog/best-programming-books
+9,Refactoring,Refactoring,Martin Fowler,0.200000,https://hackr.io/blog/best-programming-books
+10,The Art of Computer Programming,The Art of Computer Programming,Donald E. Knuth,0.100000,https://hackr.io/blog/best-programming-books

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_curricular`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 9
 - **Escopo:** Programação, arquitetura, algoritmos, matemática, sistemas, redes, bancos e linguagens.
 - **Observações:** Foram usados os nove livros principais do resumo curricular; cursos e alternativas foram excluídos.

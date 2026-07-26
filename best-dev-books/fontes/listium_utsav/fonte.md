@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 8
 - **Escopo:** Algoritmos, práticas de código, sistemas distribuídos, DevOps e ML.
 - **Observações:** A ordem visual entre categorias foi preservada.

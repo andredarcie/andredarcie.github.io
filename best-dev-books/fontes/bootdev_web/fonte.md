@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_editorial`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Front-end, entrevistas, práticas, back-end e bancos de dados.
 - **Observações:** Os dez lugares do ranking publicado foram preservados.

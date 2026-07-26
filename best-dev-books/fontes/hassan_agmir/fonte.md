@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Prática, código, construção, design, algoritmos, fundamentos e dados.
 - **Observações:** Foram preservados os dez lugares numerados pelo autor.

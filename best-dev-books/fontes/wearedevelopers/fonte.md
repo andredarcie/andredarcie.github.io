@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_empresa`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Programação, testes, arquitetura, distribuídos, DevOps, ML e equipes.
 - **Observações:** A fonte possui mais de 20 itens e uma menção honorária; foram usados os 20 primeiros livros.

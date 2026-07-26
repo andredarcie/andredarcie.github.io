@@ -1,0 +1,18 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Code,Code,Charles Petzold,1.000000,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+2,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.941176,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+3,Don't Make Me Think,Don't Make Me Think,Steve Krug,0.882353,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+4,Rocket Surgery Made Easy,Rocket Surgery Made Easy,Steve Krug,0.823529,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+5,JavaScript: The Good Parts,JavaScript: The Good Parts,Douglas Crockford,0.764706,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+6,The Visual Display of Quantitative Information,The Visual Display of Quantitative Information,Edward R. Tufte,0.705882,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+7,Clean Code,Clean Code,Robert C. Martin,0.647059,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+8,The Lean Startup,The Lean Startup,Eric Ries,0.588235,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+9,Code Complete,Code Complete,Steve McConnell,0.529412,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+10,Joel on Software,Joel on Software,Joel Spolsky,0.470588,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+11,Code Craft,Code Craft,Pete Goodliffe,0.411765,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+12,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.352941,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+13,Seven Databases in Seven Weeks,Seven Databases in Seven Weeks,Luc Perkins; Eric Redmond; Jim R. Wilson,0.294118,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+14,Hackers & Painters,Hackers & Painters,Paul Graham,0.235294,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+15,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.176471,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+16,The Cathedral and the Bazaar,The Cathedral and the Bazaar,Eric S. Raymond,0.117647,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1
+17,The Art of Unix Programming,The Art of Unix Programming,Eric S. Raymond,0.058824,https://medium.com/the-reading-room/the-ultimate-developers-reading-list-ec35fd2280a1

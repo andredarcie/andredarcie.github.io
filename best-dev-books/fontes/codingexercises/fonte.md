@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Lista ampla de desenvolvimento, carreira e cultura.
 - **Observações:** A fonte possui 42 itens; foram usados os 20 primeiros para comparabilidade.

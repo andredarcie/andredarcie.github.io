@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 15
 - **Escopo:** Código, carreira, design, legado, entrega e IA.
 - **Observações:** O autor também recomenda dois livros próprios; essa relação foi mantida e documentada.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 11
 - **Escopo:** Carreira, entrevistas, produtividade, práticas ágeis e código.
 - **Observações:** Os onze lugares numerados do artigo foram preservados.

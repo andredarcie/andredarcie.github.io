@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_especialista`
 - **Tipo de ordem:** `ranking_explicito`
+- **Idioma:** `en`
 - **Quantidade usada:** 5
 - **Escopo:** Construção, legado, design orientado a objetos, domínio e Lean.
 - **Observações:** Foram usados somente os cinco títulos da seção A.1, declarada em ordem de importância relativa.

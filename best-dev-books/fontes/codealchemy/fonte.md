@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 5
 - **Escopo:** Boas práticas, sistemas de dados, refatoração e JavaScript.
 - **Observações:** Lista de cinco livros em ordem numérica.

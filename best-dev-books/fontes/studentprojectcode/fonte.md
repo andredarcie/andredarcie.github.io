@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `lista_comercial_dinamica`
 - **Tipo de ordem:** `ranking_explicito`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Livros atuais de fundamentos, sistemas, carreira, liderança e IA.
 - **Observações:** A página exibe uma lista de compra dinâmica para julho de 2026.

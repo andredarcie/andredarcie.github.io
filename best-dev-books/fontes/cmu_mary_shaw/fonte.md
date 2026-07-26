@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_academica`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 9
 - **Escopo:** Arquitetura, requisitos, design, UML e engenharia de sistemas.
 - **Observações:** Foram preservadas as nove recomendações da página, na ordem das categorias.

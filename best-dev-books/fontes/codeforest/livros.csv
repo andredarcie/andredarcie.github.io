@@ -1,0 +1,10 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Refactoring,Refactoring,Martin Fowler,1.000000,https://www.codeforest.net/9-best-development-books
+2,Clean Code,Clean Code,Robert C. Martin,0.888889,https://www.codeforest.net/9-best-development-books
+3,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.777778,https://www.codeforest.net/9-best-development-books
+4,Accelerate,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,0.666667,https://www.codeforest.net/9-best-development-books
+5,The Phoenix Project,The Phoenix Project,Gene Kim; Kevin Behr; George Spafford,0.555556,https://www.codeforest.net/9-best-development-books
+6,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.444444,https://www.codeforest.net/9-best-development-books
+7,Patterns of Enterprise Application Architecture,Patterns of Enterprise Application Architecture,Martin Fowler,0.333333,https://www.codeforest.net/9-best-development-books
+8,Monolith to Microservices,Monolith to Microservices,Sam Newman,0.222222,https://www.codeforest.net/9-best-development-books
+9,Extreme Programming Explained,Extreme Programming Explained,Kent Beck; Cynthia Andres,0.111111,https://www.codeforest.net/9-best-development-books

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_equipe`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 12
 - **Escopo:** Livros gerais de engenharia de software e preparação profissional.
 - **Observações:** A página declara não usar links de afiliados para esta seleção.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Código limpo, Java, Python, padrões, algoritmos e domínio.
 - **Observações:** Foram usados os dez livros apresentados no corpo principal do artigo.

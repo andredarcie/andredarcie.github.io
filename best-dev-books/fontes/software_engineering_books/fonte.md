@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 12
 - **Escopo:** Núcleo de engenharia e referências rápidas relevantes a desenvolvedores.
 - **Observações:** Foram usados os livros das seções de engenharia e referência rápida; um curso em vídeo foi excluído.

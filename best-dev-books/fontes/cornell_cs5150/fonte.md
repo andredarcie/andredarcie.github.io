@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_academica`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 5
 - **Escopo:** Engenharia em escala, embarcados, gestão de projetos e prática profissional.
 - **Observações:** Foram usados os cinco itens da seção 'Books'; recursos online foram excluídos.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_academica`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 20
 - **Escopo:** Engenharia, projeto de programas, testes, requisitos, design e métodos formais.
 - **Observações:** Foram usados os 20 primeiros livros únicos; artigos, capítulos avulsos e uma coletânea genérica foram excluídos.

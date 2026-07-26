@@ -1,0 +1,10 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+2,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.888889,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+3,Software Engineering at Google,Software Engineering at Google,Titus Winters; Tom Manshreck; Hyrum Wright,0.777778,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+4,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.666667,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+5,Learning SQL,Learning SQL,Alan Beaulieu,0.555556,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+6,Clean Architecture,Clean Architecture,Robert C. Martin,0.444444,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+7,Designing Distributed Systems,Designing Distributed Systems,Brendan Burns,0.333333,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+8,The DevOps Handbook,The DevOps Handbook,Gene Kim; Jez Humble; Patrick Debois; John Willis,0.222222,https://blog.amigoscode.com/p/9-books-every-software-engineer-should
+9,Code Complete,Code Complete,Steve McConnell,0.111111,https://blog.amigoscode.com/p/9-books-every-software-engineer-should

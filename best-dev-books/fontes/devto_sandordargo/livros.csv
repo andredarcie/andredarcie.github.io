@@ -1,0 +1,9 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Code Complete,Code Complete,Steve McConnell,1.000000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+2,The Software Craftsman,The Software Craftsman,Sandro Mancuso,0.875000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+3,Clean Code,Clean Code,Robert C. Martin,0.750000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+4,"Growing Object-Oriented Software, Guided by Tests","Growing Object-Oriented Software, Guided by Tests",Steve Freeman; Nat Pryce,0.625000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+5,The Clean Coder,The Clean Coder,Robert C. Martin,0.500000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+6,Refactoring,Refactoring,Martin Fowler,0.375000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+7,Working Effectively with Legacy Code,Working Effectively with Legacy Code,Michael C. Feathers,0.250000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h
+8,The Complete Software Developer's Career Guide,The Complete Software Developer's Career Guide,John Sonmez,0.125000,https://dev.to/sandordargo/8-books-every-junior-developer-should-read--4p5h

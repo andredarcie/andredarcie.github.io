@@ -1,0 +1,11 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Craftsmanship,Clean Craftsmanship,Robert C. Martin,1.000000,https://bookauthority.org/books/best-software-engineering-books
+2,Modern Software Engineering,Modern Software Engineering,David Farley,0.900000,https://bookauthority.org/books/best-software-engineering-books
+3,Accelerate,Accelerate,Nicole Forsgren; Jez Humble; Gene Kim,0.800000,https://bookauthority.org/books/best-software-engineering-books
+4,Clean Code,Clean Code,Robert C. Martin,0.700000,https://bookauthority.org/books/best-software-engineering-books
+5,Explore It!,Explore It!,Elisabeth Hendrickson,0.600000,https://bookauthority.org/books/best-software-engineering-books
+6,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,0.500000,https://bookauthority.org/books/best-software-engineering-books
+7,Introduction to Software Testing,Introduction to Software Testing,Paul Ammann; Jeff Offutt,0.400000,https://bookauthority.org/books/best-software-engineering-books
+8,The Agile Samurai,The Agile Samurai,Jonathan Rasmusson,0.300000,https://bookauthority.org/books/best-software-engineering-books
+9,Software Engineering at Google,Software Engineering at Google,Titus Winters; Tom Manshreck; Hyrum Wright,0.200000,https://bookauthority.org/books/best-software-engineering-books
+10,The Missing README,The Missing README,Chris Riccomini; Dmitriy Ryaboy,0.100000,https://bookauthority.org/books/best-software-engineering-books

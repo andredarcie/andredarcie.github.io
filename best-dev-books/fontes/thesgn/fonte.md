@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_individual`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 7
 - **Escopo:** Código, dados, system design, algoritmos e confiabilidade.
 - **Observações:** A fonte contém links de download; o levantamento registra apenas títulos e ordem, não redistribui arquivos.

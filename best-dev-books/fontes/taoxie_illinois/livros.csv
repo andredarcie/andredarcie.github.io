@@ -1,0 +1,17 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,The Mythical Man-Month,The Mythical Man-Month,Frederick P. Brooks Jr.,1.000000,https://taoxie.cs.illinois.edu/sereading.htm
+2,Software Fundamentals: Collected Papers,Software Fundamentals: Collected Papers,David L. Parnas,0.937500,https://taoxie.cs.illinois.edu/sereading.htm
+3,Software Product-Line Engineering,Software Product-Line Engineering,David M. Weiss; Chi Tau Robert Lai,0.875000,https://taoxie.cs.illinois.edu/sereading.htm
+4,Software Architecture: Perspectives on an Emerging Discipline,Software Architecture: Perspectives on an Emerging Discipline,Mary Shaw; David Garlan,0.812500,https://taoxie.cs.illinois.edu/sereading.htm
+5,Software Engineering Economics,Software Engineering Economics,Barry W. Boehm,0.750000,https://taoxie.cs.illinois.edu/sereading.htm
+6,Software Cost Estimation with COCOMO II,Software Cost Estimation with COCOMO II,Barry W. Boehm,0.687500,https://taoxie.cs.illinois.edu/sereading.htm
+7,Design Rules: The Power of Modularity,Design Rules: The Power of Modularity,Carliss Y. Baldwin; Kim B. Clark,0.625000,https://taoxie.cs.illinois.edu/sereading.htm
+8,Software Requirements and Specifications,Software Requirements and Specifications,Michael Jackson,0.562500,https://taoxie.cs.illinois.edu/sereading.htm
+9,Problem Frames and Methods,Problem Frames and Methods,Michael Jackson,0.500000,https://taoxie.cs.illinois.edu/sereading.htm
+10,Design Patterns,Design Patterns,Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides,0.437500,https://taoxie.cs.illinois.edu/sereading.htm
+11,UML Distilled,UML Distilled,Martin Fowler,0.375000,https://taoxie.cs.illinois.edu/sereading.htm
+12,Refactoring,Refactoring,Martin Fowler,0.312500,https://taoxie.cs.illinois.edu/sereading.htm
+13,Analysis Patterns,Analysis Patterns,Martin Fowler,0.250000,https://taoxie.cs.illinois.edu/sereading.htm
+14,Pattern-Oriented Software Architecture,Pattern-Oriented Software Architecture,Frank Buschmann; Regine Meunier; Hans Rohnert; Peter Sommerlad; Michael Stal,0.187500,https://taoxie.cs.illinois.edu/sereading.htm
+15,Code Complete,Code Complete,Steve McConnell,0.125000,https://taoxie.cs.illinois.edu/sereading.htm
+16,High Tech Start Up,High Tech Start Up,John L. Nesheim,0.062500,https://taoxie.cs.illinois.edu/sereading.htm

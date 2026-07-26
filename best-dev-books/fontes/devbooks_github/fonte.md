@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_open_source`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 12
 - **Escopo:** Fundamentos modernos de código, arquitetura, legado e microserviços.
 - **Observações:** Lista versionada em repositório público; a ordem do arquivo foi preservada.

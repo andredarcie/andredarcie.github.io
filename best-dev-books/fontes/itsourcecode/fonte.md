@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_comercial`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 15
 - **Escopo:** Fundamentos, Python, Java, web, arquitetura e IA/ML.
 - **Observações:** A página informa links de afiliados e foi atualizada em 2026-07-01.

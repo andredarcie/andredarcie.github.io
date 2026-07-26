@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_comercial`
 - **Tipo de ordem:** `lista_numerada`
+- **Idioma:** `en`
 - **Quantidade usada:** 10
 - **Escopo:** Código, arquitetura, sistemas de dados, fundamentos e legado.
 - **Observações:** O artigo promove cursos da empresa; a lista de livros foi extraída separadamente.

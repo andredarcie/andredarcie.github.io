@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `curadoria_especialista`
 - **Tipo de ordem:** `ordem_editorial`
+- **Idioma:** `en`
 - **Quantidade usada:** 13
 - **Escopo:** Código, princípios, arquitetura, dados, IA, testes, entrega e carreira.
 - **Observações:** Inclui um livro do próprio autor, explicitamente identificado na fonte.

@@ -8,6 +8,7 @@
 - **Acessibilidade na checagem final:** HTTP 200 em 2026-07-25
 - **Natureza:** `meta_ranking_68_listas`
 - **Tipo de ordem:** `meta_ranking`
+- **Idioma:** `en`
 - **Quantidade usada:** 25
 - **Escopo:** Meta-ranking de mais de 1.200 recomendações coletadas em 68 listas.
 - **Observações:** Foram preservados todos os 25 lugares do ranking publicado.

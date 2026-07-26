@@ -1,0 +1,21 @@
+﻿posicao,titulo_na_fonte,titulo_normalizado,autor,peso_posicao,url_fonte
+1,Clean Code,Clean Code,Robert C. Martin,1.000000,https://dinahosting.com/blog/libros-de-programacion/
+2,The Clean Coder,The Clean Coder,Robert C. Martin,0.950000,https://dinahosting.com/blog/libros-de-programacion/
+3,Clean Craftsmanship,Clean Craftsmanship,Robert C. Martin,0.900000,https://dinahosting.com/blog/libros-de-programacion/
+4,The Pragmatic Programmer,The Pragmatic Programmer,Andrew Hunt; David Thomas,0.850000,https://dinahosting.com/blog/libros-de-programacion/
+5,El libro negro del Programador,El libro negro del Programador,Rafael Gómez Blanes,0.800000,https://dinahosting.com/blog/libros-de-programacion/
+6,Dive into Design Patterns,Dive into Design Patterns,Alexander Shvets,0.750000,https://dinahosting.com/blog/libros-de-programacion/
+7,Head First Design Patterns,Head First Design Patterns,Eric Freeman; Elisabeth Robson; Bert Bates; Kathy Sierra,0.700000,https://dinahosting.com/blog/libros-de-programacion/
+8,Continuous Delivery,Continuous Delivery,Jez Humble; David Farley,0.650000,https://dinahosting.com/blog/libros-de-programacion/
+9,Refactoring,Refactoring,Martin Fowler,0.600000,https://dinahosting.com/blog/libros-de-programacion/
+10,Test-Driven Development: By Example,Test-Driven Development: By Example,Kent Beck,0.550000,https://dinahosting.com/blog/libros-de-programacion/
+11,The Phoenix Project,The Phoenix Project,Gene Kim; Kevin Behr; George Spafford,0.500000,https://dinahosting.com/blog/libros-de-programacion/
+12,Automate the Boring Stuff with Python,Automate the Boring Stuff with Python,Al Sweigart,0.450000,https://dinahosting.com/blog/libros-de-programacion/
+13,JavaScript: The Good Parts,JavaScript: The Good Parts,Douglas Crockford,0.400000,https://dinahosting.com/blog/libros-de-programacion/
+14,The Tangled Web,The Tangled Web,Michal Zalewski,0.350000,https://dinahosting.com/blog/libros-de-programacion/
+15,Git & GitHub desde cero,Git & GitHub desde cero,Brais Moure,0.300000,https://dinahosting.com/blog/libros-de-programacion/
+16,The Web Application Hacker's Handbook,The Web Application Hacker's Handbook,Dafydd Stuttard; Marcus Pinto,0.250000,https://dinahosting.com/blog/libros-de-programacion/
+17,Designing Data-Intensive Applications,Designing Data-Intensive Applications,Martin Kleppmann,0.200000,https://dinahosting.com/blog/libros-de-programacion/
+18,Aprende SQL en un fin de semana,Aprende SQL en un fin de semana,Antonio Padial Solier,0.150000,https://dinahosting.com/blog/libros-de-programacion/
+19,The Coming Wave,The Coming Wave,Mustafa Suleyman,0.100000,https://dinahosting.com/blog/libros-de-programacion/
+20,Algorithms to Live By,Algorithms to Live By,Brian Christian; Tom Griffiths,0.050000,https://dinahosting.com/blog/libros-de-programacion/
