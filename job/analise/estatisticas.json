@@ -1,0 +1,4420 @@
+{
+  "geradoEm": "2026-07-27T17:32:58.303Z",
+  "taxonomiaVersao": "1.0",
+  "total": 1209,
+  "porFonte": {
+    "gupy": 320,
+    "hackernews": 280,
+    "programathor": 160,
+    "weworkremotely": 108,
+    "greenhouse_br": 85,
+    "himalayas": 84,
+    "jobicy": 80,
+    "arbeitnow": 79,
+    "remotive": 13
+  },
+  "porIdioma": {
+    "en": 703,
+    "pt": 506
+  },
+  "porSenioridade": {
+    "nao_informado": 483,
+    "senior": 440,
+    "staff_plus": 130,
+    "pleno": 111,
+    "junior": 41,
+    "estagio": 4
+  },
+  "porFamilia": {
+    "generico": 527,
+    "fullstack": 242,
+    "backend": 140,
+    "devops_sre": 84,
+    "dados_ml": 82,
+    "mobile": 62,
+    "frontend": 53,
+    "qa": 14,
+    "embarcado": 4,
+    "jogos": 1
+  },
+  "porModalidade": {
+    "remoto": 718,
+    "hibrido": 209,
+    "nao_informado": 146,
+    "presencial": 136
+  },
+  "recorteBeneficios": {
+    "vagasComCorte": 640,
+    "pctDoCorpus": 52.9,
+    "mediaCaracteresCortados": 949
+  },
+  "mediaRequisitosPorVaga": 9.9,
+  "categorias": {
+    "comunicacao": "Comunicação e idioma",
+    "comportamento": "Comportamento e colaboração",
+    "processo": "Processo e prática de engenharia",
+    "tecnico_transversal": "Fundamentos técnicos que independem de linguagem",
+    "credenciais": "Credenciais, contexto e formato de trabalho",
+    "produto": "Produto e negócio"
+  },
+  "fontesComparaveis": [
+    "gupy",
+    "hackernews",
+    "programathor",
+    "weworkremotely",
+    "greenhouse_br",
+    "himalayas",
+    "jobicy",
+    "arbeitnow"
+  ],
+  "coberturaCategorias": [
+    {
+      "categoria": "tecnico_transversal",
+      "nome": "Fundamentos técnicos que independem de linguagem",
+      "requisitos": 11,
+      "n": 1088,
+      "pct": 90,
+      "pt": 96.8,
+      "en": 85.1
+    },
+    {
+      "categoria": "processo",
+      "nome": "Processo e prática de engenharia",
+      "requisitos": 11,
+      "n": 944,
+      "pct": 78.1,
+      "pt": 90.9,
+      "en": 68.8
+    },
+    {
+      "categoria": "comportamento",
+      "nome": "Comportamento e colaboração",
+      "requisitos": 12,
+      "n": 889,
+      "pct": 73.5,
+      "pt": 75.5,
+      "en": 72.1
+    },
+    {
+      "categoria": "credenciais",
+      "nome": "Credenciais, contexto e formato de trabalho",
+      "requisitos": 8,
+      "n": 712,
+      "pct": 58.9,
+      "pt": 66.6,
+      "en": 53.3
+    },
+    {
+      "categoria": "comunicacao",
+      "nome": "Comunicação e idioma",
+      "requisitos": 4,
+      "n": 532,
+      "pct": 44,
+      "pt": 44.5,
+      "en": 43.7
+    },
+    {
+      "categoria": "produto",
+      "nome": "Produto e negócio",
+      "requisitos": 4,
+      "n": 350,
+      "pct": 28.9,
+      "pt": 27.7,
+      "en": 29.9
+    }
+  ],
+  "ranking": [
+    {
+      "id": "apis_integracao",
+      "rotulo": "APIs e integrações",
+      "categoria": "tecnico_transversal",
+      "n": 670,
+      "pct": 55.4,
+      "pt": 75.9,
+      "en": 40.7,
+      "pctBoards": 64.9,
+      "porFonte": {
+        "gupy": 78.8,
+        "hackernews": 23.9,
+        "programathor": 72.5,
+        "weworkremotely": 41.7,
+        "greenhouse_br": 60,
+        "himalayas": 53.6,
+        "jobicy": 60,
+        "arbeitnow": 48.1
+      },
+      "pisoEntreFontes": 23.9,
+      "tetoEntreFontes": 78.8
+    },
+    {
+      "id": "banco_dados",
+      "rotulo": "Banco de dados / SQL",
+      "categoria": "tecnico_transversal",
+      "n": 645,
+      "pct": 53.3,
+      "pt": 72.3,
+      "en": 39.7,
+      "pctBoards": 59.1,
+      "porFonte": {
+        "gupy": 72.8,
+        "hackernews": 34.3,
+        "programathor": 74.4,
+        "weworkremotely": 40.7,
+        "greenhouse_br": 56.5,
+        "himalayas": 50,
+        "jobicy": 41.3,
+        "arbeitnow": 32.9
+      },
+      "pisoEntreFontes": 32.9,
+      "tetoEntreFontes": 74.4
+    },
+    {
+      "id": "trabalho_em_equipe",
+      "rotulo": "Trabalho em equipe / colaboração",
+      "categoria": "comportamento",
+      "n": 596,
+      "pct": 49.3,
+      "pt": 57.7,
+      "en": 43.2,
+      "pctBoards": 61.9,
+      "porFonte": {
+        "gupy": 65.6,
+        "hackernews": 7.5,
+        "programathor": 44.4,
+        "weworkremotely": 67.6,
+        "greenhouse_br": 71.8,
+        "himalayas": 67.9,
+        "jobicy": 78.8,
+        "arbeitnow": 38
+      },
+      "pisoEntreFontes": 7.5,
+      "tetoEntreFontes": 78.8
+    },
+    {
+      "id": "boas_praticas_codigo",
+      "rotulo": "Clean code / SOLID / boas práticas",
+      "categoria": "tecnico_transversal",
+      "n": 501,
+      "pct": 41.4,
+      "pt": 54.2,
+      "en": 32.3,
+      "pctBoards": 51.9,
+      "porFonte": {
+        "gupy": 58.8,
+        "hackernews": 6.8,
+        "programathor": 44.4,
+        "weworkremotely": 48.1,
+        "greenhouse_br": 74.1,
+        "himalayas": 50,
+        "jobicy": 41.3,
+        "arbeitnow": 38
+      },
+      "pisoEntreFontes": 6.8,
+      "tetoEntreFontes": 74.1
+    },
+    {
+      "id": "cloud",
+      "rotulo": "Cloud (AWS/Azure/GCP)",
+      "categoria": "tecnico_transversal",
+      "n": 500,
+      "pct": 41.4,
+      "pt": 43.1,
+      "en": 40.1,
+      "pctBoards": 46.6,
+      "porFonte": {
+        "gupy": 44.7,
+        "hackernews": 23.9,
+        "programathor": 38.1,
+        "weworkremotely": 49.1,
+        "greenhouse_br": 62.4,
+        "himalayas": 50,
+        "jobicy": 46.3,
+        "arbeitnow": 43
+      },
+      "pisoEntreFontes": 23.9,
+      "tetoEntreFontes": 62.4
+    },
+    {
+      "id": "arquitetura",
+      "rotulo": "Arquitetura / system design",
+      "categoria": "tecnico_transversal",
+      "n": 481,
+      "pct": 39.8,
+      "pt": 33,
+      "en": 44.7,
+      "pctBoards": 45.6,
+      "porFonte": {
+        "gupy": 37.8,
+        "hackernews": 20.4,
+        "programathor": 28.8,
+        "weworkremotely": 58.3,
+        "greenhouse_br": 58.8,
+        "himalayas": 61.9,
+        "jobicy": 67.5,
+        "arbeitnow": 34.2
+      },
+      "pisoEntreFontes": 20.4,
+      "tetoEntreFontes": 67.5
+    },
+    {
+      "id": "experiencia_previa",
+      "rotulo": "Experiência prévia comprovada (sem número)",
+      "categoria": "credenciais",
+      "n": 468,
+      "pct": 38.7,
+      "pt": 51.8,
+      "en": 29.3,
+      "pctBoards": 48.9,
+      "porFonte": {
+        "gupy": 52.2,
+        "hackernews": 5,
+        "programathor": 49.4,
+        "weworkremotely": 56.5,
+        "greenhouse_br": 58.8,
+        "himalayas": 48.8,
+        "jobicy": 43.8,
+        "arbeitnow": 25.3
+      },
+      "pisoEntreFontes": 5,
+      "tetoEntreFontes": 58.8
+    },
+    {
+      "id": "versionamento",
+      "rotulo": "Controle de versão (Git)",
+      "categoria": "processo",
+      "n": 450,
+      "pct": 37.2,
+      "pt": 60.1,
+      "en": 20.8,
+      "pctBoards": 46.1,
+      "porFonte": {
+        "gupy": 64.7,
+        "hackernews": 7.9,
+        "programathor": 54.4,
+        "weworkremotely": 29.6,
+        "greenhouse_br": 38.8,
+        "himalayas": 26.2,
+        "jobicy": 26.3,
+        "arbeitnow": 24.1
+      },
+      "pisoEntreFontes": 7.9,
+      "tetoEntreFontes": 64.7
+    },
+    {
+      "id": "comunicacao_geral",
+      "rotulo": "Comunicação (falar/escrever bem)",
+      "categoria": "comunicacao",
+      "n": 441,
+      "pct": 36.5,
+      "pt": 34.8,
+      "en": 37.7,
+      "pctBoards": 45.9,
+      "porFonte": {
+        "gupy": 33.8,
+        "hackernews": 5.4,
+        "programathor": 41.9,
+        "weworkremotely": 54.6,
+        "greenhouse_br": 51.8,
+        "himalayas": 70.2,
+        "jobicy": 73.8,
+        "arbeitnow": 31.6
+      },
+      "pisoEntreFontes": 5.4,
+      "tetoEntreFontes": 73.8
+    },
+    {
+      "id": "performance_escala",
+      "rotulo": "Performance e escala",
+      "categoria": "processo",
+      "n": 421,
+      "pct": 34.8,
+      "pt": 36.2,
+      "en": 33.9,
+      "pctBoards": 43.3,
+      "porFonte": {
+        "gupy": 38.4,
+        "hackernews": 6.8,
+        "programathor": 31.9,
+        "weworkremotely": 53.7,
+        "greenhouse_br": 62.4,
+        "himalayas": 52.4,
+        "jobicy": 55,
+        "arbeitnow": 35.4
+      },
+      "pisoEntreFontes": 6.8,
+      "tetoEntreFontes": 62.4
+    },
+    {
+      "id": "observabilidade",
+      "rotulo": "Observabilidade / monitoramento",
+      "categoria": "processo",
+      "n": 397,
+      "pct": 32.8,
+      "pt": 33.6,
+      "en": 32.3,
+      "pctBoards": 38.4,
+      "porFonte": {
+        "gupy": 37.5,
+        "hackernews": 14.3,
+        "programathor": 19.4,
+        "weworkremotely": 52.8,
+        "greenhouse_br": 57.6,
+        "himalayas": 38.1,
+        "jobicy": 40,
+        "arbeitnow": 36.7
+      },
+      "pisoEntreFontes": 14.3,
+      "tetoEntreFontes": 57.6
+    },
+    {
+      "id": "ci_cd",
+      "rotulo": "CI/CD e automação de deploy",
+      "categoria": "processo",
+      "n": 386,
+      "pct": 31.9,
+      "pt": 40.1,
+      "en": 26,
+      "pctBoards": 39,
+      "porFonte": {
+        "gupy": 44.4,
+        "hackernews": 8.6,
+        "programathor": 32.5,
+        "weworkremotely": 38.9,
+        "greenhouse_br": 42.4,
+        "himalayas": 35.7,
+        "jobicy": 28.8,
+        "arbeitnow": 38
+      },
+      "pisoEntreFontes": 8.6,
+      "tetoEntreFontes": 44.4
+    },
+    {
+      "id": "dados_ia",
+      "rotulo": "Dados / IA no dia a dia",
+      "categoria": "tecnico_transversal",
+      "n": 355,
+      "pct": 29.4,
+      "pt": 26.1,
+      "en": 31.7,
+      "pctBoards": 30.7,
+      "porFonte": {
+        "gupy": 24.4,
+        "hackernews": 25,
+        "programathor": 23.1,
+        "weworkremotely": 43.5,
+        "greenhouse_br": 35.3,
+        "himalayas": 33.3,
+        "jobicy": 47.5,
+        "arbeitnow": 30.4
+      },
+      "pisoEntreFontes": 23.1,
+      "tetoEntreFontes": 47.5
+    },
+    {
+      "id": "containers",
+      "rotulo": "Containers / Kubernetes",
+      "categoria": "tecnico_transversal",
+      "n": 345,
+      "pct": 28.5,
+      "pt": 31.4,
+      "en": 26.5,
+      "pctBoards": 32.5,
+      "porFonte": {
+        "gupy": 35,
+        "hackernews": 15.4,
+        "programathor": 23.1,
+        "weworkremotely": 37,
+        "greenhouse_br": 38.8,
+        "himalayas": 31,
+        "jobicy": 30,
+        "arbeitnow": 35.4
+      },
+      "pisoEntreFontes": 15.4,
+      "tetoEntreFontes": 38.8
+    },
+    {
+      "id": "metodologias_ageis",
+      "rotulo": "Metodologias ágeis (Scrum/Kanban)",
+      "categoria": "processo",
+      "n": 343,
+      "pct": 28.4,
+      "pt": 41.1,
+      "en": 19.2,
+      "pctBoards": 34.8,
+      "porFonte": {
+        "gupy": 50.6,
+        "hackernews": 7.1,
+        "programathor": 25.6,
+        "weworkremotely": 17.6,
+        "greenhouse_br": 36.5,
+        "himalayas": 25,
+        "jobicy": 32.5,
+        "arbeitnow": 20.3
+      },
+      "pisoEntreFontes": 7.1,
+      "tetoEntreFontes": 50.6
+    },
+    {
+      "id": "testes_automatizados",
+      "rotulo": "Testes automatizados / TDD",
+      "categoria": "processo",
+      "n": 299,
+      "pct": 24.7,
+      "pt": 41.5,
+      "en": 12.7,
+      "pctBoards": 31.8,
+      "porFonte": {
+        "gupy": 48.1,
+        "hackernews": 1.4,
+        "programathor": 26.3,
+        "weworkremotely": 15.7,
+        "greenhouse_br": 30.6,
+        "himalayas": 19,
+        "jobicy": 28.8,
+        "arbeitnow": 20.3
+      },
+      "pisoEntreFontes": 1.4,
+      "tetoEntreFontes": 48.1
+    },
+    {
+      "id": "autonomia",
+      "rotulo": "Autonomia / trabalhar sem supervisão",
+      "categoria": "comportamento",
+      "n": 278,
+      "pct": 23,
+      "pt": 26.1,
+      "en": 20.8,
+      "pctBoards": 25.4,
+      "porFonte": {
+        "gupy": 28.8,
+        "hackernews": 15,
+        "programathor": 18.1,
+        "weworkremotely": 26.9,
+        "greenhouse_br": 27.1,
+        "himalayas": 19,
+        "jobicy": 33.8,
+        "arbeitnow": 13.9
+      },
+      "pisoEntreFontes": 13.9,
+      "tetoEntreFontes": 33.8
+    },
+    {
+      "id": "documentacao",
+      "rotulo": "Documentação técnica",
+      "categoria": "processo",
+      "n": 266,
+      "pct": 22,
+      "pt": 30,
+      "en": 16.2,
+      "pctBoards": 28.3,
+      "porFonte": {
+        "gupy": 33.8,
+        "hackernews": 1.1,
+        "programathor": 20.6,
+        "weworkremotely": 22.2,
+        "greenhouse_br": 31.8,
+        "himalayas": 32.1,
+        "jobicy": 26.3,
+        "arbeitnow": 17.7
+      },
+      "pisoEntreFontes": 1.1,
+      "tetoEntreFontes": 33.8
+    },
+    {
+      "id": "cultura_devops",
+      "rotulo": "Cultura DevOps",
+      "categoria": "processo",
+      "n": 246,
+      "pct": 20.3,
+      "pt": 20.4,
+      "en": 20.3,
+      "pctBoards": 22.7,
+      "porFonte": {
+        "gupy": 21.9,
+        "hackernews": 12.5,
+        "programathor": 21.3,
+        "weworkremotely": 31.5,
+        "greenhouse_br": 17.6,
+        "himalayas": 31,
+        "jobicy": 18.8,
+        "arbeitnow": 19
+      },
+      "pisoEntreFontes": 12.5,
+      "tetoEntreFontes": 31.5
+    },
+    {
+      "id": "ownership",
+      "rotulo": "Ownership / senso de dono",
+      "categoria": "comportamento",
+      "n": 234,
+      "pct": 19.4,
+      "pt": 12.8,
+      "en": 24,
+      "pctBoards": 19.7,
+      "porFonte": {
+        "gupy": 14.7,
+        "hackernews": 18.2,
+        "programathor": 8.8,
+        "weworkremotely": 30.6,
+        "greenhouse_br": 24.7,
+        "himalayas": 21.4,
+        "jobicy": 31.3,
+        "arbeitnow": 21.5
+      },
+      "pisoEntreFontes": 8.8,
+      "tetoEntreFontes": 31.3
+    },
+    {
+      "id": "graduacao",
+      "rotulo": "Diploma / ensino superior",
+      "categoria": "credenciais",
+      "n": 226,
+      "pct": 18.7,
+      "pt": 24.5,
+      "en": 14.5,
+      "pctBoards": 24.2,
+      "porFonte": {
+        "gupy": 28.4,
+        "hackernews": 0.4,
+        "programathor": 16.9,
+        "weworkremotely": 26.9,
+        "greenhouse_br": 15.3,
+        "himalayas": 40.5,
+        "jobicy": 33.8,
+        "arbeitnow": 5.1
+      },
+      "pisoEntreFontes": 0.4,
+      "tetoEntreFontes": 40.5
+    },
+    {
+      "id": "mensageria_eventos",
+      "rotulo": "Mensageria / arquitetura orientada a eventos",
+      "categoria": "tecnico_transversal",
+      "n": 220,
+      "pct": 18.2,
+      "pt": 29.2,
+      "en": 10.2,
+      "pctBoards": 22.9,
+      "porFonte": {
+        "gupy": 31.6,
+        "hackernews": 2.5,
+        "programathor": 18.8,
+        "weworkremotely": 13,
+        "greenhouse_br": 35.3,
+        "himalayas": 17.9,
+        "jobicy": 16.3,
+        "arbeitnow": 11.4
+      },
+      "pisoEntreFontes": 2.5,
+      "tetoEntreFontes": 35.3
+    },
+    {
+      "id": "ingles",
+      "rotulo": "Inglês",
+      "categoria": "comunicacao",
+      "n": 218,
+      "pct": 18,
+      "pt": 16.8,
+      "en": 18.9,
+      "pctBoards": 22.5,
+      "porFonte": {
+        "gupy": 18.8,
+        "hackernews": 3.2,
+        "programathor": 26.9,
+        "weworkremotely": 13,
+        "greenhouse_br": 38.8,
+        "himalayas": 13.1,
+        "jobicy": 27.5,
+        "arbeitnow": 30.4
+      },
+      "pisoEntreFontes": 3.2,
+      "tetoEntreFontes": 38.8
+    },
+    {
+      "id": "code_review",
+      "rotulo": "Code review / pull request",
+      "categoria": "processo",
+      "n": 212,
+      "pct": 17.5,
+      "pt": 26.9,
+      "en": 10.8,
+      "pctBoards": 22.4,
+      "porFonte": {
+        "gupy": 29.4,
+        "hackernews": 1.4,
+        "programathor": 18.8,
+        "weworkremotely": 15.7,
+        "greenhouse_br": 28.2,
+        "himalayas": 15.5,
+        "jobicy": 18.8,
+        "arbeitnow": 19
+      },
+      "pisoEntreFontes": 1.4,
+      "tetoEntreFontes": 29.4
+    },
+    {
+      "id": "mentoria",
+      "rotulo": "Mentoria de outras pessoas",
+      "categoria": "comportamento",
+      "n": 203,
+      "pct": 16.8,
+      "pt": 10.5,
+      "en": 21.3,
+      "pctBoards": 20.1,
+      "porFonte": {
+        "gupy": 13.4,
+        "hackernews": 5.7,
+        "programathor": 6.3,
+        "weworkremotely": 35.2,
+        "greenhouse_br": 23.5,
+        "himalayas": 34.5,
+        "jobicy": 38.8,
+        "arbeitnow": 16.5
+      },
+      "pisoEntreFontes": 5.7,
+      "tetoEntreFontes": 38.8
+    },
+    {
+      "id": "microservicos",
+      "rotulo": "Microsserviços",
+      "categoria": "tecnico_transversal",
+      "n": 201,
+      "pct": 16.6,
+      "pt": 25.7,
+      "en": 10.1,
+      "pctBoards": 21.2,
+      "porFonte": {
+        "gupy": 30.6,
+        "hackernews": 1.4,
+        "programathor": 13.1,
+        "weworkremotely": 22.2,
+        "greenhouse_br": 25.9,
+        "himalayas": 17.9,
+        "jobicy": 12.5,
+        "arbeitnow": 7.6
+      },
+      "pisoEntreFontes": 1.4,
+      "tetoEntreFontes": 30.6
+    },
+    {
+      "id": "lideranca",
+      "rotulo": "Liderança técnica",
+      "categoria": "comportamento",
+      "n": 195,
+      "pct": 16.1,
+      "pt": 15.2,
+      "en": 16.8,
+      "pctBoards": 18.7,
+      "porFonte": {
+        "gupy": 14.7,
+        "hackernews": 7.5,
+        "programathor": 13.1,
+        "weworkremotely": 24.1,
+        "greenhouse_br": 31.8,
+        "himalayas": 19,
+        "jobicy": 31.3,
+        "arbeitnow": 13.9
+      },
+      "pisoEntreFontes": 7.5,
+      "tetoEntreFontes": 31.8
+    },
+    {
+      "id": "anos_experiencia",
+      "rotulo": "Tempo mínimo de experiência (em anos)",
+      "categoria": "credenciais",
+      "n": 195,
+      "pct": 16.1,
+      "pt": 7.3,
+      "en": 22.5,
+      "pctBoards": 19.3,
+      "porFonte": {
+        "gupy": 6.3,
+        "hackernews": 5.7,
+        "programathor": 20,
+        "weworkremotely": 34.3,
+        "greenhouse_br": 7.1,
+        "himalayas": 36.9,
+        "jobicy": 41.3,
+        "arbeitnow": 20.3
+      },
+      "pisoEntreFontes": 5.7,
+      "tetoEntreFontes": 41.3
+    },
+    {
+      "id": "resolucao_problemas",
+      "rotulo": "Resolução de problemas / raciocínio analítico",
+      "categoria": "comportamento",
+      "n": 180,
+      "pct": 14.9,
+      "pt": 18.6,
+      "en": 12.2,
+      "pctBoards": 19.3,
+      "porFonte": {
+        "gupy": 21.6,
+        "hackernews": 0.4,
+        "programathor": 10.6,
+        "weworkremotely": 21.3,
+        "greenhouse_br": 29.4,
+        "himalayas": 32.1,
+        "jobicy": 13.8,
+        "arbeitnow": 6.3
+      },
+      "pisoEntreFontes": 0.4,
+      "tetoEntreFontes": 32.1
+    },
+    {
+      "id": "times_multidisciplinares",
+      "rotulo": "Times multidisciplinares / cross-functional",
+      "categoria": "comportamento",
+      "n": 164,
+      "pct": 13.6,
+      "pt": 11.3,
+      "en": 15.2,
+      "pctBoards": 17,
+      "porFonte": {
+        "gupy": 12.5,
+        "hackernews": 2.1,
+        "programathor": 9.4,
+        "weworkremotely": 19.4,
+        "greenhouse_br": 25.9,
+        "himalayas": 22.6,
+        "jobicy": 25,
+        "arbeitnow": 17.7
+      },
+      "pisoEntreFontes": 2.1,
+      "tetoEntreFontes": 25.9
+    },
+    {
+      "id": "aprendizado_continuo",
+      "rotulo": "Aprendizado contínuo / curiosidade",
+      "categoria": "comportamento",
+      "n": 158,
+      "pct": 13.1,
+      "pt": 12.6,
+      "en": 13.4,
+      "pctBoards": 16.1,
+      "porFonte": {
+        "gupy": 13.8,
+        "hackernews": 2.9,
+        "programathor": 8.1,
+        "weworkremotely": 16.7,
+        "greenhouse_br": 23.5,
+        "himalayas": 17.9,
+        "jobicy": 33.8,
+        "arbeitnow": 16.5
+      },
+      "pisoEntreFontes": 2.9,
+      "tetoEntreFontes": 33.8
+    },
+    {
+      "id": "infra_como_codigo",
+      "rotulo": "Infraestrutura como código",
+      "categoria": "tecnico_transversal",
+      "n": 137,
+      "pct": 11.3,
+      "pt": 4.7,
+      "en": 16.1,
+      "pctBoards": 12.1,
+      "porFonte": {
+        "gupy": 3.1,
+        "hackernews": 8.9,
+        "programathor": 8.1,
+        "weworkremotely": 26.9,
+        "greenhouse_br": 20,
+        "himalayas": 22.6,
+        "jobicy": 13.8,
+        "arbeitnow": 15.2
+      },
+      "pisoEntreFontes": 3.1,
+      "tetoEntreFontes": 26.9
+    },
+    {
+      "id": "impacto_negocio",
+      "rotulo": "Entender o negócio / gerar impacto",
+      "categoria": "produto",
+      "n": 136,
+      "pct": 11.2,
+      "pt": 13.4,
+      "en": 9.7,
+      "pctBoards": 14.4,
+      "porFonte": {
+        "gupy": 15,
+        "hackernews": 0.7,
+        "programathor": 12.5,
+        "weworkremotely": 17.6,
+        "greenhouse_br": 14.1,
+        "himalayas": 19,
+        "jobicy": 12.5,
+        "arbeitnow": 11.4
+      },
+      "pisoEntreFontes": 0.7,
+      "tetoEntreFontes": 19
+    },
+    {
+      "id": "organizacao_tempo",
+      "rotulo": "Organização / gestão de prazos",
+      "categoria": "comportamento",
+      "n": 135,
+      "pct": 11.2,
+      "pt": 16.8,
+      "en": 7.1,
+      "pctBoards": 14,
+      "porFonte": {
+        "gupy": 18.1,
+        "hackernews": 1.8,
+        "programathor": 14.4,
+        "weworkremotely": 21.3,
+        "greenhouse_br": 14.1,
+        "himalayas": 8.3,
+        "jobicy": 6.3,
+        "arbeitnow": 2.5
+      },
+      "pisoEntreFontes": 1.8,
+      "tetoEntreFontes": 21.3
+    },
+    {
+      "id": "stakeholders",
+      "rotulo": "Relação com stakeholders",
+      "categoria": "produto",
+      "n": 135,
+      "pct": 11.2,
+      "pt": 7.1,
+      "en": 14.1,
+      "pctBoards": 14,
+      "porFonte": {
+        "gupy": 6.6,
+        "hackernews": 1.8,
+        "programathor": 8.1,
+        "weworkremotely": 28.7,
+        "greenhouse_br": 21.2,
+        "himalayas": 27.4,
+        "jobicy": 15,
+        "arbeitnow": 15.2
+      },
+      "pisoEntreFontes": 1.8,
+      "tetoEntreFontes": 28.7
+    },
+    {
+      "id": "adaptabilidade",
+      "rotulo": "Adaptabilidade / ambiente de mudança",
+      "categoria": "comportamento",
+      "n": 117,
+      "pct": 9.7,
+      "pt": 4.3,
+      "en": 13.5,
+      "pctBoards": 11.6,
+      "porFonte": {
+        "gupy": 5.3,
+        "hackernews": 3.2,
+        "programathor": 5,
+        "weworkremotely": 25.9,
+        "greenhouse_br": 8.2,
+        "himalayas": 17.9,
+        "jobicy": 26.3,
+        "arbeitnow": 11.4
+      },
+      "pisoEntreFontes": 3.2,
+      "tetoEntreFontes": 26.3
+    },
+    {
+      "id": "proatividade",
+      "rotulo": "Proatividade / iniciativa",
+      "categoria": "comportamento",
+      "n": 115,
+      "pct": 9.5,
+      "pt": 8.9,
+      "en": 10,
+      "pctBoards": 12.1,
+      "porFonte": {
+        "gupy": 10.6,
+        "hackernews": 1.1,
+        "programathor": 6.9,
+        "weworkremotely": 19.4,
+        "greenhouse_br": 12.9,
+        "himalayas": 21.4,
+        "jobicy": 16.3,
+        "arbeitnow": 5.1
+      },
+      "pisoEntreFontes": 1.1,
+      "tetoEntreFontes": 21.4
+    },
+    {
+      "id": "foco_cliente",
+      "rotulo": "Foco no cliente / usuário final",
+      "categoria": "produto",
+      "n": 103,
+      "pct": 8.5,
+      "pt": 7.7,
+      "en": 9.1,
+      "pctBoards": 10.8,
+      "porFonte": {
+        "gupy": 5,
+        "hackernews": 1.1,
+        "programathor": 10,
+        "weworkremotely": 13.9,
+        "greenhouse_br": 18.8,
+        "himalayas": 11.9,
+        "jobicy": 20,
+        "arbeitnow": 13.9
+      },
+      "pisoEntreFontes": 1.1,
+      "tetoEntreFontes": 20
+    },
+    {
+      "id": "seguranca",
+      "rotulo": "Segurança / conformidade",
+      "categoria": "processo",
+      "n": 96,
+      "pct": 7.9,
+      "pt": 9.3,
+      "en": 7,
+      "pctBoards": 9.9,
+      "porFonte": {
+        "gupy": 9.7,
+        "hackernews": 1.4,
+        "programathor": 5.6,
+        "weworkremotely": 13,
+        "greenhouse_br": 16.5,
+        "himalayas": 13.1,
+        "jobicy": 11.3,
+        "arbeitnow": 5.1
+      },
+      "pisoEntreFontes": 1.4,
+      "tetoEntreFontes": 16.5
+    },
+    {
+      "id": "visao_produto",
+      "rotulo": "Visão de produto / trabalho com PM e design",
+      "categoria": "produto",
+      "n": 96,
+      "pct": 7.9,
+      "pt": 3.8,
+      "en": 11,
+      "pctBoards": 8.7,
+      "porFonte": {
+        "gupy": 3.8,
+        "hackernews": 5.4,
+        "programathor": 6.3,
+        "weworkremotely": 9.3,
+        "greenhouse_br": 11.8,
+        "himalayas": 8.3,
+        "jobicy": 16.3,
+        "arbeitnow": 15.2
+      },
+      "pisoEntreFontes": 3.8,
+      "tetoEntreFontes": 16.3
+    },
+    {
+      "id": "portfolio_open_source",
+      "rotulo": "Portfólio / open source / projetos pessoais",
+      "categoria": "credenciais",
+      "n": 80,
+      "pct": 6.6,
+      "pt": 3.4,
+      "en": 9,
+      "pctBoards": 7.2,
+      "porFonte": {
+        "gupy": 3.4,
+        "hackernews": 4.6,
+        "programathor": 3.8,
+        "weworkremotely": 12,
+        "greenhouse_br": 12.9,
+        "himalayas": 10.7,
+        "jobicy": 11.3,
+        "arbeitnow": 7.6
+      },
+      "pisoEntreFontes": 3.4,
+      "tetoEntreFontes": 12.9
+    },
+    {
+      "id": "on_call",
+      "rotulo": "Plantão / on-call",
+      "categoria": "processo",
+      "n": 69,
+      "pct": 5.7,
+      "pt": 0.8,
+      "en": 9.2,
+      "pctBoards": 6.8,
+      "porFonte": {
+        "gupy": 0.6,
+        "hackernews": 2.1,
+        "programathor": 1.9,
+        "weworkremotely": 24.1,
+        "greenhouse_br": 9.4,
+        "himalayas": 16.7,
+        "jobicy": 8.8,
+        "arbeitnow": 3.8
+      },
+      "pisoEntreFontes": 0.6,
+      "tetoEntreFontes": 24.1
+    },
+    {
+      "id": "fundamentos_cs",
+      "rotulo": "Algoritmos e estruturas de dados",
+      "categoria": "tecnico_transversal",
+      "n": 63,
+      "pct": 5.2,
+      "pt": 5.1,
+      "en": 5.3,
+      "pctBoards": 5.9,
+      "porFonte": {
+        "gupy": 5.3,
+        "hackernews": 2.9,
+        "programathor": 5,
+        "weworkremotely": 5.6,
+        "greenhouse_br": 12.9,
+        "himalayas": 3.6,
+        "jobicy": 6.3,
+        "arbeitnow": 6.3
+      },
+      "pisoEntreFontes": 2.9,
+      "tetoEntreFontes": 12.9
+    },
+    {
+      "id": "fuso_horario",
+      "rotulo": "Fuso horário / janela de sobreposição",
+      "categoria": "credenciais",
+      "n": 59,
+      "pct": 4.9,
+      "pt": 0.2,
+      "en": 8.3,
+      "pctBoards": 4.1,
+      "porFonte": {
+        "gupy": 0,
+        "hackernews": 7.5,
+        "programathor": 2.5,
+        "weworkremotely": 11.1,
+        "greenhouse_br": 0,
+        "himalayas": 4.8,
+        "jobicy": 18.8,
+        "arbeitnow": 2.5
+      },
+      "pisoEntreFontes": 0,
+      "tetoEntreFontes": 18.8
+    },
+    {
+      "id": "atencao_detalhe",
+      "rotulo": "Atenção a detalhes / qualidade",
+      "categoria": "comportamento",
+      "n": 44,
+      "pct": 3.6,
+      "pt": 1.4,
+      "en": 5.3,
+      "pctBoards": 4.6,
+      "porFonte": {
+        "gupy": 1.3,
+        "hackernews": 0.4,
+        "programathor": 1.9,
+        "weworkremotely": 8.3,
+        "greenhouse_br": 7.1,
+        "himalayas": 7.1,
+        "jobicy": 12.5,
+        "arbeitnow": 3.8
+      },
+      "pisoEntreFontes": 0.4,
+      "tetoEntreFontes": 12.5
+    },
+    {
+      "id": "diploma_dispensavel",
+      "rotulo": "Diploma explicitamente dispensável",
+      "categoria": "credenciais",
+      "n": 33,
+      "pct": 2.7,
+      "pt": 0.6,
+      "en": 4.3,
+      "pctBoards": 3.3,
+      "porFonte": {
+        "gupy": 0.6,
+        "hackernews": 0.7,
+        "programathor": 1.3,
+        "weworkremotely": 10.2,
+        "greenhouse_br": 0,
+        "himalayas": 13.1,
+        "jobicy": 5,
+        "arbeitnow": 1.3
+      },
+      "pisoEntreFontes": 0,
+      "tetoEntreFontes": 13.1
+    },
+    {
+      "id": "comunicacao_escrita",
+      "rotulo": "Comunicação escrita explícita",
+      "categoria": "comunicacao",
+      "n": 32,
+      "pct": 2.6,
+      "pt": 0.6,
+      "en": 4.1,
+      "pctBoards": 3.2,
+      "porFonte": {
+        "gupy": 0.6,
+        "hackernews": 0.7,
+        "programathor": 2.5,
+        "weworkremotely": 4.6,
+        "greenhouse_br": 1.2,
+        "himalayas": 13.1,
+        "jobicy": 3.8,
+        "arbeitnow": 3.8
+      },
+      "pisoEntreFontes": 0.6,
+      "tetoEntreFontes": 13.1
+    },
+    {
+      "id": "autorizacao_trabalho",
+      "rotulo": "Autorização de trabalho / visto",
+      "categoria": "credenciais",
+      "n": 23,
+      "pct": 1.9,
+      "pt": 0,
+      "en": 3.3,
+      "pctBoards": 0.8,
+      "porFonte": {
+        "gupy": 0.3,
+        "hackernews": 5.7,
+        "programathor": 0,
+        "weworkremotely": 0,
+        "greenhouse_br": 0,
+        "himalayas": 6,
+        "jobicy": 0,
+        "arbeitnow": 1.3
+      },
+      "pisoEntreFontes": 0,
+      "tetoEntreFontes": 6
+    },
+    {
+      "id": "espanhol",
+      "rotulo": "Espanhol",
+      "categoria": "comunicacao",
+      "n": 17,
+      "pct": 1.4,
+      "pt": 2.8,
+      "en": 0.4,
+      "pctBoards": 1.8,
+      "porFonte": {
+        "gupy": 4.1,
+        "hackernews": 0,
+        "programathor": 1.3,
+        "weworkremotely": 0,
+        "greenhouse_br": 0,
+        "himalayas": 1.2,
+        "jobicy": 1.3,
+        "arbeitnow": 0
+      },
+      "pisoEntreFontes": 0,
+      "tetoEntreFontes": 4.1
+    },
+    {
+      "id": "disponibilidade_viagem",
+      "rotulo": "Disponibilidade para viagem / presença",
+      "categoria": "credenciais",
+      "n": 5,
+      "pct": 0.4,
+      "pt": 0.4,
+      "en": 0.4,
+      "pctBoards": 0.5,
+      "porFonte": {
+        "gupy": 0.6,
+        "hackernews": 0,
+        "programathor": 0,
+        "weworkremotely": 0,
+        "greenhouse_br": 0,
+        "himalayas": 1.2,
+        "jobicy": 2.5,
+        "arbeitnow": 0
+      },
+      "pisoEntreFontes": 0,
+      "tetoEntreFontes": 2.5
+    }
+  ],
+  "porSenioridadeDetalhe": {
+    "pleno": {
+      "total": 111,
+      "requisitos": {
+        "ingles": {
+          "n": 12,
+          "pct": 10.8
+        },
+        "comunicacao_geral": {
+          "n": 40,
+          "pct": 36
+        },
+        "comunicacao_escrita": {
+          "n": 2,
+          "pct": 1.8
+        },
+        "espanhol": {
+          "n": 2,
+          "pct": 1.8
+        },
+        "trabalho_em_equipe": {
+          "n": 70,
+          "pct": 63.1
+        },
+        "times_multidisciplinares": {
+          "n": 14,
+          "pct": 12.6
+        },
+        "autonomia": {
+          "n": 28,
+          "pct": 25.2
+        },
+        "ownership": {
+          "n": 9,
+          "pct": 8.1
+        },
+        "proatividade": {
+          "n": 11,
+          "pct": 9.9
+        },
+        "aprendizado_continuo": {
+          "n": 14,
+          "pct": 12.6
+        },
+        "resolucao_problemas": {
+          "n": 18,
+          "pct": 16.2
+        },
+        "mentoria": {
+          "n": 7,
+          "pct": 6.3
+        },
+        "lideranca": {
+          "n": 7,
+          "pct": 6.3
+        },
+        "adaptabilidade": {
+          "n": 5,
+          "pct": 4.5
+        },
+        "atencao_detalhe": {
+          "n": 2,
+          "pct": 1.8
+        },
+        "organizacao_tempo": {
+          "n": 19,
+          "pct": 17.1
+        },
+        "metodologias_ageis": {
+          "n": 45,
+          "pct": 40.5
+        },
+        "code_review": {
+          "n": 27,
+          "pct": 24.3
+        },
+        "testes_automatizados": {
+          "n": 49,
+          "pct": 44.1
+        },
+        "ci_cd": {
+          "n": 40,
+          "pct": 36
+        },
+        "versionamento": {
+          "n": 73,
+          "pct": 65.8
+        },
+        "cultura_devops": {
+          "n": 16,
+          "pct": 14.4
+        },
+        "observabilidade": {
+          "n": 28,
+          "pct": 25.2
+        },
+        "on_call": {
+          "n": 0,
+          "pct": 0
+        },
+        "documentacao": {
+          "n": 34,
+          "pct": 30.6
+        },
+        "seguranca": {
+          "n": 12,
+          "pct": 10.8
+        },
+        "performance_escala": {
+          "n": 38,
+          "pct": 34.2
+        },
+        "arquitetura": {
+          "n": 26,
+          "pct": 23.4
+        },
+        "boas_praticas_codigo": {
+          "n": 60,
+          "pct": 54.1
+        },
+        "cloud": {
+          "n": 45,
+          "pct": 40.5
+        },
+        "containers": {
+          "n": 38,
+          "pct": 34.2
+        },
+        "banco_dados": {
+          "n": 88,
+          "pct": 79.3
+        },
+        "apis_integracao": {
+          "n": 95,
+          "pct": 85.6
+        },
+        "microservicos": {
+          "n": 21,
+          "pct": 18.9
+        },
+        "mensageria_eventos": {
+          "n": 35,
+          "pct": 31.5
+        },
+        "infra_como_codigo": {
+          "n": 4,
+          "pct": 3.6
+        },
+        "dados_ia": {
+          "n": 25,
+          "pct": 22.5
+        },
+        "fundamentos_cs": {
+          "n": 4,
+          "pct": 3.6
+        },
+        "anos_experiencia": {
+          "n": 10,
+          "pct": 9
+        },
+        "experiencia_previa": {
+          "n": 52,
+          "pct": 46.8
+        },
+        "graduacao": {
+          "n": 34,
+          "pct": 30.6
+        },
+        "diploma_dispensavel": {
+          "n": 3,
+          "pct": 2.7
+        },
+        "portfolio_open_source": {
+          "n": 2,
+          "pct": 1.8
+        },
+        "fuso_horario": {
+          "n": 1,
+          "pct": 0.9
+        },
+        "autorizacao_trabalho": {
+          "n": 0,
+          "pct": 0
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 3,
+          "pct": 2.7
+        },
+        "foco_cliente": {
+          "n": 7,
+          "pct": 6.3
+        },
+        "impacto_negocio": {
+          "n": 19,
+          "pct": 17.1
+        },
+        "stakeholders": {
+          "n": 6,
+          "pct": 5.4
+        }
+      }
+    },
+    "senior": {
+      "total": 440,
+      "requisitos": {
+        "ingles": {
+          "n": 90,
+          "pct": 20.5
+        },
+        "comunicacao_geral": {
+          "n": 173,
+          "pct": 39.3
+        },
+        "comunicacao_escrita": {
+          "n": 11,
+          "pct": 2.5
+        },
+        "espanhol": {
+          "n": 5,
+          "pct": 1.1
+        },
+        "trabalho_em_equipe": {
+          "n": 229,
+          "pct": 52
+        },
+        "times_multidisciplinares": {
+          "n": 64,
+          "pct": 14.5
+        },
+        "autonomia": {
+          "n": 98,
+          "pct": 22.3
+        },
+        "ownership": {
+          "n": 97,
+          "pct": 22
+        },
+        "proatividade": {
+          "n": 39,
+          "pct": 8.9
+        },
+        "aprendizado_continuo": {
+          "n": 61,
+          "pct": 13.9
+        },
+        "resolucao_problemas": {
+          "n": 70,
+          "pct": 15.9
+        },
+        "mentoria": {
+          "n": 95,
+          "pct": 21.6
+        },
+        "lideranca": {
+          "n": 72,
+          "pct": 16.4
+        },
+        "adaptabilidade": {
+          "n": 51,
+          "pct": 11.6
+        },
+        "atencao_detalhe": {
+          "n": 17,
+          "pct": 3.9
+        },
+        "organizacao_tempo": {
+          "n": 46,
+          "pct": 10.5
+        },
+        "metodologias_ageis": {
+          "n": 124,
+          "pct": 28.2
+        },
+        "code_review": {
+          "n": 117,
+          "pct": 26.6
+        },
+        "testes_automatizados": {
+          "n": 143,
+          "pct": 32.5
+        },
+        "ci_cd": {
+          "n": 165,
+          "pct": 37.5
+        },
+        "versionamento": {
+          "n": 158,
+          "pct": 35.9
+        },
+        "cultura_devops": {
+          "n": 108,
+          "pct": 24.5
+        },
+        "observabilidade": {
+          "n": 175,
+          "pct": 39.8
+        },
+        "on_call": {
+          "n": 34,
+          "pct": 7.7
+        },
+        "documentacao": {
+          "n": 107,
+          "pct": 24.3
+        },
+        "seguranca": {
+          "n": 40,
+          "pct": 9.1
+        },
+        "performance_escala": {
+          "n": 200,
+          "pct": 45.5
+        },
+        "arquitetura": {
+          "n": 206,
+          "pct": 46.8
+        },
+        "boas_praticas_codigo": {
+          "n": 215,
+          "pct": 48.9
+        },
+        "cloud": {
+          "n": 215,
+          "pct": 48.9
+        },
+        "containers": {
+          "n": 149,
+          "pct": 33.9
+        },
+        "banco_dados": {
+          "n": 253,
+          "pct": 57.5
+        },
+        "apis_integracao": {
+          "n": 260,
+          "pct": 59.1
+        },
+        "microservicos": {
+          "n": 109,
+          "pct": 24.8
+        },
+        "mensageria_eventos": {
+          "n": 108,
+          "pct": 24.5
+        },
+        "infra_como_codigo": {
+          "n": 58,
+          "pct": 13.2
+        },
+        "dados_ia": {
+          "n": 142,
+          "pct": 32.3
+        },
+        "fundamentos_cs": {
+          "n": 18,
+          "pct": 4.1
+        },
+        "anos_experiencia": {
+          "n": 89,
+          "pct": 20.2
+        },
+        "experiencia_previa": {
+          "n": 198,
+          "pct": 45
+        },
+        "graduacao": {
+          "n": 72,
+          "pct": 16.4
+        },
+        "diploma_dispensavel": {
+          "n": 13,
+          "pct": 3
+        },
+        "portfolio_open_source": {
+          "n": 30,
+          "pct": 6.8
+        },
+        "fuso_horario": {
+          "n": 20,
+          "pct": 4.5
+        },
+        "autorizacao_trabalho": {
+          "n": 8,
+          "pct": 1.8
+        },
+        "disponibilidade_viagem": {
+          "n": 1,
+          "pct": 0.2
+        },
+        "visao_produto": {
+          "n": 38,
+          "pct": 8.6
+        },
+        "foco_cliente": {
+          "n": 39,
+          "pct": 8.9
+        },
+        "impacto_negocio": {
+          "n": 49,
+          "pct": 11.1
+        },
+        "stakeholders": {
+          "n": 53,
+          "pct": 12
+        }
+      }
+    },
+    "nao_informado": {
+      "total": 483,
+      "requisitos": {
+        "ingles": {
+          "n": 85,
+          "pct": 17.6
+        },
+        "comunicacao_geral": {
+          "n": 154,
+          "pct": 31.9
+        },
+        "comunicacao_escrita": {
+          "n": 14,
+          "pct": 2.9
+        },
+        "espanhol": {
+          "n": 6,
+          "pct": 1.2
+        },
+        "trabalho_em_equipe": {
+          "n": 204,
+          "pct": 42.2
+        },
+        "times_multidisciplinares": {
+          "n": 48,
+          "pct": 9.9
+        },
+        "autonomia": {
+          "n": 109,
+          "pct": 22.6
+        },
+        "ownership": {
+          "n": 87,
+          "pct": 18
+        },
+        "proatividade": {
+          "n": 48,
+          "pct": 9.9
+        },
+        "aprendizado_continuo": {
+          "n": 58,
+          "pct": 12
+        },
+        "resolucao_problemas": {
+          "n": 68,
+          "pct": 14.1
+        },
+        "mentoria": {
+          "n": 48,
+          "pct": 9.9
+        },
+        "lideranca": {
+          "n": 47,
+          "pct": 9.7
+        },
+        "adaptabilidade": {
+          "n": 44,
+          "pct": 9.1
+        },
+        "atencao_detalhe": {
+          "n": 18,
+          "pct": 3.7
+        },
+        "organizacao_tempo": {
+          "n": 49,
+          "pct": 10.1
+        },
+        "metodologias_ageis": {
+          "n": 124,
+          "pct": 25.7
+        },
+        "code_review": {
+          "n": 44,
+          "pct": 9.1
+        },
+        "testes_automatizados": {
+          "n": 78,
+          "pct": 16.1
+        },
+        "ci_cd": {
+          "n": 119,
+          "pct": 24.6
+        },
+        "versionamento": {
+          "n": 150,
+          "pct": 31.1
+        },
+        "cultura_devops": {
+          "n": 87,
+          "pct": 18
+        },
+        "observabilidade": {
+          "n": 127,
+          "pct": 26.3
+        },
+        "on_call": {
+          "n": 26,
+          "pct": 5.4
+        },
+        "documentacao": {
+          "n": 80,
+          "pct": 16.6
+        },
+        "seguranca": {
+          "n": 32,
+          "pct": 6.6
+        },
+        "performance_escala": {
+          "n": 113,
+          "pct": 23.4
+        },
+        "arquitetura": {
+          "n": 151,
+          "pct": 31.3
+        },
+        "boas_praticas_codigo": {
+          "n": 159,
+          "pct": 32.9
+        },
+        "cloud": {
+          "n": 163,
+          "pct": 33.7
+        },
+        "containers": {
+          "n": 111,
+          "pct": 23
+        },
+        "banco_dados": {
+          "n": 226,
+          "pct": 46.8
+        },
+        "apis_integracao": {
+          "n": 222,
+          "pct": 46
+        },
+        "microservicos": {
+          "n": 45,
+          "pct": 9.3
+        },
+        "mensageria_eventos": {
+          "n": 40,
+          "pct": 8.3
+        },
+        "infra_como_codigo": {
+          "n": 46,
+          "pct": 9.5
+        },
+        "dados_ia": {
+          "n": 135,
+          "pct": 28
+        },
+        "fundamentos_cs": {
+          "n": 33,
+          "pct": 6.8
+        },
+        "anos_experiencia": {
+          "n": 58,
+          "pct": 12
+        },
+        "experiencia_previa": {
+          "n": 142,
+          "pct": 29.4
+        },
+        "graduacao": {
+          "n": 89,
+          "pct": 18.4
+        },
+        "diploma_dispensavel": {
+          "n": 10,
+          "pct": 2.1
+        },
+        "portfolio_open_source": {
+          "n": 31,
+          "pct": 6.4
+        },
+        "fuso_horario": {
+          "n": 30,
+          "pct": 6.2
+        },
+        "autorizacao_trabalho": {
+          "n": 10,
+          "pct": 2.1
+        },
+        "disponibilidade_viagem": {
+          "n": 2,
+          "pct": 0.4
+        },
+        "visao_produto": {
+          "n": 30,
+          "pct": 6.2
+        },
+        "foco_cliente": {
+          "n": 39,
+          "pct": 8.1
+        },
+        "impacto_negocio": {
+          "n": 41,
+          "pct": 8.5
+        },
+        "stakeholders": {
+          "n": 44,
+          "pct": 9.1
+        }
+      }
+    },
+    "junior": {
+      "total": 41,
+      "requisitos": {
+        "ingles": {
+          "n": 6,
+          "pct": 14.6
+        },
+        "comunicacao_geral": {
+          "n": 14,
+          "pct": 34.1
+        },
+        "comunicacao_escrita": {
+          "n": 0,
+          "pct": 0
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 17,
+          "pct": 41.5
+        },
+        "times_multidisciplinares": {
+          "n": 1,
+          "pct": 2.4
+        },
+        "autonomia": {
+          "n": 3,
+          "pct": 7.3
+        },
+        "ownership": {
+          "n": 2,
+          "pct": 4.9
+        },
+        "proatividade": {
+          "n": 2,
+          "pct": 4.9
+        },
+        "aprendizado_continuo": {
+          "n": 7,
+          "pct": 17.1
+        },
+        "resolucao_problemas": {
+          "n": 5,
+          "pct": 12.2
+        },
+        "mentoria": {
+          "n": 3,
+          "pct": 7.3
+        },
+        "lideranca": {
+          "n": 3,
+          "pct": 7.3
+        },
+        "adaptabilidade": {
+          "n": 1,
+          "pct": 2.4
+        },
+        "atencao_detalhe": {
+          "n": 1,
+          "pct": 2.4
+        },
+        "organizacao_tempo": {
+          "n": 8,
+          "pct": 19.5
+        },
+        "metodologias_ageis": {
+          "n": 14,
+          "pct": 34.1
+        },
+        "code_review": {
+          "n": 8,
+          "pct": 19.5
+        },
+        "testes_automatizados": {
+          "n": 8,
+          "pct": 19.5
+        },
+        "ci_cd": {
+          "n": 4,
+          "pct": 9.8
+        },
+        "versionamento": {
+          "n": 27,
+          "pct": 65.9
+        },
+        "cultura_devops": {
+          "n": 2,
+          "pct": 4.9
+        },
+        "observabilidade": {
+          "n": 4,
+          "pct": 9.8
+        },
+        "on_call": {
+          "n": 0,
+          "pct": 0
+        },
+        "documentacao": {
+          "n": 15,
+          "pct": 36.6
+        },
+        "seguranca": {
+          "n": 0,
+          "pct": 0
+        },
+        "performance_escala": {
+          "n": 7,
+          "pct": 17.1
+        },
+        "arquitetura": {
+          "n": 6,
+          "pct": 14.6
+        },
+        "boas_praticas_codigo": {
+          "n": 11,
+          "pct": 26.8
+        },
+        "cloud": {
+          "n": 8,
+          "pct": 19.5
+        },
+        "containers": {
+          "n": 6,
+          "pct": 14.6
+        },
+        "banco_dados": {
+          "n": 28,
+          "pct": 68.3
+        },
+        "apis_integracao": {
+          "n": 26,
+          "pct": 63.4
+        },
+        "microservicos": {
+          "n": 6,
+          "pct": 14.6
+        },
+        "mensageria_eventos": {
+          "n": 6,
+          "pct": 14.6
+        },
+        "infra_como_codigo": {
+          "n": 2,
+          "pct": 4.9
+        },
+        "dados_ia": {
+          "n": 14,
+          "pct": 34.1
+        },
+        "fundamentos_cs": {
+          "n": 4,
+          "pct": 9.8
+        },
+        "anos_experiencia": {
+          "n": 3,
+          "pct": 7.3
+        },
+        "experiencia_previa": {
+          "n": 12,
+          "pct": 29.3
+        },
+        "graduacao": {
+          "n": 9,
+          "pct": 22
+        },
+        "diploma_dispensavel": {
+          "n": 0,
+          "pct": 0
+        },
+        "portfolio_open_source": {
+          "n": 5,
+          "pct": 12.2
+        },
+        "fuso_horario": {
+          "n": 1,
+          "pct": 2.4
+        },
+        "autorizacao_trabalho": {
+          "n": 1,
+          "pct": 2.4
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 1,
+          "pct": 2.4
+        },
+        "foco_cliente": {
+          "n": 5,
+          "pct": 12.2
+        },
+        "impacto_negocio": {
+          "n": 3,
+          "pct": 7.3
+        },
+        "stakeholders": {
+          "n": 1,
+          "pct": 2.4
+        }
+      }
+    },
+    "estagio": {
+      "total": 4,
+      "requisitos": {
+        "ingles": {
+          "n": 0,
+          "pct": 0
+        },
+        "comunicacao_geral": {
+          "n": 0,
+          "pct": 0
+        },
+        "comunicacao_escrita": {
+          "n": 0,
+          "pct": 0
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 2,
+          "pct": 50
+        },
+        "times_multidisciplinares": {
+          "n": 0,
+          "pct": 0
+        },
+        "autonomia": {
+          "n": 0,
+          "pct": 0
+        },
+        "ownership": {
+          "n": 0,
+          "pct": 0
+        },
+        "proatividade": {
+          "n": 1,
+          "pct": 25
+        },
+        "aprendizado_continuo": {
+          "n": 1,
+          "pct": 25
+        },
+        "resolucao_problemas": {
+          "n": 2,
+          "pct": 50
+        },
+        "mentoria": {
+          "n": 0,
+          "pct": 0
+        },
+        "lideranca": {
+          "n": 0,
+          "pct": 0
+        },
+        "adaptabilidade": {
+          "n": 0,
+          "pct": 0
+        },
+        "atencao_detalhe": {
+          "n": 1,
+          "pct": 25
+        },
+        "organizacao_tempo": {
+          "n": 0,
+          "pct": 0
+        },
+        "metodologias_ageis": {
+          "n": 2,
+          "pct": 50
+        },
+        "code_review": {
+          "n": 1,
+          "pct": 25
+        },
+        "testes_automatizados": {
+          "n": 1,
+          "pct": 25
+        },
+        "ci_cd": {
+          "n": 1,
+          "pct": 25
+        },
+        "versionamento": {
+          "n": 2,
+          "pct": 50
+        },
+        "cultura_devops": {
+          "n": 0,
+          "pct": 0
+        },
+        "observabilidade": {
+          "n": 0,
+          "pct": 0
+        },
+        "on_call": {
+          "n": 0,
+          "pct": 0
+        },
+        "documentacao": {
+          "n": 0,
+          "pct": 0
+        },
+        "seguranca": {
+          "n": 0,
+          "pct": 0
+        },
+        "performance_escala": {
+          "n": 0,
+          "pct": 0
+        },
+        "arquitetura": {
+          "n": 0,
+          "pct": 0
+        },
+        "boas_praticas_codigo": {
+          "n": 1,
+          "pct": 25
+        },
+        "cloud": {
+          "n": 2,
+          "pct": 50
+        },
+        "containers": {
+          "n": 1,
+          "pct": 25
+        },
+        "banco_dados": {
+          "n": 2,
+          "pct": 50
+        },
+        "apis_integracao": {
+          "n": 2,
+          "pct": 50
+        },
+        "microservicos": {
+          "n": 0,
+          "pct": 0
+        },
+        "mensageria_eventos": {
+          "n": 1,
+          "pct": 25
+        },
+        "infra_como_codigo": {
+          "n": 0,
+          "pct": 0
+        },
+        "dados_ia": {
+          "n": 0,
+          "pct": 0
+        },
+        "fundamentos_cs": {
+          "n": 0,
+          "pct": 0
+        },
+        "anos_experiencia": {
+          "n": 0,
+          "pct": 0
+        },
+        "experiencia_previa": {
+          "n": 1,
+          "pct": 25
+        },
+        "graduacao": {
+          "n": 0,
+          "pct": 0
+        },
+        "diploma_dispensavel": {
+          "n": 0,
+          "pct": 0
+        },
+        "portfolio_open_source": {
+          "n": 1,
+          "pct": 25
+        },
+        "fuso_horario": {
+          "n": 0,
+          "pct": 0
+        },
+        "autorizacao_trabalho": {
+          "n": 1,
+          "pct": 25
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 0,
+          "pct": 0
+        },
+        "foco_cliente": {
+          "n": 0,
+          "pct": 0
+        },
+        "impacto_negocio": {
+          "n": 0,
+          "pct": 0
+        },
+        "stakeholders": {
+          "n": 0,
+          "pct": 0
+        }
+      }
+    },
+    "staff_plus": {
+      "total": 130,
+      "requisitos": {
+        "ingles": {
+          "n": 25,
+          "pct": 19.2
+        },
+        "comunicacao_geral": {
+          "n": 60,
+          "pct": 46.2
+        },
+        "comunicacao_escrita": {
+          "n": 5,
+          "pct": 3.8
+        },
+        "espanhol": {
+          "n": 4,
+          "pct": 3.1
+        },
+        "trabalho_em_equipe": {
+          "n": 74,
+          "pct": 56.9
+        },
+        "times_multidisciplinares": {
+          "n": 37,
+          "pct": 28.5
+        },
+        "autonomia": {
+          "n": 40,
+          "pct": 30.8
+        },
+        "ownership": {
+          "n": 39,
+          "pct": 30
+        },
+        "proatividade": {
+          "n": 14,
+          "pct": 10.8
+        },
+        "aprendizado_continuo": {
+          "n": 17,
+          "pct": 13.1
+        },
+        "resolucao_problemas": {
+          "n": 17,
+          "pct": 13.1
+        },
+        "mentoria": {
+          "n": 50,
+          "pct": 38.5
+        },
+        "lideranca": {
+          "n": 66,
+          "pct": 50.8
+        },
+        "adaptabilidade": {
+          "n": 16,
+          "pct": 12.3
+        },
+        "atencao_detalhe": {
+          "n": 5,
+          "pct": 3.8
+        },
+        "organizacao_tempo": {
+          "n": 13,
+          "pct": 10
+        },
+        "metodologias_ageis": {
+          "n": 34,
+          "pct": 26.2
+        },
+        "code_review": {
+          "n": 15,
+          "pct": 11.5
+        },
+        "testes_automatizados": {
+          "n": 20,
+          "pct": 15.4
+        },
+        "ci_cd": {
+          "n": 57,
+          "pct": 43.8
+        },
+        "versionamento": {
+          "n": 40,
+          "pct": 30.8
+        },
+        "cultura_devops": {
+          "n": 33,
+          "pct": 25.4
+        },
+        "observabilidade": {
+          "n": 63,
+          "pct": 48.5
+        },
+        "on_call": {
+          "n": 9,
+          "pct": 6.9
+        },
+        "documentacao": {
+          "n": 30,
+          "pct": 23.1
+        },
+        "seguranca": {
+          "n": 12,
+          "pct": 9.2
+        },
+        "performance_escala": {
+          "n": 63,
+          "pct": 48.5
+        },
+        "arquitetura": {
+          "n": 92,
+          "pct": 70.8
+        },
+        "boas_praticas_codigo": {
+          "n": 55,
+          "pct": 42.3
+        },
+        "cloud": {
+          "n": 67,
+          "pct": 51.5
+        },
+        "containers": {
+          "n": 40,
+          "pct": 30.8
+        },
+        "banco_dados": {
+          "n": 48,
+          "pct": 36.9
+        },
+        "apis_integracao": {
+          "n": 65,
+          "pct": 50
+        },
+        "microservicos": {
+          "n": 20,
+          "pct": 15.4
+        },
+        "mensageria_eventos": {
+          "n": 30,
+          "pct": 23.1
+        },
+        "infra_como_codigo": {
+          "n": 27,
+          "pct": 20.8
+        },
+        "dados_ia": {
+          "n": 39,
+          "pct": 30
+        },
+        "fundamentos_cs": {
+          "n": 4,
+          "pct": 3.1
+        },
+        "anos_experiencia": {
+          "n": 35,
+          "pct": 26.9
+        },
+        "experiencia_previa": {
+          "n": 63,
+          "pct": 48.5
+        },
+        "graduacao": {
+          "n": 22,
+          "pct": 16.9
+        },
+        "diploma_dispensavel": {
+          "n": 7,
+          "pct": 5.4
+        },
+        "portfolio_open_source": {
+          "n": 11,
+          "pct": 8.5
+        },
+        "fuso_horario": {
+          "n": 7,
+          "pct": 5.4
+        },
+        "autorizacao_trabalho": {
+          "n": 3,
+          "pct": 2.3
+        },
+        "disponibilidade_viagem": {
+          "n": 2,
+          "pct": 1.5
+        },
+        "visao_produto": {
+          "n": 24,
+          "pct": 18.5
+        },
+        "foco_cliente": {
+          "n": 13,
+          "pct": 10
+        },
+        "impacto_negocio": {
+          "n": 24,
+          "pct": 18.5
+        },
+        "stakeholders": {
+          "n": 31,
+          "pct": 23.8
+        }
+      }
+    }
+  },
+  "porFonteDetalhe": {
+    "gupy": {
+      "total": 320,
+      "requisitos": {
+        "ingles": {
+          "n": 60,
+          "pct": 18.8
+        },
+        "comunicacao_geral": {
+          "n": 108,
+          "pct": 33.8
+        },
+        "comunicacao_escrita": {
+          "n": 2,
+          "pct": 0.6
+        },
+        "espanhol": {
+          "n": 13,
+          "pct": 4.1
+        },
+        "trabalho_em_equipe": {
+          "n": 210,
+          "pct": 65.6
+        },
+        "times_multidisciplinares": {
+          "n": 40,
+          "pct": 12.5
+        },
+        "autonomia": {
+          "n": 92,
+          "pct": 28.8
+        },
+        "ownership": {
+          "n": 47,
+          "pct": 14.7
+        },
+        "proatividade": {
+          "n": 34,
+          "pct": 10.6
+        },
+        "aprendizado_continuo": {
+          "n": 44,
+          "pct": 13.8
+        },
+        "resolucao_problemas": {
+          "n": 69,
+          "pct": 21.6
+        },
+        "mentoria": {
+          "n": 43,
+          "pct": 13.4
+        },
+        "lideranca": {
+          "n": 47,
+          "pct": 14.7
+        },
+        "adaptabilidade": {
+          "n": 17,
+          "pct": 5.3
+        },
+        "atencao_detalhe": {
+          "n": 4,
+          "pct": 1.3
+        },
+        "organizacao_tempo": {
+          "n": 58,
+          "pct": 18.1
+        },
+        "metodologias_ageis": {
+          "n": 162,
+          "pct": 50.6
+        },
+        "code_review": {
+          "n": 94,
+          "pct": 29.4
+        },
+        "testes_automatizados": {
+          "n": 154,
+          "pct": 48.1
+        },
+        "ci_cd": {
+          "n": 142,
+          "pct": 44.4
+        },
+        "versionamento": {
+          "n": 207,
+          "pct": 64.7
+        },
+        "cultura_devops": {
+          "n": 70,
+          "pct": 21.9
+        },
+        "observabilidade": {
+          "n": 120,
+          "pct": 37.5
+        },
+        "on_call": {
+          "n": 2,
+          "pct": 0.6
+        },
+        "documentacao": {
+          "n": 108,
+          "pct": 33.8
+        },
+        "seguranca": {
+          "n": 31,
+          "pct": 9.7
+        },
+        "performance_escala": {
+          "n": 123,
+          "pct": 38.4
+        },
+        "arquitetura": {
+          "n": 121,
+          "pct": 37.8
+        },
+        "boas_praticas_codigo": {
+          "n": 188,
+          "pct": 58.8
+        },
+        "cloud": {
+          "n": 143,
+          "pct": 44.7
+        },
+        "containers": {
+          "n": 112,
+          "pct": 35
+        },
+        "banco_dados": {
+          "n": 233,
+          "pct": 72.8
+        },
+        "apis_integracao": {
+          "n": 252,
+          "pct": 78.8
+        },
+        "microservicos": {
+          "n": 98,
+          "pct": 30.6
+        },
+        "mensageria_eventos": {
+          "n": 101,
+          "pct": 31.6
+        },
+        "infra_como_codigo": {
+          "n": 10,
+          "pct": 3.1
+        },
+        "dados_ia": {
+          "n": 78,
+          "pct": 24.4
+        },
+        "fundamentos_cs": {
+          "n": 17,
+          "pct": 5.3
+        },
+        "anos_experiencia": {
+          "n": 20,
+          "pct": 6.3
+        },
+        "experiencia_previa": {
+          "n": 167,
+          "pct": 52.2
+        },
+        "graduacao": {
+          "n": 91,
+          "pct": 28.4
+        },
+        "diploma_dispensavel": {
+          "n": 2,
+          "pct": 0.6
+        },
+        "portfolio_open_source": {
+          "n": 11,
+          "pct": 3.4
+        },
+        "fuso_horario": {
+          "n": 0,
+          "pct": 0
+        },
+        "autorizacao_trabalho": {
+          "n": 1,
+          "pct": 0.3
+        },
+        "disponibilidade_viagem": {
+          "n": 2,
+          "pct": 0.6
+        },
+        "visao_produto": {
+          "n": 12,
+          "pct": 3.8
+        },
+        "foco_cliente": {
+          "n": 16,
+          "pct": 5
+        },
+        "impacto_negocio": {
+          "n": 48,
+          "pct": 15
+        },
+        "stakeholders": {
+          "n": 21,
+          "pct": 6.6
+        }
+      }
+    },
+    "greenhouse_br": {
+      "total": 85,
+      "requisitos": {
+        "ingles": {
+          "n": 33,
+          "pct": 38.8
+        },
+        "comunicacao_geral": {
+          "n": 44,
+          "pct": 51.8
+        },
+        "comunicacao_escrita": {
+          "n": 1,
+          "pct": 1.2
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 61,
+          "pct": 71.8
+        },
+        "times_multidisciplinares": {
+          "n": 22,
+          "pct": 25.9
+        },
+        "autonomia": {
+          "n": 23,
+          "pct": 27.1
+        },
+        "ownership": {
+          "n": 21,
+          "pct": 24.7
+        },
+        "proatividade": {
+          "n": 11,
+          "pct": 12.9
+        },
+        "aprendizado_continuo": {
+          "n": 20,
+          "pct": 23.5
+        },
+        "resolucao_problemas": {
+          "n": 25,
+          "pct": 29.4
+        },
+        "mentoria": {
+          "n": 20,
+          "pct": 23.5
+        },
+        "lideranca": {
+          "n": 27,
+          "pct": 31.8
+        },
+        "adaptabilidade": {
+          "n": 7,
+          "pct": 8.2
+        },
+        "atencao_detalhe": {
+          "n": 6,
+          "pct": 7.1
+        },
+        "organizacao_tempo": {
+          "n": 12,
+          "pct": 14.1
+        },
+        "metodologias_ageis": {
+          "n": 31,
+          "pct": 36.5
+        },
+        "code_review": {
+          "n": 24,
+          "pct": 28.2
+        },
+        "testes_automatizados": {
+          "n": 26,
+          "pct": 30.6
+        },
+        "ci_cd": {
+          "n": 36,
+          "pct": 42.4
+        },
+        "versionamento": {
+          "n": 33,
+          "pct": 38.8
+        },
+        "cultura_devops": {
+          "n": 15,
+          "pct": 17.6
+        },
+        "observabilidade": {
+          "n": 49,
+          "pct": 57.6
+        },
+        "on_call": {
+          "n": 8,
+          "pct": 9.4
+        },
+        "documentacao": {
+          "n": 27,
+          "pct": 31.8
+        },
+        "seguranca": {
+          "n": 14,
+          "pct": 16.5
+        },
+        "performance_escala": {
+          "n": 53,
+          "pct": 62.4
+        },
+        "arquitetura": {
+          "n": 50,
+          "pct": 58.8
+        },
+        "boas_praticas_codigo": {
+          "n": 63,
+          "pct": 74.1
+        },
+        "cloud": {
+          "n": 53,
+          "pct": 62.4
+        },
+        "containers": {
+          "n": 33,
+          "pct": 38.8
+        },
+        "banco_dados": {
+          "n": 48,
+          "pct": 56.5
+        },
+        "apis_integracao": {
+          "n": 51,
+          "pct": 60
+        },
+        "microservicos": {
+          "n": 22,
+          "pct": 25.9
+        },
+        "mensageria_eventos": {
+          "n": 30,
+          "pct": 35.3
+        },
+        "infra_como_codigo": {
+          "n": 17,
+          "pct": 20
+        },
+        "dados_ia": {
+          "n": 30,
+          "pct": 35.3
+        },
+        "fundamentos_cs": {
+          "n": 11,
+          "pct": 12.9
+        },
+        "anos_experiencia": {
+          "n": 6,
+          "pct": 7.1
+        },
+        "experiencia_previa": {
+          "n": 50,
+          "pct": 58.8
+        },
+        "graduacao": {
+          "n": 13,
+          "pct": 15.3
+        },
+        "diploma_dispensavel": {
+          "n": 0,
+          "pct": 0
+        },
+        "portfolio_open_source": {
+          "n": 11,
+          "pct": 12.9
+        },
+        "fuso_horario": {
+          "n": 0,
+          "pct": 0
+        },
+        "autorizacao_trabalho": {
+          "n": 0,
+          "pct": 0
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 10,
+          "pct": 11.8
+        },
+        "foco_cliente": {
+          "n": 16,
+          "pct": 18.8
+        },
+        "impacto_negocio": {
+          "n": 12,
+          "pct": 14.1
+        },
+        "stakeholders": {
+          "n": 18,
+          "pct": 21.2
+        }
+      }
+    },
+    "programathor": {
+      "total": 160,
+      "requisitos": {
+        "ingles": {
+          "n": 43,
+          "pct": 26.9
+        },
+        "comunicacao_geral": {
+          "n": 67,
+          "pct": 41.9
+        },
+        "comunicacao_escrita": {
+          "n": 4,
+          "pct": 2.5
+        },
+        "espanhol": {
+          "n": 2,
+          "pct": 1.3
+        },
+        "trabalho_em_equipe": {
+          "n": 71,
+          "pct": 44.4
+        },
+        "times_multidisciplinares": {
+          "n": 15,
+          "pct": 9.4
+        },
+        "autonomia": {
+          "n": 29,
+          "pct": 18.1
+        },
+        "ownership": {
+          "n": 14,
+          "pct": 8.8
+        },
+        "proatividade": {
+          "n": 11,
+          "pct": 6.9
+        },
+        "aprendizado_continuo": {
+          "n": 13,
+          "pct": 8.1
+        },
+        "resolucao_problemas": {
+          "n": 17,
+          "pct": 10.6
+        },
+        "mentoria": {
+          "n": 10,
+          "pct": 6.3
+        },
+        "lideranca": {
+          "n": 21,
+          "pct": 13.1
+        },
+        "adaptabilidade": {
+          "n": 8,
+          "pct": 5
+        },
+        "atencao_detalhe": {
+          "n": 3,
+          "pct": 1.9
+        },
+        "organizacao_tempo": {
+          "n": 23,
+          "pct": 14.4
+        },
+        "metodologias_ageis": {
+          "n": 41,
+          "pct": 25.6
+        },
+        "code_review": {
+          "n": 30,
+          "pct": 18.8
+        },
+        "testes_automatizados": {
+          "n": 42,
+          "pct": 26.3
+        },
+        "ci_cd": {
+          "n": 52,
+          "pct": 32.5
+        },
+        "versionamento": {
+          "n": 87,
+          "pct": 54.4
+        },
+        "cultura_devops": {
+          "n": 34,
+          "pct": 21.3
+        },
+        "observabilidade": {
+          "n": 31,
+          "pct": 19.4
+        },
+        "on_call": {
+          "n": 3,
+          "pct": 1.9
+        },
+        "documentacao": {
+          "n": 33,
+          "pct": 20.6
+        },
+        "seguranca": {
+          "n": 9,
+          "pct": 5.6
+        },
+        "performance_escala": {
+          "n": 51,
+          "pct": 31.9
+        },
+        "arquitetura": {
+          "n": 46,
+          "pct": 28.8
+        },
+        "boas_praticas_codigo": {
+          "n": 71,
+          "pct": 44.4
+        },
+        "cloud": {
+          "n": 61,
+          "pct": 38.1
+        },
+        "containers": {
+          "n": 37,
+          "pct": 23.1
+        },
+        "banco_dados": {
+          "n": 119,
+          "pct": 74.4
+        },
+        "apis_integracao": {
+          "n": 116,
+          "pct": 72.5
+        },
+        "microservicos": {
+          "n": 21,
+          "pct": 13.1
+        },
+        "mensageria_eventos": {
+          "n": 30,
+          "pct": 18.8
+        },
+        "infra_como_codigo": {
+          "n": 13,
+          "pct": 8.1
+        },
+        "dados_ia": {
+          "n": 37,
+          "pct": 23.1
+        },
+        "fundamentos_cs": {
+          "n": 8,
+          "pct": 5
+        },
+        "anos_experiencia": {
+          "n": 32,
+          "pct": 20
+        },
+        "experiencia_previa": {
+          "n": 79,
+          "pct": 49.4
+        },
+        "graduacao": {
+          "n": 27,
+          "pct": 16.9
+        },
+        "diploma_dispensavel": {
+          "n": 2,
+          "pct": 1.3
+        },
+        "portfolio_open_source": {
+          "n": 6,
+          "pct": 3.8
+        },
+        "fuso_horario": {
+          "n": 4,
+          "pct": 2.5
+        },
+        "autorizacao_trabalho": {
+          "n": 0,
+          "pct": 0
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 10,
+          "pct": 6.3
+        },
+        "foco_cliente": {
+          "n": 16,
+          "pct": 10
+        },
+        "impacto_negocio": {
+          "n": 20,
+          "pct": 12.5
+        },
+        "stakeholders": {
+          "n": 13,
+          "pct": 8.1
+        }
+      }
+    },
+    "hackernews": {
+      "total": 280,
+      "requisitos": {
+        "ingles": {
+          "n": 9,
+          "pct": 3.2
+        },
+        "comunicacao_geral": {
+          "n": 15,
+          "pct": 5.4
+        },
+        "comunicacao_escrita": {
+          "n": 2,
+          "pct": 0.7
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 21,
+          "pct": 7.5
+        },
+        "times_multidisciplinares": {
+          "n": 6,
+          "pct": 2.1
+        },
+        "autonomia": {
+          "n": 42,
+          "pct": 15
+        },
+        "ownership": {
+          "n": 51,
+          "pct": 18.2
+        },
+        "proatividade": {
+          "n": 3,
+          "pct": 1.1
+        },
+        "aprendizado_continuo": {
+          "n": 8,
+          "pct": 2.9
+        },
+        "resolucao_problemas": {
+          "n": 1,
+          "pct": 0.4
+        },
+        "mentoria": {
+          "n": 16,
+          "pct": 5.7
+        },
+        "lideranca": {
+          "n": 21,
+          "pct": 7.5
+        },
+        "adaptabilidade": {
+          "n": 9,
+          "pct": 3.2
+        },
+        "atencao_detalhe": {
+          "n": 1,
+          "pct": 0.4
+        },
+        "organizacao_tempo": {
+          "n": 5,
+          "pct": 1.8
+        },
+        "metodologias_ageis": {
+          "n": 20,
+          "pct": 7.1
+        },
+        "code_review": {
+          "n": 4,
+          "pct": 1.4
+        },
+        "testes_automatizados": {
+          "n": 4,
+          "pct": 1.4
+        },
+        "ci_cd": {
+          "n": 24,
+          "pct": 8.6
+        },
+        "versionamento": {
+          "n": 22,
+          "pct": 7.9
+        },
+        "cultura_devops": {
+          "n": 35,
+          "pct": 12.5
+        },
+        "observabilidade": {
+          "n": 40,
+          "pct": 14.3
+        },
+        "on_call": {
+          "n": 6,
+          "pct": 2.1
+        },
+        "documentacao": {
+          "n": 3,
+          "pct": 1.1
+        },
+        "seguranca": {
+          "n": 4,
+          "pct": 1.4
+        },
+        "performance_escala": {
+          "n": 19,
+          "pct": 6.8
+        },
+        "arquitetura": {
+          "n": 57,
+          "pct": 20.4
+        },
+        "boas_praticas_codigo": {
+          "n": 19,
+          "pct": 6.8
+        },
+        "cloud": {
+          "n": 67,
+          "pct": 23.9
+        },
+        "containers": {
+          "n": 43,
+          "pct": 15.4
+        },
+        "banco_dados": {
+          "n": 96,
+          "pct": 34.3
+        },
+        "apis_integracao": {
+          "n": 67,
+          "pct": 23.9
+        },
+        "microservicos": {
+          "n": 4,
+          "pct": 1.4
+        },
+        "mensageria_eventos": {
+          "n": 7,
+          "pct": 2.5
+        },
+        "infra_como_codigo": {
+          "n": 25,
+          "pct": 8.9
+        },
+        "dados_ia": {
+          "n": 70,
+          "pct": 25
+        },
+        "fundamentos_cs": {
+          "n": 8,
+          "pct": 2.9
+        },
+        "anos_experiencia": {
+          "n": 16,
+          "pct": 5.7
+        },
+        "experiencia_previa": {
+          "n": 14,
+          "pct": 5
+        },
+        "graduacao": {
+          "n": 1,
+          "pct": 0.4
+        },
+        "diploma_dispensavel": {
+          "n": 2,
+          "pct": 0.7
+        },
+        "portfolio_open_source": {
+          "n": 13,
+          "pct": 4.6
+        },
+        "fuso_horario": {
+          "n": 21,
+          "pct": 7.5
+        },
+        "autorizacao_trabalho": {
+          "n": 16,
+          "pct": 5.7
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 15,
+          "pct": 5.4
+        },
+        "foco_cliente": {
+          "n": 3,
+          "pct": 1.1
+        },
+        "impacto_negocio": {
+          "n": 2,
+          "pct": 0.7
+        },
+        "stakeholders": {
+          "n": 5,
+          "pct": 1.8
+        }
+      }
+    },
+    "arbeitnow": {
+      "total": 79,
+      "requisitos": {
+        "ingles": {
+          "n": 24,
+          "pct": 30.4
+        },
+        "comunicacao_geral": {
+          "n": 25,
+          "pct": 31.6
+        },
+        "comunicacao_escrita": {
+          "n": 3,
+          "pct": 3.8
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 30,
+          "pct": 38
+        },
+        "times_multidisciplinares": {
+          "n": 14,
+          "pct": 17.7
+        },
+        "autonomia": {
+          "n": 11,
+          "pct": 13.9
+        },
+        "ownership": {
+          "n": 17,
+          "pct": 21.5
+        },
+        "proatividade": {
+          "n": 4,
+          "pct": 5.1
+        },
+        "aprendizado_continuo": {
+          "n": 13,
+          "pct": 16.5
+        },
+        "resolucao_problemas": {
+          "n": 5,
+          "pct": 6.3
+        },
+        "mentoria": {
+          "n": 13,
+          "pct": 16.5
+        },
+        "lideranca": {
+          "n": 11,
+          "pct": 13.9
+        },
+        "adaptabilidade": {
+          "n": 9,
+          "pct": 11.4
+        },
+        "atencao_detalhe": {
+          "n": 3,
+          "pct": 3.8
+        },
+        "organizacao_tempo": {
+          "n": 2,
+          "pct": 2.5
+        },
+        "metodologias_ageis": {
+          "n": 16,
+          "pct": 20.3
+        },
+        "code_review": {
+          "n": 15,
+          "pct": 19
+        },
+        "testes_automatizados": {
+          "n": 16,
+          "pct": 20.3
+        },
+        "ci_cd": {
+          "n": 30,
+          "pct": 38
+        },
+        "versionamento": {
+          "n": 19,
+          "pct": 24.1
+        },
+        "cultura_devops": {
+          "n": 15,
+          "pct": 19
+        },
+        "observabilidade": {
+          "n": 29,
+          "pct": 36.7
+        },
+        "on_call": {
+          "n": 3,
+          "pct": 3.8
+        },
+        "documentacao": {
+          "n": 14,
+          "pct": 17.7
+        },
+        "seguranca": {
+          "n": 4,
+          "pct": 5.1
+        },
+        "performance_escala": {
+          "n": 28,
+          "pct": 35.4
+        },
+        "arquitetura": {
+          "n": 27,
+          "pct": 34.2
+        },
+        "boas_praticas_codigo": {
+          "n": 30,
+          "pct": 38
+        },
+        "cloud": {
+          "n": 34,
+          "pct": 43
+        },
+        "containers": {
+          "n": 28,
+          "pct": 35.4
+        },
+        "banco_dados": {
+          "n": 26,
+          "pct": 32.9
+        },
+        "apis_integracao": {
+          "n": 38,
+          "pct": 48.1
+        },
+        "microservicos": {
+          "n": 6,
+          "pct": 7.6
+        },
+        "mensageria_eventos": {
+          "n": 9,
+          "pct": 11.4
+        },
+        "infra_como_codigo": {
+          "n": 12,
+          "pct": 15.2
+        },
+        "dados_ia": {
+          "n": 24,
+          "pct": 30.4
+        },
+        "fundamentos_cs": {
+          "n": 5,
+          "pct": 6.3
+        },
+        "anos_experiencia": {
+          "n": 16,
+          "pct": 20.3
+        },
+        "experiencia_previa": {
+          "n": 20,
+          "pct": 25.3
+        },
+        "graduacao": {
+          "n": 4,
+          "pct": 5.1
+        },
+        "diploma_dispensavel": {
+          "n": 1,
+          "pct": 1.3
+        },
+        "portfolio_open_source": {
+          "n": 6,
+          "pct": 7.6
+        },
+        "fuso_horario": {
+          "n": 2,
+          "pct": 2.5
+        },
+        "autorizacao_trabalho": {
+          "n": 1,
+          "pct": 1.3
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 12,
+          "pct": 15.2
+        },
+        "foco_cliente": {
+          "n": 11,
+          "pct": 13.9
+        },
+        "impacto_negocio": {
+          "n": 9,
+          "pct": 11.4
+        },
+        "stakeholders": {
+          "n": 12,
+          "pct": 15.2
+        }
+      }
+    },
+    "himalayas": {
+      "total": 84,
+      "requisitos": {
+        "ingles": {
+          "n": 11,
+          "pct": 13.1
+        },
+        "comunicacao_geral": {
+          "n": 59,
+          "pct": 70.2
+        },
+        "comunicacao_escrita": {
+          "n": 11,
+          "pct": 13.1
+        },
+        "espanhol": {
+          "n": 1,
+          "pct": 1.2
+        },
+        "trabalho_em_equipe": {
+          "n": 57,
+          "pct": 67.9
+        },
+        "times_multidisciplinares": {
+          "n": 19,
+          "pct": 22.6
+        },
+        "autonomia": {
+          "n": 16,
+          "pct": 19
+        },
+        "ownership": {
+          "n": 18,
+          "pct": 21.4
+        },
+        "proatividade": {
+          "n": 18,
+          "pct": 21.4
+        },
+        "aprendizado_continuo": {
+          "n": 15,
+          "pct": 17.9
+        },
+        "resolucao_problemas": {
+          "n": 27,
+          "pct": 32.1
+        },
+        "mentoria": {
+          "n": 29,
+          "pct": 34.5
+        },
+        "lideranca": {
+          "n": 16,
+          "pct": 19
+        },
+        "adaptabilidade": {
+          "n": 15,
+          "pct": 17.9
+        },
+        "atencao_detalhe": {
+          "n": 6,
+          "pct": 7.1
+        },
+        "organizacao_tempo": {
+          "n": 7,
+          "pct": 8.3
+        },
+        "metodologias_ageis": {
+          "n": 21,
+          "pct": 25
+        },
+        "code_review": {
+          "n": 13,
+          "pct": 15.5
+        },
+        "testes_automatizados": {
+          "n": 16,
+          "pct": 19
+        },
+        "ci_cd": {
+          "n": 30,
+          "pct": 35.7
+        },
+        "versionamento": {
+          "n": 22,
+          "pct": 26.2
+        },
+        "cultura_devops": {
+          "n": 26,
+          "pct": 31
+        },
+        "observabilidade": {
+          "n": 32,
+          "pct": 38.1
+        },
+        "on_call": {
+          "n": 14,
+          "pct": 16.7
+        },
+        "documentacao": {
+          "n": 27,
+          "pct": 32.1
+        },
+        "seguranca": {
+          "n": 11,
+          "pct": 13.1
+        },
+        "performance_escala": {
+          "n": 44,
+          "pct": 52.4
+        },
+        "arquitetura": {
+          "n": 52,
+          "pct": 61.9
+        },
+        "boas_praticas_codigo": {
+          "n": 42,
+          "pct": 50
+        },
+        "cloud": {
+          "n": 42,
+          "pct": 50
+        },
+        "containers": {
+          "n": 26,
+          "pct": 31
+        },
+        "banco_dados": {
+          "n": 42,
+          "pct": 50
+        },
+        "apis_integracao": {
+          "n": 45,
+          "pct": 53.6
+        },
+        "microservicos": {
+          "n": 15,
+          "pct": 17.9
+        },
+        "mensageria_eventos": {
+          "n": 15,
+          "pct": 17.9
+        },
+        "infra_como_codigo": {
+          "n": 19,
+          "pct": 22.6
+        },
+        "dados_ia": {
+          "n": 28,
+          "pct": 33.3
+        },
+        "fundamentos_cs": {
+          "n": 3,
+          "pct": 3.6
+        },
+        "anos_experiencia": {
+          "n": 31,
+          "pct": 36.9
+        },
+        "experiencia_previa": {
+          "n": 41,
+          "pct": 48.8
+        },
+        "graduacao": {
+          "n": 34,
+          "pct": 40.5
+        },
+        "diploma_dispensavel": {
+          "n": 11,
+          "pct": 13.1
+        },
+        "portfolio_open_source": {
+          "n": 9,
+          "pct": 10.7
+        },
+        "fuso_horario": {
+          "n": 4,
+          "pct": 4.8
+        },
+        "autorizacao_trabalho": {
+          "n": 5,
+          "pct": 6
+        },
+        "disponibilidade_viagem": {
+          "n": 1,
+          "pct": 1.2
+        },
+        "visao_produto": {
+          "n": 7,
+          "pct": 8.3
+        },
+        "foco_cliente": {
+          "n": 10,
+          "pct": 11.9
+        },
+        "impacto_negocio": {
+          "n": 16,
+          "pct": 19
+        },
+        "stakeholders": {
+          "n": 23,
+          "pct": 27.4
+        }
+      }
+    },
+    "jobicy": {
+      "total": 80,
+      "requisitos": {
+        "ingles": {
+          "n": 22,
+          "pct": 27.5
+        },
+        "comunicacao_geral": {
+          "n": 59,
+          "pct": 73.8
+        },
+        "comunicacao_escrita": {
+          "n": 3,
+          "pct": 3.8
+        },
+        "espanhol": {
+          "n": 1,
+          "pct": 1.3
+        },
+        "trabalho_em_equipe": {
+          "n": 63,
+          "pct": 78.8
+        },
+        "times_multidisciplinares": {
+          "n": 20,
+          "pct": 25
+        },
+        "autonomia": {
+          "n": 27,
+          "pct": 33.8
+        },
+        "ownership": {
+          "n": 25,
+          "pct": 31.3
+        },
+        "proatividade": {
+          "n": 13,
+          "pct": 16.3
+        },
+        "aprendizado_continuo": {
+          "n": 27,
+          "pct": 33.8
+        },
+        "resolucao_problemas": {
+          "n": 11,
+          "pct": 13.8
+        },
+        "mentoria": {
+          "n": 31,
+          "pct": 38.8
+        },
+        "lideranca": {
+          "n": 25,
+          "pct": 31.3
+        },
+        "adaptabilidade": {
+          "n": 21,
+          "pct": 26.3
+        },
+        "atencao_detalhe": {
+          "n": 10,
+          "pct": 12.5
+        },
+        "organizacao_tempo": {
+          "n": 5,
+          "pct": 6.3
+        },
+        "metodologias_ageis": {
+          "n": 26,
+          "pct": 32.5
+        },
+        "code_review": {
+          "n": 15,
+          "pct": 18.8
+        },
+        "testes_automatizados": {
+          "n": 23,
+          "pct": 28.8
+        },
+        "ci_cd": {
+          "n": 23,
+          "pct": 28.8
+        },
+        "versionamento": {
+          "n": 21,
+          "pct": 26.3
+        },
+        "cultura_devops": {
+          "n": 15,
+          "pct": 18.8
+        },
+        "observabilidade": {
+          "n": 32,
+          "pct": 40
+        },
+        "on_call": {
+          "n": 7,
+          "pct": 8.8
+        },
+        "documentacao": {
+          "n": 21,
+          "pct": 26.3
+        },
+        "seguranca": {
+          "n": 9,
+          "pct": 11.3
+        },
+        "performance_escala": {
+          "n": 44,
+          "pct": 55
+        },
+        "arquitetura": {
+          "n": 54,
+          "pct": 67.5
+        },
+        "boas_praticas_codigo": {
+          "n": 33,
+          "pct": 41.3
+        },
+        "cloud": {
+          "n": 37,
+          "pct": 46.3
+        },
+        "containers": {
+          "n": 24,
+          "pct": 30
+        },
+        "banco_dados": {
+          "n": 33,
+          "pct": 41.3
+        },
+        "apis_integracao": {
+          "n": 48,
+          "pct": 60
+        },
+        "microservicos": {
+          "n": 10,
+          "pct": 12.5
+        },
+        "mensageria_eventos": {
+          "n": 13,
+          "pct": 16.3
+        },
+        "infra_como_codigo": {
+          "n": 11,
+          "pct": 13.8
+        },
+        "dados_ia": {
+          "n": 38,
+          "pct": 47.5
+        },
+        "fundamentos_cs": {
+          "n": 5,
+          "pct": 6.3
+        },
+        "anos_experiencia": {
+          "n": 33,
+          "pct": 41.3
+        },
+        "experiencia_previa": {
+          "n": 35,
+          "pct": 43.8
+        },
+        "graduacao": {
+          "n": 27,
+          "pct": 33.8
+        },
+        "diploma_dispensavel": {
+          "n": 4,
+          "pct": 5
+        },
+        "portfolio_open_source": {
+          "n": 9,
+          "pct": 11.3
+        },
+        "fuso_horario": {
+          "n": 15,
+          "pct": 18.8
+        },
+        "autorizacao_trabalho": {
+          "n": 0,
+          "pct": 0
+        },
+        "disponibilidade_viagem": {
+          "n": 2,
+          "pct": 2.5
+        },
+        "visao_produto": {
+          "n": 13,
+          "pct": 16.3
+        },
+        "foco_cliente": {
+          "n": 16,
+          "pct": 20
+        },
+        "impacto_negocio": {
+          "n": 10,
+          "pct": 12.5
+        },
+        "stakeholders": {
+          "n": 12,
+          "pct": 15
+        }
+      }
+    },
+    "weworkremotely": {
+      "total": 108,
+      "requisitos": {
+        "ingles": {
+          "n": 14,
+          "pct": 13
+        },
+        "comunicacao_geral": {
+          "n": 59,
+          "pct": 54.6
+        },
+        "comunicacao_escrita": {
+          "n": 5,
+          "pct": 4.6
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 73,
+          "pct": 67.6
+        },
+        "times_multidisciplinares": {
+          "n": 21,
+          "pct": 19.4
+        },
+        "autonomia": {
+          "n": 29,
+          "pct": 26.9
+        },
+        "ownership": {
+          "n": 33,
+          "pct": 30.6
+        },
+        "proatividade": {
+          "n": 21,
+          "pct": 19.4
+        },
+        "aprendizado_continuo": {
+          "n": 18,
+          "pct": 16.7
+        },
+        "resolucao_problemas": {
+          "n": 23,
+          "pct": 21.3
+        },
+        "mentoria": {
+          "n": 38,
+          "pct": 35.2
+        },
+        "lideranca": {
+          "n": 26,
+          "pct": 24.1
+        },
+        "adaptabilidade": {
+          "n": 28,
+          "pct": 25.9
+        },
+        "atencao_detalhe": {
+          "n": 9,
+          "pct": 8.3
+        },
+        "organizacao_tempo": {
+          "n": 23,
+          "pct": 21.3
+        },
+        "metodologias_ageis": {
+          "n": 19,
+          "pct": 17.6
+        },
+        "code_review": {
+          "n": 17,
+          "pct": 15.7
+        },
+        "testes_automatizados": {
+          "n": 17,
+          "pct": 15.7
+        },
+        "ci_cd": {
+          "n": 42,
+          "pct": 38.9
+        },
+        "versionamento": {
+          "n": 32,
+          "pct": 29.6
+        },
+        "cultura_devops": {
+          "n": 34,
+          "pct": 31.5
+        },
+        "observabilidade": {
+          "n": 57,
+          "pct": 52.8
+        },
+        "on_call": {
+          "n": 26,
+          "pct": 24.1
+        },
+        "documentacao": {
+          "n": 24,
+          "pct": 22.2
+        },
+        "seguranca": {
+          "n": 14,
+          "pct": 13
+        },
+        "performance_escala": {
+          "n": 58,
+          "pct": 53.7
+        },
+        "arquitetura": {
+          "n": 63,
+          "pct": 58.3
+        },
+        "boas_praticas_codigo": {
+          "n": 52,
+          "pct": 48.1
+        },
+        "cloud": {
+          "n": 53,
+          "pct": 49.1
+        },
+        "containers": {
+          "n": 40,
+          "pct": 37
+        },
+        "banco_dados": {
+          "n": 44,
+          "pct": 40.7
+        },
+        "apis_integracao": {
+          "n": 45,
+          "pct": 41.7
+        },
+        "microservicos": {
+          "n": 24,
+          "pct": 22.2
+        },
+        "mensageria_eventos": {
+          "n": 14,
+          "pct": 13
+        },
+        "infra_como_codigo": {
+          "n": 29,
+          "pct": 26.9
+        },
+        "dados_ia": {
+          "n": 47,
+          "pct": 43.5
+        },
+        "fundamentos_cs": {
+          "n": 6,
+          "pct": 5.6
+        },
+        "anos_experiencia": {
+          "n": 37,
+          "pct": 34.3
+        },
+        "experiencia_previa": {
+          "n": 61,
+          "pct": 56.5
+        },
+        "graduacao": {
+          "n": 29,
+          "pct": 26.9
+        },
+        "diploma_dispensavel": {
+          "n": 11,
+          "pct": 10.2
+        },
+        "portfolio_open_source": {
+          "n": 13,
+          "pct": 12
+        },
+        "fuso_horario": {
+          "n": 12,
+          "pct": 11.1
+        },
+        "autorizacao_trabalho": {
+          "n": 0,
+          "pct": 0
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 10,
+          "pct": 9.3
+        },
+        "foco_cliente": {
+          "n": 15,
+          "pct": 13.9
+        },
+        "impacto_negocio": {
+          "n": 19,
+          "pct": 17.6
+        },
+        "stakeholders": {
+          "n": 31,
+          "pct": 28.7
+        }
+      }
+    },
+    "remotive": {
+      "total": 13,
+      "requisitos": {
+        "ingles": {
+          "n": 2,
+          "pct": 15.4
+        },
+        "comunicacao_geral": {
+          "n": 5,
+          "pct": 38.5
+        },
+        "comunicacao_escrita": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "espanhol": {
+          "n": 0,
+          "pct": 0
+        },
+        "trabalho_em_equipe": {
+          "n": 10,
+          "pct": 76.9
+        },
+        "times_multidisciplinares": {
+          "n": 7,
+          "pct": 53.8
+        },
+        "autonomia": {
+          "n": 9,
+          "pct": 69.2
+        },
+        "ownership": {
+          "n": 8,
+          "pct": 61.5
+        },
+        "proatividade": {
+          "n": 0,
+          "pct": 0
+        },
+        "aprendizado_continuo": {
+          "n": 0,
+          "pct": 0
+        },
+        "resolucao_problemas": {
+          "n": 2,
+          "pct": 15.4
+        },
+        "mentoria": {
+          "n": 3,
+          "pct": 23.1
+        },
+        "lideranca": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "adaptabilidade": {
+          "n": 3,
+          "pct": 23.1
+        },
+        "atencao_detalhe": {
+          "n": 2,
+          "pct": 15.4
+        },
+        "organizacao_tempo": {
+          "n": 0,
+          "pct": 0
+        },
+        "metodologias_ageis": {
+          "n": 7,
+          "pct": 53.8
+        },
+        "code_review": {
+          "n": 0,
+          "pct": 0
+        },
+        "testes_automatizados": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "ci_cd": {
+          "n": 7,
+          "pct": 53.8
+        },
+        "versionamento": {
+          "n": 7,
+          "pct": 53.8
+        },
+        "cultura_devops": {
+          "n": 2,
+          "pct": 15.4
+        },
+        "observabilidade": {
+          "n": 7,
+          "pct": 53.8
+        },
+        "on_call": {
+          "n": 0,
+          "pct": 0
+        },
+        "documentacao": {
+          "n": 9,
+          "pct": 69.2
+        },
+        "seguranca": {
+          "n": 0,
+          "pct": 0
+        },
+        "performance_escala": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "arquitetura": {
+          "n": 11,
+          "pct": 84.6
+        },
+        "boas_praticas_codigo": {
+          "n": 3,
+          "pct": 23.1
+        },
+        "cloud": {
+          "n": 10,
+          "pct": 76.9
+        },
+        "containers": {
+          "n": 2,
+          "pct": 15.4
+        },
+        "banco_dados": {
+          "n": 4,
+          "pct": 30.8
+        },
+        "apis_integracao": {
+          "n": 8,
+          "pct": 61.5
+        },
+        "microservicos": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "mensageria_eventos": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "infra_como_codigo": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "dados_ia": {
+          "n": 3,
+          "pct": 23.1
+        },
+        "fundamentos_cs": {
+          "n": 0,
+          "pct": 0
+        },
+        "anos_experiencia": {
+          "n": 4,
+          "pct": 30.8
+        },
+        "experiencia_previa": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "graduacao": {
+          "n": 0,
+          "pct": 0
+        },
+        "diploma_dispensavel": {
+          "n": 0,
+          "pct": 0
+        },
+        "portfolio_open_source": {
+          "n": 2,
+          "pct": 15.4
+        },
+        "fuso_horario": {
+          "n": 1,
+          "pct": 7.7
+        },
+        "autorizacao_trabalho": {
+          "n": 0,
+          "pct": 0
+        },
+        "disponibilidade_viagem": {
+          "n": 0,
+          "pct": 0
+        },
+        "visao_produto": {
+          "n": 7,
+          "pct": 53.8
+        },
+        "foco_cliente": {
+          "n": 0,
+          "pct": 0
+        },
+        "impacto_negocio": {
+          "n": 0,
+          "pct": 0
+        },
+        "stakeholders": {
+          "n": 0,
+          "pct": 0
+        }
+      }
+    }
+  },
+  "coocorrencia": [
+    {
+      "a": "apis_integracao",
+      "b": "banco_dados",
+      "n": 438,
+      "pct": 36.2
+    },
+    {
+      "a": "apis_integracao",
+      "b": "trabalho_em_equipe",
+      "n": 383,
+      "pct": 31.7
+    },
+    {
+      "a": "apis_integracao",
+      "b": "boas_praticas_codigo",
+      "n": 356,
+      "pct": 29.4
+    },
+    {
+      "a": "banco_dados",
+      "b": "trabalho_em_equipe",
+      "n": 350,
+      "pct": 28.9
+    },
+    {
+      "a": "apis_integracao",
+      "b": "versionamento",
+      "n": 347,
+      "pct": 28.7
+    },
+    {
+      "a": "trabalho_em_equipe",
+      "b": "boas_praticas_codigo",
+      "n": 342,
+      "pct": 28.3
+    },
+    {
+      "a": "apis_integracao",
+      "b": "experiencia_previa",
+      "n": 329,
+      "pct": 27.2
+    },
+    {
+      "a": "banco_dados",
+      "b": "cloud",
+      "n": 324,
+      "pct": 26.8
+    },
+    {
+      "a": "trabalho_em_equipe",
+      "b": "experiencia_previa",
+      "n": 321,
+      "pct": 26.6
+    },
+    {
+      "a": "banco_dados",
+      "b": "boas_praticas_codigo",
+      "n": 316,
+      "pct": 26.1
+    },
+    {
+      "a": "apis_integracao",
+      "b": "cloud",
+      "n": 308,
+      "pct": 25.5
+    },
+    {
+      "a": "banco_dados",
+      "b": "versionamento",
+      "n": 308,
+      "pct": 25.5
+    },
+    {
+      "a": "trabalho_em_equipe",
+      "b": "comunicacao_geral",
+      "n": 307,
+      "pct": 25.4
+    },
+    {
+      "a": "apis_integracao",
+      "b": "arquitetura",
+      "n": 302,
+      "pct": 25
+    },
+    {
+      "a": "trabalho_em_equipe",
+      "b": "cloud",
+      "n": 299,
+      "pct": 24.7
+    }
+  ],
+  "anosExperiencia": {
+    "vagasComNumero": 331,
+    "pctDoCorpus": 27.4,
+    "media": 5.3,
+    "mediana": 5,
+    "distribuicao": {
+      "1": 4,
+      "2": 39,
+      "3": 46,
+      "4": 23,
+      "5": 117,
+      "6": 34,
+      "7": 12,
+      "8": 23,
+      "10": 17,
+      "12": 7,
+      "15": 5,
+      "16": 3,
+      "20": 1
+    }
+  }
+}

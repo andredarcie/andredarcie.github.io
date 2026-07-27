@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Radar de vagas dev — o que as vagas pedem fora da stack</title>
+    <meta
+      name="description"
+      content="Análise de 1.209 anúncios de vaga de desenvolvedor: o que se repete nos requisitos depois de tirar linguagem de programação e framework da conta."
+    />
+    <meta name="color-scheme" content="light dark" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Radar de vagas dev" />
+    <meta
+      property="og:description"
+      content="1.209 anúncios de vaga de desenvolvedor, 9 boards, 50 requisitos não-stack medidos."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="site/estilo.css?v=3" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <div class="envelope topo__interno">
+        <div class="marca">
+          <span class="marca__ponto" aria-hidden="true"></span>
+          Radar de vagas dev
+        </div>
+        <nav class="topo__navegacao" aria-label="Seções">
+          <a href="#tripe">O tripé</a>
+          <a href="#requisitos">Ranking</a>
+          <a href="#onde">Brasil × global</a>
+          <a href="#empresa">Qual Brasil</a>
+          <a href="#carreira">Senioridade</a>
+          <a href="#dados">Dados</a>
+          <a href="#metodo">Método</a>
+        </nav>
+        <button class="botao-tema" id="botao-tema" type="button" aria-live="polite">
+          Tema
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="abertura envelope">
+        <div class="abertura__grade">
+          <div>
+            <p class="abertura__olho" id="olho-abertura">
+              Relatório · 1.209 anúncios · 9 boards
+            </p>
+            <h1 class="abertura__titulo">
+              O que as vagas de dev pedem quando você risca
+              <em>a stack</em> da conta.
+            </h1>
+            <p class="abertura__resumo">
+              Todo levantamento de vaga termina em ranking de linguagem e framework — a
+              parte mais visível e mais volátil do anúncio. Este mede o que sobra:
+              processo, comportamento, fundamentos que independem de stack e
+              credenciais.
+            </p>
+
+            <div class="abertura__numeros">
+              <div>
+                <span class="numero__valor" data-meta="total">—</span>
+                <span class="numero__rotulo">Vagas analisadas</span>
+              </div>
+              <div>
+                <span class="numero__valor" data-meta="requisitos">—</span>
+                <span class="numero__rotulo">Requisitos medidos</span>
+              </div>
+              <div>
+                <span class="numero__valor" data-meta="media">—</span>
+                <span class="numero__rotulo">Por vaga, em média</span>
+              </div>
+              <div>
+                <span class="numero__valor" data-meta="idiomas">—</span>
+                <span class="numero__rotulo">Português / inglês</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Assinatura da página: o anúncio com a stack riscada. -->
+          <figure class="anuncio" style="margin: 0">
+            <figcaption class="anuncio__cabecalho">
+              <span class="anuncio__cargo">Desenvolvedor(a) Full Stack Sênior</span>
+              <span class="anuncio__meta">Híbrido</span>
+            </figcaption>
+
+            <p class="anuncio__secao">Requisitos e qualificações</p>
+            <ul class="anuncio__lista">
+              <li class="requisito requisito--stack" style="--ordem: 0">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Experiência sólida com Java e Spring Boot</span>
+              </li>
+              <li class="requisito requisito--stack" style="--ordem: 1">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Vivência com React e TypeScript</span>
+              </li>
+              <li class="requisito requisito--stack" style="--ordem: 2">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Conhecimento em .NET Core</span>
+              </li>
+              <li class="requisito" style="--ordem: 0">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Modelagem e consultas em banco de dados</span>
+                <span class="requisito__chip" data-req="banco_dados">—</span>
+              </li>
+              <li class="requisito" style="--ordem: 1">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Experiência com AWS, Azure ou GCP</span>
+                <span class="requisito__chip" data-req="cloud">—</span>
+              </li>
+              <li class="requisito" style="--ordem: 2">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Versionamento com Git</span>
+                <span class="requisito__chip" data-req="versionamento">—</span>
+              </li>
+              <li class="requisito" style="--ordem: 3">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Boa comunicação e trabalho em equipe</span>
+                <span class="requisito__chip" data-req="trabalho_em_equipe">—</span>
+              </li>
+              <li class="requisito" style="--ordem: 4">
+                <span class="requisito__marca" aria-hidden="true">•</span>
+                <span class="requisito__texto">Vivência com metodologias ágeis</span>
+                <span class="requisito__chip" data-req="metodologias_ageis">—</span>
+              </li>
+            </ul>
+
+            <p class="anuncio__rodape">
+              Anúncio ilustrativo. O que sobra depois do risco é o que este relatório
+              mede — e a porcentagem ao lado é em quantos dos anúncios reais aquilo
+              aparece.
+            </p>
+          </figure>
+        </div>
+
+        <noscript>
+          <p class="destaque" style="margin-top: 2.5rem">
+            Os gráficos desta página são montados em JavaScript. Sem ele, o relatório
+            completo em texto está em
+            <a href="analise/requisitos-comuns.md">analise/requisitos-comuns.md</a>.
+          </p>
+        </noscript>
+      </section>
+
+      <section class="secao envelope" id="tripe">
+        <p class="secao__rotulo">O que buscamos</p>
+        <h2 class="secao__titulo">Fora a stack, sobra um tripé.</h2>
+        <p class="secao__intro">
+          Três blocos concentram o que praticamente todo anúncio pede. A barra mostra a
+          fatia dos anúncios; o traço vertical marca o <strong>piso entre fontes</strong> —
+          o menor percentual observado em qualquer board, ou seja, o que a exigência
+          nunca deixa de ter.
+        </p>
+        <div class="tripe" id="tripe-cartoes"></div>
+      </section>
+
+      <section class="secao envelope" id="requisitos">
+        <p class="secao__rotulo">Requisitos e qualificações</p>
+        <h2 class="secao__titulo">Quanto cada tipo de exigência aparece.</h2>
+        <p class="secao__intro">
+          Percentual de anúncios que pedem pelo menos um item da categoria. Linguagem e
+          framework ficam fora da taxonomia por definição do escopo.
+        </p>
+
+        <div class="cobertura" id="cobertura"></div>
+
+        <h3 class="secao__titulo" style="margin-top: 4rem; font-size: 1.5rem">
+          O ranking completo
+        </h3>
+        <p class="secao__intro">
+          A barra cheia é o percentual geral. A faixa clara atrás dela vai do piso ao
+          teto entre as fontes com amostra relevante: faixa curta significa
+          exigência que aparece em toda parte; faixa longa significa que depende de onde
+          a vaga foi publicada.
+        </p>
+
+        <div class="controles">
+          <div class="controles__grupo">
+            <span class="controles__rotulo">Categoria</span>
+            <div id="filtros-categoria" class="controles__grupo"></div>
+          </div>
+          <input
+            class="busca"
+            id="busca"
+            type="search"
+            placeholder="Filtrar por nome…"
+            aria-label="Filtrar requisitos por nome"
+          />
+          <div class="controles__grupo">
+            <span class="controles__rotulo">Ordenar</span>
+            <button class="chip" data-ordem="pct" aria-pressed="true" type="button">
+              % geral
+            </button>
+            <button class="chip" data-ordem="piso" aria-pressed="false" type="button">
+              Piso entre fontes
+            </button>
+            <button class="chip" data-ordem="pt" aria-pressed="false" type="button">
+              Brasil
+            </button>
+            <button class="chip" data-ordem="en" aria-pressed="false" type="button">
+              Global
+            </button>
+          </div>
+        </div>
+
+        <div class="ranking" id="ranking">
+          <div class="ranking__cabecalho">
+            <span>#</span>
+            <span>Requisito</span>
+            <span>Distribuição</span>
+            <span>Geral</span>
+            <span>PT</span>
+            <span>EN</span>
+          </div>
+          <div id="ranking-linhas"></div>
+        </div>
+
+        <div class="legenda">
+          <span class="legenda__item">
+            <span class="legenda__amostra legenda__amostra--cheia"></span>
+            % de todos os anúncios
+          </span>
+          <span class="legenda__item">
+            <span class="legenda__amostra legenda__amostra--faixa"></span>
+            faixa piso–teto entre fontes
+          </span>
+        </div>
+
+        <button class="alternar" type="button" data-alvo="tabela-ranking">
+          Ver como tabela
+        </button>
+        <div class="tabela-alvo" id="tabela-ranking" hidden></div>
+      </section>
+
+      <section class="secao envelope" id="onde">
+        <p class="secao__rotulo">Local de trabalho</p>
+        <h2 class="secao__titulo">Brasil e mercado global pedem coisas diferentes.</h2>
+        <p class="secao__intro">
+          O anúncio brasileiro descreve <strong>como</strong> você vai trabalhar: enumera
+          ferramenta e ritual. O internacional descreve <strong>pelo que</strong> você vai
+          responder: escopo e resultado.
+        </p>
+
+        <div class="comparacao" id="comparacao"></div>
+
+        <div class="legenda">
+          <span class="legenda__item">
+            <span class="legenda__amostra legenda__amostra--cheia"></span>
+            PT — anúncios em português
+          </span>
+          <span class="legenda__item">
+            <span class="legenda__amostra legenda__amostra--serie2"></span>
+            EN — anúncios em inglês
+          </span>
+        </div>
+
+        <div class="prosa">
+          <p>
+            Isso tem consequência prática para currículo. Para vaga brasileira, o anúncio
+            pede que você prove familiaridade com o processo — vale citar as práticas pelo
+            nome. Para vaga internacional, dizer "trabalho com Scrum" não diferencia
+            ninguém: conta o que você foi dono e em que escala.
+          </p>
+        </div>
+      </section>
+
+      <section class="secao envelope" id="empresa">
+        <p class="secao__rotulo">Sobre a empresa</p>
+        <h2 class="secao__titulo">O Brasil não é um mercado só.</h2>
+        <p class="secao__intro">
+          Este é o achado que só apareceu quando o corpus deixou de depender de uma
+          fonte brasileira só. Os requisitos abaixo estão ordenados pela distância
+          entre os três tipos de empresa — e em vários deles a diferença dentro do
+          país é maior que a diferença entre Brasil e exterior.
+        </p>
+
+        <div class="legenda" id="legenda-brasil"></div>
+        <div class="grupos" id="brasil-fontes"></div>
+
+        <div class="prosa">
+          <p>
+            O contraste mais prático é o inglês. Dobrar a exigência de um tipo de
+            empresa para outro muda a conta de quem pode se candidatar — e a mesma
+            distância aparece em liderança técnica. "O mercado brasileiro pede X" é
+            uma frase perigosa: depende de qual Brasil.
+          </p>
+        </div>
+
+        <button class="alternar" type="button" data-alvo="tabela-brasil">
+          Ver como tabela
+        </button>
+        <div class="tabela-alvo" id="tabela-brasil" hidden></div>
+      </section>
+
+      <section class="secao envelope" id="carreira">
+        <p class="secao__rotulo">Plano de carreira</p>
+        <h2 class="secao__titulo">O que promove não é tecnologia.</h2>
+        <p class="secao__intro">
+          Requisitos com maior variação entre júnior e staff/lead. A altura de cada degrau
+          é o percentual de anúncios daquela faixa que pedem o item.
+        </p>
+
+        <div class="destaque">
+          Leia com cuidado: as vagas júnior e plenas do corpus são quase todas brasileiras
+          e as de staff quase todas internacionais. Como os dois mercados escrevem
+          anúncios diferentes, parte da variação é efeito da fonte, não da carreira. As
+          linhas em que a diferença PT–EN é grande o bastante para explicar a curva estão
+          marcadas como <strong>confundidas</strong>.
+        </div>
+
+        <div class="senioridade" id="senioridade"></div>
+
+        <button class="alternar" type="button" data-alvo="tabela-senioridade">
+          Ver como tabela
+        </button>
+        <div class="tabela-alvo" id="tabela-senioridade" hidden></div>
+      </section>
+
+      <section class="secao envelope" id="experiencia">
+        <p class="secao__rotulo">Experiência mínima</p>
+        <h2 class="secao__titulo">Quando o anúncio crava um número, ele crava cinco.</h2>
+        <p class="secao__intro" id="anos-intro"></p>
+
+        <div class="colunas" id="colunas-anos"></div>
+        <div class="colunas__eixo" id="colunas-eixo"></div>
+      </section>
+
+      <section class="secao envelope" id="diferenciais">
+        <p class="secao__rotulo">Diferenciais</p>
+        <h2 class="secao__titulo">O que quase ninguém pede.</h2>
+        <p class="secao__intro">
+          A cauda do ranking desmente algumas crenças caras do meio — a começar pelo
+          conteúdo que domina a preparação para entrevista.
+        </p>
+
+        <div class="raros" id="raros"></div>
+
+        <h3 class="secao__titulo" style="margin-top: 3.6rem; font-size: 1.4rem">
+          Exigências que andam juntas
+        </h3>
+        <p class="secao__intro">Pares que mais aparecem no mesmo anúncio.</p>
+        <div class="duplas" id="duplas"></div>
+      </section>
+
+      <section class="secao envelope" id="dados">
+        <p class="secao__rotulo">Anexos</p>
+        <h2 class="secao__titulo">O corpus inteiro, em CSV.</h2>
+        <p class="secao__intro">
+          Tudo que está nesta página sai destes arquivos. São seis tabelas em dois
+          grãos — a vaga e o par vaga&nbsp;×&nbsp;requisito — em UTF-8, separadas por
+          vírgula e com aspas conforme a RFC 4180.
+        </p>
+
+        <div class="arquivos" id="arquivos"></div>
+
+        <div class="uso">
+          <p class="uso__titulo">Começar em três linhas</p>
+          <pre class="codigo"><code>import pandas as pd
+
+matriz = pd.read_csv("vagas_requisitos_matriz.csv")
+reqs = [c for c in matriz.columns if c.startswith("req_")]
+(matriz.groupby("mercado")[reqs].mean() * 100).round(1).T</code></pre>
+          <p class="uso__nota">
+            A coluna <code>descricao</code> de <code>vagas.csv</code> tem quebras de
+            linha dentro do campo, que são os parágrafos do anúncio. É CSV válido e o
+            <code>read_csv</code> lê sem nenhum argumento extra.
+          </p>
+        </div>
+
+        <div class="destaque">
+          O texto dos anúncios é conteúdo das empresas que os publicaram — este projeto
+          não reivindica direito sobre ele, e alguns boards restringem redistribuição.
+          Antes de republicar <code>vagas.csv</code>, confira os termos das fontes. Os
+          outros cinco arquivos são anotação derivada e não carregam texto de terceiros.
+          O dicionário completo de colunas está no
+          <a href="dados/README.md">README do dataset</a>.
+        </div>
+      </section>
+
+      <section class="secao envelope" id="metodo">
+        <p class="secao__rotulo">Informações adicionais</p>
+        <h2 class="secao__titulo">De onde vêm os números.</h2>
+        <p class="secao__intro">
+          Nove boards com API ou feed público. Dentro do Brasil são três recortes
+          diferentes de empresa — ATS de corporação, página de carreira de empresa de
+          produto e board de startup —, porque eles não pedem as mesmas coisas.
+        </p>
+
+        <div class="fontes" id="fontes"></div>
+
+        <div class="prosa">
+          <h3>Como estes números foram medidos</h3>
+          <p>
+            Cada anúncio passa por um filtro de cargo, um filtro de qualidade (descrição
+            com pelo menos 500 caracteres) e duas travas de deduplicação. Depois,
+            <strong>50 requisitos não-stack</strong> são procurados por padrões de texto.
+            A medida é presença ou ausência por vaga: um anúncio que repete "comunicação"
+            oito vezes conta igual a um que menciona uma vez.
+          </p>
+          <p>
+            O texto original de cada anúncio fica preservado na coluna
+            <code>descricao</code> de <code>dados/vagas.csv</code>, com os requisitos
+            identificados na mesma linha — é o que permite conferir qualquer número
+            desta página no anúncio que o gerou.
+          </p>
+
+          <h3>O que o método precisou descartar</h3>
+        </div>
+
+        <ol class="notas">
+          <li>
+            <span
+              ><strong>Benefício não é requisito.</strong> Um bloco final de benefícios
+              aparece em <span data-meta="recorte">—</span> das vagas. Sem descartá-lo,
+              "curso de inglês in company" contava como exigência de inglês e "horário
+              flexível" como pedido de adaptabilidade.</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>Link não é requisito.</strong> URLs e e-mails saem do texto antes da
+              busca por padrões: um anúncio que apenas linkava um repositório era contado
+              como exigindo controle de versão.</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>Silêncio não é dispensa.</strong> Nos anúncios do Hacker News,
+              escritos pela própria engenharia, "trabalho em equipe" aparece em
+              <span data-meta="silencioHn">—</span> — contra
+              <span data-meta="silencioGupy">—</span> na Gupy. Nenhuma dessas empresas contrata quem não trabalha em
+              equipe; elas apenas não escrevem listas de requisitos. Por isso o ranking
+              traz o piso entre fontes.</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>Presença de padrão não é exigência formal.</strong> "Arquitetura"
+              pode ser requisito ou descrição do produto. É o limite conhecido do método, e
+              a razão de o texto original ficar guardado.</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>É uma foto, não um filme.</strong> Os números valem para a coleta de
+              <span data-meta="data">—</span>.</span
+            >
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="envelope rodape__grade">
+        <div>
+          <p style="margin-bottom: 0.3rem">
+            Relatório completo em
+            <a href="analise/requisitos-comuns.md">requisitos-comuns.md</a> · dados em
+            <a href="dados/README.md">CSV</a> · corpus em
+            <a href="dados/vagas.csv">dados/vagas.csv</a> · metodologia em
+            <a href="docs/metodologia.md">docs/metodologia.md</a>
+          </p>
+          <p style="margin: 0">
+            Dados coletados de boards públicos. Nenhum dado pessoal de candidato é usado.
+          </p>
+        </div>
+        <p class="selo">build 3 · <span data-meta="data">—</span></p>
+      </div>
+    </footer>
+
+    <div class="dica" id="dica" role="status" aria-live="polite"></div>
+
+    <script src="site/dados.js?v=3"></script>
+    <script src="site/app.js?v=3"></script>
+  </body>
+</html>

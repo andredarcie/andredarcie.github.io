@@ -1,0 +1,44 @@
+{
+  "title": "Vagas de desenvolvedor: o que se pede além da stack",
+  "subtitle": "1209 anúncios de 9 boards, com 50 requisitos não-stack anotados",
+  "id": "SEU_USUARIO_KAGGLE/vagas-dev-requisitos-alem-da-stack",
+  "licenses": [
+    {
+      "name": "other"
+    }
+  ],
+  "keywords": [
+    "jobs",
+    "brazil",
+    "software-engineering",
+    "nlp",
+    "labor-market",
+    "text"
+  ],
+  "resources": [
+    {
+      "path": "vagas.csv",
+      "description": "Uma linha por vaga, com a descrição original completa."
+    },
+    {
+      "path": "vagas_requisitos.csv",
+      "description": "Formato longo: um par vaga × requisito por linha."
+    },
+    {
+      "path": "vagas_requisitos_matriz.csv",
+      "description": "Formato largo: uma coluna 0/1 por requisito. Sem texto de terceiros."
+    },
+    {
+      "path": "taxonomia.csv",
+      "description": "Dicionário dos 50 requisitos e os padrões usados para detectá-los."
+    },
+    {
+      "path": "fontes.csv",
+      "description": "As fontes e o funil de triagem de cada uma."
+    },
+    {
+      "path": "ranking_requisitos.csv",
+      "description": "Agregado por requisito, já calculado."
+    }
+  ]
+}

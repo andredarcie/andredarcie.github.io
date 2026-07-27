@@ -1,0 +1,4 @@
+# Snapshots crus das APIs (re-obteníveis com `npm run coletar`).
+# O corpus normalizado (data/corpus/), o dataset (dados/) e a análise ficam versionados.
+data/raw/
+node_modules/

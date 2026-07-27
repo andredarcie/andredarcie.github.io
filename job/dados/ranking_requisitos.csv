@@ -1,0 +1,51 @@
+requisito_id,requisito,categoria_nome,n_vagas,pct_geral,pct_boards,pct_pt,pct_en,piso_entre_fontes,teto_entre_fontes
+apis_integracao,APIs e integrações,Fundamentos técnicos que independem de linguagem,670,55.4,64.9,75.9,40.7,23.9,78.8
+banco_dados,Banco de dados / SQL,Fundamentos técnicos que independem de linguagem,645,53.3,59.1,72.3,39.7,32.9,74.4
+trabalho_em_equipe,Trabalho em equipe / colaboração,Comportamento e colaboração,596,49.3,61.9,57.7,43.2,7.5,78.8
+boas_praticas_codigo,Clean code / SOLID / boas práticas,Fundamentos técnicos que independem de linguagem,501,41.4,51.9,54.2,32.3,6.8,74.1
+cloud,Cloud (AWS/Azure/GCP),Fundamentos técnicos que independem de linguagem,500,41.4,46.6,43.1,40.1,23.9,62.4
+arquitetura,Arquitetura / system design,Fundamentos técnicos que independem de linguagem,481,39.8,45.6,33,44.7,20.4,67.5
+experiencia_previa,Experiência prévia comprovada (sem número),"Credenciais, contexto e formato de trabalho",468,38.7,48.9,51.8,29.3,5,58.8
+versionamento,Controle de versão (Git),Processo e prática de engenharia,450,37.2,46.1,60.1,20.8,7.9,64.7
+comunicacao_geral,Comunicação (falar/escrever bem),Comunicação e idioma,441,36.5,45.9,34.8,37.7,5.4,73.8
+performance_escala,Performance e escala,Processo e prática de engenharia,421,34.8,43.3,36.2,33.9,6.8,62.4
+observabilidade,Observabilidade / monitoramento,Processo e prática de engenharia,397,32.8,38.4,33.6,32.3,14.3,57.6
+ci_cd,CI/CD e automação de deploy,Processo e prática de engenharia,386,31.9,39,40.1,26,8.6,44.4
+dados_ia,Dados / IA no dia a dia,Fundamentos técnicos que independem de linguagem,355,29.4,30.7,26.1,31.7,23.1,47.5
+containers,Containers / Kubernetes,Fundamentos técnicos que independem de linguagem,345,28.5,32.5,31.4,26.5,15.4,38.8
+metodologias_ageis,Metodologias ágeis (Scrum/Kanban),Processo e prática de engenharia,343,28.4,34.8,41.1,19.2,7.1,50.6
+testes_automatizados,Testes automatizados / TDD,Processo e prática de engenharia,299,24.7,31.8,41.5,12.7,1.4,48.1
+autonomia,Autonomia / trabalhar sem supervisão,Comportamento e colaboração,278,23,25.4,26.1,20.8,13.9,33.8
+documentacao,Documentação técnica,Processo e prática de engenharia,266,22,28.3,30,16.2,1.1,33.8
+cultura_devops,Cultura DevOps,Processo e prática de engenharia,246,20.3,22.7,20.4,20.3,12.5,31.5
+ownership,Ownership / senso de dono,Comportamento e colaboração,234,19.4,19.7,12.8,24,8.8,31.3
+graduacao,Diploma / ensino superior,"Credenciais, contexto e formato de trabalho",226,18.7,24.2,24.5,14.5,0.4,40.5
+mensageria_eventos,Mensageria / arquitetura orientada a eventos,Fundamentos técnicos que independem de linguagem,220,18.2,22.9,29.2,10.2,2.5,35.3
+ingles,Inglês,Comunicação e idioma,218,18,22.5,16.8,18.9,3.2,38.8
+code_review,Code review / pull request,Processo e prática de engenharia,212,17.5,22.4,26.9,10.8,1.4,29.4
+mentoria,Mentoria de outras pessoas,Comportamento e colaboração,203,16.8,20.1,10.5,21.3,5.7,38.8
+microservicos,Microsserviços,Fundamentos técnicos que independem de linguagem,201,16.6,21.2,25.7,10.1,1.4,30.6
+lideranca,Liderança técnica,Comportamento e colaboração,195,16.1,18.7,15.2,16.8,7.5,31.8
+anos_experiencia,Tempo mínimo de experiência (em anos),"Credenciais, contexto e formato de trabalho",195,16.1,19.3,7.3,22.5,5.7,41.3
+resolucao_problemas,Resolução de problemas / raciocínio analítico,Comportamento e colaboração,180,14.9,19.3,18.6,12.2,0.4,32.1
+times_multidisciplinares,Times multidisciplinares / cross-functional,Comportamento e colaboração,164,13.6,17,11.3,15.2,2.1,25.9
+aprendizado_continuo,Aprendizado contínuo / curiosidade,Comportamento e colaboração,158,13.1,16.1,12.6,13.4,2.9,33.8
+infra_como_codigo,Infraestrutura como código,Fundamentos técnicos que independem de linguagem,137,11.3,12.1,4.7,16.1,3.1,26.9
+impacto_negocio,Entender o negócio / gerar impacto,Produto e negócio,136,11.2,14.4,13.4,9.7,0.7,19
+organizacao_tempo,Organização / gestão de prazos,Comportamento e colaboração,135,11.2,14,16.8,7.1,1.8,21.3
+stakeholders,Relação com stakeholders,Produto e negócio,135,11.2,14,7.1,14.1,1.8,28.7
+adaptabilidade,Adaptabilidade / ambiente de mudança,Comportamento e colaboração,117,9.7,11.6,4.3,13.5,3.2,26.3
+proatividade,Proatividade / iniciativa,Comportamento e colaboração,115,9.5,12.1,8.9,10,1.1,21.4
+foco_cliente,Foco no cliente / usuário final,Produto e negócio,103,8.5,10.8,7.7,9.1,1.1,20
+seguranca,Segurança / conformidade,Processo e prática de engenharia,96,7.9,9.9,9.3,7,1.4,16.5
+visao_produto,Visão de produto / trabalho com PM e design,Produto e negócio,96,7.9,8.7,3.8,11,3.8,16.3
+portfolio_open_source,Portfólio / open source / projetos pessoais,"Credenciais, contexto e formato de trabalho",80,6.6,7.2,3.4,9,3.4,12.9
+on_call,Plantão / on-call,Processo e prática de engenharia,69,5.7,6.8,0.8,9.2,0.6,24.1
+fundamentos_cs,Algoritmos e estruturas de dados,Fundamentos técnicos que independem de linguagem,63,5.2,5.9,5.1,5.3,2.9,12.9
+fuso_horario,Fuso horário / janela de sobreposição,"Credenciais, contexto e formato de trabalho",59,4.9,4.1,0.2,8.3,0,18.8
+atencao_detalhe,Atenção a detalhes / qualidade,Comportamento e colaboração,44,3.6,4.6,1.4,5.3,0.4,12.5
+diploma_dispensavel,Diploma explicitamente dispensável,"Credenciais, contexto e formato de trabalho",33,2.7,3.3,0.6,4.3,0,13.1
+comunicacao_escrita,Comunicação escrita explícita,Comunicação e idioma,32,2.6,3.2,0.6,4.1,0.6,13.1
+autorizacao_trabalho,Autorização de trabalho / visto,"Credenciais, contexto e formato de trabalho",23,1.9,0.8,0,3.3,0,6
+espanhol,Espanhol,Comunicação e idioma,17,1.4,1.8,2.8,0.4,0,4.1
+disponibilidade_viagem,Disponibilidade para viagem / presença,"Credenciais, contexto e formato de trabalho",5,0.4,0.5,0.4,0.4,0,2.5

@@ -1,0 +1,48 @@
+{
+  "geradoEm": "2026-07-27",
+  "totalVagas": 1209,
+  "arquivos": [
+    {
+      "arquivo": "vagas.csv",
+      "descricao": "Uma linha por vaga, com a descrição original completa.",
+      "linhas": 1209,
+      "colunas": 17,
+      "bytes": 4553007
+    },
+    {
+      "arquivo": "vagas_requisitos.csv",
+      "descricao": "Formato longo: um par vaga × requisito por linha.",
+      "linhas": 11989,
+      "colunas": 5,
+      "bytes": 1404523
+    },
+    {
+      "arquivo": "vagas_requisitos_matriz.csv",
+      "descricao": "Formato largo: uma coluna 0/1 por requisito. Sem texto de terceiros.",
+      "linhas": 1209,
+      "colunas": 59,
+      "bytes": 209122
+    },
+    {
+      "arquivo": "taxonomia.csv",
+      "descricao": "Dicionário dos 50 requisitos e os padrões usados para detectá-los.",
+      "linhas": 50,
+      "colunas": 8,
+      "bytes": 14483
+    },
+    {
+      "arquivo": "fontes.csv",
+      "descricao": "As fontes e o funil de triagem de cada uma.",
+      "linhas": 9,
+      "colunas": 10,
+      "bytes": 1155
+    },
+    {
+      "arquivo": "ranking_requisitos.csv",
+      "descricao": "Agregado por requisito, já calculado.",
+      "linhas": 50,
+      "colunas": 10,
+      "bytes": 5739
+    }
+  ]
+}

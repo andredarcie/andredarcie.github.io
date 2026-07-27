@@ -1,0 +1,149 @@
+{
+  "versao": "1.0",
+  "objetivo": "Formar um corpus de vagas de desenvolvedor (BR + remoto global) grande o bastante para medir o que se repete nos requisitos, ignorando linguagem e framework.",
+
+  "fontes": {
+    "gupy": {
+      "ativa": true,
+      "quota": 320,
+      "consultas": [
+        "desenvolvedor",
+        "desenvolvedora",
+        "engenheiro de software",
+        "engenheira de software",
+        "programador",
+        "back-end",
+        "front-end",
+        "fullstack",
+        "desenvolvedor mobile",
+        "desenvolvedor web",
+        "desenvolvedor backend",
+        "desenvolvedor frontend",
+        "analista de sistemas",
+        "arquiteto de software",
+        "tech lead",
+        "devops",
+        "estagio desenvolvimento"
+      ],
+      "obs": "Maior ATS do Brasil, com peso forte de empresa grande, varejo e consultoria. Quota reduzida de 420 para 320 quando entraram as outras fontes brasileiras: antes ela sozinha era 100% do corpus em português."
+    },
+    "greenhouse_br": {
+      "ativa": true,
+      "quota": 240,
+      "empresas": [
+        "stone",
+        "xpinc",
+        "c6bank",
+        "inter",
+        "arcoeducacao",
+        "quintoandar",
+        "gympass",
+        "ebanx",
+        "vtex",
+        "rdstation",
+        "wildlifestudios",
+        "jusbrasil",
+        "blip"
+      ],
+      "obs": "Páginas de carreira de empresas brasileiras de produto e fintechs. Recorte oposto ao da Gupy: empresa de tecnologia contratando para o próprio time. Só entram as posições localizadas no Brasil — o filtro de local descarta as vagas que essas mesmas empresas abrem fora do país."
+    },
+    "programathor": {
+      "ativa": true,
+      "quota": 160,
+      "paginas": 14,
+      "obs": "Board brasileiro exclusivo de tecnologia, com muita startup e empresa pequena. A descrição só existe na página da vaga, em JSON-LD, então cada anúncio custa uma requisição."
+    },
+    "hackernews": {
+      "ativa": true,
+      "quota": 280,
+      "threads": ["48747976", "48357725", "47975571"],
+      "obs": "Threads 'Ask HN: Who is hiring?'. Texto cru escrito pela própria engenharia, sem template de RH — contraponto importante aos boards."
+    },
+    "arbeitnow": {
+      "ativa": true,
+      "quota": 250,
+      "paginas": 20,
+      "obs": "Board europeu (forte na Alemanha). Traz muitas vagas não-dev; o filtro de título faz a triagem."
+    },
+    "himalayas": {
+      "ativa": true,
+      "quota": 200,
+      "paginas": 45,
+      "obs": "Board remoto global. Máximo de 20 itens por página."
+    },
+    "jobicy": {
+      "ativa": true,
+      "quota": 140,
+      "obs": "Board remoto global. Máximo de 50 por chamada; varremos por região."
+    },
+    "weworkremotely": {
+      "ativa": true,
+      "quota": 130,
+      "obs": "Board remoto clássico, via RSS por categoria (25 itens por feed)."
+    },
+    "remotive": {
+      "ativa": true,
+      "quota": 60,
+      "obs": "API degradada em 07/2026: devolve só ~36 anúncios e ignora os parâmetros category e limit, misturando vagas não-dev. Mantida por contribuir algumas vagas válidas, mas não é mais fonte de volume."
+    },
+    "remoteok": {
+      "ativa": false,
+      "quota": 0,
+      "obs": "DESATIVADA em 27/07/2026: o endpoint público /api parou de devolver vagas de tecnologia e passou a retornar conteúdo genérico e spam (lojas, restaurantes, 'Current Vacancies'). Zero anúncios sobreviveram ao filtro de título em 100 amostrados."
+    }
+  },
+
+  "inclusao": {
+    "comentario": "Aplicado ao título normalizado (minúsculo, sem acento, e sem a flexão inclusiva entre parênteses: 'Engenheiro(a) de Software' vira 'engenheiro de software' antes do teste). Basta um padrão bater.",
+    "titulo": [
+      "\\b(software|web|mobile|backend|back[ -]end|frontend|front[ -]end|full[ -]?stack|cloud|platform|systems?|application|embedded|game|api|infrastructure|data|machine learning|ml|ai|devops|sre|site reliability|qa|test) ?(engineer|developer|dev)\\b",
+      "\\b(engineer|developer|programmer)\\b",
+      "\\bdesenvolvedor(a|as|es)?\\b",
+      "\\bprogramador(a|as|es)?\\b",
+      "\\bengenheir[oa]s? de (software|dados|plataforma|computacao|machine learning)\\b",
+      "\\bengenharia de (software|dados|plataforma|computacao)\\b",
+      "\\banalista (de )?(sistemas|desenvolvimento|programador)\\b",
+      "\\barquitet[oa]s? (de )?(software|solucoes|sistemas|dados|mobile|ia|cloud|nuvem|tecnologia|integracao)\\b",
+      "\\b(tech lead|technical lead|software architect|solutions architect|enterprise architect|platform engineering)\\b",
+      "\\bsre\\b",
+      "\\bdevops\\b"
+    ]
+  },
+
+  "exclusao": {
+    "comentario": "Tira 'engenheiro' de outras engenharias, papéis comerciais e funções que não escrevem código. Vence a inclusão.",
+    "titulo": [
+      "\\b(sales|account|business|partner|pre[ -]?sales|presales|solution sales) (engineer|developer|development)\\b",
+      "\\bbusiness development\\b",
+      "\\b(customer|client) (success|support|service) (engineer|manager)\\b",
+      "\\b(mechanical|electrical|electronic|civil|chemical|industrial|process|manufacturing|production|structural|petroleum|mining|environmental|safety|quality|hardware|network|field|hvac|automotive|aerospace|packaging|materials|maintenance|piping|welding|geotechnical) engineer\\b",
+      "\\bengenheir[oa]s? (civil|mecanic[oa]|eletric[oa]|eletronic[oa]|quimic[oa]|de producao|de seguranca|ambiental|agronom[oa]|de alimentos|florestal|de minas|cartograf|de petroleo|naval|metalurgic[oa]|de materiais|de manutencao|de processos|de qualidade|clinic[oa]|biomedic[oa])\\b",
+      "\\b(recruiter|recruitment|talent acquisition|hr |people ops)\\b",
+      "\\b(ux|ui|graphic|visual|product|motion|instructional) designer\\b",
+      "\\b(marketing|social media|copywriter|content writer|community manager)\\b",
+      "\\bdeveloper (advocate|relations|evangelist)\\b",
+      "\\b(sales|account) (manager|executive|representative)\\b",
+      "\\b(professor|instrutor|instructor|teacher|tutor|mentor de carreira)\\b",
+      "\\b(estagio|estagiario|estagiaria) (em|de) (marketing|vendas|rh|financeiro|administrativo)\\b",
+      "\\bengenheir[oa]s? de vendas\\b",
+      "\\b(analista|assistente) (de )?(rh|recursos humanos|financeiro|contabil|fiscal|comercial|marketing|logistica|compras|folha)\\b",
+      "\\b(motorista|vendedor|atendente|auxiliar|operador de caixa|repositor|farmaceutic|enfermeir|tecnico de enfermagem)\\b"
+    ]
+  },
+
+  "qualidade": {
+    "comentario": "Vaga sem descrição real não serve para medir requisito.",
+    "minCaracteresDescricao": 500,
+    "maxCaracteresDescricao": 30000,
+    "exigeEmpresa": true,
+    "exigeUrl": true
+  },
+
+  "deduplicacao": {
+    "comentario": "Boards republicam a mesma vaga e empresas repostam o mesmo anúncio todo mês. Duas travas: empresa+título normalizados e hash do texto.",
+    "porEmpresaTitulo": true,
+    "porTextoIdentico": true,
+    "maxPorEmpresa": 12,
+    "obsMaxPorEmpresa": "Impede que uma empresa com 80 vagas abertas domine a estatística."
+  }
+}

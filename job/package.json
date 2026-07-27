@@ -1,0 +1,19 @@
+{
+  "name": "radar-vagas-dev",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Coleta, anota e agrega vagas de desenvolvedor para descobrir o que elas mais pedem em comum fora de linguagem e framework. O corpus sai em CSV.",
+  "scripts": {
+    "coletar": "node src/coletar.mjs",
+    "coletar:offline": "node src/coletar.mjs --offline",
+    "analisar": "node src/analisar.mjs",
+    "agregar": "node src/agregar.mjs",
+    "site": "node src/site.mjs",
+    "exportar": "node src/exportar.mjs",
+    "pipeline": "node src/pipeline.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

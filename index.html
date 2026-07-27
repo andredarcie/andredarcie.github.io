@@ -349,7 +349,7 @@
       <div class="sec-head">
         <h2>Projects</h2>
         <span class="rule"></span>
-        <span class="count">10</span>
+        <span class="count">13</span>
       </div>
 
       <div class="subhead"><span>Tools &amp; experiments</span><span class="count">3</span></div>
@@ -371,7 +371,7 @@
         </a>
       </div>
 
-      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">7</span></div>
+      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">10</span></div>
       <div class="grid">
         <a class="card" href="https://www.openvideogamedata.com/" target="_blank" rel="noopener">
           <div class="card-title">OpenVideoGameData</div>
@@ -406,6 +406,21 @@
         <a class="card" href="https://andredarcie.github.io/divinolandia-transparente/" target="_blank" rel="noopener">
           <div class="card-title">Divinolândia Transparente</div>
           <div class="card-desc">Public-spending transparency for Divinolândia (2026).</div>
+          <span class="card-tag">Site</span>
+        </a>
+        <a class="card" href="curso/">
+          <div class="card-title">Curso Dev do André</div>
+          <div class="card-desc">Software engineering course in slide decks: OOP, SOLID, architecture, distributed systems.</div>
+          <span class="card-tag">Course</span>
+        </a>
+        <a class="card" href="salvador-historico/">
+          <div class="card-title">Salvador Histórico</div>
+          <div class="card-desc">Walking map of Salvador that tells what each landmark used to be, across four centuries.</div>
+          <span class="card-tag">Site</span>
+        </a>
+        <a class="card" href="historia-divinolandia/">
+          <div class="card-title">Quilombo do Careca</div>
+          <div class="card-desc">The story of the free black territory that existed before the town of Divinolândia.</div>
           <span class="card-tag">Site</span>
         </a>
       </div>
@@ -484,12 +499,12 @@
       </div>
       <p class="games-note">Making small games is a hobby of mine.</p>
       <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
-        <span class="arrow">▸</span><span class="label">Show my games (10)</span>
+        <span class="arrow">▸</span><span class="label">Show my games (13)</span>
       </button>
 
       <div id="games-panel" hidden>
         <div class="filters" role="group" aria-label="Filter games by category">
-          <span class="flabel"><b id="games-count">10</b> games · filter</span>
+          <span class="flabel"><b id="games-count">13</b> games · filter</span>
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
           <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
           <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
@@ -497,6 +512,7 @@
           <button type="button" class="chip" data-filter="action" aria-pressed="false">Action</button>
           <button type="button" class="chip" data-filter="narrative" aria-pressed="false">Narrative</button>
           <button type="button" class="chip" data-filter="sim" aria-pressed="false">Sim</button>
+          <button type="button" class="chip" data-filter="strategy" aria-pressed="false">Strategy</button>
         </div>
 
         <div class="grid" id="games-grid">
@@ -550,6 +566,21 @@
             <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
             <span class="card-tag">Sim</span>
           </a>
+          <a class="card" href="asc-rpg/" data-cat="adventure">
+            <div class="card-title">ASCII Dungeon</div>
+            <div class="card-desc">Turn-based ASCII roguelike rendered in 2.5D: five floors and a final boss.</div>
+            <span class="card-tag">Adventure</span>
+          </a>
+          <a class="card" href="tiny-catan/" data-cat="strategy">
+            <div class="card-title">Tiny Catan</div>
+            <div class="card-desc">A compact take on the settle-and-trade board game, playable in the browser.</div>
+            <span class="card-tag">Strategy</span>
+          </a>
+          <a class="card" href="house/" data-cat="sim">
+            <div class="card-title">House Walkthrough</div>
+            <div class="card-desc">First-person walking sim of a house built faithfully from its floor plan.</div>
+            <span class="card-tag">Sim</span>
+          </a>
         </div>
       </div>
     </section>
@@ -558,11 +589,11 @@
       <div class="sec-head">
         <h2>Tests &amp; prototypes</h2>
         <span class="rule"></span>
-        <span class="count">27</span>
+        <span class="count">29</span>
       </div>
       <p class="games-note">Rough experiments, game-jam entries, course work and one-off builds, kept here for the record.</p>
       <button type="button" id="reveal-proto" class="reveal-btn" aria-expanded="false" aria-controls="prototypes-panel">
-        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (27)</span>
+        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (29)</span>
       </button>
 
       <div id="prototypes-panel" hidden>
@@ -702,6 +733,16 @@
           <div class="card-desc">Existential Bitsy game made for the One Room game jam.</div>
           <span class="card-tag">Narrative</span>
         </a>
+        <a class="card" href="ugc/">
+          <div class="card-title">UGC Studio</div>
+          <div class="card-desc">Production-desk app for a content creator: brands, jobs, deliverables and scripts in one place.</div>
+          <span class="card-tag">Tool</span>
+        </a>
+        <a class="card" href="diego/">
+          <div class="card-title">Diego's Move</div>
+          <div class="card-desc">A tiny moving-day puzzle: pack the whole house in four turns.</div>
+          <span class="card-tag">Puzzle</span>
+        </a>
         </div>
       </div>
     </section>
@@ -744,7 +785,7 @@
         var willOpen = panel.hasAttribute('hidden');
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        label.textContent = willOpen ? 'Hide games' : 'Show my games (10)';
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (13)';
       });
 
       var revealP = document.getElementById('reveal-proto');
@@ -754,7 +795,7 @@
         var willOpen = panelP.hasAttribute('hidden');
         if (willOpen) { panelP.removeAttribute('hidden'); } else { panelP.setAttribute('hidden', ''); }
         revealP.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (27)';
+        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (29)';
       });
 
       var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));

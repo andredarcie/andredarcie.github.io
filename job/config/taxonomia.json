@@ -1,0 +1,676 @@
+{
+  "versao": "1.0",
+  "comentario": "Dicionário de requisitos NÃO-stack. Linguagem de programação e framework ficam de fora de propósito: a pergunta do projeto é o que se repete depois que você tira 'sabe React/Java'. Os padrões são regex aplicados ao texto normalizado (minúsculo, sem acento) de título + descrição. A medida é presença/ausência por vaga, nunca contagem de repetições.",
+
+  "categorias": {
+    "comunicacao": "Comunicação e idioma",
+    "comportamento": "Comportamento e colaboração",
+    "processo": "Processo e prática de engenharia",
+    "tecnico_transversal": "Fundamentos técnicos que independem de linguagem",
+    "credenciais": "Credenciais, contexto e formato de trabalho",
+    "produto": "Produto e negócio"
+  },
+
+  "requisitos": [
+    {
+      "id": "ingles",
+      "categoria": "comunicacao",
+      "rotulo": "Inglês",
+      "padroes": ["\\bingles\\b", "\\benglish\\b", "\\bfluent in english\\b"],
+      "excecoes": [
+        "(curso|cursos|aulas?|bolsa|auxilio|incentivo|plataforma|clube|escola|programa) (de |ao |a )?(idiomas?|ingles)",
+        "ingles in company",
+        "(ingles|idiomas?) in ?company",
+        "english (classes|lessons|courses|school)",
+        "language (classes|lessons|courses|learning benefit)"
+      ],
+      "notaMetodologica": "No Brasil 'inglês' aparece tanto como exigência quanto como benefício (curso de inglês in company). As exceções derrubam o segundo caso."
+    },
+    {
+      "id": "comunicacao_geral",
+      "categoria": "comunicacao",
+      "rotulo": "Comunicação (falar/escrever bem)",
+      "padroes": [
+        "\\bcommunicat(e|ion|ions|ing|or)\\b",
+        "\\bcomunica(cao|r|tiv[oa]|dor)\\b",
+        "\\bexcellent (verbal|written|interpersonal)\\b",
+        "\\bboa (comunicacao|oratoria)\\b"
+      ],
+      "excecoes": [
+        "communication protocol",
+        "protocolo de comunicacao",
+        "comunicacao (pub|assincrona entre servicos|entre (os )?(micro)?servicos)",
+        "communication (layer|between services|bus)"
+      ]
+    },
+    {
+      "id": "comunicacao_escrita",
+      "categoria": "comunicacao",
+      "rotulo": "Comunicação escrita explícita",
+      "padroes": [
+        "\\bwritten communication\\b",
+        "\\bwriting skills\\b",
+        "\\bwrite (clearly|well)\\b",
+        "\\bcomunicacao escrita\\b",
+        "\\bescrita clara\\b"
+      ]
+    },
+    {
+      "id": "espanhol",
+      "categoria": "comunicacao",
+      "rotulo": "Espanhol",
+      "padroes": ["\\bespanhol\\b", "\\bspanish\\b"],
+      "excecoes": [
+        "(curso|cursos|aulas?|bolsa|auxilio|incentivo|plataforma|clube|escola) (de |ao |a )?(idiomas?|espanhol)",
+        "espanhol in ?company",
+        "spanish (classes|lessons|courses)"
+      ]
+    },
+
+    {
+      "id": "trabalho_em_equipe",
+      "categoria": "comportamento",
+      "rotulo": "Trabalho em equipe / colaboração",
+      "padroes": [
+        "\\bteam ?work\\b",
+        "\\bcollaborat(e|ion|ive|ing)\\b",
+        "\\bwork(ing)? (closely )?with (the )?(team|others|peers)\\b",
+        "\\btrabalho em equipe\\b",
+        "\\bcolabora(cao|tiv[oa]|r)\\b",
+        "\\btrabalhar em equipe\\b"
+      ]
+    },
+    {
+      "id": "times_multidisciplinares",
+      "categoria": "comportamento",
+      "rotulo": "Times multidisciplinares / cross-functional",
+      "padroes": [
+        "\\bcross[ -]functional\\b",
+        "\\bmultidisciplinar\\b",
+        "\\btimes? multifuncional\\b",
+        "\\bsquads?\\b"
+      ]
+    },
+    {
+      "id": "autonomia",
+      "categoria": "comportamento",
+      "rotulo": "Autonomia / trabalhar sem supervisão",
+      "padroes": [
+        "\\bautonom(y|ous|ously|ia|[oa])\\b",
+        "\\b(work|working) independently\\b",
+        "\\bself[ -](starter|motivated|directed|driven|sufficient|manage)",
+        "\\bpouca supervisao\\b",
+        "\\bindependencia\\b"
+      ]
+    },
+    {
+      "id": "ownership",
+      "categoria": "comportamento",
+      "rotulo": "Ownership / senso de dono",
+      "padroes": [
+        "\\bownership\\b",
+        "\\btake (full )?ownership\\b",
+        "\\bend[ -]to[ -]end (ownership|responsibility)\\b",
+        "\\bsenso de dono\\b",
+        "\\bdono do (produto|projeto|resultado)\\b",
+        "\\bprotagonis(mo|ta)\\b"
+      ],
+      "excecoes": [
+        "ownership of (sensitive|the )?(data|information|records|policy)",
+        "data ownership",
+        "code ownership file"
+      ]
+    },
+    {
+      "id": "proatividade",
+      "categoria": "comportamento",
+      "rotulo": "Proatividade / iniciativa",
+      "padroes": [
+        "\\bpro[ -]?activ(e|ely|ity)\\b",
+        "\\btake(s)? initiative\\b",
+        "\\bproativ[oa]\\b",
+        "\\biniciativa\\b"
+      ]
+    },
+    {
+      "id": "aprendizado_continuo",
+      "categoria": "comportamento",
+      "rotulo": "Aprendizado contínuo / curiosidade",
+      "padroes": [
+        "\\bcontinuous learning\\b",
+        "\\b(eager|willing|desire) to learn\\b",
+        "\\bfast learner\\b",
+        "\\blearn(ing)? (quickly|fast|new technologies)\\b",
+        "\\bcurious|curiosity\\b",
+        "\\baprendizado continuo\\b",
+        "\\bvontade de aprender\\b",
+        "\\bcuriosidade\\b",
+        "\\bse manter atualizad[oa]\\b"
+      ]
+    },
+    {
+      "id": "resolucao_problemas",
+      "categoria": "comportamento",
+      "rotulo": "Resolução de problemas / raciocínio analítico",
+      "padroes": [
+        "\\bproblem[ -]solv(ing|er)\\b",
+        "\\banalytical (skills|thinking|mindset)\\b",
+        "\\bcritical thinking\\b",
+        "\\bresolucao de problemas\\b",
+        "\\bpensamento (analitico|critico)\\b",
+        "\\bcapacidade analitica\\b"
+      ]
+    },
+    {
+      "id": "mentoria",
+      "categoria": "comportamento",
+      "rotulo": "Mentoria de outras pessoas",
+      "padroes": [
+        "\\bmentor(ing|ship|s)?\\b",
+        "\\bcoach(ing)? (junior|other|team)",
+        "\\bmentoria\\b",
+        "\\bdesenvolver (o time|pessoas|outros desenvolvedores)\\b",
+        "\\bcompartilhar conhecimento\\b",
+        "\\bknowledge sharing\\b"
+      ]
+    },
+    {
+      "id": "lideranca",
+      "categoria": "comportamento",
+      "rotulo": "Liderança técnica",
+      "padroes": [
+        "\\bleadership\\b",
+        "\\blead (a |the )?(team|squad|project|initiative)",
+        "\\btech(nical)? lead\\b",
+        "\\blideranca\\b",
+        "\\bliderar\\b"
+      ]
+    },
+    {
+      "id": "adaptabilidade",
+      "categoria": "comportamento",
+      "rotulo": "Adaptabilidade / ambiente de mudança",
+      "padroes": [
+        "\\bfast[ -]paced\\b",
+        "\\badaptab(le|ility)\\b",
+        "\\bambiguity\\b",
+        "\\bchanging (priorities|requirements|environment)\\b",
+        "\\bcomfortable with (change|uncertainty|ambiguity)\\b",
+        "\\bflexib\\w* (mindset|approach|to adapt)\\b",
+        "\\badaptabilidade\\b",
+        "\\bambiente (dinamico|de mudanca|em constante)\\b",
+        "\\blidar com (mudancas|ambiguidade|imprevistos)\\b",
+        "\\bse adaptar\\b"
+      ],
+      "notaMetodologica": "'flexible/flexibilidade' sozinho foi removido dos padrões: na prática casava com benefício (horário flexível, flexible working hours), não com requisito."
+    },
+    {
+      "id": "atencao_detalhe",
+      "categoria": "comportamento",
+      "rotulo": "Atenção a detalhes / qualidade",
+      "padroes": [
+        "\\battention to detail\\b",
+        "\\bdetail[ -]oriented\\b",
+        "\\batencao aos detalhes\\b",
+        "\\bzelo pela qualidade\\b"
+      ]
+    },
+    {
+      "id": "organizacao_tempo",
+      "categoria": "comportamento",
+      "rotulo": "Organização / gestão de prazos",
+      "padroes": [
+        "\\btime management\\b",
+        "\\bprioriti(ze|zation|sing)\\b",
+        "\\bmeet deadlines\\b",
+        "\\bgestao de tempo\\b",
+        "\\borganizacao\\b",
+        "\\bcumprir prazos\\b",
+        "\\bpriorizacao\\b"
+      ]
+    },
+
+    {
+      "id": "metodologias_ageis",
+      "categoria": "processo",
+      "rotulo": "Metodologias ágeis (Scrum/Kanban)",
+      "padroes": [
+        "\\bagile\\b",
+        "\\bscrum\\b",
+        "\\bkanban\\b",
+        "\\bsprints?\\b",
+        "\\bmetodologias? ageis\\b",
+        "\\b(metodologia |cultura |ambiente )?agil\\b",
+        "\\bcerimonias\\b",
+        "\\bdailys?\\b"
+      ]
+    },
+    {
+      "id": "code_review",
+      "categoria": "processo",
+      "rotulo": "Code review / pull request",
+      "padroes": [
+        "\\bcode review(s)?\\b",
+        "\\bpeer review\\b",
+        "\\bpull request(s)?\\b",
+        "\\bmerge request(s)?\\b",
+        "\\brevisao de codigo\\b"
+      ]
+    },
+    {
+      "id": "testes_automatizados",
+      "categoria": "processo",
+      "rotulo": "Testes automatizados / TDD",
+      "padroes": [
+        "\\b(unit|integration|automated|end[ -]to[ -]end|e2e) test(s|ing)?\\b",
+        "\\btest[ -]driven\\b",
+        "\\btdd\\b",
+        "\\bwrit(e|ing) tests\\b",
+        "\\btest coverage\\b",
+        "\\btest automation\\b",
+        "\\btestes? (automatizados?|unitarios?|de integracao|automatizada)\\b",
+        "\\bcobertura de testes\\b",
+        "\\bescrever testes\\b"
+      ]
+    },
+    {
+      "id": "ci_cd",
+      "categoria": "processo",
+      "rotulo": "CI/CD e automação de deploy",
+      "padroes": [
+        "\\bci ?/ ?cd\\b",
+        "\\bcontinuous (integration|delivery|deployment)\\b",
+        "\\bintegracao continua\\b",
+        "\\bentrega continua\\b",
+        "\\bpipelines? de (deploy|build|ci)\\b",
+        "\\b(github actions|gitlab ci|jenkins|circleci|azure devops pipelines?|argo ?cd)\\b"
+      ]
+    },
+    {
+      "id": "versionamento",
+      "categoria": "processo",
+      "rotulo": "Controle de versão (Git)",
+      "padroes": [
+        "\\bgit\\b",
+        "\\bgithub\\b",
+        "\\bgitlab\\b",
+        "\\bbitbucket\\b",
+        "\\bversion control\\b",
+        "\\bcontrole de versao\\b",
+        "\\bversionamento\\b"
+      ]
+    },
+    {
+      "id": "cultura_devops",
+      "categoria": "processo",
+      "rotulo": "Cultura DevOps",
+      "padroes": ["\\bdevops\\b", "\\bplatform engineering\\b", "\\bsre\\b", "\\bsite reliability\\b"]
+    },
+    {
+      "id": "observabilidade",
+      "categoria": "processo",
+      "rotulo": "Observabilidade / monitoramento",
+      "padroes": [
+        "\\bobservabilit(y|ies)\\b",
+        "\\bmonitoring\\b",
+        "\\blogging\\b",
+        "\\btelemetry\\b",
+        "\\b(datadog|grafana|prometheus|new relic|splunk|opentelemetry|sentry|elk)\\b",
+        "\\bobservabilidade\\b",
+        "\\bmonitoramento\\b"
+      ]
+    },
+    {
+      "id": "on_call",
+      "categoria": "processo",
+      "rotulo": "Plantão / on-call",
+      "padroes": [
+        "\\bon[ -]call\\b",
+        "\\bincident (response|management)\\b",
+        "\\bplantao\\b",
+        "\\bsobreaviso\\b",
+        "\\bgestao de incidentes\\b"
+      ]
+    },
+    {
+      "id": "documentacao",
+      "categoria": "processo",
+      "rotulo": "Documentação técnica",
+      "padroes": [
+        "\\bdocument(ation|ing)\\b",
+        "\\bwrite (technical )?docs?\\b",
+        "\\bdocumentacao (tecnica|de codigo|clara)?\\b",
+        "\\bdocumentar\\b"
+      ]
+    },
+    {
+      "id": "seguranca",
+      "categoria": "processo",
+      "rotulo": "Segurança / conformidade",
+      "padroes": [
+        "\\bsecurity (best practices|standards|requirements|mindset)\\b",
+        "\\bsecure (coding|development)\\b",
+        "\\bowasp\\b",
+        "\\b(lgpd|gdpr|hipaa|soc ?2|pci ?dss|iso ?27001)\\b",
+        "\\bseguranca (da informacao|de aplicacoes|cibernetica|dos dados)\\b",
+        "\\bvulnerabilidades\\b"
+      ]
+    },
+    {
+      "id": "performance_escala",
+      "categoria": "processo",
+      "rotulo": "Performance e escala",
+      "padroes": [
+        "\\bscalab(le|ility)\\b",
+        "\\bhigh[ -](volume|traffic|throughput|availability)\\b",
+        "\\bperformance (optimization|tuning|improvements?)\\b",
+        "\\blatency\\b",
+        "\\bescalabilidade\\b",
+        "\\balta (disponibilidade|performance|escala)\\b",
+        "\\botimizacao de (performance|consultas|desempenho)\\b"
+      ]
+    },
+
+    {
+      "id": "arquitetura",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Arquitetura / system design",
+      "padroes": [
+        "\\barchitect(ure|ing|ural)\\b",
+        "\\bsystem design\\b",
+        "\\bdesign (patterns|principles)\\b",
+        "\\bdistributed systems\\b",
+        "\\barquitetura de (software|solucoes|sistemas)\\b",
+        "\\bpadroes de projeto\\b",
+        "\\bsistemas distribuidos\\b",
+        "\\bdesenho de solucao\\b"
+      ]
+    },
+    {
+      "id": "boas_praticas_codigo",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Clean code / SOLID / boas práticas",
+      "padroes": [
+        "\\bclean (code|architecture)\\b",
+        "\\bsolid principles?\\b",
+        "\\bbest practices\\b",
+        "\\bmaintainable code\\b",
+        "\\bcodigo (limpo|de qualidade|manutenivel)\\b",
+        "\\bboas praticas (de programacao|de desenvolvimento|de codigo)?\\b",
+        "\\bsolid\\b",
+        "\\brefator(acao|ing)\\b"
+      ]
+    },
+    {
+      "id": "cloud",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Cloud (AWS/Azure/GCP)",
+      "padroes": [
+        "\\baws\\b",
+        "\\bamazon web services\\b",
+        "\\bazure\\b",
+        "\\bgcp\\b",
+        "\\bgoogle cloud\\b",
+        "\\bcloud (platform|provider|environment|native|infrastructure|services|computing)\\b",
+        "\\bcomputacao em nuvem\\b",
+        "\\bambiente(s)? (em|de) nuvem\\b"
+      ]
+    },
+    {
+      "id": "containers",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Containers / Kubernetes",
+      "padroes": [
+        "\\bdocker\\b",
+        "\\bkubernetes\\b",
+        "\\bk8s\\b",
+        "\\bcontainer(s|ized|ization)?\\b",
+        "\\bconteiner(es)?\\b",
+        "\\borquestracao de containers\\b"
+      ]
+    },
+    {
+      "id": "banco_dados",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Banco de dados / SQL",
+      "padroes": [
+        "\\bdatabases?\\b",
+        "\\bsql\\b",
+        "\\bnosql\\b",
+        "\\b(postgre?s(ql)?|mysql|mongo ?db|oracle|sql server|redis|dynamodb|elasticsearch)\\b",
+        "\\bbancos? de dados\\b",
+        "\\bmodelagem de dados\\b"
+      ]
+    },
+    {
+      "id": "apis_integracao",
+      "categoria": "tecnico_transversal",
+      "rotulo": "APIs e integrações",
+      "padroes": [
+        "\\bapis?\\b",
+        "\\brest(ful)?\\b",
+        "\\bgraphql\\b",
+        "\\bgrpc\\b",
+        "\\bweb services\\b",
+        "\\bintegracoes?\\b",
+        "\\bwebhooks?\\b"
+      ]
+    },
+    {
+      "id": "microservicos",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Microsserviços",
+      "padroes": ["\\bmicro[ -]?services?\\b", "\\bmicrosservicos?\\b", "\\bmicroservicos?\\b"]
+    },
+    {
+      "id": "mensageria_eventos",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Mensageria / arquitetura orientada a eventos",
+      "padroes": [
+        "\\b(kafka|rabbit ?mq|sqs|pub ?/ ?sub|service bus|activemq)\\b",
+        "\\bmessage (queue|broker|bus)\\b",
+        "\\bevent[ -]driven\\b",
+        "\\bmensageria\\b",
+        "\\bfilas de mensagens\\b",
+        "\\borientad[ao] a eventos\\b"
+      ]
+    },
+    {
+      "id": "infra_como_codigo",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Infraestrutura como código",
+      "padroes": [
+        "\\bterraform\\b",
+        "\\binfrastructure as code\\b",
+        "\\biac\\b",
+        "\\bansible\\b",
+        "\\bpulumi\\b",
+        "\\bcloudformation\\b",
+        "\\binfraestrutura como codigo\\b"
+      ]
+    },
+    {
+      "id": "dados_ia",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Dados / IA no dia a dia",
+      "padroes": [
+        "\\bmachine learning\\b",
+        "\\bartificial intelligence\\b",
+        "\\bllms?\\b",
+        "\\bgen ?ai\\b",
+        "\\bdata pipelines?\\b",
+        "\\betl\\b",
+        "\\binteligencia artificial\\b",
+        "\\baprendizado de maquina\\b",
+        "\\bcopilot\\b"
+      ]
+    },
+    {
+      "id": "fundamentos_cs",
+      "categoria": "tecnico_transversal",
+      "rotulo": "Algoritmos e estruturas de dados",
+      "padroes": [
+        "\\bdata structures\\b",
+        "\\balgorithms?\\b",
+        "\\bcomputer science fundamentals\\b",
+        "\\bestruturas? de dados\\b",
+        "\\balgoritmos?\\b",
+        "\\bcomplexidade computacional\\b"
+      ]
+    },
+
+    {
+      "id": "anos_experiencia",
+      "categoria": "credenciais",
+      "rotulo": "Tempo mínimo de experiência (em anos)",
+      "padroes": [
+        "\\b\\d{1,2} ?\\+? ?(years?|yrs?) of (professional |relevant |hands[ -]on |software |industry )?experience\\b",
+        "\\b(at least|minimum of|min\\.?) \\d{1,2} ?\\+? ?years?\\b",
+        "\\b\\d{1,2} ?\\+? ?anos de experiencia\\b",
+        "\\bexperiencia (minima|de) (de )?\\d{1,2} ?\\+? ?anos\\b",
+        "\\bno minimo \\d{1,2} ?anos\\b"
+      ]
+    },
+    {
+      "id": "experiencia_previa",
+      "categoria": "credenciais",
+      "rotulo": "Experiência prévia comprovada (sem número)",
+      "padroes": [
+        "\\bproven (experience|track record)\\b",
+        "\\bprior experience\\b",
+        "\\bhands[ -]on experience\\b",
+        "\\bexperiencia (previa|comprovada|solida|consolidada)\\b",
+        "\\bvivencia (previa|em|com)\\b"
+      ]
+    },
+    {
+      "id": "graduacao",
+      "categoria": "credenciais",
+      "rotulo": "Diploma / ensino superior",
+      "padroes": [
+        "\\bbachelor'?s?\\b",
+        "\\b(bs|bsc|b\\.s\\.|msc|master'?s) (degree )?in\\b",
+        "\\bdegree in (computer|software|engineering|information)\\b",
+        "\\buniversity degree\\b",
+        "\\bensino superior\\b",
+        "\\bsuperior completo\\b",
+        "\\bgraduacao (completa|em|cursando)\\b",
+        "\\bformacao (superior|academica) (em|completa)\\b",
+        "\\bbacharelado\\b"
+      ]
+    },
+    {
+      "id": "diploma_dispensavel",
+      "categoria": "credenciais",
+      "rotulo": "Diploma explicitamente dispensável",
+      "padroes": [
+        "\\bor equivalent (practical |work )?experience\\b",
+        "\\bequivalent experience\\b",
+        "\\bdegree (is )?not required\\b",
+        "\\bno degree required\\b",
+        "\\bnao (e )?(obrigatorio|exigimos) (ter )?(diploma|graduacao)\\b",
+        "\\bou experiencia equivalente\\b"
+      ]
+    },
+    {
+      "id": "portfolio_open_source",
+      "categoria": "credenciais",
+      "rotulo": "Portfólio / open source / projetos pessoais",
+      "padroes": [
+        "\\bopen[ -]source (contributions?|projects?|work)\\b",
+        "\\bgithub (profile|portfolio)\\b",
+        "\\bside projects?\\b",
+        "\\bportfolio\\b",
+        "\\bprojetos pessoais\\b",
+        "\\bcontribuicoes? (em|para) open source\\b"
+      ]
+    },
+    {
+      "id": "fuso_horario",
+      "categoria": "credenciais",
+      "rotulo": "Fuso horário / janela de sobreposição",
+      "padroes": [
+        "\\btime ?zone(s)?\\b",
+        "\\boverlap (with|hours)\\b",
+        "\\b(cet|cest|est|pst|gmt|utc) ?[+-]? ?\\d?\\b",
+        "\\bfuso horario\\b",
+        "\\bhorario de brasilia\\b"
+      ]
+    },
+    {
+      "id": "autorizacao_trabalho",
+      "categoria": "credenciais",
+      "rotulo": "Autorização de trabalho / visto",
+      "padroes": [
+        "\\bwork authorization\\b",
+        "\\bvisa sponsorship\\b",
+        "\\beligible to work\\b",
+        "\\bright to work\\b",
+        "\\bwork permit\\b",
+        "\\bautorizacao de trabalho\\b"
+      ]
+    },
+    {
+      "id": "disponibilidade_viagem",
+      "categoria": "credenciais",
+      "rotulo": "Disponibilidade para viagem / presença",
+      "padroes": [
+        "\\bwillingness to travel\\b",
+        "\\btravel requirements?\\b",
+        "\\bdisponibilidade para viaj(ar|ens)\\b",
+        "\\bdisponibilidade para (mudanca|residir)\\b"
+      ]
+    },
+
+    {
+      "id": "visao_produto",
+      "categoria": "produto",
+      "rotulo": "Visão de produto / trabalho com PM e design",
+      "padroes": [
+        "\\bproduct (mindset|thinking|sense|owner|managers?)\\b",
+        "\\bwork(ing)? (closely )?with (product|pm|design|designers)\\b",
+        "\\bvisao de produto\\b",
+        "\\bmentalidade de produto\\b",
+        "\\bjunto (ao|com) (o )?(time de )?produto\\b",
+        "\\bproduct manager\\b"
+      ]
+    },
+    {
+      "id": "foco_cliente",
+      "categoria": "produto",
+      "rotulo": "Foco no cliente / usuário final",
+      "padroes": [
+        "\\bcustomer[ -](focused|obsessed|centric|first)\\b",
+        "\\buser (needs|experience|feedback)\\b",
+        "\\bend users?\\b",
+        "\\bfoco no (cliente|usuario)\\b",
+        "\\bexperiencia do usuario\\b",
+        "\\bnecessidades do cliente\\b"
+      ]
+    },
+    {
+      "id": "impacto_negocio",
+      "categoria": "produto",
+      "rotulo": "Entender o negócio / gerar impacto",
+      "padroes": [
+        "\\bbusiness (impact|value|goals|needs|requirements|outcomes)\\b",
+        "\\bcommercial awareness\\b",
+        "\\bregras de negocio\\b",
+        "\\bimpacto no negocio\\b",
+        "\\bvisao de negocio\\b",
+        "\\bareas? de negocio\\b",
+        "\\bresultados do negocio\\b"
+      ]
+    },
+    {
+      "id": "stakeholders",
+      "categoria": "produto",
+      "rotulo": "Relação com stakeholders",
+      "padroes": [
+        "\\bstakeholders?\\b",
+        "\\bclientes internos\\b",
+        "\\bpartes interessadas\\b"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+fonte,nome,mercado,escopo,vagas_no_corpus,anuncios_coletados,fora_do_escopo_dev,excluidos_por_titulo,sem_descricao,duplicados
+gupy,Gupy,brasil,"Brasil — maior ATS do país, vagas em português",320,553,112,4,0,59
+greenhouse_br,Greenhouse — empresas brasileiras,brasil,Brasil — página de carreiras de empresas de tecnologia e fintechs brasileiras,85,1233,939,161,0,14
+programathor,ProgramaThor,brasil,"Brasil — board só de vagas de tecnologia, empresas menores e startups",160,204,25,0,5,8
+hackernews,"Hacker News — ""Who is hiring?""",global,"Global — anúncio escrito pela própria engenharia, sem template de RH",280,596,174,19,23,24
+arbeitnow,Arbeitnow,global,"Europa (forte na Alemanha) — board generalista, 100 por página",79,510,337,78,10,5
+himalayas,Himalayas,global,Remoto global — API paginada de 20 em 20,84,400,244,59,0,1
+jobicy,Jobicy,global,"Remoto global — API limitada a 50 por chamada, varrida por região",80,130,27,12,0,2
+weworkremotely,We Work Remotely,global,Remoto global — feeds RSS por categoria (25 por feed),108,249,99,23,0,6
+remotive,Remotive,global,Remoto global — categoria software-dev,13,36,15,3,0,5
