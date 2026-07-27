@@ -9,5 +9,22 @@
     "footer": "Ft4 Dense colophon",
     "slop_test": "58/58 pass",
     "responsive_test": "320–1920 px; required viewports 320, 375, 414 and 768 px"
+  },
+  {
+    "date": "2026-07-27",
+    "macrostructure": "Index-First",
+    "theme": "Newsprint + Newsprint invertido",
+    "enrichment": "none",
+    "brief": "Revisão do site: alcance, estado compartilhável e faixa escura",
+    "changes": [
+      "tokens.css ganha bloco prefers-color-scheme: dark; as faixas invertidas (ink como fundo, grupo dark-*) trocam de lado em vez de só clarear",
+      "SEO: canonical, Open Graph, Twitter card, Dataset em JSON-LD estático e ItemList do top 10 gerado do CSV",
+      "og-cover.png 1200x630 desenhado por scripts/gerar_og.py a partir dos CSVs",
+      "ranking ganha ordenação (rank, recorrência, posição média, título) e botão mostrar todos",
+      "busca, ordem e filtros passam a viver na query string via replaceState",
+      "atalhos / e Esc na busca, botão de retorno ao topo, foco na primeira linha revelada",
+      "folha de impressão, esqueletos na altura real do conteúdo, retry no estado de erro"
+    ],
+    "removed": [".legend e .mini-book, markup sem regra visível em nenhum breakpoint"]
   }
 ]

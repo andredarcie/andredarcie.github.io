@@ -103,9 +103,24 @@ visíveis.
 
 ## Página web
 
-A página responsiva em `index.html` apresenta o ranking, permite buscar e filtrar livros,
-expande as fontes de cada resultado e reúne as 100 fontes pesquisadas. Como os dados são
-carregados dos CSVs, abra a pasta por um servidor local:
+A página responsiva em `index.html` apresenta o ranking, permite buscar, ordenar e filtrar
+livros, expande as fontes de cada resultado e reúne as 100 fontes pesquisadas. Ela segue o
+tema claro ou escuro do sistema e traz uma folha de estilo de impressão para o ranking.
+
+Busca, ordem e filtros ficam na query string, então uma visão filtrada é um link:
+
+| Parâmetro | Seção | Valores |
+|---|---|---|
+| `q` | ranking | texto livre (título ou autor) |
+| `min` | ranking | `0`, `2`, `5`, `10`, `20` |
+| `ordem` | ranking | `rank`, `ocorrencias`, `posicao_media`, `titulo` |
+| `fq` | fontes | texto livre (título, publicador ou domínio) |
+| `tipo` | fontes | `all`, `meta_ranking`, `ranking_explicito`, `lista_numerada`, `ordem_editorial` |
+| `faixa` | fontes | `all`, `sólida`, `aceitável`, `frágil` |
+
+Exemplo: `?q=fowler&ordem=posicao_media`. Dentro do ranking, `/` foca a busca e `Esc` limpa.
+
+Como os dados são carregados dos CSVs, abra a pasta por um servidor local:
 
 ```powershell
 python -m http.server 8000
@@ -120,4 +135,8 @@ Execute:
 ```powershell
 python scripts/gerar_ranking.py
 python scripts/validar_resultados.py
+python scripts/gerar_og.py
 ```
+
+`gerar_og.py` redesenha `og-cover.png`, a imagem de prévia em redes sociais, a partir dos
+CSVs — vale rodar sempre que o top 3 ou os totais mudarem.

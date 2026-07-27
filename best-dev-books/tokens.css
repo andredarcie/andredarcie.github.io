@@ -1,5 +1,7 @@
 /* Hallmark · tokens: Newsprint · paper-band: light · accent-hue: warm rust */
 :root {
+  color-scheme: light;
+
   --color-paper: oklch(96.5% 0.012 82);
   --color-paper-2: oklch(93.5% 0.015 82);
   --color-paper-3: oklch(88.5% 0.017 82);
@@ -73,4 +75,40 @@
   --z-modal: 400;
   --z-toast: 500;
   --z-tooltip: 600;
+}
+
+/*
+  Newsprint invertido. O layout usa faixas invertidas: `--color-ink` também é
+  fundo (seção de fontes, rodapé, card do 1º lugar) e os tokens `--color-dark-*`
+  descrevem o conteúdo que fica sobre essa faixa. Por isso o modo escuro não é
+  uma troca de duas cores: paper escurece, ink clareia e o grupo `dark-*`
+  (mais `accent-soft` e `focus-dark`) escurece para continuar legível sobre a
+  faixa, que agora é a clara.
+*/
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --color-paper: oklch(17% 0.02 255);
+    --color-paper-2: oklch(21.5% 0.022 255);
+    --color-paper-3: oklch(29% 0.024 255);
+    --color-ink: oklch(93.5% 0.012 82);
+    --color-ink-2: oklch(85% 0.013 82);
+    --color-muted: oklch(71% 0.015 82);
+    --color-rule: oklch(33% 0.02 255);
+    --color-rule-strong: oklch(48% 0.022 255);
+    --color-accent: oklch(73% 0.145 45);
+    --color-accent-hover: oklch(82% 0.12 55);
+    --color-accent-soft: oklch(46% 0.17 35);
+    --color-accent-ink: oklch(17% 0.02 255);
+    --color-focus: oklch(80% 0.14 60);
+    --color-focus-dark: oklch(45% 0.16 35);
+    --color-dark-surface: oklch(90% 0.014 82);
+    --color-dark-rule: oklch(72% 0.018 82);
+    --color-dark-muted: oklch(42% 0.022 255);
+    --color-success: oklch(72% 0.13 160);
+    --color-error: oklch(57% 0.19 27);
+    --color-skeleton: oklch(26% 0.02 255);
+    --color-transparent: oklch(93.5% 0.005 82 / 0);
+  }
 }

@@ -10,8 +10,47 @@
       name="description"
       content="Ranking dos livros mais recomendados para desenvolvimento de software, consolidado a partir de 100 fontes."
     />
-    <meta name="theme-color" content="#18243a" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f1e7" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#12161f" />
+    <meta name="color-scheme" content="light dark" />
     <title>Best Dev Books — Os livros mais recomendados para devs</title>
+    <link rel="canonical" href="https://andredarcie.github.io/best-dev-books/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Best Dev Books" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content="https://andredarcie.github.io/best-dev-books/" />
+    <meta
+      property="og:title"
+      content="Best Dev Books — Os livros mais recomendados para devs"
+    />
+    <meta
+      property="og:description"
+      content="352 livros, 100 fontes, um ranking. Índice verificável dos títulos que mais aparecem quando desenvolvedores recomendam o que ler."
+    />
+    <meta
+      property="og:image"
+      content="https://andredarcie.github.io/best-dev-books/og-cover.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Capa do Best Dev Books com os três livros mais recomendados e os números da pesquisa."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Best Dev Books — Os livros mais recomendados para devs"
+    />
+    <meta
+      name="twitter:description"
+      content="352 livros, 100 fontes, um ranking. Consenso da web sobre o que ler, com posição e fonte auditáveis."
+    />
+    <meta
+      name="twitter:image"
+      content="https://andredarcie.github.io/best-dev-books/og-cover.png"
+    />
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317223b'/%3E%3Crect x='13' y='20' width='10' height='29' fill='%23f65a36'/%3E%3Crect x='27' y='11' width='10' height='38' fill='%238dccbf'/%3E%3Crect x='41' y='25' width='10' height='24' fill='%23edba45'/%3E%3C/svg%3E"
@@ -22,8 +61,52 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@400;700&amp;family=Newsreader:opsz,wght@6..72,400;6..72,700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./hallmark.css" />
-    <script src="./app.js" defer></script>
+    <link rel="stylesheet" href="./hallmark.css?v=2" />
+    <script src="./app.js?v=2" defer></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "Best Dev Books — ranking de livros recomendados para desenvolvimento de software",
+        "description": "Consolidação de recomendações de livros de programação e engenharia de software publicadas na web. Cada aparição vale um ponto de recorrência e a posição dentro de cada lista gera um bônus normalizado.",
+        "url": "https://andredarcie.github.io/best-dev-books/",
+        "inLanguage": "pt-BR",
+        "isAccessibleForFree": true,
+        "keywords": [
+          "livros de programação",
+          "engenharia de software",
+          "ranking",
+          "consenso",
+          "leitura para desenvolvedores"
+        ],
+        "creator": {
+          "@type": "Person",
+          "name": "André N. Darcie",
+          "url": "https://andredarcie.github.io/"
+        },
+        "distribution": [
+          {
+            "@type": "DataDownload",
+            "name": "Ranking final",
+            "encodingFormat": "text/csv",
+            "contentUrl": "https://andredarcie.github.io/best-dev-books/ranking_final.csv"
+          },
+          {
+            "@type": "DataDownload",
+            "name": "Índice de fontes",
+            "encodingFormat": "text/csv",
+            "contentUrl": "https://andredarcie.github.io/best-dev-books/fontes.csv"
+          },
+          {
+            "@type": "DataDownload",
+            "name": "Todas as menções",
+            "encodingFormat": "text/csv",
+            "contentUrl": "https://andredarcie.github.io/best-dev-books/todas_mencoes.csv"
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#ranking">Pular para o ranking</a>
@@ -121,7 +204,7 @@
             </p>
           </div>
 
-          <div class="podium-grid" id="podium" aria-live="polite">
+          <div class="podium-grid" id="podium">
             <div class="skeleton podium-skeleton"></div>
             <div class="skeleton podium-skeleton"></div>
             <div class="skeleton podium-skeleton"></div>
@@ -143,13 +226,17 @@
 
           <div class="toolbar" role="search" aria-label="Filtrar ranking">
             <div class="field field-search">
-              <label for="book-search">Buscar livro ou autor</label>
+              <label for="book-search">
+                Buscar livro ou autor
+                <kbd class="key-hint" aria-hidden="true">/</kbd>
+              </label>
               <div class="input-wrap">
                 <input
                   id="book-search"
                   type="search"
                   placeholder="Ex.: Refactoring ou Martin Fowler"
                   autocomplete="off"
+                  aria-keyshortcuts="/"
                 />
               </div>
             </div>
@@ -163,6 +250,15 @@
                 <option value="20">20 fontes ou mais</option>
               </select>
             </div>
+            <div class="field">
+              <label for="book-order">Ordenar por</label>
+              <select id="book-order">
+                <option value="rank">Ranking</option>
+                <option value="ocorrencias">Recorrência</option>
+                <option value="posicao_media">Melhor posição média</option>
+                <option value="titulo">Título (A–Z)</option>
+              </select>
+            </div>
             <button class="clear-button" id="clear-book-filters" type="button">
               Limpar filtros
             </button>
@@ -170,10 +266,6 @@
 
           <div class="result-meta">
             <p id="book-result-count" aria-live="polite">Carregando ranking…</p>
-            <div class="legend" aria-label="Legenda">
-              <span><i class="legend-bar" aria-hidden="true"></i> presença nas fontes</span>
-              <span><i class="legend-score" aria-hidden="true"></i> pontuação final</span>
-            </div>
           </div>
 
           <div class="ranking-header" aria-hidden="true">
@@ -191,9 +283,12 @@
           </div>
 
           <div class="load-more-wrap">
-            <button class="button button-outline" id="load-more" type="button" hidden>
+            <button class="button" id="load-more" type="button" hidden>
               Mostrar mais livros
               <span aria-hidden="true">↓</span>
+            </button>
+            <button class="clear-button" id="show-all" type="button" hidden>
+              Mostrar todos
             </button>
           </div>
         </div>
@@ -208,7 +303,12 @@
             <p>
               URL, natureza, critério de ordenação e quantidade de livros permanecem
               visíveis. Cada fonte traz a grade de qualidade de sete critérios definida no
-              <a href="./PROTOCOLO-FONTES.md">protocolo de inclusão</a>.
+              <a
+                href="https://github.com/andredarcie/andredarcie.github.io/blob/main/best-dev-books/PROTOCOLO-FONTES.md"
+                target="_blank"
+                rel="noreferrer"
+                >protocolo de inclusão ↗</a
+              >.
             </p>
           </div>
 
@@ -265,9 +365,21 @@
               gera um bônus normalizado, sem permitir que poucas posições altas
               superem um título encontrado em mais listas.
             </p>
-            <a class="text-link" href="./README.md">Ler método completo →</a>
-            <a class="text-link" href="./PROTOCOLO-FONTES.md">
-              Protocolo de inclusão de fontes →
+            <a
+              class="text-link"
+              href="https://github.com/andredarcie/andredarcie.github.io/blob/main/best-dev-books/README.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Ler método completo ↗
+            </a>
+            <a
+              class="text-link"
+              href="https://github.com/andredarcie/andredarcie.github.io/blob/main/best-dev-books/PROTOCOLO-FONTES.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Protocolo de inclusão de fontes ↗
             </a>
           </div>
 
@@ -376,6 +488,11 @@
           <div>
             <span class="download-kicker">Dados abertos</span>
             <h3>Refaça a análise.</h3>
+            <p>
+              Quatro CSVs em UTF-8: o ranking, o índice das fontes, cada menção
+              individual com posição de origem e o log dos portões reaplicados a
+              cada execução.
+            </p>
           </div>
           <div class="download-actions">
             <a class="text-link" href="./ranking_final.csv" download>
@@ -383,6 +500,12 @@
             </a>
             <a class="text-link" href="./fontes.csv" download>
               Índice de fontes ↓
+            </a>
+            <a class="text-link" href="./todas_mencoes.csv" download>
+              Todas as menções ↓
+            </a>
+            <a class="text-link" href="./auditoria.csv" download>
+              Auditoria dos portões ↓
             </a>
           </div>
         </div>
@@ -404,6 +527,10 @@
         </p>
       </div>
     </footer>
+
+    <button class="to-top" id="to-top" type="button" hidden>
+      <span aria-hidden="true">↑</span> Topo
+    </button>
 
     <noscript>
       <div class="noscript">

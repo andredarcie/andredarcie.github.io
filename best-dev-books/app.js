@@ -1,10 +1,13 @@
+const PAGE_SIZE = 25;
+
 const state = {
   ranking: [],
   sources: [],
   sourcesById: new Map(),
-  visibleBooks: 25,
+  visibleBooks: PAGE_SIZE,
   bookQuery: "",
   minMentions: 0,
+  bookOrder: "rank",
   sourceQuery: "",
   sourceOrder: "all",
   sourceTier: "all",
@@ -16,9 +19,11 @@ const elements = {
   sourcesGrid: document.querySelector("#sources-grid"),
   bookSearch: document.querySelector("#book-search"),
   minMentions: document.querySelector("#min-mentions"),
+  bookOrder: document.querySelector("#book-order"),
   clearBookFilters: document.querySelector("#clear-book-filters"),
   bookResultCount: document.querySelector("#book-result-count"),
   loadMore: document.querySelector("#load-more"),
+  showAll: document.querySelector("#show-all"),
   sourceSearch: document.querySelector("#source-search"),
   sourceOrder: document.querySelector("#source-order"),
   sourceTier: document.querySelector("#source-tier"),
@@ -31,6 +36,19 @@ const elements = {
   sourcesTotal: document.querySelector("#sources-total"),
   footerSources: document.querySelector("#footer-sources"),
   footerMentions: document.querySelector("#footer-mentions"),
+  toTop: document.querySelector("#to-top"),
+  brand: document.querySelector(".brand"),
+};
+
+// Ordem alternativa do ranking. `rank` é a padrão e segue a pontuação final.
+const bookComparators = {
+  rank: (a, b) => a.rank_final - b.rank_final,
+  ocorrencias: (a, b) =>
+    b.ocorrencias - a.ocorrencias || a.rank_final - b.rank_final,
+  posicao_media: (a, b) =>
+    a.posicao_media - b.posicao_media || a.rank_final - b.rank_final,
+  titulo: (a, b) =>
+    a.titulo_normalizado.localeCompare(b.titulo_normalizado, "pt-BR"),
 };
 
 const orderLabels = {
@@ -124,6 +142,14 @@ function number(value, digits = 0) {
   });
 }
 
+function debounce(fn, wait) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
+}
+
 function prepareData(rankingRows, sourceRows) {
   state.ranking = rankingRows.map((book) => ({
     ...book,
@@ -134,12 +160,17 @@ function prepareData(rankingRows, sourceRows) {
     peso_posicao_medio: Number(book.peso_posicao_medio),
     pontuacao_final: Number(book.pontuacao_final),
     posicao_media: Number(book.posicao_media),
-    sourceIds: book.fontes.split("|").filter(Boolean),
+    sourceIds: (book.fontes || "").split("|").filter(Boolean),
+    // Normalizar aqui evita refazer a conta dos 352 títulos a cada tecla.
+    searchKey: normalizeSearch(`${book.titulo_normalizado} ${book.autor}`),
   }));
 
   state.sources = sourceRows.map((source) => ({
     ...source,
     quantidade_livros: Number(source.quantidade_livros),
+    searchKey: normalizeSearch(
+      `${source.titulo} ${source.publicador} ${source.dominio} ${source.escopo}`,
+    ),
   }));
 
   state.sourcesById = new Map(
@@ -183,12 +214,39 @@ function renderPodium() {
               <strong>${book.ocorrencias}/${book.total_fontes}</strong>
               <small>${number(book.percentual_fontes, 1)}% das fontes</small>
             </div>
-            <span class="mini-book" aria-hidden="true"></span>
           </div>
         </article>
       `,
     )
     .join("");
+}
+
+// O Dataset é estático no HTML; o top 10 sai do CSV para não envelhecer no markup.
+function renderStructuredData() {
+  const script =
+    document.querySelector("#ranking-jsonld") ||
+    document.createElement("script");
+  script.id = "ranking-jsonld";
+  script.type = "application/ld+json";
+  script.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Livros mais recomendados para desenvolvimento de software",
+    numberOfItems: state.ranking.length,
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    itemListElement: state.ranking.slice(0, 10).map((book) => ({
+      "@type": "ListItem",
+      position: book.rank_final,
+      item: {
+        "@type": "Book",
+        name: book.titulo_normalizado,
+        author: book.autor
+          .split(";")
+          .map((name) => ({ "@type": "Person", name: name.trim() })),
+      },
+    })),
+  });
+  document.head.appendChild(script);
 }
 
 function sourceChips(book) {
@@ -214,7 +272,7 @@ function sourceChips(book) {
 function bookRow(book) {
   const width = Math.min(100, (book.ocorrencias / book.total_fontes) * 100);
   return `
-    <article class="book-row" data-testid="book-row">
+    <article class="book-row" data-testid="book-row" tabindex="-1">
       <div class="book-main">
         <span class="book-rank">${book.rank_final}</span>
         <div class="book-info">
@@ -249,24 +307,23 @@ function bookRow(book) {
 
 function filteredBooks() {
   const query = normalizeSearch(state.bookQuery);
-  return state.ranking.filter((book) => {
-    const searchable = normalizeSearch(
-      `${book.titulo_normalizado} ${book.autor}`,
-    );
-    return (
+  const books = state.ranking.filter(
+    (book) =>
       book.ocorrencias >= state.minMentions &&
-      (!query || searchable.includes(query))
-    );
-  });
+      (!query || book.searchKey.includes(query)),
+  );
+
+  return books.sort(bookComparators[state.bookOrder] || bookComparators.rank);
 }
 
 function renderRanking() {
   const books = filteredBooks();
   const visible = books.slice(0, state.visibleBooks);
+  const remaining = books.length - visible.length;
 
   elements.bookResultCount.textContent = `${number(books.length)} ${
     books.length === 1 ? "livro encontrado" : "livros encontrados"
-  }`;
+  }${remaining ? ` · ${number(visible.length)} na tela` : ""}`;
 
   if (!visible.length) {
     elements.rankingList.innerHTML = `
@@ -278,26 +335,26 @@ function renderRanking() {
     elements.rankingList.innerHTML = visible.map(bookRow).join("");
   }
 
-  elements.loadMore.hidden = visible.length >= books.length;
-  if (!elements.loadMore.hidden) {
-    elements.loadMore.textContent = `Mostrar mais ${Math.min(25, books.length - visible.length)} livros ↓`;
+  elements.loadMore.hidden = remaining <= 0;
+  elements.showAll.hidden = remaining <= PAGE_SIZE;
+  if (remaining > 0) {
+    elements.loadMore.textContent = `Mostrar mais ${Math.min(PAGE_SIZE, remaining)} livros ↓`;
+  }
+  if (remaining > PAGE_SIZE) {
+    elements.showAll.textContent = `Mostrar todos os ${number(books.length)}`;
   }
 }
 
 function filteredSources() {
   const query = normalizeSearch(state.sourceQuery);
-  return state.sources.filter((source) => {
-    const searchable = normalizeSearch(
-      `${source.titulo} ${source.publicador} ${source.dominio} ${source.escopo}`,
-    );
-    return (
+  return state.sources.filter(
+    (source) =>
       (state.sourceOrder === "all" ||
         source.tipo_ordem === state.sourceOrder) &&
       (state.sourceTier === "all" ||
         source.qualidade_faixa === state.sourceTier) &&
-      (!query || searchable.includes(query))
-    );
-  });
+      (!query || source.searchKey.includes(query)),
+  );
 }
 
 const qualityCriteria = [
@@ -381,7 +438,8 @@ function showLoadError(error) {
   const message = `
     <div class="error-state">
       <strong>Não foi possível carregar os dados.</strong>
-      Abra a página por um servidor local ou pelo GitHub Pages e tente novamente.
+      <span>Abra a página por um servidor local ou pelo GitHub Pages.</span>
+      <button class="button" type="button" data-retry>Tentar de novo</button>
     </div>
   `;
   elements.podium.innerHTML = message;
@@ -389,50 +447,177 @@ function showLoadError(error) {
   elements.sourcesGrid.innerHTML = message;
   elements.bookResultCount.textContent = "Falha ao carregar ranking";
   elements.sourceResultCount.textContent = "Falha ao carregar fontes";
+
+  document.querySelectorAll("[data-retry]").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.disabled = true;
+      init();
+    });
+  });
+}
+
+// Filtro sem endereço não se compartilha; a URL passa a ser o estado da busca.
+const urlParams = {
+  q: ["bookQuery", (value) => value, ""],
+  min: ["minMentions", Number, 0],
+  ordem: ["bookOrder", (value) => value, "rank"],
+  fq: ["sourceQuery", (value) => value, ""],
+  tipo: ["sourceOrder", (value) => value, "all"],
+  faixa: ["sourceTier", (value) => value, "all"],
+};
+
+// Um <select> recusa valor fora da lista e fica em branco; nesse caso vale a
+// opção padrão, para uma URL adulterada não deixar o controle sem seleção.
+function applySelect(select, value, fallback) {
+  select.value = String(value);
+  if (select.selectedIndex < 0) select.value = String(fallback);
+  return select.value;
+}
+
+function readStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  Object.entries(urlParams).forEach(([param, [key, parse]]) => {
+    if (!params.has(param)) return;
+    const value = parse(params.get(param));
+    if (typeof value !== "number" || Number.isFinite(value)) {
+      state[key] = value;
+    }
+  });
+
+  elements.bookSearch.value = state.bookQuery;
+  elements.sourceSearch.value = state.sourceQuery;
+  state.minMentions = Number(applySelect(elements.minMentions, state.minMentions, 0));
+  state.bookOrder = applySelect(elements.bookOrder, state.bookOrder, "rank");
+  state.sourceOrder = applySelect(elements.sourceOrder, state.sourceOrder, "all");
+  state.sourceTier = applySelect(elements.sourceTier, state.sourceTier, "all");
+}
+
+const syncUrl = debounce(() => {
+  const url = new URL(window.location.href);
+  Object.entries(urlParams).forEach(([param, [key, , fallback]]) => {
+    if (String(state[key]) === String(fallback)) {
+      url.searchParams.delete(param);
+    } else {
+      url.searchParams.set(param, state[key]);
+    }
+  });
+  // replaceState mantém o botão voltar servindo à navegação, não aos filtros.
+  window.history.replaceState(null, "", url);
+}, 250);
+
+function updateBooks({ resetPage = true } = {}) {
+  if (resetPage) state.visibleBooks = PAGE_SIZE;
+  renderRanking();
+  syncUrl();
+}
+
+// Ao revelar mais linhas o foco vai para a primeira delas: quem navega por
+// teclado continua de onde parou em vez de cair no fim do documento.
+function revealMore(step) {
+  const boundary = state.visibleBooks;
+  state.visibleBooks += step;
+  updateBooks({ resetPage: false });
+  elements.rankingList.children[boundary]?.focus();
+}
+
+function updateSources() {
+  renderSources();
+  syncUrl();
 }
 
 function bindEvents() {
+  const onBookQuery = debounce(() => updateBooks(), 150);
   elements.bookSearch.addEventListener("input", (event) => {
     state.bookQuery = event.target.value;
-    state.visibleBooks = 25;
-    renderRanking();
+    onBookQuery();
   });
 
   elements.minMentions.addEventListener("change", (event) => {
     state.minMentions = Number(event.target.value);
-    state.visibleBooks = 25;
-    renderRanking();
+    updateBooks();
+  });
+
+  elements.bookOrder.addEventListener("change", (event) => {
+    state.bookOrder = event.target.value;
+    updateBooks();
   });
 
   elements.clearBookFilters.addEventListener("click", () => {
     state.bookQuery = "";
     state.minMentions = 0;
-    state.visibleBooks = 25;
+    state.bookOrder = "rank";
     elements.bookSearch.value = "";
     elements.minMentions.value = "0";
-    renderRanking();
+    elements.bookOrder.value = "rank";
+    updateBooks();
     elements.bookSearch.focus();
   });
 
-  elements.loadMore.addEventListener("click", () => {
-    state.visibleBooks += 25;
-    renderRanking();
-  });
+  elements.loadMore.addEventListener("click", () => revealMore(PAGE_SIZE));
+  elements.showAll.addEventListener("click", () =>
+    revealMore(state.ranking.length),
+  );
 
+  const onSourceQuery = debounce(updateSources, 150);
   elements.sourceSearch.addEventListener("input", (event) => {
     state.sourceQuery = event.target.value;
-    renderSources();
+    onSourceQuery();
   });
 
   elements.sourceOrder.addEventListener("change", (event) => {
     state.sourceOrder = event.target.value;
-    renderSources();
+    updateSources();
   });
 
   elements.sourceTier.addEventListener("change", (event) => {
     state.sourceTier = event.target.value;
-    renderSources();
+    updateSources();
   });
+
+  bindShortcuts();
+  bindBackToTop();
+}
+
+function bindShortcuts() {
+  document.addEventListener("keydown", (event) => {
+    const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName);
+    if (event.key === "/" && !typing && !event.metaKey && !event.ctrlKey) {
+      event.preventDefault();
+      elements.bookSearch.focus();
+      elements.bookSearch.select();
+    }
+    if (event.key === "Escape" && event.target === elements.bookSearch) {
+      state.bookQuery = "";
+      elements.bookSearch.value = "";
+      updateBooks();
+    }
+  });
+}
+
+function bindBackToTop() {
+  let ticking = false;
+  const update = () => {
+    elements.toTop.hidden = window.scrollY < window.innerHeight;
+    ticking = false;
+  };
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    },
+    { passive: true },
+  );
+
+  elements.toTop.addEventListener("click", () => {
+    // Sem `behavior` explícito o scroll respeita o prefers-reduced-motion do CSS.
+    window.scrollTo({ top: 0 });
+    elements.brand.focus();
+  });
+
+  update();
 }
 
 function alignInitialHash() {
@@ -447,11 +632,13 @@ function alignInitialHash() {
   });
 }
 
+let eventsBound = false;
+
 async function init() {
   try {
     const [rankingResponse, sourceResponse] = await Promise.all([
-      fetch("./ranking_final.csv"),
-      fetch("./fontes.csv"),
+      fetch("./ranking_final.csv?v=2"),
+      fetch("./fontes.csv?v=2"),
     ]);
 
     if (!rankingResponse.ok || !sourceResponse.ok) {
@@ -468,9 +655,17 @@ async function init() {
     prepareData(parseCsv(rankingText), parseCsv(sourceText));
     renderStats();
     renderPodium();
+    renderStructuredData();
+    readStateFromUrl();
     renderRanking();
     renderSources();
-    bindEvents();
+
+    // init() roda de novo no botão "tentar de novo"; os listeners são únicos.
+    if (!eventsBound) {
+      bindEvents();
+      eventsBound = true;
+    }
+
     alignInitialHash();
   } catch (error) {
     showLoadError(error);

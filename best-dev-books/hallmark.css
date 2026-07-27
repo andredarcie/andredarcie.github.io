@@ -1,5 +1,5 @@
 /* Hallmark · macrostructure: Index-First · genre: editorial · tone: technical · theme: Newsprint · anchor hue: warm rust · pre-emit critique: P5 H5 E5 S5 R5 V5 · contrast: pass (40–41) · nav: N6 · footer: Ft4 · slop: pass (42–45) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · icons: pass (30) · mobile: pass (34, 49, 50–57) */
-@import url("./tokens.css");
+@import url("./tokens.css?v=2");
 
 *,
 *::before,
@@ -536,10 +536,6 @@ select.is-success,
   color: var(--color-muted);
 }
 
-.mini-book {
-  display: none;
-}
-
 /* Flat search tools */
 .toolbar {
   display: grid;
@@ -555,9 +551,31 @@ select.is-success,
 }
 
 .field label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   color: var(--color-muted);
   font-size: var(--text-sm);
   font-weight: 700;
+}
+
+/* Atalho de teclado só faz sentido onde existe teclado. */
+.key-hint {
+  display: none;
+  padding-inline: var(--space-2xs);
+  border: var(--rule-hair) solid var(--color-rule-strong);
+  border-radius: var(--radius-small);
+  color: var(--color-muted);
+  font-family: var(--font-outlier);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@media (min-width: 40rem) and (pointer: fine) {
+  .key-hint {
+    display: inline-block;
+  }
 }
 
 .input-wrap {
@@ -602,6 +620,7 @@ select:focus-visible {
 
 .clear-button:active,
 .button:active,
+.to-top:active,
 .text-link:active,
 .header-download:active {
   transform: translateY(1px);
@@ -649,10 +668,6 @@ select:active {
   font-variant-numeric: tabular-nums;
 }
 
-.legend {
-  display: none;
-}
-
 .ranking-header {
   display: none;
 }
@@ -666,6 +681,13 @@ select:active {
   border-block-end: var(--rule-hair) solid var(--color-rule-strong);
   background: var(--color-paper);
   color: var(--color-ink);
+}
+
+/* A linha recebe foco programático ao revelar mais resultados. */
+.book-row:focus,
+.book-row:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
 }
 
 .book-main {
@@ -829,8 +851,16 @@ select:active {
 
 .load-more-wrap {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   justify-content: start;
+  gap: var(--space-lg);
   padding-block-start: var(--space-xl);
+}
+
+/* Sem botões visíveis a lista já acabou; o respiro extra vira buraco. */
+.load-more-wrap:not(:has(button:not([hidden]))) {
+  padding-block-start: 0;
 }
 
 .button {
@@ -854,9 +884,61 @@ select:active {
   color: var(--color-muted);
 }
 
+.error-state {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-sm);
+}
+
+.error-state strong {
+  color: var(--color-ink);
+}
+
+.sources-section .error-state,
+.sources-section .empty-state {
+  border-color: var(--color-dark-rule);
+  color: var(--color-dark-muted);
+}
+
+.sources-section .error-state strong {
+  color: var(--color-paper);
+}
+
+/* Ft4 · Retorno ao topo em página longa */
+.to-top {
+  position: fixed;
+  z-index: var(--z-sticky);
+  inset-block-end: var(--space-md);
+  inset-inline-end: var(--space-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-inline: var(--space-md);
+  border: var(--rule-hair) solid var(--color-ink);
+  border-radius: var(--radius-card);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* Cada esqueleto imita a altura do bloco que substitui, para o conteúdo
+   carregado não empurrar a página. */
 .skeleton {
   min-height: 5rem;
   background: var(--color-skeleton);
+}
+
+.row-skeleton {
+  min-height: 11rem;
+}
+
+.podium-skeleton {
+  min-height: 13rem;
+}
+
+.source-skeleton {
+  min-height: 18rem;
 }
 
 /* Source index */
@@ -1282,7 +1364,8 @@ select:active {
     text-decoration-thickness: var(--rule-double);
   }
 
-  .button:hover {
+  .button:hover,
+  .to-top:hover {
     background: var(--color-ink);
     color: var(--color-paper);
   }
@@ -1351,8 +1434,12 @@ select:active {
   }
 
   .toolbar {
-    grid-template-columns: minmax(16rem, 1fr) minmax(13rem, 0.4fr) auto;
+    grid-template-columns: minmax(14rem, 1fr) minmax(11rem, 0.45fr) minmax(11rem, 0.45fr);
     align-items: end;
+  }
+
+  .toolbar .clear-button {
+    grid-column: 1 / -1;
   }
 
   .toolbar-dark {
@@ -1454,6 +1541,10 @@ select:active {
     padding-block: var(--space-lg);
   }
 
+  .row-skeleton {
+    min-height: 7rem;
+  }
+
   .book-rank {
     grid-area: rank;
   }
@@ -1500,6 +1591,18 @@ select:active {
     padding-inline-start: var(--space-2xl);
   }
 
+  .toolbar {
+    grid-template-columns:
+      minmax(14rem, 1fr)
+      minmax(10rem, 0.38fr)
+      minmax(11rem, 0.42fr)
+      auto;
+  }
+
+  .toolbar .clear-button {
+    grid-column: auto;
+  }
+
   .methodology-grid {
     grid-template-columns: minmax(0, 1.1fr) minmax(25rem, 0.9fr);
     gap: var(--space-3xl);
@@ -1514,6 +1617,77 @@ select:active {
 @media (min-width: 90rem) {
   .hero h1 {
     font-size: var(--text-display);
+  }
+}
+
+/* Impressão · o ranking vale como folha de consulta em papel */
+@media print {
+  .skip-link,
+  .mast-line,
+  .mast-nav-row,
+  .nav-disclosure,
+  .hero-actions,
+  .toolbar,
+  .load-more-wrap,
+  .to-top,
+  .book-sources,
+  .quality-panel,
+  .download-panel {
+    display: none !important;
+  }
+
+  html,
+  body,
+  .hero,
+  .site-header,
+  .top-section,
+  .ranking-section,
+  .sources-section,
+  .methodology-section,
+  .site-footer,
+  .book-row,
+  .podium-card,
+  .podium-card.rank-one,
+  .source-card,
+  .formula-final {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .section,
+  .hero {
+    padding-block: var(--space-lg);
+  }
+
+  .book-row,
+  .podium-card,
+  .source-card,
+  .formula-step {
+    break-inside: avoid;
+  }
+
+  .section-heading {
+    break-after: avoid;
+  }
+
+  .book-rank,
+  .score strong,
+  .podium-number,
+  .formula-step > span,
+  .query-row dt {
+    color: #000 !important;
+  }
+
+  .bar-fill {
+    background: #666 !important;
+  }
+
+  /* Em papel o destino do link some; explicitar mantém a fonte auditável. */
+  .source-card-footer a::after,
+  .footer-inner a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -1532,6 +1706,7 @@ select:active {
 
   .clear-button:active,
   .button:active,
+  .to-top:active,
   .text-link:active,
   .header-download:active {
     transform: none;
