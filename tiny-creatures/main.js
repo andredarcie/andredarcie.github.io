@@ -60,6 +60,16 @@ const LEAVE_BY     = 6;   // passos de tolerância para sair da base; ficar para
 const EXPLORE_BONUS = 0.12; // bônus de fitness por célula nova visitada (incentiva explorar)
 const GOAL_VISION_BONUS = 14;    // passos extras concedidos enquanto o objetivo está no cone de visão
 const STEP_LIMIT_MAX = GLEN * 3; // teto da extensão de passos por geração
+// Novidade comportamental (Novelty Search): sem isso a população converge toda
+// para a MESMA rota e a tela vira uma fila indiana. Premiar quem faz algo
+// diferente mantém várias estratégias vivas ao mesmo tempo.
+const NOVELTY_W   = 0.5;  // quanto a novidade infla a aptidão (0 = só objetivo)
+const NOVELTY_K   = 5;    // vizinhos mais parecidos considerados
+const ARCHIVE_MAX = 300;  // teto do arquivo de comportamentos já vistos
+// Largada escalonada: a companhia sai da base em fluxo, não num piscar só.
+const RELEASE_SPAN = 12;  // passos entre a saída do primeiro e a do último
+// As defesas escalam a cada partida vencida pelas criaturas (coevolução).
+const BUDGET_STEP  = 3;   // peças extras concedidas por vitória da IA
 
 const createCreatureColor = SPRITES.createCreatureColor;
 const createCreatureName = SPRITES.createCreatureName;
@@ -154,6 +164,11 @@ let enemies  = [];             // inimigos vivos durante a fase de assistir
 let painting = false;          // arrastar para pintar defesas
 let bfsField = null;           // distância BFS de cada célula até a espada (contornando torres)
 let bfsMax   = 1;              // maior distância BFS alcançável
+let noveltyArchive = [];       // descritores de comportamento de gerações passadas
+let dynasties = new Map();     // id -> { id, base, color, born, alive } (linhagens vivas)
+let nextDynastyId = 1;
+let matchNum   = 1;            // partida atual (nº de mundos já enfrentados)
+let budgetBonus = 0;           // peças extras acumuladas a cada vitória das criaturas
 
 // ══ DOM REFS ════════════════════════════════════
 const gridEl   = document.getElementById('grid');
@@ -332,6 +347,33 @@ function neatFitness(a) {
   return f;
 }
 
+// ── NOVIDADE COMPORTAMENTAL ──────────────────────
+// Descritor: ONDE a criatura parou e QUANTO chão ela cobriu. Duas criaturas com
+// descritores distantes fizeram coisas diferentes — mesmo que as duas tenham ido
+// igualmente mal. É isso que a novidade premia.
+function behavior(a) {
+  return [a.pos.x, a.pos.y, Math.min(a.seen.size, MAXDIST)];
+}
+
+function behDist(p, q) {
+  const dx = p[0] - q[0], dy = p[1] - q[1], dn = (p[2] - q[2]) * 0.5;
+  return Math.sqrt(dx*dx + dy*dy + dn*dn);
+}
+
+// Distância média aos K comportamentos mais PARECIDOS, olhando a geração atual e
+// o arquivo histórico. Alto = ninguém tinha feito isso ainda.
+function noveltyOf(desc, peers) {
+  const ds = [];
+  for (const p of peers)          if (p !== desc) ds.push(behDist(desc, p));
+  for (const p of noveltyArchive) ds.push(behDist(desc, p));
+  if (!ds.length) return 0;
+  ds.sort((x, y) => x - y);
+  const k = Math.min(NOVELTY_K, ds.length);
+  let s = 0;
+  for (let i = 0; i < k; i++) s += ds[i];
+  return s / k;
+}
+
 // O que a criatura "vê" num bloco: positivo = bom, negativo = perigo.
 function cellSense(cx, cy) {
   if (cx<0 || cy<0 || cx>MAXI || cy>MAXI) return -1;        // fora da grade (parede)
@@ -372,17 +414,50 @@ function sensors(a) {
   return s;
 }
 
-function makeAgent(brain, name, color) {
-  return { brain, name, color, facing: 'U', pos: {...START}, reached: false, dead: false, hidden: false, bestBfs: Infinity, seen: new Set([key(START.x, START.y)]), path: [{...START}] };
+function makeAgent(brain, name, color, dyn) {
+  return { brain, name, color, dyn, facing: 'U', pos: {...START}, reached: false, dead: false, hidden: false, bestBfs: Infinity, seen: new Set([key(START.x, START.y)]), path: [{...START}], releaseAt: 0 };
 }
 
 // ══ EVOLVE ═══════════════════════════════════════
+// Sufixo dinástico: os filhos de uma mesma linhagem viram Ana, Ana II, Ana III…
+const ROMAN = ['', ' II', ' III', ' IV', ' V', ' VI', ' VII', ' VIII', ' IX', ' X'];
+
+// Funda uma linhagem nova, evitando repetir nome e cor de quem já está vivo.
+function foundDynasty() {
+  const usedColors = [], usedNames = new Set();
+  dynasties.forEach(v => { usedColors.push(v.color); usedNames.add(v.base); });
+  let base = createCreatureName();
+  for (let t = 0; t < 40 && usedNames.has(base); t++) base = createCreatureName();
+  // CREATURE_NAMES tem menos nomes que POP, então o sorteio ESGOTA e repete. Sem
+  // isso, duas linhagens vivas se chamariam igual e só a cor as separaria — e a
+  // paleta também repete. Marca a casa com uma letra: Wozniak, Wozniak B, …
+  if (usedNames.has(base)) {
+    const HOUSE = 'BCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for (let h = 0; h < HOUSE.length; h++) {
+      if (!usedNames.has(base + ' ' + HOUSE[h])) { base = base + ' ' + HOUSE[h]; break; }
+    }
+  }
+  const d = { id: nextDynastyId++, base, color: createCreatureColor({ usedColors }), born: gen, alive: 1 };
+  dynasties.set(d.id, d);
+  return d;
+}
+
 function buildPopFromGenomes() {
-  const usedColors = [];
+  const countByDyn = new Map();   // quantos membros desta linhagem já saíram
   pop = neat.genomes.map(g => {
-    const color = createCreatureColor({ usedColors });
-    usedColors.push(color);
-    return makeAgent(g, createCreatureName(), color);
+    let d = dynasties.get(g.lin);
+    if (!d) { d = foundDynasty(); g.lin = d.id; }   // genoma órfão funda a sua
+    const n = countByDyn.get(d.id) || 0;
+    countByDyn.set(d.id, n + 1);
+    // ROMAN[0] é '' (o fundador não leva sufixo), e '' é falsy — por isso o teste
+    // é pelo índice, não por `||`, senão o primeiro viraria "Ana 1".
+    const suffix = n < ROMAN.length ? ROMAN[n] : ` ${n + 1}`;
+    return makeAgent(g, d.base + suffix, d.color, d.id);
+  });
+  // linhagem sem nenhum descendente nesta geração está extinta: libera nome e cor
+  dynasties.forEach((v, id) => {
+    if (countByDyn.has(id)) v.alive = countByDyn.get(id);
+    else dynasties.delete(id);
   });
 }
 
@@ -392,20 +467,44 @@ function evolve() {
   pop.forEach(a => { if (bfsDistOf(a.pos.x, a.pos.y) < bfsDistOf(best.pos.x, best.pos.y)) best = a; });
   trail = best.path.slice();
 
-  // NEAT evolui pesos + topologia a partir da aptidão de cada rede
-  const fits = pop.map(a => neatFitness(a));
+  // Aptidão = objetivo (chegar na espada) INFLADO pela novidade do comportamento.
+  // Multiplicativo de propósito: preserva o piso de quem nunca saiu da base
+  // (0.001) e não depende da escala do mapa.
+  const descs = pop.map(behavior);
+  const fits = pop.map((a, i) => {
+    const nov = Math.min(1, noveltyOf(descs[i], descs) / MAXDIST);
+    return neatFitness(a) * (1 + NOVELTY_W * nov);
+  });
+
+  // arquivo histórico: é o que impede a população de redescobrir a mesma rota
+  noveltyArchive.push(...descs);
+  if (noveltyArchive.length > ARCHIVE_MAX) {
+    noveltyArchive.splice(0, noveltyArchive.length - ARCHIVE_MAX);
+  }
+
   neat.evolve(fits);              // fits alinhado a neat.genomes (== ordem de pop)
   buildPopFromGenomes();
 }
 
 function initPop() {
   neat = NEAT.createPopulation(NUM_INPUTS, NUM_OUTPUTS, POP);
+  dynasties = new Map();
+  nextDynastyId = 1;
+  noveltyArchive = [];
+  neat.genomes.forEach(g => { g.lin = foundDynasty().id; });  // geração 1: 40 fundadores
   buildPopFromGenomes();
 }
 
 // ══ FASE 1 · CONSTRUÇÃO ══════════════════════════
 function budgetUsed() {
   return towers.size + traps.size + enemyStarts.length;
+}
+
+// Orçamento da partida atual: cresce a cada vitória das criaturas. É o lado
+// "ambiente" da coevolução — quando elas melhoram, o mundo endurece, então a
+// corrida nunca chega num platô.
+function currentBudget() {
+  return BUDGET + budgetBonus;
 }
 
 function setTool(t) {
@@ -421,11 +520,11 @@ function setTool(t) {
 }
 
 function updateBudget() {
-  const left = BUDGET - budgetUsed();
+  const left = currentBudget() - budgetUsed();
   const el = document.getElementById('budget-left');
   if (el) el.textContent = left;
   const total = document.getElementById('budget-total');
-  if (total) total.textContent = BUDGET;   // o total sai do BUDGET, não do HTML
+  if (total) total.textContent = currentBudget();   // o total sai do código, não do HTML
   const wrap = document.getElementById('budget');
   if (wrap) wrap.classList.toggle('empty', left <= 0);
 }
@@ -445,7 +544,7 @@ function placeAt(x, y) {
     if (eIdx >= 0) enemyStarts.splice(eIdx, 1);
   } else {
     if (occupied) return;
-    if (budgetUsed() >= BUDGET) return;
+    if (budgetUsed() >= currentBudget()) return;
     if (tool === 'tower') towers.add(k);
     else if (tool === 'trap') traps.add(k);
     else if (tool === 'enemy') enemyStarts.push({x, y});
@@ -562,7 +661,7 @@ function startBuild() {
   gen = 1;
   genEl.textContent = '001';
   distEl.textContent = '—';
-  stepEl.textContent = '0 / ' + GLEN;
+  stepEl.textContent = '0 / ' + (GLEN + RELEASE_SPAN);
   phaseEl.style.width = '0%';
 
   document.querySelectorAll('.cell.trail').forEach(c => c.classList.remove('trail'));
@@ -571,8 +670,12 @@ function startBuild() {
   renderDefenses();
   renderEnemies(enemyStarts);
   updateBudget();
-  setStatus('BUILD · PLACE YOUR DEFENSES', 'building');
-  setCoach('<b>You are the environment.</b> Build defenses between the barracks and the castle, then press <b>Start the siege</b>. The invaders begin knowing nothing — you will watch them learn to break through by natural selection alone.');
+  setStatus(matchNum > 1
+    ? `BUILD · SIEGE ${matchNum} · +${BUDGET_STEP} GARRISONS`
+    : 'BUILD · PLACE YOUR DEFENSES', 'building');
+  setCoach(matchNum > 1
+    ? `<b>Siege ${matchNum}. The crown reinforces.</b> They broke through, so you get <b>${BUDGET_STEP} more garrisons</b> — ${currentBudget()} in total. This is coevolution: every time life solves the world, the world gets harder, and neither side ever finishes.`
+    : '<b>You are the environment.</b> Build defenses between the barracks and the castle, then press <b>Start the siege</b>. The invaders begin knowing nothing — you will watch them learn to break through by natural selection alone.');
 }
 
 // ══ FASE 2 · ASSISTIR ════════════════════════════
@@ -667,6 +770,7 @@ function damageTower(k) {
 function moveAgents() {
   pop.forEach(a => {
     if (a.reached || a.dead || stepN >= stepLimit) return;
+    if (stepN < a.releaseAt) return;      // ainda formando no quartel
 
     // Espada logo ao lado? Pega — só basta chegar.
     const dgoal = Math.abs(a.pos.x - GOAL.x) + Math.abs(a.pos.y - GOAL.y);
@@ -760,14 +864,16 @@ function advance(headless) {
 
   // punição GRAVE: quem não saiu da base depois da tolerância fica girando à toa
   // no quartel — morre na hora (seen só tem a célula de partida).
-  if (stepN >= LEAVE_BY) {
-    pop.forEach(a => {
-      if (!a.dead && !a.reached && a.seen.size <= 1) {
-        a.dead = true;
-        if (!headless) spawnDust(a.pos.x, a.pos.y);
-      }
-    });
-  }
+  // As duas punições contam a partir da LARGADA de cada um (stepN - releaseAt),
+  // nunca do relógio global: senão quem ainda está formando no quartel morreria
+  // parado, sem nunca ter tido a chance de andar.
+  pop.forEach(a => {
+    if (stepN - a.releaseAt < LEAVE_BY) return;
+    if (!a.dead && !a.reached && a.seen.size <= 1) {
+      a.dead = true;
+      if (!headless) spawnDust(a.pos.x, a.pos.y);
+    }
+  });
 
   // punição: quem fica muito atrás do líder (no caminho até a espada) é eliminado
   if (stepN >= 4) {
@@ -775,7 +881,9 @@ function advance(headless) {
     pop.forEach(a => { if (!a.dead && !a.reached) { const d = bfsDistOf(a.pos.x, a.pos.y); if (d < lead) lead = d; } });
     if (lead < Infinity) {
       pop.forEach(a => {
-        if (!a.dead && !a.reached && bfsDistOf(a.pos.x, a.pos.y) > lead + LAG_MARGIN) a.dead = true;
+        if (a.dead || a.reached) return;
+        if (stepN - a.releaseAt < 4) return;   // recém-largado ainda não é "atrasado"
+        if (bfsDistOf(a.pos.x, a.pos.y) > lead + LAG_MARGIN) a.dead = true;
       });
     }
   }
@@ -804,8 +912,11 @@ function tick() {
 // Reposiciona todas as criaturas na base (início de geração), sem desenhar.
 function resetPositions() {
   stepN = 0;
-  stepLimit = GLEN;
-  pop.forEach(a => {
+  // O teto sobe RELEASE_SPAN para que MESMO o último da fila tenha os GLEN
+  // passos de sempre — a largada escalonada não pode encurtar a vida de ninguém.
+  stepLimit = GLEN + RELEASE_SPAN;
+  const last = Math.max(1, pop.length - 1);
+  pop.forEach((a, i) => {
     a.pos = {...START};
     a.facing = 'U';
     a.reached = false;
@@ -814,6 +925,8 @@ function resetPositions() {
     a.bestBfs = bfsDistOf(START.x, START.y);
     a.seen = new Set([key(START.x, START.y)]);
     a.path = [{...START}];
+    // sai da base em fluxo: o líder (índice 0, elite do NEAT) puxa a coluna
+    a.releaseAt = Math.round(i / last * RELEASE_SPAN);
   });
   liveTraps = new Set(traps);                 // armadilhas voltam intactas a cada geração
   spentTowers = new Set();                     // torres recarregam (1 tiro por geração)
@@ -1325,7 +1438,7 @@ function render() {
     agent.style.left    = (a.pos.x * metrics.cellSize + sub.x) + 'px';
     agent.style.top     = (a.pos.y * metrics.cellSize + sub.y) + 'px';
     agent.classList.toggle('dead', a.dead);
-    if (label) label.textContent = a.name;
+    if (label) { label.textContent = a.name; label.style.color = a.color; }  // cor = dinastia
     dot.classList.toggle('best',    rank === 0 && !a.reached && !a.dead);
     dot.classList.toggle('reached', a.reached);
     dot.classList.toggle('dead',    a.dead);
@@ -1342,7 +1455,10 @@ function render() {
 }
 
 function renderList(ranked) {
-  listEl.innerHTML = '<div class="list-hdr">Invading company</div>';
+  // O contador de linhagens é o retrato da seleção: começa em 40 fundadores e
+  // despenca conforme umas poucas famílias tomam conta da população.
+  const lines = dynasties.size;
+  listEl.innerHTML = `<div class="list-hdr">Invading company · ${lines} ${lines === 1 ? 'bloodline' : 'bloodlines'}</div>`;
   ranked.forEach(({a,d}) => {
     const color = a.color;
     const pct   = Math.round(Math.max(0, (MAXDIST-d)/MAXDIST*100));
@@ -1428,7 +1544,13 @@ function setSpeed(level) {
 function reset() { startBuild(); }
 
 // Botão do modal de fim de partida.
-function backToBuild() { startBuild(); }
+function backToBuild() {
+  // As criaturas venceram a partida anterior: o mundo responde ficando mais
+  // duro. É o loop de coevolução — o jogador é o ambiente que escala.
+  matchNum++;
+  budgetBonus += BUDGET_STEP;
+  startBuild();
+}
 
 // ══ JANELA FLUTUANTE (HUD) ═══════════════════════
 // O tabuleiro ocupa a tela inteira; o painel é uma janela por cima dele, que se

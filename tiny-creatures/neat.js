@@ -106,7 +106,9 @@
     var nodes = [], conns = [], i;
     for (i = 0; i < g.nodes.length; i++) nodes.push({ id: g.nodes[i].id, type: g.nodes[i].type });
     for (i = 0; i < g.conns.length; i++) conns.push(cloneConn(g.conns[i]));
-    return { nodes: nodes, conns: conns, seed: g.seed };
+    // `lin` é uma etiqueta OPACA de linhagem: o NEAT só a repassa de pai para
+    // filho, nunca a lê. Quem dá significado a ela é o main.js (dinastias).
+    return { nodes: nodes, conns: conns, seed: g.seed, lin: g.lin };
   };
 
   // Ativação feed-forward (DAG) por recursão memoizada.
@@ -230,6 +232,7 @@
     }
     var child = this.buildFromConns(childConns);
     child.seed = g1.seed;   // herda o traço do pai mais apto
+    child.lin  = g1.lin;    // e a linhagem dele (ver comentário em clone)
     return child;
   };
 
