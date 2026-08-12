@@ -1,4 +1,5 @@
-// Museu da Travessia — nove salas, uma por estado, percorridas em primeira pessoa.
+// Museu da Travessia — o ano percorrido a pé, em primeira pessoa. Uma sala por
+// trecho contínuo da viagem, na ordem exata em que foi vivida.
 //
 // UMA SALA POR VEZ. Nada da sala vizinha existe: ao trocar de estado, a anterior
 // é desmontada e a memória de vídeo devolvida. Esta é a decisão que sustenta
@@ -23,7 +24,7 @@
 
 import * as THREE from 'three';
 import { DATA_URL, thumbUrl, fullUrl, setImageExt } from './config.js';
-import { S, fmtDate, fmtDateLong, fmtNum, fmtTime, daysBetween, romano } from './strings.js';
+import { S, fmtDate, fmtDateLong, fmtMonth, fmtNum, fmtTime, daysBetween, romano } from './strings.js';
 import { aplicarCidades, listarCidades } from './lugares.js';
 import { PosProducao, ambienteDeGaleria } from './museu-fx.js';
 import { criarSom } from './museu-som.js';
@@ -583,35 +584,101 @@ function moverPoeira(t) {
 
 // --- planta -----------------------------------------------------------------
 
+/**
+ * Trecho curto demais para virar sala é absorvido pelo anterior.
+ *
+ * A viagem tem uma passagem de duas fotos por Alagoas em 3 de agosto, entre dois
+ * blocos grandes. Sala própria para ela seriam 30 m de salão — o mínimo, já que
+ * os dois saguões sozinhos somam 19 — com dois quadros dentro. Absorvidas, as
+ * duas ficam no lugar cronológico que já ocupavam, e a etiqueta de cada uma
+ * continua dizendo Alagoas: quem nomeia a foto é a foto, não a sala.
+ */
+const MINIMO_POR_SALA = 10;
+
+/**
+ * Uma sala por trecho contínuo da viagem, e não por estado.
+ *
+ * A viagem não é uma fila de estados: ela volta. A Bahia aparece três vezes e
+ * Pernambuco duas, e enquanto a sala guardava o estado inteiro, atravessá-la era
+ * andar de agosto para novembro numa parede e cair de volta em agosto na sala
+ * seguinte. O museu tem uma ordem só — a do ano — e agora a planta a segue: cada
+ * sala é um pedaço contíguo do tempo, e a porta no fim dela abre no instante
+ * seguinte.
+ *
+ * O preço é o mesmo estado em salas diferentes e parede sobrando nas curtas. É
+ * barato: parede vazia é acabamento, data fora de ordem é uma mentira sobre a
+ * viagem.
+ */
 function planejar(m) {
-  const porEstado = new Map(m.states.map((s) => [s.uf, []]));
-  for (const p of m.photos) porEstado.get(p.uf)?.push(p);
+  const nomes = new Map(m.states.map((s) => [s.uf, s.nome ?? s.uf]));
 
-  m.states.forEach((estado, i) => {
-    const fotos = porEstado.get(estado.uf) ?? [];
+  // As fotos já vêm do manifesto em ordem cronológica, então "mudou de estado" é
+  // a única fronteira que precisa ser encontrada.
+  const trechos = [];
+  for (const p of m.photos) {
+    if (!p.uf) continue;                      // sem estado, sem sala
+    const atual = trechos[trechos.length - 1];
+    if (atual && atual.uf === p.uf) atual.fotos.push(p);
+    else trechos.push({ uf: p.uf, fotos: [p] });
+  }
 
+  // A segunda condição é para quando absorver um trecho curto deixa dois trechos
+  // do mesmo estado encostados: aí eles são um só. Duas salas iguais lado a lado
+  // fariam o visitante achar que andou em círculo.
+  const planos = [];
+  for (const t of trechos) {
+    const anterior = planos[planos.length - 1];
+    if (anterior && (t.fotos.length < MINIMO_POR_SALA || anterior.uf === t.uf)) {
+      anterior.fotos.push(...t.fotos);
+      continue;
+    }
+    planos.push(t);
+  }
+
+  // Estado visitado uma vez só fica com o nome limpo. Repetido, ganha o mês em
+  // que aquela passagem começa — sem isso o índice lista três "Bahia" iguais.
+  const vezes = new Map();
+  for (const p of planos) vezes.set(p.uf, (vezes.get(p.uf) ?? 0) + 1);
+
+  planos.forEach(({ uf, fotos }, i) => {
     // O comprimento sai da capacidade real, medida pelo mesmo gerador que
     // constrói as paredes — e não de uma fórmula paralela. Estimar a capacidade
     // por um lado e gerar a parede por outro foi o que deixou 46 fotos de fora
     // na Bahia: as duas contas nunca se conferiam.
-    // Teto de 260 m, e não de 200: com duas fileiras o salão de Pernambuco
-    // precisa de 184 m para pendurar as 1.103 fotos. Parar antes deixaria fotos
-    // de fora em silêncio, que é o pior desfecho possível para um acervo.
+    //
+    // Teto de 420 m, e não dos 260 de antes. A fita pendura em metade da parede
+    // que o salão tem — só uma face por divisória, só a lateral do lado que se
+    // anda — então cada metro de prédio vale metade do que valia, e o Maranhão
+    // precisa de perto de 270 m para as suas 824 fotos. O teto existe como
+    // guarda contra dado absurdo, não como orçamento: encostar nele deixaria
+    // fotos de fora em silêncio, que é o pior desfecho possível para um acervo.
     let comprimento = 30;
-    while (comprimento < 260 && capacidade(comprimento) < fotos.length) comprimento += 2;
+    while (comprimento < 420 && capacidade(comprimento) < fotos.length) comprimento += 2;
+
+    // Período e quilometragem saem das fotos DA SALA, e não do resumo do estado:
+    // o resumo descreve todas as passagens somadas e diria que as três salas da
+    // Bahia duraram de julho a dezembro, cada uma.
+    //
+    // `leg` é a mesma parcela por foto que o build soma para chegar ao km do
+    // estado, então isto não é uma segunda definição de distância: as salas de um
+    // mesmo estado somam exatamente o total dele, e as de estado visitado uma vez
+    // só continuam dando o número de sempre.
+    const primeira = fotos[0]?.t ?? null;
+    const ultima = fotos[fotos.length - 1]?.t ?? null;
+    const base = nomes.get(uf) ?? uf;
 
     app.salas.push({
       indice: i,
-      uf: estado.uf,
-      nome: estado.nome ?? estado.uf,
+      uf,
+      nome: vezes.get(uf) > 1 ? `${base}, ${fmtMonth(primeira)}` : base,
       total: fotos.length,
-      km: estado.km ?? 0,
-      primeira: estado.first,
-      ultima: estado.last,
-      dias: daysBetween(estado.first, estado.last) ?? 1,
+      km: fotos.reduce((soma, f) => soma + (f.leg ?? 0), 0),
+      primeira,
+      ultima,
+      dias: daysBetween(primeira, ultima) ?? 1,
       cheio: diaMaisCheio(fotos),
       cidades: listarCidades(fotos, 4),
-      paleta: PALETAS[estado.uf] ?? PALETA_PADRAO,
+      paleta: PALETAS[uf] ?? PALETA_PADRAO,
       fotos,
       comprimento,
     });
@@ -655,40 +722,58 @@ function divisorias(L) {
 }
 
 /**
- * Os trechos de parede disponíveis para pendurar, em ordem de percurso.
- * Abstrair a parede num segmento faz laterais e divisórias virarem o mesmo
- * problema — e a serpentina sai de graça, porque os segmentos já saem na
- * ordem em que o visitante os encontra.
+ * A FITA: os trechos de parede que o visitante encontra, na ordem exata em que
+ * os encontra, e nenhum outro.
+ *
+ * Esta função já tentou devolver toda parede disponível — as duas faces de cada
+ * divisória e as duas laterais inteiras — e deixar a ordenação para depois. Não
+ * há ordenação que salve isso: com quatro superfícies em volta, a foto seguinte
+ * está sempre atrás ou do outro lado do salão, e seguir o acervo vira caça ao
+ * tesouro. O acervo é uma fila; a parede tinha de ser uma fila também.
+ *
+ * A planta já dava a resposta e ninguém tinha lido. Cada divisória nasce colada
+ * numa parede e deixa o vão na oposta, e o lado alterna. Então o visitante chega
+ * a cada divisória pela parede em que ela nasce, atravessa a face dela inteira
+ * até o vão, passa, e desemboca encostado na parede de onde a PRÓXIMA divisória
+ * nasce. Lateral, face, lateral, face — uma fita contínua, sem emenda e sem um
+ * passo para trás.
+ *
+ * O que sobra fica vazio de propósito: a face de trás de cada divisória, que só
+ * se vê virando a cabeça depois de passar, e a lateral do lado oposto ao trecho
+ * que está sendo andado. Metade da parede do museu não pendura nada, e é esse o
+ * preço de a ordem existir.
  */
 function segmentos(L) {
   const meia = LARGURA / 2;
-  const segs = [];
   const fundo = LARGURA - DIVISORIA_VAO;
   const divs = divisorias(L);
+  const segs = [];
+
+  // De que lado o visitante está andando. -1 é a parede em z negativo, que é
+  // também onde fica o painel de texto da sala: a fita começa ao lado dele, e a
+  // primeira foto da sala é a primeira foto do trecho.
+  let lado = divs.length && !divs[0].paraCima ? 1 : -1;
+  let x = SAGUAO;
 
   for (const d of divs) {
-    const z0 = d.paraCima ? -meia : meia;
-    const z1 = d.paraCima ? -meia + fundo : meia - fundo;
-    segs.push({ tipo: 'divisoria', x: d.x, z0, z1, face: 1 });
-    segs.push({ tipo: 'divisoria', x: d.x, z0, z1, face: -1 });
+    // O trecho de lateral até encontrar a divisória. Ela nasce NESTA parede, e
+    // por isso tapa as colunas do fim do trecho — quem sabe disso é a planta.
+    segs.push({ tipo: 'lateral', z: lado * meia, x0: x, x1: d.x, face: -lado, tapadas: [d.x] });
+    // A face que o encara, atravessada da parede em que ele está até o vão. Só
+    // esta face: a de trás é o preço.
+    segs.push({ tipo: 'divisoria', x: d.x, z0: lado * meia, z1: lado * (meia - fundo), face: -1 });
+    lado = -lado;      // sai pelo vão, encostado na parede oposta
+    x = d.x;
   }
 
-  // Laterais: percorridas por inteiro, uma de ida e outra de volta, respeitando
-  // os saguões das duas pontas.
-  //
-  // Cada lateral leva consigo a lista de divisórias que ENCOSTAM nela. Uma
-  // divisória com `paraCima` nasce em z=-meia; a de baixo, em z=+meia. O trecho
-  // de parede que ela cobre não pode receber quadro — e quem sabe disso é a
-  // planta, não o pendurador.
-  const encostamEm = (paraCima) => divs.filter((d) => d.paraCima === paraCima).map((d) => d.x);
-
-  segs.push({ tipo: 'lateral', z: -meia, x0: SAGUAO, x1: L - SAGUAO, face: 1, tapadas: encostamEm(true) });
-  segs.push({ tipo: 'lateral', z: meia, x0: L - SAGUAO, x1: SAGUAO, face: -1, tapadas: encostamEm(false) });
+  // O último trecho corre até o saguão do fim. Nenhuma divisória o tapa: a
+  // última nasce na parede oposta a esta.
+  segs.push({ tipo: 'lateral', z: lado * meia, x0: x, x1: L - SAGUAO, face: -lado, tapadas: [] });
   return segs;
 }
 
 /**
- * Pontos de pendura, três fileiras.
+ * Pontos de pendura, uma por fileira de `FILEIRAS` (hoje duas).
  *
  * Devolve a posição NA SUPERFÍCIE da parede mais a normal que aponta para
  * dentro do salão. Quem pendura é que empilha moldura, paspatur e tela ao longo
@@ -1241,6 +1326,13 @@ function pendurar(grupo, morrer, sala) {
   const lugares = [];
   for (const seg of segmentos(sala.comprimento)) lugares.push(...pontos(seg));
 
+  // Sem ordenação aqui, de propósito. `segmentos` devolve a fita na ordem do
+  // percurso e `pontos` a percorre no sentido da caminhada, então esta lista já
+  // nasce certa. Houve uma versão que gerava toda parede possível e depois
+  // ordenava por proximidade a uma rota estimada; funcionava no papel e não na
+  // sala, porque duas paredes a quinze metros uma da outra têm quase a mesma
+  // distância à rota e a ordem entre elas saía no palpite. Ordem que se descobre
+  // por heurística não é ordem: é chute bem-comportado.
   const n = Math.min(lugares.length, sala.fotos.length);
   sala.pendurados = n;
   sala.quadros = [];
@@ -1446,6 +1538,10 @@ async function irPara(indice, entrandoPor = 'inicio') {
 function atualizarHud(sala) {
   const alvo = $('hud-sala');
   alvo.replaceChildren();
+
+  // A cidade da sala anterior não vale para esta. Some até a primeira obra
+  // chegar ao alcance, o que acontece nos primeiros passos depois do saguão.
+  $('hud-cidade').textContent = '';
 
   const canto = document.createElement('span');
   canto.className = 'hud__canto';
@@ -1974,6 +2070,23 @@ function atualizarPercurso() {
   if (!salaViva) return;
   const p = clamp(jogador.pos.x / salaViva.comprimento, 0, 1);
   $('hud-percurso-barra').style.transform = `scaleX(${p.toFixed(3)})`;
+
+  // A cidade da obra mais próxima, não a da que está na mira: a mira exige que
+  // o visitante encare um quadro, e esta linha existe justamente para quem está
+  // andando. `aoAlcance` acabou de ser refeito neste mesmo tique — é a mesma
+  // lista da etiqueta, então as duas nunca discordam sobre onde se está.
+  let perto = null;
+  let menor = Infinity;
+  for (const q of aoAlcance) {
+    const d = q.pos.distanceTo(jogador.pos);
+    if (d < menor) { menor = d; perto = q; }
+  }
+
+  // Sem nada por perto — saguão, ou textura ainda carregando — a última cidade
+  // fica. Apagar aqui faria a linha piscar a cada vão de divisória, e o vão não
+  // é uma mudança de lugar: é uma passagem entre duas paredes do mesmo lugar.
+  const cidade = perto?.foto?.cidade;
+  if (cidade) $('hud-cidade').textContent = cidade;
 }
 
 /**

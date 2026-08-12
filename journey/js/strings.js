@@ -248,6 +248,14 @@ export const fmtDay = (ms) =>
     ? new Date(ms).toLocaleDateString(LOCALE, { day: '2-digit', month: 'short' }).replace('.', '')
     : '—';
 
+/**
+ * Só o mês, por extenso. Serve para desambiguar salas do museu que repetem o
+ * estado: a viagem passa pela Bahia três vezes, e "Bahia" três vezes no índice
+ * não diz qual é qual.
+ */
+export const fmtMonth = (ms) =>
+  ms ? new Date(ms).toLocaleDateString(LOCALE, { month: 'long' }) : '';
+
 export const fmtTime = (ms) =>
   ms ? new Date(ms).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' }) : '';
 

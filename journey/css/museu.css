@@ -237,6 +237,24 @@ html, body {
   transition: transform 220ms linear;
 }
 
+/* Pendurada sob a barra, na mesma coluna do nome da sala. Fundo próprio e não
+   herdado: a barra é uma régua de 3 px e o texto precisa de caixa. */
+.hud__cidade {
+  background: var(--vidro);
+  backdrop-filter: blur(6px);
+  padding: 0.32rem 0.9rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--milho);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Vazia no saguão, antes da primeira obra: sem isto a caixa fica flutuando com
+   um retângulo de vidro em branco embaixo da barra. */
+.hud__cidade:empty { display: none; }
+
 .hud__acoes { display: flex; gap: 2px; }
 
 .hud__botao {

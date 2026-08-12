@@ -4,24 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Museu da Travessia — 2024</title>
-<meta name="description" content="Caminhe em primeira pessoa por um museu com nove salas, uma para cada estado do Nordeste, com todas as fotos da viagem emolduradas.">
+<meta name="description" content="Caminhe em primeira pessoa por um museu montado na ordem exata do ano: uma sala para cada trecho contínuo da viagem pelo Nordeste, com todas as fotos emolduradas.">
 <meta name="theme-color" content="#0E0B08">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./css/museu.css?v=23">
+<link rel="stylesheet" href="./css/museu.css?v=28">
 
 <script type="importmap">
 {
   "imports": {
-    "three": "./vendor/three/three.module.min.js?v=23",
-    "./js/museu.js": "./js/museu.js?v=23",
-    "./js/museu-fx.js": "./js/museu-fx.js?v=23",
-    "./js/museu-som.js": "./js/museu-som.js?v=23",
-    "./js/lugares.js": "./js/lugares.js?v=23",
-    "./js/config.js": "./js/config.js?v=23",
-    "./js/strings.js": "./js/strings.js?v=23"
+    "three": "./vendor/three/three.module.min.js?v=28",
+    "./js/museu.js": "./js/museu.js?v=28",
+    "./js/museu-fx.js": "./js/museu-fx.js?v=28",
+    "./js/museu-som.js": "./js/museu-som.js?v=28",
+    "./js/lugares.js": "./js/lugares.js?v=28",
+    "./js/config.js": "./js/config.js?v=28",
+    "./js/strings.js": "./js/strings.js?v=28"
   }
 }
 </script>
@@ -60,7 +60,7 @@
 
     <button class="portaria__entrar" id="entrar" type="button" disabled>Entrar</button>
     <a class="portaria__voltar" href="./index.html">Voltar para o acervo</a>
-    <p class="portaria__build">BUILD 23</p>
+    <p class="portaria__build">BUILD 28</p>
   </div>
 </div>
 
@@ -73,6 +73,10 @@
     <div class="hud__percurso" role="presentation">
       <span class="hud__percurso-barra" id="hud-percurso-barra"></span>
     </div>
+    <!-- Onde, dentro do estado. A barra diz quanto falta e o nome da sala diz o
+         estado; a cidade é a única das três que muda enquanto se anda, e é ela
+         que transforma o percurso em itinerário. -->
+    <p class="hud__cidade" id="hud-cidade" aria-live="polite"></p>
   </div>
 
   <div class="hud__acoes">
@@ -134,6 +138,6 @@
      outra, que acontecem no mesmo frame e piscariam sem isto. -->
 <div class="cortina" id="cortina" hidden></div>
 
-<script type="module" src="./js/museu.js?v=23"></script>
+<script type="module" src="./js/museu.js?v=28"></script>
 </body>
 </html>
