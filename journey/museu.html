@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Museu da Travessia — 2024</title>
+<meta name="description" content="Caminhe em primeira pessoa por um museu com nove salas, uma para cada estado do Nordeste, com todas as fotos da viagem emolduradas.">
+<meta name="theme-color" content="#0E0B08">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/museu.css?v=23">
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.min.js?v=23",
+    "./js/museu.js": "./js/museu.js?v=23",
+    "./js/museu-fx.js": "./js/museu-fx.js?v=23",
+    "./js/museu-som.js": "./js/museu-som.js?v=23",
+    "./js/lugares.js": "./js/lugares.js?v=23",
+    "./js/config.js": "./js/config.js?v=23",
+    "./js/strings.js": "./js/strings.js?v=23"
+  }
+}
+</script>
+</head>
+<body>
+
+<canvas id="cena"></canvas>
+
+<!-- Portaria: nada carrega até o visitante entrar, porque o pointer lock e o
+     áudio de um jogo precisam de um gesto, e porque abrir 3 mil fotos sem aviso
+     num celular seria falta de educação. É aqui, e só aqui, que a qualidade se
+     escolhe: sombra e pós-produção decidem como o renderizador é construído. -->
+<div class="portaria" id="portaria">
+  <div class="portaria__cartao">
+    <p class="portaria__sobre">Museu da Travessia</p>
+    <h1 class="portaria__titulo">2024</h1>
+    <p class="portaria__linha" id="portaria-linha">Carregando o acervo…</p>
+
+    <div class="opcao">
+      <span class="opcao__rotulo">Qualidade</span>
+      <div class="opcao__grupo" role="group" aria-label="Qualidade">
+        <button class="opcao__botao" type="button" data-qualidade="alta" aria-pressed="false">Alta</button>
+        <button class="opcao__botao" type="button" data-qualidade="leve" aria-pressed="false">Leve</button>
+      </div>
+    </div>
+    <p class="opcao__nota" id="portaria-nota"></p>
+
+    <div class="opcao">
+      <span class="opcao__rotulo">Som</span>
+      <div class="opcao__grupo">
+        <button class="opcao__botao" type="button" id="portaria-som" aria-pressed="true">Ligado</button>
+      </div>
+    </div>
+
+    <ul class="portaria__ajuda" id="portaria-ajuda"></ul>
+
+    <button class="portaria__entrar" id="entrar" type="button" disabled>Entrar</button>
+    <a class="portaria__voltar" href="./index.html">Voltar para o acervo</a>
+    <p class="portaria__build">BUILD 23</p>
+  </div>
+</div>
+
+<!-- HUD -->
+<div class="hud" id="hud" hidden>
+  <div class="hud__esquerda">
+    <div class="hud__sala" id="hud-sala"></div>
+    <!-- Quanto da sala já foi andado. Num salão de 130 metros, saber que ainda
+         falta metade é a diferença entre percorrer e desistir. -->
+    <div class="hud__percurso" role="presentation">
+      <span class="hud__percurso-barra" id="hud-percurso-barra"></span>
+    </div>
+  </div>
+
+  <div class="hud__acoes">
+    <button class="hud__botao" id="hud-mapa" type="button" aria-label="Ir para uma sala">Salas</button>
+    <button class="hud__botao hud__botao--som" id="hud-som" type="button" aria-pressed="true" aria-label="Som">♪</button>
+    <button class="hud__botao" id="hud-sair" type="button" aria-label="Sair">✕</button>
+  </div>
+
+  <!-- Só aparece quando o ponteiro se soltou: sem isto, sair com Esc deixa o
+       visitante mexendo o mouse sem entender por que a cabeça não vira. -->
+  <p class="hud__retomar" id="hud-retomar"></p>
+</div>
+
+<!-- Etiqueta da obra: aparece quando o visitante encara um quadro de perto. -->
+<div class="placa" id="placa" hidden>
+  <p class="placa__data" id="placa-data"></p>
+  <p class="placa__local" id="placa-local"></p>
+  <button class="placa__ver" id="placa-ver" type="button"></button>
+</div>
+
+<!-- Ver de perto: a miniatura pendurada tem 96 cm e 440 px. Museu em que não dá
+     para chegar perto da obra falhou no essencial. -->
+<div class="lupa" id="lupa" hidden>
+  <button class="lupa__fechar" id="lupa-fechar" type="button" aria-label="Fechar">✕</button>
+  <button class="lupa__nav lupa__nav--ant" id="lupa-ant" type="button" aria-label="Quadro anterior">‹</button>
+  <button class="lupa__nav lupa__nav--prox" id="lupa-prox" type="button" aria-label="Próximo quadro">›</button>
+  <figure class="lupa__figura">
+    <img class="lupa__img" id="lupa-img" alt="">
+    <figcaption class="lupa__meta">
+      <p class="lupa__data" id="lupa-data"></p>
+      <p class="lupa__local" id="lupa-local"></p>
+      <p class="lupa__cam" id="lupa-cam"></p>
+      <p class="lupa__pos" id="lupa-pos"></p>
+    </figcaption>
+  </figure>
+</div>
+
+<!-- Índice de salas: teleporte. Um museu de um quilômetro precisa de atalho. -->
+<div class="indice" id="indice" hidden>
+  <div class="indice__caixa">
+    <h2 class="indice__titulo">Salas</h2>
+    <div class="indice__lista" id="indice-lista"></div>
+    <button class="indice__fechar" id="indice-fechar" type="button">Continuar andando</button>
+  </div>
+</div>
+
+<!-- Controles de toque, só no celular. -->
+<div class="toque" id="toque" hidden>
+  <div class="manche" id="manche" aria-label="Mover">
+    <div class="manche__base"></div>
+    <div class="manche__polegar" id="manche-polegar"></div>
+  </div>
+  <button class="correr" id="correr" type="button" aria-label="Correr">Correr</button>
+</div>
+
+<div class="carregando" id="carregando" hidden><span></span></div>
+
+<!-- Cortina da troca de sala: esconde a desmontagem de uma e a montagem da
+     outra, que acontecem no mesmo frame e piscariam sem isto. -->
+<div class="cortina" id="cortina" hidden></div>
+
+<script type="module" src="./js/museu.js?v=23"></script>
+</body>
+</html>

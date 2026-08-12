@@ -1,0 +1,950 @@
+/* ---------------------------------------------------------------------------
+   2024 — A year on the Northeast coast
+
+   Two surfaces, deliberately opposed: the map is a block of ink, the gallery is
+   the paper it was printed on. Palette and type come from cordel woodcut on
+   newsprint rather than from travel-brochure tropical.
+   --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   Paleta armorial
+   ---------------------------------------------------------------------------
+   Não inventada: vem do Movimento Armorial, que Ariano Suassuna fundou em
+   Recife em 1970 justamente para erguer arte erudita a partir da raiz popular
+   nordestina — cordel, orquestra popular, xilogravura. "Armorial" é palavra de
+   heráldica: brasão, estandarte, bandeira.
+
+   Três decisões saem dessa pesquisa e valem como lei neste arquivo:
+
+   1. Tinta sobre papel de cordel, nunca preto neutro sobre branco neutro.
+   2. As quatro cores da bandeirinha de São João — fogo, milho, mata, céu — são
+      as únicas cores saturadas permitidas.
+   3. Gilvan Samico, o gravador do movimento, usava o branco como cor ativa e
+      recusava profundidade: figuras achatadas, tratadas como signos. Portanto
+      aqui não há gradiente, sombra projetada nem falso relevo. Campos chapados
+      e arestas duras.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --ink:      #1A1410;   /* tinta de xilogravura — preto quente, nunca neutro */
+  --ink-2:    #241C15;
+  --ink-3:    #382C20;
+  --paper:    #EFE7D6;   /* papel de cordel */
+  --paper-2:  #E2D7C0;   /* papel na dobra, um tom abaixo */
+  --sal:      #FBF8F1;   /* o branco de Samico: cor, não ausência de cor */
+
+  /* Bandeirinha de São João: fogo, milho, mata, céu. */
+  --bandeira-0: #C1342B;
+  --bandeira-1: #E3A11C;
+  --bandeira-2: #2E6B4C;
+  --bandeira-3: #1D5170;
+
+  --fogo:     #C1342B;
+  --milho:    #E3A11C;
+  --mata:     #2E6B4C;
+  --ceu:      #1D5170;
+
+  --mare:     #0F5C63;   /* água do litoral nesta latitude */
+  --brasa:    #C1342B;   /* a rota, e nada mais */
+  --ocre:     #A6612C;   /* solo da caatinga */
+  --caatinga: #77775F;   /* verde seco, para o que é secundário */
+
+  --display: 'Alfa Slab One', Georgia, serif;
+  --body: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Space Mono', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+
+  --gap: clamp(1rem, 3vw, 2.25rem);
+  --edge: clamp(1.125rem, 5vw, 4.5rem);
+
+  /* Fio de xilogravura: a madeira entalhada não produz meio-tom. Régua cheia,
+     não hairline apagado. */
+  --rule: 2px solid var(--ink);
+  --rule-fina: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+}
+
+* { box-sizing: border-box; }
+
+/* `hidden` é regra do navegador e perde para qualquer `display` de autor. Sem
+   isto, `.tray` (grid) e `.map__empty` (grid) ignoram o atributo e aparecem
+   mesmo marcados como escondidos. */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+.mono { font-family: var(--mono); font-size: 0.75em; letter-spacing: -0.01em; }
+
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--ink); color: var(--paper);
+  padding: 0.75rem 1rem; z-index: 100;
+}
+.skip:focus { left: 0.5rem; top: 0.5rem; }
+
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--brasa);
+  outline-offset: 3px;
+}
+
+/* --- masthead ------------------------------------------------------------ */
+
+.masthead {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: end;
+  padding: clamp(1.5rem, 5vw, 3.5rem) var(--edge) var(--gap);
+  max-width: 1500px;
+  margin-inline: auto;
+}
+
+/* Filete de abertura do folheto: a tarja é o que anuncia o canto. */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sal);
+  background: var(--ink);
+  padding: 0.3em 0.7em;
+  margin: 0 0 1.1rem;
+}
+
+/* The one place the wood-type face is allowed to shout. */
+.year {
+  font-family: var(--display);
+  font-size: clamp(4.5rem, 17vw, 11rem);
+  line-height: 0.78;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
+  /* Registro fora de esquadro: a prancha de madeira nunca bate exata no papel.
+     Uma cor por trás, deslocada, como impressão de segunda passada. */
+  text-shadow: 0.055em 0.05em 0 var(--milho);
+}
+
+.lede {
+  max-width: 34ch;
+  margin: 1.25rem 0 0;
+  font-size: 1.02rem;
+  color: color-mix(in srgb, var(--ink) 82%, var(--paper));
+  text-wrap: pretty;
+}
+
+.tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 2rem;
+  margin: 1.75rem 0 0;
+  padding-top: 1.1rem;
+  border-top: var(--rule);
+}
+.tally div {
+  display: flex;
+  flex-direction: column-reverse;
+  padding-right: 2rem;
+  border-right: var(--rule);
+}
+.tally div:last-child { border-right: 0; padding-right: 0; }
+.tally dt {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--caatinga);
+}
+.tally dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* Porta para o museu. Bloco de tinta cheia — é a única coisa da página que
+   leva para fora dela, e precisa parecer uma porta, não um link. */
+.imersiva {
+  display: block;
+  margin-top: 1.6rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--ink);
+  color: var(--sal);
+  text-decoration: none;
+  border-left: 5px solid var(--fogo);
+  transition: background 140ms ease;
+}
+.imersiva:hover { background: var(--fogo); }
+.imersiva__rotulo {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+.imersiva__nota {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--sal) 72%, var(--ink));
+}
+.imersiva:hover .imersiva__nota { color: color-mix(in srgb, var(--sal) 88%, transparent); }
+
+/* --- the map block ------------------------------------------------------- */
+
+.mapblock { margin: 0; }
+
+.mapblock__frame {
+  position: relative;
+  background: var(--ink);
+  border-radius: 2px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3.4;
+  min-height: 420px;         /* mapa de verdade precisa de espaço pra arrastar */
+  /* Moldura entalhada, não sombra: a gravura não projeta luz. */
+  border: 3px solid var(--ink);
+  border-radius: 0;
+}
+
+.map { display: block; width: 100%; height: 100%; background: var(--ink); }
+
+/* --- Leaflet, dressed for the ink panel ---------------------------------- */
+
+.leaflet-container {
+  background: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+
+.leaflet-control-zoom a {
+  background: var(--ink-2);
+  color: var(--paper);
+  border-color: var(--ink-3);
+}
+.leaflet-control-zoom a:hover { background: var(--ink-3); color: var(--sal); }
+
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  color: var(--caatinga);
+  font-size: 0.58rem;
+  padding: 0.1em 0.5em;
+}
+.leaflet-control-attribution a { color: var(--caatinga); }
+
+/* Cluster pins. Count is the label, so the number has to stay legible from
+   the smallest radius the sqrt scale produces. */
+.pin {
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--sal) 88%, transparent);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.66rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px var(--ink);   /* anel entalhado, chapado — não sombra */
+  transition: transform 120ms ease, background 120ms ease;
+}
+.pin:hover {
+  background: var(--brasa);
+  color: var(--sal);
+  transform: scale(1.08);
+}
+.pin--sea {
+  background: color-mix(in srgb, var(--mare) 92%, transparent);
+  color: var(--sal);
+}
+.pin--sea:hover { background: var(--brasa); }
+
+.leaflet-interactive { cursor: pointer; }
+
+.map__empty {
+  position: absolute; inset: 0;
+  z-index: 600;
+  display: grid; place-content: center; gap: 0.5rem;
+  padding: 2rem; text-align: center;
+  color: var(--caatinga);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.map__empty code {
+  display: inline-block;
+  background: var(--ink-2);
+  color: var(--paper);
+  padding: 0.15em 0.5em;
+}
+
+.readout {
+  position: absolute;
+  z-index: 500;              /* over Leaflet's own panes */
+  left: 0.9rem; bottom: 1.8rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--caatinga);
+  pointer-events: none;
+  letter-spacing: 0.02em;
+}
+
+.mapblock__caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--caatinga);
+}
+.legend { display: inline-flex; align-items: center; gap: 0.4rem; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
+.dot--sea { background: var(--mare); }
+.dot--inferred { background: var(--caatinga); }
+.trail-key { width: 18px; height: 2px; background: var(--brasa); }
+.legend--hint { text-transform: none; letter-spacing: 0.02em; opacity: 0.75; }
+
+/* --- state rail ---------------------------------------------------------- */
+
+.rail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: 0 var(--edge);
+  max-width: 1500px;
+  margin: 0 auto;
+  border-top: var(--rule);
+  border-bottom: var(--rule);
+}
+
+/* Coast order, north to south — the shape of the trip, not the alphabet. */
+.rail__states {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+}
+.rail__states::-webkit-scrollbar { display: none; }
+
+/* Cada estado é uma bandeirinha no varal, e um canto da travessia. O recorte
+   em V é a forma da bandeirinha de São João; o algarismo romano numera a
+   ordem em que o estado foi atravessado. A cor não codifica dado nenhum —
+   codifica que isto é um varal. */
+
+.rail__states { padding: 0.9rem 0 1.1rem; gap: 0.4rem; }
+
+.chip {
+  appearance: none;
+  border: 0;
+  padding: 0.5rem 0.9rem 1.5rem;
+  background: var(--flag, var(--fogo));
+  color: var(--sal);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 5.4rem;
+  clip-path: polygon(0 0, 100% 0, 100% 74%, 50% 100%, 0 74%);
+  transition: transform 140ms ease, filter 140ms ease;
+  transform-origin: top center;
+}
+
+.chip__canto {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  opacity: 0.75;
+}
+.chip__uf {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+.chip__n {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.chip:hover { transform: translateY(2px); filter: brightness(1.12); }
+
+/* Selecionado vira tinta: o estandarte "impresso" em vez de tingido. */
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--sal);
+}
+.chip[aria-pressed='true'] .chip__canto { color: var(--flag); opacity: 1; }
+.chip[aria-pressed='true'] .chip__n { color: var(--flag); opacity: 1; }
+
+/* O varal sendo pendurado, uma bandeirinha por vez. */
+@media (prefers-reduced-motion: no-preference) {
+  .chip {
+    animation: pendura 420ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+    animation-delay: var(--entra, 0ms);
+  }
+  @keyframes pendura {
+    from { transform: translateY(-14px) rotate(-2deg); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+}
+
+.rail__toggles { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+
+.toggle {
+  appearance: none;
+  background: none;
+  border: var(--rule);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+.toggle__value { color: var(--brasa); font-weight: 700; }
+.toggle[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.toggle--ghost { border-style: dashed; color: var(--caatinga); }
+.toggle--cull[aria-pressed='true'] { background: #B4231A; border-color: #B4231A; color: var(--sal); }
+
+/* --- dossiê -------------------------------------------------------------- */
+/* Uma linha de fatos sob os filtros. Fica em tinta cheia porque é a única coisa
+   da página que muda de assunto conforme você navega — o resto é fixo. */
+
+.dossier {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0.8rem var(--edge);
+  color: var(--sal);
+  background: var(--ink);
+  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  border-bottom: 3px solid var(--milho);
+}
+.dossier:empty { display: none; }
+
+/* --- timeline ------------------------------------------------------------ */
+
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem var(--edge);
+  max-width: 1500px;
+  margin: 0 auto;
+  border-bottom: var(--rule);
+}
+
+.timeline__track {
+  position: relative;
+  flex: 1;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+.timeline__track::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: color-mix(in srgb, var(--ink) 15%, transparent);
+}
+.timeline__fill {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  background: var(--brasa);
+  width: 100%;
+}
+.timeline__months {
+  position: absolute;
+  inset-inline: 0;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--caatinga);
+  top: 100%;
+  margin-top: -2px;
+  pointer-events: none;
+}
+.timeline__input {
+  appearance: none;
+  position: relative;
+  width: 100%;
+  background: none;
+  margin: 0;
+  height: 30px;
+  cursor: ew-resize;
+}
+.timeline__input::-webkit-slider-thumb {
+  appearance: none;
+  width: 3px; height: 22px;
+  background: var(--ink);
+  border: 0; border-radius: 0;
+  cursor: ew-resize;
+}
+.timeline__input::-moz-range-thumb {
+  width: 3px; height: 22px;
+  background: var(--ink);
+  border: 0; border-radius: 0;
+  cursor: ew-resize;
+}
+.timeline__date { margin: 0; color: var(--caatinga); white-space: nowrap; min-width: 8ch; }
+
+/* --- gallery ------------------------------------------------------------- */
+
+.sheet {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: var(--gap) var(--edge) clamp(3rem, 8vw, 6rem);
+}
+
+.sheet__status {
+  color: var(--caatinga);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 var(--gap);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(210px, 44vw), 1fr));
+  gap: clamp(0.35rem, 1vw, 0.75rem);
+}
+
+/* Abertura de semana. Ocupa a linha inteira da grade e fica colada no topo ao
+   rolar, para você sempre saber em que semana está — a grade é longa. */
+.semana {
+  grid-column: 1 / -1;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.9rem;
+  margin: 1.6rem 0 0.35rem;
+  padding: 0.5rem 0 0.45rem;
+  background: var(--paper);
+  border-bottom: var(--rule);
+  font-weight: 400;
+}
+.semana:first-child { margin-top: 0; }
+
+.semana__n {
+  font-family: var(--display);
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1;
+  color: var(--ink);
+}
+.semana__onde {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sal);
+  background: var(--ink);
+  padding: 0.25em 0.6em;
+}
+/* Onde dentro do estado. Fica em corpo de texto, e não em caixa alta espaçada
+   como o estado ao lado: são nomes próprios de lugares, não rótulo. */
+.semana__cidades {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  letter-spacing: 0.02em;
+}
+
+.semana__meta {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--caatinga);
+  margin-left: auto;
+  letter-spacing: 0.03em;
+}
+
+.tile {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: var(--paper-2);
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+.tile img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 320ms ease, transform 420ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.tile img.is-loaded { opacity: 1; }
+.tile:hover img, .tile:focus-visible img { transform: scale(1.04); }
+
+.tile__badge {
+  position: absolute;
+  right: 0.35rem; bottom: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  padding: 0.12em 0.4em;
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  color: var(--sal);
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+.tile:hover .tile__badge, .tile:focus-visible .tile__badge { opacity: 1; }
+.tile--on { outline: 2px solid var(--brasa); outline-offset: -2px; }
+
+/* --- cull mode ----------------------------------------------------------- */
+
+.grid--marking .tile { cursor: crosshair; }
+.grid--marking .tile:hover img { transform: none; }
+
+/* Red is doing real work here, so nothing else on the page is allowed to use
+   it — a marked photo has to be unmistakable at a glance across the grid. */
+.tile--doomed img { opacity: 0.42; filter: grayscale(0.5); }
+.tile--doomed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--fogo) 45%, transparent);
+  box-shadow: inset 0 0 0 3px var(--fogo);
+  pointer-events: none;
+}
+
+.tray {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.9rem var(--edge) 1.1rem;
+  display: grid;
+  gap: 0.6rem;
+  border-top: 3px solid var(--fogo);
+}
+.tray__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1500px;
+  margin-inline: auto;
+  width: 100%;
+}
+.tray__count { margin: 0; color: var(--paper); letter-spacing: 0.06em; }
+.tray__actions { display: flex; gap: 0.5rem; }
+.tray .toggle { color: var(--paper); border-color: color-mix(in srgb, var(--paper) 30%, transparent); }
+.tray .toggle:hover { background: color-mix(in srgb, var(--paper) 12%, transparent); }
+
+.tray__list {
+  max-width: 1500px;
+  margin-inline: auto;
+  width: 100%;
+  min-height: 3.5rem;
+  max-height: 22vh;
+  resize: vertical;
+  background: var(--ink-2);
+  color: var(--paper);
+  border: 1px solid var(--ink-3);
+  border-radius: 2px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.7rem;
+  line-height: 1.7;
+}
+.tray__list:empty { display: none; }
+
+.tray__hint {
+  margin: 0;
+  max-width: 1500px;
+  margin-inline: auto;
+  width: 100%;
+  color: var(--brasa);
+  letter-spacing: 0.05em;
+}
+
+.empty {
+  padding: clamp(2rem, 8vw, 5rem) 0;
+  text-align: center;
+  color: var(--caatinga);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.9;
+}
+.empty code {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.2em 0.55em;
+  display: inline-block;
+  margin: 0.15rem 0;
+}
+
+/* --- lightbox ------------------------------------------------------------ */
+
+.lightbox {
+  border: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background: var(--ink);
+  color: var(--paper);
+}
+.lightbox::backdrop { background: color-mix(in srgb, var(--ink) 92%, transparent); }
+
+.lightbox__figure {
+  margin: 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  padding: clamp(0.75rem, 3vw, 2.5rem);
+  gap: 0.9rem;
+}
+.lightbox__figure img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.lightbox__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  justify-content: center;
+  color: var(--caatinga);
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+.lightbox__meta b { color: var(--paper); font-weight: 400; }
+
+.lightbox__close, .lightbox__nav {
+  position: absolute;
+  z-index: 2;
+  appearance: none;
+  background: color-mix(in srgb, var(--paper) 10%, transparent);
+  border: 0;
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--body);
+  display: grid;
+  place-content: center;
+}
+.lightbox__close {
+  top: 0.6rem; right: 0.6rem;
+  width: 2.5rem; height: 2.5rem;
+  font-size: 0.95rem;
+  border-radius: 50%;
+}
+.lightbox__nav {
+  top: 50%; transform: translateY(-50%);
+  width: 2.75rem; height: 4.5rem;
+  font-size: 2rem;
+  line-height: 1;
+}
+.lightbox__nav--prev { left: 0; }
+.lightbox__nav--next { right: 0; }
+.lightbox__close:hover, .lightbox__nav:hover {
+  background: color-mix(in srgb, var(--paper) 20%, transparent);
+}
+
+/* --- curiosidades -------------------------------------------------------- */
+
+.curiosidades {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) var(--edge);
+  border-top: var(--rule);
+}
+
+.curiosidades__cabeca { margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
+.curiosidades__titulo {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  line-height: 1;
+  margin: 0 0 0.6rem;
+  color: var(--ink);
+}
+.curiosidades__intro {
+  margin: 0;
+  max-width: 52ch;
+  color: color-mix(in srgb, var(--ink) 78%, var(--paper));
+  text-wrap: pretty;
+}
+
+/* Ladrilhos: número grande, rótulo, nota. Sem gráfico — é um fato só. */
+.fatos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 1px;
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+.fato {
+  background: var(--paper);
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+.fato__n {
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+  line-height: 1;
+  margin: 0;
+  color: var(--ink);
+}
+.fato__r {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fogo);
+  margin: 0.45rem 0 0.5rem;
+}
+.fato__nota {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--ink) 72%, var(--paper));
+  text-wrap: pretty;
+}
+
+/* A tira: o dado é a própria imagem, então nada de eixo ou grade. */
+.tira { margin: 0 0 clamp(2rem, 5vw, 3rem); }
+.tira__titulo,
+.gr__titulo {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 0.7rem;
+  font-weight: 400;
+}
+.tira__canvas {
+  display: block;
+  width: 100%;
+  border: 2px solid var(--ink);
+}
+.tira__nota,
+.gr__nota {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--caatinga);
+  margin: 0.5rem 0 0;
+  letter-spacing: 0.02em;
+}
+
+/* Barras. Marca fina, ponta arredondada só na extremidade livre, ancorada na
+   linha de base à esquerda. Eixo recessivo, sem grade. */
+.gr { margin: 0 0 clamp(2rem, 5vw, 3rem); }
+.gr__corpo { display: grid; gap: 2px; }
+
+.gr__linha {
+  display: grid;
+  grid-template-columns: 3ch 1fr 6ch;
+  align-items: center;
+  gap: 0.7rem;
+}
+.gr__rotulo,
+.gr__valor {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.gr__valor { text-align: right; }
+.is-fraca { color: color-mix(in srgb, var(--ink) 45%, var(--paper)); }
+
+.gr__trilho {
+  height: 14px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.gr__barra {
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+  transition: filter 120ms ease;
+}
+.gr__linha:hover .gr__barra { filter: brightness(1.15); }
+
+@media (max-width: 560px) {
+  .gr__linha { grid-template-columns: 3ch 1fr 5ch; gap: 0.5rem; }
+}
+
+/* --- colophon ------------------------------------------------------------ */
+
+.colophon {
+  border-top: var(--rule);
+  padding: 1.5rem var(--edge) 2.5rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--caatinga);
+  font-size: 0.8rem;
+}
+.colophon p { margin: 0; max-width: 62ch; }
+
+/* --- narrow -------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .masthead {
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding-bottom: 0.75rem;
+  }
+  .masthead__type { order: 1; }
+  .mapblock { order: 2; }
+  .mapblock__frame { aspect-ratio: 1 / 1.05; }
+  .tally { gap: 0 1.5rem; }
+
+  .rail { flex-direction: column; align-items: stretch; gap: 0; }
+  .rail__states { border-bottom: var(--rule); }
+  .rail__toggles { padding: 0.7rem 0; justify-content: space-between; }
+
+  .timeline { flex-direction: column; align-items: stretch; gap: 0.35rem; padding-bottom: 1.4rem; }
+  .timeline__date { text-align: right; }
+
+  .lightbox__nav { width: 2.25rem; font-size: 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

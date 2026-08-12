@@ -1,0 +1,15 @@
+node_modules/
+
+# Intermediate pipeline state. Safe to delete; re-running rebuilds it.
+cache/
+
+# Takeout drop zone, if you unzip inside the project. The originals stay here on
+# disk but never enter git — 26 GB of source material would end the repo.
+takeout/
+Takeout/
+originals/
+
+# photos/ is deliberately NOT ignored. The web derivatives live in the repo and
+# ship with the site. Before the first commit, read the size budget printed by
+# `npm run images` — git keeps every version of a binary forever, so re-encoding
+# at different settings later leaves both copies in history permanently.

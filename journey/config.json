@@ -1,0 +1,42 @@
+{
+  "//": "Paths are resolved relative to the journey/ folder unless absolute.",
+
+  "takeoutDir": "takeout/Google Fotos",
+
+  "year": 2024,
+
+  "images": {
+    "//": "The derivatives ship inside the repo, so these numbers are a storage",
+    "//2": "budget as much as a quality setting. GitHub Pages refuses to publish a",
+    "//3": "site over 1 GB, and 5,677 photos means every 10 KB per photo costs",
+    "//4": "57 MB of that ceiling. `npm run images` prints the running total.",
+
+    "format": "avif",
+    "fullWidth": 1600,
+    "fullQuality": 50,
+    "thumbWidth": 440,
+    "thumbQuality": 42,
+
+    "//5": "AVIF is slow to encode but roughly 40% smaller than WebP at matching",
+    "//6": "quality. Set format to \"webp\" to trade about 400 MB for hours of CPU,",
+    "//7": "or \"jpeg\" for maximum compatibility and roughly 2.5x the size.",
+
+    "//8": "Videos are excluded from the site by default: 322 clips weigh 6.2 GB,",
+    "//9": "six times the entire Pages budget. \"poster\" keeps a still frame from",
+    "//10": "each one (needs ffmpeg on PATH); \"skip\" drops them entirely.",
+    "videos": "skip"
+  },
+
+  "locate": {
+    "//": "Coastal photos fall outside every state polygon, for two unrelated reasons",
+    "//2": "worth telling apart. Within a few hundred metres it is mesh resolution —",
+    "//3": "IBGE boundaries are not survey-grade and beaches sit seaward of them, so",
+    "//4": "you were on dry sand. Beyond that you were genuinely on the water.",
+    "coastToleranceKm": 0.8,
+    "offshoreSnapKm": 40,
+
+    "//5": "Photos with no GPS at all get their location inferred from the nearest",
+    "//6": "GPS-tagged photo in time, if one exists within this many hours.",
+    "interpolateHours": 12
+  }
+}

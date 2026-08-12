@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2024 — Um ano subindo o litoral</title>
+<meta name="description" content="Todas as fotos de um ano atravessando o Nordeste, cada uma no lugar exato em que foi tirada.">
+<meta name="theme-color" content="#16130F">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="./vendor/leaflet/leaflet.css?v=15">
+<link rel="stylesheet" href="./css/app.css?v=15">
+
+<!-- Classic script so `L` is a global before the modules run. Vendored, not CDN. -->
+<script src="./vendor/leaflet/leaflet.js?v=15"></script>
+
+<script type="importmap">
+{
+  "imports": {
+    "./js/app.js":        "./js/app.js?v=15",
+    "./js/config.js":     "./js/config.js?v=15",
+    "./js/strings.js":    "./js/strings.js?v=15",
+    "./js/lugares.js":    "./js/lugares.js?v=15",
+    "./js/map.js":        "./js/map.js?v=15",
+    "./js/gallery.js":    "./js/gallery.js?v=15",
+    "./js/lightbox.js":   "./js/lightbox.js?v=15",
+    "./js/curiosidades.js": "./js/curiosidades.js?v=15"
+  }
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#grid">Pular para as fotos</a>
+
+<header class="masthead">
+  <div class="masthead__type">
+    <p class="eyebrow" id="eyebrow">Na ordem em que foram percorridos</p>
+    <h1 class="year">2024</h1>
+    <p class="lede" id="lede">
+      O ano em que fiz trinta, vendi o que não coubesse numa mochila e passei
+      inteiro me mudando — um estado por vez, litoral acima.
+    </p>
+    <dl class="tally" id="tally"></dl>
+
+    <a class="imersiva" href="./museu.html">
+      <span class="imersiva__rotulo">Experiência imersiva</span>
+      <span class="imersiva__nota">Caminhe pelo museu em primeira pessoa — nove salas, uma por estado</span>
+    </a>
+  </div>
+
+  <figure class="mapblock">
+    <div class="mapblock__frame">
+      <div id="map" class="map" role="application"
+           aria-label="Mapa do Brasil com todas as fotos geolocalizadas"></div>
+      <div class="map__empty" id="map-empty" hidden></div>
+      <output class="readout" id="readout" aria-live="polite"></output>
+    </div>
+    <figcaption class="mapblock__caption">
+      <span class="legend"><i class="dot dot--exact"></i>Em terra</span>
+      <span class="legend"><i class="dot dot--sea"></i>Sobre a água</span>
+      <span class="legend"><i class="dot dot--inferred"></i>Inferida pelo horário</span>
+      <span class="legend"><i class="trail-key"></i>Rota percorrida</span>
+      <span class="legend legend--hint">Os círculos numerados agrupam fotos próximas — clique para aproximar</span>
+    </figcaption>
+  </figure>
+</header>
+
+<nav class="rail" aria-label="Filtrar por estado">
+  <div class="rail__states" id="states"></div>
+  <div class="rail__toggles">
+    <button class="toggle toggle--ghost" id="reset" type="button" hidden>Limpar</button>
+    <button class="toggle toggle--cull" id="cull-toggle" type="button" aria-pressed="false">Apagar fotos</button>
+  </div>
+</nav>
+
+<p class="dossier mono" id="dossier"></p>
+
+<aside class="tray" id="tray" hidden aria-live="polite">
+  <div class="tray__head">
+    <p class="tray__count mono" id="tray-count"></p>
+    <div class="tray__actions">
+      <button class="toggle" id="tray-copy" type="button">Copiar lista</button>
+      <button class="toggle toggle--ghost" id="tray-clear" type="button">Desmarcar todas</button>
+    </div>
+  </div>
+  <textarea class="tray__list mono" id="tray-list" readonly spellcheck="false"
+            aria-label="Nomes das fotos marcadas"></textarea>
+  <p class="tray__hint mono" id="tray-hint"></p>
+</aside>
+
+<section class="timeline" aria-label="Filtrar por data">
+  <div class="timeline__track" id="timeline">
+    <div class="timeline__fill" id="timeline-fill"></div>
+    <div class="timeline__months" id="timeline-months" aria-hidden="true"></div>
+    <input class="timeline__input" id="timeline-input" type="range" min="0" max="365" value="365"
+           aria-label="Mostrar fotos até esta data">
+  </div>
+  <p class="timeline__date mono" id="timeline-date"></p>
+</section>
+
+<main id="grid" class="sheet">
+  <p class="sheet__status mono" id="status"></p>
+  <div class="grid" id="gallery"></div>
+  <div class="empty" id="empty" hidden></div>
+</main>
+
+<section class="curiosidades" id="curiosidades" aria-labelledby="curio-titulo">
+  <header class="curiosidades__cabeca">
+    <h2 class="curiosidades__titulo" id="curio-titulo">O que os metadados sabem</h2>
+    <p class="curiosidades__intro">
+      Nada disso foi anotado — sai da hora, da posição e da própria imagem de cada foto.
+    </p>
+  </header>
+  <div id="curio"></div>
+</section>
+
+<footer class="colophon">
+  <p>Fotos e rota vindas de um export do Google Takeout. Estado e cidade de cada foto
+     foram resolvidos offline contra as malhas estadual e municipal do IBGE.
+     Nada saiu desta máquina.</p>
+  <p class="mono">BUILD 15</p>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Foto">
+  <button class="lightbox__close" id="lb-close" type="button" aria-label="Fechar">✕</button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lb-prev" type="button" aria-label="Foto anterior">‹</button>
+  <button class="lightbox__nav lightbox__nav--next" id="lb-next" type="button" aria-label="Próxima foto">›</button>
+  <figure class="lightbox__figure">
+    <img id="lb-img" alt="">
+    <figcaption class="lightbox__meta mono" id="lb-meta"></figcaption>
+  </figure>
+</dialog>
+
+<script type="module" src="./js/app.js?v=15"></script>
+</body>
+</html>
