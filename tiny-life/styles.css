@@ -1,0 +1,156 @@
+/* tiny life — minimal ant colony.
+   Chão de terra batida cercado de grama. O HUD mora nos cantos, que são grama
+   escura, então o texto é claro e com sombra pra aguentar o fundo folhado. */
+
+:root {
+  --bg: #7e6349;
+  --ink: #f6f3e9;
+  --dim: rgba(246, 243, 233, 0.78);
+  --faint: rgba(246, 243, 233, 0.55);
+  --line: rgba(246, 243, 233, 0.34);
+  --pad: 22px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  font: 400 10px/1.5 ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Sombra suave nos cantos: lida como a grama mais fechada na beirada. */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(132% 100% at 50% 46%, transparent 46%, rgba(14, 20, 7, 0.46) 100%);
+}
+
+.hud {
+  position: fixed;
+  margin: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-shadow: 0 1px 3px rgba(10, 16, 4, 0.8);
+}
+
+/* ---- cabeçalho ---- */
+
+.hud-top {
+  top: calc(var(--pad) + env(safe-area-inset-top));
+  left: calc(var(--pad) + env(safe-area-inset-left));
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.title {
+  color: var(--ink);
+  letter-spacing: 0.34em;
+}
+
+.sub { color: var(--faint); }
+
+.build {
+  color: var(--faint);
+  letter-spacing: 0.2em;
+  padding-left: 2px;
+  border-left: 1px solid var(--line);
+  padding-inline-start: 10px;
+}
+
+/* ---- dica (some depois do primeiro toque) ---- */
+
+.hud-hint {
+  top: calc(var(--pad) + 26px + env(safe-area-inset-top));
+  left: calc(var(--pad) + env(safe-area-inset-left));
+  color: var(--faint);
+  transition: opacity 0.9s ease;
+}
+
+.hud-hint.gone { opacity: 0; }
+
+/* ---- números ---- */
+
+.hud-stats {
+  bottom: calc(var(--pad) + env(safe-area-inset-bottom));
+  left: calc(var(--pad) + env(safe-area-inset-left));
+  display: flex;
+  gap: 8px;
+}
+
+.hud-stats b {
+  font-weight: 400;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-stats .dot { color: var(--line); }
+
+/* ---- botões ---- */
+
+.hud-actions {
+  bottom: calc(var(--pad) + env(safe-area-inset-bottom));
+  right: calc(var(--pad) + env(safe-area-inset-right));
+  display: flex;
+  gap: 8px;
+}
+
+.hud-actions button {
+  pointer-events: auto;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: var(--dim);
+  background: rgba(20, 28, 12, 0.32);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.hud-actions button:hover,
+.hud-actions button:focus-visible {
+  color: var(--ink);
+  border-color: rgba(246, 243, 233, 0.6);
+  outline: none;
+}
+
+.hud-actions button[aria-pressed="false"] { color: var(--faint); opacity: 0.6; }
+
+/* ---- telas pequenas ---- */
+
+@media (max-width: 560px) {
+  :root { --pad: 16px; }
+  body { font-size: 9px; }
+  .hud { letter-spacing: 0.14em; }
+  .hud-actions button { padding: 8px 12px; }
+}
+
+@media (max-width: 360px) {
+  .sub { display: none; }
+}

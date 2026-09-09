@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#33481f">
+<title>tiny life — ant colony</title>
+<meta name="description" content="A minimal ant colony simulation: black specks foraging on bare earth, wearing pheromone trails into the dirt.">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="hud hud-top">
+  <span class="title">tiny life</span>
+  <span class="sub">ant colony</span>
+  <span class="build">build 5</span>
+</header>
+
+<p class="hud hud-hint" id="hint">tap anywhere to scatter food</p>
+
+<div class="hud hud-stats" aria-hidden="true">
+  <span><b id="stat-ants">0</b> ants</span>
+  <span class="dot">·</span>
+  <span><b id="stat-food">0</b> gathered</span>
+</div>
+
+<div class="hud hud-actions">
+  <button id="btn-trails" type="button" aria-pressed="true">trails</button>
+  <button id="btn-reset" type="button">reset</button>
+</div>
+
+<script src="main.js?v=5"></script>
+</body>
+</html>

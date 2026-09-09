@@ -1880,35 +1880,209 @@ function buildAviao() {
 /* ===================== CENA: A PRAIA (o fim da fuga) ===================== */
 function buildPraia() {
   freshScene();
-  scene.background = new THREE.Color(0xbcd0da);   // céu claro
-  scene.fog = new THREE.Fog(0xbcd0da, 24, 130);
-  scene.add(new THREE.HemisphereLight(0xe4eef2, 0x9fb0b8, 1.2));
+  const SKY = 0xbcd0da;
+  scene.background = new THREE.Color(SKY);
+  scene.fog = new THREE.Fog(SKY, 34, 165);
+  // freshScene() já traz hemisférica (1.05) + direcional (.5). NÃO acrescentar
+  // uma segunda hemisférica aqui: ela lavava o contraste e deixava o mar chapado.
+  // O que falta é a direcional baixa do sol, que dá relevo às cristas.
+  const sunLight = new THREE.DirectionalLight(0xfdf1e0, .6);
+  sunLight.position.set(0, 8, -40);
+  scene.add(sunLight);
 
-  box(140, .4, 100, LIGHT2, 0, -.2, 30);          // areia (termina no z ≈ -20)
-  walkOf(-30, -14, 30, 45);
-  const sea = box(200, .3, 160, NAVY, 0, -.3, -100); // mar (começa no z ≈ -20)
+  const SHORE = -20;                              // linha d'água
+  const SAND_W = 150;
+  // A areia vai de y=-.4 a y=0, ou seja, o CHÃO É y=0. Tudo que se apoia nela
+  // (espuma, faixa molhada, pedras) tem que ficar ACIMA disso — antes espuma
+  // (-.09) e faixa molhada (-.16) estavam enterradas e nunca apareciam.
+  const GROUND = 0;
 
-  // linhas de espuma quebrando na linha d'água
-  const foam = [];
-  for (let i = 0; i < 5; i++) {
-    const f = box(200, .05, 1.3, GLOW, 0, -.1, -20 - i * 1.5);
-    f.material.transparent = true; f.material.opacity = .5 - i * .08;
-    foam.push(f);
+  // ── areia ──────────────────────────────────────────────────────────────
+  box(SAND_W, .4, 110, LIGHT2, 0, -.2, 35);
+  walkOf(-30, -18.5, 30, 45);
+  // faixa de areia molhada: escurece quando a água sobe e seca depois que ela
+  // recua — mesmo truque do asfalto da chuva na rua (multiplyScalar no color).
+  const wet = box(SAND_W, .02, 2.6, LIGHT2, 0, GROUND + .012, SHORE + 1.1);
+  const cWet = new THREE.Color(LIGHT2), cWetDark = new THREE.Color(LIGHT2).multiplyScalar(.55);
+
+  // ── o mar, malha animada ───────────────────────────────────────────────
+  const SEA_W = 300, SEA_D = 200, SX = 40, SZ = 30;
+  const seaGeo = new THREE.PlaneGeometry(SEA_W, SEA_D, SX, SZ);
+  seaGeo.rotateX(-Math.PI / 2);
+  // NAVY puro contra um céu claro vira um vazio preto e as facetas da onda somem.
+  // Puxado um pouco para o céu, a mesma luz passa a desenhar crista e vale.
+  const cSea = new THREE.Color(NAVY).lerp(new THREE.Color(SKY), .3);
+  const sea = new THREE.Mesh(seaGeo, new THREE.MeshLambertMaterial({ color: cSea, flatShading: true }));
+  // Quase rente ao chão: com -.28 sobrava um degrau visível entre areia e água,
+  // que lia como uma emenda reta atravessando a tela inteira.
+  sea.position.set(0, GROUND - .05, SHORE - SEA_D / 2);
+  scene.add(sea);
+  const sPos = seaGeo.attributes.position;
+  const sBase = Float32Array.from(sPos.array);    // z local +SEA_D/2 == a arrebentação
+
+  // Altura da onda em função da distância da arrebentação. Fica em função à
+  // parte porque o brilho do sol também precisa dela para boiar junto.
+  function waveAt(x, d, t) {
+    const shoal = Math.max(.3, 2.2 - d * .045);   // a onda encorpa ao perder fundo
+    // ...e desaparece nos últimos metros: é ali que ela já quebrou e virou
+    // lâmina d'água. Sem esse afinamento a borda da malha batia acima da areia.
+    const edge = Math.min(1, d / 7);
+    return edge * (
+      Math.sin(d * .17 - t * 1.5) * .62 * shoal +
+      Math.sin(d * .06 - t * .85 + x * .055) * .80 +   // cristas tortas, não paralelas
+      Math.sin(x * .11 + t * .65) * .34 +
+      Math.sin(x * .045 - d * .09 + t * .4) * .40);    // segundo trem, cruzado
   }
+
+  // ── espuma ─────────────────────────────────────────────────────────────
+  // Antes eram 5 barras defasadas só pelo índice, então andavam em uníssono e
+  // liam como listras deslizando. Cada língua agora tem período, alcance e
+  // largura próprios — elas sobem a areia e recuam fora de fase.
+  // Três, não cinco: cada barra é um retângulo de borda dura de largura total, e
+  // em ângulo rasante cada uma vira DUAS linhas horizontais na tela. Empilhadas,
+  // viravam um zebrado. Três é o máximo que ainda lê como espuma.
+  const foam = [];
+  for (let i = 0; i < 3; i++) {
+    // largura da AREIA, não do mar: com SEA_W a barra sobrava 75 de cada lado,
+    // flutuando no vazio para além da praia. E FINA: com 2 a 4 de profundidade
+    // correndo 12 areia acima, as cinco viravam faixas pavimentando a praia
+    // inteira em vez de renda na beira d'água.
+    const f = box(SAND_W, .04, .7 + (i % 3) * .45, GLOW, 0, GROUND + .035, SHORE);
+    f.material.transparent = true; f.material.depthWrite = false;
+    foam.push({
+      m: f,
+      per: 5.5 + i * 1.35,                        // períodos primos entre si: nunca sincronizam
+      // Alcance curto de propósito: espalhadas por 11 unidades de areia, as
+      // cinco viravam listras horizontais ocupando meia tela. A espuma vive
+      // colada na beira d'água, não sobe a praia inteira.
+      run: 1.8 + (i % 4) * .9,
+      off: i * 1.7,
+      base: SHORE - i * .5,
+    });
+  }
+
   anims.push(t => {
-    for (let i = 0; i < foam.length; i++) foam[i].position.z = -20 - i * 1.5 + Math.sin(t * .6 + i) * .7;
-    sea.position.y = -.3 + Math.sin(t * .5) * .04;
+    // ondas: marulho longo + encrespamento que engrossa ao chegar no raso
+    for (let i = 0; i < sPos.count; i++) {
+      const x = sBase[i * 3], z = sBase[i * 3 + 2];
+      sPos.setY(i, waveAt(x, SEA_D / 2 - z, t));  // d = 0 na arrebentação
+    }
+    sPos.needsUpdate = true;
+    seaGeo.computeVertexNormals();                // sem isso a luz não acompanha a onda
+
+    // línguas d'água subindo e recuando
+    let maxRun = 0;
+    for (const f of foam) {
+      const ph = ((t + f.off) % f.per) / f.per;   // 0→1 uma vez por período
+      const surge = Math.sin(ph * Math.PI);       // sobe e volta, sem salto
+      const adv = surge * f.run;
+      f.m.position.z = f.base + adv;
+      f.m.material.opacity = .1 + surge * .45;
+      if (adv > maxRun) maxRun = adv;
+    }
+    // a areia lembra por onde a água passou
+    const soak = Math.min(1, maxRun / 3.2);
+    wet.material.color.copy(cWetDark).lerp(cWet, 1 - soak);
+    wet.position.z = SHORE + 1.1 + soak * .8;
   });
 
-  // sol e nuvens distantes
-  const sun = new THREE.Mesh(new THREE.CircleGeometry(3.5, 24), new THREE.MeshBasicMaterial({ color: GLOW, fog: false }));
-  sun.position.set(0, 15, -75); scene.add(sun);
-  for (let i = 0; i < 6; i++) blob(3 + (i % 3), 1, 2, LIGHT, -30 + i * 12, 13 + (i % 2) * 3, -62);
+  // ── sol, halo e o caminho de brilho na água ────────────────────────────
+  // O sol era GLOW (quase branco) contra um céu azul-claro: sumia por falta de
+  // contraste. Quente contra o céu frio ele aparece, e combina com o "Paraiso".
+  const SUNC = 0xffe6b8;
+  const sunG = grp(0, 15, -85);
+  const sun = new THREE.Mesh(new THREE.CircleGeometry(5.4, 28), new THREE.MeshBasicMaterial({ color: SUNC, fog: false }));
+  sunG.add(sun);
+  for (let h = 0; h < 3; h++) {                   // halo em camadas, o brilho não tem borda dura
+    const halo = new THREE.Mesh(
+      new THREE.CircleGeometry(7.2 + h * 4.2, 28),
+      new THREE.MeshBasicMaterial({ color: SUNC, fog: false, transparent: true, opacity: .2 - h * .055, depthWrite: false })
+    );
+    halo.position.z = -.1 - h * .1;
+    sunG.add(halo);
+  }
+  // rastro do sol na água: placas curtas que piscam na direção do observador
+  const glint = [];
+  for (let i = 0; i < 26; i++) {
+    const gz = SHORE - 6 - i * 3.1;
+    const g = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.6 + (i % 3) * .8, .5),
+      new THREE.MeshBasicMaterial({ color: SUNC, fog: false, transparent: true, opacity: .3, depthWrite: false })
+    );
+    g.rotation.x = -Math.PI / 2;
+    const gx = ((i * 37) % 11 - 5) * .55;
+    g.position.set(gx, GROUND, gz);
+    scene.add(g);
+    // guarda x e a distância da arrebentação para o brilho SUBIR E DESCER com a
+    // onda; num plano fixo ele era engolido pelas cristas e piscava sozinho.
+    glint.push({ m: g, ph: (i * .41) % 1, x: gx, d: SHORE - gz });
+  }
+  anims.push(t => {
+    for (const g of glint) {
+      const b = (Math.sin((t * 1.3 + g.ph * 6.28)) + 1) / 2;
+      g.m.material.opacity = .08 + b * .42;
+      g.m.scale.x = .7 + b * .6;
+      g.m.position.y = GROUND - .05 + waveAt(g.x, g.d, t) + .06;   // boia na crista
+    }
+  });
 
-  // pedrinhas na areia
-  for (const [rx, rz] of [[-8, 6], [10, 10], [-14, 16], [6, 22]]) blob(.6, .4, .6, DARK2, rx, .2, rz);
+  // ── nuvens à deriva ────────────────────────────────────────────────────
+  // Uma blob só vira um disco de borda dura — lê como disco voador, não como
+  // nuvem. Cada nuvem aqui é um punhado de bolhas sobrepostas de tamanhos
+  // diferentes, que é o que dá a silhueta irregular.
+  const clouds = [];
+  for (let i = 0; i < 8; i++) {
+    const g = grp(0, 17 + (i % 3) * 4.5, -78 - (i % 4) * 14);
+    const n = 3 + (i % 3);
+    for (let p = 0; p < n; p++) {
+      const s = .55 + ((i + p * 3) % 4) * .22;
+      const b = blob(5.2 * s, 2.1 * s, 3.4 * s, GLOW,
+        (p - (n - 1) / 2) * 4.4, ((p * 7 + i * 3) % 5) * .5 - .8, ((p * 5 + i) % 3) * 1.1, g);
+      // sem emissive a Lambert deixa a barriga da nuvem no escuro e ela lê como
+      // pedra flutuando; o emissive devolve o branco sem matar o volume
+      b.material.emissive = new THREE.Color(GLOW).multiplyScalar(.62);
+      b.material.transparent = true; b.material.opacity = .7;
+    }
+    clouds.push({ g, x0: -70 + i * 18, sp: .3 + (i % 3) * .1 });
+  }
+  anims.push(t => {
+    for (const c of clouds) c.g.position.x = ((c.x0 + t * c.sp + 85) % 170) - 85;
+  });
 
-  return { spawn: { x: 0, z: 22, yaw: 0 }, caption: sceneCaption('praia'), auto: null };
+  // ── gaivotas ───────────────────────────────────────────────────────────
+  const gulls = [];
+  for (let i = 0; i < 3; i++) {
+    const g = grp(0, 9 + i * 1.8, -34 - i * 9);
+    const wl = box(1.5, .07, .34, GLOW, -.7, 0, 0, g);
+    const wr = box(1.5, .07, .34, GLOW, .7, 0, 0, g);
+    box(.5, .13, .2, GLOW, 0, 0, 0, g);
+    gulls.push({ g, wl, wr, x0: i * 26, sp: 2.2 + i * .5, ph: i * 1.1 });
+  }
+  anims.push(t => {
+    for (const b of gulls) {
+      b.g.position.x = ((b.x0 + t * b.sp + 60) % 120) - 60;
+      b.g.position.y += Math.sin(t * .8 + b.ph) * .004;
+      const fl = Math.sin(t * 4.4 + b.ph) * .5;   // batida de asa
+      b.wl.rotation.z = fl; b.wr.rotation.z = -fl;
+    }
+  });
+
+  // ── pedras e conchas na areia ──────────────────────────────────────────
+  // Boa parte delas fica ENTRE o jogador e a água (z de -18 a -12): com o spawn
+  // novo, sem isso o primeiro plano é um vazio de areia ocupando meia tela.
+  for (const [rx, rz, s] of [[-2.4, -17.2, .5], [3.1, -18.4, .35], [-5.6, -15.1, .7],
+                             [6.8, -14.3, .45], [1.2, -13.2, .3], [-9.4, -16.8, .6],
+                             [9.9, -17.6, .55], [-13, -13.4, .8], [14, -12.6, .5],
+                             [-8, 6, 1], [10, 10, .7], [-14, 16, 1.2], [6, 22, .8],
+                             [-3, -6, .6], [16, -2, .9], [-19, 2, .7], [12, 30, 1.1]])
+    // y fixo em .16 fazia as pequenas flutuarem e as grandes afundarem; ligado
+    // ao próprio raio, toda pedra fica meio enterrada na areia, como pedra.
+    blob(.6 * s, .34 * s, .6 * s, DARK2, rx, GROUND + .34 * s * .5, rz);
+
+  // O spawn original era z:22 — 42 unidades de areia até a água, o que reduzia o
+  // mar a um fio no horizonte. Chegar quase na arrebentação é o ponto da cena:
+  // daqui a espuma passa pelos pés e a onda tem relevo na tela.
+  return { spawn: { x: 0, z: -15.5, yaw: 0 }, caption: sceneCaption('praia'), auto: null };
 }
 
 /* ===================== CENA: O METRO ===================== */
