@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resumo do DDIA</title>
+<meta name="description" content="Resumo em português de Designing Data-Intensive Applications (2ª edição), um capítulo por vez.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤿</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Literata:ital,opsz,wght@0,7..72,300..700;1,7..72,300..700&display=swap" rel="stylesheet">
+<style>
+  /* Hallmark · genre: editorial · macrostructure: Long Document · nav: N3 side-rail (variante: índice de capítulos) · footer: Ft2 inline single line
+   * theme: custom · vibe: "mergulho: do raso ao fundo, papel frio" · paper: oklch(96.5% 0.006 215) · accent: oklch(50% 0.08 195)
+   * display: Literata · body: Literata · ui: Instrument Sans · axes: light / roman-serif / chromatic-other (teal ~195°)
+   * enrichment: none (typography only) · studied: no · context: inferred (o autor e leitores do DDIA · ler e navegar resumos · editorial técnico)
+   * contrast: pass (40–41) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · mobile: pass (34, 49–57), conferido lendo o CSS, sem renderizar
+   */
+  /* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5 */
+
+  :root {
+    color-scheme: light dark;
+
+    /* Neutros no matiz 215 nos dois temas; o índice desce do raso (accent) ao fundo (deep). */
+    --color-paper:      oklch(96.5% 0.006 215);
+    --color-paper-2:    oklch(93% 0.009 215);
+    --color-ink:        oklch(23% 0.014 215);
+    --color-muted:      oklch(47% 0.014 215);
+    --color-rule:       oklch(82% 0.012 215);
+    --color-accent:     oklch(50% 0.08 195);
+    --color-deep:       oklch(34% 0.07 250);
+    --color-accent-ink: var(--color-paper);
+    --color-focus:      var(--color-accent);
+
+    --font-display: "Literata", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --font-body:    "Literata", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --font-ui:      "Instrument Sans", "Segoe UI", -apple-system, sans-serif;
+
+    /* Escala 1.25 sobre 18 px; cinco tamanhos na página inteira */
+    --text-sm:      0.9rem;
+    --text-base:    1.125rem;
+    --text-md:      1.40625rem;
+    --text-xl:      clamp(1.75rem, 1.3rem + 1.6vw, 2.1875rem);
+    --text-display: clamp(1.75rem, 0.9rem + 3.2vw, 3rem);
+
+    --lh-tight:   1.08;
+    --lh-heading: 1.15;
+    --lh-snug:    1.4;
+    --lh-body:    1.7;
+
+    --space-3xs: 0.125rem;
+    --space-2xs: 0.25rem;
+    --space-xs:  0.5rem;
+    --space-sm:  0.75rem;
+    --space-md:  1rem;
+    --space-lg:  1.5rem;
+    --space-xl:  2.5rem;
+    --space-2xl: 4rem;
+    --space-3xl: 6rem;
+
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 0.75rem;
+    --rule: 1px solid var(--color-rule);
+
+    --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-short:   220ms;
+
+    --z-raised: 10;
+
+    /* Índice: diâmetro da estação e altura de cada linha */
+    --estacao:    1.75rem;
+    --linha-item: 1.75rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-paper:   oklch(18% 0.02 215);
+      --color-paper-2: oklch(22% 0.022 215);
+      --color-ink:     oklch(93% 0.01 215);
+      --color-muted:   oklch(74% 0.014 215);
+      --color-rule:    oklch(32% 0.02 215);
+      --color-accent:  oklch(78% 0.08 195);
+      --color-deep:    oklch(62% 0.09 250);
+    }
+    body { font-weight: 350; }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { overflow-x: clip; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    margin: 0;
+    overflow-x: clip;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--lh-body);
+  }
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: var(--radius-sm); }
+  h1, h2, h3 { overflow-wrap: anywhere; min-width: 0; }
+
+  .sr {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+  }
+  .pular {
+    position: absolute; left: var(--space-md); top: calc(-1 * var(--space-2xl)); z-index: var(--z-raised);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-ink); color: var(--color-paper);
+    font: 600 var(--text-sm)/1 var(--font-ui);
+    white-space: nowrap; text-decoration: none;
+  }
+  .pular:focus { top: var(--space-md); }
+
+  .pagina {
+    max-width: 44rem;
+    margin-inline: auto;
+    padding-inline: max(var(--space-md), env(safe-area-inset-left)) max(var(--space-md), env(safe-area-inset-right));
+  }
+  @media (min-width: 30rem) {
+    .pagina { padding-inline: max(var(--space-lg), env(safe-area-inset-left)) max(var(--space-lg), env(safe-area-inset-right)); }
+  }
+
+  /* Cabeçalho */
+  .topo { padding-block: var(--space-xl) var(--space-2xl); }
+  .topo h1 {
+    margin: 0 0 var(--space-md);
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    font-weight: 700;
+    line-height: var(--lh-tight);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .topo p { margin: 0; }
+  .topo .autores { font: 500 var(--text-sm)/var(--lh-snug) var(--font-ui); }
+  .topo .sobre { margin-top: var(--space-lg); max-width: 60ch; color: var(--color-muted); }
+  .topo .progresso { margin-top: var(--space-md); font: 500 var(--text-sm)/var(--lh-snug) var(--font-ui); color: var(--color-muted); }
+
+  /* Índice: cada capítulo é uma estação na linha do mergulho */
+  .indice { margin-bottom: var(--space-xl); font-family: var(--font-ui); }
+  .indice details { border: var(--rule); border-radius: var(--radius-md); }
+  .indice summary {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-md);
+    min-height: 2.75rem;
+    padding-inline: var(--space-md);
+    border-radius: var(--radius-md);
+    font: 600 var(--text-sm)/1 var(--font-ui);
+    white-space: nowrap;
+    cursor: pointer; list-style: none;
+  }
+  .indice summary::-webkit-details-marker { display: none; }
+  .indice summary::after {
+    content: ""; width: 0.5rem; height: 0.5rem; margin-inline-end: var(--space-2xs);
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: translateY(-25%) rotate(45deg);
+  }
+  .indice details[open] > summary::after { transform: translateY(25%) rotate(-135deg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .indice summary::after { transition: transform var(--dur-short) var(--ease-in-out); }
+  }
+  @media (hover: hover) {
+    .indice summary:hover { background: var(--color-paper-2); }
+  }
+  .indice summary:active { background: var(--color-paper-2); }
+
+  .mergulho {
+    position: relative;
+    list-style: none;
+    margin: var(--space-2xs) var(--space-sm) var(--space-md);
+    padding: 0;
+  }
+  .mergulho::before {
+    content: ""; position: absolute;
+    left: calc(var(--estacao) / 2 - 1px);
+    top: calc(var(--linha-item) / 2);
+    bottom: calc(var(--linha-item) / 2);
+    width: 2px;
+    background: linear-gradient(var(--color-accent), var(--color-deep));
+  }
+  .mergulho > li {
+    --color-station: color-mix(in oklab, var(--color-accent), var(--color-deep) calc(var(--p) * 100%));
+    position: relative;
+    padding-inline-start: calc(var(--estacao) + var(--space-sm));
+  }
+  .mergulho > li + li { margin-top: var(--space-2xs); }
+  .cap {
+    display: flex; align-items: center;
+    min-height: var(--linha-item);
+    font-size: var(--text-sm); line-height: var(--lh-snug);
+    color: var(--color-muted); text-decoration: none;
+  }
+  .cap .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cap .n {
+    position: absolute; left: 0;
+    top: calc((var(--linha-item) - var(--estacao)) / 2);
+    width: var(--estacao); height: var(--estacao);
+    display: grid; place-items: center;
+    border: 2px solid var(--color-station); border-radius: 50%;
+    background: var(--color-paper);
+    font: 600 var(--text-sm)/1 var(--font-ui);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
+  }
+  .feito .cap { color: var(--color-ink); font-weight: 700; }
+  .feito .cap .n { background: var(--color-station); color: var(--color-accent-ink); font-weight: 700; }
+  @media (hover: hover) {
+    a.cap:hover .t { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+  }
+  a.cap:active .t { color: var(--color-accent); }
+
+  .secoes { list-style: none; margin: var(--space-2xs) 0 var(--space-xs); padding: 0; }
+  .secoes a {
+    display: flex; align-items: center;
+    min-height: 2rem;
+    margin-inline-start: calc(-1 * var(--space-xs));
+    padding-inline: var(--space-xs);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm); line-height: var(--lh-snug);
+    white-space: nowrap;
+    color: var(--color-muted); text-decoration: none;
+  }
+  @media (hover: hover) {
+    .secoes a:hover { color: var(--color-ink); }
+  }
+  .secoes a:active { color: var(--color-accent); }
+  .secoes a[aria-current] { color: var(--color-ink); background: var(--color-paper-2); }
+
+  /* Toque: alvos de 44 px */
+  @media (pointer: coarse) {
+    :root { --linha-item: 2.75rem; }
+    .mergulho > li + li { margin-top: 0; }
+    .secoes a { min-height: 2.75rem; }
+  }
+
+  /* Texto do capítulo */
+  .texto { max-width: 68ch; font-variant-numeric: oldstyle-nums; hyphens: auto; }
+  @media (min-width: 40rem) {
+    .texto { hyphens: manual; }
+  }
+  .texto p, .texto ul { margin: 0 0 var(--space-lg); text-wrap: pretty; }
+  .texto ul { padding-inline-start: var(--space-lg); }
+  .texto li { margin-bottom: var(--space-xs); }
+  .texto li::marker { color: var(--color-accent); }
+  .texto strong { font-weight: 700; }
+
+  .capitulo {
+    --color-station: color-mix(in oklab, var(--color-accent), var(--color-deep) calc(var(--p) * 100%));
+    padding-top: var(--space-xl);
+    border-top: var(--rule);
+    scroll-margin-top: var(--space-md);
+  }
+  .capitulo h2 {
+    margin: 0 0 var(--space-xs);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    line-height: var(--lh-heading);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .cap-marca {
+    display: grid; place-items: center;
+    width: 2.75rem; height: 2.75rem;
+    margin-bottom: var(--space-md);
+    border-radius: 50%;
+    background: var(--color-station);
+    color: var(--color-accent-ink);
+    font: 700 var(--text-md)/1 var(--font-ui);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+  .texto .cap-paginas { margin: 0 0 var(--space-xl); font: 500 var(--text-sm)/var(--lh-snug) var(--font-ui); color: var(--color-muted); }
+
+  .epigrafe { margin: 0 0 var(--space-xl) var(--space-lg); }
+  .epigrafe blockquote { margin: 0; }
+  .texto .epigrafe p { margin: 0 0 var(--space-xs); font-style: italic; }
+  .epigrafe figcaption { font: 400 var(--text-sm)/var(--lh-snug) var(--font-ui); color: var(--color-muted); }
+  .texto .lead { font-size: var(--text-md); line-height: 1.55; }
+
+  /* Ritmo: abertura curta, trade-offs com respiro largo, conclusão fechada por um fio */
+  .secao { margin-top: var(--space-2xl); scroll-margin-top: var(--space-lg); }
+  .secao--abertura { margin-top: var(--space-xl); }
+  .secao--fecho { margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: var(--rule); }
+  .secao h3 {
+    margin: 0;
+    font: 700 var(--text-md)/var(--lh-snug) var(--font-ui);
+    letter-spacing: -0.01em;
+  }
+  .texto .original { margin: var(--space-2xs) 0 var(--space-lg); font: 400 var(--text-sm)/var(--lh-snug) var(--font-ui); color: var(--color-muted); }
+
+  .tabela { margin: var(--space-lg) 0 var(--space-xl); overflow-x: auto; }
+  .tabela table { width: 100%; min-width: 26rem; border-collapse: collapse; font: 400 var(--text-sm)/var(--lh-snug) var(--font-ui); }
+  .tabela caption { caption-side: top; text-align: start; padding-bottom: var(--space-xs); color: var(--color-muted); }
+  .tabela th, .tabela td { padding: var(--space-xs) var(--space-sm); text-align: start; vertical-align: top; border-bottom: var(--rule); }
+  .tabela thead th { background: var(--color-paper-2); border-bottom: 0; font-weight: 700; }
+  .tabela tbody th { font-weight: 600; color: var(--color-muted); }
+
+  .aparte { margin: var(--space-xl) 0; padding: var(--space-lg); border-radius: var(--radius-lg); background: var(--color-paper-2); }
+  .aparte h4 { margin: 0 0 var(--space-xs); font: 700 var(--text-base)/var(--lh-snug) var(--font-ui); }
+  .texto .aparte p { margin: 0; }
+
+  /* Rodapé */
+  .rodape {
+    margin-top: var(--space-2xl);
+    padding-block: var(--space-lg) var(--space-2xl);
+    border-top: var(--rule);
+    font: 400 var(--text-sm)/var(--lh-snug) var(--font-ui);
+    color: var(--color-muted);
+  }
+  .rodape p { margin: 0; }
+  .build { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* Desktop: índice fixo à esquerda, texto à direita */
+  @media (min-width: 64rem) {
+    .pagina {
+      display: grid;
+      grid-template-columns: 20rem minmax(0, 68ch);
+      grid-template-areas: "indice topo" "indice texto" "indice rodape";
+      column-gap: clamp(var(--space-xl), 5vw, var(--space-3xl));
+      justify-content: center;
+      max-width: none;
+    }
+    .topo { grid-area: topo; padding-block: var(--space-2xl) var(--space-3xl); }
+    .texto { grid-area: texto; }
+    .rodape { grid-area: rodape; }
+    .indice {
+      grid-area: indice; align-self: start;
+      position: sticky; top: 0;
+      max-height: 100vh; max-height: 100dvh; overflow-y: auto;
+      margin: 0; padding-block: var(--space-2xl);
+    }
+    .indice details { border: 0; }
+    .indice summary,
+    .indice summary:hover,
+    .indice summary:active { min-height: 0; padding: 0; background: none; cursor: default; color: var(--color-muted); }
+    .indice summary::after { display: none; }
+    .mergulho { margin: var(--space-lg) 0 0; }
+  }
+</style>
+</head>
+<body>
+<a class="pular" href="#cap-1">Pular para o texto</a>
+
+<div class="pagina">
+  <header class="topo">
+    <h1 lang="en">Designing Data-Intensive Applications</h1>
+    <p class="autores">Martin Kleppmann e Chris Riccomini. 2ª edição, O’Reilly, 2026.</p>
+    <p class="sobre">Cada capítulo resumido em português, na ordem do livro. Os títulos ficam em inglês, como no original, com a página em que cada seção começa.</p>
+    <p class="progresso">1 de 14 capítulos resumidos.</p>
+  </header>
+
+  <nav class="indice" aria-label="Capítulos do livro">
+    <details id="indice">
+      <summary>Capítulos</summary>
+      <ol class="mergulho">
+        <li class="feito" style="--p:0">
+          <a class="cap" href="#cap-1" title="Trade-Offs in Data Systems Architecture"><span class="n">1</span><span class="t" lang="en">Trade-Offs in Data Systems Architecture</span></a>
+          <ol class="secoes">
+            <li><a href="#operacional-analitico">Operacional vs. analítico</a></li>
+            <li><a href="#cloud-self-hosting">Cloud vs. self-hosting</a></li>
+            <li><a href="#distribuido-um-no">Distribuído vs. um nó só</a></li>
+            <li><a href="#lei-sociedade">Dados, lei e sociedade</a></li>
+          </ol>
+        </li>
+        <li style="--p:.077" title="Defining Nonfunctional Requirements"><span class="cap"><span class="n">2</span><span class="t" lang="en">Defining Nonfunctional Requirements</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.154" title="Data Models and Query Languages"><span class="cap"><span class="n">3</span><span class="t" lang="en">Data Models and Query Languages</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.231" title="Storage and Retrieval"><span class="cap"><span class="n">4</span><span class="t" lang="en">Storage and Retrieval</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.308" title="Encoding and Evolution"><span class="cap"><span class="n">5</span><span class="t" lang="en">Encoding and Evolution</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.385" title="Replication"><span class="cap"><span class="n">6</span><span class="t" lang="en">Replication</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.462" title="Sharding"><span class="cap"><span class="n">7</span><span class="t" lang="en">Sharding</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.538" title="Transactions"><span class="cap"><span class="n">8</span><span class="t" lang="en">Transactions</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.615" title="The Trouble with Distributed Systems"><span class="cap"><span class="n">9</span><span class="t" lang="en">The Trouble with Distributed Systems</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.692" title="Consistency and Consensus"><span class="cap"><span class="n">10</span><span class="t" lang="en">Consistency and Consensus</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.769" title="Batch Processing"><span class="cap"><span class="n">11</span><span class="t" lang="en">Batch Processing</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.846" title="Stream Processing"><span class="cap"><span class="n">12</span><span class="t" lang="en">Stream Processing</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:.923" title="A Philosophy of Streaming Systems"><span class="cap"><span class="n">13</span><span class="t" lang="en">A Philosophy of Streaming Systems</span><span class="sr">, ainda não resumido</span></span></li>
+        <li style="--p:1" title="Doing the Right Thing"><span class="cap"><span class="n">14</span><span class="t" lang="en">Doing the Right Thing</span><span class="sr">, ainda não resumido</span></span></li>
+      </ol>
+    </details>
+  </nav>
+
+  <main class="texto">
+    <article class="capitulo" id="cap-1" style="--p:0" aria-labelledby="cap-1-titulo">
+      <h2 id="cap-1-titulo"><span class="cap-marca"><span class="sr">Capítulo </span>1</span> <span lang="en">Trade-Offs in Data Systems Architecture</span></h2>
+      <p class="cap-paginas">Páginas 1 a 32 do livro.</p>
+
+      <figure class="epigrafe">
+        <blockquote lang="en"><p>There are no solutions; there are only trade-offs.</p></blockquote>
+        <figcaption>Thomas Sowell, em entrevista a Fred Barnes (2005)</figcaption>
+      </figure>
+
+      <p class="lead">Nenhuma tecnologia específica: o capítulo passa por quatro decisões de arquitetura, mostra o que cada lado ganha e perde e define o vocabulário do resto do livro.</p>
+
+      <section class="secao secao--abertura" id="ponto-de-partida" aria-labelledby="ponto-de-partida-titulo">
+        <h3 id="ponto-de-partida-titulo">Ponto de partida</h3>
+        <p class="original">Abertura do capítulo, p. 1</p>
+        <p>Uma aplicação é <em>data-intensive</em> quando o difícil são os dados, e não a CPU: volume, mudanças, consistência diante de falhas e concorrência, disponibilidade. Ela é montada com peças padrão (banco, cache, índice de busca, stream e batch processing) ligadas por código stateless. O estado fica na infraestrutura de dados do backend, que guarda os dados de todos os usuários, e é ali que mora o problema difícil.</p>
+      </section>
+
+      <section class="secao" id="operacional-analitico" aria-labelledby="operacional-analitico-titulo">
+        <h3 id="operacional-analitico-titulo">Operacional vs. analítico</h3>
+        <p class="original"><span lang="en">Operational Versus Analytical Systems</span>, p. 3</p>
+        <p>O backend lê e altera dados; analistas de negócio (BI) e cientistas de dados só leem o que ele gerou. Daí a divisão usada no livro todo: sistemas <strong>operacionais</strong>, onde o dado nasce, e sistemas <strong>analíticos</strong>, com uma cópia somente leitura organizada para análise.</p>
+
+        <div class="tabela" role="region" tabindex="0" aria-label="Tabela: diferenças entre sistemas operacionais e analíticos">
+          <table>
+            <caption>Diferenças típicas (tabela 1-1 do livro)</caption>
+            <thead>
+              <tr><th scope="col"><span class="sr">Aspecto</span></th><th scope="col">Operacional (OLTP)</th><th scope="col">Analítico (OLAP)</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Leitura</th><td>Registros individuais, por chave</td><td>Agregação sobre muitos registros</td></tr>
+              <tr><th scope="row">Escrita</th><td>Cria, altera e apaga registros</td><td>Carga em lote (ETL) ou stream</td></tr>
+              <tr><th scope="row">Queries</th><td>Muitas, pequenas e fixas no código</td><td>Poucas, complexas e ad hoc</td></tr>
+              <tr><th scope="row">O dado representa</th><td>O estado atual</td><td>O histórico de eventos</td></tr>
+              <tr><th scope="row">Tamanho</th><td>GB a TB</td><td>TB a PB</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Data warehouse.</strong> Um banco separado para análise, alimentado por ETL (ou ELT), para cruzar dados espalhados em silos sem pesar no OLTP. O HTAP junta os dois num sistema só, mas não substitui o warehouse: a empresa tem centenas de bancos operacionais e um warehouse.</p>
+        <p><strong>Data lake.</strong> Arquivos crus, sem schema imposto, em object storage barato, para cientistas de dados que preferem Pandas ou Spark a SQL. É o <i lang="en">sushi principle</i>: “<span lang="en">raw data is better</span>”. A análise também recebe streams, reagindo em segundos, e às vezes devolve resultados à produção (<em>reverse ETL</em>), como um modelo de recomendação.</p>
+        <p><strong>System of record e dado derivado.</strong> O system of record é a fonte da verdade, com cada fato registrado uma vez só. Cache, índice, view materializada e modelo treinado são derivados: redundantes, feitos para leitura rápida e recriáveis a partir da fonte. O papel depende do uso, não da ferramenta; o difícil é propagar as mudanças da fonte para os derivados (capítulo 11).</p>
+      </section>
+
+      <section class="secao" id="cloud-self-hosting" aria-labelledby="cloud-self-hosting-titulo">
+        <h3 id="cloud-self-hosting-titulo">Cloud vs. self-hosting</h3>
+        <p class="original"><span lang="en">Cloud Versus Self-Hosting</span>, p. 12</p>
+        <p>É construir ou comprar. Hospedar por conta própria costuma sair mais barato quando o time já sabe operar o sistema e a carga é previsível. A cloud compensa quando falta esse conhecimento ou quando a carga oscila muito, como em análise, porque dá para devolver os recursos que sobram.</p>
+        <p><strong>O preço da cloud é a falta de controle.</strong> Se falta uma feature ou o serviço cai, só resta pedir e esperar. Bugs são investigados sem acesso aos logs internos. E há lock-in, mudança de preço, risco de sanções entre países e a necessidade de confiar a segurança dos dados ao provedor.</p>
+        <p><strong>Cloud native.</strong> Sistemas feitos para a cloud (Aurora, Spanner, Snowflake, BigQuery) são construídos sobre outros serviços dela e <strong>separam storage de compute</strong>: o disco local vira cache, blocos grandes vão para object storage como o S3, e vários clientes dividem o mesmo hardware (multitenancy).</p>
+        <p><strong>A operação continua.</strong> Ela passou do DBA e do sysadmin para DevOps e SRE. Planejar capacidade vira planejar gastos, otimizar performance vira otimizar custo, e escolher, integrar e monitorar serviços continua sendo trabalho seu.</p>
+      </section>
+
+      <section class="secao" id="distribuido-um-no" aria-labelledby="distribuido-um-no-titulo">
+        <h3 id="distribuido-um-no-titulo">Distribuído vs. um nó só</h3>
+        <p class="original"><span lang="en">Distributed Versus Single-Node Systems</span>, p. 19</p>
+        <p>Distribuir faz sentido por tolerância a falhas, escala, latência para usuários espalhados, elasticidade, hardware especializado ou leis de residência de dados. Às vezes a aplicação já nasce distribuída, com vários usuários ou serviços na cloud.</p>
+        <p><strong>O preço de distribuir.</strong> Toda chamada de rede pode falhar ou dar timeout sem que você saiba se o outro lado processou, e repetir pode não ser seguro (capítulo 9). A rede é muito mais lenta que uma chamada local, depurar exige observabilidade e tracing, e a consistência entre serviços vira problema da aplicação. Em alguns casos, um programa de uma thread numa máquina só bate um cluster com mais de 100&nbsp;cores.</p>
+        <p><strong>Recomendação: não distribua antes da hora.</strong> O hardware atual, com bancos como DuckDB e SQLite, dá conta de muita carga numa máquina só.</p>
+        <p><strong>Microservices e serverless.</strong> Com microservices, cada time tem um serviço, uma API e um banco próprio, ao custo de testes, deploys e APIs mais difíceis de evoluir. Para o livro, são “<span lang="en">a technical solution to a people problem</span>”: valem em empresa grande e sobram em empresa pequena. Serverless cobra só pelo tempo de execução, em troca de limite de duração e cold start.</p>
+      </section>
+
+      <section class="secao" id="lei-sociedade" aria-labelledby="lei-sociedade-titulo">
+        <h3 id="lei-sociedade-titulo">Dados, lei e sociedade</h3>
+        <p class="original"><span lang="en">Data Systems, Law, and Society</span>, p. 24</p>
+        <p>Quem constrói sistemas de dados também responde à sociedade. GDPR, CCPA e o EU AI Act já afetam o design: o direito ao esquecimento esbarra em logs append-only imutáveis e em dados derivados, como os de treino de um modelo, e ainda não há receita técnica pronta.</p>
+        <p><strong>Guardar dados tem custo</strong> além da conta do S3: vazamento, multa, pedido do governo e risco para o usuário quando o dado revela algo criminalizado em algum lugar. Daí a <strong>data minimization</strong> (<i lang="de">Datensparsamkeit</i>): não guardar o que não tem finalidade explícita, o oposto de guardar tudo porque um dia pode servir.</p>
+      </section>
+
+      <section class="secao secao--fecho" id="conclusao-1" aria-labelledby="conclusao-1-titulo">
+        <h3 id="conclusao-1-titulo">Conclusão</h3>
+        <p class="original"><span lang="en">Summary</span>, p. 25</p>
+        <p>Muitas perguntas não têm resposta certa, só prós e contras. Operacional e analítico diferem no acesso, no público e na forma de guardar os dados (capítulo 4). A cloud mudou a arquitetura, a começar pela separação entre storage e compute. Distribuir tem custo, então só quando for preciso (capítulo 9). E a lei também desenha o sistema.</p>
+      </section>
+    </article>
+  </main>
+
+  <footer class="rodape">
+    <p>Resumo pessoal, sem vínculo com os autores nem com a O’Reilly. <span class="build">build 2</span></p>
+  </footer>
+</div>
+
+<script>
+  (() => {
+    const indice = document.getElementById('indice');
+    const largo = window.matchMedia('(min-width: 64rem)');
+
+    // No desktop o índice fica sempre aberto na lateral; no celular começa fechado.
+    const ajustar = () => { indice.open = largo.matches; };
+    ajustar();
+    largo.addEventListener('change', ajustar);
+
+    indice.querySelector('summary').addEventListener('click', (e) => {
+      if (largo.matches) e.preventDefault();
+    });
+
+    // No celular, fecha o índice depois de escolher um destino.
+    indice.addEventListener('click', (e) => {
+      if (!largo.matches && e.target.closest('a')) indice.open = false;
+    });
+
+    // Destaca no índice a seção que está sendo lida.
+    if (!('IntersectionObserver' in window)) return;
+    const links = new Map(
+      [...document.querySelectorAll('.secoes a')].map((a) => [a.hash.slice(1), a])
+    );
+    let atual = null;
+    const observador = new IntersectionObserver((entradas) => {
+      for (const entrada of entradas) {
+        if (!entrada.isIntersecting) continue;
+        atual?.removeAttribute('aria-current');
+        atual = links.get(entrada.target.id);
+        atual.setAttribute('aria-current', 'location');
+      }
+    }, { rootMargin: '0px 0px -70% 0px' });
+    links.forEach((_, id) => {
+      const alvo = document.getElementById(id);
+      if (alvo) observador.observe(alvo);
+    });
+  })();
+</script>
+</body>
+</html>
