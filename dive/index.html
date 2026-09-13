@@ -395,18 +395,18 @@
         <figcaption>Thomas Sowell, em entrevista a Fred Barnes (2005)</figcaption>
       </figure>
 
-      <p class="lead">Nenhuma tecnologia específica: o capítulo passa por quatro decisões de arquitetura, mostra o que cada lado ganha e perde e define o vocabulário do resto do livro.</p>
+      <p class="lead">O capítulo não ensina ferramentas. Ele compara quatro escolhas que moldam qualquer sistema de dados, mostra o que cada lado ganha e perde e define o vocabulário do resto do livro. A ideia é aprender a fazer as perguntas certas, porque nenhuma abordagem é melhor em tudo.</p>
 
       <section class="secao secao--abertura" id="ponto-de-partida" aria-labelledby="ponto-de-partida-titulo">
         <h3 id="ponto-de-partida-titulo">Ponto de partida</h3>
         <p class="original">Abertura do capítulo, p. 1</p>
-        <p>Uma aplicação é <em>data-intensive</em> quando o difícil são os dados, e não a CPU: volume, mudanças, consistência diante de falhas e concorrência, disponibilidade. Ela é montada com peças padrão (banco, cache, índice de busca, stream e batch processing) ligadas por código stateless. O estado fica na infraestrutura de dados do backend, que guarda os dados de todos os usuários, e é ali que mora o problema difícil.</p>
+        <p>Uma aplicação é <em>data-intensive</em> quando o principal desafio são os dados, e não a CPU: volume, mudanças, consistência diante de falhas e concorrência, disponibilidade. Ela é montada com peças padrão (banco, cache, índice de busca, stream e batch processing) ligadas por código de aplicação, e o difícil é escolher entre muitas opções parecidas e combiná-las quando uma só não resolve. Esse código costuma ser stateless: o que precisa persistir fica na infraestrutura de dados do backend, que guarda os dados de todos os usuários.</p>
       </section>
 
       <section class="secao" id="operacional-analitico" aria-labelledby="operacional-analitico-titulo">
         <h3 id="operacional-analitico-titulo">Operacional vs. analítico</h3>
         <p class="original"><span lang="en">Operational Versus Analytical Systems</span>, p. 3</p>
-        <p>O backend lê e altera dados; analistas de negócio (BI) e cientistas de dados só leem o que ele gerou. Daí a divisão usada no livro todo: sistemas <strong>operacionais</strong>, onde o dado nasce, e sistemas <strong>analíticos</strong>, com uma cópia somente leitura organizada para análise.</p>
+        <p>O backend lê e altera dados; analistas de negócio (BI) e cientistas de dados só leem o que ele gerou. Daí a divisão usada no livro todo: sistemas <strong>operacionais</strong> (OLTP), onde o dado nasce e é lido e gravado registro a registro, e sistemas <strong>analíticos</strong> (OLAP), com uma cópia somente leitura em que as queries varrem muitos registros para agregar.</p>
 
         <div class="tabela" role="region" tabindex="0" aria-label="Tabela: diferenças entre sistemas operacionais e analíticos">
           <table>
@@ -424,17 +424,17 @@
           </table>
         </div>
 
-        <p><strong>Data warehouse.</strong> Um banco separado para análise, alimentado por ETL (ou ELT), para cruzar dados espalhados em silos sem pesar no OLTP. O HTAP junta os dois num sistema só, mas não substitui o warehouse: a empresa tem centenas de bancos operacionais e um warehouse.</p>
+        <p><strong>Data warehouse.</strong> Um banco separado para análise, alimentado por ETL (ou ELT), onde dá para cruzar numa query dados espalhados em silos sem pesar no OLTP. O HTAP põe os dois num sistema só, mas não substitui o warehouse: a empresa pode ter centenas de bancos operacionais e costuma ter um warehouse só, que reúne todos.</p>
         <p><strong>Data lake.</strong> Arquivos crus, sem schema imposto, em object storage barato, para cientistas de dados que preferem Pandas ou Spark a SQL. É o <i lang="en">sushi principle</i>: “<span lang="en">raw data is better</span>”. A análise também recebe streams, reagindo em segundos, e às vezes devolve resultados à produção (<em>reverse ETL</em>), como um modelo de recomendação.</p>
-        <p><strong>System of record e dado derivado.</strong> O system of record é a fonte da verdade, com cada fato registrado uma vez só. Cache, índice, view materializada e modelo treinado são derivados: redundantes, feitos para leitura rápida e recriáveis a partir da fonte. O papel depende do uso, não da ferramenta; o difícil é propagar as mudanças da fonte para os derivados (capítulo 11).</p>
+        <p><strong>System of record e dado derivado.</strong> O system of record é a fonte da verdade, com cada fato registrado uma vez só. Cache, índice, view materializada e modelo treinado são derivados: redundantes, feitos para leitura rápida e recriáveis a partir da fonte. Sistemas analíticos quase sempre são derivados. O papel depende do uso, não da ferramenta; o difícil é propagar as mudanças da fonte para os derivados (capítulo 11).</p>
       </section>
 
       <section class="secao" id="cloud-self-hosting" aria-labelledby="cloud-self-hosting-titulo">
         <h3 id="cloud-self-hosting-titulo">Cloud vs. self-hosting</h3>
         <p class="original"><span lang="en">Cloud Versus Self-Hosting</span>, p. 12</p>
-        <p>É construir ou comprar. Hospedar por conta própria costuma sair mais barato quando o time já sabe operar o sistema e a carga é previsível. A cloud compensa quando falta esse conhecimento ou quando a carga oscila muito, como em análise, porque dá para devolver os recursos que sobram.</p>
-        <p><strong>O preço da cloud é a falta de controle.</strong> Se falta uma feature ou o serviço cai, só resta pedir e esperar. Bugs são investigados sem acesso aos logs internos. E há lock-in, mudança de preço, risco de sanções entre países e a necessidade de confiar a segurança dos dados ao provedor.</p>
-        <p><strong>Cloud native.</strong> Sistemas feitos para a cloud (Aurora, Spanner, Snowflake, BigQuery) são construídos sobre outros serviços dela e <strong>separam storage de compute</strong>: o disco local vira cache, blocos grandes vão para object storage como o S3, e vários clientes dividem o mesmo hardware (multitenancy).</p>
+        <p>É a escolha entre construir e comprar: o que é central para o negócio tende a ficar em casa, e o que é rotina vai para um fornecedor. Hospedar por conta própria costuma sair mais barato quando o time já sabe operar o sistema e a carga é previsível. A cloud compensa quando falta esse conhecimento ou quando a carga oscila muito, como em análise, porque dá para devolver os recursos que sobram.</p>
+        <p><strong>A maior desvantagem da cloud é a falta de controle.</strong> Se falta uma feature ou o serviço cai, só resta pedir e esperar. Bugs são investigados sem acesso aos logs internos. E há lock-in, mudança de preço, risco de sanções entre países e a necessidade de confiar a segurança dos dados ao provedor.</p>
+        <p><strong>Cloud native.</strong> Sistemas feitos para a cloud (Aurora, Spanner, Snowflake, BigQuery) se apoiam em outros serviços dela e costumam render mais no mesmo hardware, se recuperar de falhas e escalar mais rápido. A marca deles é <strong>separar storage de compute</strong>: o disco local vira cache e os blocos grandes vão para object storage como o S3. Muitos também são multitenant, com vários clientes no mesmo hardware.</p>
         <p><strong>A operação continua.</strong> Ela passou do DBA e do sysadmin para DevOps e SRE. Planejar capacidade vira planejar gastos, otimizar performance vira otimizar custo, e escolher, integrar e monitorar serviços continua sendo trabalho seu.</p>
       </section>
 
@@ -444,26 +444,26 @@
         <p>Distribuir faz sentido por tolerância a falhas, escala, latência para usuários espalhados, elasticidade, hardware especializado ou leis de residência de dados. Às vezes a aplicação já nasce distribuída, com vários usuários ou serviços na cloud.</p>
         <p><strong>O preço de distribuir.</strong> Toda chamada de rede pode falhar ou dar timeout sem que você saiba se o outro lado processou, e repetir pode não ser seguro (capítulo 9). A rede é muito mais lenta que uma chamada local, depurar exige observabilidade e tracing, e a consistência entre serviços vira problema da aplicação. Em alguns casos, um programa de uma thread numa máquina só bate um cluster com mais de 100&nbsp;cores.</p>
         <p><strong>Recomendação: não distribua antes da hora.</strong> O hardware atual, com bancos como DuckDB e SQLite, dá conta de muita carga numa máquina só.</p>
-        <p><strong>Microservices e serverless.</strong> Com microservices, cada time tem um serviço, uma API e um banco próprio, ao custo de testes, deploys e APIs mais difíceis de evoluir. Para o livro, são “<span lang="en">a technical solution to a people problem</span>”: valem em empresa grande e sobram em empresa pequena. Serverless cobra só pelo tempo de execução, em troca de limite de duração e cold start.</p>
+        <p><strong>Microservices e serverless.</strong> Em microservices, cada serviço tem um propósito, uma API, um time responsável e o próprio banco, ao custo de testes, deploys e APIs mais difíceis de evoluir. Para o livro, são “<span lang="en">a technical solution to a people problem</span>”: valem em empresa grande, com muitos times, e viram custo desnecessário numa pequena. Serverless cobra só pelo tempo de execução, em troca de limite de duração e cold start.</p>
       </section>
 
       <section class="secao" id="lei-sociedade" aria-labelledby="lei-sociedade-titulo">
         <h3 id="lei-sociedade-titulo">Dados, lei e sociedade</h3>
         <p class="original"><span lang="en">Data Systems, Law, and Society</span>, p. 24</p>
-        <p>Quem constrói sistemas de dados também responde à sociedade. GDPR, CCPA e o EU AI Act já afetam o design: o direito ao esquecimento esbarra em logs append-only imutáveis e em dados derivados, como os de treino de um modelo, e ainda não há receita técnica pronta.</p>
+        <p>Quem constrói sistemas de dados também tem responsabilidade com a sociedade, porque sistemas automáticos já decidem crédito, seguro, entrevistas de emprego e suspeitas de crime. GDPR, CCPA e o EU AI Act chegam ao próprio design: o direito ao esquecimento esbarra em logs append-only imutáveis e em dados derivados, como os de treino de um modelo, e ainda não há receita técnica pronta.</p>
         <p><strong>Guardar dados tem custo</strong> além da conta do S3: vazamento, multa, pedido do governo e risco para o usuário quando o dado revela algo criminalizado em algum lugar. Daí a <strong>data minimization</strong> (<i lang="de">Datensparsamkeit</i>): não guardar o que não tem finalidade explícita, o oposto de guardar tudo porque um dia pode servir.</p>
       </section>
 
       <section class="secao secao--fecho" id="conclusao-1" aria-labelledby="conclusao-1-titulo">
         <h3 id="conclusao-1-titulo">Conclusão</h3>
         <p class="original"><span lang="en">Summary</span>, p. 25</p>
-        <p>Muitas perguntas não têm resposta certa, só prós e contras. Operacional e analítico diferem no acesso, no público e na forma de guardar os dados (capítulo 4). A cloud mudou a arquitetura, a começar pela separação entre storage e compute. Distribuir tem custo, então só quando for preciso (capítulo 9). E a lei também desenha o sistema.</p>
+        <p>Muitas perguntas não têm resposta certa, só prós e contras. Operacional e analítico diferem no acesso, no público e na forma de guardar os dados (capítulo 4). Cloud ou self-hosting depende do caso, mas a cloud já mudou a arquitetura, a começar pela separação entre storage e compute. Distribuir tem custo, então só quando for preciso (capítulo 9). E o desenho do sistema também responde às leis de privacidade, um lado que muitos engenheiros ignoram.</p>
       </section>
     </article>
   </main>
 
   <footer class="rodape">
-    <p>Resumo pessoal, sem vínculo com os autores nem com a O’Reilly. <span class="build">build 2</span></p>
+    <p>Resumo pessoal, sem vínculo com os autores nem com a O’Reilly. <span class="build">build 3</span></p>
   </footer>
 </div>
 
