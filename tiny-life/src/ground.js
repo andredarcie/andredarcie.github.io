@@ -2,21 +2,18 @@ import { NEST_R } from './config.js';
 import { rand, pick, coin, TAU } from './math.js';
 import {
   SOIL, SOIL_LIGHT, SOIL_DARK,
-  GRASS_BED, GRASS_TONE, GRASS_SHADOW,
+  GRASS_BED, GRASS_TONE, BLADES, GRASS_SHADOW,
   GRIT, NEST_SPOIL
 } from './palette.js';
 
 const rgba = (c, a) => `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})`;
 
 /**
- * O retrato do terreno: terra batida com textura, e o colchão de grama em volta.
+ * O retrato do terreno: terra batida com textura, cercada de grama.
  *
- * Custa caro e não muda, então é assado uma vez num canvas próprio, que vira a
- * textura do chão. As lâminas de grama NÃO são pintadas aqui — são geometria de
- * verdade, em `grass-field.js`; o que fica é o colchão que aparece entre elas.
- *
- * Depende de uma TerrainShape apenas por onde a borda passa — não conhece
- * formiga, feromônio nem laço de jogo.
+ * Custa caro e não muda, então é assado uma vez num canvas próprio; a cada
+ * quadro o renderizador só copia. Depende de uma TerrainShape apenas por onde a
+ * borda passa — não conhece formiga, feromônio nem laço de jogo.
  */
 export class Ground {
   constructor() {
@@ -34,6 +31,7 @@ export class Ground {
     this.canvas.width = width;
     this.canvas.height = height;
     const g = this.ctx;
+    const wind = Math.random() * TAU;
 
     this.#soil(g, shape, width, height);
     this.#nestSpoil(g, nest);
@@ -48,7 +46,12 @@ export class Ground {
     outside.addPath(outline);
     g.clip(outside, 'evenodd');
     this.#grassBed(g, width, height);
+    this.#blades(g, shape, wind, width, height);
     g.restore();
+
+    // E as pontas passam por cima da linha, senão a borda fica com cara de
+    // recorte.
+    this.#fringe(g, shape);
 
     this.bakeMs = Math.round(performance.now() - t0);
   }
@@ -147,4 +150,59 @@ export class Ground {
     }
   }
 
+  /**
+   * Grama vista de cima: lâminas curtas e curvas, em ângulos parecidos (o
+   * vento) mas nunca iguais. Agrupadas por cor pra sair em 6 traçados em vez de
+   * dezenas de milhares — e com densidade contida, porque cada lâmina é uma
+   * curva traçada debaixo de um recorte complexo.
+   */
+  #blades(g, shape, wind, width, height) {
+    const paths = BLADES.map(() => new Path2D());
+    const want = Math.min(16000, Math.round((width * height - shape.area) / 46));
+    let placed = 0, tries = 0;
+
+    while (placed < want && tries < want * 6) {
+      tries++;
+      const x = Math.random() * width, y = Math.random() * height;
+      if (shape.valueAt(x, y) > 0.004) continue;   // aqui é terra, não planta
+      placed++;
+      this.#blade(pick(paths), x, y, wind + rand(-1.15, 1.15), rand(6, 19), rand(-3.5, 3.5));
+    }
+    this.#strokeBlades(g, paths);
+  }
+
+  #fringe(g, shape) {
+    const paths = BLADES.map(() => new Path2D());
+    const n = Math.round((shape.rx + shape.ry) * 0.9);
+    for (let i = 0; i < n; i++) {
+      const th = Math.random() * TAU;
+      const r = shape.radiusAt(th) * rand(0.985, 1.02);
+      const x = shape.cx + Math.cos(th) * r;
+      const y = shape.cy + Math.sin(th) * r;
+      const inward = Math.atan2(shape.cy - y, shape.cx - x) + rand(-0.8, 0.8);
+      this.#blade(pick(paths), x, y, inward, rand(4, 13), rand(-2.5, 2.5));
+    }
+    this.#strokeBlades(g, paths);
+  }
+
+  #blade(path, x, y, ang, len, curve) {
+    const hx = Math.cos(ang), hy = Math.sin(ang);
+    const px = -hy, py = hx;
+    path.moveTo(x, y);
+    path.quadraticCurveTo(
+      x + hx * len * 0.55 + px * curve,
+      y + hy * len * 0.55 + py * curve,
+      x + hx * len + px * curve * 1.7,
+      y + hy * len + py * curve * 1.7
+    );
+  }
+
+  #strokeBlades(g, paths) {
+    g.lineCap = 'round';
+    for (let i = 0; i < paths.length; i++) {
+      g.strokeStyle = BLADES[i];
+      g.lineWidth = 1.1 + (i % 3) * 0.4;
+      g.stroke(paths[i]);
+    }
+  }
 }

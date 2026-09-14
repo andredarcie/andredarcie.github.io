@@ -42,6 +42,7 @@ export class Colony {
     this.store = 0;
     this.delivered = 0;
     this.#placeChamber();
+    this.queen.found();   // colônia nova, rainha nova, genética nova
     for (let i = 0; i < count; i++) this.spawn();
   }
 
@@ -59,7 +60,9 @@ export class Colony {
   spawn() {
     const th = Math.random() * TAU;
     const d = rand(0, NEST_R);
-    this.ants.push(new Ant(this.nest.x + Math.cos(th) * d, this.nest.y + Math.sin(th) * d, th));
+    const x = this.nest.x + Math.cos(th) * d;
+    const y = this.nest.y + Math.sin(th) * d;
+    this.ants.push(new Ant(x, y, th, this.queen.breed()));
   }
 
   /** Uma formiga entregou um grão. Comer no ninho também rejuvenesce um pouco. */
@@ -83,7 +86,7 @@ export class Colony {
   layEgg(x, y) {
     if (this.store >= EGG_COST) this.store -= EGG_COST;
     const spread = Math.min(16, 5 + Math.sqrt(this.brood.length) * 0.9);
-    this.brood.push(new BroodItem(x, y, spread));
+    this.brood.push(new BroodItem(x, y, spread, this.queen.breed()));
   }
 
   update(dt, world) {
@@ -120,7 +123,7 @@ export class Colony {
       const item = this.brood[i];
       item.update(dt);
       if (!item.hatched) continue;
-      this.ants.push(new Ant(item.x, item.y, Math.random() * TAU));
+      this.ants.push(new Ant(item.x, item.y, Math.random() * TAU, item.genome));
       this.brood[i] = this.brood[this.brood.length - 1];
       this.brood.pop();
     }

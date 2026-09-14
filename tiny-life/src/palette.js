@@ -20,20 +20,13 @@ export const GRIT = [
 ];
 export const NEST_SPOIL = ['rgba(178, 152, 114, 0.5)', 'rgba(88, 66, 44, 0.45)'];
 
-// Daqui pra baixo o consumidor é o three.js, que quer número, não string CSS.
-export const SEEDS = [0xcbb083, 0xdcc79a, 0xb9986a, 0xe2d2ab];
+export const SEEDS = ['#cbb083', '#dcc79a', '#b9986a', '#e2d2ab'];
 
 export const HOME_STAIN = [72, 58, 42];     // trilha de ida: terra pisada
 export const FOOD_STAIN = [92, 54, 28];     // trilha da comida: barro mais escuro
 export const STAIN_ALPHA = 116;             // 0-255, teto da mancha
 
-export const ANT_HEX = 0x171210;
-export const QUEEN_HEX = 0x1b1410;
-export const LOAD_HEX = 0xe4d2a8;
-export const BROOD_HEX = [0xefe7d4, 0xe7dab9, 0xd7c197];  // ovo, larva, pupa
-
-// Luz: céu frio por cima, sol quente de lado, e a terra devolvendo um pouco
-// por baixo. É o que dá volume sem custar sombra.
-export const SKY_HEX = 0xbcd2e8;
-export const SUN_HEX = 0xfff2dc;
-export const BOUNCE_HEX = 0x6b5334;
+export const ANT = 'rgba(22, 17, 13, 0.95)';
+export const QUEEN = 'rgba(26, 19, 14, 0.97)';
+export const BROOD = ['#efe7d4', '#e7dab9', '#d7c197'];  // ovo, larva, pupa
+export const LOAD = 'rgba(228, 210, 168, 0.95)';

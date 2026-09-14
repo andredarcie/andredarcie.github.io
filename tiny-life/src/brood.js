@@ -9,12 +9,13 @@ import { rand, TAU } from './math.js';
  * esquentar a ninhada no sol.
  */
 export class BroodItem {
-  constructor(x, y, spread) {
+  constructor(x, y, spread, genome) {
     const th = Math.random() * TAU;
     const r = Math.sqrt(Math.random()) * spread;
     this.x = x + Math.cos(th) * r;
     this.y = y + Math.sin(th) * r;
     this.rot = Math.random() * Math.PI;
+    this.genome = genome;   // já vem definido do ovo: a cria não muda de gene
     this.stage = EGG;
     this.timer = rand(BROOD_STAGES[EGG] * 0.8, BROOD_STAGES[EGG] * 1.2);
   }

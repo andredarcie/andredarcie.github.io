@@ -15,7 +15,10 @@ export class Hud {
       stages: document.getElementById('stat-stages'),
       gathered: document.getElementById('stat-gathered'),
       rate: document.getElementById('stat-rate'),
-      piles: document.getElementById('stat-piles')
+      piles: document.getElementById('stat-piles'),
+      lineages: document.getElementById('stat-lineages'),
+      pace: document.getElementById('stat-pace'),
+      sense: document.getElementById('stat-sense')
     };
     this.hint = document.getElementById('hint');
     this.btnTrails = document.getElementById('btn-trails');
@@ -42,6 +45,9 @@ export class Hud {
     this.#set('gathered', s.gathered);
     this.#set('rate', s.rate);
     this.#set('piles', s.piles);
+    this.#set('lineages', s.lineages);
+    this.#set('pace', s.pace);
+    this.#set('sense', s.sense);
     this.#spark(s.history, s.peak);
   }
 

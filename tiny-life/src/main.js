@@ -10,13 +10,13 @@
  */
 
 import { World } from './world.js';
-import { Renderer3D } from './renderer3d.js';
+import { Renderer } from './renderer.js';
 import { Telemetry } from './telemetry.js';
 import { Hud } from './hud.js';
 
 const canvas = document.getElementById('scene');
 const world = new World();
-const renderer = new Renderer3D(canvas);
+const renderer = new Renderer(canvas);
 const telemetry = new Telemetry();
 
 const hud = new Hud({
@@ -82,13 +82,11 @@ function fail(err) {
 
 // --- entrada ----------------------------------------------------------------
 
-// O arrasto gira a câmara; o toque solta comida. Quem separa os dois é o rig.
-renderer.rig.onTap = (clientX, clientY) => {
-  const point = renderer.screenToSim(clientX, clientY);
-  if (!point) return;
-  world.dropFood(point[0], point[1]);
+canvas.addEventListener('pointerdown', (e) => {
+  const r = canvas.getBoundingClientRect();
+  world.dropFood(e.clientX - r.left, e.clientY - r.top);
   hud.dismissHint();
-};
+});
 
 window.addEventListener('keydown', (e) => {
   if (e.key === 'r' || e.key === 'R') world.reset();

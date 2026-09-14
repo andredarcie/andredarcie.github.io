@@ -1,5 +1,6 @@
-import { LAY_INTERVAL, QUEEN_SPEED, CHAMBER_R } from './config.js';
-import { rand, coin, angDiff, clamp, TAU } from './math.js';
+import { LAY_INTERVAL, QUEEN_SPEED, CHAMBER_R, PATRILINES } from './config.js';
+import { rand, coin, angDiff, clamp, pick, TAU } from './math.js';
+import { Genome } from './genome.js';
 
 /**
  * A rainha. Não forrageia, não sai da câmara de cria e não morre de velhice —
@@ -7,6 +8,10 @@ import { rand, coin, angDiff, clamp, TAU } from './math.js';
  *
  * O ritmo da postura é dela; o recurso é da colônia. Por isso ela pergunta
  * `canLay()` antes e manda `layEgg()` depois, em vez de mexer no estoque.
+ *
+ * É também a origem de toda a genética do formigueiro: acasala uma vez, guarda
+ * o esperma de vários machos e cruza com um deles a cada ovo. Toda operária
+ * viva é filha dela — as diferenças entre elas vêm de qual macho entrou.
  */
 export class Queen {
   constructor() {
@@ -18,6 +23,23 @@ export class Queen {
     this.speed = 0;
     this.layT = rand(LAY_INTERVAL[0], LAY_INTERVAL[1]);
     this.pauseT = 0;
+    this.found();
+  }
+
+  /**
+   * Voo nupcial: sorteia o próprio genoma e enche a espermateca. Cada macho é
+   * haploide e clonal, então uma patrilinha é uma contribuição fixa pro resto
+   * da vida da colônia.
+   */
+  found() {
+    this.genome = Genome.random();
+    this.sperm = [];
+    for (let i = 0; i < PATRILINES; i++) this.sperm.push(Genome.random(i));
+  }
+
+  /** O genoma do próximo ovo. */
+  breed() {
+    return Genome.cross(this.genome, pick(this.sperm));
   }
 
   moveTo(x, y) {

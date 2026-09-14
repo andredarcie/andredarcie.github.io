@@ -5,34 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#33481f">
 <title>tiny life — ant colony</title>
-<meta name="description" content="A 3D ant colony simulation: black specks foraging on bare earth, wearing pheromone trails into the dirt.">
-<link rel="stylesheet" href="styles.css?v=9">
+<meta name="description" content="A minimal ant colony simulation: black specks foraging on bare earth, wearing pheromone trails into the dirt.">
+<link rel="stylesheet" href="styles.css?v=12">
 
 <!-- Cache-busting central: cada módulo é mapeado para a sua URL com ?v=N, e os
      imports dentro dos .js vão sem query string. Trocar o N aqui invalida tudo. -->
 <script type="importmap">
 {
   "imports": {
-    "three": "./lib/three.module.min.js?v=9",
-    "./src/main.js": "./src/main.js?v=9",
-    "./src/world.js": "./src/world.js?v=9",
-    "./src/renderer3d.js": "./src/renderer3d.js?v=9",
-    "./src/grass-field.js": "./src/grass-field.js?v=9",
-    "./src/camera-rig.js": "./src/camera-rig.js?v=9",
-    "./src/hud.js": "./src/hud.js?v=9",
-    "./src/telemetry.js": "./src/telemetry.js?v=9",
-    "./src/colony.js": "./src/colony.js?v=9",
-    "./src/queen.js": "./src/queen.js?v=9",
-    "./src/brood.js": "./src/brood.js?v=9",
-    "./src/ant.js": "./src/ant.js?v=9",
-    "./src/food-source.js": "./src/food-source.js?v=9",
-    "./src/pheromone-field.js": "./src/pheromone-field.js?v=9",
-    "./src/terrain-shape.js": "./src/terrain-shape.js?v=9",
-    "./src/ground.js": "./src/ground.js?v=9",
-    "./src/spatial-hash.js": "./src/spatial-hash.js?v=9",
-    "./src/config.js": "./src/config.js?v=9",
-    "./src/palette.js": "./src/palette.js?v=9",
-    "./src/math.js": "./src/math.js?v=9"
+    "./src/main.js": "./src/main.js?v=12",
+    "./src/world.js": "./src/world.js?v=12",
+    "./src/renderer.js": "./src/renderer.js?v=12",
+    "./src/hud.js": "./src/hud.js?v=12",
+    "./src/telemetry.js": "./src/telemetry.js?v=12",
+    "./src/colony.js": "./src/colony.js?v=12",
+    "./src/genome.js": "./src/genome.js?v=12",
+    "./src/queen.js": "./src/queen.js?v=12",
+    "./src/brood.js": "./src/brood.js?v=12",
+    "./src/ant.js": "./src/ant.js?v=12",
+    "./src/food-source.js": "./src/food-source.js?v=12",
+    "./src/pheromone-field.js": "./src/pheromone-field.js?v=12",
+    "./src/terrain-shape.js": "./src/terrain-shape.js?v=12",
+    "./src/ground.js": "./src/ground.js?v=12",
+    "./src/spatial-hash.js": "./src/spatial-hash.js?v=12",
+    "./src/config.js": "./src/config.js?v=12",
+    "./src/palette.js": "./src/palette.js?v=12",
+    "./src/math.js": "./src/math.js?v=12"
   }
 }
 </script>
@@ -45,10 +43,10 @@
 <header class="hud hud-top">
   <span class="title">tiny life</span>
   <span class="sub">ant colony</span>
-  <span class="build">build 9</span>
+  <span class="build">build 12</span>
 </header>
 
-<p class="hud hud-hint" id="hint">tap to scatter food · drag to look around</p>
+<p class="hud hud-hint" id="hint">tap anywhere to scatter food</p>
 
 <div class="hud hud-actions">
   <button id="btn-trails" type="button" aria-pressed="true">trails</button>
@@ -69,6 +67,10 @@
     <div class="row"><dt>gathered</dt><dd id="stat-gathered">0</dd></div>
     <div class="row sub"><dt>per minute</dt><dd id="stat-rate">0</dd></div>
     <div class="row sub"><dt>food piles</dt><dd id="stat-piles">0</dd></div>
+
+    <div class="row"><dt>lineages</dt><dd id="stat-lineages">0</dd></div>
+    <div class="row sub"><dt>avg pace</dt><dd id="stat-pace">0</dd></div>
+    <div class="row sub"><dt>avg scent</dt><dd id="stat-sense">0</dd></div>
   </dl>
 
   <canvas id="spark" class="panel-spark" width="132" height="26" aria-hidden="true"></canvas>
@@ -82,6 +84,6 @@
       'serve this over http:// — es modules do not load from file://';
   }
 </script>
-<script type="module" src="src/main.js?v=9"></script>
+<script type="module" src="src/main.js?v=12"></script>
 </body>
 </html>

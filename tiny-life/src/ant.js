@@ -1,7 +1,7 @@
 import {
   RUN, PAUSE, PIVOT,
-  CRUISE, TURN, HOME_TURN, DRIFT_DECAY, DRIFT_NOISE,
-  SENSE_DIST, SENSE_ANGLE, LOOK_AHEAD, TRAIL_LIFE, LIFE_SPAN
+  TURN, HOME_TURN, DRIFT_DECAY,
+  SENSE_ANGLE, LOOK_AHEAD, TRAIL_LIFE, ANT_SIZE
 } from './config.js';
 import { rand, clamp, angDiff, coin, TAU } from './math.js';
 
@@ -12,9 +12,12 @@ import { rand, clamp, angDiff, coin, TAU } from './math.js';
  * O andar é run-and-tumble com balanço de corpo: o rumo pretendido (`course`) é
  * separado da cabeça (`head`), e ela anda e cheira pela cabeça. É isso que faz
  * ela costurar a borda da trilha em vez de correr colada no centro.
+ *
+ * O genoma é lido uma única vez, no nascimento: daí em diante ela carrega o
+ * fenótipo em campos simples, e o laço quente não toca em getter nenhum.
  */
 export class Ant {
-  constructor(x, y, course) {
+  constructor(x, y, course, genome) {
     this.x = x;
     this.y = y;
     this.course = course;
@@ -23,8 +26,18 @@ export class Ant {
     this.drift = 0;                 // ruído de rumo com memória
     this.bias = rand(-0.9, 0.9);    // lado pro qual ela tende a curvar buscando
     this.biasT = rand(1, 4);
-    this.cruise = rand(37, 58) * (CRUISE / 46);
     this.speed = 0;
+
+    // --- fenótipo, expresso uma vez ---
+    this.genome = genome;
+    this.cruise = genome.pace;
+    this.life = genome.span;
+    this.sense = genome.senseDist;
+    this.gain = genome.trailGain;
+    this.roam = genome.roam;
+    this.markRate = genome.mark;
+    this.zeal = genome.zeal;
+    this.size = ANT_SIZE * genome.build;
     this.gait = RUN;
     this.gaitT = rand(0.2, 0.9);
     this.turnRate = 0;
@@ -33,7 +46,6 @@ export class Ant {
     this.carrying = false;
     this.since = 0;                 // s desde que saiu do ninho / pegou comida
     this.age = 0;
-    this.life = rand(LIFE_SPAN[0], LIFE_SPAN[1]);
   }
 
   get dead() {
@@ -100,17 +112,18 @@ export class Ant {
       }
     } else {
       this.gait = RUN;
-      this.gaitT = this.carrying ? rand(0.5, 1.8) : rand(0.2, 1.1);
+      this.gaitT = (this.carrying ? rand(0.5, 1.8) : rand(0.2, 1.1)) * this.zeal;
     }
   }
 
   // Três sensores presos à cabeça, que balança: é a varredura das antenas.
   #smell(field) {
+    const d = this.sense;
     const l = this.head - SENSE_ANGLE, r = this.head + SENSE_ANGLE;
     return [
-      field.sample(this.x + Math.cos(this.head) * SENSE_DIST, this.y + Math.sin(this.head) * SENSE_DIST),
-      field.sample(this.x + Math.cos(l) * SENSE_DIST, this.y + Math.sin(l) * SENSE_DIST),
-      field.sample(this.x + Math.cos(r) * SENSE_DIST, this.y + Math.sin(r) * SENSE_DIST)
+      field.sample(this.x + Math.cos(this.head) * d, this.y + Math.sin(this.head) * d),
+      field.sample(this.x + Math.cos(l) * d, this.y + Math.sin(l) * d),
+      field.sample(this.x + Math.cos(r) * d, this.y + Math.sin(r) * d)
     ];
   }
 
@@ -127,7 +140,7 @@ export class Ant {
   // Ruído de rumo com memória (Ornstein-Uhlenbeck): gera curvas inteiras em vez
   // do tremor de um sorteio novo a cada quadro.
   #wander(dt) {
-    this.drift += -this.drift * DRIFT_DECAY * dt + (Math.random() - 0.5) * DRIFT_NOISE * Math.sqrt(dt);
+    this.drift += -this.drift * DRIFT_DECAY * dt + (Math.random() - 0.5) * this.roam * Math.sqrt(dt);
     this.course += this.drift * dt * (this.carrying ? 0.45 : 1);
 
     // Sem trilha nenhuma, ela varre a área em arcos largos para o mesmo lado.
@@ -137,7 +150,7 @@ export class Ant {
   #followTrail(sc, sl, sr, dt) {
     if (sc >= sl && sc >= sr) return;
     const diff = sr - sl;
-    this.course += Math.sign(diff) * Math.min(1, Math.abs(diff) * 5) * TURN * dt;
+    this.course += Math.sign(diff) * Math.min(1, Math.abs(diff) * 5) * TURN * this.gain * dt;
   }
 
   // Carregada, ela tem uma noção fraca de onde fica o ninho (senão se perde).
@@ -181,7 +194,7 @@ export class Ant {
   // uma formiga perdida há minutos desenhe uma trilha forte pro nada.
   #layTrail(dt, field) {
     const strength = Math.max(0, 1 - this.since / TRAIL_LIFE)
-      * Math.min(1, this.speed / 28) * dt * 3.2;
+      * Math.min(1, this.speed / 28) * dt * this.markRate;
     if (strength > 0) field.deposit(this.x, this.y, strength);
   }
 

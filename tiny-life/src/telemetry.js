@@ -1,4 +1,4 @@
-import { MIN_ANTS, EGG, LARVA, PUPA, EGG_COST } from './config.js';
+import { MIN_ANTS, EGG, LARVA, PUPA, EGG_COST, PATRILINES } from './config.js';
 
 const SPARK_SAMPLES = 180;   // ~90 s de história a uma amostra por meio segundo
 
@@ -17,6 +17,7 @@ export class Telemetry {
     this.rate = 0;           // grãos por minuto, suavizado
     this.prevDelivered = 0;
     this.sparkT = 0;
+    this.lineSeen = new Uint8Array(PATRILINES);
   }
 
   reset() {
@@ -33,8 +34,20 @@ export class Telemetry {
     const colony = world.colony;
     const workers = colony.ants.length;
 
-    let hauling = 0;
-    for (const ant of colony.ants) if (ant.carrying) hauling++;
+    // Uma passada só pelas formigas: carga, e a média dos traços que o gene
+    // decide. Contar linhagem com marcador em vez de Set evita alocar por
+    // amostra.
+    let hauling = 0, pace = 0, sense = 0;
+    const seen = this.lineSeen;
+    seen.fill(0);
+    for (const ant of colony.ants) {
+      if (ant.carrying) hauling++;
+      pace += ant.cruise;
+      sense += ant.sense;
+      if (ant.genome.lineage >= 0) seen[ant.genome.lineage] = 1;
+    }
+    let lineages = 0;
+    for (let i = 0; i < seen.length; i++) lineages += seen[i];
 
     let eggs = 0, larvae = 0, pupae = 0;
     for (const item of colony.brood) {
@@ -72,6 +85,9 @@ export class Telemetry {
       stored: colony.store,
       rate: Math.max(0, Math.round(this.rate)),
       piles: world.foods.length,
+      lineages,
+      pace: workers ? Math.round(pace / workers) : 0,
+      sense: workers ? (sense / workers).toFixed(1) : '0',
       history: this.history,
       peak: this.peak,
       status: this.#status(workers, hauling, world.foods.length, colony.store, full)
