@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Divinolândia na Bacia do Pardo</title>
+<meta name="description" content="A bacia do Rio Pardo em Divinolândia (SP): problemas de água apontados nos relatórios oficiais e as verbas que a prefeitura tem ou pode buscar (orçamento, FEHIDRO, fundo de saneamento, Sabesp).">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+  :root {
+    --ground: #EDF1F0;
+    --surface: #F8FAF9;
+    --ink: #15252A;
+    --muted: #55676B;
+    --rule: #C9D4D2;
+    --track: #DDE5E3;
+    --water: #1C6582;
+    --pardo: #85613B;
+    --ok: #2E6A45;
+    --alert: #A63A2A;
+    --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0D1719;
+      --surface: #132125;
+      --ink: #E1E9E7;
+      --muted: #98AAAD;
+      --rule: #293B3E;
+      --track: #1D2D31;
+      --water: #72B4D0;
+      --pardo: #CDA475;
+      --ok: #7CC39A;
+      --alert: #E8826C;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    padding-inline: 20px;
+    padding-block: 0 72px;
+  }
+  .wrap { max-width: 1060px; margin-inline: auto; }
+
+  a { color: var(--water); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--water); outline-offset: 3px; }
+
+  .hydro { font-style: italic; color: var(--water); }
+  .code {
+    font-family: var(--mono); font-size: .8em; font-weight: 500;
+    padding: 1px 5px; border: 1px solid var(--rule); border-radius: 3px;
+    background: var(--surface); white-space: nowrap;
+  }
+  .money { font-family: var(--mono); font-size: .92em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* cabeçalho */
+  .masthead { padding-block: 60px 40px; }
+  .eyebrow {
+    font-family: var(--display); font-weight: 600; font-size: .9rem;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--pardo);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(2.7rem, 7.5vw, 4.8rem); line-height: .96;
+    margin: 0; max-width: 14ch; text-wrap: balance;
+  }
+  h1 .hydro { font-family: var(--serif); font-weight: 400; letter-spacing: -.015em; }
+  .dek { font-size: 1.2rem; line-height: 1.5; color: var(--muted); max-width: 60ch; margin: 22px 0 0; }
+
+  /* seções: rótulo na margem + corpo */
+  .part {
+    display: grid; grid-template-columns: 170px minmax(0, 1fr); column-gap: 44px;
+    padding-block: 44px; border-top: 1px solid var(--rule);
+  }
+  .part-label {
+    font-family: var(--display); font-weight: 600; font-size: .95rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--pardo);
+    margin: 6px 0 0; line-height: 1.3;
+  }
+  .part-label small {
+    display: block; margin-top: 4px; color: var(--muted);
+    font-weight: 500; letter-spacing: .06em; font-size: .85rem;
+  }
+  .part-body { min-width: 0; max-width: 740px; display: flex; flex-direction: column; gap: 22px; }
+  .part-body > * { margin: 0; }
+  h2 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(1.75rem, 3.6vw, 2.25rem); line-height: 1.08; text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--display); font-weight: 600; font-size: 1.3rem;
+    letter-spacing: .01em; line-height: 1.2; margin: 10px 0 0; text-wrap: balance;
+  }
+  p { max-width: 66ch; }
+  .lede { font-size: 1.3rem; line-height: 1.5; }
+  .note { font-size: .95rem; color: var(--muted); }
+
+  /* tabelas */
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .96rem; line-height: 1.45; }
+  th, td { padding: 11px 14px 11px 0; border-bottom: 1px solid var(--rule); vertical-align: top; text-align: left; }
+  th:last-child, td:last-child { padding-right: 0; }
+  thead th {
+    font-family: var(--display); font-weight: 600; font-size: .8rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--ink);
+    vertical-align: bottom;
+  }
+  td.num, th.num {
+    text-align: right; font-family: var(--mono); font-size: .86rem;
+    font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 14px;
+  }
+  thead th.num { font-family: var(--display); font-size: .8rem; }
+  tfoot td { font-weight: 600; border-bottom: none; border-top: 1.5px solid var(--ink); }
+  td small { display: block; color: var(--muted); font-size: .86rem; }
+  .ledger td:first-child { font-weight: 600; min-width: 11rem; }
+  .ledger td:nth-child(2) { min-width: 15rem; }
+  tr.hit td { background: color-mix(in srgb, var(--water) 7%, transparent); }
+
+  /* estado */
+  .chip {
+    display: inline-block; font-family: var(--mono); font-size: .74rem; font-weight: 500;
+    line-height: 1.3; padding: 3px 8px; border: 1px solid currentColor; border-radius: 3px;
+  }
+  .chip--ok { color: var(--ok); }
+  .chip--warn { color: var(--pardo); }
+  .chip--alert { color: var(--alert); }
+  .chip--quiet { color: var(--muted); }
+
+  /* ficha técnica, no espírito de legenda de mapa */
+  .ficha {
+    margin: 0; padding: 18px 20px; background: var(--surface);
+    border: 1px solid var(--rule); border-radius: 4px;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px;
+  }
+  .ficha div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .ficha dt {
+    font-family: var(--display); font-weight: 500; font-size: .8rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  }
+  .ficha dd { margin: 0; font-family: var(--mono); font-size: .98rem; font-variant-numeric: tabular-nums; }
+  .ficha dd small { display: block; font-family: var(--serif); font-size: .84rem; color: var(--muted); }
+
+  .findings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .findings li { display: flex; flex-direction: column; gap: 6px; padding-block: 14px; border-bottom: 1px solid var(--rule); }
+  .findings li:first-child { border-top: 1px solid var(--rule); }
+  .findings p { margin: 0; }
+  .finding-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .finding-head strong { font-family: var(--display); font-weight: 600; font-size: 1.2rem; letter-spacing: .01em; }
+
+  /* gráfico de barras */
+  .chart {
+    margin: 0; padding: 20px 22px 16px; background: var(--surface);
+    border: 1px solid var(--rule); border-radius: 4px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .chart figcaption { font-family: var(--display); font-weight: 600; font-size: 1.15rem; line-height: 1.25; }
+  .chart figcaption span {
+    display: block; margin-top: 2px; font-family: var(--serif); font-weight: 400;
+    font-size: .9rem; color: var(--muted);
+  }
+  .bars { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row, .axis {
+    display: grid; grid-template-columns: 10rem minmax(0, 1fr) 3.4rem;
+    column-gap: 12px; align-items: center;
+  }
+  .bar-row { position: relative; grid-template-areas: "label track value"; border-radius: 3px; }
+  .axis { grid-template-areas: ". scale ."; }
+  .bar-label { grid-area: label; font-size: .95rem; line-height: 1.25; }
+  .bar-row.is-focus .bar-label { font-weight: 600; }
+  .bar-track {
+    grid-area: track; position: relative; height: 14px;
+    background:
+      linear-gradient(to right, transparent calc(50% - .5px), var(--rule) calc(50% - .5px), var(--rule) calc(50% + .5px), transparent calc(50% + .5px)),
+      var(--track);
+    border-radius: 0 3px 3px 0;
+  }
+  .bar-fill {
+    position: absolute; inset: 0 auto 0 0; width: var(--v);
+    background: var(--water); border-radius: 0 4px 4px 0;
+  }
+  .bar-row.is-focus .bar-fill { background: var(--pardo); }
+  .bar-value { grid-area: value; text-align: right; font-family: var(--mono); font-size: .9rem; font-variant-numeric: tabular-nums; }
+  .bar-row::after {
+    content: attr(data-tip); position: absolute; left: 11rem; bottom: calc(100% + 8px); z-index: 2;
+    background: var(--ink); color: var(--ground); font-family: var(--mono); font-size: .75rem; line-height: 1.45;
+    padding: 6px 9px; border-radius: 3px; white-space: pre; pointer-events: none;
+    opacity: 0; transition: opacity .12s ease;
+  }
+  .bar-row:hover::after, .bar-row:focus-visible::after { opacity: 1; }
+  .axis-scale { grid-area: scale; position: relative; height: 1.1rem; font-family: var(--mono); font-size: .7rem; color: var(--muted); }
+  .axis-scale span { position: absolute; top: 0; transform: translateX(-50%); }
+  .axis-scale span:first-child { transform: none; }
+  .axis-scale span:last-child { transform: translateX(-100%); }
+
+  /* linha do tempo e listas */
+  .timeline, .checklist, .actions, .gaps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .timeline li {
+    display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 16px;
+    padding-block: 12px; border-bottom: 1px solid var(--rule);
+  }
+  .timeline li:first-child { border-top: 1px solid var(--rule); }
+  .timeline .when { font-family: var(--mono); font-size: .84rem; color: var(--pardo); padding-top: 3px; }
+  .timeline li.miss .when { color: var(--muted); }
+  .timeline p { margin: 0; }
+
+  .checklist li {
+    display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 14px;
+    padding-block: 12px; border-bottom: 1px solid var(--rule);
+  }
+  .checklist li:first-child { border-top: 1px solid var(--rule); }
+  .mark {
+    width: 1.5rem; height: 1.5rem; display: inline-grid; place-items: center; margin-top: 2px;
+    border: 1.5px solid currentColor; border-radius: 3px;
+    font-family: var(--mono); font-weight: 500; font-size: .82rem; line-height: 1;
+  }
+  .mark--ok { color: var(--ok); }
+  .mark--warn { color: var(--pardo); }
+  .mark--unknown { color: var(--muted); border-style: dashed; }
+  .checklist p { margin: 0; }
+  .checklist .ref { display: block; color: var(--muted); font-size: .92rem; }
+
+  .estimate {
+    border: 1.5px dashed var(--pardo); border-radius: 4px; padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .estimate-label {
+    font-family: var(--display); font-weight: 600; font-size: .8rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--pardo); margin: 0;
+  }
+  .estimate-figure { font-family: var(--display); font-weight: 700; font-size: 2.5rem; line-height: 1; margin: 0; }
+  .estimate-figure small { font-size: 1.1rem; font-weight: 600; color: var(--muted); }
+  .estimate p { margin: 0; font-size: .95rem; color: var(--muted); }
+
+  .actions { gap: 20px; }
+  .actions li { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 16px; }
+  .actions .when {
+    font-family: var(--display); font-weight: 600; font-size: .86rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--water); padding-top: 3px; line-height: 1.3;
+  }
+  .actions p { margin: 0; }
+
+  .gaps { gap: 10px; }
+  .gaps li { padding-left: 18px; position: relative; }
+  .gaps li::before { content: "–"; position: absolute; left: 0; color: var(--muted); }
+
+  .sources { list-style: none; margin: 0; padding: 0; font-size: .92rem; columns: 2 300px; column-gap: 36px; }
+  .sources li { break-inside: avoid; padding-block: 6px; border-bottom: 1px solid var(--rule); overflow-wrap: anywhere; }
+  .sources .kind { display: block; font-family: var(--display); font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+
+  .colophon { padding-block: 28px 0; border-top: 1px solid var(--rule); font-size: .88rem; color: var(--muted); }
+  .colophon p { margin: 0; max-width: 80ch; }
+  .build { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  @media (max-width: 800px) {
+    .part { grid-template-columns: 1fr; row-gap: 12px; padding-block: 36px; }
+    .part-label { margin: 0; }
+    .part-label small { display: inline; margin: 0 0 0 8px; }
+    .ficha { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .masthead { padding-block: 40px 28px; }
+    .lede { font-size: 1.18rem; }
+    .bar-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label value" "track track"; row-gap: 6px; }
+    .axis { grid-template-columns: minmax(0, 1fr); grid-template-areas: "scale"; }
+    .bar-row::after { left: 0; }
+    .timeline li, .actions li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .chart { padding-inline: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bar-row::after { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead wrap">
+  <p class="eyebrow">Pesquisa · UGRHI 04 · setembro de 2026</p>
+  <h1>Divinolândia na <span class="hydro">Bacia do Pardo</span></h1>
+  <p class="dek">Em que bacia o município está, que problemas de água aparecem nos relatórios oficiais e de onde pode vir dinheiro para resolvê-los: o que já foi pedido, o que foi gasto e o que ficou parado.</p>
+</header>
+
+<main class="wrap">
+
+  <section class="part" aria-labelledby="resposta">
+    <p class="part-label">Resposta curta</p>
+    <div class="part-body">
+      <h2 id="resposta">A prefeitura quase não tem verba própria para água. O dinheiro existe, mas fora do caixa</h2>
+      <p class="lede">No orçamento municipal de 2025, a função Gestão Ambiental recebeu <span class="money">R$ 207.000</span>, o equivalente a 0,19% do orçamento, e só <span class="money">R$ 5.705,56</span> foram gastos. Os recursos maiores estão fora do orçamento e só chegam se a prefeitura for buscar: o FEHIDRO, dividido entre 27 municípios pelo Comitê da Bacia do Pardo, e o Fundo Municipal de Saneamento Básico, que pode receber 4% da receita líquida da Sabesp na cidade, mas ainda não foi habilitado.</p>
+      <div class="table-scroll">
+        <table class="ledger">
+          <thead>
+            <tr><th scope="col">De onde vem</th><th scope="col">Quanto</th><th scope="col">Situação</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 · Orçamento próprio<small>função Gestão Ambiental</small></td>
+              <td><span class="money">R$ 207.000</span> previstos em 2025; <span class="money">R$ 5.705,56</span> gastos</td>
+              <td><span class="chip chip--warn">Existe, quase parado</span></td>
+            </tr>
+            <tr>
+              <td>2 · FEHIDRO<small>via Comitê da Bacia do Pardo</small></td>
+              <td>Não há cota por cidade. A bacia tem <span class="money">R$ 7,96 mi</span> programados para 2026; cada projeto recebe até <span class="money">R$ 400–800 mil</span>, com 2% de contrapartida</td>
+              <td><span class="chip chip--quiet">Por edital, todo ano</span></td>
+            </tr>
+            <tr>
+              <td>3 · Fundo Municipal de Saneamento<small>repasse da Sabesp</small></td>
+              <td>4% da receita líquida da Sabesp no município, perto de <span class="money">R$ 140 mil/ano</span> (estimativa)</td>
+              <td><span class="chip chip--warn">Criado em 2025, sem habilitação</span></td>
+            </tr>
+            <tr>
+              <td>4 · Contrato da Sabesp<small>concessão URAE-1</small></td>
+              <td>Investimento obrigatório da concessionária para universalizar água e esgoto até 2029</td>
+              <td><span class="chip chip--quiet">Não entra no caixa municipal</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="bacia">
+    <p class="part-label">A bacia <small>UGRHI 04 · Pardo</small></p>
+    <div class="part-body">
+      <h2 id="bacia">Toda a chuva de Divinolândia termina no <span class="hydro">Rio Pardo</span></h2>
+      <p>Bacia hidrográfica é a área em que toda a água da chuva escorre para o mesmo rio. São Paulo administra a água por bacia: o estado é dividido em 22 Unidades de Gerenciamento de Recursos Hídricos (UGRHIs). Em cada uma, um comitê com estado, municípios e sociedade civil decide onde aplicar o dinheiro estadual da água.</p>
+      <p>Divinolândia está inteira dentro da UGRHI 04, a bacia do <span class="hydro">Pardo</span>. O comitê dela, o CBH-Pardo, foi instalado em 1996, reúne 27 municípios de Caconde a Ribeirão Preto e tem sede em Ribeirão Preto. É ele, e não a prefeitura, que escolhe quais projetos recebem FEHIDRO na região.</p>
+      <dl class="ficha" aria-label="Ficha técnica de Divinolândia">
+        <div><dt>Área</dt><dd>221,75 km²<small>2,47% da UGRHI 04</small></dd></div>
+        <div><dt>Dentro da bacia</dt><dd>100%<small>do território</small></dd></div>
+        <div><dt>População</dt><dd>11.314<small>7.777 urbana · 3.537 rural</small></dd></div>
+        <div><dt>Operadora</dt><dd>Sabesp<small>regulada pela ARSESP</small></dd></div>
+        <div><dt>Água encanada</dt><dd>73%<small>zona rural: 13,5%</small></dd></div>
+        <div><dt>Coleta de esgoto</dt><dd>64,1%<small>zona urbana: 93,2%</small></dd></div>
+        <div><dt>Esgoto sem tratamento</dt><dd>136,2 mil m³<small>no ano (2022)</small></dd></div>
+        <div><dt>Perdas na rede</dt><dd>18,5%<small>da água distribuída</small></dd></div>
+      </dl>
+      <p class="note">Área: Relatório de Situação 2025 do CBH-Pardo. Demais dados: Instituto Água e Saneamento, com base no SNIS 2022.</p>
+
+      <h3>O que os relatórios apontam no município</h3>
+      <ul class="findings">
+        <li>
+          <p class="finding-head"><span class="chip chip--alert">Área crítica</span><strong>Drenagem urbana</strong></p>
+          <p>Só 40,1% das vias urbanas têm galeria de água pluvial. O Relatório de Situação 2025 põe Divinolândia na lista de áreas críticas da bacia (faixa abaixo de 50%) e recomenda obras de contenção de enchentes e alagamentos, o <span class="code">SubPDC 7.1</span>.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--alert">Risco alto</span><strong>Erosão</strong></p>
+          <p>O município está no bloco leste/sudeste da bacia, onde predomina risco alto e muito alto de erosão, ao lado de Caconde, Tapiratiba e São Sebastião da Grama. Solo que desce o morro vira assoreamento no rio.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--warn">Lacuna</span><strong>Saneamento na zona rural</strong></p>
+          <p>Na cidade, água e esgoto chegam a quase todos. No campo, não: são 3.058 pessoas sem água encanada, todas na zona rural, e 4.066 sem coleta de esgoto, das quais 3.537 na zona rural.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="f1">
+    <p class="part-label">Fonte 1 <small>Orçamento municipal</small></p>
+    <div class="part-body">
+      <h2 id="f1">R$ 207 mil reservados, R$ 5,7 mil usados</h2>
+      <p>O orçamento de Divinolândia não tem a função Saneamento, porque água e esgoto são da Sabesp. O que a prefeitura gasta com água aparece espalhado em outras funções: Gestão Ambiental (preservação e conservação), Urbanismo (onde entram as galerias pluviais) e Agricultura.</p>
+
+      <figure class="chart" aria-labelledby="chart-title">
+        <figcaption id="chart-title">Parte do previsto que virou despesa em 2025<span>Despesa empenhada ÷ dotação atualizada, janeiro a dezembro. Passe o mouse ou o foco para ver os valores.</span></figcaption>
+        <div class="bars" role="list">
+          <div class="bar-row" role="listitem" tabindex="0" data-tip="Dotação: R$ 108.355.695,08&#10;Empenhado: R$ 77.811.711,47">
+            <span class="bar-label">Prefeitura inteira</span>
+            <span class="bar-track"><span class="bar-fill" style="--v: 71.8%"></span></span>
+            <span class="bar-value">71,8%</span>
+          </div>
+          <div class="bar-row" role="listitem" tabindex="0" data-tip="Dotação: R$ 5.726.565,93&#10;Empenhado: R$ 2.400.062,05">
+            <span class="bar-label">Urbanismo</span>
+            <span class="bar-track"><span class="bar-fill" style="--v: 41.9%"></span></span>
+            <span class="bar-value">41,9%</span>
+          </div>
+          <div class="bar-row" role="listitem" tabindex="0" data-tip="Dotação: R$ 1.110.000,00&#10;Empenhado: R$ 252.920,04">
+            <span class="bar-label">Agricultura</span>
+            <span class="bar-track"><span class="bar-fill" style="--v: 22.8%"></span></span>
+            <span class="bar-value">22,8%</span>
+          </div>
+          <div class="bar-row is-focus" role="listitem" tabindex="0" data-tip="Dotação: R$ 207.000,00&#10;Empenhado: R$ 5.705,56">
+            <span class="bar-label">Gestão Ambiental</span>
+            <span class="bar-track"><span class="bar-fill" style="--v: 2.8%"></span></span>
+            <span class="bar-value">2,8%</span>
+          </div>
+        </div>
+        <div class="axis" aria-hidden="true">
+          <div class="axis-scale"><span style="left: 0">0%</span><span style="left: 50%">50%</span><span style="left: 100%">100%</span></div>
+        </div>
+      </figure>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Função · 2025</th>
+              <th scope="col" class="num">Dotação inicial</th>
+              <th scope="col" class="num">Dotação atualizada</th>
+              <th scope="col" class="num">Empenhado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hit"><td>Gestão Ambiental<small>toda em Preservação e Conservação Ambiental</small></td><td class="num">208.000,00</td><td class="num">207.000,00</td><td class="num">5.705,56</td></tr>
+            <tr><td>Agricultura</td><td class="num">1.111.000,00</td><td class="num">1.110.000,00</td><td class="num">252.920,04</td></tr>
+            <tr><td>Urbanismo<small>Infraestrutura Urbana: 1.669.738,97 empenhados</small></td><td class="num">5.510.700,00</td><td class="num">5.726.565,93</td><td class="num">2.400.062,05</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Prefeitura inteira</td><td class="num">104.925.200,00</td><td class="num">108.355.695,08</td><td class="num">77.811.711,47</td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="note">Valores em R$. Fonte: RREO, Anexo 2, janeiro a dezembro de 2025, publicado pela prefeitura em 15/04/2026.</p>
+      <p>Em 2025 sobraram <span class="money">R$ 201.294,44</span> na Gestão Ambiental. Quando entra dinheiro do FEHIDRO, ele é lançado como convênio. Na obra de galerias de 2021, a despesa correu por Infraestrutura Urbana, com duas fontes: tesouro municipal e "transferências e convênios estaduais".</p>
+      <p class="note">Não encontrei a LOA 2026 do município em formato pesquisável. Por isso, os números desta seção são do fechamento de 2025.</p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="f2">
+    <p class="part-label">Fonte 2 <small>FEHIDRO · CBH-Pardo</small></p>
+    <div class="part-body">
+      <h2 id="f2">O dinheiro grande é disputado, e quem não inscreve projeto não recebe</h2>
+      <p>O FEHIDRO é o fundo estadual de recursos hídricos. Na bacia do <span class="hydro">Pardo</span>, ele recebe dinheiro de duas fontes: a compensação financeira das hidrelétricas (CFURH) e a cobrança pelo uso da água, paga por quem capta água ou lança efluentes nos rios. Não existe cota por município. A prefeitura inscreve projetos no SIGAM, as câmaras técnicas dão nota e a plenária do comitê decide quem recebe.</p>
+      <p>Só a cobrança tinha previsão de arrecadar <span class="money">R$ 7.051.532,00</span> na bacia em 2025. Somando o saldo acumulado, o comitê tinha <span class="money">R$ 28.688.627,16</span> para aplicar naquele ano. O programa de investimentos 2024–2027 soma <span class="money">R$ 31,4 milhões</span>. A tabela mostra a divisão de 2026:</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">SubPDC · tema</th>
+              <th scope="col" class="num">2026, bacia inteira</th>
+              <th scope="col" class="num">Teto por projeto</th>
+              <th scope="col">Encaixe em Divinolândia (minha leitura)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hit"><td><span class="code">7.1</span> Drenagem, enchentes e alagamentos</td><td class="num">1.672.246,37</td><td class="num">700.000</td><td>Forte: área crítica (40,1%)</td></tr>
+            <tr><td><span class="code">5.1</span> Controle de perdas de água</td><td class="num">1.592.615,59</td><td class="num">800.000</td><td>Fraco: prioridade é para perdas acima de 25% (aqui são 18,5%), e a rede é da Sabesp</td></tr>
+            <tr><td><span class="code">3.1</span> Esgotamento sanitário</td><td class="num">1.194.461,70</td><td class="num">800.000</td><td>Fraco: a rede é obrigação da Sabesp</td></tr>
+            <tr><td><span class="code">2.5</span> Monitoramento de quantidade e qualidade</td><td class="num">875.938,58</td><td class="num">600.000</td><td>—</td></tr>
+            <tr><td><span class="code">3.3</span> Resíduos sólidos (aterro)</td><td class="num">797.104,10</td><td class="num">500.000</td><td>Possível: o aterro é municipal</td></tr>
+            <tr><td><span class="code">1.2</span> Planos (perdas, erosão, saneamento)</td><td class="num">637.046,24</td><td class="num">350.000</td><td>Possível: plano de erosão ou revisão do plano de saneamento</td></tr>
+            <tr><td><span class="code">6.1</span> Captação e adução de água</td><td class="num">346.393,89</td><td class="num">700.000</td><td>—</td></tr>
+            <tr><td><span class="code">4.2</span> Mata ciliar e nascentes</td><td class="num">345.597,58</td><td class="num">400.000</td><td>Possível, como 2ª ou 3ª proposta</td></tr>
+            <tr><td><span class="code">8.1–8.3</span> Capacitação, educação ambiental, comunicação</td><td class="num">501.673,92</td><td class="num">180.000</td><td>Possível, como 2ª ou 3ª proposta</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Total programado para 2026</td><td class="num">7.963.077,97</td><td class="num"></td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="note">Valores em R$. Fontes: Plano de Ação e Programa de Investimentos no Relatório de Situação 2025 (valores) e Deliberação CBH-Pardo 364/2025 (tetos).</p>
+
+      <h3>Regras do edital de 2026</h3>
+      <ul class="gaps">
+        <li>Contrapartida mínima de 2% para municípios com até 50 mil habitantes. Nos subPDCs <span class="code">3.1</span>, <span class="code">5.1</span>, <span class="code">5.2</span> e <span class="code">6.1</span>, a contrapartida é zero.</li>
+        <li>Piso de R$ 100 mil para estudos e projetos e de R$ 150 mil a R$ 250 mil para obras.</li>
+        <li>Até três propostas por tomador. Uma é a prioritária; a segunda e a terceira têm de ser do PDC 4 (proteção) ou do PDC 8 (capacitação e educação).</li>
+        <li>No mínimo 60% do dinheiro vai para esgoto, resíduos, perdas e drenagem.</li>
+        <li>Calendário: inscrição no SIGAM de 08/12/2025 a 06/03/2026 e plenária em 22/05/2026. Houve um segundo pleito, com critérios aprovados em 25/05 e projetos indicados em 21/08/2026.</li>
+      </ul>
+
+      <h3>O histórico de Divinolândia com o FEHIDRO</h3>
+      <ol class="timeline">
+        <li><span class="when">jun 2015</span><p>Projeto de implantação de aterro sanitário indicado pelo comitê: <span class="money">R$ 145.470,66</span> do FEHIDRO e <span class="money">R$ 4.499,09</span> de contrapartida (Deliberação CBH-Pardo 213).</p></li>
+        <li><span class="when">2017</span><p>O projeto do novo aterro em valas, feito com recursos do FEHIDRO, recebe licença prévia da CETESB em 08/05/2017. O projeto de encerramento do aterro antigo é enviado ao fundo.</p></li>
+        <li><span class="when">fev 2020</span><p>Convênio de <span class="money">R$ 342 mil</span> com o FEHIDRO para obras de drenagem.</p></li>
+        <li><span class="when">jul 2021</span><p>Obra de galerias pluviais no Bairro Santo Antônio (contrato FEHIDRO 150/2021), contratada por <span class="money">R$ 349.442,98</span>.</p></li>
+        <li><span class="when">abr 2022</span><p>Licitação de galerias pluviais para drenagem urbana, com base no contrato FEHIDRO 34/2022.</p></li>
+        <li class="miss"><span class="when">ago 2025</span><p>Divinolândia não aparece entre os 18 projetos do 2º pleito de 2025. Vizinhas pequenas, sim: Caconde (setorização da rede de água), Tapiratiba (galeria pluvial) e Santa Cruz da Esperança (revisão do plano de saneamento).</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="f3">
+    <p class="part-label">Fonte 3 <small>Fundo de Saneamento</small></p>
+    <div class="part-body">
+      <h2 id="f3">Um fundo criado, mas que ainda não recebe repasses</h2>
+      <p>Na privatização, a Sabesp assinou em 2024 um contrato único com os municípios da URAE-1. Ele prevê repassar 4% da receita líquida que a empresa fatura em cada cidade para um Fundo Municipal de Saneamento Básico. Divinolândia criou o seu fundo em setembro de 2025. Mas o repasse só começa depois que a ARSESP publica uma portaria de habilitação, e a contagem parte dessa data, sem pagamento retroativo. Na consulta de setembro de 2026, o município não estava na lista de fundos habilitados.</p>
+
+      <h3>O que a ARSESP exige (Deliberação 1.766/2026)</h3>
+      <ul class="checklist">
+        <li><span class="mark mark--ok" aria-label="Feito">✓</span><p><strong>Lei de criação do fundo</strong><span class="ref">Lei municipal 2.535, de 11/09/2025, que cria o FMSB e o Conselho Municipal de Saneamento (COMUSA)</span></p></li>
+        <li><span class="mark mark--ok" aria-label="Feito">✓</span><p><strong>Conselho gestor com representante da sociedade civil</strong><span class="ref">COMUSA nomeado pela Portaria 107/2025, de 15/10/2025: cinco gerências municipais e um representante da sociedade civil</span></p></li>
+        <li><span class="mark mark--ok" aria-label="Feito">✓</span><p><strong>Contrato de prestação vigente</strong><span class="ref">Contrato de Concessão 01/2024 da URAE-1, em vigor desde 23/07/2024</span></p></li>
+        <li><span class="mark mark--warn" aria-label="Atenção">!</span><p><strong>Plano Municipal de Saneamento Básico atualizado</strong><span class="ref">O plano é a Lei 2.176/2016. A Lei 11.445/2007 manda revisar em no máximo 10 anos, prazo que vence em 2026</span></p></li>
+        <li><span class="mark mark--unknown" aria-label="Não localizado">?</span><p><strong>CNPJ próprio do fundo e conta bancária exclusiva</strong><span class="ref">Não localizados</span></p></li>
+        <li><span class="mark mark--unknown" aria-label="Não localizado">?</span><p><strong>Pedido formal de habilitação, por ofício do prefeito</strong><span class="ref">Não localizado. A análise leva até 45 dias úteis depois do protocolo</span></p></li>
+      </ul>
+
+      <div class="estimate">
+        <p class="estimate-label">Estimativa minha, não é número oficial</p>
+        <p class="estimate-figure">≈ R$ 140 mil <small>por ano</small></p>
+        <p>Cálculo: a produção é de 559 mil m³/ano e as perdas são de 18,5%, o que dá cerca de 455 mil m³ de água faturada. Com uns 400 mil m³ de esgoto faturado e a tarifa média de R$ 4,60/m³, a receita bruta fica perto de R$ 3,9 milhões. Tirando PIS e Cofins, sobram cerca de R$ 3,57 milhões, e 4% disso dá uns R$ 143 mil. É quase 70% da verba anual de Gestão Ambiental. O valor real depende do anexo de Divinolândia no contrato e da receita apurada pela Sabesp.</p>
+      </div>
+      <p>O fundo só pode pagar ações de saneamento que sejam responsabilidade do município e não façam parte das obrigações contratuais da Sabesp. Pela Lei 11.445, saneamento básico inclui drenagem de águas pluviais e resíduos sólidos. Os recursos também podem servir de garantia em operações de crédito.</p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="f4">
+    <p class="part-label">Fonte 4 <small>Sabesp</small></p>
+    <div class="part-body">
+      <h2 id="f4">Levar água à zona rural é obrigação da Sabesp</h2>
+      <p>O contrato da desestatização obriga a Sabesp a levar água potável e esgoto coletado e tratado a todos até 2029, incluindo áreas rurais e núcleos urbanos informais. Esse é o maior déficit de Divinolândia: 3.058 moradores da zona rural sem água encanada. Esse dinheiro não passa pela prefeitura. O papel dela é cobrar, pelo conselho da URAE-1 e pela ARSESP, e fiscalizar o cronograma.</p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="falhas">
+    <p class="part-label">Onde falha <small>leitura dos documentos</small></p>
+    <div class="part-body">
+      <h2 id="falhas">A prefeitura não busca nem usa o dinheiro que está ao seu alcance</h2>
+      <ul class="findings">
+        <li>
+          <p class="finding-head"><span class="chip chip--alert">Verba parada</span><strong>Não gasta a verba ambiental que tem</strong></p>
+          <p>Em 2025 a Gestão Ambiental tinha <span class="money">R$ 207 mil</span> e gastou <span class="money">R$ 5.705,56</span> (2,8%). Os <span class="money">R$ 201 mil</span> que sobraram poderiam pagar projetos, estudos e a contrapartida exigida para disputar o FEHIDRO.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--warn">Atraso</span><strong>Fundo de saneamento sem habilitação</strong></p>
+          <p>A lei é de setembro de 2025 e o conselho foi nomeado em outubro, mas em setembro de 2026 Divinolândia ainda não aparece na lista da ARSESP. O repasse da Sabesp só conta a partir da habilitação, sem retroativo. Pela estimativa desta página, são cerca de <span class="money">R$ 12 mil</span> perdidos por mês.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--warn">Prazo vencendo</span><strong>Plano de saneamento de 2016</strong></p>
+          <p>O prazo legal de revisão, de 10 anos, vence em 2026, e sem plano atualizado a ARSESP não habilita o fundo. Mococa e Santa Cruz da Esperança pagaram essa revisão com dinheiro do FEHIDRO em 2025.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--alert">Ausente</span><strong>Fora da disputa pelo FEHIDRO</strong></p>
+          <p>O último projeto confirmado é de 2022. No 2º pleito de 2025, Divinolândia não está entre os 18 projetos aprovados, enquanto vizinhas pequenas como Caconde e Tapiratiba conseguiram recursos.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--alert">Crítico</span><strong>A drenagem não foi atacada</strong></p>
+          <p>A drenagem urbana segue crítica, com 40,1% das ruas atendidas. É justamente onde o comitê mais investe: <span class="money">R$ 1,67 milhão</span> na bacia em 2026, com até <span class="money">R$ 700 mil</span> por projeto.</p>
+        </li>
+        <li>
+          <p class="finding-head"><span class="chip chip--quiet">Transparência</span><strong>Contas difíceis de acompanhar</strong></p>
+          <p>O orçamento de 2026 não aparece em formato pesquisável, e os relatórios fiscais saem em PDFs difíceis de ler.</p>
+        </li>
+      </ul>
+      <p>A falta de água e esgoto na zona rural não é falha direta da prefeitura: pelo contrato de privatização, levar esses serviços ao campo até 2029 é obrigação da Sabesp. O papel da prefeitura ali é cobrar, e não encontrei nenhuma evidência de que ela esteja cobrando ou deixando de cobrar.</p>
+      <p class="note">Alguns desses pontos podem ter explicação que não aparece nos documentos. Não deu para ler o 1º pleito do FEHIDRO de 2025 nem os dois de 2026, porque são PDFs escaneados. Também pode haver um pedido de habilitação do fundo já protocolado e ainda não publicado. Para confirmar, o caminho é perguntar à prefeitura pelo portal de transparência ou via Lei de Acesso à Informação.</p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="passos">
+    <p class="part-label">Próximos passos</p>
+    <div class="part-body">
+      <h2 id="passos">O que dá para fazer, pela ordem do calendário</h2>
+      <ul class="actions">
+        <li><span class="when">Agora, 2026</span><p>Pedir a habilitação do fundo à ARSESP: tirar o CNPJ, abrir a conta exclusiva e enviar o ofício do prefeito para <a href="mailto:protocolo@arsesp.sp.gov.br">protocolo@arsesp.sp.gov.br</a>. Como o repasse conta a partir da portaria, cada mês de atraso é dinheiro perdido.</p></li>
+        <li><span class="when">Agora, 2026</span><p>Revisar o Plano Municipal de Saneamento de 2016, porque sem plano atualizado o fundo não é habilitado. A revisão pode ser paga pelo FEHIDRO (<span class="code">1.2</span>): foi o que Mococa e Santa Cruz da Esperança conseguiram em 2025.</p></li>
+        <li><span class="when">Dez 2026 – mar 2027</span><p>Janela provável do FEHIDRO 2027, se o comitê repetir o calendário deste ano (critérios em dezembro, inscrição até março, plenária em maio). A proposta prioritária seria galerias pluviais (<span class="code">7.1</span>): o município é área crítica nesse tema, e é o subPDC com mais dinheiro na bacia. As outras duas vagas podem ir para nascentes e mata ciliar (<span class="code">4.2</span>) ou educação ambiental (<span class="code">8.2</span>).</p></li>
+        <li><span class="when">Sempre</span><p>Usar a verba de Gestão Ambiental que sobra (R$ 201 mil em 2025) no que precisa estar pronto na inscrição: projeto, planilha orçamentária com tabela oficial e ART. E também na contrapartida de 2%.</p></li>
+        <li><span class="when">Sempre</span><p>Cobrar da Sabesp, pela URAE-1 e pela ARSESP, o cronograma para levar água e esgoto à zona rural até 2029.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="lacunas">
+    <p class="part-label">Lacunas</p>
+    <div class="part-body">
+      <h2 id="lacunas">O que não consegui confirmar</h2>
+      <ul class="gaps">
+        <li>O orçamento de 2026: a LOA não apareceu em formato pesquisável.</li>
+        <li>Se Divinolândia recebeu FEHIDRO no 1º pleito de 2025 ou nos dois de 2026. As deliberações 357/2025, 370/2026 e 373/2026 são PDFs escaneados e não deu para ler.</li>
+        <li>O valor do contrato FEHIDRO 34/2022 e o percentual exato previsto no anexo de Divinolândia no contrato da Sabesp.</li>
+        <li>Se o CNPJ, a conta do fundo ou um pedido de habilitação já existem sem ter sido publicados.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="fontes">
+    <p class="part-label">Fontes</p>
+    <div class="part-body">
+      <h2 id="fontes">Documentos consultados</h2>
+      <ul class="sources">
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/cbhpardo/apresentacao">Apresentação do comitê (SigRH)</a></li>
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/public/uploads/documents//CBH-PARDO/30770/rs25-24-versao-final.pdf">Relatório de Situação 2025, ano-base 2024</a></li>
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/public/uploads/deliberation//CBH-PARDO/30640/364_-_aprova_diretrizes_e_criterios_distribuicao_recursos_2026_assinado_assinado_assinado.pdf">Deliberação 364/2025: critérios FEHIDRO 2026</a></li>
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/public/uploads/deliberation//CBH-PARDO/30454/deliberacao_360_cbh_pardo_assinado_assinado_assinado.pdf">Deliberação 360/2025: aplicação da cobrança</a></li>
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/public/uploads/deliberation//CBH-PARDO/30455/deliberacao_361_cbh_pardo_assinado.pdf">Deliberação 361/2025: 2º pleito 2025</a></li>
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/public/uploads/deliberation/9196/213-indica-prioridades-de-investimento.htm">Deliberação 213/2015: aterro de Divinolândia</a></li>
+        <li><span class="kind">CBH-Pardo</span><a href="https://sigrh.sp.gov.br/cbhpardo/deliberacoes">Lista de deliberações</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/public/admin/globalarq/conta-publica/arquivo/60eb0b349cda54b210fae31ce0bcdee4.pdf">RREO jan–dez 2025, por função</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/public/admin/globalarq/conta-publica/arquivo/a706153fcb836a99325001b9400ed556.pdf">RREO jan–out 2025, por função</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/public/admin/globalarq/contrato/arquivo/bb076cae8c93909860c25ad72d6dedfd.pdf">Contrato 14/2021: galerias do Bairro Santo Antônio</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/public/admin/globalarq/licitacao/arquivo/fbc825baa00d520f5a94c7a5fff02eb1.pdf">Edital TP 02/2022: contrato FEHIDRO 34/2022</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/public/noticia/881/prefeitura-assinou-convenio-com-fehidro-para-obras-de-drenagem/">Convênio FEHIDRO para drenagem (2020)</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/noticia/523/implantacao-de-novo-aterro-em-valas-para-residuos-de-origem-domestica/">Novo aterro em valas (2017)</a></li>
+        <li><span class="kind">Prefeitura</span><a href="https://www.divinolandia.sp.gov.br/public/admin/globalarq/diario-eletronico/diario/A323wAax2ZRTAcs2.pdf">Diário Oficial 718: Portaria 107/2025 (COMUSA)</a></li>
+        <li><span class="kind">ARSESP</span><a href="https://www.arsesp.sp.gov.br/LegislacaoArquivos/DELIBERA%C3%87%C3%83O%20ARSESP%20n%C2%BA.%201.766,%20de%2014%20DE%20JANEIRO%20DE%202026.pdf">Deliberação 1.766/2026: fundos municipais</a></li>
+        <li><span class="kind">ARSESP</span><a href="https://www.arsesp.sp.gov.br/Paginas/fundo-municipal-saneamento-bascio.aspx">Lista de fundos habilitados</a></li>
+        <li><span class="kind">TCE-SP</span><a href="https://www.tce.sp.gov.br/legislacao/comunicado/instituicao-fundos-municipais-saneamento-municipios-participantes-urae-1">Comunicado sobre fundos da URAE-1</a></li>
+        <li><span class="kind">Instituto Água e Saneamento</span><a href="https://www.aguaesaneamento.org.br/municipios-e-saneamento/sp/divinolandia">O saneamento em Divinolândia</a></li>
+        <li><span class="kind">Instituto Água e Saneamento</span><a href="https://www.aguaesaneamento.org.br/en/news/o-que-muda-na-sabesp-com-a-privatizacao/">O que muda na Sabesp com a privatização</a></li>
+        <li><span class="kind">Governo de SP</span><a href="https://www.saopaulo.sp.gov.br/spnoticias/ultimas-noticias/cidade-de-sao-paulo-tera-investimento-de-r-841-bilhoes-com-desestatizacao-da-sabesp/">Metas de universalização até 2029</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <p>Levantamento feito em 14 de setembro de 2026 com documentos públicos da prefeitura, do CBH-Pardo (SigRH), da ARSESP, do TCE-SP e do Instituto Água e Saneamento. O que é estimativa ou leitura minha está marcado assim no texto. <span class="build">build 1</span></p>
+  </footer>
+</main>
+
+</body>
+</html>
