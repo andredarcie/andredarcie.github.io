@@ -13,7 +13,7 @@
   /* Hallmark · genre: editorial · macrostructure: Long Document · nav: N3 side-rail (variante: índice de capítulos) · footer: Ft2 inline single line
    * theme: custom · vibe: "mergulho: do raso ao fundo, papel frio" · paper: oklch(96.5% 0.006 215) · accent: oklch(50% 0.08 195)
    * display: Literata · body: Literata · ui: Instrument Sans · axes: light / roman-serif / chromatic-other (teal ~195°)
-   * enrichment: none (typography only) · studied: no · context: inferred (o autor e leitores do DDIA · ler e navegar resumos · editorial técnico)
+   * enrichment: Tier B hand-built SVG (diagramas estáticos no texto, cores só de tokens) · studied: no · context: inferred (o autor e leitores do DDIA · ler e navegar resumos · editorial técnico)
    * contrast: pass (40–41) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · mobile: pass (34, 49–57), conferido lendo o CSS, sem renderizar
    */
   /* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V5 */
@@ -301,6 +301,43 @@
   .tabela thead th { background: var(--color-paper-2); border-bottom: 0; font-weight: 700; }
   .tabela tbody th { font-weight: 600; color: var(--color-muted); }
 
+  /* Figuras: diagramas em SVG feitos à mão, todos com viewBox de 440 de largura.
+     No desktop saem em 1:1, com rótulos do tamanho de --text-sm; no celular encolhem juntos. */
+  .figura { margin: var(--space-lg) 0 var(--space-xl); }
+  .figura svg {
+    display: block;
+    width: 100%; max-width: 27.5rem; height: auto;
+    overflow: visible;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-variant-numeric: lining-nums;
+  }
+  .figura figcaption {
+    max-width: 27.5rem;
+    margin-top: var(--space-sm);
+    font: 400 var(--text-sm)/var(--lh-snug) var(--font-ui);
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+  .figura text { fill: var(--color-ink); }
+  .figura .forte { font-weight: 600; }
+  .figura .fraco { fill: var(--color-muted); }
+  .figura .marca { fill: var(--color-station); font-weight: 600; }
+  .figura .caixa {
+    fill: var(--color-paper-2);
+    stroke: color-mix(in oklab, var(--color-rule), var(--color-muted));
+    stroke-width: 1.5;
+  }
+  .figura .caixa--marca { stroke: var(--color-station); stroke-width: 2; }
+  .figura .cheia { fill: var(--color-station); stroke: var(--color-station); stroke-width: 1.5; }
+  .figura .grupo { fill: none; stroke: color-mix(in oklab, var(--color-rule), var(--color-muted)); stroke-width: 1.5; }
+  .figura .grupo--marca { stroke: var(--color-station); stroke-width: 2; }
+  .figura .fio { fill: none; stroke: var(--color-muted); stroke-width: 1.5; }
+  .figura .fio--tracejado { stroke-dasharray: 5 4; }
+  .figura .ponta { fill: var(--color-muted); }
+  .figura .corte { fill: none; stroke: var(--color-ink); stroke-width: 2; stroke-linecap: round; }
+  .figura .divisa { stroke: var(--color-rule); stroke-width: 1; }
+
   .aparte { margin: var(--space-xl) 0; padding: var(--space-lg); border-radius: var(--radius-lg); background: var(--color-paper-2); }
   .aparte h4 { margin: 0 0 var(--space-xs); font: 700 var(--text-base)/var(--lh-snug) var(--font-ui); }
   .texto .aparte p { margin: 0; }
@@ -401,6 +438,44 @@
         <h3 id="ponto-de-partida-titulo">Ponto de partida</h3>
         <p class="original">Abertura do capítulo, p. 1</p>
         <p>Uma aplicação é <em>data-intensive</em> quando o principal desafio são os dados, e não a CPU: volume, mudanças, consistência diante de falhas e concorrência, disponibilidade. Ela é montada com peças padrão (banco, cache, índice de busca, stream e batch processing) ligadas por código de aplicação, e o difícil é escolher entre muitas opções parecidas e combiná-las quando uma só não resolve. Esse código costuma ser stateless: o que precisa persistir fica na infraestrutura de dados do backend, que guarda os dados de todos os usuários.</p>
+
+        <figure class="figura">
+          <svg viewBox="0 0 440 198" role="img" aria-label="Clientes mandam requisições HTTP ao código da aplicação, que não guarda estado e lê e grava na infraestrutura de dados: banco de dados, cache, índice de busca e fila de mensagens.">
+            <rect class="caixa" x="13" y="74" width="72" height="48" rx="6"/>
+            <rect class="caixa" x="7" y="80" width="72" height="48" rx="6"/>
+            <rect class="caixa" x="1" y="86" width="72" height="48" rx="6"/>
+            <text class="forte" x="37" y="115" text-anchor="middle">clientes</text>
+            <text class="fraco" x="37" y="156" text-anchor="middle">navegador</text>
+            <text class="fraco" x="37" y="174" text-anchor="middle">ou app</text>
+
+            <text class="fraco" x="108" y="101" text-anchor="middle">HTTP</text>
+            <line class="fio" x1="89" y1="110" x2="118" y2="110"/>
+            <polygon class="ponta" points="127,110 118,105.5 118,114.5"/>
+
+            <rect class="caixa" x="131" y="70" width="92" height="80" rx="6"/>
+            <text class="forte" x="177" y="96" text-anchor="middle">código da</text>
+            <text class="forte" x="177" y="114" text-anchor="middle">aplicação</text>
+            <text class="fraco" x="177" y="134" text-anchor="middle">sem estado</text>
+
+            <text class="fraco" x="252" y="80" text-anchor="middle">lê e</text>
+            <text class="fraco" x="252" y="96" text-anchor="middle">grava</text>
+            <line class="fio" x1="236" y1="110" x2="268" y2="110"/>
+            <polygon class="ponta" points="227,110 236,105.5 236,114.5"/>
+            <polygon class="ponta" points="277,110 268,105.5 268,114.5"/>
+
+            <text class="marca" x="439" y="14" text-anchor="end">infraestrutura de dados</text>
+            <rect class="grupo grupo--marca" x="281" y="24" width="158" height="172" rx="8"/>
+            <rect class="caixa" x="291" y="36" width="138" height="30" rx="4"/>
+            <rect class="caixa" x="291" y="76" width="138" height="30" rx="4"/>
+            <rect class="caixa" x="291" y="116" width="138" height="30" rx="4"/>
+            <rect class="caixa" x="291" y="156" width="138" height="30" rx="4"/>
+            <text x="360" y="56" text-anchor="middle">banco de dados</text>
+            <text x="360" y="96" text-anchor="middle">cache</text>
+            <text x="360" y="136" text-anchor="middle">índice de busca</text>
+            <text x="360" y="176" text-anchor="middle">fila de mensagens</text>
+          </svg>
+          <figcaption>O código da aplicação atende cada requisição e esquece dela ao terminar. O que precisa durar fica na infraestrutura de dados, que guarda os dados de todos os usuários.</figcaption>
+        </figure>
       </section>
 
       <section class="secao" id="operacional-analitico" aria-labelledby="operacional-analitico-titulo">
@@ -425,6 +500,43 @@
         </div>
 
         <p><strong>Data warehouse.</strong> Um banco separado para análise, alimentado por ETL (ou ELT), onde dá para cruzar numa query dados espalhados em silos sem pesar no OLTP. O HTAP põe os dois num sistema só, mas não substitui o warehouse: a empresa pode ter centenas de bancos operacionais e costuma ter um warehouse só, que reúne todos.</p>
+
+        <figure class="figura">
+          <svg viewBox="0 0 440 306" role="img" aria-label="Três bancos operacionais, loja online, estoque e entregas, passam por extract, transform e load até um data warehouse, que analistas e cientistas de dados consultam.">
+            <text class="fraco" x="1" y="13">bancos operacionais (OLTP)</text>
+            <rect class="caixa" x="1" y="24" width="134" height="40" rx="6"/>
+            <rect class="caixa" x="153" y="24" width="134" height="40" rx="6"/>
+            <rect class="caixa" x="305" y="24" width="134" height="40" rx="6"/>
+            <text class="forte" x="68" y="49" text-anchor="middle">loja online</text>
+            <text class="forte" x="220" y="49" text-anchor="middle">estoque</text>
+            <text class="forte" x="372" y="49" text-anchor="middle">entregas</text>
+
+            <path class="fio" d="M68 64V92M220 64V92M372 64V92"/>
+            <polygon class="ponta" points="68,101 63.5,92 72.5,92"/>
+            <polygon class="ponta" points="220,101 215.5,92 224.5,92"/>
+            <polygon class="ponta" points="372,101 367.5,92 376.5,92"/>
+            <text class="fraco" x="228" y="87">extract</text>
+
+            <rect class="caixa" x="1" y="102" width="438" height="40" rx="6"/>
+            <text x="220" y="127" text-anchor="middle"><tspan class="forte">transform</tspan><tspan class="fraco"> · limpa e muda para o schema de análise</tspan></text>
+
+            <line class="fio" x1="220" y1="142" x2="220" y2="170"/>
+            <polygon class="ponta" points="220,179 215.5,170 224.5,170"/>
+            <text class="fraco" x="228" y="165">load</text>
+
+            <rect class="caixa caixa--marca" x="1" y="180" width="438" height="52" rx="6"/>
+            <text class="forte" x="220" y="201" text-anchor="middle">data warehouse</text>
+            <text class="fraco" x="220" y="220" text-anchor="middle">uma cópia só leitura dos três bancos</text>
+
+            <line class="fio" x1="220" y1="268" x2="220" y2="242"/>
+            <polygon class="ponta" points="220,233 215.5,242 224.5,242"/>
+            <text class="fraco" x="228" y="255">queries</text>
+
+            <rect class="caixa" x="70" y="268" width="300" height="36" rx="6"/>
+            <text class="forte" x="220" y="291" text-anchor="middle">analistas e cientistas de dados</text>
+          </svg>
+          <figcaption>Os dados saem de cada banco operacional, são limpos e reorganizados e chegam ao warehouse, onde o analista cruza tudo numa query sem pesar nos bancos de produção. O livro mostra esse fluxo na figura 1-1.</figcaption>
+        </figure>
         <p><strong>Data lake.</strong> Arquivos crus, sem schema imposto, em object storage barato, para cientistas de dados que preferem Pandas ou Spark a SQL. É o <i lang="en">sushi principle</i>: “<span lang="en">raw data is better</span>”. A análise também recebe streams, reagindo em segundos, e às vezes devolve resultados à produção (<em>reverse ETL</em>), como um modelo de recomendação.</p>
         <p><strong>System of record e dado derivado.</strong> O system of record é a fonte da verdade, com cada fato registrado uma vez só. Cache, índice, view materializada e modelo treinado são derivados: redundantes, feitos para leitura rápida e recriáveis a partir da fonte. Sistemas analíticos quase sempre são derivados. O papel depende do uso, não da ferramenta; o difícil é propagar as mudanças da fonte para os derivados (capítulo 11).</p>
       </section>
@@ -433,8 +545,81 @@
         <h3 id="cloud-self-hosting-titulo">Cloud vs. self-hosting</h3>
         <p class="original"><span lang="en">Cloud Versus Self-Hosting</span>, p. 12</p>
         <p>É a escolha entre construir e comprar: o que é central para o negócio tende a ficar em casa, e o que é rotina vai para um fornecedor. Hospedar por conta própria costuma sair mais barato quando o time já sabe operar o sistema e a carga é previsível. A cloud compensa quando falta esse conhecimento ou quando a carga oscila muito, como em análise, porque dá para devolver os recursos que sobram.</p>
+
+        <figure class="figura">
+          <svg viewBox="0 0 440 204" role="img" aria-label="Quatro opções. Software sob medida: você cuida do código, do hardware e da operação. Software pronto on-premises: você cuida do hardware e da operação. Software pronto em VM na cloud: você cuida só da operação. Serviço de cloud: o fornecedor cuida de tudo.">
+            <text class="fraco" x="215" y="14" text-anchor="middle">código</text>
+            <text class="fraco" x="305" y="14" text-anchor="middle">hardware</text>
+            <text class="fraco" x="395" y="14" text-anchor="middle">operação</text>
+
+            <text x="1" y="45">sob medida</text>
+            <rect class="cheia" x="172" y="24" width="86" height="32" rx="4"/>
+            <rect class="cheia" x="262" y="24" width="86" height="32" rx="4"/>
+            <rect class="cheia" x="352" y="24" width="86" height="32" rx="4"/>
+
+            <text x="1" y="83">pronto, on-premises</text>
+            <rect class="caixa" x="172" y="62" width="86" height="32" rx="4"/>
+            <rect class="cheia" x="262" y="62" width="86" height="32" rx="4"/>
+            <rect class="cheia" x="352" y="62" width="86" height="32" rx="4"/>
+
+            <text x="1" y="121">pronto, em VM (IaaS)</text>
+            <rect class="caixa" x="172" y="100" width="86" height="32" rx="4"/>
+            <rect class="caixa" x="262" y="100" width="86" height="32" rx="4"/>
+            <rect class="cheia" x="352" y="100" width="86" height="32" rx="4"/>
+
+            <text x="1" y="159">serviço de cloud</text>
+            <rect class="caixa" x="172" y="138" width="86" height="32" rx="4"/>
+            <rect class="caixa" x="262" y="138" width="86" height="32" rx="4"/>
+            <rect class="caixa" x="352" y="138" width="86" height="32" rx="4"/>
+
+            <rect class="cheia" x="1" y="186" width="14" height="14" rx="2"/>
+            <text class="fraco" x="23" y="198">fica com você</text>
+            <rect class="caixa" x="138" y="186" width="14" height="14" rx="2"/>
+            <text class="fraco" x="160" y="198">fica com o fornecedor</text>
+          </svg>
+          <figcaption>Do software sob medida ao serviço de cloud, o que fica com você diminui: primeiro sai o código, depois o hardware e, por fim, a operação. O livro desenha esse espectro na figura 1-2.</figcaption>
+        </figure>
         <p><strong>A maior desvantagem da cloud é a falta de controle.</strong> Se falta uma feature ou o serviço cai, só resta pedir e esperar. Bugs são investigados sem acesso aos logs internos. E há lock-in, mudança de preço, risco de sanções entre países e a necessidade de confiar a segurança dos dados ao provedor.</p>
         <p><strong>Cloud native.</strong> Sistemas feitos para a cloud (Aurora, Spanner, Snowflake, BigQuery) se apoiam em outros serviços dela e costumam render mais no mesmo hardware, se recuperar de falhas e escalar mais rápido. A marca deles é <strong>separar storage de compute</strong>: o disco local vira cache e os blocos grandes vão para object storage como o S3. Muitos também são multitenant, com vários clientes no mesmo hardware.</p>
+
+        <figure class="figura">
+          <svg viewBox="0 0 440 208" role="img" aria-label="À esquerda, o modelo tradicional: um servidor com CPU e RAM e, no mesmo servidor, o disco durável. À direita, o cloud native: duas máquinas com CPU, RAM e um disco local usado só como cache, ligadas pela rede a um object storage durável.">
+            <text class="fraco" x="1" y="13">tradicional</text>
+            <rect class="grupo" x="1" y="24" width="190" height="182" rx="8"/>
+            <text class="forte" x="13" y="46">um servidor</text>
+            <rect class="caixa" x="13" y="58" width="166" height="40" rx="4"/>
+            <text x="96" y="83" text-anchor="middle">CPU e RAM</text>
+            <line class="fio" x1="96" y1="111" x2="96" y2="137"/>
+            <polygon class="ponta" points="96,102 91.5,111 100.5,111"/>
+            <polygon class="ponta" points="96,146 91.5,137 100.5,137"/>
+            <text class="fraco" x="104" y="129">local</text>
+            <rect class="caixa caixa--marca" x="13" y="150" width="166" height="44" rx="4"/>
+            <text class="forte" x="96" y="168" text-anchor="middle">disco</text>
+            <text class="fraco" x="96" y="186" text-anchor="middle">durável (RAID)</text>
+
+            <line class="divisa" x1="207" y1="24" x2="207" y2="206"/>
+
+            <text class="fraco" x="223" y="13">cloud native</text>
+            <rect class="caixa" x="223" y="24" width="103" height="78" rx="4"/>
+            <rect class="caixa" x="336" y="24" width="103" height="78" rx="4"/>
+            <text x="274.5" y="50" text-anchor="middle">CPU e RAM</text>
+            <text class="fraco" x="274.5" y="69" text-anchor="middle">disco local</text>
+            <text class="fraco" x="274.5" y="88" text-anchor="middle">(só cache)</text>
+            <text x="387.5" y="50" text-anchor="middle">CPU e RAM</text>
+            <text class="fraco" x="387.5" y="69" text-anchor="middle">disco local</text>
+            <text class="fraco" x="387.5" y="88" text-anchor="middle">(só cache)</text>
+            <path class="fio" d="M274.5 115V137M387.5 115V137"/>
+            <polygon class="ponta" points="274.5,106 270,115 279,115"/>
+            <polygon class="ponta" points="274.5,146 270,137 279,137"/>
+            <polygon class="ponta" points="387.5,106 383,115 392,115"/>
+            <polygon class="ponta" points="387.5,146 383,137 392,137"/>
+            <text class="fraco" x="331" y="130" text-anchor="middle">rede</text>
+            <rect class="caixa caixa--marca" x="223" y="150" width="216" height="44" rx="4"/>
+            <text class="forte" x="331" y="168" text-anchor="middle">object storage (S3)</text>
+            <text class="fraco" x="331" y="186" text-anchor="middle">durável, blocos grandes</text>
+          </svg>
+          <figcaption>No modelo tradicional, o disco durável fica no mesmo servidor que processa. No cloud native, o disco local vira cache e os dados duráveis ficam no object storage, do outro lado da rede, então as máquinas de compute podem ser trocadas ou multiplicadas sem mover os dados.</figcaption>
+        </figure>
         <p><strong>A operação continua.</strong> Ela passou do DBA e do sysadmin para DevOps e SRE. Planejar capacidade vira planejar gastos, otimizar performance vira otimizar custo, e escolher, integrar e monitorar serviços continua sendo trabalho seu.</p>
       </section>
 
@@ -443,6 +628,41 @@
         <p class="original"><span lang="en">Distributed Versus Single-Node Systems</span>, p. 19</p>
         <p>Distribuir faz sentido por tolerância a falhas, escala, latência para usuários espalhados, elasticidade, hardware especializado ou leis de residência de dados. Às vezes a aplicação já nasce distribuída, com vários usuários ou serviços na cloud.</p>
         <p><strong>O preço de distribuir.</strong> Toda chamada de rede pode falhar ou dar timeout sem que você saiba se o outro lado processou, e repetir pode não ser seguro (capítulo 9). A rede é muito mais lenta que uma chamada local, depurar exige observabilidade e tracing, e a consistência entre serviços vira problema da aplicação. Em alguns casos, um programa de uma thread numa máquina só bate um cluster com mais de 100&nbsp;cores.</p>
+
+        <figure class="figura">
+          <svg viewBox="0 0 440 258" role="img" aria-label="Três casos em que o cliente manda um pedido ao serviço: o pedido se perde na rede; o serviço recebe o pedido e cai; o serviço processa, mas a resposta se perde. Nos três, o cliente só vê um timeout.">
+            <text class="fraco" x="48" y="13" text-anchor="middle">cliente</text>
+            <text class="fraco" x="392" y="13" text-anchor="middle">serviço</text>
+
+            <rect class="caixa" x="1" y="24" width="94" height="72" rx="6"/>
+            <text class="marca" x="48" y="65" text-anchor="middle">timeout</text>
+            <text class="fraco" x="107" y="44">pedido</text>
+            <line class="fio" x1="99" y1="52" x2="212" y2="52"/>
+            <path class="corte" d="M214 46l12 12M226 46l-12 12"/>
+            <rect class="caixa" x="345" y="24" width="94" height="72" rx="6"/>
+            <text x="392" y="65" text-anchor="middle">nada chegou</text>
+
+            <rect class="caixa" x="1" y="104" width="94" height="72" rx="6"/>
+            <text class="marca" x="48" y="145" text-anchor="middle">timeout</text>
+            <text class="fraco" x="107" y="124">pedido</text>
+            <line class="fio" x1="99" y1="132" x2="332" y2="132"/>
+            <polygon class="ponta" points="341,132 332,127.5 332,136.5"/>
+            <rect class="caixa" x="345" y="104" width="94" height="72" rx="6"/>
+            <text x="392" y="145" text-anchor="middle">caiu</text>
+
+            <rect class="caixa" x="1" y="184" width="94" height="72" rx="6"/>
+            <text class="marca" x="48" y="225" text-anchor="middle">timeout</text>
+            <text class="fraco" x="107" y="204">pedido</text>
+            <line class="fio" x1="99" y1="212" x2="332" y2="212"/>
+            <polygon class="ponta" points="341,212 332,207.5 332,216.5"/>
+            <line class="fio" x1="341" y1="234" x2="228" y2="234"/>
+            <path class="corte" d="M214 228l12 12M226 228l-12 12"/>
+            <text class="fraco" x="333" y="252" text-anchor="end">resposta</text>
+            <rect class="caixa" x="345" y="184" width="94" height="72" rx="6"/>
+            <text x="392" y="225" text-anchor="middle">processou</text>
+          </svg>
+          <figcaption>Para o cliente, os três casos são iguais: um timeout. Ele não sabe se o pedido chegou nem se foi processado, e no terceiro caso repetir o pedido faz o trabalho duas vezes.</figcaption>
+        </figure>
         <p><strong>Recomendação: não distribua antes da hora.</strong> O hardware atual, com bancos como DuckDB e SQLite, dá conta de muita carga numa máquina só.</p>
         <p><strong>Microservices e serverless.</strong> Em microservices, cada serviço tem um propósito, uma API, um time responsável e o próprio banco, ao custo de testes, deploys e APIs mais difíceis de evoluir. Para o livro, são “<span lang="en">a technical solution to a people problem</span>”: valem em empresa grande, com muitos times, e viram custo desnecessário numa pequena. Serverless cobra só pelo tempo de execução, em troca de limite de duração e cold start.</p>
       </section>
@@ -451,6 +671,37 @@
         <h3 id="lei-sociedade-titulo">Dados, lei e sociedade</h3>
         <p class="original"><span lang="en">Data Systems, Law, and Society</span>, p. 24</p>
         <p>Quem constrói sistemas de dados também tem responsabilidade com a sociedade, porque sistemas automáticos já decidem crédito, seguro, entrevistas de emprego e suspeitas de crime. GDPR, CCPA e o EU AI Act chegam ao próprio design: o direito ao esquecimento esbarra em logs append-only imutáveis e em dados derivados, como os de treino de um modelo, e ainda não há receita técnica pronta.</p>
+
+        <figure class="figura">
+          <svg viewBox="0 0 440 252" role="img" aria-label="Um pedido de exclusão apaga o registro no system of record, mas as cópias feitas antes, no log append-only, no data warehouse e nos dados de treino de um modelo, ainda têm o dado.">
+            <rect class="caixa" x="110" y="1" width="220" height="36" rx="6"/>
+            <text class="forte" x="220" y="24" text-anchor="middle">pedido de exclusão (GDPR)</text>
+            <line class="fio" x1="220" y1="37" x2="220" y2="62"/>
+            <polygon class="ponta" points="220,71 215.5,62 224.5,62"/>
+            <text class="fraco" x="228" y="59">apaga</text>
+
+            <rect class="caixa" x="110" y="72" width="220" height="52" rx="6"/>
+            <text class="forte" x="220" y="94" text-anchor="middle">system of record</text>
+            <text class="fraco" x="220" y="113" text-anchor="middle">registro apagado</text>
+
+            <path class="fio fio--tracejado" d="M220 124V189M70 160H370M70 160V189M370 160V189"/>
+            <polygon class="ponta" points="70,198 65.5,189 74.5,189"/>
+            <polygon class="ponta" points="220,198 215.5,189 224.5,189"/>
+            <polygon class="ponta" points="370,198 365.5,189 374.5,189"/>
+            <text class="fraco" x="228" y="150">cópias feitas antes</text>
+
+            <rect class="caixa caixa--marca" x="1" y="198" width="138" height="52" rx="6"/>
+            <rect class="caixa caixa--marca" x="151" y="198" width="138" height="52" rx="6"/>
+            <rect class="caixa caixa--marca" x="301" y="198" width="138" height="52" rx="6"/>
+            <text class="forte" x="70" y="220" text-anchor="middle">log append-only</text>
+            <text class="forte" x="220" y="220" text-anchor="middle">data warehouse</text>
+            <text class="forte" x="370" y="220" text-anchor="middle">dados de treino</text>
+            <text class="marca" x="70" y="239" text-anchor="middle">ainda tem o dado</text>
+            <text class="marca" x="220" y="239" text-anchor="middle">ainda tem o dado</text>
+            <text class="marca" x="370" y="239" text-anchor="middle">ainda tem o dado</text>
+          </svg>
+          <figcaption>Apagar o registro na fonte não alcança as cópias feitas antes: o log append-only é imutável por design, e o warehouse e os dados de treino já incorporaram o dado.</figcaption>
+        </figure>
         <p><strong>Guardar dados tem custo</strong> além da conta do S3: vazamento, multa, pedido do governo e risco para o usuário quando o dado revela algo criminalizado em algum lugar. Daí a <strong>data minimization</strong> (<i lang="de">Datensparsamkeit</i>): não guardar o que não tem finalidade explícita, o oposto de guardar tudo porque um dia pode servir.</p>
       </section>
 
@@ -463,7 +714,7 @@
   </main>
 
   <footer class="rodape">
-    <p>Resumo pessoal, sem vínculo com os autores nem com a O’Reilly. <span class="build">build 3</span></p>
+    <p>Resumo pessoal, sem vínculo com os autores nem com a O’Reilly. <span class="build">build 4</span></p>
   </footer>
 </div>
 
