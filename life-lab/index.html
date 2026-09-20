@@ -31,6 +31,7 @@
     .section-label { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); margin-bottom: var(--space-sm); font-size: var(--text-label); font-weight: 600; letter-spacing: .06em; }
     .live { display: inline-flex; align-items: center; gap: 5px; color: var(--color-muted); font-size: var(--text-label); font-weight: 400; letter-spacing: 0; white-space: nowrap; }
     .live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--color-grass); }
+    aside.raining .live::before { background: var(--color-water); }
     .readout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--color-line); }
     .stat { min-width: 0; padding-block: var(--space-sm); }
     .stat:nth-child(odd) { padding-right: var(--space-sm); border-right: 1px solid var(--color-line); }
@@ -39,6 +40,36 @@
     .stat:nth-last-child(-n + 2) { padding-bottom: 0; }
     .stat b { display: block; font-family: var(--font-display); font-size: var(--text-number); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
     .stat small { display: block; margin-top: 2px; color: var(--color-muted); font-size: var(--text-label); line-height: 1.3; }
+    .inspect-button, .dialog-close { font: inherit; color: var(--color-ink); cursor: pointer; }
+    .inspect-button { width: 100%; margin-top: var(--space-sm); padding: 8px 10px; border: 1px solid var(--color-line); border-radius: var(--radius-pill); background: transparent; font-size: var(--text-label); }
+    .inspect-button:hover, .inspect-button[aria-pressed="true"] { background: var(--color-field); }
+    .inspect-button:focus-visible, .dialog-close:focus-visible { outline: 2px solid var(--color-water); outline-offset: 2px; }
+    dialog { width: min(390px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: var(--space-lg); border: 1px solid var(--color-line); border-radius: var(--radius-panel); background: var(--color-panel); color: var(--color-ink); box-shadow: 0 16px 55px color-mix(in oklch, var(--color-ink) 18%, transparent); }
+    dialog::backdrop { background: color-mix(in oklch, var(--color-ink) 38%, transparent); }
+    .dialog-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-sm); }
+    .dialog-heading small { color: var(--color-muted); font-size: var(--text-label); letter-spacing: .08em; text-transform: uppercase; }
+    .dialog-heading h2 { margin: 3px 0 0; font-family: var(--font-display); font-size: 29px; line-height: 1.1; }
+    .dialog-close { width: 32px; height: 32px; flex: none; border: 1px solid var(--color-line); border-radius: 50%; background: transparent; font-size: 23px; line-height: 1; }
+    .gene-identity, .gene-note { color: var(--color-muted); font-size: var(--text-helper); line-height: 1.5; }
+    .gene-identity { margin: var(--space-sm) 0 var(--space-md); }
+    .gene-list { margin: 0; border-top: 1px solid var(--color-line); }
+    .gene-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); padding: 9px 0; border-bottom: 1px solid var(--color-line); font-size: var(--text-helper); }
+    .gene-row dt { color: var(--color-muted); }
+    .gene-row dd { display: inline-flex; align-items: center; gap: 7px; margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+    .gene-swatch { display: inline-block; width: 13px; height: 13px; flex: none; border: 1px solid var(--color-line); border-radius: 50%; }
+    .gene-note { margin: var(--space-md) 0 0; }
+    dialog.evolution-dialog { width: min(900px, calc(100vw - 32px)); }
+    .evolution-intro { margin: var(--space-sm) 0 var(--space-md); color: var(--color-muted); font-size: var(--text-helper); line-height: 1.5; }
+    .evolution-summary { margin: 0 0 var(--space-sm); font-size: var(--text-helper); font-variant-numeric: tabular-nums; }
+    .evolution-plot { display: block; width: 100%; height: 330px; border: 1px solid var(--color-line); border-radius: var(--radius-panel); background: var(--color-field); }
+    .evolution-legend { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: var(--space-sm); }
+    .series-toggle { min-width: 0; padding: 7px 9px; border: 1px solid var(--color-line); border-radius: 8px; background: transparent; color: var(--color-ink); font: inherit; text-align: left; cursor: pointer; }
+    .series-toggle:hover { background: var(--color-field); }
+    .series-toggle[aria-pressed="false"] { opacity: .45; }
+    .series-toggle:focus-visible { outline: 2px solid var(--color-water); outline-offset: 2px; }
+    .series-name { display: flex; align-items: center; gap: 7px; min-width: 0; font-size: var(--text-label); font-weight: 600; }
+    .series-swatch { width: 15px; height: 3px; flex: none; border-radius: 2px; }
+    .series-values { display: flex; justify-content: space-between; gap: 5px; margin-top: 4px; color: var(--color-muted); font-size: var(--text-label); font-variant-numeric: tabular-nums; white-space: nowrap; }
     .arena-meta {
       position: fixed;
       z-index: 2;
@@ -59,6 +90,8 @@
       aside { width: 198px; padding: var(--space-sm); }
       .stat b { font-size: 25px; }
       .arena-meta { font-size: var(--text-label); }
+      .evolution-plot { height: 270px; }
+      .evolution-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
@@ -76,13 +109,52 @@
           <div class="stat"><b id="pond-count">5</b><small>poças</small></div>
           <div class="stat"><b id="clock">00:00</b><small>tempo</small></div>
         </div>
+        <button id="inspect-toggle" class="inspect-button" type="button" aria-pressed="false">Ver genes de um bicho</button>
+        <button id="evolution-toggle" class="inspect-button" type="button">Evolução dos genes</button>
       </aside>
-      <p class="arena-meta">Toque no campo para criar uma vida</p>
+      <p class="arena-meta" id="arena-hint">□ macho · ○ fêmea · toque para criar uma vida</p>
     </main>
   </div>
+  <dialog id="genes-dialog" aria-labelledby="genes-title">
+    <div class="dialog-heading">
+      <div><small>Ficha genética</small><h2 id="genes-title">Bicho selecionado</h2></div>
+      <button id="genes-close" class="dialog-close" type="button" aria-label="Fechar">×</button>
+    </div>
+    <p id="gene-identity" class="gene-identity"></p>
+    <dl class="gene-list">
+      <div class="gene-row"><dt>Alcance da visão</dt><dd id="gene-vision-range"></dd></div>
+      <div class="gene-row"><dt>Abertura da visão</dt><dd id="gene-vision-angle"></dd></div>
+      <div class="gene-row"><dt>Velocidade</dt><dd id="gene-speed"></dd></div>
+      <div class="gene-row"><dt>Metabolismo</dt><dd id="gene-metabolism"></dd></div>
+      <div class="gene-row"><dt>Aproveitamento</dt><dd id="gene-efficiency"></dd></div>
+      <div class="gene-row"><dt>Idade adulta</dt><dd id="gene-maturity"></dd></div>
+      <div class="gene-row"><dt>Velhice</dt><dd id="gene-longevity"></dd></div>
+      <div class="gene-row"><dt>Fertilidade</dt><dd id="gene-fertility"></dd></div>
+      <div class="gene-row"><dt>Cor</dt><dd><span id="gene-swatch" class="gene-swatch"></span><span id="gene-color"></span></dd></div>
+    </dl>
+    <p class="gene-note">Filhotes herdam genes dos pais com pequenas mutações. Metabolismo menor significa menos fome e sede ao longo do tempo.</p>
+  </dialog>
+  <dialog id="evolution-dialog" class="evolution-dialog" aria-labelledby="evolution-title">
+    <div class="dialog-heading">
+      <div><small>População</small><h2 id="evolution-title">Evolução dos genes</h2></div>
+      <button id="evolution-close" class="dialog-close" type="button" aria-label="Fechar">×</button>
+    </div>
+    <p class="evolution-intro">Eixo X: tempo. Eixo Y: mudança na média dos bichos vivos desde o início (%); para as cores, mudança na proporção em pontos percentuais.</p>
+    <p id="evolution-summary" class="evolution-summary"></p>
+    <canvas id="evolution-plot" class="evolution-plot" role="img" aria-label="Gráfico de linhas da evolução dos genes ao longo do tempo"></canvas>
+    <div id="evolution-legend" class="evolution-legend" aria-label="Mostrar ou ocultar genes no gráfico"></div>
+    <p class="gene-note">Toque em um gene na legenda para ocultar ou mostrar sua linha. Subir ou cair não significa necessariamente ser melhor; metabolismo menor consome menos recursos.</p>
+  </dialog>
   <script>
     const canvas = document.querySelector('#arena');
     const ctx = canvas.getContext('2d');
+    const inspectToggle = document.querySelector('#inspect-toggle');
+    const genesDialog = document.querySelector('#genes-dialog');
+    const evolutionToggle = document.querySelector('#evolution-toggle');
+    const evolutionDialog = document.querySelector('#evolution-dialog');
+    const evolutionPlot = document.querySelector('#evolution-plot');
+    const evolutionLegend = document.querySelector('#evolution-legend');
+    const arenaHint = document.querySelector('#arena-hint');
     const styles = getComputedStyle(document.documentElement);
     const color = name => styles.getPropertyValue(`--color-${name}`).trim();
     const paint = {
@@ -92,16 +164,68 @@
       life: color('life'), eye: color('eye')
     };
     const palette = [color('coral'), color('cyan'), color('yellow'), color('lilac')];
+    const colorNames = ['coral', 'ciano', 'amarelo', 'lilás'];
     const bodyFont = styles.getPropertyValue('--font-body').trim();
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const LIFE_SIZE = 10;
     const VISION = 105;
+    const VISION_ANGLE = 120;
     const WALK_SPEED = 34;
     const RUN_SPEED = 84;
     const ACCELERATION = 145;
     const BRAKING = 190;
     const DRINK_RATE = 32;
-    let organisms = [], grass = [], grassRegrow = [], ponds = [], encounters = 0, elapsed = 0;
+    const INFANT_AGE = 18;
+    const ELDER_AGE = 90;
+    const MATE_MIN_RESOURCE = 65;
+    const MATE_COOLDOWN = 16;
+    const DEATH_FALL = .8;
+    const DEATH_REST = 2.8;
+    const DEATH_FADE = 1.4;
+    const DEATH_TOTAL = DEATH_FALL + DEATH_REST + DEATH_FADE;
+    const POND_COUNT = 5;
+    const RAIN_START_RATIO = .2;
+    const RAIN_REFILL_AT = 2;
+    const RAIN_DURATION = 5;
+    const GENE_SPECS = {
+      visionRange: { base: VISION, min: 75, max: 135, initial: 28, mutation: 10 },
+      visionAngle: { base: VISION_ANGLE, min: 90, max: 155, initial: 24, mutation: 8 },
+      speed: { base: 1, min: .78, max: 1.22, initial: .24, mutation: .08 },
+      metabolism: { base: 1, min: .8, max: 1.2, initial: .2, mutation: .07 },
+      efficiency: { base: 1, min: .82, max: 1.18, initial: .2, mutation: .07 },
+      maturity: { base: INFANT_AGE, min: 15, max: 22, initial: 4, mutation: 1.6 },
+      longevity: { base: ELDER_AGE, min: 76, max: 106, initial: 16, mutation: 6 },
+      fertility: { base: 1, min: .8, max: 1.22, initial: .2, mutation: .07 }
+    };
+    const GENE_SAMPLE_INTERVAL = 1;
+    const GENE_HISTORY_LIMIT = 600;
+    const evolutionLineColors = [
+      '#b34c38', '#3175aa', '#4a8a40', '#7858af',
+      '#a9751c', '#b34a81', '#278b85', '#737c33',
+      '#d26146', '#3e9db3', '#c59a26', '#a17aba'
+    ];
+    const evolutionTraits = [
+      { key: 'visionRange', label: 'Alcance da visão' },
+      { key: 'visionAngle', label: 'Abertura da visão' },
+      { key: 'speed', label: 'Velocidade' },
+      { key: 'metabolism', label: 'Metabolismo' },
+      { key: 'efficiency', label: 'Aproveitamento' },
+      { key: 'maturity', label: 'Idade adulta' },
+      { key: 'longevity', label: 'Velhice' },
+      { key: 'fertility', label: 'Fertilidade' },
+      ...colorNames.map((name, i) => ({ key: `pigment${i}`, label: `Cor · ${name}`, share: true }))
+    ].map((trait, i) => ({ ...trait, color: evolutionLineColors[i] }));
+    const geneHistory = [];
+    const evolutionRows = new Map();
+    const visibleGenes = new Set(evolutionTraits.map(trait => trait.key));
+    let organisms = [], grass = [], grassRegrow = [], ponds = [], pairs = [], corpses = [];
+    let encounters = 0, births = 0, elapsed = 0, rainEvents = 0, nextOrganismId = 1;
+    let rain = null, fullWaterCapacity = 0, inspectMode = false;
+    let geneBaseline = null, nextGeneSample = GENE_SAMPLE_INTERVAL;
+    const rainDrops = Array.from({ length: 340 }, () => ({
+      x: Math.random(), y: Math.random(), speed: 130 + Math.random() * 90,
+      length: 7 + Math.random() * 7
+    }));
 
     function resize() {
       const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1;
@@ -120,34 +244,119 @@
       };
     }
 
-    function make(x = Math.random() * canvas.clientWidth, y = Math.random() * canvas.clientHeight) {
-      const i = organisms.length, heading = Math.random() * Math.PI * 2;
+    function newPond(existing) {
+      const radius = 22 + Math.random() * 14;
+      const capacity = 130 + Math.random() * 40;
+      const margin = radius + 6;
+      let x, y;
+      for (let attempt = 0; attempt < 25; attempt++) {
+        x = margin + Math.random() * Math.max(0, canvas.clientWidth - margin * 2);
+        y = margin + Math.random() * Math.max(0, canvas.clientHeight - margin * 2);
+        if (existing.every(p => Math.hypot(x - p.x, y - p.y) > radius + p.fullRadius + 12)) break;
+      }
+      return { x, y, r: radius, fullRadius: radius, water: capacity, capacity };
+    }
+
+    function restorePonds() {
+      const next = [];
+      for (let i = 0; i < POND_COUNT; i++) next.push(newPond(next));
+      ponds = next;
+      fullWaterCapacity = ponds.reduce((total, p) => total + p.capacity, 0);
+    }
+
+    function createGenes(parents, seedPigment) {
+      const genes = {};
+      for (const [key, spec] of Object.entries(GENE_SPECS)) {
+        const baseline = parents
+          ? (parents[0].genes[key] + parents[1].genes[key]) / 2
+          : spec.base;
+        const variation = parents && Math.random() >= .25 ? 0 :
+          (Math.random() - .5) * (parents ? spec.mutation : spec.initial);
+        genes[key] = Math.max(spec.min, Math.min(spec.max, baseline + variation));
+      }
+      if (parents) {
+        const inherited = parents[Math.random() < .5 ? 0 : 1].genes.pigment;
+        genes.pigment = Math.random() < .08
+          ? (inherited + 1 + Math.floor(Math.random() * (palette.length - 1))) % palette.length
+          : inherited;
+      } else {
+        genes.pigment = seedPigment;
+      }
+      return genes;
+    }
+
+    function make(
+      x = Math.random() * canvas.clientWidth,
+      y = Math.random() * canvas.clientHeight,
+      sex = Math.random() < .5 ? 'male' : 'female',
+      age = 0,
+      parents = null
+    ) {
+      const id = nextOrganismId++, heading = Math.random() * Math.PI * 2;
+      const genes = createGenes(parents, (id - 1) % palette.length);
       return {
+        id, genes,
         x, y, vx: 0, vy: 0, speed: 0, heading, wanderHeading: heading,
         walkTimer: .6 + Math.random() * 1.8, restTimer: 0, gait: Math.random() * 6,
-        wanderPhase: Math.random() * Math.PI * 2, pace: .85 + Math.random() * .3,
-        size: LIFE_SIZE, color: palette[i % 4],
-        life: 100, hunger: 72 + Math.random() * 28, thirst: 72 + Math.random() * 28,
-        need: null, target: null, thought: 0, message: '', eating: 0, drinking: 0, drinkingPond: null
+        wanderPhase: Math.random() * Math.PI * 2, pace: genes.speed,
+        sex, age, stage: age < genes.maturity ? 'infant' : age >= genes.longevity ? 'elder' : 'adult',
+        size: age < genes.maturity ? LIFE_SIZE * (.55 + .45 * age / genes.maturity) : LIFE_SIZE,
+        color: palette[genes.pigment], life: 100, hunger: 100, thirst: 100,
+        need: null, target: null, thought: 0, message: '', eating: 0, drinking: 0,
+        drinkingPond: null, pair: null, mateCooldown: 0
       };
     }
 
-    for (let i = 0; i < 12; i++) organisms.push(make());
+    for (let i = 0; i < 6; i++) {
+      const x = canvas.clientWidth * (.18 + Math.random() * .64);
+      const y = canvas.clientHeight * (.18 + Math.random() * .64);
+      const angle = Math.random() * Math.PI * 2;
+      const offsetX = Math.cos(angle) * 34, offsetY = Math.sin(angle) * 34;
+      organisms.push(make(x - offsetX, y - offsetY, 'male', GENE_SPECS.maturity.max + Math.random() * 6));
+      organisms.push(make(x + offsetX, y + offsetY, 'female', GENE_SPECS.maturity.max + Math.random() * 6));
+    }
     for (let i = 0; i < 24; i++) grass.push(spot('grass'));
-    for (let i = 0; i < 5; i++) {
-      const radius = 22 + Math.random() * 14;
-      const capacity = 130 + Math.random() * 40;
-      ponds.push({
-        x: 35 + Math.random() * Math.max(0, canvas.clientWidth - 70),
-        y: 35 + Math.random() * Math.max(0, canvas.clientHeight - 70),
-        r: radius, fullRadius: radius, water: capacity, capacity
-      });
+    restorePonds();
+
+    function captureGeneSnapshot() {
+      const count = organisms.length;
+      const values = {};
+      const pigmentCounts = palette.map(() => 0);
+      for (const key of Object.keys(GENE_SPECS)) values[key] = 0;
+      for (const o of organisms) {
+        for (const key of Object.keys(GENE_SPECS)) values[key] += o.genes[key];
+        pigmentCounts[o.genes.pigment]++;
+      }
+      for (const key of Object.keys(GENE_SPECS)) values[key] = count ? values[key] / count : null;
+      for (let i = 0; i < palette.length; i++) {
+        values[`pigment${i}`] = count ? pigmentCounts[i] / count * 100 : null;
+      }
+      if (!geneBaseline && count) geneBaseline = { ...values };
+      geneHistory.push({ time: elapsed, count, values });
+      if (geneHistory.length > GENE_HISTORY_LIMIT) geneHistory.shift();
+      if (evolutionDialog.open) renderEvolution();
+    }
+
+    function visionHalfAngle(o) {
+      return o.genes.visionAngle * Math.PI / 360;
+    }
+
+    function inVision(o, item, radius = 0) {
+      const dx = item.x - o.x, dy = item.y - o.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance - radius > o.genes.visionRange) return false;
+      if (distance <= radius) return true;
+      const bearing = Math.atan2(dy, dx);
+      const angle = Math.abs(Math.atan2(Math.sin(bearing - o.heading), Math.cos(bearing - o.heading)));
+      return angle <= visionHalfAngle(o) + Math.asin(Math.min(1, radius / distance));
     }
 
     function nearest(o, items) {
-      let best = null, distance = VISION;
+      let best = null, distance = o.genes.visionRange;
       for (const item of items) {
-        const next = Math.hypot(item.x - o.x, item.y - o.y) - (item.r || 0);
+        const radius = item.r || 0;
+        if (!inVision(o, item, radius)) continue;
+        const next = Math.max(0, Math.hypot(item.x - o.x, item.y - o.y) - radius);
         if (next < distance) { best = item; distance = next; }
       }
       return best;
@@ -173,7 +382,9 @@
       ctx.globalAlpha = .024;
       ctx.fillStyle = o.color;
       ctx.beginPath();
-      ctx.arc(o.x, o.y, VISION, 0, Math.PI * 2);
+      ctx.moveTo(o.x, o.y);
+      ctx.arc(o.x, o.y, o.genes.visionRange, o.heading - visionHalfAngle(o), o.heading + visionHalfAngle(o));
+      ctx.closePath();
       ctx.fill();
       ctx.globalAlpha = .13;
       ctx.strokeStyle = o.color;
@@ -222,24 +433,24 @@
       const bodyY = o.y - bob + (feeding ? feedingPulse * 1.2 : 0);
       const bodyX = o.x + sway;
       ctx.save();
+      ctx.translate(bodyX, bodyY);
+      ctx.scale(o.size / LIFE_SIZE, o.size / LIFE_SIZE);
+      if (o.stage === 'elder') ctx.globalAlpha = .72;
       ctx.strokeStyle = paint.ink;
       ctx.lineWidth = 1.6;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(bodyX - 4, bodyY + 5);
-      ctx.quadraticCurveTo(bodyX - 7, bodyY + 10, o.x - 5 + step * 2, bodyY + 15 - Math.max(0, step) * 3);
-      ctx.moveTo(bodyX + 4, bodyY + 5);
-      ctx.quadraticCurveTo(bodyX + 7, bodyY + 10, o.x + 5 - step * 2, bodyY + 15 - Math.max(0, -step) * 3);
+      ctx.moveTo(-4, 5);
+      ctx.quadraticCurveTo(-7, 10, -5 + step * 2, 15 - Math.max(0, step) * 3);
+      ctx.moveTo(4, 5);
+      ctx.quadraticCurveTo(7, 10, 5 - step * 2, 15 - Math.max(0, -step) * 3);
       ctx.stroke();
-      ctx.restore();
-
-      ctx.save();
-      ctx.translate(bodyX, bodyY);
       ctx.strokeStyle = paint.ink;
       ctx.lineWidth = 1.25;
       ctx.fillStyle = o.color;
       ctx.beginPath();
-      ctx.arc(0, 0, o.size, 0, Math.PI * 2);
+      if (o.sex === 'male') ctx.roundRect(-LIFE_SIZE, -LIFE_SIZE, LIFE_SIZE * 2, LIFE_SIZE * 2, 2);
+      else ctx.arc(0, 0, LIFE_SIZE, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
       ctx.save();
@@ -270,10 +481,75 @@
       ctx.fill();
       ctx.restore();
 
-      const bx = o.x - 11;
-      drawBar(bx, o.y - 26, 22, o.life, paint.life);
-      drawBar(bx, o.y - 22, 22, o.hunger, paint.grass);
-      drawBar(bx, o.y - 18, 22, o.thirst, paint.water);
+      const bx = o.x - 11, by = o.y - o.size - 16;
+      drawBar(bx, by, 22, o.life, paint.life);
+      drawBar(bx, by + 4, 22, o.hunger, paint.grass);
+      drawBar(bx, by + 8, 22, o.thirst, paint.water);
+    }
+
+    function drawCorpse(c) {
+      const fall = reducedMotion.matches ? 1 : Math.min(1, c.time / DEATH_FALL);
+      const easedFall = 1 - Math.pow(1 - fall, 3);
+      const fade = Math.max(0, Math.min(1, (DEATH_TOTAL - c.time) / DEATH_FADE));
+      const opacity = fade * (c.stage === 'elder' ? .72 : 1);
+      const landingX = c.x + c.direction * c.size * .55 * easedFall;
+
+      ctx.save();
+      ctx.globalAlpha = .13 * fade * easedFall;
+      ctx.fillStyle = paint.ink;
+      ctx.beginPath();
+      ctx.ellipse(landingX, c.y + c.size * .85, c.size * (1 + easedFall * .35), 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.translate(c.x, c.y + c.size * .55);
+      ctx.rotate(c.direction * Math.PI / 2 * easedFall);
+      ctx.translate(0, -c.size * .55);
+      ctx.scale(c.size / LIFE_SIZE, c.size / LIFE_SIZE);
+      ctx.strokeStyle = paint.ink;
+      ctx.lineWidth = 1.6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-4, 5);
+      ctx.quadraticCurveTo(-7, 10, -5, 15);
+      ctx.moveTo(4, 5);
+      ctx.quadraticCurveTo(7, 10, 5, 15);
+      ctx.stroke();
+
+      ctx.fillStyle = c.color;
+      ctx.lineWidth = 1.25;
+      ctx.beginPath();
+      if (c.sex === 'male') ctx.roundRect(-LIFE_SIZE, -LIFE_SIZE, LIFE_SIZE * 2, LIFE_SIZE * 2, 2);
+      else ctx.arc(0, 0, LIFE_SIZE, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = paint.ink;
+      ctx.lineWidth = 1.15;
+      ctx.beginPath();
+      ctx.moveTo(-5, -2); ctx.quadraticCurveTo(-3.2, -.4, -1.4, -2);
+      ctx.moveTo(1.4, -2); ctx.quadraticCurveTo(3.2, -.4, 5, -2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPairs() {
+      for (const pair of pairs) {
+        if (pair.phase !== 'mating') continue;
+        const x = (pair.male.x + pair.female.x) / 2;
+        const y = Math.min(pair.male.y, pair.female.y) - 37;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.fillStyle = paint.life;
+        ctx.globalAlpha = .82;
+        ctx.beginPath();
+        ctx.moveTo(0, 6);
+        ctx.bezierCurveTo(-11, -1, -6, -8, 0, -3);
+        ctx.bezierCurveTo(6, -8, 11, -1, 0, 6);
+        ctx.fill();
+        ctx.restore();
+      }
     }
 
     function puddlePath(p, radius) {
@@ -329,11 +605,125 @@
       }
     }
 
+    function drawRain() {
+      if (!rain) return;
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      const strength = Math.max(0, Math.min(1, rain.time / .6, (RAIN_DURATION - rain.time) / .8));
+      const motionTime = reducedMotion.matches ? 0 : rain.time;
+      const count = Math.min(rainDrops.length, Math.max(55, Math.round(w * h / 6500)));
+      ctx.save();
+      ctx.fillStyle = paint.water;
+      ctx.globalAlpha = .045 * strength;
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = paint.water;
+      ctx.lineWidth = 1.1;
+      ctx.lineCap = 'round';
+      ctx.globalAlpha = .34 * strength;
+      ctx.beginPath();
+      for (let i = 0; i < count; i++) {
+        const drop = rainDrops[i];
+        const x = (drop.x * (w + 30) + motionTime * drop.speed * .22) % (w + 30) - 15;
+        const y = (drop.y * (h + 30) + motionTime * drop.speed) % (h + 30) - 15;
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - drop.length * .22, y - drop.length);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function updateRain(dt) {
+      if (rain) {
+        rain.time += dt;
+        if (!rain.refilled && rain.time >= RAIN_REFILL_AT) {
+          restorePonds();
+          rain.refilled = true;
+        }
+        if (rain.time >= RAIN_DURATION) rain = null;
+        return;
+      }
+      const waterRemaining = ponds.reduce((total, p) => total + p.water, 0);
+      if (ponds.length <= 1 || waterRemaining <= fullWaterCapacity * RAIN_START_RATIO) {
+        rain = { time: 0, refilled: false };
+        rainEvents++;
+      }
+    }
+
+    function canMate(o) {
+      const minimum = MATE_MIN_RESOURCE + (1 - o.genes.fertility) * 18;
+      return o.stage === 'adult' && o.life > 0 && o.hunger >= minimum &&
+        o.thirst >= minimum && o.mateCooldown <= 0 &&
+        o.eating <= 0 && o.drinking <= 0;
+    }
+
+    function stageSpeed(o) {
+      return o.stage === 'infant' ? .62 : o.stage === 'elder' ? .48 : 1;
+    }
+
+    function seekMate(observer) {
+      let partner = null, closest = observer.genes.visionRange;
+      for (const candidate of organisms) {
+        if (candidate.sex === observer.sex || candidate.pair || !canMate(candidate)) continue;
+        if (!inVision(observer, candidate, candidate.size)) continue;
+        const distance = Math.max(0, Math.hypot(candidate.x - observer.x, candidate.y - observer.y) - candidate.size);
+        if (distance < closest) { partner = candidate; closest = distance; }
+      }
+      if (!partner) return;
+      const male = observer.sex === 'male' ? observer : partner;
+      const female = observer.sex === 'female' ? observer : partner;
+      const pair = { male, female, phase: 'approach', timer: 0 };
+      pairs.push(pair);
+      for (const o of [male, female]) {
+        o.pair = pair;
+        o.need = null;
+        o.target = null;
+        o.restTimer = 0;
+        o.message = o === observer ? (o.sex === 'male' ? 'vi fêmea' : 'vi macho') : 'atração';
+        o.thought = 1.5;
+      }
+    }
+
+    function updatePairs(dt) {
+      for (let i = pairs.length - 1; i >= 0; i--) {
+        const pair = pairs[i];
+        const { male, female } = pair;
+        const missing = !organisms.includes(male) || !organisms.includes(female);
+        if (missing || male.stage !== 'adult' || female.stage !== 'adult') {
+          male.pair = null;
+          female.pair = null;
+          pairs.splice(i, 1);
+          continue;
+        }
+
+        const distance = Math.hypot(male.x - female.x, male.y - female.y);
+        if (pair.phase === 'approach' && distance <= 30) {
+          pair.phase = 'mating';
+          pair.timer = 1.4 / ((male.genes.fertility + female.genes.fertility) / 2);
+          for (const o of [male, female]) {
+            o.speed = 0; o.vx = 0; o.vy = 0; o.thought = 0;
+          }
+        } else if (pair.phase === 'mating') {
+          pair.timer -= dt;
+          if (pair.timer <= 0) {
+            for (const o of [male, female]) {
+              o.pair = null;
+              o.mateCooldown = MATE_COOLDOWN / o.genes.fertility;
+              o.hunger = Math.max(0, o.hunger - 22);
+              o.thirst = Math.max(0, o.thirst - 18);
+            }
+            organisms.push(make((male.x + female.x) / 2, (male.y + female.y) / 2,
+              undefined, 0, [male, female]));
+            births++;
+            pairs.splice(i, 1);
+          }
+        }
+      }
+    }
+
     function move(o, dt, direction, desiredSpeed) {
       if (desiredSpeed > 0) {
         let avoidX = 0, avoidY = 0;
         for (const other of organisms) {
-          if (other === o) continue;
+          if (other === o || (o.pair && (other === o.pair.male || other === o.pair.female))) continue;
           const dx = o.x - other.x, dy = o.y - other.y;
           const distance = Math.hypot(dx, dy);
           if (distance > 0 && distance < 28) {
@@ -371,25 +761,45 @@
     function update(dt) {
       elapsed += dt;
       for (const o of organisms) {
-        o.hunger = Math.max(0, o.hunger - dt * 1.15);
-        o.thirst = Math.max(0, o.thirst - dt * 1.45);
+        o.age += dt;
+        o.stage = o.age >= o.genes.longevity ? 'elder' : o.age >= o.genes.maturity ? 'adult' : 'infant';
+        o.size = o.stage === 'infant' ? LIFE_SIZE * (.55 + .45 * o.age / o.genes.maturity) : LIFE_SIZE;
+        o.mateCooldown = Math.max(0, o.mateCooldown - dt);
+        if (o.stage === 'elder') o.life -= dt * 2.6;
+        o.hunger = Math.max(0, o.hunger - dt * 1.15 * o.genes.metabolism);
+        o.thirst = Math.max(0, o.thirst - dt * 1.45 * o.genes.metabolism);
         o.thought = Math.max(0, o.thought - dt);
         if (o.hunger === 0 || o.thirst === 0) o.life -= dt * 5;
+        if (o.life <= 0) continue;
+
+        if (!o.pair && canMate(o)) seekMate(o);
+        if (o.pair) {
+          if (o.pair.phase === 'approach') {
+            const partner = o.sex === 'male' ? o.pair.female : o.pair.male;
+            const distance = Math.hypot(partner.x - o.x, partner.y - o.y);
+            const direction = Math.atan2(partner.y - o.y, partner.x - o.x);
+            const desiredSpeed = Math.min(RUN_SPEED * .72 * o.pace, Math.sqrt(2 * BRAKING * Math.max(0, distance - 12)));
+            move(o, dt, direction, desiredSpeed * stageSpeed(o));
+          } else {
+            o.speed = 0; o.vx = 0; o.vy = 0;
+          }
+          continue;
+        }
 
         if (o.eating > 0 || o.drinking > 0) {
           if (o.eating > 0) {
             o.eating -= dt;
-            if (o.eating <= 0) o.hunger = Math.min(100, o.hunger + 42);
+            if (o.eating <= 0) o.hunger = Math.min(100, o.hunger + 42 * o.genes.efficiency);
           } else {
             const pond = o.drinkingPond;
             if (!pond || !ponds.includes(pond) || pond.water <= 0) {
               o.drinking = 0;
               o.drinkingPond = null;
             } else {
-              const amount = Math.min(pond.water, DRINK_RATE * dt, (100 - o.thirst) / 1.2);
+              const amount = Math.min(pond.water, DRINK_RATE * dt, (100 - o.thirst) / (1.2 * o.genes.efficiency));
               pond.water -= amount;
               pond.r = pond.fullRadius * Math.sqrt(pond.water / pond.capacity);
-              o.thirst = Math.min(100, o.thirst + amount * 1.2);
+              o.thirst = Math.min(100, o.thirst + amount * 1.2 * o.genes.efficiency);
               o.drinking = Math.max(0, o.drinking - dt);
               if (pond.water <= 1) {
                 ponds = ponds.filter(p => p !== pond);
@@ -457,10 +867,19 @@
             if (o.restTimer <= 0) desiredSpeed = Math.max(desiredSpeed, WALK_SPEED * .7);
           }
         }
-        move(o, dt, direction, desiredSpeed);
+        move(o, dt, direction, desiredSpeed * stageSpeed(o));
       }
 
+      for (const o of organisms) {
+        if (o.life <= 0) {
+          corpses.push({ x: o.x, y: o.y, size: o.size, sex: o.sex, stage: o.stage,
+            color: o.color, direction: Math.random() < .5 ? -1 : 1, time: 0 });
+        }
+      }
       organisms = organisms.filter(o => o.life > 0);
+      for (const c of corpses) c.time += dt;
+      corpses = corpses.filter(c => c.time < DEATH_TOTAL);
+      updatePairs(dt);
       for (let i = 0; i < organisms.length; i++) {
         for (let j = i + 1; j < organisms.length; j++) {
           if (Math.hypot(organisms[i].x - organisms[j].x, organisms[i].y - organisms[j].y) < 18 && Math.random() < dt * .12) encounters++;
@@ -472,6 +891,11 @@
           grass.push(spot('grass'));
           grassRegrow.splice(i, 1);
         }
+      }
+      updateRain(dt);
+      if (elapsed >= nextGeneSample) {
+        captureGeneSnapshot();
+        nextGeneSample = elapsed + GENE_SAMPLE_INTERVAL;
       }
     }
 
@@ -488,33 +912,261 @@
       }
       ctx.restore();
       drawWorld();
+      corpses.forEach(drawCorpse);
       organisms.forEach(draw);
+      drawPairs();
+      drawRain();
+      document.querySelector('aside').classList.toggle('raining', Boolean(rain));
+      document.querySelector('.live').textContent = rain ? 'chovendo' : 'ao vivo';
       document.querySelector('#count').textContent = organisms.length;
       document.querySelector('#grass-count').textContent = grass.length;
       document.querySelector('#pond-count').textContent = ponds.length;
       document.querySelector('#clock').textContent = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(Math.floor(elapsed % 60)).padStart(2, '0');
     }
 
+    function setInspectMode(active) {
+      inspectMode = active;
+      inspectToggle.setAttribute('aria-pressed', String(active));
+      inspectToggle.textContent = active ? 'Cancelar seleção' : 'Ver genes de um bicho';
+      arenaHint.textContent = active
+        ? 'Toque em um bicho para ver seus genes'
+        : '□ macho · ○ fêmea · toque para criar uma vida';
+      canvas.style.cursor = active ? 'pointer' : 'crosshair';
+    }
+
+    function openGenes(o) {
+      const g = o.genes;
+      const stageNames = { infant: 'infância', adult: 'adulto', elder: 'idoso' };
+      const multiplier = value => `${value.toFixed(2).replace('.', ',')}×`;
+      const values = {
+        'gene-vision-range': `${Math.round(g.visionRange)} px`,
+        'gene-vision-angle': `${Math.round(g.visionAngle)}°`,
+        'gene-speed': multiplier(g.speed),
+        'gene-metabolism': multiplier(g.metabolism),
+        'gene-efficiency': multiplier(g.efficiency),
+        'gene-maturity': `${Math.round(g.maturity)} s`,
+        'gene-longevity': `${Math.round(g.longevity)} s`,
+        'gene-fertility': multiplier(g.fertility),
+        'gene-color': colorNames[g.pigment]
+      };
+      document.querySelector('#genes-title').textContent = `Bicho #${o.id}`;
+      document.querySelector('#gene-identity').textContent =
+        `${o.sex === 'male' ? 'Macho' : 'Fêmea'} · ${stageNames[o.stage]} · ${Math.floor(o.age)} s de vida`;
+      for (const [id, value] of Object.entries(values)) document.getElementById(id).textContent = value;
+      document.querySelector('#gene-swatch').style.backgroundColor = o.color;
+      genesDialog.showModal();
+    }
+
+    function buildEvolutionLegend() {
+      for (const trait of evolutionTraits) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'series-toggle';
+        button.setAttribute('aria-pressed', 'true');
+        const name = document.createElement('span');
+        name.className = 'series-name';
+        const swatch = document.createElement('span');
+        swatch.className = 'series-swatch';
+        swatch.style.backgroundColor = trait.color;
+        name.append(swatch, document.createTextNode(trait.label));
+        const values = document.createElement('span');
+        values.className = 'series-values';
+        const current = document.createElement('span');
+        const delta = document.createElement('span');
+        values.append(current, delta);
+        button.append(name, values);
+        button.addEventListener('click', () => {
+          if (visibleGenes.has(trait.key)) visibleGenes.delete(trait.key);
+          else visibleGenes.add(trait.key);
+          button.setAttribute('aria-pressed', String(visibleGenes.has(trait.key)));
+          renderEvolution();
+        });
+        evolutionLegend.append(button);
+        evolutionRows.set(trait.key, { current, delta });
+      }
+    }
+
+    function formatEvolutionValue(trait, value) {
+      if (trait.share) return `${value.toFixed(1).replace('.', ',')}%`;
+      if (trait.key === 'visionRange') return `${Math.round(value)} px`;
+      if (trait.key === 'visionAngle') return `${Math.round(value)}°`;
+      if (trait.key === 'maturity' || trait.key === 'longevity') return `${Math.round(value)} s`;
+      return `${value.toFixed(2).replace('.', ',')}×`;
+    }
+
+    function geneChange(trait, value, baseline) {
+      return trait.share ? value - baseline : (value / baseline - 1) * 100;
+    }
+
+    function drawEvolutionPlot() {
+      const width = Math.max(1, evolutionPlot.clientWidth), height = Math.max(1, evolutionPlot.clientHeight);
+      const pixelRatio = devicePixelRatio || 1;
+      evolutionPlot.width = Math.round(width * pixelRatio);
+      evolutionPlot.height = Math.round(height * pixelRatio);
+      const graph = evolutionPlot.getContext('2d');
+      graph.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      const left = 54, right = 16, top = 27, bottom = 38;
+      const plotWidth = Math.max(1, width - left - right);
+      const plotHeight = Math.max(1, height - top - bottom);
+      const firstTime = geneHistory[0].time;
+      const lastTime = Math.max(firstTime + 10, geneHistory[geneHistory.length - 1].time);
+      let largestChange = 0;
+      for (const trait of evolutionTraits) {
+        if (!visibleGenes.has(trait.key)) continue;
+        for (const sample of geneHistory) {
+          const value = sample.values[trait.key];
+          if (value !== null) largestChange = Math.max(largestChange,
+            Math.abs(geneChange(trait, value, geneBaseline[trait.key])));
+        }
+      }
+      const scale = Math.max(5, Math.ceil(largestChange / 5) * 5);
+      const clock = seconds => String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
+        String(Math.floor(seconds % 60)).padStart(2, '0');
+
+      graph.strokeStyle = paint.ink;
+      graph.lineWidth = 1;
+      graph.font = `10px ${bodyFont}`;
+      graph.textBaseline = 'middle';
+      for (let tick = -2; tick <= 2; tick++) {
+        const value = tick * scale / 2;
+        const y = top + plotHeight / 2 - value / scale * plotHeight / 2;
+        graph.save();
+        graph.globalAlpha = tick === 0 ? .35 : .12;
+        graph.beginPath();
+        graph.moveTo(left, y);
+        graph.lineTo(left + plotWidth, y);
+        graph.stroke();
+        graph.restore();
+        graph.fillStyle = paint.ink;
+        graph.globalAlpha = .65;
+        graph.textAlign = 'right';
+        graph.fillText(`${value > 0 ? '+' : ''}${Number.isInteger(value) ? value : value.toFixed(1)}`, left - 8, y);
+      }
+      for (let tick = 0; tick <= 4; tick++) {
+        const x = left + tick / 4 * plotWidth;
+        graph.save();
+        graph.globalAlpha = .1;
+        graph.beginPath();
+        graph.moveTo(x, top);
+        graph.lineTo(x, top + plotHeight);
+        graph.stroke();
+        graph.restore();
+        graph.fillStyle = paint.ink;
+        graph.globalAlpha = .65;
+        graph.textAlign = tick === 0 ? 'left' : tick === 4 ? 'right' : 'center';
+        graph.fillText(clock(firstTime + tick / 4 * (lastTime - firstTime)), x, height - 19);
+      }
+      graph.globalAlpha = .7;
+      graph.textAlign = 'left';
+      graph.fillText('Δ % / p.p.', left, 13);
+      graph.globalAlpha = 1;
+
+      for (const trait of evolutionTraits) {
+        if (!visibleGenes.has(trait.key)) continue;
+        graph.strokeStyle = trait.color;
+        graph.fillStyle = trait.color;
+        graph.lineWidth = 2;
+        graph.lineJoin = 'round';
+        graph.lineCap = 'round';
+        graph.beginPath();
+        let connected = false, lastPoint = null;
+        for (const sample of geneHistory) {
+          const value = sample.values[trait.key];
+          if (value === null) { connected = false; continue; }
+          const change = geneChange(trait, value, geneBaseline[trait.key]);
+          const x = left + (sample.time - firstTime) / (lastTime - firstTime) * plotWidth;
+          const y = top + plotHeight / 2 - change / scale * plotHeight / 2;
+          if (connected) graph.lineTo(x, y);
+          else graph.moveTo(x, y);
+          connected = true;
+          lastPoint = { x, y };
+        }
+        graph.stroke();
+        if (lastPoint) {
+          graph.beginPath();
+          graph.arc(lastPoint.x, lastPoint.y, 2.5, 0, Math.PI * 2);
+          graph.fill();
+        }
+      }
+    }
+
+    function renderEvolution() {
+      if (!geneHistory.length || !geneBaseline) return;
+      const first = geneHistory[0], latest = geneHistory[geneHistory.length - 1];
+      const clock = seconds => String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
+        String(Math.floor(seconds % 60)).padStart(2, '0');
+      document.querySelector('#evolution-summary').textContent =
+        `${latest.count} bichos vivos · histórico ${clock(first.time)}–${clock(latest.time)} · atualização a cada segundo`;
+      for (const trait of evolutionTraits) {
+        const row = evolutionRows.get(trait.key);
+        const value = latest.values[trait.key];
+        const baseline = geneBaseline[trait.key];
+        if (value === null) {
+          row.current.textContent = 'sem vivos';
+          row.delta.textContent = '—';
+        } else {
+          const change = geneChange(trait, value, baseline);
+          row.current.textContent = formatEvolutionValue(trait, value);
+          row.delta.textContent = Math.abs(change) < .1 ? 'estável' :
+            `${change > 0 ? '↑' : '↓'} ${Math.abs(change).toFixed(1).replace('.', ',')} ${trait.share ? 'p.p.' : '%'}`;
+        }
+      }
+      drawEvolutionPlot();
+    }
+
+    inspectToggle.addEventListener('click', () => setInspectMode(!inspectMode));
+    document.querySelector('#genes-close').addEventListener('click', () => genesDialog.close());
+    evolutionToggle.addEventListener('click', () => {
+      evolutionDialog.showModal();
+      renderEvolution();
+    });
+    document.querySelector('#evolution-close').addEventListener('click', () => evolutionDialog.close());
     canvas.addEventListener('click', e => {
       const r = canvas.getBoundingClientRect();
-      organisms.push(make(e.clientX - r.left, e.clientY - r.top));
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      if (inspectMode) {
+        let selected = null, closest = Infinity;
+        for (const o of organisms) {
+          const distance = Math.hypot(o.x - x, o.y - y);
+          if (distance <= Math.max(18, o.size + 8) && distance < closest) {
+            selected = o;
+            closest = distance;
+          }
+        }
+        if (selected) {
+          setInspectMode(false);
+          openGenes(selected);
+        }
+        return;
+      }
+      organisms.push(make(x, y));
     });
-    window.addEventListener('resize', () => { resize(); render(); });
+    window.addEventListener('resize', () => {
+      resize(); render();
+      if (evolutionDialog.open) renderEvolution();
+    });
     window.render_game_to_text = () => JSON.stringify({
       coordinateSystem: 'origin top-left; x right, y down',
       organisms: organisms.map(o => ({
-        x: Math.round(o.x), y: Math.round(o.y),
+        id: o.id, x: Math.round(o.x), y: Math.round(o.y), genes: { ...o.genes },
+        sex: o.sex, stage: o.stage, age: Math.round(o.age), size: Math.round(o.size),
         speed: Math.round(o.speed), need: o.need, target: Boolean(o.target),
+        mating: o.pair ? o.pair.phase : null,
         life: Math.round(o.life), hunger: Math.round(o.hunger), thirst: Math.round(o.thirst)
       })),
       grass: grass.length, grassRegrowing: grassRegrow.length,
       ponds: ponds.length, waterRemaining: ponds.map(p => Math.round(p.water)),
-      encounters, elapsed: Math.round(elapsed)
+      rain: rain ? { time: Math.round(rain.time * 10) / 10, refilled: rain.refilled } : null,
+      rainEvents,
+      corpses: corpses.map(c => ({ x: Math.round(c.x), y: Math.round(c.y), time: Math.round(c.time * 10) / 10 })),
+      encounters, births, elapsed: Math.round(elapsed)
     });
     window.advanceTime = ms => {
       for (let i = 0; i < Math.max(1, Math.round(ms / 16.67)); i++) update(1 / 60);
       render();
     };
+    buildEvolutionLegend();
+    captureGeneSnapshot();
     resize(); render();
     let last = performance.now();
     function loop(now) {
