@@ -3,42 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <title>Divinolândia na Bacia do Pardo</title>
 <meta name="description" content="A bacia do Rio Pardo em Divinolândia (SP): problemas de água apontados nos relatórios oficiais e as verbas que a prefeitura tem ou pode buscar (orçamento, FEHIDRO, fundo de saneamento, Sabesp).">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../tema.css?v=1">
 <style>
+  /* Paleta e fontes vêm de ../tema.css; aqui só os apelidos usados nesta página. */
   :root {
-    --ground: #EDF1F0;
-    --surface: #F8FAF9;
-    --ink: #15252A;
-    --muted: #55676B;
-    --rule: #C9D4D2;
-    --track: #DDE5E3;
-    --water: #1C6582;
-    --pardo: #85613B;
-    --ok: #2E6A45;
-    --alert: #A63A2A;
-    --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
-    --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
-    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ground: #0D1719;
-      --surface: #132125;
-      --ink: #E1E9E7;
-      --muted: #98AAAD;
-      --rule: #293B3E;
-      --track: #1D2D31;
-      --water: #72B4D0;
-      --pardo: #CDA475;
-      --ok: #7CC39A;
-      --alert: #E8826C;
-    }
+    --ground: var(--dt-ground);
+    --surface: var(--dt-surface);
+    --ink: var(--dt-ink);
+    --muted: var(--dt-muted);
+    --rule: var(--dt-rule);
+    --track: var(--dt-track);
+    --water: var(--dt-water);
+    --pardo: var(--dt-pardo);
+    --ok: var(--dt-leaf);
+    --alert: var(--dt-alert);
+    --display: var(--dt-display);
+    --serif: var(--dt-serif);
+    --mono: var(--dt-mono);
   }
 
   * { box-sizing: border-box; }
@@ -49,14 +37,13 @@
     font-family: var(--serif);
     font-size: 1.0625rem;
     line-height: 1.6;
-    padding-inline: 20px;
     padding-block: 0 72px;
   }
-  .wrap { max-width: 1060px; margin-inline: auto; }
+  .wrap { max-width: 1100px; margin-inline: auto; padding-inline: 20px; }
 
-  a { color: var(--water); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a { color: var(--dt-link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
   a:hover { text-decoration-thickness: 2px; }
-  :focus-visible { outline: 2px solid var(--water); outline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--dt-link); outline-offset: 3px; }
 
   .hydro { font-style: italic; color: var(--water); }
   .code {
@@ -286,6 +273,15 @@
 </style>
 </head>
 <body>
+
+<nav class="dt-bar" aria-label="Divinolândia Transparente">
+  <a class="dt-bar-marca" href="../index.html">Divinolândia Transparente</a>
+  <div class="dt-bar-links">
+    <a href="../gastos/index.html">Gastos</a>
+    <a href="index.html" aria-current="page">Água</a>
+    <a href="../historia/index.html">História</a>
+  </div>
+</nav>
 
 <header class="masthead wrap">
   <p class="eyebrow">Pesquisa · UGRHI 04 · setembro de 2026</p>
@@ -616,7 +612,7 @@
   </section>
 
   <footer class="colophon">
-    <p>Levantamento feito em 14 de setembro de 2026 com documentos públicos da prefeitura, do CBH-Pardo (SigRH), da ARSESP, do TCE-SP e do Instituto Água e Saneamento, e revisado no mesmo dia contra o texto de cada fonte. O que é estimativa ou leitura minha está marcado assim no texto. <span class="build">build 2</span></p>
+    <p>Levantamento feito em 14 de setembro de 2026 com documentos públicos da prefeitura, do CBH-Pardo (SigRH), da ARSESP, do TCE-SP e do Instituto Água e Saneamento, e revisado no mesmo dia contra o texto de cada fonte. O que é estimativa ou leitura minha está marcado assim no texto. <span class="build">build 5</span></p>
   </footer>
 </main>
 

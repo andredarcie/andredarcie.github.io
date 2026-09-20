@@ -1,0 +1,90 @@
+/* Divinolândia Transparente: tema único do projeto.
+   Toda página liga esta folha antes da própria e tira cor e fonte só destas variáveis.
+   Mudou aqui, muda nas quatro páginas (bumpar o ?v= do link em todas). */
+
+:root {
+  color-scheme: light;
+
+  /* neutros */
+  --dt-ground: #EEF1EC;
+  --dt-ground-2: #E3E8E2;
+  --dt-surface: #F8FAF6;
+  --dt-track: #DDE5DF;
+  --dt-rule: #CBD5CD;
+  --dt-muted-2: #7E8C84;
+  --dt-muted: #56655D;
+  --dt-ink-2: #33423A;
+  --dt-ink: #17241E;
+
+  /* mata (fundos escuros) e folha (destaque principal) */
+  --dt-forest-deep: #0E241C;
+  --dt-forest: #16372B;
+  --dt-forest-2: #21493B;
+  --dt-leaf: #2E6A45;
+  --dt-leaf-2: #4E8A64;
+  --dt-leaf-tint: #DCEBE1;
+
+  /* pardo (a cor do rio) e ouro (destaque sobre fundo escuro) */
+  --dt-pardo-deep: #5E4327;
+  --dt-pardo: #85613B;
+  --dt-pardo-tint: #F1E7D8;
+  --dt-gold: #CDA475;
+
+  /* categorias: gráficos, selos e cartões */
+  --dt-water: #1C6582;
+  --dt-water-tint: #DCEAF0;
+  --dt-teal: #2F7472;
+  --dt-teal-tint: #DAECEA;
+  --dt-plum: #6B4C7A;
+  --dt-plum-tint: #ECE3F0;
+  --dt-ochre: #8A6A12;
+  --dt-ochre-tint: #F4EBCF;
+  --dt-alert: #A63A2A;
+  --dt-alert-tint: #F6E0DA;
+
+  --dt-link: var(--dt-leaf);
+
+  --dt-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --dt-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --dt-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+/* Barra do projeto, igual no topo de todas as páginas */
+.dt-bar {
+  position: relative;
+  z-index: 1100;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 24px;
+  padding: 10px max(20px, calc((100% - 1180px) / 2));
+  background: var(--dt-forest-deep);
+  color: var(--dt-surface);
+  font-family: var(--dt-display);
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.dt-bar a { color: inherit; text-decoration: none; }
+.dt-bar a:hover { color: var(--dt-gold); }
+.dt-bar :focus-visible { outline: 2px solid var(--dt-gold); outline-offset: 3px; }
+.dt-bar-marca { display: inline-flex; align-items: center; gap: 9px; }
+.dt-bar-marca::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--dt-gold);
+}
+.dt-bar-links { display: flex; flex-wrap: wrap; gap: 4px 20px; font-weight: 500; }
+.dt-bar-links a { color: rgba(248, 250, 246, .72); padding-block: 2px; }
+.dt-bar-links a[aria-current="page"] { color: var(--dt-surface); box-shadow: inset 0 -2px 0 var(--dt-gold); }
+
+@media (max-width: 560px) {
+  .dt-bar { font-size: .8rem; letter-spacing: .06em; gap: 4px 16px; padding-inline: 16px; }
+  .dt-bar-links { gap: 4px 14px; }
+}

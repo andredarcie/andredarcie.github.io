@@ -1,0 +1,499 @@
+﻿Rank,Matrícula,Tipo da Folha,Nome,Cargo,Vínculo Empregatício,Salário Base,Proventos,Vantagens,Vencimentos Totais,Descontos,Líquido,_bruto,_deducoes,_liquido
+1,Totais,,,,,"R$ 339.901,50","R$ 505.390,01","R$ 67,54","R$ 505.457,55","R$ 132.961,33","R$ 372.496,22",505457.55,132961.33,372496.22
+2,Totais,,,,,"R$ 322.013,11","R$ 491.579,81","R$ 135,08","R$ 491.714,89","R$ 120.225,88","R$ 371.489,01",491714.89,120225.88,371489.01
+3,Totais,,,,,"R$ 312.449,01","R$ 478.212,48","R$ 0,00","R$ 478.212,48","R$ 131.944,38","R$ 346.268,10",478212.48,131944.38,346268.1
+4,Totais,,,,,"R$ 317.004,10","R$ 463.694,93","R$ 472,78","R$ 464.167,71","R$ 99.109,13","R$ 365.058,58",464167.71,99109.13,365058.58
+5,Totais,,,,,"R$ 253.739,42","R$ 366.509,45","R$ 135,08","R$ 366.644,53","R$ 82.998,02","R$ 283.646,51",366644.53,82998.02,283646.51
+6,00006394 / 1,Rescisão,Evandro Antonio de Almeida,Dentista,Regime Jurídico Único,"R$ 0,00","R$ 22.655,84","R$ 0,00","R$ 22.655,84","R$ 1.497,73","R$ 21.158,11",22655.84,1497.73,21158.11
+7,00028681 / 1,Folha Mensal,Cleberson Corrêa,Secretário  Administrativo,Regime Jurídico Único,"R$ 7.261,87","R$ 18.370,44","R$ 0,00","R$ 18.370,44","R$ 10.726,03","R$ 7.644,41",18370.44,10726.03,7644.41
+8,00039357 / 1,Folha Mensal,Antonio de Padua Aquisti,Prefeito,Prefeito,"R$ 18.051,25","R$ 18.051,25","R$ 0,00","R$ 18.051,25","R$ 4.771,71","R$ 13.279,54",18051.25,4771.71,13279.54
+9,00037249 / 1,Folha Mensal,José Henrique Fornari,Procurador Jurídico,Regime Jurídico Único,"R$ 7.261,87","R$ 17.881,74","R$ 0,00","R$ 17.881,74","R$ 4.804,25","R$ 13.077,49",17881.74,4804.25,13077.49
+10,00036307 / 1,Folha Mensal,Ana Carolina Moreira de Oliveira,Auditor Geral do Município,Regime Jurídico Único,"R$ 5.409,10","R$ 17.438,90","R$ 0,00","R$ 17.438,90","R$ 7.283,02","R$ 10.155,88",17438.9,7283.02,10155.88
+11,00035491 / 1,Folha Mensal,Maria Carolina Medeiros Brandi,Procurador Jurídico,Regime Jurídico Único,"R$ 7.261,87","R$ 16.048,41","R$ 0,00","R$ 16.048,41","R$ 4.425,92","R$ 11.622,49",16048.41,4425.92,11622.49
+12,00010596 / 1,Folha Mensal,Elaine Regina Mori,Médico I,Regime Jurídico Único,"R$ 7.261,87","R$ 15.188,78","R$ 0,00","R$ 15.188,78","R$ 7.727,99","R$ 7.460,79",15188.78,7727.99,7460.79
+13,00031682 / 1,Folha Mensal,Lucimara Regina de Paula Carvalho,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 13.185,86","R$ 0,00","R$ 13.185,86","R$ 3.910,77","R$ 9.275,09",13185.86,3910.77,9275.09
+14,00020338 / 1,Folha Mensal,Osnir Bento Ferreira,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 13.040,04","R$ 0,00","R$ 13.040,04","R$ 2.761,23","R$ 10.278,81",13040.04,2761.23,10278.81
+15,00000710 / 1,Folha Mensal,José Luis Zamai,Engenheiro Agrônomo,Regime Jurídico Único,"R$ 5.409,10","R$ 12.949,75","R$ 0,00","R$ 12.949,75","R$ 3.574,80","R$ 9.374,95",12949.75,3574.8,9374.95
+16,00000590 / 1,Folha Mensal,Ivandecir Aparecido Cardoso,Gerente M. de Obras e Serviços,Regime Jurídico Único,"R$ 7.261,87","R$ 12.708,62","R$ 0,00","R$ 12.708,62","R$ 8.295,86","R$ 4.412,76",12708.62,8295.86,4412.76
+17,00021474 / 1,Folha Mensal,Júlio Cesar Pereira,Supervisor de Esportes,Regime Jurídico Único,"R$ 5.618,56","R$ 11.767,22","R$ 0,00","R$ 11.767,22","R$ 6.029,84","R$ 5.737,38",11767.22,6029.84,5737.38
+18,00024350 / 1,Folha Mensal,Juliana Maria Mastri Ferreira,Enfermeiro Padrao,Regime Jurídico Único,"R$ 2.380,02","R$ 11.551,08","R$ 0,00","R$ 11.551,08","R$ 2.991,33","R$ 8.559,75",11551.08,2991.33,8559.75
+19,00031089 / 1,Folha Mensal,Carlos Alberto Costa da Silva,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 11.488,32","R$ 0,00","R$ 11.488,32","R$ 2.223,86","R$ 9.264,46",11488.32,2223.86,9264.46
+20,00006416 / 1,Folha Mensal,Maristela Darcie Pereira,Dentista,Regime Jurídico Único,"R$ 3.894,57","R$ 11.268,59","R$ 0,00","R$ 11.268,59","R$ 2.273,23","R$ 8.995,36",11268.59,2273.23,8995.36
+21,00021369 / 1,Folha Mensal,Nilson Alves de Souza,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 10.417,89","R$ 0,00","R$ 10.417,89","R$ 2.121,95","R$ 8.295,94",10417.89,2121.95,8295.94
+22,00023272 / 1,Folha Mensal,Josemary Marinho de Souza,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 10.395,56","R$ 0,00","R$ 10.395,56","R$ 4.229,24","R$ 6.166,32",10395.56,4229.24,6166.32
+23,00000566 / 1,Rescisão,Sonia Regina Pinto de Faria,Serviços Gerais,Regime Jurídico Único,"R$ 0,00","R$ 10.329,03","R$ 0,00","R$ 10.329,03","R$ 119,60","R$ 10.209,43",10329.03,119.6,10209.43
+24,00010537 / 1,Folha Mensal,Alessandra de Cássia Fonseca Gouvea,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 9.991,66","R$ 0,00","R$ 9.991,66","R$ 4.700,39","R$ 5.291,27",9991.66,4700.39,5291.27
+25,00022012 / 1,Folha Mensal,Daniella Betin Isaac Goulart,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 9.991,64","R$ 0,00","R$ 9.991,64","R$ 2.708,15","R$ 7.283,49",9991.64,2708.15,7283.49
+26,00023442 / 1,Folha Mensal,Ana Paula Feltran,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 9.991,64","R$ 0,00","R$ 9.991,64","R$ 2.708,15","R$ 7.283,49",9991.64,2708.15,7283.49
+27,00038555 / 1,Folha Mensal,Bruna da Gama Saliba Tostes,Medico Pediatra,Regime Jurídico Único,"R$ 7.261,87","R$ 9.585,66","R$ 0,00","R$ 9.585,66","R$ 2.700,26","R$ 6.885,40",9585.66,2700.26,6885.4
+28,00037346 / 1,Folha Mensal,Marcel Uchiyama,Medico Ginecologista\Obstetra,Regime Jurídico Único,"R$ 7.261,87","R$ 9.585,66","R$ 0,00","R$ 9.585,66","R$ 2.700,26","R$ 6.885,40",9585.66,2700.26,6885.4
+29,00039039 / 1,Folha Mensal,Marcelo Raddo Venancio de Souza,Médico I,Regime Jurídico Único,"R$ 7.261,87","R$ 9.585,66","R$ 0,00","R$ 9.585,66","R$ 2.700,26","R$ 6.885,40",9585.66,2700.26,6885.4
+30,00043958 / 1,Folha Mensal,Guilherme Antonio dos Santos,Engenheiro Civil,Regime Jurídico Único,"R$ 5.409,10","R$ 9.559,49","R$ 0,00","R$ 9.559,49","R$ 2.269,15","R$ 7.290,34",9559.49,2269.15,7290.34
+31,00031690 / 1,Folha Mensal,Ana Emilia da Silveira,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 9.500,82","R$ 0,00","R$ 9.500,82","R$ 4.023,97","R$ 5.476,85",9500.82,4023.97,5476.85
+32,00020842 / 1,Folha Mensal,Luciane Braz,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 9.445,39","R$ 0,00","R$ 9.445,39","R$ 4.725,96","R$ 4.719,43",9445.39,4725.96,4719.43
+33,00020664 / 1,Folha Mensal,Elaine Aparecida Amalfi,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 9.167,66","R$ 0,00","R$ 9.167,66","R$ 4.498,04","R$ 4.669,62",9167.66,4498.04,4669.62
+34,00042226 / 1,Folha Mensal,Thiago Henrique Abrão Bertholini,Médico I,Regime Jurídico Único,"R$ 7.261,87","R$ 9.149,95","R$ 0,00","R$ 9.149,95","R$ 2.536,22","R$ 6.613,73",9149.95,2536.22,6613.73
+35,00042072 / 1,Folha Mensal,Patricia Cabral Costa Barreiro,Medico Pediatra,Regime Jurídico Único,"R$ 7.261,87","R$ 9.149,95","R$ 0,00","R$ 9.149,95","R$ 4.277,16","R$ 4.872,79",9149.95,4277.16,4872.79
+36,00036331 / 1,Folha Mensal,Sandra Lucia Passoni Gussão,Professor de E. Especial - PEE,Regime Jurídico Único,"R$ 6.156,00","R$ 9.123,26","R$ 0,00","R$ 9.123,26","R$ 2.381,20","R$ 6.742,06",9123.26,2381.2,6742.06
+37,00028436 / 1,Folha Mensal,Gisele Fernanda Pinto Aurilietti,Professor de E. Especial - PEE,Regime Jurídico Único,"R$ 6.156,00","R$ 9.107,92","R$ 0,00","R$ 9.107,92","R$ 4.545,46","R$ 4.562,46",9107.92,4545.46,4562.46
+38,00034738 / 1,Folha Mensal,Bruce Wellington Silva,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 8.885,22","R$ 0,00","R$ 8.885,22","R$ 3.410,89","R$ 5.474,33",8885.22,3410.89,5474.33
+39,00040720 / 1,Folha Mensal,Sandra Helena Coelho de Freitas,Agente de C. de V. ou Endemias,Regime Jurídico Único,"R$ 3.242,00","R$ 8.753,31","R$ 0,00","R$ 8.753,31","R$ 2.767,40","R$ 5.985,91",8753.31,2767.4,5985.91
+40,00031674 / 1,Folha Mensal,Ana Gabriela Cardoso,Professor  PEB II,Regime Jurídico Único,"R$ 5.771,25","R$ 8.743,36","R$ 0,00","R$ 8.743,36","R$ 2.286,49","R$ 6.456,87",8743.36,2286.49,6456.87
+41,00045470 / 1,Folha Mensal,Michele Kamila Galgani Amaru,Médico I,Regime Jurídico Único,"R$ 7.261,87","R$ 8.714,24","R$ 0,00","R$ 8.714,24","R$ 2.372,17","R$ 6.342,07",8714.24,2372.17,6342.07
+42,00047040 / 1,Folha Mensal,Laion Roberto Ferreira da Silva,Médico I,Regime Jurídico Único,"R$ 7.261,87","R$ 8.714,24","R$ 0,00","R$ 8.714,24","R$ 2.372,17","R$ 6.342,07",8714.24,2372.17,6342.07
+43,00031747 / 1,Folha Mensal,Patrícia de Oliveira Santos,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 8.651,08","R$ 0,00","R$ 8.651,08","R$ 2.313,84","R$ 6.337,24",8651.08,2313.84,6337.24
+44,00021270 / 1,Folha Mensal,Ana Carolina Amadeu Fernandes,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 8.591,31","R$ 0,00","R$ 8.591,31","R$ 4.636,66","R$ 3.954,65",8591.31,4636.66,3954.65
+45,00021261 / 1,Folha Mensal,Lucinéia Ranzani,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 8.527,47","R$ 0,00","R$ 8.527,47","R$ 2.281,34","R$ 6.246,13",8527.47,2281.34,6246.13
+46,00020630 / 1,Folha Mensal,Jose Carlos de Biazzi,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 8.464,17","R$ 0,00","R$ 8.464,17","R$ 1.890,52","R$ 6.573,65",8464.17,1890.52,6573.65
+47,00006777 / 1,Folha Mensal,Silmara de Oliveira Andreatta Masteguim,Chefe da D. de R. Humanos,Regime Jurídico Único,"R$ 2.380,02","R$ 8.346,82","R$ 0,00","R$ 8.346,82","R$ 2.989,19","R$ 5.357,63",8346.82,2989.19,5357.63
+48,00036072 / 1,Folha Mensal,Liliane Aparecida Trevisan Darcie,Professor de E. Especial - PEE,Regime Jurídico Único,"R$ 6.156,00","R$ 8.343,28","R$ 0,00","R$ 8.343,28","R$ 2.197,95","R$ 6.145,33",8343.28,2197.95,6145.33
+49,00037567 / 1,Folha Mensal,Miller Kelsio Ferreira Amaru,Engenheiro Civil,Regime Jurídico Único,"R$ 5.409,10","R$ 8.276,03","R$ 0,00","R$ 8.276,03","R$ 1.998,55","R$ 6.277,48",8276.03,1998.55,6277.48
+50,00020834 / 1,Folha Mensal,Lucréci Betânia Vicente de Souza,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 8.258,90","R$ 0,00","R$ 8.258,90","R$ 2.180,22","R$ 6.078,68",8258.9,2180.22,6078.68
+51,00023388 / 1,Folha Mensal,Fabiana Imaculada Massini,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 8.237,62","R$ 0,00","R$ 8.237,62","R$ 2.174,37","R$ 6.063,25",8237.62,2174.37,6063.25
+52,00022039 / 1,Folha Mensal,Giselaine Aparecida de Andrade,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 8.175,71","R$ 0,00","R$ 8.175,71","R$ 4.375,21","R$ 3.800,50",8175.71,4375.21,3800.5
+53,00030970 / 1,Folha Mensal,Elica Cancian Feltran,Enfermeira do PSF,Regime Jurídico Único,"R$ 4.760,00","R$ 8.168,58","R$ 0,00","R$ 8.168,58","R$ 2.033,34","R$ 6.135,24",8168.58,2033.34,6135.24
+54,00039047 / 1,Folha Mensal,Eudes Goulart Bardi,Pedreiro,Regime Jurídico Único,"R$ 2.520,62","R$ 8.095,71","R$ 0,00","R$ 8.095,71","R$ 2.188,05","R$ 5.907,66",8095.71,2188.05,5907.66
+55,00037290 / 1,Folha Mensal,Camila Rodrigues de Oliveira Garcia,SECRETÁRIA,Regime Jurídico Único,"R$ 2.380,02","R$ 8.083,89","R$ 0,00","R$ 8.083,89","R$ 1.513,87","R$ 6.570,02",8083.89,1513.87,6570.02
+56,00023280 / 1,Folha Mensal,Luciana Ramos Bertolini,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 7.979,70","R$ 0,00","R$ 7.979,70","R$ 2.076,18","R$ 5.903,52",7979.7,2076.18,5903.52
+57,00010839 / 1,Folha Mensal,Alba Valéria Ribeiro,Dentista,Regime Jurídico Único,"R$ 3.894,57","R$ 7.906,18","R$ 0,00","R$ 7.906,18","R$ 3.890,47","R$ 4.015,71",7906.18,3890.47,4015.71
+58,00034746 / 1,Folha Mensal,João Batista Trevizan Junior,Professor  PEB II,Regime Jurídico Único,"R$ 6.027,75","R$ 7.864,51","R$ 0,00","R$ 7.864,51","R$ 2.644,29","R$ 5.220,22",7864.51,2644.29,5220.22
+59,00031593 / 1,Folha Mensal,Patricia Aires Tezolin,Dentista,Regime Jurídico Único,"R$ 3.894,57","R$ 7.851,43","R$ 0,00","R$ 7.851,43","R$ 1.819,63","R$ 6.031,80",7851.43,1819.63,6031.8
+60,00038113 / 1,Folha Mensal,João Marcos de Oliveira,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 7.767,30","R$ 0,00","R$ 7.767,30","R$ 1.303,39","R$ 6.463,91",7767.3,1303.39,6463.91
+61,00023396 / 1,Folha Mensal,Analiane Pires Braz,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 7.732,43","R$ 0,00","R$ 7.732,43","R$ 3.880,02","R$ 3.852,41",7732.43,3880.02,3852.41
+62,00035645 / 1,Folha Mensal,Silvânia Maria Dezorzi Junqueira,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 7.657,95","R$ 0,00","R$ 7.657,95","R$ 1.960,44","R$ 5.697,51",7657.95,1960.44,5697.51
+63,00034436 / 1,Folha Mensal,Magali Cristina de Paula Bucci,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 7.643,28","R$ 0,00","R$ 7.643,28","R$ 1.823,99","R$ 5.819,29",7643.28,1823.99,5819.29
+64,00039900 / 1,Folha Mensal,Suelen Cristina Rodrigues Viana,Gerente Municipal de Saúde,Cargo em Comissão,"R$ 7.261,87","R$ 7.624,96","R$ 0,00","R$ 7.624,96","R$ 1.818,15","R$ 5.806,81",7624.96,1818.15,5806.81
+65,00041114 / 1,Folha Mensal,Francisco Otavio Cervelin,Gerente Municipal de Finanças,Cargo em Comissão,"R$ 7.261,87","R$ 7.624,96","R$ 0,00","R$ 7.624,96","R$ 1.818,15","R$ 5.806,81",7624.96,1818.15,5806.81
+66,00035394 / 1,Folha Mensal,Ércules Garcias de Carvalho,Professor  PEB II,Regime Jurídico Único,"R$ 6.027,75","R$ 7.563,13","R$ 0,00","R$ 7.563,13","R$ 3.576,87","R$ 3.986,26",7563.13,3576.87,3986.26
+67,00035513 / 1,Folha Mensal,Gisele Cristina dos Santos,SECRETÁRIA,Regime Jurídico Único,"R$ 2.380,02","R$ 7.529,67","R$ 0,00","R$ 7.529,67","R$ 2.979,52","R$ 4.550,15",7529.67,2979.52,4550.15
+68,00028991 / 1,Folha Mensal,Sheila Sanches Perin,Engenheiro Agrônomo,Regime Jurídico Único,"R$ 5.409,10","R$ 7.458,06","R$ 0,00","R$ 7.458,06","R$ 1.776,37","R$ 5.681,69",7458.06,1776.37,5681.69
+69,00023310 / 1,Folha Mensal,Rita Ferreira,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 7.442,60","R$ 0,00","R$ 7.442,60","R$ 3.993,31","R$ 3.449,29",7442.6,3993.31,3449.29
+70,00034762 / 1,Folha Mensal,Maristela Aparecida Masteguim Cassani,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 7.419,88","R$ 0,00","R$ 7.419,88","R$ 1.798,15","R$ 5.621,73",7419.88,1798.15,5621.73
+71,00043869 / 1,Folha Mensal,Gabriel de Araujo Mengali,Arquiteto,Regime Jurídico Único,"R$ 5.409,10","R$ 7.365,02","R$ 0,00","R$ 7.365,02","R$ 1.665,67","R$ 5.699,35",7365.02,1665.67,5699.35
+72,00040100 / 1,Folha Mensal,Karen Gabrielle Silva Dal Ava,Gerente M. de Assist Social,Cargo em Comissão,"R$ 7.261,87","R$ 7.261,87","R$ 0,00","R$ 7.261,87","R$ 1.669,71","R$ 5.592,16",7261.87,1669.71,5592.16
+73,00047090 / 1,Folha Mensal,Rafaela Cristina Pedro,Gerente Contábil,Cargo em Comissão,"R$ 7.261,87","R$ 7.261,87","R$ 0,00","R$ 7.261,87","R$ 1.669,71","R$ 5.592,16",7261.87,1669.71,5592.16
+74,00043745 / 1,Folha Mensal,Muciel da Silva Datovo,Chefe de Gabinete,Cargo em Comissão,"R$ 7.261,87","R$ 7.261,87","R$ 0,00","R$ 7.261,87","R$ 1.669,71","R$ 5.592,16",7261.87,1669.71,5592.16
+75,00047430 / 1,Folha Mensal,Maria de Fatima Barion Machado,Gerente Municipal de Educação,Cargo em Comissão,"R$ 7.261,87","R$ 7.261,87","R$ 0,00","R$ 7.261,87","R$ 1.669,71","R$ 5.592,16",7261.87,1669.71,5592.16
+76,00035246 / 1,Folha Mensal,Carlos Henrique de Sousa Ferreira,Professor  PEB II,Regime Jurídico Único,"R$ 5.771,25","R$ 7.244,69","R$ 0,00","R$ 7.244,69","R$ 4.842,86","R$ 2.401,83",7244.69,4842.86,2401.83
+77,00047406 / 1,Folha Mensal,Maila Cristina Jorge Corrêa,Professor  PEB II,Regime Jurídico Único,"R$ 5.771,25","R$ 7.244,69","R$ 0,00","R$ 7.244,69","R$ 2.821,88","R$ 4.422,81",7244.69,2821.88,4422.81
+78,00046183 / 1,Folha Mensal,Aline Cristina Gil Corsi,Assessor de L. e Contratos,Cargo em Comissão,"R$ 6.293,61","R$ 7.237,65","R$ 0,00","R$ 7.237,65","R$ 1.657,36","R$ 5.580,29",7237.65,1657.36,5580.29
+79,00034703 / 1,Folha Mensal,Fernanda Barion Amadeu Borges,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 7.175,06","R$ 0,00","R$ 7.175,06","R$ 1.648,56","R$ 5.526,50",7175.06,1648.56,5526.5
+80,00027669 / 1,Folha Mensal,Marcio Fernando Darcie,Diretor S.E.T.R.,Regime Jurídico Único,"R$ 3.678,18","R$ 7.125,05","R$ 0,00","R$ 7.125,05","R$ 1.636,24","R$ 5.488,81",7125.05,1636.24,5488.81
+81,00044059 / 1,Folha Mensal,Igor Alves Ribeiro,Professor  PEB II,Regime Jurídico Único,"R$ 6.156,00","R$ 7.032,70","R$ 0,00","R$ 7.032,70","R$ 1.957,85","R$ 5.074,85",7032.7,1957.85,5074.85
+82,00038920 / 1,Folha Mensal,Anderson Rodrigo Martins Bianco,Pedreiro,Regime Jurídico Único,"R$ 2.520,62","R$ 6.989,15","R$ 0,00","R$ 6.989,15","R$ 2.137,11","R$ 4.852,04",6989.15,2137.11,4852.04
+83,00036242 / 1,Folha Mensal,Aline Correa Junior,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 6.952,73","R$ 0,00","R$ 6.952,73","R$ 2.079,38","R$ 4.873,35",6952.73,2079.38,4873.35
+84,00021415 / 1,Folha Mensal,Luiz Fernando Madeira,Eletricista,Regime Jurídico Único,"R$ 2.163,63","R$ 6.946,40","R$ 0,00","R$ 6.946,40","R$ 1.374,51","R$ 5.571,89",6946.4,1374.51,5571.89
+85,00035980 / 1,Folha Mensal,Deborah Vasconcelos dos Santos,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 6.944,88","R$ 0,00","R$ 6.944,88","R$ 3.651,55","R$ 3.293,33",6944.88,3651.55,3293.33
+86,00034789 / 1,Folha Mensal,Vanessa Gomes,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 6.937,02","R$ 0,00","R$ 6.937,02","R$ 1.551,40","R$ 5.385,62",6937.02,1551.4,5385.62
+87,00028568 / 1,Folha Mensal,Camila Cristiane Bergamasco,Professor de E. Especial - PEE,Regime Jurídico Único,"R$ 4.873,50","R$ 6.845,21","R$ 0,00","R$ 6.845,21","R$ 1.574,26","R$ 5.270,95",6845.21,1574.26,5270.95
+88,00026719 / 1,Folha Mensal,Antônio Carlos Durante,Pedreiro,Regime Jurídico Único,"R$ 2.520,62","R$ 6.796,90","R$ 0,00","R$ 6.796,90","R$ 1.270,28","R$ 5.526,62",6796.9,1270.28,5526.62
+89,00045667 / 1,Folha Mensal,Mario Celso Ferreira Pinto,Vice Prefeito,Vice - Prefeito,"R$ 6.729,17","R$ 6.729,17","R$ 0,00","R$ 6.729,17","R$ 1.398,21","R$ 5.330,96",6729.17,1398.21,5330.96
+90,00024376 / 1,Folha Mensal,Cintia Helena Gavioli Moda Bertolini,Controlador  Arquivo Publico,Regime Jurídico Único,"R$ 2.520,62","R$ 6.725,99","R$ 0,00","R$ 6.725,99","R$ 2.738,57","R$ 3.987,42",6725.99,2738.57,3987.42
+91,00038024 / 1,Folha Mensal,Hernani Alves de Melo Feliciano de Oliveira,Contador,Regime Jurídico Único,"R$ 5.409,10","R$ 6.664,01","R$ 0,00","R$ 6.664,01","R$ 1.436,44","R$ 5.227,57",6664.01,1436.44,5227.57
+92,00042013 / 1,Folha Mensal,Naiara Aparecida Mapelli,Gerente Municipal de Turismo,Cargo em Comissão,"R$ 6.293,61","R$ 6.608,29","R$ 0,00","R$ 6.608,29","R$ 1.336,61","R$ 5.271,68",6608.29,1336.61,5271.68
+93,00040932 / 1,Folha Mensal,Marcelo da Costa,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 6.596,08","R$ 0,00","R$ 6.596,08","R$ 2.319,22","R$ 4.276,86",6596.08,2319.22,4276.86
+94,00009873 / 1,Folha Mensal,Iamara de Queiroz Nogueira Ribeiro,Secretária da j. de S. Militar,Regime Jurídico Único,"R$ 2.380,02","R$ 6.547,08","R$ 0,00","R$ 6.547,08","R$ 1.245,66","R$ 5.301,42",6547.08,1245.66,5301.42
+95,00026557 / 1,Folha Mensal,Paulo José Trevisan,Chefe do Transporte,Regime Jurídico Único,"R$ 2.163,63","R$ 6.499,30","R$ 0,00","R$ 6.499,30","R$ 3.004,62","R$ 3.494,68",6499.3,3004.62,3494.68
+96,00048240 / 1,Folha Mensal,Andrea Aparecida de Toledo,Professor de E. Especial - PEE,Contrato por Tempo Determinado,"R$ 6.156,00","R$ 6.496,80","R$ 0,00","R$ 6.496,80","R$ 1.279,79","R$ 5.217,01",6496.8,1279.79,5217.01
+97,00048399 / 1,Folha Mensal,Daniel Felipe Del Pio Luogo,Professor  PEB II,Contrato por Tempo Determinado,"R$ 6.156,00","R$ 6.496,48","R$ 0,00","R$ 6.496,48","R$ 1.279,62","R$ 5.216,86",6496.48,1279.62,5216.86
+98,00048224 / 1,Folha Mensal,Natany Eliza da Silva,Professor  PEB II,Contrato por Tempo Determinado,"R$ 6.156,00","R$ 6.496,48","R$ 0,00","R$ 6.496,48","R$ 2.095,25","R$ 4.401,23",6496.48,2095.25,4401.23
+99,00048445 / 1,Folha Mensal,Vonilson Almeide Alves,Professor  PEB II,Contrato por Tempo Determinado,"R$ 6.156,00","R$ 6.496,48","R$ 0,00","R$ 6.496,48","R$ 1.279,62","R$ 5.216,86",6496.48,1279.62,5216.86
+100,00048380 / 1,Folha Mensal,Felippe Augusto Teixeira,Professor  PEB II,Contrato por Tempo Determinado,"R$ 6.156,00","R$ 6.496,48","R$ 0,00","R$ 6.496,48","R$ 1.581,89","R$ 4.914,59",6496.48,1581.89,4914.59
+101,00023248 / 1,Folha Mensal,Aparecida Bocamino Amadeu,Pensionista,Pensionista,"R$ 6.490,92","R$ 6.490,92","R$ 0,00","R$ 6.490,92","R$ 0,00","R$ 6.490,92",6490.92,0.0,6490.92
+102,00029637 / 1,Folha Mensal,Danila Ferreira de Moura,Psicólogo,Regime Jurídico Único,"R$ 2.520,62","R$ 6.426,89","R$ 0,00","R$ 6.426,89","R$ 1.009,86","R$ 5.417,03",6426.89,1009.86,5417.03
+103,00043931 / 1,Folha Mensal,Carla Maria de Freitas Souza,Enfermeira do PSF,Regime Jurídico Único,"R$ 4.760,00","R$ 6.392,76","R$ 0,00","R$ 6.392,76","R$ 2.883,67","R$ 3.509,09",6392.76,2883.67,3509.09
+104,00044083 / 1,Folha Mensal,Maurício Divino Pedretti,Professor  PEB II,Regime Jurídico Único,"R$ 5.771,25","R$ 6.379,01","R$ 0,00","R$ 6.379,01","R$ 1.331,27","R$ 5.047,74",6379.01,1331.27,5047.74
+105,00044032 / 1,Folha Mensal,Josiane Ferreira Pinto Borges,Professor  PEB II,Regime Jurídico Único,"R$ 5.771,25","R$ 6.379,01","R$ 0,00","R$ 6.379,01","R$ 1.331,27","R$ 5.047,74",6379.01,1331.27,5047.74
+106,00044091 / 1,Folha Mensal,Edivania Cristina Dias,Professor  PEB II,Regime Jurídico Único,"R$ 5.771,25","R$ 6.379,01","R$ 0,00","R$ 6.379,01","R$ 2.850,36","R$ 3.528,65",6379.01,2850.36,3528.65
+107,00048208 / 1,Folha Mensal,Elidia Fatima Ferreira,Professor  PEB II,Contrato por Tempo Determinado,"R$ 5.771,25","R$ 6.344,55","R$ 0,00","R$ 6.344,55","R$ 1.202,19","R$ 5.142,36",6344.55,1202.19,5142.36
+108,00026905 / 1,Folha Mensal,Marcelo Bréssio,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 6.337,25","R$ 0,00","R$ 6.337,25","R$ 989,61","R$ 5.347,64",6337.25,989.61,5347.64
+109,00044598 / 1,Folha Mensal,Flavia Baptistella Dias Ribeiro Nogueira,Lançador,Regime Jurídico Único,"R$ 5.409,10","R$ 6.310,61","R$ 0,00","R$ 6.310,61","R$ 870,01","R$ 5.440,60",6310.61,870.01,5440.6
+110,00047449 / 1,Folha Mensal,Marinês Cossulin Amadeu,Assessoria de P. Pedagógico,Cargo em Comissão,"R$ 6.293,61","R$ 6.293,61","R$ 0,00","R$ 6.293,61","R$ 1.176,23","R$ 5.117,38",6293.61,1176.23,5117.38
+111,00044938 / 1,Folha Mensal,Diego Stracieri Araujo Silva,Assessor M. Planejamento,Cargo em Comissão,"R$ 6.293,61","R$ 6.293,61","R$ 0,00","R$ 6.293,61","R$ 1.176,23","R$ 5.117,38",6293.61,1176.23,5117.38
+112,00046191 / 1,Folha Mensal,Marina Aparecida Aguiar Ramos,Assessor Municipal de Saúde,Cargo em Comissão,"R$ 6.293,61","R$ 6.293,61","R$ 0,00","R$ 6.293,61","R$ 1.176,23","R$ 5.117,38",6293.61,1176.23,5117.38
+113,00037303 / 1,Folha Mensal,Nelson Maneta Neto,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 6.274,51","R$ 0,00","R$ 6.274,51","R$ 2.378,72","R$ 3.895,79",6274.51,2378.72,3895.79
+114,00035971 / 1,Folha Mensal,Lucimara Durante,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 6.197,64","R$ 0,00","R$ 6.197,64","R$ 1.249,63","R$ 4.948,01",6197.64,1249.63,4948.01
+115,00035211 / 1,Folha Mensal,Valeria Cristina Zonta,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 6.187,00","R$ 0,00","R$ 6.187,00","R$ 1.836,09","R$ 4.350,91",6187.0,1836.09,4350.91
+116,00038032 / 1,Folha Mensal,Thais Moussi Bertoleti,Fisioterapeuta,Regime Jurídico Único,"R$ 2.520,62","R$ 6.156,77","R$ 0,00","R$ 6.156,77","R$ 465,80","R$ 5.690,97",6156.77,465.8,5690.97
+117,00029777 / 1,Folha Mensal,Edimar José Marinho,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 6.149,01","R$ 0,00","R$ 6.149,01","R$ 1.766,17","R$ 4.382,84",6149.01,1766.17,4382.84
+118,00035653 / 1,Folha Mensal,Juliana Gabriele Nogueira,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 6.133,80","R$ 0,00","R$ 6.133,80","R$ 2.413,58","R$ 3.720,22",6133.8,2413.58,3720.22
+119,00020710 / 1,Folha Mensal,Wanderley de Moraes Machado,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 6.133,33","R$ 0,00","R$ 6.133,33","R$ 1.137,44","R$ 4.995,89",6133.33,1137.44,4995.89
+120,00031224 / 1,Folha Mensal,Flaviane Alves Moreira,Assistente Social,Regime Jurídico Único,"R$ 2.520,62","R$ 6.097,74","R$ 0,00","R$ 6.097,74","R$ 1.683,81","R$ 4.413,93",6097.74,1683.81,4413.93
+121,00028428 / 1,Folha Mensal,Marcos Romerito Pinto,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 6.091,19","R$ 0,00","R$ 6.091,19","R$ 924,14","R$ 5.167,05",6091.19,924.14,5167.05
+122,00048151 / 1,Folha Mensal,Marcia Nogueira,Professor  PEB II,Contrato por Tempo Determinado,"R$ 5.771,25","R$ 6.090,45","R$ 0,00","R$ 6.090,45","R$ 1.072,69","R$ 5.017,76",6090.45,1072.69,5017.76
+123,00023558 / 1,Folha Mensal,Sergio Donizete Boletta,Serviços Gerais,Regime Jurídico Único,"R$ 2.520,62","R$ 6.079,57","R$ 0,00","R$ 6.079,57","R$ 1.097,72","R$ 4.981,85",6079.57,1097.72,4981.85
+124,00037893 / 1,Folha Mensal,Carlos Antoninho Villas Boas Junior,Dentista,Regime Jurídico Único,"R$ 3.894,57","R$ 5.997,62","R$ 0,00","R$ 5.997,62","R$ 744,81","R$ 5.252,81",5997.62,744.81,5252.81
+125,00034827 / 1,Folha Mensal,Fernanda Rossetto Rovani,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.967,46","R$ 0,00","R$ 5.967,46","R$ 2.416,34","R$ 3.551,12",5967.46,2416.34,3551.12
+126,00035378 / 1,Folha Mensal,Elisangela Zani Lorca,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.967,46","R$ 0,00","R$ 5.967,46","R$ 1.132,32","R$ 4.835,14",5967.46,1132.32,4835.14
+127,00036366 / 1,Folha Mensal,Euler Pinto Ribeiro Junior,Lançador,Regime Jurídico Único,"R$ 5.409,10","R$ 5.950,01","R$ 0,00","R$ 5.950,01","R$ 1.092,90","R$ 4.857,11",5950.01,1092.9,4857.11
+128,00035220 / 1,Folha Mensal,Lidiana Fernandes de Rezende,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.924,90","R$ 0,00","R$ 5.924,90","R$ 2.920,18","R$ 3.004,72",5924.9,2920.18,3004.72
+129,00034720 / 1,Folha Mensal,Melrilaine de Carvalho,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.924,90","R$ 0,00","R$ 5.924,90","R$ 1.114,96","R$ 4.809,94",5924.9,1114.96,4809.94
+130,00035238 / 1,Folha Mensal,Lara Helena da Silva de Paula,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.903,62","R$ 0,00","R$ 5.903,62","R$ 1.106,27","R$ 4.797,35",5903.62,1106.27,4797.35
+131,00035416 / 1,Folha Mensal,Rosany de Lima Andrade Reis,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.903,62","R$ 0,00","R$ 5.903,62","R$ 1.106,27","R$ 4.797,35",5903.62,1106.27,4797.35
+132,00034770 / 1,Folha Mensal,Juliana Aparecida Biaco da Silva Faria,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.892,98","R$ 0,00","R$ 5.892,98","R$ 1.101,93","R$ 4.791,05",5892.98,1101.93,4791.05
+133,00022926 / 1,Folha Mensal,Danilo Tadeu Claudiano Pietrucci,Auxiliar Atividade Esportiva,Regime Jurídico Único,"R$ 1.621,00","R$ 5.854,27","R$ 0,00","R$ 5.854,27","R$ 2.988,85","R$ 2.865,42",5854.27,2988.85,2865.42
+134,00035351 / 1,Folha Mensal,Ivan César da Silva Evangelista,Fiscal,Regime Jurídico Único,"R$ 3.353,61","R$ 5.847,19","R$ 0,00","R$ 5.847,19","R$ 2.084,11","R$ 3.763,08",5847.19,2084.11,3763.08
+135,00041874 / 1,Folha Mensal,Miquéias de Oliveira Costa,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 5.845,70","R$ 0,00","R$ 5.845,70","R$ 804,08","R$ 5.041,62",5845.7,804.08,5041.62
+136,00029327 / 1,Folha Mensal,Andrea Bianchetti Ribeiro,Dentista,Regime Jurídico Único,"R$ 3.894,57","R$ 5.841,85","R$ 0,00","R$ 5.841,85","R$ 2.381,19","R$ 3.460,66",5841.85,2381.19,3460.66
+137,00035688 / 1,Folha Mensal,Danielle de Almeida Cardoso,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.829,14","R$ 0,00","R$ 5.829,14","R$ 2.407,51","R$ 3.421,63",5829.14,2407.51,3421.63
+138,00035670 / 1,Folha Mensal,Daiana Franco Ribeiro,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.807,86","R$ 0,00","R$ 5.807,86","R$ 2.092,65","R$ 3.715,21",5807.86,2092.65,3715.21
+139,00038210 / 1,Folha Mensal,Mara Regina Zan,Psicólogo,Regime Jurídico Único,"R$ 2.520,62","R$ 5.790,20","R$ 0,00","R$ 5.790,20","R$ 697,07","R$ 5.093,13",5790.2,697.07,5093.13
+140,00022756 / 1,Folha Mensal,Márien Haddad  Nascimento,Chefe da Divisão de Patrimonio,Regime Jurídico Único,"R$ 2.380,02","R$ 5.781,91","R$ 0,00","R$ 5.781,91","R$ 1.429,00","R$ 4.352,91",5781.91,1429.0,4352.91
+141,00010081 / 1,Rescisão,Antonio Rossetto Sobrinho,Motorista I,Regime Jurídico Único,"R$ 0,00","R$ 5.748,96","R$ 0,00","R$ 5.748,96","R$ 152,40","R$ 5.596,56",5748.96,152.4,5596.56
+142,00034800 / 1,Folha Mensal,Danielle de Almeida Cardoso,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.694,72","R$ 0,00","R$ 5.694,72","R$ 997,64","R$ 4.697,08",5694.72,997.64,4697.08
+143,00026476 / 1,Folha Mensal,Carlos Roberto Passoni,Chefe D. T. Fora do Domicilio,Regime Jurídico Único,"R$ 1.914,80","R$ 5.686,76","R$ 0,00","R$ 5.686,76","R$ 1.607,79","R$ 4.078,97",5686.76,1607.79,4078.97
+144,00030104 / 1,Folha Mensal,Jairo Orácio Danziger,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 5.673,50","R$ 0,00","R$ 5.673,50","R$ 680,82","R$ 4.992,68",5673.5,680.82,4992.68
+145,00035661 / 1,Folha Mensal,Priscilla Nogueira de Moura,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.662,80","R$ 0,00","R$ 5.662,80","R$ 984,61","R$ 4.678,19",5662.8,984.61,4678.19
+146,00037710 / 1,Folha Mensal,Luciana de Cássia Coutinho Bento,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.662,79","R$ 0,00","R$ 5.662,79","R$ 984,61","R$ 4.678,18",5662.79,984.61,4678.18
+147,00027901 / 1,Folha Mensal,Geovana Betin,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 5.653,05","R$ 0,00","R$ 5.653,05","R$ 765,67","R$ 4.887,38",5653.05,765.67,4887.38
+148,00036374 / 1,Folha Mensal,Hérica Ignácio,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.641,51","R$ 0,00","R$ 5.641,51","R$ 975,92","R$ 4.665,59",5641.51,975.92,4665.59
+149,00028665 / 1,Folha Mensal,Graziele Jorge Barion Braz,Coordenador CRAS,Regime Jurídico Único,"R$ 4.110,92","R$ 5.638,65","R$ 0,00","R$ 5.638,65","R$ 883,46","R$ 4.755,19",5638.65,883.46,4755.19
+150,00034711 / 1,Folha Mensal,Fernanda Barion Amadeu Borges,Professor  PEB II,Regime Jurídico Único,"R$ 4.488,75","R$ 5.610,92","R$ 0,00","R$ 5.610,92","R$ 2.135,81","R$ 3.475,11",5610.92,2135.81,3475.11
+151,00027251 / 1,Folha Mensal,Adenilson Cesar Gonçalves,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 5.608,63","R$ 0,00","R$ 5.608,63","R$ 1.704,19","R$ 3.904,44",5608.63,1704.19,3904.44
+152,00031518 / 1,Folha Mensal,Fabio Luis José Mendonça,Dentista,Regime Jurídico Único,"R$ 3.894,57","R$ 5.608,17","R$ 0,00","R$ 5.608,17","R$ 1.565,69","R$ 4.042,48",5608.17,1565.69,4042.48
+153,00036234 / 1,Folha Mensal,Evandro Donizete de Mello,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 5.603,84","R$ 0,00","R$ 5.603,84","R$ 1.866,81","R$ 3.737,03",5603.84,1866.81,3737.03
+154,00027170 / 1,Folha Mensal,Dulcinéia de Lourdes Geraldo,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 5.583,80","R$ 0,00","R$ 5.583,80","R$ 734,52","R$ 4.849,28",5583.8,734.52,4849.28
+155,00042307 / 1,Folha Mensal,Gisele Benassi,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.549,64","R$ 0,00","R$ 5.549,64","R$ 2.604,89","R$ 2.944,75",5549.64,2604.89,2944.75
+156,00041602 / 1,Folha Mensal,Deborah Vasconcelos dos Santos,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.524,48","R$ 0,00","R$ 5.524,48","R$ 3.626,79","R$ 1.897,69",5524.48,3626.79,1897.69
+157,00034797 / 1,Folha Mensal,Tatiane Aparecida Restani Mengali,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.475,18","R$ 0,00","R$ 5.475,18","R$ 2.600,12","R$ 2.875,06",5475.18,2600.12,2875.06
+158,00029041 / 1,Folha Mensal,Moacir Ricardo Cassani,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 5.463,20","R$ 0,00","R$ 5.463,20","R$ 591,94","R$ 4.871,26",5463.2,591.94,4871.26
+159,00024090 / 1,Folha Mensal,Nicolau Henrique Trevisan,Instrutor de Informatica,Regime Jurídico Único,"R$ 1.914,80","R$ 5.452,72","R$ 0,00","R$ 5.452,72","R$ 655,53","R$ 4.797,19",5452.72,655.53,4797.19
+160,00039004 / 1,Folha Mensal,Ana Maria Rueda Morgan Moreira,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.443,25","R$ 0,00","R$ 5.443,25","R$ 871,65","R$ 4.571,60",5443.25,871.65,4571.6
+161,00046205 / 1,Folha Mensal,Vanesa Roque,Assessor Financeiro,Cargo em Comissão,"R$ 5.409,10","R$ 5.409,10","R$ 0,00","R$ 5.409,10","R$ 712,13","R$ 4.696,97",5409.1,712.13,4696.97
+162,00048020 / 1,Folha Mensal,Imaculada Peixoto Machado Farias,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 5.398,42","R$ 0,00","R$ 5.398,42","R$ 706,28","R$ 4.692,14",5398.42,706.28,4692.14
+163,00010235 / 1,Folha Mensal,Adriana Gussão,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 5.326,33","R$ 0,00","R$ 5.326,33","R$ 725,92","R$ 4.600,41",5326.33,725.92,4600.41
+164,00027006 / 1,Folha Mensal,Pedro Luis Datovo,Zelador E. Esportivos,Regime Jurídico Único,"R$ 2.163,63","R$ 5.306,51","R$ 0,00","R$ 5.306,51","R$ 2.164,36","R$ 3.142,15",5306.51,2164.36,3142.15
+165,00041939 / 1,Folha Mensal,Mariana Barion,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.298,18","R$ 0,00","R$ 5.298,18","R$ 792,85","R$ 4.505,33",5298.18,792.85,4505.33
+166,00048267 / 1,Folha Mensal,Angela Beatriz Nogueira,Professor  PEB II,Contrato por Tempo Determinado,"R$ 5.001,75","R$ 5.278,65","R$ 0,00","R$ 5.278,65","R$ 640,62","R$ 4.638,03",5278.65,640.62,4638.03
+167,00041610 / 1,Folha Mensal,Bruna Helena Grespan,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.234,34","R$ 0,00","R$ 5.234,34","R$ 769,98","R$ 4.464,36",5234.34,769.98,4464.36
+168,00041629 / 1,Folha Mensal,Maria Paula Zanatta Egreja Mengali,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.234,34","R$ 0,00","R$ 5.234,34","R$ 769,98","R$ 4.464,36",5234.34,769.98,4464.36
+169,00034576 / 1,Folha Mensal,Leandro Cesar Sgrilli,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 5.227,36","R$ 0,00","R$ 5.227,36","R$ 1.457,34","R$ 3.770,02",5227.36,1457.34,3770.02
+170,00047856 / 1,Folha Mensal,Raiana Durante,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 5.213,05","R$ 0,00","R$ 5.213,05","R$ 687,12","R$ 4.525,93",5213.05,687.12,4525.93
+171,00041580 / 1,Folha Mensal,Gabriela da Silva Breda Nogueira,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.202,42","R$ 0,00","R$ 5.202,42","R$ 1.723,88","R$ 3.478,54",5202.42,1723.88,3478.54
+172,00041599 / 1,Folha Mensal,Adriana Reis Guilherme Sanches,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.181,14","R$ 0,00","R$ 5.181,14","R$ 750,93","R$ 4.430,21",5181.14,750.93,4430.21
+173,00041572 / 1,Folha Mensal,Rosangela Aparecida Rocha,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.170,50","R$ 0,00","R$ 5.170,50","R$ 747,12","R$ 4.423,38",5170.5,747.12,4423.38
+174,00042110 / 1,Folha Mensal,Ana Claudia Cussolini,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.159,86","R$ 0,00","R$ 5.159,86","R$ 1.604,04","R$ 3.555,82",5159.86,1604.04,3555.82
+175,00048488 / 1,Folha Mensal,Ana Lucia da Silva Borges,Professor de E. Especial - PEE,Contrato por Tempo Determinado,"R$ 4.873,50","R$ 5.139,50","R$ 0,00","R$ 5.139,50","R$ 570,97","R$ 4.568,53",5139.5,570.97,4568.53
+176,00037699 / 1,Folha Mensal,Daniele Cristina de Oliveira,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.117,31","R$ 0,00","R$ 5.117,31","R$ 728,07","R$ 4.389,24",5117.31,728.07,4389.24
+177,00041980 / 1,Folha Mensal,Joice Alexandra Grespan Benfeito,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.117,30","R$ 0,00","R$ 5.117,30","R$ 728,07","R$ 4.389,23",5117.3,728.07,4389.23
+178,00047937 / 1,Folha Mensal,Angelica Donizeti Teixeira,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 5.080,88","R$ 0,00","R$ 5.080,88","R$ 541,77","R$ 4.539,11",5080.88,541.77,4539.11
+179,00038148 / 1,Folha Mensal,Luiz de Marcos,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 5.074,54","R$ 0,00","R$ 5.074,54","R$ 426,51","R$ 4.648,03",5074.54,426.51,4648.03
+180,00030147 / 1,Folha Mensal,Alcemir Aparecido Franco Barbosa,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 5.045,36","R$ 0,00","R$ 5.045,36","R$ 2.074,85","R$ 2.970,51",5045.36,2074.85,2970.51
+181,00042935 / 1,Folha Mensal,Ana Carolina Amadeu Fernandes,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 5.036,08","R$ 0,00","R$ 5.036,08","R$ 3.414,18","R$ 1.621,90",5036.08,3414.18,1621.9
+182,00037540 / 1,Folha Mensal,Odair Jose de Almeida,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 5.006,62","R$ 0,00","R$ 5.006,62","R$ 1.401,76","R$ 3.604,86",5006.62,1401.76,3604.86
+183,00041823 / 1,Folha Mensal,Miliane Aparecida dos Santos,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.992,68","R$ 0,00","R$ 4.992,68","R$ 571,88","R$ 4.420,80",4992.68,571.88,4420.8
+184,00037680 / 1,Folha Mensal,Gessi Aparecida Pagano Martimbianco,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 4.982,88","R$ 0,00","R$ 4.982,88","R$ 676,74","R$ 4.306,14",4982.88,676.74,4306.14
+185,00043559 / 1,Folha Mensal,Evania Cristina Pergentino Batista,Professor  PEB I,Regime Jurídico Único,"R$ 4.603,74","R$ 4.972,24","R$ 0,00","R$ 4.972,24","R$ 1.766,70","R$ 3.205,54",4972.24,1766.7,3205.54
+186,00047821 / 1,Folha Mensal,Luciana Costa Baptista,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.963,84","R$ 0,00","R$ 4.963,84","R$ 496,43","R$ 4.467,41",4963.84,496.43,4467.41
+187,00021695 / 1,Folha Mensal,Carmen Lucia da Cunha,Fisioterapeuta,Regime Jurídico Único,"R$ 2.520,62","R$ 4.940,54","R$ 0,00","R$ 4.940,54","R$ 1.881,75","R$ 3.058,79",4940.54,1881.75,3058.79
+188,00038300 / 1,Folha Mensal,Ana Paula Feltran,Professor de E. Especial - PEE,Regime Jurídico Único,"R$ 4.488,75","R$ 4.937,61","R$ 0,00","R$ 4.937,61","R$ 1.859,00","R$ 3.078,61",4937.61,1859.0,3078.61
+189,00020567 / 1,Folha Mensal,Cleber Rogerio Ferreira,Agente Vigilância Sanitária,Regime Jurídico Único,"R$ 2.055,47","R$ 4.923,79","R$ 0,00","R$ 4.923,79","R$ 1.119,22","R$ 3.804,57",4923.79,1119.22,3804.57
+190,00036323 / 1,Folha Mensal,Danilo Cesar Cunha,Mecânico,Regime Jurídico Único,"R$ 1.871,51","R$ 4.883,73","R$ 0,00","R$ 4.883,73","R$ 1.581,37","R$ 3.302,36",4883.73,1581.37,3302.36
+191,00048216 / 1,Folha Mensal,Marcia Cristina Barzagli Picoli,Professor  PEB II,Contrato por Tempo Determinado,"R$ 4.617,00","R$ 4.872,36","R$ 0,00","R$ 4.872,36","R$ 1.900,45","R$ 2.971,91",4872.36,1900.45,2971.91
+192,00048437 / 1,Folha Mensal,Vitor Aparecido de Oliveira,Professor  PEB II,Contrato por Tempo Determinado,"R$ 4.617,00","R$ 4.872,36","R$ 0,00","R$ 4.872,36","R$ 483,63","R$ 4.388,73",4872.36,483.63,4388.73
+193,00030066 / 1,Folha Mensal,Horacio Augusto Danziger,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 680,82","R$ 4.182,18",4863.0,680.82,4182.18
+194,00030074 / 1,Folha Mensal,Fernanda Aparecida de Souza Silva,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 680,82","R$ 4.182,18",4863.0,680.82,4182.18
+195,00030082 / 1,Folha Mensal,Kelly Junqueira Corrêa,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 1.860,28","R$ 3.002,72",4863.0,1860.28,3002.72
+196,00030139 / 1,Folha Mensal,Antônia Aparecida Machado Alvares,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 680,82","R$ 4.182,18",4863.0,680.82,4182.18
+197,00030090 / 1,Folha Mensal,Gislaine Priscila Alves da Silva,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 1.694,33","R$ 3.168,67",4863.0,1694.33,3168.67
+198,00030775 / 1,Folha Mensal,Lucelena de Fátima Oliveira,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 680,82","R$ 4.182,18",4863.0,680.82,4182.18
+199,00030120 / 1,Folha Mensal,Jussara Maria Rodrigues Correa,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.863,00","R$ 0,00","R$ 4.863,00","R$ 680,82","R$ 4.182,18",4863.0,680.82,4182.18
+200,00031798 / 1,Folha Mensal,Janaina de Cassia Braz Cardoso,Farmacêutico,Regime Jurídico Único,"R$ 2.520,62","R$ 4.824,45","R$ 0,00","R$ 4.824,45","R$ 1.033,45","R$ 3.791,00",4824.45,1033.45,3791.0
+201,00040924 / 1,Folha Mensal,Eduardo Rafael Grespan,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 4.817,36","R$ 0,00","R$ 4.817,36","R$ 1.184,57","R$ 3.632,79",4817.36,1184.57,3632.79
+202,00047805 / 1,Folha Mensal,Bruna Bernardes,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 472,83","R$ 4.322,43",4795.26,472.83,4322.43
+203,00047970 / 1,Folha Mensal,Ana Cristina Sorce Ferreira,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 610,30","R$ 4.184,96",4795.26,610.3,4184.96
+204,00048054 / 1,Folha Mensal,Angelica Camila de Sousa,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 472,83","R$ 4.322,43",4795.26,472.83,4322.43
+205,00047902 / 1,Folha Mensal,Daniele Cristina de Oliveira,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 1.945,96","R$ 2.849,30",4795.26,1945.96,2849.3
+206,00047910 / 1,Folha Mensal,Daiana Franco Ribeiro,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 1.866,84","R$ 2.928,42",4795.26,1866.84,2928.42
+207,00048127 / 1,Folha Mensal,Clea de Fatima dos Santos e Souza,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 472,83","R$ 4.322,43",4795.26,472.83,4322.43
+208,00047872 / 1,Folha Mensal,Denise Franco Ribeiro Maeiro,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.795,26","R$ 0,00","R$ 4.795,26","R$ 472,83","R$ 4.322,43",4795.26,472.83,4322.43
+209,00047996 / 1,Folha Mensal,Sandra Estela Magarotto Sernaglia,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.784,62","R$ 0,00","R$ 4.784,62","R$ 471,34","R$ 4.313,28",4784.62,471.34,4313.28
+210,00048003 / 1,Folha Mensal,Isadora da Costa Barion,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.784,62","R$ 0,00","R$ 4.784,62","R$ 471,34","R$ 4.313,28",4784.62,471.34,4313.28
+211,00048038 / 1,Folha Mensal,July Anne Freire,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.784,62","R$ 0,00","R$ 4.784,62","R$ 471,34","R$ 4.313,28",4784.62,471.34,4313.28
+212,00047961 / 1,Folha Mensal,Renata Maria Fonssato,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.773,98","R$ 0,00","R$ 4.773,98","R$ 469,85","R$ 4.304,13",4773.98,469.85,4304.13
+213,00047899 / 1,Folha Mensal,Beatriz Cristina Luis,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.763,34","R$ 0,00","R$ 4.763,34","R$ 468,36","R$ 4.294,98",4763.34,468.36,4294.98
+214,00047864 / 1,Folha Mensal,Paula Ferreira Pinto Cepolini,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.752,70","R$ 0,00","R$ 4.752,70","R$ 466,88","R$ 4.285,82",4752.7,466.88,4285.82
+215,00047929 / 1,Folha Mensal,Luana Martins Braz,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.752,70","R$ 0,00","R$ 4.752,70","R$ 466,88","R$ 4.285,82",4752.7,466.88,4285.82
+216,00047783 / 1,Folha Mensal,Marcia Cristina Barzagli Picoli,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.752,70","R$ 0,00","R$ 4.752,70","R$ 554,06","R$ 4.198,64",4752.7,554.06,4198.64
+217,00042021 / 1,Folha Mensal,Janaina Cristina da Silva,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 4.752,23","R$ 0,00","R$ 4.752,23","R$ 349,86","R$ 4.402,37",4752.23,349.86,4402.37
+218,00048062 / 1,Folha Mensal,Natalia Gonçalves Della Torre Bini,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.742,06","R$ 0,00","R$ 4.742,06","R$ 465,39","R$ 4.276,67",4742.06,465.39,4276.67
+219,00048585 / 1,Folha Mensal,Heloize Helena Nogueira Miranda,Professor  PEB II,Contrato por Tempo Determinado,"R$ 4.488,75","R$ 4.733,47","R$ 0,00","R$ 4.733,47","R$ 489,78","R$ 4.243,69",4733.47,489.78,4243.69
+220,00048453 / 1,Folha Mensal,Andresa Evelen Bassini,Professor  PEB II,Contrato por Tempo Determinado,"R$ 4.488,75","R$ 4.733,47","R$ 0,00","R$ 4.733,47","R$ 464,18","R$ 4.269,29",4733.47,464.18,4269.29
+221,00047830 / 1,Folha Mensal,Fernanda Rossetto Rovani,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.731,42","R$ 0,00","R$ 4.731,42","R$ 1.821,56","R$ 2.909,86",4731.42,1821.56,2909.86
+222,00048518 / 1,Folha Mensal,Cintia Cristina de Moraes Moreira,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.731,42","R$ 0,00","R$ 4.731,42","R$ 463,90","R$ 4.267,52",4731.42,463.9,4267.52
+223,00047988 / 1,Folha Mensal,Ana Laura Alvares,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.731,42","R$ 0,00","R$ 4.731,42","R$ 463,90","R$ 4.267,52",4731.42,463.9,4267.52
+224,00048097 / 1,Folha Mensal,Greise Viviane da Cunha Ramires,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.731,42","R$ 0,00","R$ 4.731,42","R$ 463,90","R$ 4.267,52",4731.42,463.9,4267.52
+225,00047791 / 1,Folha Mensal,Evania Cristina Pergentino Batista,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.720,78","R$ 0,00","R$ 4.720,78","R$ 1.905,99","R$ 2.814,79",4720.78,1905.99,2814.79
+226,00048500 / 1,Folha Mensal,Livia Cristiny Bucci,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.720,78","R$ 0,00","R$ 4.720,78","R$ 468,65","R$ 4.252,13",4720.78,468.65,4252.13
+227,00048100 / 1,Folha Mensal,Ana Carolina de Sousa,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.720,78","R$ 0,00","R$ 4.720,78","R$ 462,41","R$ 4.258,37",4720.78,462.41,4258.37
+228,00047880 / 1,Folha Mensal,Vanessa Cristina Vieira Escremin,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.720,78","R$ 0,00","R$ 4.720,78","R$ 462,41","R$ 4.258,37",4720.78,462.41,4258.37
+229,00048526 / 1,Folha Mensal,Marcela de Cassia da Cruz Melo,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.720,78","R$ 0,00","R$ 4.720,78","R$ 462,41","R$ 4.258,37",4720.78,462.41,4258.37
+230,00048011 / 1,Folha Mensal,Anna Carolina Donnabella Pereira,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.710,14","R$ 0,00","R$ 4.710,14","R$ 460,92","R$ 4.249,22",4710.14,460.92,4249.22
+231,00048496 / 1,Folha Mensal,Adriana Aparecida Bertolini Mengali,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.710,14","R$ 0,00","R$ 4.710,14","R$ 460,92","R$ 4.249,22",4710.14,460.92,4249.22
+232,00048194 / 1,Folha Mensal,Rafaela Erica de Paula,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.710,14","R$ 0,00","R$ 4.710,14","R$ 460,92","R$ 4.249,22",4710.14,460.92,4249.22
+233,00023663 / 1,Folha Mensal,Renata de Carvalho Dias Bertolin,Secretária de Escola,Regime Jurídico Único,"R$ 2.380,02","R$ 4.704,52","R$ 0,00","R$ 4.704,52","R$ 524,80","R$ 4.179,72",4704.52,524.8,4179.72
+234,00047945 / 1,Folha Mensal,Cristina Augusto de Melo,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.699,50","R$ 0,00","R$ 4.699,50","R$ 459,43","R$ 4.240,07",4699.5,459.43,4240.07
+235,00010812 / 1,Folha Mensal,Valeria Regina da Matta,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 4.692,31","R$ 0,00","R$ 4.692,31","R$ 1.397,76","R$ 3.294,55",4692.31,1397.76,3294.55
+236,00048070 / 1,Folha Mensal,Samira Gabriela Regina Rabelo de Almeida Solano Gimenes,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.688,86","R$ 0,00","R$ 4.688,86","R$ 457,94","R$ 4.230,92",4688.86,457.94,4230.92
+237,00047848 / 1,Folha Mensal,Erlani Cristina Barbosa,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.688,86","R$ 0,00","R$ 4.688,86","R$ 863,86","R$ 3.825,00",4688.86,863.86,3825.0
+238,00042242 / 1,Folha Mensal,Elton Carlos Restani,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 4.688,62","R$ 0,00","R$ 4.688,62","R$ 1.440,42","R$ 3.248,20",4688.62,1440.42,3248.2
+239,00031054 / 1,Folha Mensal,Cris Kelly Dezorzi Magaroti,Coordenador de Atenção Básica,Regime Jurídico Único,"R$ 1.621,00","R$ 4.679,01","R$ 0,00","R$ 4.679,01","R$ 1.814,70","R$ 2.864,31",4679.01,1814.7,2864.31
+240,00039225 / 1,Folha Mensal,Odete de Bem de Carvalho,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 4.678,71","R$ 0,00","R$ 4.678,71","R$ 958,76","R$ 3.719,95",4678.71,958.76,3719.95
+241,00031810 / 1,Folha Mensal,Eliane Maria Arsie,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.668,48","R$ 0,00","R$ 4.668,48","R$ 653,58","R$ 4.014,90",4668.48,653.58,4014.9
+242,00031178 / 1,Folha Mensal,Aline Cristian de Oliveira Gavioli,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.668,48","R$ 0,00","R$ 4.668,48","R$ 917,78","R$ 3.750,70",4668.48,917.78,3750.7
+243,00031186 / 1,Folha Mensal,Maiara de Cássia Francisco,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.668,48","R$ 0,00","R$ 4.668,48","R$ 1.667,98","R$ 3.000,50",4668.48,1667.98,3000.5
+244,00031143 / 1,Folha Mensal,Edimara Sabino,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.668,48","R$ 0,00","R$ 4.668,48","R$ 1.853,51","R$ 2.814,97",4668.48,1853.51,2814.97
+245,00031119 / 1,Folha Mensal,Danielle Fernanda Silva,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.668,48","R$ 0,00","R$ 4.668,48","R$ 1.646,52","R$ 3.021,96",4668.48,1646.52,3021.96
+246,00047813 / 1,Folha Mensal,Lenize Liboni,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 4.656,94","R$ 0,00","R$ 4.656,94","R$ 453,47","R$ 4.203,47",4656.94,453.47,4203.47
+247,00044792 / 1,Folha Mensal,Rafael Felipe Duarte,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 4.646,77","R$ 0,00","R$ 4.646,77","R$ 363,48","R$ 4.283,29",4646.77,363.48,4283.29
+248,00010383 / 1,Folha Mensal,Benedito Correa Filho,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 4.638,40","R$ 0,00","R$ 4.638,40","R$ 530,10","R$ 4.108,30",4638.4,530.1,4108.3
+249,00023671 / 1,Folha Mensal,Carina Rosa dos Santos,Secretária de Escola,Regime Jurídico Único,"R$ 2.380,02","R$ 4.592,07","R$ 0,00","R$ 4.592,07","R$ 1.766,56","R$ 2.825,51",4592.07,1766.56,2825.51
+250,00023590 / 1,Folha Mensal,Adriana de Fátima Ramos da Silva,Secretária de Escola,Regime Jurídico Único,"R$ 2.380,02","R$ 4.592,07","R$ 0,00","R$ 4.592,07","R$ 1.367,68","R$ 3.224,39",4592.07,1367.68,3224.39
+251,00042056 / 1,Folha Mensal,Michella Passoni Aurilietti,Gerente M. de Comunicações,Cargo em Comissão,"R$ 4.327,28","R$ 4.543,64","R$ 0,00","R$ 4.543,64","R$ 1.328,20","R$ 3.215,44",4543.64,1328.2,3215.44
+252,00041882 / 1,Folha Mensal,Rodrigo Augusto Correa,Gerente Municipal de Cultura,Regime Jurídico Único,"R$ 4.327,28","R$ 4.543,64","R$ 0,00","R$ 4.543,64","R$ 957,32","R$ 3.586,32",4543.64,957.32,3586.32
+253,00047244 / 1,Folha Mensal,Amanda Rizzetto Longuini Quinalhia,Dentista,Contrato por Tempo Determinado,"R$ 3.894,57","R$ 4.542,97","R$ 0,00","R$ 4.542,97","R$ 437,51","R$ 4.105,46",4542.97,437.51,4105.46
+254,00047236 / 1,Folha Mensal,Moira Helena Kulay Carnevale,Dentista,Contrato por Tempo Determinado,"R$ 3.894,57","R$ 4.542,97","R$ 0,00","R$ 4.542,97","R$ 437,51","R$ 4.105,46",4542.97,437.51,4105.46
+255,00034819 / 1,Folha Mensal,Marco Aurélio Pereira da Silva,Professor  PEB II,Regime Jurídico Único,"R$ 3.462,75","R$ 4.519,94","R$ 0,00","R$ 4.519,94","R$ 605,97","R$ 3.913,97",4519.94,605.97,3913.97
+256,00041890 / 1,Folha Mensal,Antonio Marcos Feltran,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 4.489,56","R$ 0,00","R$ 4.489,56","R$ 349,86","R$ 4.139,70",4489.56,349.86,4139.7
+257,00024520 / 1,Folha Mensal,Luis Pedro de Carvalho,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 4.474,61","R$ 0,00","R$ 4.474,61","R$ 957,02","R$ 3.517,59",4474.61,957.02,3517.59
+258,00027162 / 1,Folha Mensal,Leandro Cesar de Godoy,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 4.472,33","R$ 0,00","R$ 4.472,33","R$ 1.061,44","R$ 3.410,89",4472.33,1061.44,3410.89
+259,00028606 / 1,Folha Mensal,Sérgio Donizete Bianchetti,Supervisor Obras e Serviços,Regime Jurídico Único,"R$ 2.520,62","R$ 4.411,21","R$ 0,00","R$ 4.411,21","R$ 1.155,40","R$ 3.255,81",4411.21,1155.4,3255.81
+260,00028576 / 1,Folha Mensal,Eliane de Fátima Bacetti,Psicólogo,Regime Jurídico Único,"R$ 2.520,62","R$ 4.410,77","R$ 0,00","R$ 4.410,77","R$ 927,09","R$ 3.483,68",4410.77,927.09,3483.68
+261,00020680 / 1,Folha Mensal,Silvia Regina Fonsato,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 4.406,03","R$ 0,00","R$ 4.406,03","R$ 442,84","R$ 3.963,19",4406.03,442.84,3963.19
+262,00028029 / 1,Folha Mensal,Joao Batista França,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 4.389,35","R$ 0,00","R$ 4.389,35","R$ 413,03","R$ 3.976,32",4389.35,413.03,3976.32
+263,00031658 / 1,Folha Mensal,Anelise da Costa Civitereza,Professor  PEB II,Regime Jurídico Único,"R$ 3.462,75","R$ 4.346,82","R$ 0,00","R$ 4.346,82","R$ 581,74","R$ 3.765,08",4346.82,581.74,3765.08
+264,00034754 / 1,Folha Mensal,Maila Cristina Jorge Corrêa,Professor  PEB II,Regime Jurídico Único,"R$ 3.462,75","R$ 4.346,81","R$ 0,00","R$ 4.346,81","R$ 1.083,28","R$ 3.263,53",4346.81,1083.28,3263.53
+265,00048470 / 1,Folha Mensal,Pedro Henrique Braz Garcia,Professor  PEB II,Contrato por Tempo Determinado,"R$ 4.104,00","R$ 4.327,44","R$ 0,00","R$ 4.327,44","R$ 1.357,78","R$ 2.969,66",4327.44,1357.78,2969.66
+266,00023256 / 1,Folha Mensal,Adeliza Aguiar João,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 4.286,29","R$ 0,00","R$ 4.286,29","R$ 544,08","R$ 3.742,21",4286.29,544.08,3742.21
+267,00048178 / 1,Folha Mensal,Maria da Graca Seviterezza de Oliveira,Professor  PEB II,Contrato por Tempo Determinado,"R$ 4.027,05","R$ 4.250,49","R$ 0,00","R$ 4.250,49","R$ 398,64","R$ 3.851,85",4250.49,398.64,3851.85
+268,00024481 / 1,Folha Mensal,Fernanda Aretha Faustino Borges,Farmacêutico,Regime Jurídico Único,"R$ 2.520,62","R$ 4.205,34","R$ 0,00","R$ 4.205,34","R$ 588,74","R$ 3.616,60",4205.34,588.74,3616.6
+269,00000531 / 1,Folha Mensal,Juniara Andreza do Carmo Alves,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 4.165,15","R$ 0,00","R$ 4.165,15","R$ 583,12","R$ 3.582,03",4165.15,583.12,3582.03
+270,00037524 / 1,Folha Mensal,Ana Flávia Coetti Basso,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.160,56","R$ 0,00","R$ 4.160,56","R$ 1.425,21","R$ 2.735,35",4160.56,1425.21,2735.35
+271,00032018 / 1,Folha Mensal,Diana Amalfi Moreira,Assistente Social,Regime Jurídico Único,"R$ 2.520,62","R$ 4.157,37","R$ 0,00","R$ 4.157,37","R$ 423,46","R$ 3.733,91",4157.37,423.46,3733.91
+272,00005860 / 1,Folha Mensal,José Ricardo Trevisan,Agente de Saneamento,Regime Jurídico Único,"R$ 1.621,00","R$ 4.139,49","R$ 0,00","R$ 4.139,49","R$ 1.346,47","R$ 2.793,02",4139.49,1346.47,2793.02
+273,00041831 / 1,Folha Mensal,Valdirene Aparecida da Silva,Agentes Comunitários,Regime Jurídico Único,"R$ 3.242,00","R$ 4.084,92","R$ 0,00","R$ 4.084,92","R$ 571,88","R$ 3.513,04",4084.92,571.88,3513.04
+274,00027812 / 1,Folha Mensal,Pedrina Dorzinda Nogueira Magnoni,Pensionista,Pensionista,"R$ 4.024,33","R$ 4.024,33","R$ 0,00","R$ 4.024,33","R$ 0,00","R$ 4.024,33",4024.33,0.0,4024.33
+275,00041955 / 1,Folha Mensal,Daiana Fernanda da Silva Bernardi,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 3.991,92","R$ 0,00","R$ 3.991,92","R$ 1.406,16","R$ 2.585,76",3991.92,1406.16,2585.76
+276,00048429 / 1,Folha Mensal,Hildebrando José Romão,Professor  PEB II,Contrato por Tempo Determinado,"R$ 3.719,25","R$ 3.972,17","R$ 0,00","R$ 3.972,17","R$ 365,24","R$ 3.606,93",3972.17,365.24,3606.93
+277,00048623 / 1,Folha Mensal,Cintia Helen de Godoy,Professor  PEB I,Contrato por Tempo Determinado,"R$ 4.603,74","R$ 3.951,71","R$ 0,00","R$ 3.951,71","R$ 362,79","R$ 3.588,92",3951.71,362.79,3588.92
+278,00048615 / 1,Folha Mensal,Claudete Maria Ferreira Viola,Professor de E. Especial - PEE,Contrato por Tempo Determinado,"R$ 4.488,75","R$ 3.944,55","R$ 0,00","R$ 3.944,55","R$ 524,48","R$ 3.420,07",3944.55,524.48,3420.07
+279,00042137 / 1,Folha Mensal,João Vitor Batista Coetti,Chefe de Manutenção da Frota,Regime Jurídico Único,"R$ 2.380,02","R$ 3.944,48","R$ 0,00","R$ 3.944,48","R$ 349,86","R$ 3.594,62",3944.48,349.86,3594.62
+280,00029319 / 1,Folha Mensal,Neiva Elessandra Beneti Alvares,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 3.934,94","R$ 0,00","R$ 3.934,94","R$ 1.222,28","R$ 2.712,66",3934.94,1222.28,2712.66
+281,00047260 / 1,Folha Mensal,Evana Gabriela Cardozo,Enfermeiro,Contrato por Tempo Determinado,"R$ 2.380,02","R$ 3.921,11","R$ 0,00","R$ 3.921,11","R$ 359,12","R$ 3.561,99",3921.11,359.12,3561.99
+282,00045136 / 1,Folha Mensal,Milene de Cassia da Cunha,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 3.915,53","R$ 0,00","R$ 3.915,53","R$ 1.031,89","R$ 2.883,64",3915.53,1031.89,2883.64
+283,00047163 / 1,Folha Mensal,Carlos Roberto Forlani,Motorista,Contrato por Tempo Determinado,"R$ 2.163,63","R$ 3.884,54","R$ 0,00","R$ 3.884,54","R$ 354,73","R$ 3.529,81",3884.54,354.73,3529.81
+284,00030325 / 1,Folha Mensal,Viviane Patricia Olivieri,Assistente Social,Regime Jurídico Único,"R$ 2.520,62","R$ 3.881,74","R$ 0,00","R$ 3.881,74","R$ 1.362,09","R$ 2.519,65",3881.74,1362.09,2519.65
+285,00043702 / 1,Folha Mensal,Regiane Aparecida Pinto Trevisan,Inspetor de Aluno,Regime Jurídico Único,"R$ 2.163,63","R$ 3.862,17","R$ 0,00","R$ 3.862,17","R$ 1.628,41","R$ 2.233,76",3862.17,1628.41,2233.76
+286,00028738 / 1,Folha Mensal,Lincon Fredi Moreira,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 3.854,53","R$ 0,00","R$ 3.854,53","R$ 1.699,98","R$ 2.154,55",3854.53,1699.98,2154.55
+287,00045225 / 1,Folha Mensal,Guilherme Melchiori Cerri,Psicólogo,Regime Jurídico Único,"R$ 2.520,62","R$ 3.854,02","R$ 0,00","R$ 3.854,02","R$ 388,17","R$ 3.465,85",3854.02,388.17,3465.85
+288,00042943 / 1,Folha Mensal,Natan Henrique de Lima,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 3.816,63","R$ 0,00","R$ 3.816,63","R$ 1.245,04","R$ 2.571,59",3816.63,1245.04,2571.59
+289,00034452 / 1,Folha Mensal,Sergio Roberto Rodrigues,Lixeiro,Regime Jurídico Único,"R$ 1.621,00","R$ 3.784,22","R$ 0,00","R$ 3.784,22","R$ 365,37","R$ 3.418,85",3784.22,365.37,3418.85
+290,00034444 / 1,Folha Mensal,Carlos Cesar de Almeida,Lixeiro,Regime Jurídico Único,"R$ 1.621,00","R$ 3.784,22","R$ 0,00","R$ 3.784,22","R$ 365,37","R$ 3.418,85",3784.22,365.37,3418.85
+291,00034479 / 1,Folha Mensal,Antônio Augusto de Sousa Cardoso,Lixeiro,Regime Jurídico Único,"R$ 1.621,00","R$ 3.784,22","R$ 0,00","R$ 3.784,22","R$ 942,11","R$ 2.842,11",3784.22,942.11,2842.11
+292,00027820 / 1,Folha Mensal,Regiane Aparecida da Silva,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 3.784,01","R$ 0,00","R$ 3.784,01","R$ 1.076,48","R$ 2.707,53",3784.01,1076.48,2707.53
+293,00028851 / 1,Folha Mensal,Sâmara da Cunha Haddad Ramos,Fisioterapeuta,Regime Jurídico Único,"R$ 2.520,62","R$ 3.780,92","R$ 0,00","R$ 3.780,92","R$ 529,32","R$ 3.251,60",3780.92,529.32,3251.6
+294,00038318 / 1,Folha Mensal,Osvaldo Coutinho Junior,Fisioterapeuta,Regime Jurídico Único,"R$ 2.520,62","R$ 3.763,90","R$ 0,00","R$ 3.763,90","R$ 1.363,50","R$ 2.400,40",3763.9,1363.5,2400.4
+295,00021482 / 1,Folha Mensal,Quedma Pires Ferreira,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 3.706,78","R$ 0,00","R$ 3.706,78","R$ 914,02","R$ 2.792,76",3706.78,914.02,2792.76
+296,00045551 / 1,Folha Mensal,Maria Cecilia Forti,Chefe da Divisão de Zoonoses,Regime Jurídico Único,"R$ 1.968,94","R$ 3.663,62","R$ 0,00","R$ 3.663,62","R$ 330,78","R$ 3.332,84",3663.62,330.78,3332.84
+297,00010740 / 1,Folha Mensal,Vera Cruz de Queiroz Ferreira,Inspetor de Aluno,Regime Jurídico Único,"R$ 2.163,63","R$ 3.660,24","R$ 0,00","R$ 3.660,24","R$ 1.605,78","R$ 2.054,46",3660.24,1605.78,2054.46
+298,00048160 / 1,Folha Mensal,Fabiany de Lima Andrade Forti,Professor  PEB II,Contrato por Tempo Determinado,"R$ 3.462,75","R$ 3.654,27","R$ 0,00","R$ 3.654,27","R$ 327,10","R$ 3.327,17",3654.27,327.1,3327.17
+299,00008095 / 1,Folha Mensal,Maria Regina Muniz,Pensionista,Pensionista,"R$ 3.630,93","R$ 3.630,93","R$ 0,00","R$ 3.630,93","R$ 0,00","R$ 3.630,93",3630.93,0.0,3630.93
+300,00008079 / 1,Folha Mensal,Neuza Rodrigues,Pensionista,Pensionista,"R$ 3.630,93","R$ 3.630,93","R$ 0,00","R$ 3.630,93","R$ 0,00","R$ 3.630,93",3630.93,0.0,3630.93
+301,00026484 / 1,Folha Mensal,Evandro dos Santos Coutinho,Guarda Noturno,Regime Jurídico Único,"R$ 2.163,63","R$ 3.614,33","R$ 0,00","R$ 3.614,33","R$ 978,79","R$ 2.635,54",3614.33,978.79,2635.54
+302,00021326 / 1,Folha Mensal,Rogerio Onofre Pereira de Souza,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 3.534,02","R$ 0,00","R$ 3.534,02","R$ 1.526,98","R$ 2.007,04",3534.02,1526.98,2007.04
+303,00026964 / 1,Folha Mensal,Janiere Sileni Passoni Gavioli,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 3.531,04","R$ 0,00","R$ 3.531,04","R$ 1.539,73","R$ 1.991,31",3531.04,1539.73,1991.31
+304,00044105 / 1,Folha Mensal,Julio Cesar Gomes,Eletricista,Regime Jurídico Único,"R$ 2.163,63","R$ 3.509,40","R$ 0,00","R$ 3.509,40","R$ 393,77","R$ 3.115,63",3509.4,393.77,3115.63
+305,00039020 / 1,Folha Mensal,Wilson Pedro dos Santos,Servente,Regime Jurídico Único,"R$ 2.163,63","R$ 3.498,57","R$ 0,00","R$ 3.498,57","R$ 1.149,39","R$ 2.349,18",3498.57,1149.39,2349.18
+306,00038423 / 1,Folha Mensal,Leandro Henrique Theodoro,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 3.498,57","R$ 0,00","R$ 3.498,57","R$ 570,83","R$ 2.927,74",3498.57,570.83,2927.74
+307,00041840 / 1,Folha Mensal,Junio Barbosa do Prado,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 3.494,29","R$ 0,00","R$ 3.494,29","R$ 1.033,84","R$ 2.460,45",3494.29,1033.84,2460.45
+308,00026565 / 1,Folha Mensal,Erica Cristina Aurilietti de Oliveira Moreira,Psicólogo,Regime Jurídico Único,"R$ 2.520,62","R$ 3.465,84","R$ 0,00","R$ 3.465,84","R$ 485,21","R$ 2.980,63",3465.84,485.21,2980.63
+309,00048658 / 1,Folha Mensal,Andrea Cristina de Andrade Silva,Professor de E. Especial - PEE,Contrato por Tempo Determinado,"R$ 4.873,50","R$ 3.458,05","R$ 0,00","R$ 3.458,05","R$ 303,55","R$ 3.154,50",3458.05,303.55,3154.5
+310,00039497 / 1,Folha Mensal,Natanael Balbino,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 3.445,56","R$ 0,00","R$ 3.445,56","R$ 393,77","R$ 3.051,79",3445.56,393.77,3051.79
+311,00035335 / 1,Folha Mensal,Edson Aparecido Martins,Enfermeiro Padrao,Regime Jurídico Único,"R$ 2.380,02","R$ 3.443,86","R$ 0,00","R$ 3.443,86","R$ 1.308,66","R$ 2.135,20",3443.86,1308.66,2135.2
+312,00028541 / 1,Folha Mensal,Silvanil Donizete Geronimo,Porteiro,Regime Jurídico Único,"R$ 1.621,00","R$ 3.436,13","R$ 0,00","R$ 3.436,13","R$ 927,11","R$ 2.509,02",3436.13,927.11,2509.02
+313,00026875 / 1,Folha Mensal,Fatima Francisca Alvares Limongi,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 3.403,42","R$ 0,00","R$ 3.403,42","R$ 476,47","R$ 2.926,95",3403.42,476.47,2926.95
+314,00044067 / 1,Folha Mensal,Jesiel Clemente Garcia,Auxiliar de Obras e Serviços,Regime Jurídico Único,"R$ 1.621,00","R$ 3.389,61","R$ 0,00","R$ 3.389,61","R$ 640,72","R$ 2.748,89",3389.61,640.72,2748.89
+315,00035319 / 1,Folha Mensal,Luana Farah Pacobello Godinho,Farmacêutico,Regime Jurídico Único,"R$ 2.520,62","R$ 3.388,82","R$ 0,00","R$ 3.388,82","R$ 426,99","R$ 2.961,83",3388.82,426.99,2961.83
+316,00035408 / 1,Folha Mensal,Raquel Cristina Nogueira da Cunha,Nutricionista,Regime Jurídico Único,"R$ 2.520,62","R$ 3.379,89","R$ 0,00","R$ 3.379,89","R$ 446,40","R$ 2.933,49",3379.89,446.4,2933.49
+317,00043850 / 1,Folha Mensal,Elisangela de Fatima Marques,Fiscal,Regime Jurídico Único,"R$ 3.353,61","R$ 3.353,61","R$ 0,00","R$ 3.353,61","R$ 469,50","R$ 2.884,11",3353.61,469.5,2884.11
+318,00043451 / 1,Folha Mensal,Marcio Fernando Tristão,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 3.336,30","R$ 0,00","R$ 3.336,30","R$ 363,48","R$ 2.972,82",3336.3,363.48,2972.82
+319,00037419 / 1,Folha Mensal,Carlos Roberto do Prado,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 3.331,98","R$ 0,00","R$ 3.331,98","R$ 1.285,14","R$ 2.046,84",3331.98,1285.14,2046.84
+320,00027928 / 1,Folha Mensal,Marcos Paulo Andreatta,Porteiro,Regime Jurídico Único,"R$ 1.621,00","R$ 3.324,49","R$ 0,00","R$ 3.324,49","R$ 1.158,76","R$ 2.165,73",3324.49,1158.76,2165.73
+321,00010634 / 1,Folha Mensal,Crélia Teodora Ferreira,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 3.322,85","R$ 0,00","R$ 3.322,85","R$ 1.309,93","R$ 2.012,92",3322.85,1309.93,2012.92
+322,00037265 / 1,Folha Mensal,Valdirene Roque,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 3.285,88","R$ 0,00","R$ 3.285,88","R$ 349,48","R$ 2.936,40",3285.88,349.48,2936.4
+323,00030309 / 1,Folha Mensal,Zelia Barion Honorato,Pensionista,Pensionista,"R$ 3.281,49","R$ 3.281,49","R$ 0,00","R$ 3.281,49","R$ 0,00","R$ 3.281,49",3281.49,0.0,3281.49
+324,00046442 / 1,Folha Mensal,Rosangela Aparecida Aranda,Nutricionista,Regime Jurídico Único,"R$ 2.520,62","R$ 3.276,80","R$ 0,00","R$ 3.276,80","R$ 352,88","R$ 2.923,92",3276.8,352.88,2923.92
+325,00029009 / 1,Folha Mensal,Érika Barion de Carvalho,SECRETÁRIA,Regime Jurídico Único,"R$ 2.380,02","R$ 3.272,52","R$ 0,00","R$ 3.272,52","R$ 1.381,26","R$ 1.891,26",3272.52,1381.26,1891.26
+326,00026760 / 1,Folha Mensal,Fabiana Gonçalves de Oliveira,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 3.253,36","R$ 0,00","R$ 3.253,36","R$ 720,50","R$ 2.532,86",3253.36,720.5,2532.86
+327,00047422 / 1,Folha Mensal,Isabela Caetano Pena,Professor  PEB II,Contrato por Tempo Determinado,"R$ 3.078,00","R$ 3.248,40","R$ 0,00","R$ 3.248,40","R$ 278,39","R$ 2.970,01",3248.4,278.39,2970.01
+328,00027200 / 1,Folha Mensal,Cleide Aparecida Chagas de Souza Silverio,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 3.245,61","R$ 0,00","R$ 3.245,61","R$ 668,03","R$ 2.577,58",3245.61,668.03,2577.58
+329,00027219 / 1,Folha Mensal,Luciene Aparecida Fagundes,Merendeira,Regime Jurídico Único,"R$ 2.163,63","R$ 3.234,61","R$ 0,00","R$ 3.234,61","R$ 633,11","R$ 2.601,50",3234.61,633.11,2601.5
+330,00022535 / 1,Folha Mensal,Amélia Regina Bertamé Martins,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 3.228,29","R$ 0,00","R$ 3.228,29","R$ 382,29","R$ 2.846,00",3228.29,382.29,2846.0
+331,00048666 / 1,Folha Mensal,Patricia de Freitas Camilo,Professor de E. Especial - PEE,Contrato por Tempo Determinado,"R$ 4.873,50","R$ 3.204,25","R$ 0,00","R$ 3.204,25","R$ 315,58","R$ 2.888,67",3204.25,315.58,2888.67
+332,00044750 / 1,Folha Mensal,Magno Felix Bernardi,Operador de Máquinas,Regime Jurídico Único,"R$ 2.163,63","R$ 3.180,52","R$ 0,00","R$ 3.180,52","R$ 930,55","R$ 2.249,97",3180.52,930.55,2249.97
+333,00042862 / 1,Folha Mensal,Elton Wallace Ramires,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 3.158,89","R$ 0,00","R$ 3.158,89","R$ 819,47","R$ 2.339,42",3158.89,819.47,2339.42
+334,00022527 / 1,Folha Mensal,Marli de Lurdes Sanches Bertolino,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 3.114,38","R$ 0,00","R$ 3.114,38","R$ 380,01","R$ 2.734,37",3114.38,380.01,2734.37
+335,00041971 / 1,Folha Mensal,Fabio Rafael da Silva,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 3.110,70","R$ 0,00","R$ 3.110,70","R$ 1.029,37","R$ 2.081,33",3110.7,1029.37,2081.33
+336,00035327 / 1,Folha Mensal,Luis Fernando Maeiro,Supervisor de S.E.R.M,Regime Jurídico Único,"R$ 1.871,51","R$ 3.094,18","R$ 0,00","R$ 3.094,18","R$ 642,61","R$ 2.451,57",3094.18,642.61,2451.57
+337,00039136 / 1,Folha Mensal,Ana Beatriz Machado Honório,Auxiliar de Enfermagem do PSF,Regime Jurídico Único,"R$ 1.914,80","R$ 3.077,84","R$ 0,00","R$ 3.077,84","R$ 785,43","R$ 2.292,41",3077.84,785.43,2292.41
+338,00038938 / 1,Folha Mensal,Elaine Regina da Silva,Auxiliar de Enfermagem do PSF,Regime Jurídico Único,"R$ 1.914,80","R$ 3.077,84","R$ 0,00","R$ 3.077,84","R$ 353,85","R$ 2.723,99",3077.84,353.85,2723.99
+339,00037087 / 1,Folha Mensal,Monica de Marcos,Psicólogo,Regime Jurídico Único,"R$ 2.520,62","R$ 3.049,94","R$ 0,00","R$ 3.049,94","R$ 426,99","R$ 2.622,95",3049.94,426.99,2622.95
+340,00048232 / 1,Folha Mensal,Vivian Barion Amalfi,Professor  PEB II,Contrato por Tempo Determinado,"R$ 2.898,45","R$ 3.047,55","R$ 0,00","R$ 3.047,55","R$ 254,29","R$ 2.793,26",3047.55,254.29,2793.26
+341,00028088 / 1,Folha Mensal,Renan da Silva Ceviterezza,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 3.040,59","R$ 0,00","R$ 3.040,59","R$ 1.007,67","R$ 2.032,92",3040.59,1007.67,2032.92
+342,00045233 / 1,Folha Mensal,Charlene Thomaz Sabino,Assistente Social,Regime Jurídico Único,"R$ 2.520,62","R$ 3.024,74","R$ 0,00","R$ 3.024,74","R$ 1.463,43","R$ 1.561,31",3024.74,1463.43,1561.31
+343,00043940 / 1,Folha Mensal,Robert Ribeiro,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 3.000,79","R$ 0,00","R$ 3.000,79","R$ 321,68","R$ 2.679,11",3000.79,321.68,2679.11
+344,00043826 / 1,Folha Mensal,Andreia Nogueira Ribeiro Danziger,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 3.000,79","R$ 0,00","R$ 3.000,79","R$ 979,97","R$ 2.020,82",3000.79,979.97,2020.82
+345,00039950 / 1,Folha Mensal,Isadora Tauane da Silva,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.984,19","R$ 0,00","R$ 2.984,19","R$ 1.018,73","R$ 1.965,46",2984.19,1018.73,1965.46
+346,00048674 / 1,Folha Mensal,Felicio Aparecido da Cunha,Professor  PEB II,Contrato por Tempo Determinado,"R$ 2.949,75","R$ 2.950,58","R$ 0,00","R$ 2.950,58","R$ 242,65","R$ 2.707,93",2950.58,242.65,2707.93
+347,00038539 / 1,Folha Mensal,Simone Cristina Garcia,Supervisor M. de Educação,Regime Jurídico Único,"R$ 2.661,27","R$ 2.927,39","R$ 0,00","R$ 2.927,39","R$ 409,83","R$ 2.517,56",2927.39,409.83,2517.56
+348,00047171 / 1,Folha Mensal,Abimael Magalhães Paulino,Auxiliar de Enfermagem,Contrato por Tempo Determinado,"R$ 1.914,80","R$ 2.910,70","R$ 0,00","R$ 2.910,70","R$ 237,87","R$ 2.672,83",2910.7,237.87,2672.83
+349,00027731 / 1,Folha Mensal,Marilza Aparecida Albino,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.888,10","R$ 0,00","R$ 2.888,10","R$ 654,26","R$ 2.233,84",2888.1,654.26,2233.84
+350,00031623 / 1,Folha Mensal,Elaine Cristina Jorge,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 2.856,02","R$ 0,00","R$ 2.856,02","R$ 1.244,45","R$ 1.611,57",2856.02,1244.45,1611.57
+351,00028754 / 1,Folha Mensal,Sonia Rita Barion,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.836,75","R$ 0,00","R$ 2.836,75","R$ 893,86","R$ 1.942,89",2836.75,893.86,1942.89
+352,00028584 / 1,Folha Mensal,Maria Benedita Barbosa,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.831,50","R$ 0,00","R$ 2.831,50","R$ 600,03","R$ 2.231,47",2831.5,600.03,2231.47
+353,00026883 / 1,Folha Mensal,Silvia Helena Cunha da Silva,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.803,99","R$ 0,00","R$ 2.803,99","R$ 948,44","R$ 1.855,55",2803.99,948.44,1855.55
+354,00026700 / 1,Folha Mensal,Valmir Acácio Rodrigues,Porteiro,Regime Jurídico Único,"R$ 1.621,00","R$ 2.803,99","R$ 0,00","R$ 2.803,99","R$ 1.311,50","R$ 1.492,49",2803.99,1311.5,1492.49
+355,00047635 / 1,Folha Mensal,Cauane da Silvas Carvalho,Coordenador do P. Espaço Amigo,Contrato por Tempo Determinado,"R$ 1.621,00","R$ 2.798,57","R$ 0,00","R$ 2.798,57","R$ 227,55","R$ 2.571,02",2798.57,227.55,2571.02
+356,00045489 / 1,Folha Mensal,Dina Eliana Bernardo Beltran Ferreira,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.797,03","R$ 0,00","R$ 2.797,03","R$ 317,71","R$ 2.479,32",2797.03,317.71,2479.32
+357,00043281 / 1,Folha Mensal,Diego Aparecido Bernardi,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 2.782,96","R$ 0,00","R$ 2.782,96","R$ 1.049,42","R$ 1.733,54",2782.96,1049.42,1733.54
+358,00047953 / 1,Rescisão,Patricia de Freitas Camilo,Professor  PEB I,Contrato por Tempo Determinado,"R$ 0,00","R$ 2.779,99","R$ 0,00","R$ 2.779,99","R$ 129,81","R$ 2.650,18",2779.99,129.81,2650.18
+359,00044911 / 1,Folha Mensal,Regiani Aparecida Darcie Ramin,Assistente Social,Regime Jurídico Único,"R$ 2.520,62","R$ 2.772,68","R$ 0,00","R$ 2.772,68","R$ 388,17","R$ 2.384,51",2772.68,388.17,2384.51
+360,00040070 / 1,Folha Mensal,João Batista de Sousa,Inspetor de Aluno,Regime Jurídico Único,"R$ 2.163,63","R$ 2.769,44","R$ 0,00","R$ 2.769,44","R$ 318,05","R$ 2.451,39",2769.44,318.05,2451.39
+361,00028479 / 1,Folha Mensal,Triani Carla Martins Fernandes,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 2.767,85","R$ 0,00","R$ 2.767,85","R$ 1.097,00","R$ 1.670,85",2767.85,1097.0,1670.85
+362,00039179 / 1,Folha Mensal,Moacir Donizete Gabricio,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 2.748,92","R$ 0,00","R$ 2.748,92","R$ 771,99","R$ 1.976,93",2748.92,771.99,1976.93
+363,00041815 / 1,Folha Mensal,Luis Fernando Bento,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 2.737,02","R$ 0,00","R$ 2.737,02","R$ 383,18","R$ 2.353,84",2737.02,383.18,2353.84
+364,00028690 / 1,Folha Mensal,Ana Aparecida Garcia da Silva,Monitor de Artes,Regime Jurídico Único,"R$ 1.621,00","R$ 2.726,25","R$ 0,00","R$ 2.726,25","R$ 1.069,33","R$ 1.656,92",2726.25,1069.33,1656.92
+365,00028975 / 1,Folha Mensal,Patricia Teresa Medeiros Datovo,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.723,28","R$ 0,00","R$ 2.723,28","R$ 1.036,77","R$ 1.686,51",2723.28,1036.77,1686.51
+366,00046434 / 1,Folha Mensal,Janine Estefania Ribeiro,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.677,89","R$ 0,00","R$ 2.677,89","R$ 317,71","R$ 2.360,18",2677.89,317.71,2360.18
+367,00044717 / 1,Folha Mensal,Carlos Henrique Nunes,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 2.650,44","R$ 0,00","R$ 2.650,44","R$ 302,90","R$ 2.347,54",2650.44,302.9,2347.54
+368,00044830 / 1,Folha Mensal,Afonso Henrique Barbosa,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 2.650,44","R$ 0,00","R$ 2.650,44","R$ 302,90","R$ 2.347,54",2650.44,302.9,2347.54
+369,00045144 / 1,Folha Mensal,Lucas Silva da Costa,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 2.650,44","R$ 0,00","R$ 2.650,44","R$ 302,90","R$ 2.347,54",2650.44,302.9,2347.54
+370,00044806 / 1,Folha Mensal,Talita Helena Martins de Oliveira,Motorista I,Regime Jurídico Único,"R$ 2.163,63","R$ 2.650,44","R$ 0,00","R$ 2.650,44","R$ 1.003,45","R$ 1.646,99",2650.44,1003.45,1646.99
+371,00020273 / 1,Folha Mensal,Fabio Paredes,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.647,70","R$ 0,00","R$ 2.647,70","R$ 1.240,24","R$ 1.407,46",2647.7,1240.24,1407.46
+372,00042269 / 1,Folha Mensal,Ana Paula Ostorero,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 2.641,26","R$ 0,00","R$ 2.641,26","R$ 890,14","R$ 1.751,12",2641.26,890.14,1751.12
+373,00042005 / 1,Folha Mensal,Ludiana de Almeida Theodoro,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.635,34","R$ 0,00","R$ 2.635,34","R$ 728,79","R$ 1.906,55",2635.34,728.79,1906.55
+374,00042099 / 1,Folha Mensal,Keli Cristina Urtado Sousa,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.632,76","R$ 0,00","R$ 2.632,76","R$ 789,22","R$ 1.843,54",2632.76,789.22,1843.54
+375,00031216 / 1,Folha Mensal,Marilise Philomeno de Abreu Cardoso,Telefonista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.621,15","R$ 0,00","R$ 2.621,15","R$ 953,70","R$ 1.667,45",2621.15,953.7,1667.45
+376,00043303 / 1,Folha Mensal,Ruan Gabriel Mendes,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 2.618,02","R$ 0,00","R$ 2.618,02","R$ 366,52","R$ 2.251,50",2618.02,366.52,2251.5
+377,00034606 / 1,Folha Mensal,Eliana Cristina Rodrigues,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.609,81","R$ 0,00","R$ 2.609,81","R$ 869,14","R$ 1.740,67",2609.81,869.14,1740.67
+378,00046124 / 1,Folha Mensal,Fabiano Mariano Rodrigues,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 2.588,76","R$ 0,00","R$ 2.588,76","R$ 208,66","R$ 2.380,10",2588.76,208.66,2380.1
+379,00042927 / 1,Folha Mensal,Natalia Priscila Martins,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 2.565,01","R$ 0,00","R$ 2.565,01","R$ 862,31","R$ 1.702,70",2565.01,862.31,1702.7
+380,00039918 / 1,Folha Mensal,Valcilei Pedro dos Reis,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.552,37","R$ 0,00","R$ 2.552,37","R$ 737,92","R$ 1.814,45",2552.37,737.92,1814.45
+381,00039284 / 1,Folha Mensal,Sandra Mara de Campos,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.540,09","R$ 0,00","R$ 2.540,09","R$ 285,94","R$ 2.254,15",2540.09,285.94,2254.15
+382,00042064 / 1,Folha Mensal,Luana Fernochi,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.540,09","R$ 0,00","R$ 2.540,09","R$ 285,94","R$ 2.254,15",2540.09,285.94,2254.15
+383,00036986 / 1,Folha Mensal,Joana Darc de Souza Della Torre,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 2.538,07","R$ 0,00","R$ 2.538,07","R$ 506,84","R$ 2.031,23",2538.07,506.84,2031.23
+384,00030848 / 1,Folha Mensal,Enoi da Silva Lopes,Pensionista,Pensionista,"R$ 2.505,13","R$ 2.505,13","R$ 0,00","R$ 2.505,13","R$ 0,00","R$ 2.505,13",2505.13,0.0,2505.13
+385,00041866 / 1,Folha Mensal,Mateus José Henrique Fernandes,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 2.499,02","R$ 0,00","R$ 2.499,02","R$ 746,67","R$ 1.752,35",2499.02,746.67,1752.35
+386,00042498 / 1,Folha Mensal,Pâmela Cristina Antunes Silva,AUXILIAR ADMINISTRATIVO,Regime Jurídico Único,"R$ 2.380,02","R$ 2.499,02","R$ 0,00","R$ 2.499,02","R$ 349,86","R$ 2.149,16",2499.02,349.86,2149.16
+387,00037273 / 1,Folha Mensal,Eliana Cristina de Souza Pinto,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.496,34","R$ 0,00","R$ 2.496,34","R$ 349,48","R$ 2.146,86",2496.34,349.48,2146.86
+388,00038911 / 1,Folha Mensal,Amanda Aparecida de Oliveira Tristão,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.479,79","R$ 0,00","R$ 2.479,79","R$ 698,51","R$ 1.781,28",2479.79,698.51,1781.28
+389,00039012 / 1,Folha Mensal,Michele Aparecida de Lima,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.479,79","R$ 0,00","R$ 2.479,79","R$ 597,52","R$ 1.882,27",2479.79,597.52,1882.27
+390,00038075 / 1,Folha Mensal,Manoel Paulo Urtado,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.465,65","R$ 0,00","R$ 2.465,65","R$ 299,56","R$ 2.166,09",2465.65,299.56,2166.09
+391,00036277 / 1,Folha Mensal,Fernanda Chioquete Grespan,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 2.455,20","R$ 0,00","R$ 2.455,20","R$ 196,64","R$ 2.258,56",2455.2,196.64,2258.56
+392,00048682 / 1,Folha Mensal,Ana Livia Estevo,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 2.455,20","R$ 0,00","R$ 2.455,20","R$ 196,64","R$ 2.258,56",2455.2,196.64,2258.56
+393,00031615 / 1,Folha Mensal,Roseli de Sousa Ferreira,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.442,83","R$ 0,00","R$ 2.442,83","R$ 575,00","R$ 1.867,83",2442.83,575.0,1867.83
+394,00043613 / 1,Folha Mensal,Viviane Fernanda Conti,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.442,83","R$ 0,00","R$ 2.442,83","R$ 755,46","R$ 1.687,37",2442.83,755.46,1687.37
+395,00028894 / 1,Folha Mensal,Anaí Baceti Limonge,Auxiliar de Dentista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.431,50","R$ 0,00","R$ 2.431,50","R$ 890,72","R$ 1.540,78",2431.5,890.72,1540.78
+396,00040738 / 1,Folha Mensal,Sirlei de Fatima Jorge,Auxiliar de Enfermagem,Regime Jurídico Único,"R$ 1.914,80","R$ 2.423,18","R$ 0,00","R$ 2.423,18","R$ 877,15","R$ 1.546,03",2423.18,877.15,1546.03
+397,00044040 / 1,Folha Mensal,Marcelo Costa de Oliveira,Auxiliar de Obras e Serviços,Regime Jurídico Único,"R$ 1.621,00","R$ 2.388,54","R$ 0,00","R$ 2.388,54","R$ 317,71","R$ 2.070,83",2388.54,317.71,2070.83
+398,00041564 / 1,Folha Mensal,Tatiane Bernardes Carvalho Paiva,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.382,87","R$ 0,00","R$ 2.382,87","R$ 825,78","R$ 1.557,09",2382.87,825.78,1557.09
+399,00038547 / 1,Folha Mensal,Vanessa Gomes,PEDAGOGA,Regime Jurídico Único,"R$ 2.163,63","R$ 2.379,99","R$ 0,00","R$ 2.379,99","R$ 951,06","R$ 1.428,93",2379.99,951.06,1428.93
+400,00041904 / 1,Folha Mensal,Nara Ligia Candido Marcelino,Auxiliar de Dentista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.369,25","R$ 0,00","R$ 2.369,25","R$ 285,94","R$ 2.083,31",2369.25,285.94,2083.31
+401,00037575 / 1,Folha Mensal,Bruna Cristina Barbosa,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.280,73","R$ 0,00","R$ 2.280,73","R$ 559,67","R$ 1.721,06",2280.73,559.67,1721.06
+402,00047376 / 1,Folha Mensal,Murilo Dias Benedetti,Auxiliar de Obras e Serviços,Regime Jurídico Único,"R$ 1.621,00","R$ 2.269,40","R$ 0,00","R$ 2.269,40","R$ 317,71","R$ 1.951,69",2269.4,317.71,1951.69
+403,00034495 / 1,Folha Mensal,Luana Ferreira Alves,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.236,98","R$ 0,00","R$ 2.236,98","R$ 313,17","R$ 1.923,81",2236.98,313.17,1923.81
+404,00034550 / 1,Folha Mensal,Daiane Helena da Silva,Auxiliar de Dentista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.236,98","R$ 0,00","R$ 2.236,98","R$ 761,09","R$ 1.475,89",2236.98,761.09,1475.89
+405,00039934 / 1,Folha Mensal,Priscila Rodrigues Chagas Aurelietti,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.232,67","R$ 0,00","R$ 2.232,67","R$ 727,10","R$ 1.505,57",2232.67,727.1,1505.57
+406,00042994 / 1,Folha Mensal,Lilian Maria Silverio Urtado,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.226,28","R$ 0,00","R$ 2.226,28","R$ 808,25","R$ 1.418,03",2226.28,808.25,1418.03
+407,00048569 / 1,Rescisão,Giovana Stefani de Lima,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 0,00","R$ 2.220,51","R$ 0,00","R$ 2.220,51","R$ 153,37","R$ 2.067,14",2220.51,153.37,2067.14
+408,00029076 / 1,Folha Mensal,Vera Lucia Ribeiro,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.176,25","R$ 0,00","R$ 2.176,25","R$ 988,42","R$ 1.187,83",2176.25,988.42,1187.83
+409,00030872 / 1,Folha Mensal,Leni Teresa Pedrilho,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.170,20","R$ 0,00","R$ 2.170,20","R$ 272,32","R$ 1.897,88",2170.2,272.32,1897.88
+410,00038121 / 1,Folha Mensal,Larissa Moreira Coppola,Auxiliar de Dentista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.139,72","R$ 0,00","R$ 2.139,72","R$ 299,56","R$ 1.840,16",2139.72,299.56,1840.16
+411,00037508 / 1,Folha Mensal,Marileia Cristina de Oliveira,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.139,72","R$ 0,00","R$ 2.139,72","R$ 299,56","R$ 1.840,16",2139.72,299.56,1840.16
+412,00037532 / 1,Folha Mensal,Ana Carla Delfino,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.139,72","R$ 0,00","R$ 2.139,72","R$ 299,56","R$ 1.840,16",2139.72,299.56,1840.16
+413,00038563 / 1,Folha Mensal,Janaina de Cássia Gonçalves da Silva,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.139,72","R$ 0,00","R$ 2.139,72","R$ 299,56","R$ 1.840,16",2139.72,299.56,1840.16
+414,00031607 / 1,Folha Mensal,Taís Junqueira Thezolin,Telefonista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.139,72","R$ 0,00","R$ 2.139,72","R$ 299,56","R$ 1.840,16",2139.72,299.56,1840.16
+415,00043729 / 1,Folha Mensal,Bruna Maria Sabino Ramires,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 2.118,63","R$ 0,00","R$ 2.118,63","R$ 226,94","R$ 1.891,69",2118.63,226.94,1891.69
+416,00026751 / 1,Folha Mensal,Andréa Carmem de Carvalho,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.107,30","R$ 0,00","R$ 2.107,30","R$ 1.006,07","R$ 1.101,23",2107.3,1006.07,1101.23
+417,00021385 / 1,Folha Mensal,Fernando dos Santos Coutinho,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.107,30","R$ 0,00","R$ 2.107,30","R$ 2.107,30","R$ 0,00",2107.3,2107.3,0.0
+418,00047600 / 1,Folha Mensal,Maria Gabriela dos Santos,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 135,08","R$ 2.104,02","R$ 152,88","R$ 1.951,14",2104.02,152.88,1951.14
+419,00041637 / 1,Folha Mensal,Taiane Aparecida Lourenço de Oliveira Fermino,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 2.067,38","R$ 0,00","R$ 2.067,38","R$ 289,43","R$ 1.777,95",2067.38,289.43,1777.95
+420,00043028 / 1,Folha Mensal,Tatiana Francisco Perico,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 2.067,38","R$ 0,00","R$ 2.067,38","R$ 858,14","R$ 1.209,24",2067.38,858.14,1209.24
+421,00042790 / 1,Folha Mensal,Denise Caroline Borges Ferreira,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 2.067,38","R$ 0,00","R$ 2.067,38","R$ 289,43","R$ 1.777,95",2067.38,289.43,1777.95
+422,00042811 / 1,Folha Mensal,Camila Castilho Manzoni,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 2.067,38","R$ 0,00","R$ 2.067,38","R$ 289,43","R$ 1.777,95",2067.38,289.43,1777.95
+423,00043915 / 1,Folha Mensal,Paula Gabriela Cardoso,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 2.045,61","R$ 0,00","R$ 2.045,61","R$ 159,78","R$ 1.885,83",2045.61,159.78,1885.83
+424,00042803 / 1,Folha Mensal,Tatiana Matthes Rossi,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.042,46","R$ 0,00","R$ 2.042,46","R$ 285,94","R$ 1.756,52",2042.46,285.94,1756.52
+425,00041963 / 1,Folha Mensal,Gleice Keli Aureliano de Sousa,Auxiliar de Dentista,Regime Jurídico Único,"R$ 1.621,00","R$ 2.042,46","R$ 0,00","R$ 2.042,46","R$ 285,94","R$ 1.756,52",2042.46,285.94,1756.52
+426,00042129 / 1,Folha Mensal,Bibiana Donizetti Boletta Pelose,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 2.042,46","R$ 0,00","R$ 2.042,46","R$ 285,94","R$ 1.756,52",2042.46,285.94,1756.52
+427,00047651 / 1,Folha Mensal,Mirian de Cassia Sandy Moraes,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 152,88","R$ 1.883,60",2036.48,152.88,1883.6
+428,00046736 / 1,Folha Mensal,Ana Julia Fernandes de Rezende,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 152,88","R$ 1.883,60",2036.48,152.88,1883.6
+429,00047570 / 1,Folha Mensal,Jezebel Bortolo Mengali Rosa,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 152,88","R$ 1.883,60",2036.48,152.88,1883.6
+430,00047686 / 1,Folha Mensal,Maria Vitoria Amancio,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 212,60","R$ 1.823,88",2036.48,212.6,1823.88
+431,00047767 / 1,Folha Mensal,Maria Eduarda Bertolini,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 152,88","R$ 1.883,60",2036.48,152.88,1883.6
+432,00043699 / 1,Folha Mensal,Maria Eduarda de Paula,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 926,34","R$ 1.110,14",2036.48,926.34,1110.14
+433,00047627 / 1,Folha Mensal,Tatiane Rogeria da Silva,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 67,54","R$ 2.036,48","R$ 152,88","R$ 1.883,60",2036.48,152.88,1883.6
+434,00044008 / 1,Folha Mensal,Maria Luisa Brandi Mariano,Conselheiro Tutelar,Conselho Tutelar,"R$ 2.026,25","R$ 2.026,25","R$ 0,00","R$ 2.026,25","R$ 222,88","R$ 1.803,37",2026.25,222.88,1803.37
+435,00047503 / 1,Folha Mensal,Jhenifer da Silva Brocardo,Conselheiro Tutelar,Conselho Tutelar,"R$ 2.026,25","R$ 2.026,25","R$ 0,00","R$ 2.026,25","R$ 222,88","R$ 1.803,37",2026.25,222.88,1803.37
+436,00043982 / 1,Folha Mensal,Janaina de Almeida,Conselheiro Tutelar,Conselho Tutelar,"R$ 2.026,25","R$ 2.026,25","R$ 0,00","R$ 2.026,25","R$ 222,88","R$ 1.803,37",2026.25,222.88,1803.37
+437,00043974 / 1,Folha Mensal,Nathalia Fernanda Andreazi,Conselheiro Tutelar,Conselho Tutelar,"R$ 2.026,25","R$ 2.026,25","R$ 0,00","R$ 2.026,25","R$ 222,88","R$ 1.803,37",2026.25,222.88,1803.37
+438,00044016 / 1,Folha Mensal,Priscila Mengali,Conselheiro Tutelar,Conselho Tutelar,"R$ 2.026,25","R$ 2.026,25","R$ 0,00","R$ 2.026,25","R$ 222,88","R$ 1.803,37",2026.25,222.88,1803.37
+439,00043532 / 1,Folha Mensal,Roselaine Aparecida de Mello Maduene,Auxiliar de Dentista,Regime Jurídico Único,"R$ 1.621,00","R$ 1.945,20","R$ 67,54","R$ 2.012,74","R$ 272,32","R$ 1.740,42",2012.74,272.32,1740.42
+440,00045578 / 1,Folha Mensal,Michele Cristina Pereira,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 1.945,20","R$ 67,54","R$ 2.012,74","R$ 272,32","R$ 1.740,42",2012.74,272.32,1740.42
+441,00044113 / 1,Folha Mensal,Joel Inacio Fermino,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 1.945,20","R$ 67,54","R$ 2.012,74","R$ 272,32","R$ 1.740,42",2012.74,272.32,1740.42
+442,00047716 / 1,Folha Mensal,Luisa Helena Bernardes Rodrigues,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.998,47","R$ 0,00","R$ 1.998,47","R$ 155,54","R$ 1.842,93",1998.47,155.54,1842.93
+443,00047562 / 1,Folha Mensal,Claudia Paredes,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.998,47","R$ 0,00","R$ 1.998,47","R$ 155,54","R$ 1.842,93",1998.47,155.54,1842.93
+444,00047740 / 1,Folha Mensal,Laine Ianca Carlos,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.998,47","R$ 0,00","R$ 1.998,47","R$ 155,54","R$ 1.842,93",1998.47,155.54,1842.93
+445,00047643 / 1,Folha Mensal,Noemi Yukari Takara,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+446,00047724 / 1,Folha Mensal,Leticia Cristina Valdomiro,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+447,00048186 / 1,Folha Mensal,Carolaine Pereira Pratis,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+448,00047589 / 1,Folha Mensal,Maria Eduarda dos Santos Prado,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 212,60","R$ 1.756,34",1968.94,212.6,1756.34
+449,00048410 / 1,Folha Mensal,Daiane Aparecida de Morais,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+450,00047732 / 1,Folha Mensal,Daniela Darque Jacon,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 212,60","R$ 1.756,34",1968.94,212.6,1756.34
+451,00047694 / 1,Folha Mensal,Adriele Roberta Beraldo,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+452,00047619 / 1,Folha Mensal,Victoria de Melo,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+453,00047660 / 1,Folha Mensal,Raissa da Silva Leoni,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 308,16","R$ 1.660,78",1968.94,308.16,1660.78
+454,00047759 / 1,Folha Mensal,Gabriel Henrique Ribeiro Penha,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 212,60","R$ 1.756,34",1968.94,212.6,1756.34
+455,00047678 / 1,Folha Mensal,Eloisa Gabrielli Cardoso Garcia,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 152,88","R$ 1.816,06",1968.94,152.88,1816.06
+456,00043672 / 1,Folha Mensal,Norma Pereira de Souza,Auxiliar de D. Infanti - ADI,Regime Jurídico Único,"R$ 1.968,94","R$ 1.968,94","R$ 0,00","R$ 1.968,94","R$ 275,65","R$ 1.693,29",1968.94,275.65,1693.29
+457,00045284 / 1,Folha Mensal,Aeliton Donizete Dionizio,Serviços Gerais,Regime Jurídico Único,"R$ 1.621,00","R$ 1.945,20","R$ 0,00","R$ 1.945,20","R$ 272,32","R$ 1.672,88",1945.2,272.32,1672.88
+458,00048577 / 1,Folha Mensal,Liliane Renata Silva de Oliveira,Serviços Gerais,Contrato por Tempo Determinado,"R$ 1.621,00","R$ 1.945,20","R$ 0,00","R$ 1.945,20","R$ 150,74","R$ 1.794,46",1945.2,150.74,1794.46
+459,00048089 / 1,Rescisão,Andrea Cristina de Andrade Silva,Professor  PEB I,Contrato por Tempo Determinado,"R$ 0,00","R$ 1.868,95","R$ 0,00","R$ 1.868,95","R$ 60,07","R$ 1.808,88",1868.95,60.07,1808.88
+460,00036056 / 1,Folha Mensal,Silvana Regina Felicio de Sousa,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 1.864,15","R$ 0,00","R$ 1.864,15","R$ 742,33","R$ 1.121,82",1864.15,742.33,1121.82
+461,00045390 / 1,Folha Mensal,Elaine Christina Roque,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 1.841,40","R$ 0,00","R$ 1.841,40","R$ 141,40","R$ 1.700,00",1841.4,141.4,1700.0
+462,00039870 / 1,Folha Mensal,Vilma Aparecida da Silva,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 1.702,05","R$ 0,00","R$ 1.702,05","R$ 823,59","R$ 878,46",1702.05,823.59,878.46
+463,00042340 / 1,Folha Mensal,Solange Cristina Coelho Camilo,Merendeira,Regime Jurídico Único,"R$ 1.621,00","R$ 1.702,05","R$ 0,00","R$ 1.702,05","R$ 238,28","R$ 1.463,77",1702.05,238.28,1463.77
+464,00045640 / 1,Folha Mensal,Korina Clara de Oliveira,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 1.682,10","R$ 0,00","R$ 1.682,10","R$ 127,06","R$ 1.555,04",1682.1,127.06,1555.04
+465,00047775 / 1,Folha Mensal,Maria Isabel Borges,Monitor do P. Espaco Amigo,Contrato por Tempo Determinado,"R$ 1.621,00","R$ 1.621,00","R$ 0,00","R$ 1.621,00","R$ 121,57","R$ 1.499,43",1621.0,121.57,1499.43
+466,00048631 / 1,Folha Mensal,Évelyn Cristina Bernardes,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.443,89","R$ 0,00","R$ 1.443,89","R$ 108,29","R$ 1.335,60",1443.89,108.29,1335.6
+467,00048640 / 1,Folha Mensal,Leticia Cristina da Cruz Veiga,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 1.968,94","R$ 1.443,89","R$ 0,00","R$ 1.443,89","R$ 108,29","R$ 1.335,60",1443.89,108.29,1335.6
+468,00048291 / 1,Folha Mensal,Fabiana Corrêa Marques,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 1.421,28","R$ 0,00","R$ 1.421,28","R$ 106,59","R$ 1.314,69",1421.28,106.59,1314.69
+469,00037052 / 1,Folha Mensal,Claudete Maria Ferreira Viola,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 1.381,05","R$ 0,00","R$ 1.381,05","R$ 141,87","R$ 1.239,18",1381.05,141.87,1239.18
+470,00047708 / 1,Rescisão,Valeria Cristina da Costa,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 0,00","R$ 1.282,50","R$ 0,00","R$ 1.282,50","R$ 59,92","R$ 1.222,58",1282.5,59.92,1222.58
+471,00030244 / 2,Folha Mensal,Giovana de Cassia Gonçalves,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 1.227,60","R$ 0,00","R$ 1.227,60","R$ 96,58","R$ 1.131,02",1227.6,96.58,1131.02
+472,00048542 / 1,Folha Mensal,Natali Zilda Lourenço Ricetto,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 1.142,10","R$ 0,00","R$ 1.142,10","R$ 85,65","R$ 1.056,45",1142.1,85.65,1056.45
+473,00038180 / 1,Folha Mensal,Marcela Maria Lopes da Cunha Pinto,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 1.120,23","R$ 0,00","R$ 1.120,23","R$ 84,01","R$ 1.036,22",1120.23,84.01,1036.22
+474,00047538 / 1,Folha Mensal,Bruna Dias de Souza,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 1.116,72","R$ 0,00","R$ 1.116,72","R$ 83,75","R$ 1.032,97",1116.72,83.75,1032.97
+475,00045411 / 1,Folha Mensal,Livia Maria de Almeida Biazzi,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 920,70","R$ 0,00","R$ 920,70","R$ 69,05","R$ 851,65",920.7,69.05,851.65
+476,00030244 / 1,Folha Mensal,Giovana de Cassia Gonçalves,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 920,70","R$ 0,00","R$ 920,70","R$ 72,43","R$ 848,27",920.7,72.43,848.27
+477,00044741 / 1,Folha Mensal,Livia do Carmo Alves,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 920,70","R$ 0,00","R$ 920,70","R$ 69,05","R$ 851,65",920.7,69.05,851.65
+478,00048135 / 1,Folha Mensal,Maria Clara Camilo,Monitor do P. Espaco Amigo,Contrato por Tempo Determinado,"R$ 1.621,00","R$ 864,53","R$ 0,00","R$ 864,53","R$ 64,83","R$ 799,70",864.53,64.83,799.7
+479,00047112 / 1,Folha Mensal,Renata Cristina de Avila,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 767,25","R$ 0,00","R$ 767,25","R$ 57,54","R$ 709,71",767.25,57.54,709.71
+480,00046132 / 1,Folha Mensal,Felippe Augusto Teixeira,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 761,40","R$ 0,00","R$ 761,40","R$ 85,77","R$ 675,63",761.4,85.77,675.63
+481,00048402 / 1,Rescisão,Isadora Beatriz Peppe da Silva,Auxiliar de D. Infantil - ADI,Contrato por Tempo Determinado,"R$ 0,00","R$ 710,99","R$ 0,00","R$ 710,99","R$ 36,91","R$ 674,08",710.99,36.91,674.08
+482,00047201 / 1,Folha Mensal,Elenice Lotti,Professor  PEB I,Professora Substituta (C.L.T),"R$ 0,00","R$ 659,88","R$ 0,00","R$ 659,88","R$ 49,49","R$ 610,39",659.88,49.49,610.39
+483,00046060 / 1,Folha Mensal,Natana Aparecida Pires,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 634,50","R$ 0,00","R$ 634,50","R$ 47,58","R$ 586,92",634.5,47.58,586.92
+484,00045292 / 1,Folha Mensal,Rosemeire Ferreira Copola,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 613,80","R$ 0,00","R$ 613,80","R$ 46,03","R$ 567,77",613.8,46.03,567.77
+485,00048283 / 1,Folha Mensal,Valeria Aparecida Fernochio Corsi,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 460,35","R$ 0,00","R$ 460,35","R$ 34,52","R$ 425,83",460.35,34.52,425.83
+486,00046167 / 1,Folha Mensal,Pedro Henrique Braz Garcia,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 456,84","R$ 0,00","R$ 456,84","R$ 45,00","R$ 411,84",456.84,45.0,411.84
+487,00048461 / 1,Rescisão,Carolina Machado Ramos Ranzani,Conselheiro Tutelar Suplente,Conselho Tutelar,"R$ 0,00","R$ 393,98","R$ 0,00","R$ 393,98","R$ 18,57","R$ 375,41",393.98,18.57,375.41
+488,00046795 / 1,Folha Mensal,Heloize Helena Nogueira Miranda,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 304,56","R$ 0,00","R$ 304,56","R$ 30,63","R$ 273,93",304.56,30.63,273.93
+489,00048372 / 1,Folha Mensal,Cristiane Rossatti Marques Barzagli,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 153,45","R$ 0,00","R$ 153,45","R$ 11,50","R$ 141,95",153.45,11.5,141.95
+490,00048534 / 1,Folha Mensal,Maria Luisa Lopes de Oliveira,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 153,45","R$ 0,00","R$ 153,45","R$ 11,50","R$ 141,95",153.45,11.5,141.95
+491,00048275 / 1,Folha Mensal,Isabela Cristiny Maya,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 153,45","R$ 0,00","R$ 153,45","R$ 11,50","R$ 141,95",153.45,11.5,141.95
+492,00042978 / 1,Folha Mensal,Livia Cristiny Bucci,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 153,45","R$ 0,00","R$ 153,45","R$ 15,23","R$ 138,22",153.45,15.23,138.22
+493,00048305 / 1,Folha Mensal,Rafaela Cristina Pacetti Sebastião,Professor Substituto,Professora Substituta (C.L.T),"R$ 0,00","R$ 153,45","R$ 0,00","R$ 153,45","R$ 11,50","R$ 141,95",153.45,11.5,141.95
+494,00048321 / 1,Folha Mensal,Meire Elen Cervelin Candido,Professor Substituto,Professora Substituta (C.L.T),"R$ 3.206,25","R$ 126,90","R$ 0,00","R$ 126,90","R$ 9,51","R$ 117,39",126.9,9.51,117.39
+495,00020095 / 1,Folha Mensal,Sandro Roberto Pereira,Serviços Gerais,Regime Jurídico Único,"R$ 100,26","R$ 100,26","R$ 0,00","R$ 100,26","R$ 14,03","R$ 86,23",100.26,14.03,86.23
+496,00020087 / 1,Folha Mensal,Alexandre Lorca Peres,Serviços Gerais,Regime Jurídico Único,"R$ 100,26","R$ 100,26","R$ 0,00","R$ 100,26","R$ 14,03","R$ 86,23",100.26,14.03,86.23
+497,00020133 / 1,Folha Mensal,Amilton Sebastiao de Almeida,Serviços Gerais,Regime Jurídico Único,"R$ 100,26","R$ 100,26","R$ 0,00","R$ 100,26","R$ 14,03","R$ 86,23",100.26,14.03,86.23
+498,00010413 / 1,Folha Mensal,Maria Aparecida de Sousa Limonge,Servidor Estado,SERVIDOR ESTADO ( SEM INSS ),"R$ 64,44","R$ 64,44","R$ 0,00","R$ 64,44","R$ 0,00","R$ 64,44",64.44,0.0,64.44

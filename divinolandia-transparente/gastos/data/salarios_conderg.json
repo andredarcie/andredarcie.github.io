@@ -1,0 +1,3579 @@
+{
+  "competencia": "Abril/2026",
+  "total_salarios": 1804335.38,
+  "total_servidores": 530,
+  "media_salarial": 3404.41,
+  "por_setor": [
+    {
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "total": 348549.71,
+      "servidores": 110
+    },
+    {
+      "setor": "PRONTO SOCORRO",
+      "total": 106765.86,
+      "servidores": 28
+    },
+    {
+      "setor": "BLOCO CIRURGICO",
+      "total": 100094.8,
+      "servidores": 29
+    },
+    {
+      "setor": "NUTRICAO E DIETETICA",
+      "total": 92504.54,
+      "servidores": 35
+    },
+    {
+      "setor": "INTERNACAO CIRURGICA",
+      "total": 81354.05,
+      "servidores": 26
+    },
+    {
+      "setor": "LAVANDERIA",
+      "total": 80104.0,
+      "servidores": 30
+    },
+    {
+      "setor": "CENTRO OFTALMOLOGICO",
+      "total": 78679.02,
+      "servidores": 30
+    },
+    {
+      "setor": "INTERNACAO MEDICA",
+      "total": 70956.23,
+      "servidores": 21
+    },
+    {
+      "setor": "FARMACIA",
+      "total": 64983.95,
+      "servidores": 18
+    },
+    {
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "total": 54592.23,
+      "servidores": 18
+    },
+    {
+      "setor": "REABILITAÇÃO FISICA",
+      "total": 50297.36,
+      "servidores": 12
+    },
+    {
+      "setor": "MANUTENCAO",
+      "total": 47716.64,
+      "servidores": 14
+    },
+    {
+      "setor": "C.M.E",
+      "total": 46873.77,
+      "servidores": 16
+    },
+    {
+      "setor": "RECURSOS HUMANOS",
+      "total": 43988.97,
+      "servidores": 10
+    },
+    {
+      "setor": "ASSESSORIA JURIDICA",
+      "total": 39709.05,
+      "servidores": 4
+    },
+    {
+      "setor": "SUPERINTENDENCIA",
+      "total": 38301.7,
+      "servidores": 4
+    },
+    {
+      "setor": "CONTABILIDADE",
+      "total": 31980.46,
+      "servidores": 7
+    },
+    {
+      "setor": "FUNCIONARIOS FERISTAS",
+      "total": 30904.11,
+      "servidores": 10
+    },
+    {
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "total": 28497.71,
+      "servidores": 7
+    },
+    {
+      "setor": "SAMU DIVINOLANDIA",
+      "total": 28380.16,
+      "servidores": 7
+    },
+    {
+      "setor": "INFORMATICA",
+      "total": 25482.52,
+      "servidores": 5
+    },
+    {
+      "setor": "FATURAMENTO",
+      "total": 24755.99,
+      "servidores": 8
+    },
+    {
+      "setor": "PRESTAÇÃO DE CONTAS",
+      "total": 24361.43,
+      "servidores": 5
+    },
+    {
+      "setor": "SETOR DE CONVÊNIOS",
+      "total": 23088.96,
+      "servidores": 4
+    },
+    {
+      "setor": "SAME",
+      "total": 20973.54,
+      "servidores": 9
+    },
+    {
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "total": 19171.57,
+      "servidores": 6
+    },
+    {
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "total": 18716.9,
+      "servidores": 6
+    },
+    {
+      "setor": "RAIO X",
+      "total": 18278.61,
+      "servidores": 4
+    },
+    {
+      "setor": "REABILITAÇÃO VISUAL",
+      "total": 17673.01,
+      "servidores": 5
+    },
+    {
+      "setor": "COMPRAS",
+      "total": 15472.51,
+      "servidores": 5
+    },
+    {
+      "setor": "RECEPCAO E ADMISSAO",
+      "total": 14911.85,
+      "servidores": 5
+    },
+    {
+      "setor": "FUNCIONÁRIOS FILIAIS",
+      "total": 14812.06,
+      "servidores": 2
+    },
+    {
+      "setor": "INTERNAÇÃO PEDIÁTRICA",
+      "total": 13006.4,
+      "servidores": 4
+    },
+    {
+      "setor": "SEGURANÇA DO TRABALHO",
+      "total": 12818.88,
+      "servidores": 2
+    },
+    {
+      "setor": "AUDITORIA",
+      "total": 11523.02,
+      "servidores": 3
+    },
+    {
+      "setor": "CANTINA",
+      "total": 11370.31,
+      "servidores": 5
+    },
+    {
+      "setor": "PLANEJAMENTO",
+      "total": 8697.42,
+      "servidores": 1
+    },
+    {
+      "setor": "AGENCIA TRANSFUSIONAL",
+      "total": 6199.26,
+      "servidores": 1
+    },
+    {
+      "setor": "TRANSPORTES",
+      "total": 5719.16,
+      "servidores": 2
+    },
+    {
+      "setor": "CONTROLE INTERNO",
+      "total": 5524.34,
+      "servidores": 1
+    },
+    {
+      "setor": "TELEFONIA",
+      "total": 4747.95,
+      "servidores": 2
+    },
+    {
+      "setor": "OUVIDORIA",
+      "total": 4707.8,
+      "servidores": 1
+    },
+    {
+      "setor": "BANCO DE OCULOS",
+      "total": 4707.8,
+      "servidores": 1
+    },
+    {
+      "setor": "CONSERVACAO/LIMPEZA E JARDINAGEM",
+      "total": 2902.75,
+      "servidores": 1
+    },
+    {
+      "setor": "CALDERARIA",
+      "total": 2877.77,
+      "servidores": 1
+    },
+    {
+      "setor": "ENDOSCOPIA DIGESTIVA",
+      "total": 2740.85,
+      "servidores": 1
+    },
+    {
+      "setor": "TESOURARIA",
+      "total": 2459.92,
+      "servidores": 1
+    },
+    {
+      "setor": "AÇÃO SOCIAL MORRINHOS",
+      "total": 1398.48,
+      "servidores": 3
+    }
+  ],
+  "por_cargo": [
+    {
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "total": 519829.43,
+      "servidores": 182
+    },
+    {
+      "cargo": "AUXILIAR SERVICOS",
+      "total": 282915.41,
+      "servidores": 110
+    },
+    {
+      "cargo": "ENFERMEIRO",
+      "total": 150480.11,
+      "servidores": 21
+    },
+    {
+      "cargo": "ESCRITURARIO",
+      "total": 117144.23,
+      "servidores": 45
+    },
+    {
+      "cargo": "ESCRITURARIO I",
+      "total": 91611.25,
+      "servidores": 31
+    },
+    {
+      "cargo": "FISIOTERAPEUTA",
+      "total": 52676.16,
+      "servidores": 12
+    },
+    {
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "total": 27926.58,
+      "servidores": 10
+    },
+    {
+      "cargo": "FARMACEUTICO",
+      "total": 27017.74,
+      "servidores": 5
+    },
+    {
+      "cargo": "ADVOGADO",
+      "total": 26107.09,
+      "servidores": 3
+    },
+    {
+      "cargo": "ENCARREGADO DE SETOR",
+      "total": 24029.39,
+      "servidores": 5
+    },
+    {
+      "cargo": "SUPERVISOR I",
+      "total": 23844.23,
+      "servidores": 5
+    },
+    {
+      "cargo": "MONITOR",
+      "total": 21876.15,
+      "servidores": 9
+    },
+    {
+      "cargo": "SUPERINTENDENTE",
+      "total": 20824.05,
+      "servidores": 1
+    },
+    {
+      "cargo": "ASSISTENTE SOCIAL",
+      "total": 19422.64,
+      "servidores": 4
+    },
+    {
+      "cargo": "TECNICO EM RADIOLOGIA",
+      "total": 18278.61,
+      "servidores": 4
+    },
+    {
+      "cargo": "MEDICO",
+      "total": 17550.62,
+      "servidores": 3
+    },
+    {
+      "cargo": "PSICOLOGO",
+      "total": 16982.67,
+      "servidores": 4
+    },
+    {
+      "cargo": "CONTADOR",
+      "total": 16573.02,
+      "servidores": 3
+    },
+    {
+      "cargo": "GERENTE DE CONVENIOS",
+      "total": 16194.84,
+      "servidores": 2
+    },
+    {
+      "cargo": "ASSESSOR JURÍDICO",
+      "total": 13601.96,
+      "servidores": 1
+    },
+    {
+      "cargo": "INSTRUMENTADOR CIRURGICO",
+      "total": 12973.0,
+      "servidores": 3
+    },
+    {
+      "cargo": "COPEIRA",
+      "total": 12968.41,
+      "servidores": 5
+    },
+    {
+      "cargo": "TECNICO DE S. DO TRABALHO",
+      "total": 12818.88,
+      "servidores": 2
+    },
+    {
+      "cargo": "AUXILIAR MANUTENCAO",
+      "total": 12039.1,
+      "servidores": 4
+    },
+    {
+      "cargo": "CONDUTOR DE AMBULANCIA",
+      "total": 11833.33,
+      "servidores": 3
+    }
+  ],
+  "faixas": [
+    {
+      "faixa": "Ate 2k",
+      "count": 16
+    },
+    {
+      "faixa": "2k-4k",
+      "count": 420
+    },
+    {
+      "faixa": "4k-8k",
+      "count": 73
+    },
+    {
+      "faixa": "8k-15k",
+      "count": 20
+    },
+    {
+      "faixa": "Acima 15k",
+      "count": 1
+    }
+  ],
+  "detalhes": [
+    {
+      "nome": "CRISTIANE DE PAIVA TREVISAN",
+      "cargo": "SUPERINTENDENTE",
+      "setor": "SUPERINTENDENCIA",
+      "salario": 20824.05
+    },
+    {
+      "nome": "OSWALDO BERTOGNA JUNIOR",
+      "cargo": "ASSESSOR JURÍDICO",
+      "setor": "ASSESSORIA JURIDICA",
+      "salario": 13601.96
+    },
+    {
+      "nome": "LAIS ROCHA DA SILVA MENDES",
+      "cargo": "GERENTE DE CONTROLADORIA",
+      "setor": "CONTABILIDADE",
+      "salario": 10946.65
+    },
+    {
+      "nome": "TAMARA FERREIRA",
+      "cargo": "ENFERMEIRO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 10626.1
+    },
+    {
+      "nome": "NAIARA FABRIS",
+      "cargo": "GERENTE ADMINISTRATIVO",
+      "setor": "SUPERINTENDENCIA",
+      "salario": 10103.73
+    },
+    {
+      "nome": "LUCAS DE SOUZA PAIVA",
+      "cargo": "GERENTE DE TECNOLOGIA DA INFO",
+      "setor": "INFORMATICA",
+      "salario": 9468.6
+    },
+    {
+      "nome": "JESSIKA CHAVES DE OLIVEIRA ARAGAO DANTAS",
+      "cargo": "ADVOGADO",
+      "setor": "ASSESSORIA JURIDICA",
+      "salario": 9412.19
+    },
+    {
+      "nome": "TANIA REGINA TESOLIN",
+      "cargo": "GERENTE DE REABILITAÇÃO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 9331.91
+    },
+    {
+      "nome": "ADRIANA LOPES DOMINGUES",
+      "cargo": "ENFERMEIRO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 9325.48
+    },
+    {
+      "nome": "GLAUCIA REGINA PRATA CAOBIANCO",
+      "cargo": "MEDICO OTORRINOLARINGOLOGISTA",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 8983.05
+    },
+    {
+      "nome": "ALICE POZAN PEREIRA FARINELI",
+      "cargo": "GERENTE DE CONTROLE  PRESTAÇÃ",
+      "setor": "PRESTAÇÃO DE CONTAS",
+      "salario": 8697.42
+    },
+    {
+      "nome": "VANIA DE CASSIA BUCCI",
+      "cargo": "GERENTE DE CONVENIOS",
+      "setor": "SETOR DE CONVÊNIOS",
+      "salario": 8697.42
+    },
+    {
+      "nome": "CINTIA APARECIDA LIMONGI RODRIGUES",
+      "cargo": "GERENTE DE DEPARTAMENTO PESSO",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 8697.42
+    },
+    {
+      "nome": "GESSICA FERNANDES DA SILVA BORGES",
+      "cargo": "GERENTE DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 8697.42
+    },
+    {
+      "nome": "ANGELICA APARECIDA RESTANI",
+      "cargo": "GERENTE DE PLANEJAMENTO",
+      "setor": "PLANEJAMENTO",
+      "salario": 8697.42
+    },
+    {
+      "nome": "NAIARA ELISA ROSSETO",
+      "cargo": "GERENTE DE RH",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 8697.42
+    },
+    {
+      "nome": "REGIANE DA SILVA MARIANO",
+      "cargo": "GERENTE DE SERVIÇOS DE SAUDE",
+      "setor": "SETOR DE CONVÊNIOS",
+      "salario": 8697.42
+    },
+    {
+      "nome": "PAMELLA ABREU RAMOS",
+      "cargo": "ADVOGADO",
+      "setor": "ASSESSORIA JURIDICA",
+      "salario": 8347.45
+    },
+    {
+      "nome": "RONDINELLI DE PAIVA",
+      "cargo": "ADVOGADO",
+      "setor": "ASSESSORIA JURIDICA",
+      "salario": 8347.45
+    },
+    {
+      "nome": "NICAELE FAUSTINO DAPOLICENA",
+      "cargo": "ENFERMEIRO",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 8268.99
+    },
+    {
+      "nome": "ANA CLAUDIA MARTINS",
+      "cargo": "ENFERMEIRO",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 8171.86
+    },
+    {
+      "nome": "LUIS CARLOS SIMONGINI",
+      "cargo": "MEDICO DO TRABALHO",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 7820.62
+    },
+    {
+      "nome": "LIVIA CALSONI",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 7737.27
+    },
+    {
+      "nome": "EDEIR FERREIRA PINTO",
+      "cargo": "GERENTE DE MANUTENÇÃO",
+      "setor": "MANUTENCAO",
+      "salario": 7693.76
+    },
+    {
+      "nome": "LUIZ RICARDO BARBIO DOS SANTOS",
+      "cargo": "ENFERMEIRO",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 7674.33
+    },
+    {
+      "nome": "DIEGO FELIPE BORGES",
+      "cargo": "ENFERMEIRO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 7549.64
+    },
+    {
+      "nome": "JOAO PAULO SOARES BARBOSA",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 7515.41
+    },
+    {
+      "nome": "EDILENE DA SILVA LOPES",
+      "cargo": "GERENTE DE CONVENIOS",
+      "setor": "FUNCIONÁRIOS FILIAIS",
+      "salario": 7497.42
+    },
+    {
+      "nome": "NAIEF HADDAD NETO",
+      "cargo": "MEDICO",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 7468.72
+    },
+    {
+      "nome": "MARIA CLARA DE PAIVA TREVISAN",
+      "cargo": "ENFERMEIRO",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 7449.89
+    },
+    {
+      "nome": "RODRIGO CONTE MACHADO",
+      "cargo": "ENFERMEIRO",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 7326.22
+    },
+    {
+      "nome": "THAIS TREVIZAN FELIX",
+      "cargo": "ENFERMEIRO",
+      "setor": "FUNCIONÁRIOS FILIAIS",
+      "salario": 7314.64
+    },
+    {
+      "nome": "ADRIANA BRAGA GOES",
+      "cargo": "MEDICO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 7280.88
+    },
+    {
+      "nome": "RAFAEL PANIAGUA SERRA",
+      "cargo": "TECNICO DE S. DO TRABALHO",
+      "setor": "SEGURANÇA DO TRABALHO",
+      "salario": 7245.47
+    },
+    {
+      "nome": "NATALIA MATTOS ABREU DE JESUZ",
+      "cargo": "ENFERMEIRO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 6747.88
+    },
+    {
+      "nome": "ANA LETICIA DA SILVA PAIVA",
+      "cargo": "COORDENADOR DO CENTRO CIRURGI",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 6745.0
+    },
+    {
+      "nome": "LAIS LIMONGE DELAOSA",
+      "cargo": "FARMACEUTICO",
+      "setor": "FARMACIA",
+      "salario": 6606.2
+    },
+    {
+      "nome": "BRUNO BALTAZAR FERREIRA",
+      "cargo": "SUPERVISOR I",
+      "setor": "MANUTENCAO",
+      "salario": 6547.31
+    },
+    {
+      "nome": "MARCELO FIRMINO DE PAIVA",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 6537.1
+    },
+    {
+      "nome": "DEBORA RAQUEL MAGAROTTO MARQUES",
+      "cargo": "ENFERMEIRO",
+      "setor": "AUDITORIA",
+      "salario": 6467.61
+    },
+    {
+      "nome": "CLAUDINEIA LUCIA RIBEIRO CANDIDO",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 6432.49
+    },
+    {
+      "nome": "SORAIA GLEICE DIAS PASSONI",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 6415.75
+    },
+    {
+      "nome": "NIGUIAM RIANE DE OLIVEIRA",
+      "cargo": "ASSISTENTE SOCIAL",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 6271.43
+    },
+    {
+      "nome": "FABIANE APARECIDA MENGALI",
+      "cargo": "FARMACEUTICO",
+      "setor": "FARMACIA",
+      "salario": 6217.67
+    },
+    {
+      "nome": "IVANEIDA FERREIRA DOS SANTOS DELGADILLO",
+      "cargo": "BIOMEDICA",
+      "setor": "AGENCIA TRANSFUSIONAL",
+      "salario": 6199.26
+    },
+    {
+      "nome": "BIANCA MARIA DA SILVA JACOB TONETTI",
+      "cargo": "NUTRICIONISTA",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 5817.23
+    },
+    {
+      "nome": "ADELINY SILVIA BUENO",
+      "cargo": "ENFERMEIRO",
+      "setor": "C.M.E",
+      "salario": 5783.89
+    },
+    {
+      "nome": "ELESSANDRA DE ALMEIDA",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 5783.89
+    },
+    {
+      "nome": "JACQUELINE DA SILVA RODRIGUES",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 5783.89
+    },
+    {
+      "nome": "PRICILA LOPES GIMENES BOVO",
+      "cargo": "ENFERMEIRO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 5783.89
+    },
+    {
+      "nome": "SIMONE APARECIDA DE PAIVA CERRI",
+      "cargo": "ENFERMEIRO",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 5783.89
+    },
+    {
+      "nome": "LEA CAMILA DA SILVA",
+      "cargo": "TECNICO EM RADIOLOGIA",
+      "setor": "RAIO X",
+      "salario": 5715.45
+    },
+    {
+      "nome": "VIVIANE PATRICIA OLIVIERI",
+      "cargo": "ASSISTENTE SOCIAL",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 5620.79
+    },
+    {
+      "nome": "MARIO DE PAULA LIMA",
+      "cargo": "TECNICO DE S. DO TRABALHO",
+      "setor": "SEGURANÇA DO TRABALHO",
+      "salario": 5573.41
+    },
+    {
+      "nome": "BRUNO LANZOLLA DA SILVA",
+      "cargo": "CONTADOR",
+      "setor": "CONTABILIDADE",
+      "salario": 5524.34
+    },
+    {
+      "nome": "CARLOS EDUARDO MENGALLI",
+      "cargo": "CONTADOR",
+      "setor": "CONTABILIDADE",
+      "salario": 5524.34
+    },
+    {
+      "nome": "MARCOS GILBERTO LEONI",
+      "cargo": "CONTADOR",
+      "setor": "PRESTAÇÃO DE CONTAS",
+      "salario": 5524.34
+    },
+    {
+      "nome": "BARBARA APARECIDA CARLOS RIBEIRO",
+      "cargo": "CONTROLADOR INTERNO",
+      "setor": "CONTROLE INTERNO",
+      "salario": 5524.34
+    },
+    {
+      "nome": "CAMILI EMANUELE MOREIRA DELFINO",
+      "cargo": "FARMACEUTICO",
+      "setor": "FARMACIA",
+      "salario": 5422.2
+    },
+    {
+      "nome": "CINEIA ROCHA DA SILVA",
+      "cargo": "INSTRUMENTADOR CIRURGICO",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 5297.12
+    },
+    {
+      "nome": "BRUNA LUIZA FERREIRA",
+      "cargo": "PSICOLOGO",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 5290.04
+    },
+    {
+      "nome": "HECTOR THOMAZINHO ARANDA",
+      "cargo": "PSICOLOGO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 5290.04
+    },
+    {
+      "nome": "MARCELO MASCARIN HESPANHOL",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 5259.45
+    },
+    {
+      "nome": "NATALIA MACHADO DE QUEIROZ",
+      "cargo": "ENCARREGADO DE SETOR",
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "salario": 5198.19
+    },
+    {
+      "nome": "MARIA APARECIDA BIANCHETTI PARUSSOLO",
+      "cargo": "FARMACEUTICO TEMPORÁRIO",
+      "setor": "FARMACIA",
+      "salario": 5076.95
+    },
+    {
+      "nome": "LILIANA APARECIDA FERREIRA",
+      "cargo": "SUPERVISOR I",
+      "setor": "SUPERINTENDENCIA",
+      "salario": 4965.04
+    },
+    {
+      "nome": "CARLOS DE SOUSA",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 4948.22
+    },
+    {
+      "nome": "EMILLY DE OLIVEIRA",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO VISUAL",
+      "salario": 4948.22
+    },
+    {
+      "nome": "RAQUEL APRIGIO",
+      "cargo": "GASTROLOGO",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 4928.21
+    },
+    {
+      "nome": "ANDRE LUIS FIGUEIREDO",
+      "cargo": "CONDUTOR DE AMBULANCIA",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 4863.95
+    },
+    {
+      "nome": "DIEGO FELIPE BORGES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 4849.74
+    },
+    {
+      "nome": "LUIS HENRIQUE CAMPOS",
+      "cargo": "TECNICO EM RADIOLOGIA",
+      "setor": "RAIO X",
+      "salario": 4827.61
+    },
+    {
+      "nome": "CLAUDIA GALDINO DE SOUZA",
+      "cargo": "ENCARREGADO DE SETOR",
+      "setor": "COMPRAS",
+      "salario": 4707.8
+    },
+    {
+      "nome": "JESSICA APARECIDA MENGALI BALDO",
+      "cargo": "ENCARREGADO DE SETOR",
+      "setor": "OUVIDORIA",
+      "salario": 4707.8
+    },
+    {
+      "nome": "SHEILA APARECIDA MARINHO",
+      "cargo": "ENCARREGADO DE SETOR",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 4707.8
+    },
+    {
+      "nome": "WAGNER DE FIGUEIREDO",
+      "cargo": "ENCARREGADO DE SETOR",
+      "setor": "BANCO DE OCULOS",
+      "salario": 4707.8
+    },
+    {
+      "nome": "MARIA EUGENIA DE SOUZA REZENDE",
+      "cargo": "FARMACEUTICO",
+      "setor": "FARMACIA",
+      "salario": 4585.15
+    },
+    {
+      "nome": "ANA BEATRIZ DE ARAUJO",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 4498.22
+    },
+    {
+      "nome": "MARIANE GONCALVES DAMASCENO",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 4498.22
+    },
+    {
+      "nome": "MIRIANE SALOMAO DOS REIS",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 4498.22
+    },
+    {
+      "nome": "NATANI MENEGUINI DE OLIVEIRA",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 4498.22
+    },
+    {
+      "nome": "TATIANA SCOLARI TREVISAN",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 4498.22
+    },
+    {
+      "nome": "VANIA CRISTINA PEIXOTO",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 4498.22
+    },
+    {
+      "nome": "GLAUCO DATOVO DA SILVA",
+      "cargo": "ANALISTA DE SISTEMAS",
+      "setor": "INFORMATICA",
+      "salario": 4461.35
+    },
+    {
+      "nome": "GERMANO AUGUSTO MARQUES FERNANDES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 4449.34
+    },
+    {
+      "nome": "LARA GABRIELE FERNANDES CORREA",
+      "cargo": "SUPERVISOR I",
+      "setor": "PRESTAÇÃO DE CONTAS",
+      "salario": 4425.55
+    },
+    {
+      "nome": "LUCIMARA TEZOLIN DE LIMA",
+      "cargo": "TECNICO EM RADIOLOGIA",
+      "setor": "RAIO X",
+      "salario": 4381.48
+    },
+    {
+      "nome": "EDSON CARLOS CANDIDO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 4289.14
+    },
+    {
+      "nome": "SERGIO SILVEIRA JUNIOR",
+      "cargo": "TECNICO EM INFORMATICA",
+      "setor": "INFORMATICA",
+      "salario": 4287.26
+    },
+    {
+      "nome": "TAMIRIS CRISTINA DA SILVA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "salario": 4205.55
+    },
+    {
+      "nome": "FERNANDA CRISTINA DE MORAIS",
+      "cargo": "FARMACEUTICO",
+      "setor": "FARMACIA",
+      "salario": 4186.52
+    },
+    {
+      "nome": "EDERSON CHARLES MARQUES",
+      "cargo": "ASSISTENTE SOCIAL",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 4178.1
+    },
+    {
+      "nome": "SAMARA DA CUNHA HADDAD RAMOS",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 4101.09
+    },
+    {
+      "nome": "ROBERTO DONIZETTE CANDIDO DURIGON JUNIOR",
+      "cargo": "SUPERVISOR I",
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "salario": 4080.78
+    },
+    {
+      "nome": "ADILTON DIAS JOAQUIM",
+      "cargo": "CONDUTOR DE AMBULANCIA",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 3987.65
+    },
+    {
+      "nome": "SILMARA PASSONI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3943.73
+    },
+    {
+      "nome": "IGOR PAULO AMARO BERTO",
+      "cargo": "MECANICO MANUTENCAO",
+      "setor": "MANUTENCAO",
+      "salario": 3940.51
+    },
+    {
+      "nome": "LUANA CRISTINA SANCHES",
+      "cargo": "INSTRUMENTADOR CIRURGICO",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 3864.28
+    },
+    {
+      "nome": "EDUARDO HENRIQUE CUNHA",
+      "cargo": "TECNICO EM INFORMATICA",
+      "setor": "INFORMATICA",
+      "salario": 3827.76
+    },
+    {
+      "nome": "JOSE APARECIDO ESCOBAR",
+      "cargo": "SUPERVISOR I",
+      "setor": "LAVANDERIA",
+      "salario": 3825.55
+    },
+    {
+      "nome": "ANA LAURA FERNANDES DE PAIVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 3825.55
+    },
+    {
+      "nome": "SIMONE CRISTIANE RIBEIRO DE SOUSA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 3824.07
+    },
+    {
+      "nome": "KATIA CRISTINA NOGUEIRA",
+      "cargo": "INSTRUMENTADOR CIRURGICO",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 3811.6
+    },
+    {
+      "nome": "ANA PAULA FERREIRA DIAS BARZALI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3810.56
+    },
+    {
+      "nome": "JOYCE BERTOLINI DE QUEIROZ",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 3810.45
+    },
+    {
+      "nome": "SILVIA HELENA MARTINS PINTO",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 3803.84
+    },
+    {
+      "nome": "ANDREIA CRISTINA DE ASSIS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3794.52
+    },
+    {
+      "nome": "JESSICA CRISTINE DE OLIVEIRA VICTOR",
+      "cargo": "ESCRITURARIO I",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 3781.2
+    },
+    {
+      "nome": "ELAINE CRISTINA CARDOSO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3773.49
+    },
+    {
+      "nome": "LUCIMARA CUSTODIO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3731.07
+    },
+    {
+      "nome": "LUCIMAR MARIA MANSANO BENINI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 3689.81
+    },
+    {
+      "nome": "RENATA LOPES DE FARIA AUREGLIETI",
+      "cargo": "PEDAGOGA",
+      "setor": "REABILITAÇÃO VISUAL",
+      "salario": 3666.86
+    },
+    {
+      "nome": "LUCIA FRANCISCA BOSSOLAN LOPES",
+      "cargo": "TECNICO CONTABILIDADE",
+      "setor": "CONTABILIDADE",
+      "salario": 3666.86
+    },
+    {
+      "nome": "MARTILEI MARIA FERREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3658.66
+    },
+    {
+      "nome": "RAFAELA DE CASSIA DOS SANTOS ANGELINI",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 3651.39
+    },
+    {
+      "nome": "CEILA APARECIDA NAVERO ANDREATTA",
+      "cargo": "ESCRITURARIO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3651.16
+    },
+    {
+      "nome": "CEILA MARIA MACHADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 3553.46
+    },
+    {
+      "nome": "PEDRO HENRIQUE DE LIMA AZEVEDO",
+      "cargo": "AUXILIAR MANUTENCAO",
+      "setor": "MANUTENCAO",
+      "salario": 3534.34
+    },
+    {
+      "nome": "LUCINEIA MACHADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO PEDIÁTRICA",
+      "salario": 3519.13
+    },
+    {
+      "nome": "JOAO PAULO DE ANDRADE FARIA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 3515.03
+    },
+    {
+      "nome": "MARTHA DA PENHA FERREIRA THOMAZ",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3514.1
+    },
+    {
+      "nome": "MARIA APARECIDA DO NASCIMENTO DE OLIVEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3481.02
+    },
+    {
+      "nome": "MARCIA CARDOSO COETTI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 3475.57
+    },
+    {
+      "nome": "SEBASTIAO ROBERTO MARQUES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3469.68
+    },
+    {
+      "nome": "ALEX SANDER DE OLIVEIRA LIMA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3469.36
+    },
+    {
+      "nome": "ANDREIA APARECIDA DE PAULO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3467.47
+    },
+    {
+      "nome": "JUCIANE ANTONIA RODRIGUES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3461.8
+    },
+    {
+      "nome": "ADRIELI MARCAL DE FREITAS",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECEPCAO E ADMISSAO",
+      "salario": 3458.24
+    },
+    {
+      "nome": "CARLA CRISTINA RESTANI DO PRADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3451.41
+    },
+    {
+      "nome": "SIRLEI DE FATIMA JORGE",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO PEDIÁTRICA",
+      "salario": 3447.31
+    },
+    {
+      "nome": "SILVANA AURILIETE PEREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3445.96
+    },
+    {
+      "nome": "SILVIA HELENA MENGALI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3445.42
+    },
+    {
+      "nome": "NEIDE APARECIDA AROFO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3437.55
+    },
+    {
+      "nome": "EDUARDO MOREIRA DE CARVALHO",
+      "cargo": "TECNICO EM INFORMATICA",
+      "setor": "INFORMATICA",
+      "salario": 3437.55
+    },
+    {
+      "nome": "GREICE RAQUEL MEIRELLES ESTEVAO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 3437.3
+    },
+    {
+      "nome": "LILIAN DE FATIMA FERREIRA PAIVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3435.97
+    },
+    {
+      "nome": "JOAO VITOR FIORANTE CORREA",
+      "cargo": "AUXILIAR MANUTENCAO",
+      "setor": "MANUTENCAO",
+      "salario": 3434.11
+    },
+    {
+      "nome": "GISELE DE AVILA",
+      "cargo": "PSICOLOGO",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 3433.38
+    },
+    {
+      "nome": "PRISCILA FERNANDES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3431.88
+    },
+    {
+      "nome": "MARIA LUIZA AMERICO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3429.88
+    },
+    {
+      "nome": "ANAI GISELA LIBANIO",
+      "cargo": "ESCRITURARIO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3414.66
+    },
+    {
+      "nome": "GABRIELLI MAIARA TEIXEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3380.54
+    },
+    {
+      "nome": "TATIANE BARION NOGUEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3378.33
+    },
+    {
+      "nome": "VERA LUCIA CUNICO MENGALI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3370.46
+    },
+    {
+      "nome": "ANA PAULA CORREA PASSONI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3369.83
+    },
+    {
+      "nome": "ANDIARA ELIVE FARIA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 3365.21
+    },
+    {
+      "nome": "GERALDO COPPOLA FILHO",
+      "cargo": "ESCRITURARIO I",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3356.86
+    },
+    {
+      "nome": "LETICIA PIZA",
+      "cargo": "TECNICO EM RADIOLOGIA",
+      "setor": "RAIO X",
+      "salario": 3354.07
+    },
+    {
+      "nome": "CARLA MARINA JACOIA CARDOSO",
+      "cargo": "ASSISTENTE SOCIAL",
+      "setor": "REABILITAÇÃO VISUAL",
+      "salario": 3352.32
+    },
+    {
+      "nome": "LUIZ FERNANDO DE SOUSA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3341.81
+    },
+    {
+      "nome": "ANA PAULA OSTORERO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3335.18
+    },
+    {
+      "nome": "NATALINA CUSTODIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3326.99
+    },
+    {
+      "nome": "ALDENEIDE APARECIDA RUFINO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3315.34
+    },
+    {
+      "nome": "CARLOS EDUARDO ROQUE",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 3308.41
+    },
+    {
+      "nome": "MARCELA CLAUDIA DA CUNHA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 3308.09
+    },
+    {
+      "nome": "ADRIANA MARIA DE CARVALHO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3298.8
+    },
+    {
+      "nome": "HELENA TERESINHA LEONI NOGUEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3288.42
+    },
+    {
+      "nome": "AFONSO GERALDO CIVITHERESA",
+      "cargo": "TECNICO IMOB ORTOPEDICA",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 3284.8
+    },
+    {
+      "nome": "EVANDRO ANTONIO DE ALMEIDA",
+      "cargo": "DENTISTA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3276.51
+    },
+    {
+      "nome": "ELAINE CRISTINA COSTA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3261.7
+    },
+    {
+      "nome": "PRISCILA DE FATIMA MARQUES",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 3256.39
+    },
+    {
+      "nome": "FILIPE FOGLIARINE BUENO DA SILVA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "COMPRAS",
+      "salario": 3247.06
+    },
+    {
+      "nome": "LUCAS ROBERTO PEREIRA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 3247.06
+    },
+    {
+      "nome": "LUCIMARA DE MELO ALMEIDA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "COMPRAS",
+      "salario": 3247.06
+    },
+    {
+      "nome": "MARINEI SATURNINO BARTALINI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3242.58
+    },
+    {
+      "nome": "LUIS GUSTAVO LOPES DA CUNHA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "MANUTENCAO",
+      "salario": 3238.2
+    },
+    {
+      "nome": "DANIELA PAULA PASSONI DIAS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 3234.32
+    },
+    {
+      "nome": "FERNANDA GENOVEZ FROZONI",
+      "cargo": "NUTRICIONISTA",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 3232.82
+    },
+    {
+      "nome": "ELISANGELA CRISTINA PASSONI RAMOS",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3214.93
+    },
+    {
+      "nome": "PAMELA MEDEIROS GREGORIO",
+      "cargo": "FISIOTERAPEUTA",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 3214.93
+    },
+    {
+      "nome": "MAIRA GISELE MARCAL FERREIRA MELLO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 3168.89
+    },
+    {
+      "nome": "MARIA LUISA MORGADO GUSSAO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 3137.89
+    },
+    {
+      "nome": "PATRICIA DE FATIMA PINTO PAREDES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 3135.48
+    },
+    {
+      "nome": "LUIS FABIO ANSELMO RODRIGUES",
+      "cargo": "ESCRITURARIO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3134.88
+    },
+    {
+      "nome": "ISABEL NOGUEIRA",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECEPCAO E ADMISSAO",
+      "salario": 3124.14
+    },
+    {
+      "nome": "WALLACE ESCOBAR RIBEIRO",
+      "cargo": "ESCRITURARIO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 3124.14
+    },
+    {
+      "nome": "MARGARETE DAS GRACAS CUNICO MENGALI",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 3110.04
+    },
+    {
+      "nome": "DAIANE DE SOUZA MESSIAS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 3090.47
+    },
+    {
+      "nome": "VERA LUCIA FRANCISCO PERICO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 3089.73
+    },
+    {
+      "nome": "ONEIDA DONIZETE PEREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3086.03
+    },
+    {
+      "nome": "MARIA APARECIDA DIAS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO PEDIÁTRICA",
+      "salario": 3052.21
+    },
+    {
+      "nome": "LUCIMARA CRISTINA BORGES MARQUES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 3051.12
+    },
+    {
+      "nome": "DAIANE KELLEN DA CUNHA ANTONIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 3045.33
+    },
+    {
+      "nome": "JOYCE MARA AMARANTE BEZERRA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "salario": 3044.57
+    },
+    {
+      "nome": "CARINA SOUZA CAVALARI",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 3042.74
+    },
+    {
+      "nome": "LUCIANA LEITE DE MORAIS CARNAROLI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2998.78
+    },
+    {
+      "nome": "DANIELA APARECIDA VENEZIAN LOPES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2989.01
+    },
+    {
+      "nome": "PRISCILA APARECIDA DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2989.01
+    },
+    {
+      "nome": "ROSANGELA DE ARAUJO SOUZA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO PEDIÁTRICA",
+      "salario": 2987.75
+    },
+    {
+      "nome": "VITOR DONIZETTI DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2987.75
+    },
+    {
+      "nome": "PAULO DONIZETE LOPES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2987.44
+    },
+    {
+      "nome": "MONICA APARECIDA DA SILVA JANUARIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2986.81
+    },
+    {
+      "nome": "JAINE DONIZETTI DOS REIS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2985.86
+    },
+    {
+      "nome": "DANIELA CLAUDINO BERNARDES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2982.71
+    },
+    {
+      "nome": "MARCIA APARECIDA DOS SANTOS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2982.71
+    },
+    {
+      "nome": "PEDRO ALEXANDRE AURELIETTI",
+      "cargo": "CONDUTOR DE AMBULANCIA",
+      "setor": "SAMU DIVINOLANDIA",
+      "salario": 2981.73
+    },
+    {
+      "nome": "ESTEFANIA CARLA ERNESTO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2981.45
+    },
+    {
+      "nome": "ELIZABETE FERREIRA GARCIA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2980.51
+    },
+    {
+      "nome": "SANDRA ALBUQUERQUE",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2980.51
+    },
+    {
+      "nome": "ELISANGELA PEREIRA DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2979.25
+    },
+    {
+      "nome": "JULIO CESAR DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2979.25
+    },
+    {
+      "nome": "LOURDES DONIZETI DE OLIVEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2978.93
+    },
+    {
+      "nome": "TATIANA APARECIDA ALVIM",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2978.93
+    },
+    {
+      "nome": "LEDIANA DOS SANTOS SOUZA",
+      "cargo": "TECNICO DE ENFERMAGEM TEMPORA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2978.3
+    },
+    {
+      "nome": "SALETE APARECIDA BARBOSA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2977.99
+    },
+    {
+      "nome": "SIRLENE ALVES DOS SANTOS",
+      "cargo": "TECNICO DE ENFERMAGEM TEMPORA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2976.41
+    },
+    {
+      "nome": "ANA LUCIA INACIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2976.1
+    },
+    {
+      "nome": "FRANCINI MAIELI DE ALMEIDA CANCIAN",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2975.47
+    },
+    {
+      "nome": "MARIA RAQUEL LEMES CEPOLINI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2974.21
+    },
+    {
+      "nome": "ANA CLAUDIA DE OLIVEIRA DIAS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2972.63
+    },
+    {
+      "nome": "PATRICIA RAMOS MONTEIRO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2972.32
+    },
+    {
+      "nome": "KAINARA CRISTINA DA SILVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "salario": 2972.28
+    },
+    {
+      "nome": "LELIA DE OLIVEIRA",
+      "cargo": "PSICOLOGO",
+      "setor": "REABILITAÇÃO VISUAL",
+      "salario": 2969.21
+    },
+    {
+      "nome": "MARIA DE FATIMA AURELIETI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2968.85
+    },
+    {
+      "nome": "MARIANA LIS CARVALHO SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2968.23
+    },
+    {
+      "nome": "RAFAELA APARECIDA MARCOS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2968.23
+    },
+    {
+      "nome": "JAQUELINI CRISTINA FELISBERTO DE SOUZA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2967.6
+    },
+    {
+      "nome": "MARIELLE RIBEIRO COETI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2967.6
+    },
+    {
+      "nome": "MONICA APARECIDA DE PAULA CORREA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2959.54
+    },
+    {
+      "nome": "LILIANA DE CASSIA PIVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECEPCAO E ADMISSAO",
+      "salario": 2959.43
+    },
+    {
+      "nome": "NEIVA APARECIDA DO PRADO MACHADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2953.1
+    },
+    {
+      "nome": "PEDRO HENRIQUE BARGA NOGUEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2944.85
+    },
+    {
+      "nome": "DANIELA MENDES FERREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2922.3
+    },
+    {
+      "nome": "ZELAINE ROBERTA DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2918.52
+    },
+    {
+      "nome": "PEDRO DE ARRUDA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "CONSERVACAO/LIMPEZA E JARDINAGEM",
+      "salario": 2902.75
+    },
+    {
+      "nome": "ELISANGELA MARIA LOPES MARCELINO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2901.5
+    },
+    {
+      "nome": "THIAGO ROBERTO DA SILVA",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2899.95
+    },
+    {
+      "nome": "SOFIA DE MELO",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2898.44
+    },
+    {
+      "nome": "MARCELO DIAS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2889.98
+    },
+    {
+      "nome": "MARIA DANIELA LOCATELLI DINIZ",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2885.18
+    },
+    {
+      "nome": "JULIANA MOREIRA CORREA SALGUEIROSA",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2883.96
+    },
+    {
+      "nome": "OSANA MARIA MALAGUTI DA CUNHA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2879.17
+    },
+    {
+      "nome": "ROSEVANI DONIZETE NEVES",
+      "cargo": "COPEIRA",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2878.57
+    },
+    {
+      "nome": "EDINA APARECIDA DE SOUZA MARTINS",
+      "cargo": "COPEIRA",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2878.27
+    },
+    {
+      "nome": "LAERCIO DONIZETE MARTINS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "CALDERARIA",
+      "salario": 2877.77
+    },
+    {
+      "nome": "SAMARA CRISTINA MOREIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2875.87
+    },
+    {
+      "nome": "ERICA HELENA PONTILES DE OLIVEIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2875.27
+    },
+    {
+      "nome": "MICHELE DA SILVA DELPHINO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2873.47
+    },
+    {
+      "nome": "JULIANA SILENE ALVES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2872.87
+    },
+    {
+      "nome": "ANDREIA CRISTINA DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2872.27
+    },
+    {
+      "nome": "MARIA LUCIA DE MORAES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2871.67
+    },
+    {
+      "nome": "TAINA MARTINS DE SOUZA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2871.37
+    },
+    {
+      "nome": "MARIA DO CARMO DE SOUSA JANUARIO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2871.07
+    },
+    {
+      "nome": "VERENICE APARECIDA CUNICO MENGALI",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2871.07
+    },
+    {
+      "nome": "SERGIO APARECIDO SOARES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2870.77
+    },
+    {
+      "nome": "ROSA BALBINO PEREIRA DOS SANTOS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2870.47
+    },
+    {
+      "nome": "VALERIA MANTOVANI DE SOUZA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2870.47
+    },
+    {
+      "nome": "LEANDRO GAVIOLI",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2869.91
+    },
+    {
+      "nome": "TAISE APARECIDA GOUVEA",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2869.91
+    },
+    {
+      "nome": "JESSICA RODRIGUES DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2869.87
+    },
+    {
+      "nome": "ANALIA ZABOTTO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2869.57
+    },
+    {
+      "nome": "ELIANGELA MODESTO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2868.97
+    },
+    {
+      "nome": "VITORIA REGINA RIBEIRO SIMAO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2867.77
+    },
+    {
+      "nome": "DANIELA MARTIMBIANCO",
+      "cargo": "ESCRITURARIO I",
+      "setor": "PRESTAÇÃO DE CONTAS",
+      "salario": 2867.06
+    },
+    {
+      "nome": "LAINNE CRISTINA LOURENCO EMIDIO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2865.36
+    },
+    {
+      "nome": "MATHEUS HENRIQUE BUENO PANDOLFO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2863.86
+    },
+    {
+      "nome": "DRAUZIO ANTONIO BRAZ",
+      "cargo": "MOTORISTA",
+      "setor": "TRANSPORTES",
+      "salario": 2860.9
+    },
+    {
+      "nome": "SERGIO APARECIDO DO PARTO",
+      "cargo": "MOTORISTA",
+      "setor": "TRANSPORTES",
+      "salario": 2858.26
+    },
+    {
+      "nome": "LUIS FERNANDO PEREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2857.02
+    },
+    {
+      "nome": "GUIOMAR DE OLIVEIRA SILVA FARIA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2854.56
+    },
+    {
+      "nome": "CAROLINE LIMA MARTINS PINTO",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "DELVAN RIBEIRO",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "EVELIN GALDINO DE SOUZA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 2847.06
+    },
+    {
+      "nome": "IARA FELTRAN",
+      "cargo": "ESCRITURARIO I",
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "IGOR FELIPE TAVARES DOS REIS",
+      "cargo": "ESCRITURARIO I",
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "salario": 2847.06
+    },
+    {
+      "nome": "JAQUELINE FERNANDA DE OLIVEIRA VICTOR",
+      "cargo": "ESCRITURARIO I",
+      "setor": "PRESTAÇÃO DE CONTAS",
+      "salario": 2847.06
+    },
+    {
+      "nome": "JOSE CARLA TOMAZ",
+      "cargo": "ESCRITURARIO I",
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "KEITHY GONÇALVES DE MORAES DE GOUVEA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "SETOR DE CONVÊNIOS",
+      "salario": 2847.06
+    },
+    {
+      "nome": "LUCIANA BERTOLINI RIBEIRO",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "LUIS HENRIQUE MALAGUTI",
+      "cargo": "ESCRITURARIO I",
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "MARIA EDUARDA RIBEIRO PELUCHI DE OLIVEIRA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FATURAMENTO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "PRISCILA BARION AMALFI",
+      "cargo": "ESCRITURARIO I",
+      "setor": "COMPRAS",
+      "salario": 2847.06
+    },
+    {
+      "nome": "RAFAELA GALLEGO",
+      "cargo": "ESCRITURARIO I",
+      "setor": "CONTABILIDADE",
+      "salario": 2847.06
+    },
+    {
+      "nome": "SARAH MARTINS DE SOUZA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2847.06
+    },
+    {
+      "nome": "SUELI PEREIRA VASCONCELOS",
+      "cargo": "ESCRITURARIO I",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2847.06
+    },
+    {
+      "nome": "ZILDA SABINO DA SILVA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "SETOR DE CONVÊNIOS",
+      "salario": 2847.06
+    },
+    {
+      "nome": "FERNANDA CRISTINA DALARMI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2837.36
+    },
+    {
+      "nome": "ANDREA GALICO",
+      "cargo": "ESCRITURARIO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2832.05
+    },
+    {
+      "nome": "MARIANE FLAVIA RIBEIRO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2817.54
+    },
+    {
+      "nome": "SILVELENA RODRIGUES ARAUJO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2817.03
+    },
+    {
+      "nome": "GRETIEN CRISTINA DE SOUSA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2813.76
+    },
+    {
+      "nome": "REGINA DOS SANTOS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 2811.45
+    },
+    {
+      "nome": "ANGELA DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2809.56
+    },
+    {
+      "nome": "MARTA ELISABETE CUNICO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2803.18
+    },
+    {
+      "nome": "ERIC DE MELO BILEIRO",
+      "cargo": "AUXILIAR MANUTENCAO",
+      "setor": "MANUTENCAO",
+      "salario": 2801.18
+    },
+    {
+      "nome": "GERALDO FORNARI JUNIOR",
+      "cargo": "MEDICO",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2801.02
+    },
+    {
+      "nome": "VANDERLICE BROLLO REBELATO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2796.25
+    },
+    {
+      "nome": "PRISCILA APARECIDA PEDRO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2783.14
+    },
+    {
+      "nome": "MARISTELA FERREIRA RODRIGUES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2778.61
+    },
+    {
+      "nome": "ZILDA MOREIRA CONTE",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2772.62
+    },
+    {
+      "nome": "BEATRIZ RODRIGUES BORGES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2772.31
+    },
+    {
+      "nome": "JANAINA APARECIDA CARDOSO MENGALI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2771.68
+    },
+    {
+      "nome": "SANMYA WEYLLA DOS SANTOS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2771.36
+    },
+    {
+      "nome": "ANA CRISTINA DA COSTA FELICIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2769.79
+    },
+    {
+      "nome": "JAYANE CRISTINA FERREIRA DE SOUZA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2769.79
+    },
+    {
+      "nome": "SUELI SIRLEI DE FARIA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2769.16
+    },
+    {
+      "nome": "ANILTON ANTONIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2766.01
+    },
+    {
+      "nome": "MAISA DE OLIVEIRA FELIZARDO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2766.01
+    },
+    {
+      "nome": "MARY TERESINHA BORGES CUNICO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2759.84
+    },
+    {
+      "nome": "MERLIANE VASCONCELOS DA CRUZ",
+      "cargo": "ESCRITURARIO I",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 2752.16
+    },
+    {
+      "nome": "CLEUNICE GARCIA SOARES DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2746.26
+    },
+    {
+      "nome": "JAQUELINE APARECIDA DE CARVALHO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "ENDOSCOPIA DIGESTIVA",
+      "salario": 2740.85
+    },
+    {
+      "nome": "KAROLAINE DE CASSIA DA SILVA",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2740.84
+    },
+    {
+      "nome": "GIOVANA CAROLINA DE OLIVEIRA",
+      "cargo": "ESCRITURARIO",
+      "setor": "REABILITAÇÃO VISUAL",
+      "salario": 2736.4
+    },
+    {
+      "nome": "JEFERSON DE SOUZA DE ARAUJO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2734.26
+    },
+    {
+      "nome": "ANA FLAVIA DIAS GERONIMO",
+      "cargo": "ESCRITURARIO",
+      "setor": "CONTABILIDADE",
+      "salario": 2733.23
+    },
+    {
+      "nome": "JOSIANE INTROCASO DOS SANTOS PRADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2728.59
+    },
+    {
+      "nome": "ANDREA APARECIDA DIAS GERONIMO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2725.75
+    },
+    {
+      "nome": "ERIC HENRIQUE RIBEIRO ALVES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "MANUTENCAO",
+      "salario": 2711.68
+    },
+    {
+      "nome": "FUVIA CRISTINE FERREIRA OSTORERO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2710.06
+    },
+    {
+      "nome": "ELOISA DE FATIMA SOUSA DO NASCIMENTO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2709.11
+    },
+    {
+      "nome": "GISIELI APARECIDA DE MORAES",
+      "cargo": "AUX. DE SERV.DE FARMACIA TEMP",
+      "setor": "FARMACIA",
+      "salario": 2693.21
+    },
+    {
+      "nome": "LEILA CLEIDIANE DE ALMEIDA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2692.62
+    },
+    {
+      "nome": "OLGA MARIA RIBEIRO PASSONI",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECEPCAO E ADMISSAO",
+      "salario": 2687.37
+    },
+    {
+      "nome": "JOSEANA SOARES DE MELO FARIA",
+      "cargo": "ESCRITURARIO",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2684.68
+    },
+    {
+      "nome": "JEAN CARLOS JORGE",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECEPCAO E ADMISSAO",
+      "salario": 2682.67
+    },
+    {
+      "nome": "ANDREIA APARECIDA DE SOUZA PAIVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2678.64
+    },
+    {
+      "nome": "REGINA CELIA DE ASSIS ZANI",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2672.64
+    },
+    {
+      "nome": "LUANA DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2672.34
+    },
+    {
+      "nome": "ALINE APARECIDA DE SOUZA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2670.54
+    },
+    {
+      "nome": "MARJORIE BARBOSA GONCALVES FERREIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2669.47
+    },
+    {
+      "nome": "URIAS VASCONCELOS JUNIOR",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2668.73
+    },
+    {
+      "nome": "DANIELA REGINA DINIZ",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2667.83
+    },
+    {
+      "nome": "MARISA APARECIDA FERREIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2667.23
+    },
+    {
+      "nome": "ROSANGELA APARECIDA DE CARVALHO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2657.66
+    },
+    {
+      "nome": "ADRIEL LUCAS DE CARVALHO",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2647.73
+    },
+    {
+      "nome": "EDILAINE MARIA NEVES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 2625.02
+    },
+    {
+      "nome": "ELAINE CRISTINA DE PAIVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2613.71
+    },
+    {
+      "nome": "JOAO VITOR BRANTES RODRIGUES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2610.32
+    },
+    {
+      "nome": "ELIS MARA DE PAIVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "AUDITORIA",
+      "salario": 2595.49
+    },
+    {
+      "nome": "DEISE LUCI CONTE MACHADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2588.68
+    },
+    {
+      "nome": "ANELIZE CORREA ROSA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2584.22
+    },
+    {
+      "nome": "SILVANA LEONI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2584.22
+    },
+    {
+      "nome": "RACHEL SANSMER BALBINO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2581.43
+    },
+    {
+      "nome": "VALDINEIA OLIVIA DA VEIGA",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 2573.91
+    },
+    {
+      "nome": "ALESSANDRA MARA DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2573.87
+    },
+    {
+      "nome": "JOSEANA APARECIDA LUIZ",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2568.52
+    },
+    {
+      "nome": "ELIANA APARECIDA MACHADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2567.89
+    },
+    {
+      "nome": "FLAVIANE DONIZETTI DE MELO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2563.79
+    },
+    {
+      "nome": "LIEBE CRISTINA DOS REIS FREITAS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2563.79
+    },
+    {
+      "nome": "LIDIANA ANDREAZI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2563.48
+    },
+    {
+      "nome": "MARIELE MAIARA TEIXEIRA RAMOS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2563.16
+    },
+    {
+      "nome": "JOSE CARLOS FROES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2562.53
+    },
+    {
+      "nome": "LUCIA HELENA DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2561.9
+    },
+    {
+      "nome": "DANIEL APARECIDO DE CARVALHO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2561.59
+    },
+    {
+      "nome": "JURANDIR ANSELMO MACHADO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2561.27
+    },
+    {
+      "nome": "JUSSARA MOREIRA GOMES DE AQUINO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2561.27
+    },
+    {
+      "nome": "RICARDO DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2561.27
+    },
+    {
+      "nome": "JAYNE DO NASCIMENTO MANETTA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2560.96
+    },
+    {
+      "nome": "LIVIA MARIA TEODORO DA SILVA FERREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2560.96
+    },
+    {
+      "nome": "MICHELLY FERREIRA DE ALMEIDA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2560.96
+    },
+    {
+      "nome": "JOSIANE APARECIDA DE LIMA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2560.64
+    },
+    {
+      "nome": "RAFAEL JUNIOR MARTINS PEREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2560.64
+    },
+    {
+      "nome": "DIONISIA APARECIDA TARDELLI RODRIGUES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2560.33
+    },
+    {
+      "nome": "MONICA THESOLIN PASSONI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2559.7
+    },
+    {
+      "nome": "ALINE GABRIELI DE LIMA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2559.07
+    },
+    {
+      "nome": "BRUNA CONSTANTE MARSULO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2559.07
+    },
+    {
+      "nome": "ANA CRISTINA DA SILVA VIOLIN",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2558.75
+    },
+    {
+      "nome": "MIRIAM FELIPE BRAZ",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2558.75
+    },
+    {
+      "nome": "SIMONE CANDIDO DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2558.44
+    },
+    {
+      "nome": "JUCIMARY CORTEZ ZAMAI PEREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2556.86
+    },
+    {
+      "nome": "DANIELA CRISTINA DEZORZI DA SILVA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2556.55
+    },
+    {
+      "nome": "DANIELA DA SILVA QUIRINO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2556.55
+    },
+    {
+      "nome": "VANESSA ARRUDA DO NASCIMENTO ANGELINI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2556.23
+    },
+    {
+      "nome": "GEIZIBEL RIBEIRO DE CARVALHO FERNANDES",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2555.92
+    },
+    {
+      "nome": "HANA CECILIA MARTINHAO DE CARVALHO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2553.08
+    },
+    {
+      "nome": "GEOVANA QUELLI FONSATO",
+      "cargo": "ESCRITURARIO",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 2551.7
+    },
+    {
+      "nome": "STHEFANI ELEN NOGUEIRA",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 2545.06
+    },
+    {
+      "nome": "MARILIA ANGELICA DA CUNHA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2544.61
+    },
+    {
+      "nome": "PATRICIA MARIA DE PAULA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2537.52
+    },
+    {
+      "nome": "FLAVIANA PERUSSI DE SOUZA",
+      "cargo": "TECNICO DE ENFERMAGEM TEMPORA",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2535.54
+    },
+    {
+      "nome": "DENISE GRAZIELE DA SILVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 2528.76
+    },
+    {
+      "nome": "SHIRLEY CARDOSO DE FARIA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2527.58
+    },
+    {
+      "nome": "SILVANA CLAUDIA DA SILVA MACHADO",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2493.4
+    },
+    {
+      "nome": "ANGELICA PRISCILA DA SILVA BRANTES",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2479.22
+    },
+    {
+      "nome": "CASSIA DE FATIMA CORREA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2476.61
+    },
+    {
+      "nome": "JULIANA CRISTINA DE FARIA",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2476.5
+    },
+    {
+      "nome": "BRUNA BEATRIZ BARBOSA GONÇALVES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2476.31
+    },
+    {
+      "nome": "ADRIANA APARECIDA DE SORDI MARQUES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2474.21
+    },
+    {
+      "nome": "ADRIANA APARECIDA DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2473.9
+    },
+    {
+      "nome": "ANA JULIA SORCE",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2472.1
+    },
+    {
+      "nome": "GRACY CAMILA DA SILVA LIMA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2472.1
+    },
+    {
+      "nome": "VANDERLEA APARECIDA CUNICO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2472.1
+    },
+    {
+      "nome": "VERA LUCIA MARQUES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2472.1
+    },
+    {
+      "nome": "SHIRLEI APARECIDA DA CUNHA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2471.8
+    },
+    {
+      "nome": "GABRIEL GONÇALVES DE FREITAS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2471.2
+    },
+    {
+      "nome": "JULIANA DE FATIMA DO NASCIMENTO SIQUEIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2471.2
+    },
+    {
+      "nome": "SILVANA CASSANI",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2471.2
+    },
+    {
+      "nome": "RAQUEL APARECIDA NEVES BRESCE",
+      "cargo": "COPEIRA",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2471.2
+    },
+    {
+      "nome": "JOSE CARLOS CABRAL",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2470.9
+    },
+    {
+      "nome": "CRISTIAN QUELI CARDOSO DE PAIVA MOREIRA",
+      "cargo": "COPEIRA",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2470.9
+    },
+    {
+      "nome": "JULIANA RAQUEL DA SILVA",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2470.9
+    },
+    {
+      "nome": "LUIS MIGUEL CANDIDO JORGE",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2470.6
+    },
+    {
+      "nome": "MARINA APARECIDA DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2470.6
+    },
+    {
+      "nome": "PRISCILA ELIZABETE MACHADO DA SILVA",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2470.6
+    },
+    {
+      "nome": "JACKELINE OLIVEIRA FERREIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2470.0
+    },
+    {
+      "nome": "LILIANE APARECIDA BASTOS DE OLIVEIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2469.7
+    },
+    {
+      "nome": "TATIANA BERNARDES PEREIRA COSTA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2469.7
+    },
+    {
+      "nome": "ANELI REGINA MARTINS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2469.4
+    },
+    {
+      "nome": "ADRIAN RICARDO DOS REIS CORREA",
+      "cargo": "AUXILIAR MANUTENCAO TEMPORÁR",
+      "setor": "MANUTENCAO",
+      "salario": 2468.2
+    },
+    {
+      "nome": "EDILAINE APARECIDA DE OLIVEIRA CARVALHO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2468.2
+    },
+    {
+      "nome": "ELIANA MIRANDA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2468.2
+    },
+    {
+      "nome": "JOAO BATISTA MARTINS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2468.2
+    },
+    {
+      "nome": "MARISA APARECIDA MOREIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2468.2
+    },
+    {
+      "nome": "TAUANE CRISTINA CANDIDO JORGE",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2468.2
+    },
+    {
+      "nome": "EDIJANE DA SILVA LOPES",
+      "cargo": "TELEFONISTA",
+      "setor": "TELEFONIA",
+      "salario": 2467.71
+    },
+    {
+      "nome": "FABIANE DE FATIMA LORO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2467.3
+    },
+    {
+      "nome": "DANILO RICARDO DE ABREU TRISTAO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2467.0
+    },
+    {
+      "nome": "MARILIA JOSE DOS SANTOS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2466.7
+    },
+    {
+      "nome": "MARCOS RONALDO FLAVIO RODRIGUES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2465.2
+    },
+    {
+      "nome": "SIMONE APARECIDA GARCIA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2464.3
+    },
+    {
+      "nome": "DAIANE APARECIDA MARTINS",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 2459.92
+    },
+    {
+      "nome": "GISLAINE ROBERTA CANDIDO",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2459.92
+    },
+    {
+      "nome": "HANRY DE SOUSA",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 2459.92
+    },
+    {
+      "nome": "HELEN LIMONGE LEAO",
+      "cargo": "ESCRITURARIO",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2459.92
+    },
+    {
+      "nome": "ISABELA CRISTINA MENGALI",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 2459.92
+    },
+    {
+      "nome": "JESSICA TEREZA NORONHA",
+      "cargo": "ESCRITURARIO",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 2459.92
+    },
+    {
+      "nome": "JULIA HELENA CORREA",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2459.92
+    },
+    {
+      "nome": "LARISSA DO CARMO NASCIMENTO DA SILVA DIAS",
+      "cargo": "ESCRITURARIO",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 2459.92
+    },
+    {
+      "nome": "LARISSA SANTOS DE SOUZA",
+      "cargo": "ESCRITURARIO",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 2459.92
+    },
+    {
+      "nome": "LETICIA CRISTINA GARCIA LUZ",
+      "cargo": "ESCRITURARIO",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 2459.92
+    },
+    {
+      "nome": "LETICIA JUNIOR DO PRADO",
+      "cargo": "ESCRITURARIO",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 2459.92
+    },
+    {
+      "nome": "LUIS GUSTAVO DE LIMA SILVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2459.92
+    },
+    {
+      "nome": "MARCELA APARECIDA MARQUES",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 2459.92
+    },
+    {
+      "nome": "MARIA ISABEL DE FARIA",
+      "cargo": "ESCRITURARIO",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2459.92
+    },
+    {
+      "nome": "MARINA LUPIANHES RODRIGUES",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRAL DE AGENDAMENTO",
+      "salario": 2459.92
+    },
+    {
+      "nome": "MERILIM APARECIDA DE FARIA",
+      "cargo": "ESCRITURARIO",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 2459.92
+    },
+    {
+      "nome": "PAULO CELSO ROSETTO",
+      "cargo": "ESCRITURARIO",
+      "setor": "AUDITORIA",
+      "salario": 2459.92
+    },
+    {
+      "nome": "SILMEIRE CARINA LOPES SCOLARI",
+      "cargo": "ESCRITURARIO",
+      "setor": "TESOURARIA",
+      "salario": 2459.92
+    },
+    {
+      "nome": "SILVIA ELENA LOPES LORO",
+      "cargo": "ESCRITURARIO",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2459.92
+    },
+    {
+      "nome": "SUELLEN CRISTINA DA SILVA SANTOS",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 2459.92
+    },
+    {
+      "nome": "WALLACE RICARDO DE OLIVEIRA",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 2459.92
+    },
+    {
+      "nome": "THABATA AZEVEDO DE ALENCAR",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2456.67
+    },
+    {
+      "nome": "CAROLINE DEUSDALMA RUFINO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2449.41
+    },
+    {
+      "nome": "CLEUZA MARIA DE OLIVEIRA SANTOS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "SUPERINTENDENCIA",
+      "salario": 2408.88
+    },
+    {
+      "nome": "CLEUZA DE AGUIAR",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2391.54
+    },
+    {
+      "nome": "JUSSARA CRISTINA PEDRO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2374.79
+    },
+    {
+      "nome": "KELI JESUINA DE SOUSA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2372.02
+    },
+    {
+      "nome": "ADRIELE JANAINA DINIZ DE MELO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ALESSANDRA CRISTINA FAGUNDES DE AVELAR",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ANA CAROLINA ROQUE",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ANA CLAUDIA DE CAMPOS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ANA JULIA FERREIRA DE ASSIS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ANA LUCIA GOUVEA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ANA PAULA FERREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ANA RITA DA SILVA ANGELO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "BRUNA ELAINE TOMAZ",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "BRUNA LETICIA ALVES GERVÁSIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "CAROLAINE SILVEIRA COELHO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "DEBORA CRISTINA MILITAO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "FELIPE HENRIQUE COETTI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO MEDICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "FRANCIELE APARECIDA ARAUJO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "IZABELA APARECIDA CORREA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2349.29
+    },
+    {
+      "nome": "KELY CRISTINA MARTINHAO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "LORRANE STEFANE TEIXEIRA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2349.29
+    },
+    {
+      "nome": "MARCELA CRISTINA DA CUNHA LOCATELLI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "MARCIA ALBUQUERQUE PERCILIANO RIBEIRO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "MARIA CLARA SILVA SARTORIO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2349.29
+    },
+    {
+      "nome": "MARIA HELENA MAGAROTI",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2349.29
+    },
+    {
+      "nome": "MARIA VITORIA CANDIDO MORAES DE SOUZA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "MARINA APARECIDA VITOR",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2349.29
+    },
+    {
+      "nome": "PATRICIA APARECIDA DE PADUA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "RAFAELA CHIOQUETE GRESPAN",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "RAQUEL DOS REIS",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ROSEANE DE LURDES RIZZETTO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2349.29
+    },
+    {
+      "nome": "SELMA APARECIDA GUSSAO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2349.29
+    },
+    {
+      "nome": "SIMONE APARECIDA DE LIMA CLEMENTINO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "TATIANE APARECIDA MODESTO DE ARAUJO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2349.29
+    },
+    {
+      "nome": "TATIANE MARIA CORREA ROSA",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2349.29
+    },
+    {
+      "nome": "VICTORIA JERONIMO MARÇAL",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "VINICIUS ROBERTO FERREIRA CANDIDO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 2349.29
+    },
+    {
+      "nome": "ELISANGELA CUNICO PASSONI",
+      "cargo": "COZINHEIRA",
+      "setor": "CANTINA",
+      "salario": 2292.43
+    },
+    {
+      "nome": "MARIA LUCIA ROQUE PINTO",
+      "cargo": "AUXILIAR ENFERMAGEM",
+      "setor": "C.M.E",
+      "salario": 2280.24
+    },
+    {
+      "nome": "NEIRI APARECIDA BUCCI DE CARVALHO",
+      "cargo": "TELEFONISTA",
+      "setor": "TELEFONIA",
+      "salario": 2280.24
+    },
+    {
+      "nome": "NATALIA ROBERTA EMIDIO",
+      "cargo": "AUXILIAR DE S. DE FARMACIA",
+      "setor": "FARMACIA",
+      "salario": 2278.21
+    },
+    {
+      "nome": "JUSCELINO ANTONIO DE OLIVEIRA",
+      "cargo": "AUXILIAR MANUTENCAO",
+      "setor": "MANUTENCAO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "EZEQUIEL KAIQUE MARCAL MARINHO",
+      "cargo": "AUXILIAR MANUTENCAO TEMPORÁR",
+      "setor": "MANUTENCAO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "RODRIGO FAGUNDES DOMINGOS",
+      "cargo": "AUXILIAR MANUTENCAO TEMPORÁR",
+      "setor": "MANUTENCAO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "SHAUAN ANDRÉ FERNANDES DO NASCIMENTO",
+      "cargo": "AUXILIAR MANUTENCAO TEMPORÁR",
+      "setor": "MANUTENCAO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "APARECIDA ALVES MOREIRA PARUSSOLO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "FARMACIA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "CINTIA MARIA ANDREATO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "SAME",
+      "salario": 2269.47
+    },
+    {
+      "nome": "DANIELA CIPOLLINI DE MESQUITA PAIVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "BLOCO CIRURGICO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "DENIVALDO MARCOS ANTONIO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "MANUTENCAO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "ELAINE CRISTINA NOGUEIRA MACHADO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "CANTINA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "ELAINE DE FATIMA MORAES",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "ESTEFANIA DOS SANTOS PAULINO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2269.47
+    },
+    {
+      "nome": "FERNANDA MARQUES PASSONI MUNIZ",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "PRONTO SOCORRO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "LEONARDO JOSE BARBOSA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "salario": 2269.47
+    },
+    {
+      "nome": "LIANA APARECIDA DE GODOY",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "LILIANE CIPOLLINI DE PAIVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "CANTINA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "LUZIA DONIZETE PINTO BORTOLO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "MARIA GABRIELA MESSIAS ROSA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "NEUZA APARECIDA TEZOLIN DE CARVALHO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "REABILITAÇÃO FISICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "PATRICIA MEIRE DA SILVA ANTONIO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "REGINA CELIA MARTINS MENGALI",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2269.47
+    },
+    {
+      "nome": "RODRIGO MIRANDA DE SOUZA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2269.47
+    },
+    {
+      "nome": "SELMA MARIA GARCIA DIAS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "REABILITAÇÃO AUDITIVA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "TAUANE EDUARDA DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 2269.47
+    },
+    {
+      "nome": "VERA LUCIA PEREIRA PRATIS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "SAME",
+      "salario": 2269.47
+    },
+    {
+      "nome": "ANA PAULA CARDOSO DA SILVA",
+      "cargo": "COPEIRA",
+      "setor": "CANTINA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "REGINA APARECIDA MENGALI LIMONGE",
+      "cargo": "COSTUREIRO",
+      "setor": "LAVANDERIA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "OSMILDO TREVISAN",
+      "cargo": "ESTOQUISTA",
+      "setor": "ALMOXARIFADO - CENTRAL",
+      "salario": 2269.47
+    },
+    {
+      "nome": "VALERIA BAPTISTA",
+      "cargo": "LACTARISTA",
+      "setor": "CANTINA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "JECEIR SILENE DO PRADO",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "LUARA DA SILVA",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "MONISE CRISTINA BASTOS DE OLIVEIRA",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "RHAISSA CRISTINA DA SILVA VIOLIN",
+      "cargo": "MONITOR",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 2269.47
+    },
+    {
+      "nome": "ALICE VITORIA RIOS MATOS DE OLIVEIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2269.46
+    },
+    {
+      "nome": "CAMILA CAROLINE FRANCO GABRIEL",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2269.46
+    },
+    {
+      "nome": "JANARA DUARTE",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2269.46
+    },
+    {
+      "nome": "KEITE RODRIGUES DA SILVA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2269.46
+    },
+    {
+      "nome": "LARISSA DE ABREU MODOLO FERREIRA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 2269.46
+    },
+    {
+      "nome": "RAQUEL DE FATIMA MARCOS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "LAVANDERIA",
+      "salario": 2269.46
+    },
+    {
+      "nome": "MARCIA SILVA LISBOA DOS SANTOS",
+      "cargo": "ESCRITURARIO",
+      "setor": "CENTRO OFTALMOLOGICO",
+      "salario": 2049.93
+    },
+    {
+      "nome": "JUREMA ELISABETH BERTO DA SILVA NASCIMENTO",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 1739.93
+    },
+    {
+      "nome": "JULIANA APARECIDA BARGA",
+      "cargo": "AUXILIAR DE SERVIÇOS TEMPORAR",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 1588.63
+    },
+    {
+      "nome": "ROSICLER BARBOSA DE LIMA GUTIERRIS",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 1588.63
+    },
+    {
+      "nome": "CRISTIAN DOUGLAS DOS SANTOS",
+      "cargo": "ESCRITURARIO I",
+      "setor": "RECURSOS HUMANOS",
+      "salario": 1518.43
+    },
+    {
+      "nome": "JHONATAN DE SOUZA PAIVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "SAME",
+      "salario": 1475.95
+    },
+    {
+      "nome": "VANIA APARECIDA DE MATOS MOREIRA",
+      "cargo": "TECNICO DE ENFERMAGEM TEMPORA",
+      "setor": "PRONTO SOCORRO",
+      "salario": 1467.45
+    },
+    {
+      "nome": "ANA LIVIA MULINA",
+      "cargo": "ESCRITURARIO I",
+      "setor": "COMPRAS",
+      "salario": 1423.53
+    },
+    {
+      "nome": "FATIMA SALVADOR PAZIM",
+      "cargo": "TECNICO DE ENFERMAGEM TEMPORA",
+      "setor": "AMBULATORIO DE ESPECIALIDADES",
+      "salario": 1409.57
+    },
+    {
+      "nome": "DAIANE DOS REIS SILVA",
+      "cargo": "ESCRITURARIO",
+      "setor": "FUNCIONARIOS FERISTAS",
+      "salario": 1229.96
+    },
+    {
+      "nome": "FLAVIANY CAROLINA MÓDENA TRAUTVEIN",
+      "cargo": "PSICOLOGO TEMPORARIO",
+      "setor": "AÇÃO SOCIAL MORRINHOS",
+      "salario": 752.44
+    },
+    {
+      "nome": "PAMELA APARECIDA DA SILVA",
+      "cargo": "ESCRITURARIO TEMPORARIO",
+      "setor": "CONTABILIDADE",
+      "salario": 737.98
+    },
+    {
+      "nome": "ADRIANA MARA DE ABREU",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNAÇÃO NEUROLOGICA",
+      "salario": 626.48
+    },
+    {
+      "nome": "MARCIA HELENA RICETTO",
+      "cargo": "TECNICO DE ENFERMAGEM",
+      "setor": "INTERNACAO CIRURGICA",
+      "salario": 605.93
+    },
+    {
+      "nome": "SIMONE IMACULADA DE CARVALHO ASTOLFO",
+      "cargo": "ASSISTENTE SOCIAL TEMPORARIO",
+      "setor": "AÇÃO SOCIAL MORRINHOS",
+      "salario": 570.39
+    },
+    {
+      "nome": "REGIANE CRISTINA GARCIA",
+      "cargo": "AUXILIAR SERVICOS",
+      "setor": "NUTRICAO E DIETETICA",
+      "salario": 178.28
+    },
+    {
+      "nome": "JESSICA JAQUELINE ARGERI",
+      "cargo": "ESCRITURARIO TEMPORARIO",
+      "setor": "AÇÃO SOCIAL MORRINHOS",
+      "salario": 75.65
+    }
+  ]
+}

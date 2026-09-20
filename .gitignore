@@ -42,3 +42,7 @@ tiny-creatures/assets/tiny-swords/*.zip
 # Artefatos de review/automação (prints e JSONs); não fazem parte do site.
 tiny-creatures/output/
 tiny-creatures/screenshots/
+
+# ── divinolandia-transparente ─────────────────────────────────────────
+# Os scrapers de gastos/ gravam HTML, prints e zips de depuração em debug/.
+divinolandia-transparente/gastos/debug/

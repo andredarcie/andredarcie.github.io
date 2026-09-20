@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transparência Divinolândia · Gastos Públicos 2026</title>
+<meta name="description" content="Portal não oficial de transparência pública de Divinolândia/SP. Consulte salários de servidores, maiores credores, empenhos e diárias de viagem com dados do Portal Oficial de Transparência 2026.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Transparência Divinolândia · Gastos Públicos 2026">
+<meta property="og:description" content="Salários, credores, empenhos e diárias da Prefeitura de Divinolândia/SP — dados oficiais de 2026 em formato acessível ao cidadão.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+
+<link rel="stylesheet" href="../tema.css?v=1">
+<link rel="stylesheet" href="css/style.css?v=20260915h">
+</head>
+<body>
+
+<nav class="dt-bar" aria-label="Divinolândia Transparente">
+  <a class="dt-bar-marca" href="../index.html">Divinolândia Transparente</a>
+  <div class="dt-bar-links">
+    <a href="index.html" aria-current="page">Gastos</a>
+    <a href="../agua/index.html">Água</a>
+    <a href="../historia/index.html">História</a>
+  </div>
+</nav>
+
+<!-- AVISO JURÍDICO -->
+<div class="legal-banner" id="legalBanner" role="note" aria-label="Aviso legal">
+  <div class="legal-banner-inner">
+    <span class="legal-banner-icon">⚠️</span>
+    <p class="legal-banner-text">
+      <strong>Portal não oficial &mdash; fins exclusivamente informativos.</strong>
+      Este site é uma iniciativa independente de cidadão e <strong>não possui qualquer vínculo com a Prefeitura Municipal de Divinolândia, com o Estado de São Paulo ou com qualquer órgão público.</strong>
+      Os dados aqui exibidos são obtidos por consulta automatizada ao
+      <a href="https://webapp1-divinolandia.cidade360.cloud/pronimtb/" target="_blank" rel="noopener noreferrer">Portal Oficial de Transparência</a>
+      (sistema PRONIM TB / Cidade360) e reproduzidos sem alteração de conteúdo.
+      <strong>Não nos responsabilizamos pela exatidão, completude, atualidade ou interpretação dos dados</strong> &mdash; para informações oficiais e vinculantes, consulte diretamente o portal da prefeitura.
+      O uso deste site implica ciência e concordância com este aviso.
+    </p>
+    <button class="legal-dismiss" onclick="document.getElementById('legalBanner').style.display='none'" aria-label="Fechar aviso">Entendi</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="brasao">🌿</div>
+      <div class="header-meta">
+        <div class="city">Prefeitura Municipal</div>
+        <div class="org">Divinolândia · São Paulo</div>
+      </div>
+      <div class="badge-live"><span></span> Dados Atualizados</div>
+    </div>
+    <div class="header-title-block">
+      <div class="eyebrow">Portal da Transparência</div>
+      <h1 class="main-title">Para onde vai<br><em>o seu dinheiro</em></h1>
+      <p class="header-subtitle">Acompanhe os maiores gastos públicos do município em 2026. Dados extraídos diretamente do sistema oficial de transparência.</p>
+      <div class="period-tag">
+        📅 Período: 01 jan 2026 – 21 mai 2026 &nbsp;·&nbsp; Top 50 maiores credores
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-cell">
+      <div class="stat-label">Total Empenhado</div>
+      <div class="stat-value" id="stat-emp">R$ 29,5 M</div>
+      <div class="stat-sub">Top 50 credores</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Total Pago</div>
+      <div class="stat-value leaf" id="stat-pago">—</div>
+      <div class="stat-sub">Efetivamente pago</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">% Pago / Empenhado</div>
+      <div class="stat-value amber" id="stat-pct">—</div>
+      <div class="stat-sub">Execução orçamentária</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Credores Listados</div>
+      <div class="stat-value" id="stat-count">50</div>
+      <div class="stat-sub">De 566 no sistema</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <!-- ── SOBRA OU DÉFICIT, ANO A ANO ───────────────────── -->
+  <section class="saldo-section" id="sec-saldo" aria-labelledby="saldoTitulo">
+    <h2 class="saldo-titulo" id="saldoTitulo">A prefeitura fechou o ano com sobra ou no vermelho?</h2>
+    <p class="saldo-resposta" id="saldoResposta"></p>
+
+    <div class="saldo-graficos">
+      <figure class="saldo-grafico">
+        <figcaption>Resultado de cada ano do município, somando prefeitura, câmara e instituto de previdência <span>em R$ milhões; verde é sobra, vermelho é prejuízo</span></figcaption>
+        <div id="saldoResultado"></div>
+      </figure>
+      <figure class="saldo-grafico">
+        <figcaption>Dinheiro em caixa e dívidas no fim de cada ano <span>em R$ milhões</span></figcaption>
+        <div id="saldoCaixa"></div>
+      </figure>
+    </div>
+
+    <div class="saldo-tabela-wrap">
+      <table class="saldo-tabela">
+        <caption>Os números de cada ano, em R$ milhões</caption>
+        <thead>
+          <tr>
+            <th scope="col" rowspan="2">Ano</th>
+            <th scope="col" rowspan="2">Prefeito</th>
+            <th scope="colgroup" colspan="3" class="grupo">Município, com o instituto</th>
+            <th scope="colgroup" colspan="2" class="grupo">De onde veio o resultado</th>
+            <th scope="col" rowspan="2" class="num">Caixa</th>
+            <th scope="col" rowspan="2" class="num">Dívidas</th>
+            <th scope="col" rowspan="2" class="num">Precatórios, dentro das dívidas</th>
+          </tr>
+          <tr>
+            <th scope="col" class="num">Arrecadou</th>
+            <th scope="col" class="num">Gastou</th>
+            <th scope="col" class="num">Resultado</th>
+            <th scope="col" class="num">Prefeitura e câmara</th>
+            <th scope="col" class="num">Instituto de previdência</th>
+          </tr>
+        </thead>
+        <tbody id="saldoTabela"></tbody>
+      </table>
+    </div>
+
+    <ul class="saldo-notas">
+      <li><strong>Resultado</strong> é o que o município inteiro (prefeitura, câmara e instituto de previdência) arrecadou no ano menos o que empenhou, isto é, o que se comprometeu a pagar. É o número oficial do balanço. O instituto (IPMD) é uma autarquia da prefeitura: o dinheiro dele é carimbado para aposentadorias e pensões, mas, se faltar, quem cobre é a prefeitura (Lei 9.717/1998). Por isso ele entra no total, e o gráfico mostra quanto do resultado veio de cada parte.</li>
+      <li id="saldoNotaParcial" hidden></li>
+      <li id="saldoNotaReserva" hidden></li>
+      <li id="saldoNotaResultado" hidden></li>
+      <li id="saldoNotaCancelados" hidden></li>
+      <li><strong>Caixa</strong> é todo o dinheiro em conta no fim do ano, sem o do instituto de previdência. Parte dele é carimbada para educação, saúde e convênios, e parte é de terceiros, como depósitos e cauções; não dá para pagar qualquer conta com ele.</li>
+      <li><strong>Dívidas</strong> são empréstimos, parcelamentos de contribuições previdenciárias e precatórios, que são dívidas decididas na Justiça. Desde 2024 o Tesouro não conta mais os precatórios na dívida consolidada; aqui eles entram em todos os anos para a série ser comparável.</li>
+      <li id="saldoNotaAlertas" hidden></li>
+      <li id="saldoNotaAtuarial" hidden></li>
+      <li id="saldoNotaConferencia" hidden></li>
+      <li>Fontes: <a href="https://siconfi.tesouro.gov.br/" target="_blank" rel="noopener noreferrer">SICONFI</a>, do Tesouro Nacional (Balanço Orçamentário de dezembro, RREO Anexo 1, e Dívida Consolidada Líquida do fim de cada ano, RGF Anexo 2), e <a href="https://transparencia.tce.sp.gov.br/" target="_blank" rel="noopener noreferrer">Portal da Transparência Municipal do TCE-SP</a> (contas do instituto de previdência e pagamentos de precatórios). Prefeitos: notícias de posse no <a href="https://www.divinolandia.sp.gov.br/" target="_blank" rel="noopener noreferrer">site da prefeitura</a>.</li>
+    </ul>
+  </section>
+
+  <!-- NAV INDEX -->
+  <nav class="site-nav fade-in fade-in-1">
+    <span class="nav-label">Ir para</span>
+    <div class="nav-links">
+      <a class="nav-link" href="#sec-destaques"><span>🔍</span> Radar de Gastos</a>
+      <a class="nav-link" href="#sec-credores"><span>🏢</span> Maiores Credores</a>
+      <a class="nav-link" href="#sec-salarios"><span>👤</span> Salários</a>
+      <a class="nav-link" href="#sec-empenhos"><span>🛒</span> Empenhos</a>
+      <a class="nav-link" href="#sec-diarias"><span>✈️</span> Diárias</a>
+      <a class="nav-link" href="#sec-receitas"><span>💰</span> Impostos e taxas</a>
+      <a class="nav-link" href="#sec-despesas"><span>📊</span> Despesas</a>
+      <a class="nav-link" href="#sec-conderg"><span>🏥</span> CONDERG</a>
+    </div>
+  </nav>
+
+  <!-- ── DESTAQUES ─────────────────────────────────── -->
+  <section class="destaques-section fade-in fade-in-1" id="sec-destaques">
+    <div class="destaques-label">Radar de gastos</div>
+    <h2 class="destaques-title">O que os dados revelam</h2>
+    <p class="destaques-sub">Gastos que chamaram atenção nos dados oficiais de 2025–2026. Clique em qualquer seção abaixo para ver o detalhamento completo.</p>
+
+    <div class="destaques-grid">
+
+      <div class="destaque-card dc-entret">
+        <div class="dc-cat">Entretenimento</div>
+        <div class="dc-headline">Show de "Sandy e Marckelyne" pago para o festival Divinofolia</div>
+        <div class="dc-context">Apresentação artística contratada para o 3º Divinofolia (14 a 17 de fevereiro de 2026). O empenho cita dois artistas: "Sandy e Marckelyne".</div>
+        <div class="dc-valor">R$ 60.000</div>
+        <div class="dc-fonte">Empenho · SMM Produções Ltda · fev/2026</div>
+      </div>
+
+
+      <div class="destaque-card dc-veiculo">
+        <div class="dc-cat">Veículos</div>
+        <div class="dc-headline">Dois carros zero km comprados pela prefeitura em 2026</div>
+        <div class="dc-context">Dois hatchbacks zero km, modelo 2026, com câmera de ré, assistente de frenagem e seis airbags cada um.</div>
+        <div class="dc-valor">R$ 386.400</div>
+        <div class="dc-fonte">Empenho · Comercial Germânica Ltda · 2026</div>
+      </div>
+
+      <div class="destaque-card dc-obras">
+        <div class="dc-cat">Obras</div>
+        <div class="dc-headline">R$ 332 mil em obras de palco multiuso para eventos culturais</div>
+        <div class="dc-context">Dois empenhos sequenciais (nº 3409 e 3410) com descrição idêntica, na mesma data. Pode ser um único projeto em duas parcelas ou dois contratos — o portal não distingue.</div>
+        <div class="dc-valor">R$ 332.488</div>
+        <div class="dc-fonte">Restos a Pagar · VP Engenharia e Construções · empenhos set/2025</div>
+      </div>
+
+      <div class="destaque-card dc-obras">
+        <div class="dc-cat">Obras / Lazer</div>
+        <div class="dc-headline">Reforma de área de lazer no bairro Nova Divinolândia</div>
+        <div class="dc-context">Reforma e ampliação da praça na Rua Dezesseis. Dois empenhos para o mesmo projeto, com recursos de convênio estadual (SGRI PRC 2024-00518).</div>
+        <div class="dc-valor">R$ 166.073</div>
+        <div class="dc-fonte">Empenhos · Realizze Construções e Arquitetura · 2025→2026</div>
+      </div>
+
+      <div class="destaque-card dc-contrat">
+        <div class="dc-cat">Contrato / Consultoria</div>
+        <div class="dc-headline">Instituto contratado duas vezes para criar o Código Tributário</div>
+        <div class="dc-context">Mesma empresa (INEPA) recebeu dois empenhos idênticos de R$56.000 para elaboração do novo Código Tributário municipal.</div>
+        <div class="dc-valor">R$ 112.000</div>
+        <div class="dc-fonte">Empenhos · Instituto Nac. Esp. em Pesquisa e Apoio · 2026</div>
+      </div>
+
+
+
+
+
+
+      <div class="destaque-card dc-combustivel">
+        <div class="dc-cat">Frota / Combustível</div>
+        <div class="dc-headline">R$ 831 mil em contratos de combustível e gestão de frota em 2026</div>
+        <div class="dc-context">R$500k para gerenciamento geral da frota, R$135k para frota da educação, R$166k em diesel, gasolina e álcool. Toda a operação terceirizada para a Link Card — mesma empresa do vale-alimentação dos servidores.</div>
+        <div class="dc-valor">R$ 831.757</div>
+        <div class="dc-fonte">Empenhos · Link Card Administradora · jan–abr/2026</div>
+      </div>
+
+      <div class="destaque-card dc-contrat">
+        <div class="dc-cat">Consultoria</div>
+        <div class="dc-headline">R$ 228 mil para empresa fazer planejamento, contabilidade e licitações pela prefeitura</div>
+        <div class="dc-context">A Confiatta Consultoria foi contratada para atuar em planejamento orçamentário, contabilidade, tesouraria, licitações e contratos — funções que são atribuições dos próprios servidores da prefeitura.</div>
+        <div class="dc-valor">R$ 228.000</div>
+        <div class="dc-fonte">Empenho nº 475 · Confiatta Consultoria e Gestão Ltda · jan/2026</div>
+      </div>
+
+      <div class="destaque-card dc-tecnologia">
+        <div class="dc-cat">Tecnologia / Contratos</div>
+        <div class="dc-headline">Mesmo software tributário contratado duas vezes com descrição idêntica</div>
+        <div class="dc-context">Dois empenhos para a VLC Soluções com descrição palavra por palavra igual: "licença de uso de software para modernização da administração tributária". Empenho 492 (jan) de R$105k e empenho 1453 (abr) de R$90k.</div>
+        <div class="dc-valor">R$ 195.000</div>
+        <div class="dc-fonte">Empenhos 492 e 1453 · VLC Soluções Empresariais · 2026</div>
+      </div>
+
+      <div class="destaque-card dc-contrat">
+        <div class="dc-cat">Repasse / ONG</div>
+        <div class="dc-headline">ONG "Focinho Carente" tem R$ 134 mil empenhados via Termo de Fomento</div>
+        <div class="dc-context">Associação de proteção animal tem R$134.247 reservados em empenho de dez/2025. Apenas R$12.204 foram efetivamente pagos até mai/2026. A descrição é genérica e não especifica quais serviços serão prestados.</div>
+        <div class="dc-valor">R$ 134.247 empenhados</div>
+        <div class="dc-fonte">Empenho nº 4679 · Restos a Pagar 2025→2026 · R$ 12.204 pagos até mai/2026</div>
+      </div>
+
+      <div class="destaque-card dc-salario">
+        <div class="dc-cat">Rescisão</div>
+        <div class="dc-headline">Pessoa física recebeu R$ 53 mil em rescisão — maior indenização individual do período</div>
+        <div class="dc-context">Mauro Jovanelli (CPF, não CNPJ) recebeu R$53.993 em "termo de rescisão do contrato de trabalho" em março de 2026. O empenho não descreve o cargo ou função que exercia.</div>
+        <div class="dc-valor">R$ 53.993</div>
+        <div class="dc-fonte">Empenho nº 1007 · Mauro Jovanelli · mar/2026</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INFO CARDS -->
+  <div class="info-grid fade-in fade-in-1">
+    <div class="info-card green">
+      <div class="card-ico">👥</div>
+      <div class="card-num" id="card-folha">R$ 9,4 M</div>
+      <div class="card-label">Folha de Pagamento</div>
+      <div class="card-detail">Maior gasto do município — servidores públicos municipais.</div>
+    </div>
+    <div class="info-card amber">
+      <div class="card-ico">🏛️</div>
+      <div class="card-num amber" id="card-ipmd">R$ 7,2 M</div>
+      <div class="card-label">Previdência Municipal (IPMD)</div>
+      <div class="card-detail">Instituto de previdência dos servidores de Divinolândia.</div>
+    </div>
+    <div class="info-card slate">
+      <div class="card-ico">🎫</div>
+      <div class="card-num leaf" id="card-link">R$ 2,2 M</div>
+      <div class="card-label">Vale Benefícios (Link Card)</div>
+      <div class="card-detail">Vale-alimentação e benefícios para os servidores municipais.</div>
+    </div>
+  </div>
+
+  <!-- TABLE SECTION -->
+  <div id="sec-credores"></div>
+  <div class="section-head fade-in fade-in-2">
+    <div>
+      <div class="section-label">Ranking de gastos</div>
+      <h2 class="section-title">50 Maiores Credores</h2>
+    </div>
+    <div class="controls">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="Buscar credor ou CNPJ…" autocomplete="off">
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="emp">Ordenar: Empenhado ↓</option>
+        <option value="pago">Ordenar: Pago ↓</option>
+        <option value="nome">Ordenar: Nome A→Z</option>
+        <option value="pct">Ordenar: % Pago ↓</option>
+      </select>
+      <span class="result-count" id="resultCount"><strong>50</strong> resultados</span>
+      <button class="sal-export-btn" id="credExportBtn" title="Baixar dados em CSV">⬇ CSV</button>
+    </div>
+  </div>
+
+  <div class="legend fade-in fade-in-2">
+    <div class="legend-item"><span class="legend-dot dot-emp"></span> Valor Empenhado</div>
+    <div class="legend-item"><span class="legend-dot dot-pago"></span> Valor Pago</div>
+  </div>
+
+  <div class="table-wrap fade-in fade-in-3">
+    <table class="data-table" id="dataTable">
+      <thead>
+        <tr>
+          <th class="th-rank">#</th>
+          <th class="th-name" data-sort="nome">Credor <span class="sort-icon">↕</span></th>
+          <th class="th-cnpj">CNPJ / CPF</th>
+          <th class="th-bar">Proporção do gasto</th>
+          <th class="th-emp sorted" data-sort="emp">Empenhado <span class="sort-icon">↓</span></th>
+          <th class="th-pago" data-sort="pago">Pago <span class="sort-icon">↕</span></th>
+          <th class="th-pct" data-sort="pct">% Pago <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="ver-mais-wrap"><button class="ver-mais-btn" id="vmCredores">Ver todos os 50 credores ↓</button></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-text">Nenhum credor encontrado.<br><small>Tente outro termo de busca.</small></div>
+    </div>
+  </div>
+
+  <!-- SALARY SECTION -->
+  <section class="salary-section fade-in fade-in-4" id="sec-salarios">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Remuneração de servidores</div>
+        <h2 class="section-title">Salários — Todos os Servidores</h2>
+      </div>
+      <div class="salary-controls">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="search-input" type="text" id="salarySearch" placeholder="Buscar servidor ou cargo…" autocomplete="off">
+        </div>
+        <select class="sort-select" id="salarySortSelect">
+          <option value="bruto">Ordenar: Bruto ↓</option>
+          <option value="liq">Ordenar: Líquido ↓</option>
+          <option value="nome">Ordenar: Nome A→Z</option>
+        </select>
+        <span class="result-count" id="salaryCount"><strong>493</strong> servidores</span>
+        <button class="sal-clear-btn" id="salClearFilters" hidden>✕ Limpar filtros</button>
+        <button class="sal-export-btn" id="salExportBtn" title="Baixar dados em CSV">⬇ CSV</button>
+      </div>
+    </div>
+
+    <div class="sal-stats" id="salStats"></div>
+
+    <div class="sal-filter-bar">
+      <div class="sal-filter-group">
+        <span class="sal-filter-label">Área</span>
+        <div class="cat-filters" id="salaryAreaFilters">
+          <button class="cat-btn active" data-sarea="">Todas</button>
+        </div>
+      </div>
+      <div class="sal-filter-group">
+        <span class="sal-filter-label">Tipo</span>
+        <div class="cat-filters" id="salaryTipoFilters">
+          <button class="cat-btn active" data-stipo="">Todos</button>
+          <button class="cat-btn" data-stipo="Folha Mensal">Folha</button>
+          <button class="cat-btn" data-stipo="Rescisão">Rescisão</button>
+        </div>
+      </div>
+      <div class="sal-filter-group">
+        <span class="sal-filter-label">Faixa salarial (bruto)</span>
+        <select class="sort-select" id="salaryFaixaSelect">
+          <option value="">Todos os salários</option>
+          <option value="0-3000">Até R$3.000</option>
+          <option value="3000-6000">R$3.000 – R$6.000</option>
+          <option value="6000-10000">R$6.000 – R$10.000</option>
+          <option value="10000-15000">R$10.000 – R$15.000</option>
+          <option value="15000-">Acima de R$15.000</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="demo-notice">
+      ✅ <strong>Dados oficiais</strong> — Extraídos diretamente do <a href="https://webapp1-divinolandia.cidade360.cloud/pronimtb/" target="_blank">Portal de Transparência</a> (Gestão de Pessoas › Salários por Colaborador). Última atualização: 21/05/2026.
+    </div>
+
+    <div class="salary-info-box">
+      <div class="sib-header">
+        <span class="sib-icon">ℹ️</span>
+        <strong>Notas sobre os dados de remuneração</strong>
+      </div>
+      <ul class="sib-list">
+        <li><span class="sib-badge sib-badge-rescisao">Rescisão</span> Os servidores marcados com esse badge receberam <strong>verbas rescisórias</strong> (férias vencidas, 13º proporcional etc.), não salário mensal regular. O valor não representa a remuneração ordinária do cargo.</li>
+        <li>Os valores exibidos são do <strong>período acumulado (janeiro a maio de 2026)</strong> conforme apresentado pelo portal, podendo incluir gratificações e adicionais variáveis.</li>
+        <li>Para validação ou contestação de qualquer dado, acesse diretamente o <a href="https://webapp1-divinolandia.cidade360.cloud/pronimtb/" target="_blank" rel="noopener noreferrer">Portal de Transparência Oficial</a>.</li>
+      </ul>
+    </div>
+
+    <div class="area-chart-wrap" id="areaChart"></div>
+
+    <div class="salary-table-wrap">
+      <table class="salary-table" id="salaryTable">
+        <thead>
+          <tr>
+            <th class="th-s-rank">#</th>
+            <th class="th-s-name" data-ssort="nome">Servidor <span class="sort-icon">↕</span></th>
+            <th class="th-s-cargo">Cargo / Função</th>
+            <th class="th-s-sec">Secretaria</th>
+            <th class="th-s-bruto sorted-sal" data-ssort="bruto">Bruto <span class="sort-icon">↓</span></th>
+            <th class="th-s-dedu">Deduções</th>
+            <th class="th-s-liq" data-ssort="liq">Líquido <span class="sort-icon">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="salaryBody"></tbody>
+      </table>
+      <div class="ver-mais-wrap"><button class="ver-mais-btn" id="vmSalarios">Ver todos os 493 servidores ↓</button></div>
+      <div class="empty-state" id="salaryEmpty">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">Nenhum servidor encontrado.<br><small>Tente limpar os filtros ativos.</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIORES EMPENHOS ──────────────────────────────────────────────── -->
+  <section class="empenhos-section fade-in fade-in-4" id="sec-empenhos">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Empenhos e Contratos</div>
+        <h2 class="section-title">Maiores Compras e Contratos</h2>
+      </div>
+      <div class="salary-controls">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="search-input" type="text" id="empSearch" placeholder="Buscar fornecedor ou descrição…" autocomplete="off">
+        </div>
+        <span class="result-count" id="empCount"><strong>50</strong> empenhos</span>
+        <button class="sal-export-btn" id="empExportBtn" title="Baixar dados em CSV">⬇ CSV</button>
+      </div>
+    </div>
+
+    <div class="sal-stats" id="empStats"></div>
+
+    <div class="demo-notice">
+      ✅ <strong>Dados oficiais</strong> — Extraídos do <a href="https://webapp1-divinolandia.cidade360.cloud/pronimtb/" target="_blank">Portal de Transparência</a>. Inclui empenhos de 2026 e restos a pagar de 2025. Última atualização: 21/05/2026.
+    </div>
+
+    <div class="cat-filters" id="catFilters">
+      <button class="cat-btn active" data-cat="">Todos</button>
+    </div>
+
+    <div class="emp-table-wrap">
+      <table class="emp-table" id="empTable">
+        <thead>
+          <tr>
+            <th class="th-emp-cat">Categoria</th>
+            <th class="th-emp-credor">Fornecedor / Credor</th>
+            <th class="th-emp-desc">Descrição</th>
+            <th class="th-emp-val">Valor Empenhado</th>
+          </tr>
+        </thead>
+        <tbody id="empBody"></tbody>
+      </table>
+      <div class="ver-mais-wrap"><button class="ver-mais-btn" id="vmEmpenhos">Ver todos os empenhos ↓</button></div>
+      <div class="empty-state" id="empEmpty" style="display:none;">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">Nenhum empenho encontrado.<br><small>Tente outro filtro ou termo de busca.</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DIÁRIAS E VIAGENS ───────────────────────────── -->
+  <section class="diarias-section fade-in fade-in-4" id="sec-diarias">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Adiantamentos de Viagem</div>
+        <h2 class="section-title">Diárias e Viagens — Quem Viajou e Quanto Custou</h2>
+      </div>
+    </div>
+
+    <div class="demo-notice">✅ Dados oficiais — Extraídos do Portal de Transparência (empenhos categoria "Adto-Viagens"). Período: jan–mai/2026. Devoluções de saldo excluídas.</div>
+
+    <div class="diarias-stats" id="diariasStats"></div>
+
+    <h3 style="font-size:0.85rem;font-weight:600;color:var(--dt-ink-2);font-family:var(--dt-display);margin:0 0 0.6rem;text-transform:uppercase;letter-spacing:0.05em;">Total recebido por pessoa</h3>
+    <div class="pessoa-bars" id="pessoaBars"></div>
+
+    <h3 style="font-size:0.85rem;font-weight:600;color:var(--dt-ink-2);font-family:var(--dt-display);margin:1rem 0 0.6rem;text-transform:uppercase;letter-spacing:0.05em;">Todos os adiantamentos</h3>
+    <div style="overflow-x:auto;">
+      <table class="viagens-table">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Nome / Secretaria</th>
+            <th class="th-v-desc">Finalidade</th>
+            <th style="text-align:right;">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="viagensBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- RECEITAS -->
+  <section class="receitas-section fade-in fade-in-4" id="sec-receitas">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Receita própria 2025</div>
+        <h2 class="section-title">Impostos e taxas cobrados pela prefeitura</h2>
+      </div>
+      <button id="recExportBtn" class="sal-export-btn">⬇ CSV</button>
+    </div>
+
+    <div class="demo-notice">✅ Dados oficiais — impostos e taxas lançados (cobrados) pela prefeitura em 2025, extraídos do Portal de Transparência (PRONIM TB): R$ 5,8 milhões. Não é tudo o que o município arrecadou: a maior parte do dinheiro vem de repasses do estado e da União, e o total arrecadado em 2025 foi R$ 73,8 milhões (veja o topo da página).</div>
+
+    <div class="sal-stats cols-3" id="recStats"></div>
+
+    <div class="rec-charts">
+      <div class="rec-chart-block">
+        <h3 class="rec-chart-title">Distribuição por imposto ou taxa</h3>
+        <div id="recTipoChart"></div>
+      </div>
+      <div class="rec-chart-block">
+        <h3 class="rec-chart-title">Evolução Mensal (R$)</h3>
+        <div id="recMesChart"></div>
+      </div>
+    </div>
+
+    <h3 class="rec-subtitle">Detalhamento por Tributo</h3>
+    <div style="overflow-x:auto;">
+      <table class="rec-tributo-table">
+        <thead>
+          <tr>
+            <th class="rec-th-rank">#</th>
+            <th>Tributo</th>
+            <th class="rec-th-bar"></th>
+            <th class="rec-th-val">Valor Lançado</th>
+            <th class="rec-th-pct">% Total</th>
+          </tr>
+        </thead>
+        <tbody id="recTributoBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+
+  <!-- DESPESAS -->
+  <section class="desp-section fade-in fade-in-4" id="sec-despesas">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Orçamento Municipal 2025</div>
+        <h2 class="section-title">Despesas — Para Onde Vai o Dinheiro</h2>
+      </div>
+    </div>
+
+    <div class="demo-notice">✅ <strong>Dados oficiais</strong> — valores de 2025 já descontadas as anulações de empenho (R$ 9,97 milhões). Por área: balanço anual enviado ao Tesouro Nacional (<a href="https://siconfi.tesouro.gov.br/" target="_blank" rel="noopener noreferrer">SICONFI</a>, DCA 2025). Por mês e por credor: <a href="https://transparencia.tce.sp.gov.br/" target="_blank" rel="noopener noreferrer">Portal da Transparência Municipal do TCE-SP</a>. "Repasses internos" são pagamentos entre órgãos do próprio município, como a contribuição da prefeitura ao instituto de previdência.</div>
+
+    <div class="sal-stats cols-3" id="despStats"></div>
+
+    <div class="desp-charts">
+      <div class="desp-chart-block">
+        <h3 class="desp-chart-title">Por Área de Atuação (R$)</h3>
+        <div id="despFuncaoChart"></div>
+      </div>
+      <div class="desp-chart-block">
+        <h3 class="desp-chart-title">Evolução Mensal (R$)</h3>
+        <div id="despMesChart"></div>
+      </div>
+    </div>
+
+    <h3 class="desp-subtitle">Top Credores / Fornecedores</h3>
+    <div style="overflow-x:auto;">
+      <table class="desp-cred-table">
+        <thead>
+          <tr>
+            <th class="desp-th-rank">#</th>
+            <th>Credor / Fornecedor</th>
+            <th class="desp-th-bar"></th>
+            <th class="desp-th-val">Empenhado</th>
+            <th class="desp-th-val">Pago</th>
+            <th class="desp-th-n">Empenhos</th>
+          </tr>
+        </thead>
+        <tbody id="despCredBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CONDERG SECTION -->
+  <section class="conderg-section fade-in fade-in-4" id="sec-conderg">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Entidade regional de saúde</div>
+        <h2 class="section-title">Salários — Hospital Regional de Divinolândia (CONDERG)</h2>
+      </div>
+    </div>
+
+    <div class="demo-notice">
+      🏥 <strong>Dados oficiais CONDERG</strong> — Extraídos do <a href="https://condergdivinolandia.geosiap.net.br/conderg/websis/portal_transparencia/financeiro/contas_publicas/index.php?consulta=../lei_acesso/lai_remuneracoes" target="_blank">Portal de Transparência do CONDERG</a> (GeoSIAP). Inclui Hospital Regional de Divinolândia e SAMU Divinolândia. Competência: <strong id="condergCompetencia"></strong>.
+    </div>
+
+    <div class="sal-stats" id="condergStats"></div>
+
+    <div class="conderg-charts">
+      <div class="conderg-chart-card">
+        <h3 class="conderg-chart-title">Distribuição por Faixa Salarial</h3>
+        <div id="condergFaixas"></div>
+      </div>
+      <div class="conderg-chart-card">
+        <h3 class="conderg-chart-title">Top 10 Setores por Folha</h3>
+        <div id="condergSetores"></div>
+      </div>
+    </div>
+
+    <h3 class="conderg-sub-title">Distribuição por Cargo</h3>
+    <div class="conderg-cargo-grid" id="condergCargos"></div>
+
+    <h3 class="conderg-sub-title">Servidores</h3>
+
+    <div class="conderg-controls">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" type="text" id="condergSearch" placeholder="Buscar nome ou cargo…" autocomplete="off">
+      </div>
+      <select class="sort-select" id="condergSetorSel">
+        <option value="">Todos os setores</option>
+      </select>
+      <select class="sort-select" id="condergCargoSel">
+        <option value="">Todos os cargos</option>
+      </select>
+      <select class="sort-select" id="condergSortSel">
+        <option value="sal">Ordenar: Salário ↓</option>
+        <option value="nome">Ordenar: Nome A→Z</option>
+        <option value="cargo">Ordenar: Cargo A→Z</option>
+        <option value="setor">Ordenar: Setor A→Z</option>
+      </select>
+      <span class="result-count" id="condergCount"></span>
+      <button class="sal-clear-btn" id="condergClear" hidden>✕ Limpar</button>
+    </div>
+
+    <div class="sal-filter-bar" style="margin-top:0.5rem">
+      <div class="sal-filter-group">
+        <span class="sal-filter-label">Faixa salarial</span>
+        <div class="cat-filters" id="condergFaixaSel">
+          <button class="cat-btn active" data-faixa="">Todas</button>
+          <button class="cat-btn" data-faixa="0-2000">Até 2k</button>
+          <button class="cat-btn" data-faixa="2000-4000">2k–4k</button>
+          <button class="cat-btn" data-faixa="4000-8000">4k–8k</button>
+          <button class="cat-btn" data-faixa="8000-15000">8k–15k</button>
+          <button class="cat-btn" data-faixa="15000-">Acima 15k</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="salary-table-wrap">
+      <table class="salary-table conderg-table">
+        <thead>
+          <tr>
+            <th class="th-s-rank">#</th>
+            <th class="th-s-name">Servidor</th>
+            <th class="th-s-cargo">Cargo</th>
+            <th>Setor</th>
+            <th class="th-s-bruto">Salário</th>
+          </tr>
+        </thead>
+        <tbody id="condergDetBody"></tbody>
+      </table>
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <button class="ver-mais-btn" id="condergVerMais" hidden></button>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      Dados extraídos do <a href="https://webapp1-divinolandia.cidade360.cloud/pronimtb/" target="_blank" rel="noopener noreferrer">Portal Oficial de Transparência</a> · Sistema PRONIM TB · Cidade360<br>
+      <strong style="color:rgba(255,255,255,0.7)">Site não oficial &mdash; sem vínculo com a Prefeitura de Divinolândia.</strong>
+      Produzido por cidadão para fins informativos, educacionais e de controle social, conforme a
+      <a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm" target="_blank" rel="noopener noreferrer">Lei de Acesso à Informação (Lei nº 12.527/2011)</a>.<br>
+      Os dados são de domínio público e reproduzidos sem alteração. Não nos responsabilizamos por erros, omissões ou desatualizações oriundos da fonte oficial.
+    </div>
+    <div class="footer-right">
+      Atualizado em 21/05/2026<br>
+      Prefeitura de Divinolândia · SP
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js?v=20260915h"></script>
+<script src="js/utils.js?v=20260915h"></script>
+<script src="js/app.js?v=20260915h"></script>
+</body>
+</html>

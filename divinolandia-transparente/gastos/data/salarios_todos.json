@@ -1,0 +1,4439 @@
+[
+  {
+    "rank": 1,
+    "nome": "Evandro Antonio de Almeida",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 22655.84,
+    "deducoes": 1497.73,
+    "liquido": 21158.11
+  },
+  {
+    "rank": 2,
+    "nome": "Cleberson Corrêa",
+    "cargo": "Secretário  Administrativo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 18370.44,
+    "deducoes": 10726.03,
+    "liquido": 7644.41
+  },
+  {
+    "rank": 3,
+    "nome": "Antonio de Padua Aquisti",
+    "cargo": "Prefeito",
+    "vinculo": "Prefeito",
+    "bruto": 18051.25,
+    "deducoes": 4771.71,
+    "liquido": 13279.54
+  },
+  {
+    "rank": 4,
+    "nome": "José Henrique Fornari",
+    "cargo": "Procurador Jurídico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 17881.74,
+    "deducoes": 4804.25,
+    "liquido": 13077.49
+  },
+  {
+    "rank": 5,
+    "nome": "Ana Carolina Moreira de Oliveira",
+    "cargo": "Auditor Geral do Município",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 17438.9,
+    "deducoes": 7283.02,
+    "liquido": 10155.88
+  },
+  {
+    "rank": 6,
+    "nome": "Maria Carolina Medeiros Brandi",
+    "cargo": "Procurador Jurídico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 16048.41,
+    "deducoes": 4425.92,
+    "liquido": 11622.49
+  },
+  {
+    "rank": 7,
+    "nome": "Elaine Regina Mori",
+    "cargo": "Médico I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 15188.78,
+    "deducoes": 7727.99,
+    "liquido": 7460.79
+  },
+  {
+    "rank": 8,
+    "nome": "Lucimara Regina de Paula Carvalho",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 13185.86,
+    "deducoes": 3910.77,
+    "liquido": 9275.09
+  },
+  {
+    "rank": 9,
+    "nome": "Osnir Bento Ferreira",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 13040.04,
+    "deducoes": 2761.23,
+    "liquido": 10278.81
+  },
+  {
+    "rank": 10,
+    "nome": "José Luis Zamai",
+    "cargo": "Engenheiro Agrônomo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 12949.75,
+    "deducoes": 3574.8,
+    "liquido": 9374.95
+  },
+  {
+    "rank": 11,
+    "nome": "Ivandecir Aparecido Cardoso",
+    "cargo": "Gerente M. de Obras e Serviços",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 12708.62,
+    "deducoes": 8295.86,
+    "liquido": 4412.76
+  },
+  {
+    "rank": 12,
+    "nome": "Júlio Cesar Pereira",
+    "cargo": "Supervisor de Esportes",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 11767.22,
+    "deducoes": 6029.84,
+    "liquido": 5737.38
+  },
+  {
+    "rank": 13,
+    "nome": "Juliana Maria Mastri Ferreira",
+    "cargo": "Enfermeiro Padrao",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 11551.08,
+    "deducoes": 2991.33,
+    "liquido": 8559.75
+  },
+  {
+    "rank": 14,
+    "nome": "Carlos Alberto Costa da Silva",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 11488.32,
+    "deducoes": 2223.86,
+    "liquido": 9264.46
+  },
+  {
+    "rank": 15,
+    "nome": "Maristela Darcie Pereira",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 11268.59,
+    "deducoes": 2273.23,
+    "liquido": 8995.36
+  },
+  {
+    "rank": 16,
+    "nome": "Nilson Alves de Souza",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 10417.89,
+    "deducoes": 2121.95,
+    "liquido": 8295.94
+  },
+  {
+    "rank": 17,
+    "nome": "Josemary Marinho de Souza",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 10395.56,
+    "deducoes": 4229.24,
+    "liquido": 6166.32
+  },
+  {
+    "rank": 18,
+    "nome": "Sonia Regina Pinto de Faria",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 10329.03,
+    "deducoes": 119.6,
+    "liquido": 10209.43
+  },
+  {
+    "rank": 19,
+    "nome": "Alessandra de Cássia Fonseca Gouvea",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9991.66,
+    "deducoes": 4700.39,
+    "liquido": 5291.27
+  },
+  {
+    "rank": 20,
+    "nome": "Daniella Betin Isaac Goulart",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9991.64,
+    "deducoes": 2708.15,
+    "liquido": 7283.49
+  },
+  {
+    "rank": 21,
+    "nome": "Ana Paula Feltran",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9991.64,
+    "deducoes": 2708.15,
+    "liquido": 7283.49
+  },
+  {
+    "rank": 22,
+    "nome": "Bruna da Gama Saliba Tostes",
+    "cargo": "Medico Pediatra",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9585.66,
+    "deducoes": 2700.26,
+    "liquido": 6885.4
+  },
+  {
+    "rank": 23,
+    "nome": "Marcel Uchiyama",
+    "cargo": "Medico Ginecologista\\Obstetra",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9585.66,
+    "deducoes": 2700.26,
+    "liquido": 6885.4
+  },
+  {
+    "rank": 24,
+    "nome": "Marcelo Raddo Venancio de Souza",
+    "cargo": "Médico I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9585.66,
+    "deducoes": 2700.26,
+    "liquido": 6885.4
+  },
+  {
+    "rank": 25,
+    "nome": "Guilherme Antonio dos Santos",
+    "cargo": "Engenheiro Civil",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9559.49,
+    "deducoes": 2269.15,
+    "liquido": 7290.34
+  },
+  {
+    "rank": 26,
+    "nome": "Ana Emilia da Silveira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9500.82,
+    "deducoes": 4023.97,
+    "liquido": 5476.85
+  },
+  {
+    "rank": 27,
+    "nome": "Luciane Braz",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9445.39,
+    "deducoes": 4725.96,
+    "liquido": 4719.43
+  },
+  {
+    "rank": 28,
+    "nome": "Elaine Aparecida Amalfi",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9167.66,
+    "deducoes": 4498.04,
+    "liquido": 4669.62
+  },
+  {
+    "rank": 29,
+    "nome": "Thiago Henrique Abrão Bertholini",
+    "cargo": "Médico I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9149.95,
+    "deducoes": 2536.22,
+    "liquido": 6613.73
+  },
+  {
+    "rank": 30,
+    "nome": "Patricia Cabral Costa Barreiro",
+    "cargo": "Medico Pediatra",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9149.95,
+    "deducoes": 4277.16,
+    "liquido": 4872.79
+  },
+  {
+    "rank": 31,
+    "nome": "Sandra Lucia Passoni Gussão",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9123.26,
+    "deducoes": 2381.2,
+    "liquido": 6742.06
+  },
+  {
+    "rank": 32,
+    "nome": "Gisele Fernanda Pinto Aurilietti",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 9107.92,
+    "deducoes": 4545.46,
+    "liquido": 4562.46
+  },
+  {
+    "rank": 33,
+    "nome": "Bruce Wellington Silva",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8885.22,
+    "deducoes": 3410.89,
+    "liquido": 5474.33
+  },
+  {
+    "rank": 34,
+    "nome": "Sandra Helena Coelho de Freitas",
+    "cargo": "Agente de C. de V. ou Endemias",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8753.31,
+    "deducoes": 2767.4,
+    "liquido": 5985.91
+  },
+  {
+    "rank": 35,
+    "nome": "Ana Gabriela Cardoso",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8743.36,
+    "deducoes": 2286.49,
+    "liquido": 6456.87
+  },
+  {
+    "rank": 36,
+    "nome": "Michele Kamila Galgani Amaru",
+    "cargo": "Médico I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8714.24,
+    "deducoes": 2372.17,
+    "liquido": 6342.07
+  },
+  {
+    "rank": 37,
+    "nome": "Laion Roberto Ferreira da Silva",
+    "cargo": "Médico I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8714.24,
+    "deducoes": 2372.17,
+    "liquido": 6342.07
+  },
+  {
+    "rank": 38,
+    "nome": "Patrícia de Oliveira Santos",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8651.08,
+    "deducoes": 2313.84,
+    "liquido": 6337.24
+  },
+  {
+    "rank": 39,
+    "nome": "Ana Carolina Amadeu Fernandes",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8591.31,
+    "deducoes": 4636.66,
+    "liquido": 3954.65
+  },
+  {
+    "rank": 40,
+    "nome": "Lucinéia Ranzani",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8527.47,
+    "deducoes": 2281.34,
+    "liquido": 6246.13
+  },
+  {
+    "rank": 41,
+    "nome": "Jose Carlos de Biazzi",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8464.17,
+    "deducoes": 1890.52,
+    "liquido": 6573.65
+  },
+  {
+    "rank": 42,
+    "nome": "Silmara de Oliveira Andreatta Masteguim",
+    "cargo": "Chefe da D. de R. Humanos",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8346.82,
+    "deducoes": 2989.19,
+    "liquido": 5357.63
+  },
+  {
+    "rank": 43,
+    "nome": "Liliane Aparecida Trevisan Darcie",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8343.28,
+    "deducoes": 2197.95,
+    "liquido": 6145.33
+  },
+  {
+    "rank": 44,
+    "nome": "Miller Kelsio Ferreira Amaru",
+    "cargo": "Engenheiro Civil",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8276.03,
+    "deducoes": 1998.55,
+    "liquido": 6277.48
+  },
+  {
+    "rank": 45,
+    "nome": "Lucréci Betânia Vicente de Souza",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8258.9,
+    "deducoes": 2180.22,
+    "liquido": 6078.68
+  },
+  {
+    "rank": 46,
+    "nome": "Fabiana Imaculada Massini",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8237.62,
+    "deducoes": 2174.37,
+    "liquido": 6063.25
+  },
+  {
+    "rank": 47,
+    "nome": "Giselaine Aparecida de Andrade",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8175.71,
+    "deducoes": 4375.21,
+    "liquido": 3800.5
+  },
+  {
+    "rank": 48,
+    "nome": "Elica Cancian Feltran",
+    "cargo": "Enfermeira do PSF",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8168.58,
+    "deducoes": 2033.34,
+    "liquido": 6135.24
+  },
+  {
+    "rank": 49,
+    "nome": "Eudes Goulart Bardi",
+    "cargo": "Pedreiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8095.71,
+    "deducoes": 2188.05,
+    "liquido": 5907.66
+  },
+  {
+    "rank": 50,
+    "nome": "Camila Rodrigues de Oliveira Garcia",
+    "cargo": "SECRETÁRIA",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 8083.89,
+    "deducoes": 1513.87,
+    "liquido": 6570.02
+  },
+  {
+    "rank": 51,
+    "nome": "Luciana Ramos Bertolini",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7979.7,
+    "deducoes": 2076.18,
+    "liquido": 5903.52
+  },
+  {
+    "rank": 52,
+    "nome": "Alba Valéria Ribeiro",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7906.18,
+    "deducoes": 3890.47,
+    "liquido": 4015.71
+  },
+  {
+    "rank": 53,
+    "nome": "João Batista Trevizan Junior",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7864.51,
+    "deducoes": 2644.29,
+    "liquido": 5220.22
+  },
+  {
+    "rank": 54,
+    "nome": "Patricia Aires Tezolin",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7851.43,
+    "deducoes": 1819.63,
+    "liquido": 6031.8
+  },
+  {
+    "rank": 55,
+    "nome": "João Marcos de Oliveira",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7767.3,
+    "deducoes": 1303.39,
+    "liquido": 6463.91
+  },
+  {
+    "rank": 56,
+    "nome": "Analiane Pires Braz",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7732.43,
+    "deducoes": 3880.02,
+    "liquido": 3852.41
+  },
+  {
+    "rank": 57,
+    "nome": "Silvânia Maria Dezorzi Junqueira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7657.95,
+    "deducoes": 1960.44,
+    "liquido": 5697.51
+  },
+  {
+    "rank": 58,
+    "nome": "Magali Cristina de Paula Bucci",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7643.28,
+    "deducoes": 1823.99,
+    "liquido": 5819.29
+  },
+  {
+    "rank": 59,
+    "nome": "Suelen Cristina Rodrigues Viana",
+    "cargo": "Gerente Municipal de Saúde",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7624.96,
+    "deducoes": 1818.15,
+    "liquido": 5806.81
+  },
+  {
+    "rank": 60,
+    "nome": "Francisco Otavio Cervelin",
+    "cargo": "Gerente Municipal de Finanças",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7624.96,
+    "deducoes": 1818.15,
+    "liquido": 5806.81
+  },
+  {
+    "rank": 61,
+    "nome": "Ércules Garcias de Carvalho",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7563.13,
+    "deducoes": 3576.87,
+    "liquido": 3986.26
+  },
+  {
+    "rank": 62,
+    "nome": "Gisele Cristina dos Santos",
+    "cargo": "SECRETÁRIA",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7529.67,
+    "deducoes": 2979.52,
+    "liquido": 4550.15
+  },
+  {
+    "rank": 63,
+    "nome": "Sheila Sanches Perin",
+    "cargo": "Engenheiro Agrônomo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7458.06,
+    "deducoes": 1776.37,
+    "liquido": 5681.69
+  },
+  {
+    "rank": 64,
+    "nome": "Rita Ferreira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7442.6,
+    "deducoes": 3993.31,
+    "liquido": 3449.29
+  },
+  {
+    "rank": 65,
+    "nome": "Maristela Aparecida Masteguim Cassani",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7419.88,
+    "deducoes": 1798.15,
+    "liquido": 5621.73
+  },
+  {
+    "rank": 66,
+    "nome": "Gabriel de Araujo Mengali",
+    "cargo": "Arquiteto",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7365.02,
+    "deducoes": 1665.67,
+    "liquido": 5699.35
+  },
+  {
+    "rank": 67,
+    "nome": "Karen Gabrielle Silva Dal Ava",
+    "cargo": "Gerente M. de Assist Social",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7261.87,
+    "deducoes": 1669.71,
+    "liquido": 5592.16
+  },
+  {
+    "rank": 68,
+    "nome": "Rafaela Cristina Pedro",
+    "cargo": "Gerente Contábil",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7261.87,
+    "deducoes": 1669.71,
+    "liquido": 5592.16
+  },
+  {
+    "rank": 69,
+    "nome": "Muciel da Silva Datovo",
+    "cargo": "Chefe de Gabinete",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7261.87,
+    "deducoes": 1669.71,
+    "liquido": 5592.16
+  },
+  {
+    "rank": 70,
+    "nome": "Maria de Fatima Barion Machado",
+    "cargo": "Gerente Municipal de Educação",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7261.87,
+    "deducoes": 1669.71,
+    "liquido": 5592.16
+  },
+  {
+    "rank": 71,
+    "nome": "Carlos Henrique de Sousa Ferreira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7244.69,
+    "deducoes": 4842.86,
+    "liquido": 2401.83
+  },
+  {
+    "rank": 72,
+    "nome": "Maila Cristina Jorge Corrêa",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7244.69,
+    "deducoes": 2821.88,
+    "liquido": 4422.81
+  },
+  {
+    "rank": 73,
+    "nome": "Aline Cristina Gil Corsi",
+    "cargo": "Assessor de L. e Contratos",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 7237.65,
+    "deducoes": 1657.36,
+    "liquido": 5580.29
+  },
+  {
+    "rank": 74,
+    "nome": "Fernanda Barion Amadeu Borges",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7175.06,
+    "deducoes": 1648.56,
+    "liquido": 5526.5
+  },
+  {
+    "rank": 75,
+    "nome": "Marcio Fernando Darcie",
+    "cargo": "Diretor S.E.T.R.",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7125.05,
+    "deducoes": 1636.24,
+    "liquido": 5488.81
+  },
+  {
+    "rank": 76,
+    "nome": "Igor Alves Ribeiro",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 7032.7,
+    "deducoes": 1957.85,
+    "liquido": 5074.85
+  },
+  {
+    "rank": 77,
+    "nome": "Anderson Rodrigo Martins Bianco",
+    "cargo": "Pedreiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6989.15,
+    "deducoes": 2137.11,
+    "liquido": 4852.04
+  },
+  {
+    "rank": 78,
+    "nome": "Aline Correa Junior",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6952.73,
+    "deducoes": 2079.38,
+    "liquido": 4873.35
+  },
+  {
+    "rank": 79,
+    "nome": "Luiz Fernando Madeira",
+    "cargo": "Eletricista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6946.4,
+    "deducoes": 1374.51,
+    "liquido": 5571.89
+  },
+  {
+    "rank": 80,
+    "nome": "Deborah Vasconcelos dos Santos",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6944.88,
+    "deducoes": 3651.55,
+    "liquido": 3293.33
+  },
+  {
+    "rank": 81,
+    "nome": "Vanessa Gomes",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6937.02,
+    "deducoes": 1551.4,
+    "liquido": 5385.62
+  },
+  {
+    "rank": 82,
+    "nome": "Camila Cristiane Bergamasco",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6845.21,
+    "deducoes": 1574.26,
+    "liquido": 5270.95
+  },
+  {
+    "rank": 83,
+    "nome": "Antônio Carlos Durante",
+    "cargo": "Pedreiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6796.9,
+    "deducoes": 1270.28,
+    "liquido": 5526.62
+  },
+  {
+    "rank": 84,
+    "nome": "Mario Celso Ferreira Pinto",
+    "cargo": "Vice Prefeito",
+    "vinculo": "Vice - Prefeito",
+    "bruto": 6729.17,
+    "deducoes": 1398.21,
+    "liquido": 5330.96
+  },
+  {
+    "rank": 85,
+    "nome": "Cintia Helena Gavioli Moda Bertolini",
+    "cargo": "Controlador  Arquivo Publico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6725.99,
+    "deducoes": 2738.57,
+    "liquido": 3987.42
+  },
+  {
+    "rank": 86,
+    "nome": "Hernani Alves de Melo Feliciano de Oliveira",
+    "cargo": "Contador",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6664.01,
+    "deducoes": 1436.44,
+    "liquido": 5227.57
+  },
+  {
+    "rank": 87,
+    "nome": "Naiara Aparecida Mapelli",
+    "cargo": "Gerente Municipal de Turismo",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 6608.29,
+    "deducoes": 1336.61,
+    "liquido": 5271.68
+  },
+  {
+    "rank": 88,
+    "nome": "Marcelo da Costa",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6596.08,
+    "deducoes": 2319.22,
+    "liquido": 4276.86
+  },
+  {
+    "rank": 89,
+    "nome": "Iamara de Queiroz Nogueira Ribeiro",
+    "cargo": "Secretária da j. de S. Militar",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6547.08,
+    "deducoes": 1245.66,
+    "liquido": 5301.42
+  },
+  {
+    "rank": 90,
+    "nome": "Paulo José Trevisan",
+    "cargo": "Chefe do Transporte",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6499.3,
+    "deducoes": 3004.62,
+    "liquido": 3494.68
+  },
+  {
+    "rank": 91,
+    "nome": "Andrea Aparecida de Toledo",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6496.8,
+    "deducoes": 1279.79,
+    "liquido": 5217.01
+  },
+  {
+    "rank": 92,
+    "nome": "Daniel Felipe Del Pio Luogo",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6496.48,
+    "deducoes": 1279.62,
+    "liquido": 5216.86
+  },
+  {
+    "rank": 93,
+    "nome": "Natany Eliza da Silva",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6496.48,
+    "deducoes": 2095.25,
+    "liquido": 4401.23
+  },
+  {
+    "rank": 94,
+    "nome": "Vonilson Almeide Alves",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6496.48,
+    "deducoes": 1279.62,
+    "liquido": 5216.86
+  },
+  {
+    "rank": 95,
+    "nome": "Felippe Augusto Teixeira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6496.48,
+    "deducoes": 1581.89,
+    "liquido": 4914.59
+  },
+  {
+    "rank": 96,
+    "nome": "Aparecida Bocamino Amadeu",
+    "cargo": "Pensionista",
+    "vinculo": "Pensionista",
+    "bruto": 6490.92,
+    "deducoes": 0.0,
+    "liquido": 6490.92
+  },
+  {
+    "rank": 97,
+    "nome": "Danila Ferreira de Moura",
+    "cargo": "Psicólogo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6426.89,
+    "deducoes": 1009.86,
+    "liquido": 5417.03
+  },
+  {
+    "rank": 98,
+    "nome": "Carla Maria de Freitas Souza",
+    "cargo": "Enfermeira do PSF",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6392.76,
+    "deducoes": 2883.67,
+    "liquido": 3509.09
+  },
+  {
+    "rank": 99,
+    "nome": "Maurício Divino Pedretti",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6379.01,
+    "deducoes": 1331.27,
+    "liquido": 5047.74
+  },
+  {
+    "rank": 100,
+    "nome": "Josiane Ferreira Pinto Borges",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6379.01,
+    "deducoes": 1331.27,
+    "liquido": 5047.74
+  },
+  {
+    "rank": 101,
+    "nome": "Edivania Cristina Dias",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6379.01,
+    "deducoes": 2850.36,
+    "liquido": 3528.65
+  },
+  {
+    "rank": 102,
+    "nome": "Elidia Fatima Ferreira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6344.55,
+    "deducoes": 1202.19,
+    "liquido": 5142.36
+  },
+  {
+    "rank": 103,
+    "nome": "Marcelo Bréssio",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6337.25,
+    "deducoes": 989.61,
+    "liquido": 5347.64
+  },
+  {
+    "rank": 104,
+    "nome": "Flavia Baptistella Dias Ribeiro Nogueira",
+    "cargo": "Lançador",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6310.61,
+    "deducoes": 870.01,
+    "liquido": 5440.6
+  },
+  {
+    "rank": 105,
+    "nome": "Marinês Cossulin Amadeu",
+    "cargo": "Assessoria de P. Pedagógico",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 6293.61,
+    "deducoes": 1176.23,
+    "liquido": 5117.38
+  },
+  {
+    "rank": 106,
+    "nome": "Diego Stracieri Araujo Silva",
+    "cargo": "Assessor M. Planejamento",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 6293.61,
+    "deducoes": 1176.23,
+    "liquido": 5117.38
+  },
+  {
+    "rank": 107,
+    "nome": "Marina Aparecida Aguiar Ramos",
+    "cargo": "Assessor Municipal de Saúde",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 6293.61,
+    "deducoes": 1176.23,
+    "liquido": 5117.38
+  },
+  {
+    "rank": 108,
+    "nome": "Nelson Maneta Neto",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6274.51,
+    "deducoes": 2378.72,
+    "liquido": 3895.79
+  },
+  {
+    "rank": 109,
+    "nome": "Lucimara Durante",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6197.64,
+    "deducoes": 1249.63,
+    "liquido": 4948.01
+  },
+  {
+    "rank": 110,
+    "nome": "Valeria Cristina Zonta",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6187.0,
+    "deducoes": 1836.09,
+    "liquido": 4350.91
+  },
+  {
+    "rank": 111,
+    "nome": "Thais Moussi Bertoleti",
+    "cargo": "Fisioterapeuta",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6156.77,
+    "deducoes": 465.8,
+    "liquido": 5690.97
+  },
+  {
+    "rank": 112,
+    "nome": "Edimar José Marinho",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6149.01,
+    "deducoes": 1766.17,
+    "liquido": 4382.84
+  },
+  {
+    "rank": 113,
+    "nome": "Juliana Gabriele Nogueira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6133.8,
+    "deducoes": 2413.58,
+    "liquido": 3720.22
+  },
+  {
+    "rank": 114,
+    "nome": "Wanderley de Moraes Machado",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6133.33,
+    "deducoes": 1137.44,
+    "liquido": 4995.89
+  },
+  {
+    "rank": 115,
+    "nome": "Flaviane Alves Moreira",
+    "cargo": "Assistente Social",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6097.74,
+    "deducoes": 1683.81,
+    "liquido": 4413.93
+  },
+  {
+    "rank": 116,
+    "nome": "Marcos Romerito Pinto",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6091.19,
+    "deducoes": 924.14,
+    "liquido": 5167.05
+  },
+  {
+    "rank": 117,
+    "nome": "Marcia Nogueira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 6090.45,
+    "deducoes": 1072.69,
+    "liquido": 5017.76
+  },
+  {
+    "rank": 118,
+    "nome": "Sergio Donizete Boletta",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 6079.57,
+    "deducoes": 1097.72,
+    "liquido": 4981.85
+  },
+  {
+    "rank": 119,
+    "nome": "Carlos Antoninho Villas Boas Junior",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5997.62,
+    "deducoes": 744.81,
+    "liquido": 5252.81
+  },
+  {
+    "rank": 120,
+    "nome": "Fernanda Rossetto Rovani",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5967.46,
+    "deducoes": 2416.34,
+    "liquido": 3551.12
+  },
+  {
+    "rank": 121,
+    "nome": "Elisangela Zani Lorca",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5967.46,
+    "deducoes": 1132.32,
+    "liquido": 4835.14
+  },
+  {
+    "rank": 122,
+    "nome": "Euler Pinto Ribeiro Junior",
+    "cargo": "Lançador",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5950.01,
+    "deducoes": 1092.9,
+    "liquido": 4857.11
+  },
+  {
+    "rank": 123,
+    "nome": "Lidiana Fernandes de Rezende",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5924.9,
+    "deducoes": 2920.18,
+    "liquido": 3004.72
+  },
+  {
+    "rank": 124,
+    "nome": "Melrilaine de Carvalho",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5924.9,
+    "deducoes": 1114.96,
+    "liquido": 4809.94
+  },
+  {
+    "rank": 125,
+    "nome": "Lara Helena da Silva de Paula",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5903.62,
+    "deducoes": 1106.27,
+    "liquido": 4797.35
+  },
+  {
+    "rank": 126,
+    "nome": "Rosany de Lima Andrade Reis",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5903.62,
+    "deducoes": 1106.27,
+    "liquido": 4797.35
+  },
+  {
+    "rank": 127,
+    "nome": "Juliana Aparecida Biaco da Silva Faria",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5892.98,
+    "deducoes": 1101.93,
+    "liquido": 4791.05
+  },
+  {
+    "rank": 128,
+    "nome": "Danilo Tadeu Claudiano Pietrucci",
+    "cargo": "Auxiliar Atividade Esportiva",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5854.27,
+    "deducoes": 2988.85,
+    "liquido": 2865.42
+  },
+  {
+    "rank": 129,
+    "nome": "Ivan César da Silva Evangelista",
+    "cargo": "Fiscal",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5847.19,
+    "deducoes": 2084.11,
+    "liquido": 3763.08
+  },
+  {
+    "rank": 130,
+    "nome": "Miquéias de Oliveira Costa",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5845.7,
+    "deducoes": 804.08,
+    "liquido": 5041.62
+  },
+  {
+    "rank": 131,
+    "nome": "Andrea Bianchetti Ribeiro",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5841.85,
+    "deducoes": 2381.19,
+    "liquido": 3460.66
+  },
+  {
+    "rank": 132,
+    "nome": "Danielle de Almeida Cardoso",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5829.14,
+    "deducoes": 2407.51,
+    "liquido": 3421.63
+  },
+  {
+    "rank": 133,
+    "nome": "Daiana Franco Ribeiro",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5807.86,
+    "deducoes": 2092.65,
+    "liquido": 3715.21
+  },
+  {
+    "rank": 134,
+    "nome": "Mara Regina Zan",
+    "cargo": "Psicólogo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5790.2,
+    "deducoes": 697.07,
+    "liquido": 5093.13
+  },
+  {
+    "rank": 135,
+    "nome": "Márien Haddad  Nascimento",
+    "cargo": "Chefe da Divisão de Patrimonio",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5781.91,
+    "deducoes": 1429.0,
+    "liquido": 4352.91
+  },
+  {
+    "rank": 136,
+    "nome": "Antonio Rossetto Sobrinho",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5748.96,
+    "deducoes": 152.4,
+    "liquido": 5596.56
+  },
+  {
+    "rank": 137,
+    "nome": "Danielle de Almeida Cardoso",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5694.72,
+    "deducoes": 997.64,
+    "liquido": 4697.08
+  },
+  {
+    "rank": 138,
+    "nome": "Carlos Roberto Passoni",
+    "cargo": "Chefe D. T. Fora do Domicilio",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5686.76,
+    "deducoes": 1607.79,
+    "liquido": 4078.97
+  },
+  {
+    "rank": 139,
+    "nome": "Jairo Orácio Danziger",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5673.5,
+    "deducoes": 680.82,
+    "liquido": 4992.68
+  },
+  {
+    "rank": 140,
+    "nome": "Priscilla Nogueira de Moura",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5662.8,
+    "deducoes": 984.61,
+    "liquido": 4678.19
+  },
+  {
+    "rank": 141,
+    "nome": "Luciana de Cássia Coutinho Bento",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5662.79,
+    "deducoes": 984.61,
+    "liquido": 4678.18
+  },
+  {
+    "rank": 142,
+    "nome": "Geovana Betin",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5653.05,
+    "deducoes": 765.67,
+    "liquido": 4887.38
+  },
+  {
+    "rank": 143,
+    "nome": "Hérica Ignácio",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5641.51,
+    "deducoes": 975.92,
+    "liquido": 4665.59
+  },
+  {
+    "rank": 144,
+    "nome": "Graziele Jorge Barion Braz",
+    "cargo": "Coordenador CRAS",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5638.65,
+    "deducoes": 883.46,
+    "liquido": 4755.19
+  },
+  {
+    "rank": 145,
+    "nome": "Fernanda Barion Amadeu Borges",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5610.92,
+    "deducoes": 2135.81,
+    "liquido": 3475.11
+  },
+  {
+    "rank": 146,
+    "nome": "Adenilson Cesar Gonçalves",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5608.63,
+    "deducoes": 1704.19,
+    "liquido": 3904.44
+  },
+  {
+    "rank": 147,
+    "nome": "Fabio Luis José Mendonça",
+    "cargo": "Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5608.17,
+    "deducoes": 1565.69,
+    "liquido": 4042.48
+  },
+  {
+    "rank": 148,
+    "nome": "Evandro Donizete de Mello",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5603.84,
+    "deducoes": 1866.81,
+    "liquido": 3737.03
+  },
+  {
+    "rank": 149,
+    "nome": "Dulcinéia de Lourdes Geraldo",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5583.8,
+    "deducoes": 734.52,
+    "liquido": 4849.28
+  },
+  {
+    "rank": 150,
+    "nome": "Gisele Benassi",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5549.64,
+    "deducoes": 2604.89,
+    "liquido": 2944.75
+  },
+  {
+    "rank": 151,
+    "nome": "Deborah Vasconcelos dos Santos",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5524.48,
+    "deducoes": 3626.79,
+    "liquido": 1897.69
+  },
+  {
+    "rank": 152,
+    "nome": "Tatiane Aparecida Restani Mengali",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5475.18,
+    "deducoes": 2600.12,
+    "liquido": 2875.06
+  },
+  {
+    "rank": 153,
+    "nome": "Moacir Ricardo Cassani",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5463.2,
+    "deducoes": 591.94,
+    "liquido": 4871.26
+  },
+  {
+    "rank": 154,
+    "nome": "Nicolau Henrique Trevisan",
+    "cargo": "Instrutor de Informatica",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5452.72,
+    "deducoes": 655.53,
+    "liquido": 4797.19
+  },
+  {
+    "rank": 155,
+    "nome": "Ana Maria Rueda Morgan Moreira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5443.25,
+    "deducoes": 871.65,
+    "liquido": 4571.6
+  },
+  {
+    "rank": 156,
+    "nome": "Vanesa Roque",
+    "cargo": "Assessor Financeiro",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 5409.1,
+    "deducoes": 712.13,
+    "liquido": 4696.97
+  },
+  {
+    "rank": 157,
+    "nome": "Imaculada Peixoto Machado Farias",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 5398.42,
+    "deducoes": 706.28,
+    "liquido": 4692.14
+  },
+  {
+    "rank": 158,
+    "nome": "Adriana Gussão",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5326.33,
+    "deducoes": 725.92,
+    "liquido": 4600.41
+  },
+  {
+    "rank": 159,
+    "nome": "Pedro Luis Datovo",
+    "cargo": "Zelador E. Esportivos",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5306.51,
+    "deducoes": 2164.36,
+    "liquido": 3142.15
+  },
+  {
+    "rank": 160,
+    "nome": "Mariana Barion",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5298.18,
+    "deducoes": 792.85,
+    "liquido": 4505.33
+  },
+  {
+    "rank": 161,
+    "nome": "Angela Beatriz Nogueira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 5278.65,
+    "deducoes": 640.62,
+    "liquido": 4638.03
+  },
+  {
+    "rank": 162,
+    "nome": "Bruna Helena Grespan",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5234.34,
+    "deducoes": 769.98,
+    "liquido": 4464.36
+  },
+  {
+    "rank": 163,
+    "nome": "Maria Paula Zanatta Egreja Mengali",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5234.34,
+    "deducoes": 769.98,
+    "liquido": 4464.36
+  },
+  {
+    "rank": 164,
+    "nome": "Leandro Cesar Sgrilli",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5227.36,
+    "deducoes": 1457.34,
+    "liquido": 3770.02
+  },
+  {
+    "rank": 165,
+    "nome": "Raiana Durante",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 5213.05,
+    "deducoes": 687.12,
+    "liquido": 4525.93
+  },
+  {
+    "rank": 166,
+    "nome": "Gabriela da Silva Breda Nogueira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5202.42,
+    "deducoes": 1723.88,
+    "liquido": 3478.54
+  },
+  {
+    "rank": 167,
+    "nome": "Adriana Reis Guilherme Sanches",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5181.14,
+    "deducoes": 750.93,
+    "liquido": 4430.21
+  },
+  {
+    "rank": 168,
+    "nome": "Rosangela Aparecida Rocha",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5170.5,
+    "deducoes": 747.12,
+    "liquido": 4423.38
+  },
+  {
+    "rank": 169,
+    "nome": "Ana Claudia Cussolini",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5159.86,
+    "deducoes": 1604.04,
+    "liquido": 3555.82
+  },
+  {
+    "rank": 170,
+    "nome": "Ana Lucia da Silva Borges",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 5139.5,
+    "deducoes": 570.97,
+    "liquido": 4568.53
+  },
+  {
+    "rank": 171,
+    "nome": "Daniele Cristina de Oliveira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5117.31,
+    "deducoes": 728.07,
+    "liquido": 4389.24
+  },
+  {
+    "rank": 172,
+    "nome": "Joice Alexandra Grespan Benfeito",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5117.3,
+    "deducoes": 728.07,
+    "liquido": 4389.23
+  },
+  {
+    "rank": 173,
+    "nome": "Angelica Donizeti Teixeira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 5080.88,
+    "deducoes": 541.77,
+    "liquido": 4539.11
+  },
+  {
+    "rank": 174,
+    "nome": "Luiz de Marcos",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5074.54,
+    "deducoes": 426.51,
+    "liquido": 4648.03
+  },
+  {
+    "rank": 175,
+    "nome": "Alcemir Aparecido Franco Barbosa",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5045.36,
+    "deducoes": 2074.85,
+    "liquido": 2970.51
+  },
+  {
+    "rank": 176,
+    "nome": "Ana Carolina Amadeu Fernandes",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5036.08,
+    "deducoes": 3414.18,
+    "liquido": 1621.9
+  },
+  {
+    "rank": 177,
+    "nome": "Odair Jose de Almeida",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 5006.62,
+    "deducoes": 1401.76,
+    "liquido": 3604.86
+  },
+  {
+    "rank": 178,
+    "nome": "Miliane Aparecida dos Santos",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4992.68,
+    "deducoes": 571.88,
+    "liquido": 4420.8
+  },
+  {
+    "rank": 179,
+    "nome": "Gessi Aparecida Pagano Martimbianco",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4982.88,
+    "deducoes": 676.74,
+    "liquido": 4306.14
+  },
+  {
+    "rank": 180,
+    "nome": "Evania Cristina Pergentino Batista",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4972.24,
+    "deducoes": 1766.7,
+    "liquido": 3205.54
+  },
+  {
+    "rank": 181,
+    "nome": "Luciana Costa Baptista",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4963.84,
+    "deducoes": 496.43,
+    "liquido": 4467.41
+  },
+  {
+    "rank": 182,
+    "nome": "Carmen Lucia da Cunha",
+    "cargo": "Fisioterapeuta",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4940.54,
+    "deducoes": 1881.75,
+    "liquido": 3058.79
+  },
+  {
+    "rank": 183,
+    "nome": "Ana Paula Feltran",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4937.61,
+    "deducoes": 1859.0,
+    "liquido": 3078.61
+  },
+  {
+    "rank": 184,
+    "nome": "Cleber Rogerio Ferreira",
+    "cargo": "Agente Vigilância Sanitária",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4923.79,
+    "deducoes": 1119.22,
+    "liquido": 3804.57
+  },
+  {
+    "rank": 185,
+    "nome": "Danilo Cesar Cunha",
+    "cargo": "Mecânico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4883.73,
+    "deducoes": 1581.37,
+    "liquido": 3302.36
+  },
+  {
+    "rank": 186,
+    "nome": "Marcia Cristina Barzagli Picoli",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4872.36,
+    "deducoes": 1900.45,
+    "liquido": 2971.91
+  },
+  {
+    "rank": 187,
+    "nome": "Vitor Aparecido de Oliveira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4872.36,
+    "deducoes": 483.63,
+    "liquido": 4388.73
+  },
+  {
+    "rank": 188,
+    "nome": "Horacio Augusto Danziger",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 680.82,
+    "liquido": 4182.18
+  },
+  {
+    "rank": 189,
+    "nome": "Fernanda Aparecida de Souza Silva",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 680.82,
+    "liquido": 4182.18
+  },
+  {
+    "rank": 190,
+    "nome": "Kelly Junqueira Corrêa",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 1860.28,
+    "liquido": 3002.72
+  },
+  {
+    "rank": 191,
+    "nome": "Antônia Aparecida Machado Alvares",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 680.82,
+    "liquido": 4182.18
+  },
+  {
+    "rank": 192,
+    "nome": "Gislaine Priscila Alves da Silva",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 1694.33,
+    "liquido": 3168.67
+  },
+  {
+    "rank": 193,
+    "nome": "Lucelena de Fátima Oliveira",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 680.82,
+    "liquido": 4182.18
+  },
+  {
+    "rank": 194,
+    "nome": "Jussara Maria Rodrigues Correa",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4863.0,
+    "deducoes": 680.82,
+    "liquido": 4182.18
+  },
+  {
+    "rank": 195,
+    "nome": "Janaina de Cassia Braz Cardoso",
+    "cargo": "Farmacêutico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4824.45,
+    "deducoes": 1033.45,
+    "liquido": 3791.0
+  },
+  {
+    "rank": 196,
+    "nome": "Eduardo Rafael Grespan",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4817.36,
+    "deducoes": 1184.57,
+    "liquido": 3632.79
+  },
+  {
+    "rank": 197,
+    "nome": "Bruna Bernardes",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 472.83,
+    "liquido": 4322.43
+  },
+  {
+    "rank": 198,
+    "nome": "Ana Cristina Sorce Ferreira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 610.3,
+    "liquido": 4184.96
+  },
+  {
+    "rank": 199,
+    "nome": "Angelica Camila de Sousa",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 472.83,
+    "liquido": 4322.43
+  },
+  {
+    "rank": 200,
+    "nome": "Daniele Cristina de Oliveira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 1945.96,
+    "liquido": 2849.3
+  },
+  {
+    "rank": 201,
+    "nome": "Daiana Franco Ribeiro",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 1866.84,
+    "liquido": 2928.42
+  },
+  {
+    "rank": 202,
+    "nome": "Clea de Fatima dos Santos e Souza",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 472.83,
+    "liquido": 4322.43
+  },
+  {
+    "rank": 203,
+    "nome": "Denise Franco Ribeiro Maeiro",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4795.26,
+    "deducoes": 472.83,
+    "liquido": 4322.43
+  },
+  {
+    "rank": 204,
+    "nome": "Sandra Estela Magarotto Sernaglia",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4784.62,
+    "deducoes": 471.34,
+    "liquido": 4313.28
+  },
+  {
+    "rank": 205,
+    "nome": "Isadora da Costa Barion",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4784.62,
+    "deducoes": 471.34,
+    "liquido": 4313.28
+  },
+  {
+    "rank": 206,
+    "nome": "July Anne Freire",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4784.62,
+    "deducoes": 471.34,
+    "liquido": 4313.28
+  },
+  {
+    "rank": 207,
+    "nome": "Renata Maria Fonssato",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4773.98,
+    "deducoes": 469.85,
+    "liquido": 4304.13
+  },
+  {
+    "rank": 208,
+    "nome": "Beatriz Cristina Luis",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4763.34,
+    "deducoes": 468.36,
+    "liquido": 4294.98
+  },
+  {
+    "rank": 209,
+    "nome": "Paula Ferreira Pinto Cepolini",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4752.7,
+    "deducoes": 466.88,
+    "liquido": 4285.82
+  },
+  {
+    "rank": 210,
+    "nome": "Luana Martins Braz",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4752.7,
+    "deducoes": 466.88,
+    "liquido": 4285.82
+  },
+  {
+    "rank": 211,
+    "nome": "Marcia Cristina Barzagli Picoli",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4752.7,
+    "deducoes": 554.06,
+    "liquido": 4198.64
+  },
+  {
+    "rank": 212,
+    "nome": "Janaina Cristina da Silva",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4752.23,
+    "deducoes": 349.86,
+    "liquido": 4402.37
+  },
+  {
+    "rank": 213,
+    "nome": "Natalia Gonçalves Della Torre Bini",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4742.06,
+    "deducoes": 465.39,
+    "liquido": 4276.67
+  },
+  {
+    "rank": 214,
+    "nome": "Heloize Helena Nogueira Miranda",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4733.47,
+    "deducoes": 489.78,
+    "liquido": 4243.69
+  },
+  {
+    "rank": 215,
+    "nome": "Andresa Evelen Bassini",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4733.47,
+    "deducoes": 464.18,
+    "liquido": 4269.29
+  },
+  {
+    "rank": 216,
+    "nome": "Fernanda Rossetto Rovani",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4731.42,
+    "deducoes": 1821.56,
+    "liquido": 2909.86
+  },
+  {
+    "rank": 217,
+    "nome": "Cintia Cristina de Moraes Moreira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4731.42,
+    "deducoes": 463.9,
+    "liquido": 4267.52
+  },
+  {
+    "rank": 218,
+    "nome": "Ana Laura Alvares",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4731.42,
+    "deducoes": 463.9,
+    "liquido": 4267.52
+  },
+  {
+    "rank": 219,
+    "nome": "Greise Viviane da Cunha Ramires",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4731.42,
+    "deducoes": 463.9,
+    "liquido": 4267.52
+  },
+  {
+    "rank": 220,
+    "nome": "Evania Cristina Pergentino Batista",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4720.78,
+    "deducoes": 1905.99,
+    "liquido": 2814.79
+  },
+  {
+    "rank": 221,
+    "nome": "Livia Cristiny Bucci",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4720.78,
+    "deducoes": 468.65,
+    "liquido": 4252.13
+  },
+  {
+    "rank": 222,
+    "nome": "Ana Carolina de Sousa",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4720.78,
+    "deducoes": 462.41,
+    "liquido": 4258.37
+  },
+  {
+    "rank": 223,
+    "nome": "Vanessa Cristina Vieira Escremin",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4720.78,
+    "deducoes": 462.41,
+    "liquido": 4258.37
+  },
+  {
+    "rank": 224,
+    "nome": "Marcela de Cassia da Cruz Melo",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4720.78,
+    "deducoes": 462.41,
+    "liquido": 4258.37
+  },
+  {
+    "rank": 225,
+    "nome": "Anna Carolina Donnabella Pereira",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4710.14,
+    "deducoes": 460.92,
+    "liquido": 4249.22
+  },
+  {
+    "rank": 226,
+    "nome": "Adriana Aparecida Bertolini Mengali",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4710.14,
+    "deducoes": 460.92,
+    "liquido": 4249.22
+  },
+  {
+    "rank": 227,
+    "nome": "Rafaela Erica de Paula",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4710.14,
+    "deducoes": 460.92,
+    "liquido": 4249.22
+  },
+  {
+    "rank": 228,
+    "nome": "Renata de Carvalho Dias Bertolin",
+    "cargo": "Secretária de Escola",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4704.52,
+    "deducoes": 524.8,
+    "liquido": 4179.72
+  },
+  {
+    "rank": 229,
+    "nome": "Cristina Augusto de Melo",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4699.5,
+    "deducoes": 459.43,
+    "liquido": 4240.07
+  },
+  {
+    "rank": 230,
+    "nome": "Valeria Regina da Matta",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4692.31,
+    "deducoes": 1397.76,
+    "liquido": 3294.55
+  },
+  {
+    "rank": 231,
+    "nome": "Samira Gabriela Regina Rabelo de Almeida Solano Gimenes",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4688.86,
+    "deducoes": 457.94,
+    "liquido": 4230.92
+  },
+  {
+    "rank": 232,
+    "nome": "Erlani Cristina Barbosa",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4688.86,
+    "deducoes": 863.86,
+    "liquido": 3825.0
+  },
+  {
+    "rank": 233,
+    "nome": "Elton Carlos Restani",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4688.62,
+    "deducoes": 1440.42,
+    "liquido": 3248.2
+  },
+  {
+    "rank": 234,
+    "nome": "Cris Kelly Dezorzi Magaroti",
+    "cargo": "Coordenador de Atenção Básica",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4679.01,
+    "deducoes": 1814.7,
+    "liquido": 2864.31
+  },
+  {
+    "rank": 235,
+    "nome": "Odete de Bem de Carvalho",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4678.71,
+    "deducoes": 958.76,
+    "liquido": 3719.95
+  },
+  {
+    "rank": 236,
+    "nome": "Eliane Maria Arsie",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4668.48,
+    "deducoes": 653.58,
+    "liquido": 4014.9
+  },
+  {
+    "rank": 237,
+    "nome": "Aline Cristian de Oliveira Gavioli",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4668.48,
+    "deducoes": 917.78,
+    "liquido": 3750.7
+  },
+  {
+    "rank": 238,
+    "nome": "Maiara de Cássia Francisco",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4668.48,
+    "deducoes": 1667.98,
+    "liquido": 3000.5
+  },
+  {
+    "rank": 239,
+    "nome": "Edimara Sabino",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4668.48,
+    "deducoes": 1853.51,
+    "liquido": 2814.97
+  },
+  {
+    "rank": 240,
+    "nome": "Danielle Fernanda Silva",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4668.48,
+    "deducoes": 1646.52,
+    "liquido": 3021.96
+  },
+  {
+    "rank": 241,
+    "nome": "Lenize Liboni",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4656.94,
+    "deducoes": 453.47,
+    "liquido": 4203.47
+  },
+  {
+    "rank": 242,
+    "nome": "Rafael Felipe Duarte",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4646.77,
+    "deducoes": 363.48,
+    "liquido": 4283.29
+  },
+  {
+    "rank": 243,
+    "nome": "Benedito Correa Filho",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4638.4,
+    "deducoes": 530.1,
+    "liquido": 4108.3
+  },
+  {
+    "rank": 244,
+    "nome": "Carina Rosa dos Santos",
+    "cargo": "Secretária de Escola",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4592.07,
+    "deducoes": 1766.56,
+    "liquido": 2825.51
+  },
+  {
+    "rank": 245,
+    "nome": "Adriana de Fátima Ramos da Silva",
+    "cargo": "Secretária de Escola",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4592.07,
+    "deducoes": 1367.68,
+    "liquido": 3224.39
+  },
+  {
+    "rank": 246,
+    "nome": "Michella Passoni Aurilietti",
+    "cargo": "Gerente M. de Comunicações",
+    "vinculo": "Cargo em Comissão",
+    "bruto": 4543.64,
+    "deducoes": 1328.2,
+    "liquido": 3215.44
+  },
+  {
+    "rank": 247,
+    "nome": "Rodrigo Augusto Correa",
+    "cargo": "Gerente Municipal de Cultura",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4543.64,
+    "deducoes": 957.32,
+    "liquido": 3586.32
+  },
+  {
+    "rank": 248,
+    "nome": "Amanda Rizzetto Longuini Quinalhia",
+    "cargo": "Dentista",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4542.97,
+    "deducoes": 437.51,
+    "liquido": 4105.46
+  },
+  {
+    "rank": 249,
+    "nome": "Moira Helena Kulay Carnevale",
+    "cargo": "Dentista",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4542.97,
+    "deducoes": 437.51,
+    "liquido": 4105.46
+  },
+  {
+    "rank": 250,
+    "nome": "Marco Aurélio Pereira da Silva",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4519.94,
+    "deducoes": 605.97,
+    "liquido": 3913.97
+  },
+  {
+    "rank": 251,
+    "nome": "Antonio Marcos Feltran",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4489.56,
+    "deducoes": 349.86,
+    "liquido": 4139.7
+  },
+  {
+    "rank": 252,
+    "nome": "Luis Pedro de Carvalho",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4474.61,
+    "deducoes": 957.02,
+    "liquido": 3517.59
+  },
+  {
+    "rank": 253,
+    "nome": "Leandro Cesar de Godoy",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4472.33,
+    "deducoes": 1061.44,
+    "liquido": 3410.89
+  },
+  {
+    "rank": 254,
+    "nome": "Sérgio Donizete Bianchetti",
+    "cargo": "Supervisor Obras e Serviços",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4411.21,
+    "deducoes": 1155.4,
+    "liquido": 3255.81
+  },
+  {
+    "rank": 255,
+    "nome": "Eliane de Fátima Bacetti",
+    "cargo": "Psicólogo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4410.77,
+    "deducoes": 927.09,
+    "liquido": 3483.68
+  },
+  {
+    "rank": 256,
+    "nome": "Silvia Regina Fonsato",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4406.03,
+    "deducoes": 442.84,
+    "liquido": 3963.19
+  },
+  {
+    "rank": 257,
+    "nome": "Joao Batista França",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4389.35,
+    "deducoes": 413.03,
+    "liquido": 3976.32
+  },
+  {
+    "rank": 258,
+    "nome": "Anelise da Costa Civitereza",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4346.82,
+    "deducoes": 581.74,
+    "liquido": 3765.08
+  },
+  {
+    "rank": 259,
+    "nome": "Maila Cristina Jorge Corrêa",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4346.81,
+    "deducoes": 1083.28,
+    "liquido": 3263.53
+  },
+  {
+    "rank": 260,
+    "nome": "Pedro Henrique Braz Garcia",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4327.44,
+    "deducoes": 1357.78,
+    "liquido": 2969.66
+  },
+  {
+    "rank": 261,
+    "nome": "Adeliza Aguiar João",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4286.29,
+    "deducoes": 544.08,
+    "liquido": 3742.21
+  },
+  {
+    "rank": 262,
+    "nome": "Maria da Graca Seviterezza de Oliveira",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 4250.49,
+    "deducoes": 398.64,
+    "liquido": 3851.85
+  },
+  {
+    "rank": 263,
+    "nome": "Fernanda Aretha Faustino Borges",
+    "cargo": "Farmacêutico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4205.34,
+    "deducoes": 588.74,
+    "liquido": 3616.6
+  },
+  {
+    "rank": 264,
+    "nome": "Juniara Andreza do Carmo Alves",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4165.15,
+    "deducoes": 583.12,
+    "liquido": 3582.03
+  },
+  {
+    "rank": 265,
+    "nome": "Ana Flávia Coetti Basso",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4160.56,
+    "deducoes": 1425.21,
+    "liquido": 2735.35
+  },
+  {
+    "rank": 266,
+    "nome": "Diana Amalfi Moreira",
+    "cargo": "Assistente Social",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4157.37,
+    "deducoes": 423.46,
+    "liquido": 3733.91
+  },
+  {
+    "rank": 267,
+    "nome": "José Ricardo Trevisan",
+    "cargo": "Agente de Saneamento",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4139.49,
+    "deducoes": 1346.47,
+    "liquido": 2793.02
+  },
+  {
+    "rank": 268,
+    "nome": "Valdirene Aparecida da Silva",
+    "cargo": "Agentes Comunitários",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 4084.92,
+    "deducoes": 571.88,
+    "liquido": 3513.04
+  },
+  {
+    "rank": 269,
+    "nome": "Pedrina Dorzinda Nogueira Magnoni",
+    "cargo": "Pensionista",
+    "vinculo": "Pensionista",
+    "bruto": 4024.33,
+    "deducoes": 0.0,
+    "liquido": 4024.33
+  },
+  {
+    "rank": 270,
+    "nome": "Daiana Fernanda da Silva Bernardi",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3991.92,
+    "deducoes": 1406.16,
+    "liquido": 2585.76
+  },
+  {
+    "rank": 271,
+    "nome": "Hildebrando José Romão",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3972.17,
+    "deducoes": 365.24,
+    "liquido": 3606.93
+  },
+  {
+    "rank": 272,
+    "nome": "Cintia Helen de Godoy",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3951.71,
+    "deducoes": 362.79,
+    "liquido": 3588.92
+  },
+  {
+    "rank": 273,
+    "nome": "Claudete Maria Ferreira Viola",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3944.55,
+    "deducoes": 524.48,
+    "liquido": 3420.07
+  },
+  {
+    "rank": 274,
+    "nome": "João Vitor Batista Coetti",
+    "cargo": "Chefe de Manutenção da Frota",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3944.48,
+    "deducoes": 349.86,
+    "liquido": 3594.62
+  },
+  {
+    "rank": 275,
+    "nome": "Neiva Elessandra Beneti Alvares",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3934.94,
+    "deducoes": 1222.28,
+    "liquido": 2712.66
+  },
+  {
+    "rank": 276,
+    "nome": "Evana Gabriela Cardozo",
+    "cargo": "Enfermeiro",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3921.11,
+    "deducoes": 359.12,
+    "liquido": 3561.99
+  },
+  {
+    "rank": 277,
+    "nome": "Milene de Cassia da Cunha",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3915.53,
+    "deducoes": 1031.89,
+    "liquido": 2883.64
+  },
+  {
+    "rank": 278,
+    "nome": "Carlos Roberto Forlani",
+    "cargo": "Motorista",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3884.54,
+    "deducoes": 354.73,
+    "liquido": 3529.81
+  },
+  {
+    "rank": 279,
+    "nome": "Viviane Patricia Olivieri",
+    "cargo": "Assistente Social",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3881.74,
+    "deducoes": 1362.09,
+    "liquido": 2519.65
+  },
+  {
+    "rank": 280,
+    "nome": "Regiane Aparecida Pinto Trevisan",
+    "cargo": "Inspetor de Aluno",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3862.17,
+    "deducoes": 1628.41,
+    "liquido": 2233.76
+  },
+  {
+    "rank": 281,
+    "nome": "Lincon Fredi Moreira",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3854.53,
+    "deducoes": 1699.98,
+    "liquido": 2154.55
+  },
+  {
+    "rank": 282,
+    "nome": "Guilherme Melchiori Cerri",
+    "cargo": "Psicólogo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3854.02,
+    "deducoes": 388.17,
+    "liquido": 3465.85
+  },
+  {
+    "rank": 283,
+    "nome": "Natan Henrique de Lima",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3816.63,
+    "deducoes": 1245.04,
+    "liquido": 2571.59
+  },
+  {
+    "rank": 284,
+    "nome": "Sergio Roberto Rodrigues",
+    "cargo": "Lixeiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3784.22,
+    "deducoes": 365.37,
+    "liquido": 3418.85
+  },
+  {
+    "rank": 285,
+    "nome": "Carlos Cesar de Almeida",
+    "cargo": "Lixeiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3784.22,
+    "deducoes": 365.37,
+    "liquido": 3418.85
+  },
+  {
+    "rank": 286,
+    "nome": "Antônio Augusto de Sousa Cardoso",
+    "cargo": "Lixeiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3784.22,
+    "deducoes": 942.11,
+    "liquido": 2842.11
+  },
+  {
+    "rank": 287,
+    "nome": "Regiane Aparecida da Silva",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3784.01,
+    "deducoes": 1076.48,
+    "liquido": 2707.53
+  },
+  {
+    "rank": 288,
+    "nome": "Sâmara da Cunha Haddad Ramos",
+    "cargo": "Fisioterapeuta",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3780.92,
+    "deducoes": 529.32,
+    "liquido": 3251.6
+  },
+  {
+    "rank": 289,
+    "nome": "Osvaldo Coutinho Junior",
+    "cargo": "Fisioterapeuta",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3763.9,
+    "deducoes": 1363.5,
+    "liquido": 2400.4
+  },
+  {
+    "rank": 290,
+    "nome": "Quedma Pires Ferreira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3706.78,
+    "deducoes": 914.02,
+    "liquido": 2792.76
+  },
+  {
+    "rank": 291,
+    "nome": "Maria Cecilia Forti",
+    "cargo": "Chefe da Divisão de Zoonoses",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3663.62,
+    "deducoes": 330.78,
+    "liquido": 3332.84
+  },
+  {
+    "rank": 292,
+    "nome": "Vera Cruz de Queiroz Ferreira",
+    "cargo": "Inspetor de Aluno",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3660.24,
+    "deducoes": 1605.78,
+    "liquido": 2054.46
+  },
+  {
+    "rank": 293,
+    "nome": "Fabiany de Lima Andrade Forti",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3654.27,
+    "deducoes": 327.1,
+    "liquido": 3327.17
+  },
+  {
+    "rank": 294,
+    "nome": "Maria Regina Muniz",
+    "cargo": "Pensionista",
+    "vinculo": "Pensionista",
+    "bruto": 3630.93,
+    "deducoes": 0.0,
+    "liquido": 3630.93
+  },
+  {
+    "rank": 295,
+    "nome": "Neuza Rodrigues",
+    "cargo": "Pensionista",
+    "vinculo": "Pensionista",
+    "bruto": 3630.93,
+    "deducoes": 0.0,
+    "liquido": 3630.93
+  },
+  {
+    "rank": 296,
+    "nome": "Evandro dos Santos Coutinho",
+    "cargo": "Guarda Noturno",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3614.33,
+    "deducoes": 978.79,
+    "liquido": 2635.54
+  },
+  {
+    "rank": 297,
+    "nome": "Rogerio Onofre Pereira de Souza",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3534.02,
+    "deducoes": 1526.98,
+    "liquido": 2007.04
+  },
+  {
+    "rank": 298,
+    "nome": "Janiere Sileni Passoni Gavioli",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3531.04,
+    "deducoes": 1539.73,
+    "liquido": 1991.31
+  },
+  {
+    "rank": 299,
+    "nome": "Julio Cesar Gomes",
+    "cargo": "Eletricista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3509.4,
+    "deducoes": 393.77,
+    "liquido": 3115.63
+  },
+  {
+    "rank": 300,
+    "nome": "Wilson Pedro dos Santos",
+    "cargo": "Servente",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3498.57,
+    "deducoes": 1149.39,
+    "liquido": 2349.18
+  },
+  {
+    "rank": 301,
+    "nome": "Leandro Henrique Theodoro",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3498.57,
+    "deducoes": 570.83,
+    "liquido": 2927.74
+  },
+  {
+    "rank": 302,
+    "nome": "Junio Barbosa do Prado",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3494.29,
+    "deducoes": 1033.84,
+    "liquido": 2460.45
+  },
+  {
+    "rank": 303,
+    "nome": "Erica Cristina Aurilietti de Oliveira Moreira",
+    "cargo": "Psicólogo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3465.84,
+    "deducoes": 485.21,
+    "liquido": 2980.63
+  },
+  {
+    "rank": 304,
+    "nome": "Andrea Cristina de Andrade Silva",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3458.05,
+    "deducoes": 303.55,
+    "liquido": 3154.5
+  },
+  {
+    "rank": 305,
+    "nome": "Natanael Balbino",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3445.56,
+    "deducoes": 393.77,
+    "liquido": 3051.79
+  },
+  {
+    "rank": 306,
+    "nome": "Edson Aparecido Martins",
+    "cargo": "Enfermeiro Padrao",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3443.86,
+    "deducoes": 1308.66,
+    "liquido": 2135.2
+  },
+  {
+    "rank": 307,
+    "nome": "Silvanil Donizete Geronimo",
+    "cargo": "Porteiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3436.13,
+    "deducoes": 927.11,
+    "liquido": 2509.02
+  },
+  {
+    "rank": 308,
+    "nome": "Fatima Francisca Alvares Limongi",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3403.42,
+    "deducoes": 476.47,
+    "liquido": 2926.95
+  },
+  {
+    "rank": 309,
+    "nome": "Jesiel Clemente Garcia",
+    "cargo": "Auxiliar de Obras e Serviços",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3389.61,
+    "deducoes": 640.72,
+    "liquido": 2748.89
+  },
+  {
+    "rank": 310,
+    "nome": "Luana Farah Pacobello Godinho",
+    "cargo": "Farmacêutico",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3388.82,
+    "deducoes": 426.99,
+    "liquido": 2961.83
+  },
+  {
+    "rank": 311,
+    "nome": "Raquel Cristina Nogueira da Cunha",
+    "cargo": "Nutricionista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3379.89,
+    "deducoes": 446.4,
+    "liquido": 2933.49
+  },
+  {
+    "rank": 312,
+    "nome": "Elisangela de Fatima Marques",
+    "cargo": "Fiscal",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3353.61,
+    "deducoes": 469.5,
+    "liquido": 2884.11
+  },
+  {
+    "rank": 313,
+    "nome": "Marcio Fernando Tristão",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3336.3,
+    "deducoes": 363.48,
+    "liquido": 2972.82
+  },
+  {
+    "rank": 314,
+    "nome": "Carlos Roberto do Prado",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3331.98,
+    "deducoes": 1285.14,
+    "liquido": 2046.84
+  },
+  {
+    "rank": 315,
+    "nome": "Marcos Paulo Andreatta",
+    "cargo": "Porteiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3324.49,
+    "deducoes": 1158.76,
+    "liquido": 2165.73
+  },
+  {
+    "rank": 316,
+    "nome": "Crélia Teodora Ferreira",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3322.85,
+    "deducoes": 1309.93,
+    "liquido": 2012.92
+  },
+  {
+    "rank": 317,
+    "nome": "Valdirene Roque",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3285.88,
+    "deducoes": 349.48,
+    "liquido": 2936.4
+  },
+  {
+    "rank": 318,
+    "nome": "Zelia Barion Honorato",
+    "cargo": "Pensionista",
+    "vinculo": "Pensionista",
+    "bruto": 3281.49,
+    "deducoes": 0.0,
+    "liquido": 3281.49
+  },
+  {
+    "rank": 319,
+    "nome": "Rosangela Aparecida Aranda",
+    "cargo": "Nutricionista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3276.8,
+    "deducoes": 352.88,
+    "liquido": 2923.92
+  },
+  {
+    "rank": 320,
+    "nome": "Érika Barion de Carvalho",
+    "cargo": "SECRETÁRIA",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3272.52,
+    "deducoes": 1381.26,
+    "liquido": 1891.26
+  },
+  {
+    "rank": 321,
+    "nome": "Fabiana Gonçalves de Oliveira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3253.36,
+    "deducoes": 720.5,
+    "liquido": 2532.86
+  },
+  {
+    "rank": 322,
+    "nome": "Isabela Caetano Pena",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3248.4,
+    "deducoes": 278.39,
+    "liquido": 2970.01
+  },
+  {
+    "rank": 323,
+    "nome": "Cleide Aparecida Chagas de Souza Silverio",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3245.61,
+    "deducoes": 668.03,
+    "liquido": 2577.58
+  },
+  {
+    "rank": 324,
+    "nome": "Luciene Aparecida Fagundes",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3234.61,
+    "deducoes": 633.11,
+    "liquido": 2601.5
+  },
+  {
+    "rank": 325,
+    "nome": "Amélia Regina Bertamé Martins",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3228.29,
+    "deducoes": 382.29,
+    "liquido": 2846.0
+  },
+  {
+    "rank": 326,
+    "nome": "Patricia de Freitas Camilo",
+    "cargo": "Professor de E. Especial - PEE",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3204.25,
+    "deducoes": 315.58,
+    "liquido": 2888.67
+  },
+  {
+    "rank": 327,
+    "nome": "Magno Felix Bernardi",
+    "cargo": "Operador de Máquinas",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3180.52,
+    "deducoes": 930.55,
+    "liquido": 2249.97
+  },
+  {
+    "rank": 328,
+    "nome": "Elton Wallace Ramires",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3158.89,
+    "deducoes": 819.47,
+    "liquido": 2339.42
+  },
+  {
+    "rank": 329,
+    "nome": "Marli de Lurdes Sanches Bertolino",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3114.38,
+    "deducoes": 380.01,
+    "liquido": 2734.37
+  },
+  {
+    "rank": 330,
+    "nome": "Fabio Rafael da Silva",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3110.7,
+    "deducoes": 1029.37,
+    "liquido": 2081.33
+  },
+  {
+    "rank": 331,
+    "nome": "Luis Fernando Maeiro",
+    "cargo": "Supervisor de S.E.R.M",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3094.18,
+    "deducoes": 642.61,
+    "liquido": 2451.57
+  },
+  {
+    "rank": 332,
+    "nome": "Ana Beatriz Machado Honório",
+    "cargo": "Auxiliar de Enfermagem do PSF",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3077.84,
+    "deducoes": 785.43,
+    "liquido": 2292.41
+  },
+  {
+    "rank": 333,
+    "nome": "Elaine Regina da Silva",
+    "cargo": "Auxiliar de Enfermagem do PSF",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3077.84,
+    "deducoes": 353.85,
+    "liquido": 2723.99
+  },
+  {
+    "rank": 334,
+    "nome": "Monica de Marcos",
+    "cargo": "Psicólogo",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3049.94,
+    "deducoes": 426.99,
+    "liquido": 2622.95
+  },
+  {
+    "rank": 335,
+    "nome": "Vivian Barion Amalfi",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 3047.55,
+    "deducoes": 254.29,
+    "liquido": 2793.26
+  },
+  {
+    "rank": 336,
+    "nome": "Renan da Silva Ceviterezza",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3040.59,
+    "deducoes": 1007.67,
+    "liquido": 2032.92
+  },
+  {
+    "rank": 337,
+    "nome": "Charlene Thomaz Sabino",
+    "cargo": "Assistente Social",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3024.74,
+    "deducoes": 1463.43,
+    "liquido": 1561.31
+  },
+  {
+    "rank": 338,
+    "nome": "Robert Ribeiro",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3000.79,
+    "deducoes": 321.68,
+    "liquido": 2679.11
+  },
+  {
+    "rank": 339,
+    "nome": "Andreia Nogueira Ribeiro Danziger",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 3000.79,
+    "deducoes": 979.97,
+    "liquido": 2020.82
+  },
+  {
+    "rank": 340,
+    "nome": "Isadora Tauane da Silva",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2984.19,
+    "deducoes": 1018.73,
+    "liquido": 1965.46
+  },
+  {
+    "rank": 341,
+    "nome": "Felicio Aparecido da Cunha",
+    "cargo": "Professor  PEB II",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2950.58,
+    "deducoes": 242.65,
+    "liquido": 2707.93
+  },
+  {
+    "rank": 342,
+    "nome": "Simone Cristina Garcia",
+    "cargo": "Supervisor M. de Educação",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2927.39,
+    "deducoes": 409.83,
+    "liquido": 2517.56
+  },
+  {
+    "rank": 343,
+    "nome": "Abimael Magalhães Paulino",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2910.7,
+    "deducoes": 237.87,
+    "liquido": 2672.83
+  },
+  {
+    "rank": 344,
+    "nome": "Marilza Aparecida Albino",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2888.1,
+    "deducoes": 654.26,
+    "liquido": 2233.84
+  },
+  {
+    "rank": 345,
+    "nome": "Elaine Cristina Jorge",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2856.02,
+    "deducoes": 1244.45,
+    "liquido": 1611.57
+  },
+  {
+    "rank": 346,
+    "nome": "Sonia Rita Barion",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2836.75,
+    "deducoes": 893.86,
+    "liquido": 1942.89
+  },
+  {
+    "rank": 347,
+    "nome": "Maria Benedita Barbosa",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2831.5,
+    "deducoes": 600.03,
+    "liquido": 2231.47
+  },
+  {
+    "rank": 348,
+    "nome": "Silvia Helena Cunha da Silva",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2803.99,
+    "deducoes": 948.44,
+    "liquido": 1855.55
+  },
+  {
+    "rank": 349,
+    "nome": "Valmir Acácio Rodrigues",
+    "cargo": "Porteiro",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2803.99,
+    "deducoes": 1311.5,
+    "liquido": 1492.49
+  },
+  {
+    "rank": 350,
+    "nome": "Cauane da Silvas Carvalho",
+    "cargo": "Coordenador do P. Espaço Amigo",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2798.57,
+    "deducoes": 227.55,
+    "liquido": 2571.02
+  },
+  {
+    "rank": 351,
+    "nome": "Dina Eliana Bernardo Beltran Ferreira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2797.03,
+    "deducoes": 317.71,
+    "liquido": 2479.32
+  },
+  {
+    "rank": 352,
+    "nome": "Diego Aparecido Bernardi",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2782.96,
+    "deducoes": 1049.42,
+    "liquido": 1733.54
+  },
+  {
+    "rank": 353,
+    "nome": "Patricia de Freitas Camilo",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2779.99,
+    "deducoes": 129.81,
+    "liquido": 2650.18
+  },
+  {
+    "rank": 354,
+    "nome": "Regiani Aparecida Darcie Ramin",
+    "cargo": "Assistente Social",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2772.68,
+    "deducoes": 388.17,
+    "liquido": 2384.51
+  },
+  {
+    "rank": 355,
+    "nome": "João Batista de Sousa",
+    "cargo": "Inspetor de Aluno",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2769.44,
+    "deducoes": 318.05,
+    "liquido": 2451.39
+  },
+  {
+    "rank": 356,
+    "nome": "Triani Carla Martins Fernandes",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2767.85,
+    "deducoes": 1097.0,
+    "liquido": 1670.85
+  },
+  {
+    "rank": 357,
+    "nome": "Moacir Donizete Gabricio",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2748.92,
+    "deducoes": 771.99,
+    "liquido": 1976.93
+  },
+  {
+    "rank": 358,
+    "nome": "Luis Fernando Bento",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2737.02,
+    "deducoes": 383.18,
+    "liquido": 2353.84
+  },
+  {
+    "rank": 359,
+    "nome": "Ana Aparecida Garcia da Silva",
+    "cargo": "Monitor de Artes",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2726.25,
+    "deducoes": 1069.33,
+    "liquido": 1656.92
+  },
+  {
+    "rank": 360,
+    "nome": "Patricia Teresa Medeiros Datovo",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2723.28,
+    "deducoes": 1036.77,
+    "liquido": 1686.51
+  },
+  {
+    "rank": 361,
+    "nome": "Janine Estefania Ribeiro",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2677.89,
+    "deducoes": 317.71,
+    "liquido": 2360.18
+  },
+  {
+    "rank": 362,
+    "nome": "Carlos Henrique Nunes",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2650.44,
+    "deducoes": 302.9,
+    "liquido": 2347.54
+  },
+  {
+    "rank": 363,
+    "nome": "Afonso Henrique Barbosa",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2650.44,
+    "deducoes": 302.9,
+    "liquido": 2347.54
+  },
+  {
+    "rank": 364,
+    "nome": "Lucas Silva da Costa",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2650.44,
+    "deducoes": 302.9,
+    "liquido": 2347.54
+  },
+  {
+    "rank": 365,
+    "nome": "Talita Helena Martins de Oliveira",
+    "cargo": "Motorista I",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2650.44,
+    "deducoes": 1003.45,
+    "liquido": 1646.99
+  },
+  {
+    "rank": 366,
+    "nome": "Fabio Paredes",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2647.7,
+    "deducoes": 1240.24,
+    "liquido": 1407.46
+  },
+  {
+    "rank": 367,
+    "nome": "Ana Paula Ostorero",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2641.26,
+    "deducoes": 890.14,
+    "liquido": 1751.12
+  },
+  {
+    "rank": 368,
+    "nome": "Ludiana de Almeida Theodoro",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2635.34,
+    "deducoes": 728.79,
+    "liquido": 1906.55
+  },
+  {
+    "rank": 369,
+    "nome": "Keli Cristina Urtado Sousa",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2632.76,
+    "deducoes": 789.22,
+    "liquido": 1843.54
+  },
+  {
+    "rank": 370,
+    "nome": "Marilise Philomeno de Abreu Cardoso",
+    "cargo": "Telefonista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2621.15,
+    "deducoes": 953.7,
+    "liquido": 1667.45
+  },
+  {
+    "rank": 371,
+    "nome": "Ruan Gabriel Mendes",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2618.02,
+    "deducoes": 366.52,
+    "liquido": 2251.5
+  },
+  {
+    "rank": 372,
+    "nome": "Eliana Cristina Rodrigues",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2609.81,
+    "deducoes": 869.14,
+    "liquido": 1740.67
+  },
+  {
+    "rank": 373,
+    "nome": "Fabiano Mariano Rodrigues",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 2588.76,
+    "deducoes": 208.66,
+    "liquido": 2380.1
+  },
+  {
+    "rank": 374,
+    "nome": "Natalia Priscila Martins",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2565.01,
+    "deducoes": 862.31,
+    "liquido": 1702.7
+  },
+  {
+    "rank": 375,
+    "nome": "Valcilei Pedro dos Reis",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2552.37,
+    "deducoes": 737.92,
+    "liquido": 1814.45
+  },
+  {
+    "rank": 376,
+    "nome": "Sandra Mara de Campos",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2540.09,
+    "deducoes": 285.94,
+    "liquido": 2254.15
+  },
+  {
+    "rank": 377,
+    "nome": "Luana Fernochi",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2540.09,
+    "deducoes": 285.94,
+    "liquido": 2254.15
+  },
+  {
+    "rank": 378,
+    "nome": "Joana Darc de Souza Della Torre",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2538.07,
+    "deducoes": 506.84,
+    "liquido": 2031.23
+  },
+  {
+    "rank": 379,
+    "nome": "Enoi da Silva Lopes",
+    "cargo": "Pensionista",
+    "vinculo": "Pensionista",
+    "bruto": 2505.13,
+    "deducoes": 0.0,
+    "liquido": 2505.13
+  },
+  {
+    "rank": 380,
+    "nome": "Mateus José Henrique Fernandes",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2499.02,
+    "deducoes": 746.67,
+    "liquido": 1752.35
+  },
+  {
+    "rank": 381,
+    "nome": "Pâmela Cristina Antunes Silva",
+    "cargo": "AUXILIAR ADMINISTRATIVO",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2499.02,
+    "deducoes": 349.86,
+    "liquido": 2149.16
+  },
+  {
+    "rank": 382,
+    "nome": "Eliana Cristina de Souza Pinto",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2496.34,
+    "deducoes": 349.48,
+    "liquido": 2146.86
+  },
+  {
+    "rank": 383,
+    "nome": "Amanda Aparecida de Oliveira Tristão",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2479.79,
+    "deducoes": 698.51,
+    "liquido": 1781.28
+  },
+  {
+    "rank": 384,
+    "nome": "Michele Aparecida de Lima",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2479.79,
+    "deducoes": 597.52,
+    "liquido": 1882.27
+  },
+  {
+    "rank": 385,
+    "nome": "Manoel Paulo Urtado",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2465.65,
+    "deducoes": 299.56,
+    "liquido": 2166.09
+  },
+  {
+    "rank": 386,
+    "nome": "Fernanda Chioquete Grespan",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 2455.2,
+    "deducoes": 196.64,
+    "liquido": 2258.56
+  },
+  {
+    "rank": 387,
+    "nome": "Ana Livia Estevo",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 2455.2,
+    "deducoes": 196.64,
+    "liquido": 2258.56
+  },
+  {
+    "rank": 388,
+    "nome": "Roseli de Sousa Ferreira",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2442.83,
+    "deducoes": 575.0,
+    "liquido": 1867.83
+  },
+  {
+    "rank": 389,
+    "nome": "Viviane Fernanda Conti",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2442.83,
+    "deducoes": 755.46,
+    "liquido": 1687.37
+  },
+  {
+    "rank": 390,
+    "nome": "Anaí Baceti Limonge",
+    "cargo": "Auxiliar de Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2431.5,
+    "deducoes": 890.72,
+    "liquido": 1540.78
+  },
+  {
+    "rank": 391,
+    "nome": "Sirlei de Fatima Jorge",
+    "cargo": "Auxiliar de Enfermagem",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2423.18,
+    "deducoes": 877.15,
+    "liquido": 1546.03
+  },
+  {
+    "rank": 392,
+    "nome": "Marcelo Costa de Oliveira",
+    "cargo": "Auxiliar de Obras e Serviços",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2388.54,
+    "deducoes": 317.71,
+    "liquido": 2070.83
+  },
+  {
+    "rank": 393,
+    "nome": "Tatiane Bernardes Carvalho Paiva",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2382.87,
+    "deducoes": 825.78,
+    "liquido": 1557.09
+  },
+  {
+    "rank": 394,
+    "nome": "Vanessa Gomes",
+    "cargo": "PEDAGOGA",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2379.99,
+    "deducoes": 951.06,
+    "liquido": 1428.93
+  },
+  {
+    "rank": 395,
+    "nome": "Nara Ligia Candido Marcelino",
+    "cargo": "Auxiliar de Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2369.25,
+    "deducoes": 285.94,
+    "liquido": 2083.31
+  },
+  {
+    "rank": 396,
+    "nome": "Bruna Cristina Barbosa",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2280.73,
+    "deducoes": 559.67,
+    "liquido": 1721.06
+  },
+  {
+    "rank": 397,
+    "nome": "Murilo Dias Benedetti",
+    "cargo": "Auxiliar de Obras e Serviços",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2269.4,
+    "deducoes": 317.71,
+    "liquido": 1951.69
+  },
+  {
+    "rank": 398,
+    "nome": "Luana Ferreira Alves",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2236.98,
+    "deducoes": 313.17,
+    "liquido": 1923.81
+  },
+  {
+    "rank": 399,
+    "nome": "Daiane Helena da Silva",
+    "cargo": "Auxiliar de Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2236.98,
+    "deducoes": 761.09,
+    "liquido": 1475.89
+  },
+  {
+    "rank": 400,
+    "nome": "Priscila Rodrigues Chagas Aurelietti",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2232.67,
+    "deducoes": 727.1,
+    "liquido": 1505.57
+  },
+  {
+    "rank": 401,
+    "nome": "Lilian Maria Silverio Urtado",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2226.28,
+    "deducoes": 808.25,
+    "liquido": 1418.03
+  },
+  {
+    "rank": 402,
+    "nome": "Giovana Stefani de Lima",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2220.51,
+    "deducoes": 153.37,
+    "liquido": 2067.14
+  },
+  {
+    "rank": 403,
+    "nome": "Vera Lucia Ribeiro",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2176.25,
+    "deducoes": 988.42,
+    "liquido": 1187.83
+  },
+  {
+    "rank": 404,
+    "nome": "Leni Teresa Pedrilho",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2170.2,
+    "deducoes": 272.32,
+    "liquido": 1897.88
+  },
+  {
+    "rank": 405,
+    "nome": "Larissa Moreira Coppola",
+    "cargo": "Auxiliar de Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2139.72,
+    "deducoes": 299.56,
+    "liquido": 1840.16
+  },
+  {
+    "rank": 406,
+    "nome": "Marileia Cristina de Oliveira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2139.72,
+    "deducoes": 299.56,
+    "liquido": 1840.16
+  },
+  {
+    "rank": 407,
+    "nome": "Ana Carla Delfino",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2139.72,
+    "deducoes": 299.56,
+    "liquido": 1840.16
+  },
+  {
+    "rank": 408,
+    "nome": "Janaina de Cássia Gonçalves da Silva",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2139.72,
+    "deducoes": 299.56,
+    "liquido": 1840.16
+  },
+  {
+    "rank": 409,
+    "nome": "Taís Junqueira Thezolin",
+    "cargo": "Telefonista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2139.72,
+    "deducoes": 299.56,
+    "liquido": 1840.16
+  },
+  {
+    "rank": 410,
+    "nome": "Bruna Maria Sabino Ramires",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2118.63,
+    "deducoes": 226.94,
+    "liquido": 1891.69
+  },
+  {
+    "rank": 411,
+    "nome": "Andréa Carmem de Carvalho",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2107.3,
+    "deducoes": 1006.07,
+    "liquido": 1101.23
+  },
+  {
+    "rank": 412,
+    "nome": "Fernando dos Santos Coutinho",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2107.3,
+    "deducoes": 2107.3,
+    "liquido": 0.0
+  },
+  {
+    "rank": 413,
+    "nome": "Maria Gabriela dos Santos",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2104.02,
+    "deducoes": 152.88,
+    "liquido": 1951.14
+  },
+  {
+    "rank": 414,
+    "nome": "Taiane Aparecida Lourenço de Oliveira Fermino",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2067.38,
+    "deducoes": 289.43,
+    "liquido": 1777.95
+  },
+  {
+    "rank": 415,
+    "nome": "Tatiana Francisco Perico",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2067.38,
+    "deducoes": 858.14,
+    "liquido": 1209.24
+  },
+  {
+    "rank": 416,
+    "nome": "Denise Caroline Borges Ferreira",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2067.38,
+    "deducoes": 289.43,
+    "liquido": 1777.95
+  },
+  {
+    "rank": 417,
+    "nome": "Camila Castilho Manzoni",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2067.38,
+    "deducoes": 289.43,
+    "liquido": 1777.95
+  },
+  {
+    "rank": 418,
+    "nome": "Paula Gabriela Cardoso",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 2045.61,
+    "deducoes": 159.78,
+    "liquido": 1885.83
+  },
+  {
+    "rank": 419,
+    "nome": "Tatiana Matthes Rossi",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2042.46,
+    "deducoes": 285.94,
+    "liquido": 1756.52
+  },
+  {
+    "rank": 420,
+    "nome": "Gleice Keli Aureliano de Sousa",
+    "cargo": "Auxiliar de Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2042.46,
+    "deducoes": 285.94,
+    "liquido": 1756.52
+  },
+  {
+    "rank": 421,
+    "nome": "Bibiana Donizetti Boletta Pelose",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2042.46,
+    "deducoes": 285.94,
+    "liquido": 1756.52
+  },
+  {
+    "rank": 422,
+    "nome": "Mirian de Cassia Sandy Moraes",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2036.48,
+    "deducoes": 152.88,
+    "liquido": 1883.6
+  },
+  {
+    "rank": 423,
+    "nome": "Ana Julia Fernandes de Rezende",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2036.48,
+    "deducoes": 152.88,
+    "liquido": 1883.6
+  },
+  {
+    "rank": 424,
+    "nome": "Jezebel Bortolo Mengali Rosa",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2036.48,
+    "deducoes": 152.88,
+    "liquido": 1883.6
+  },
+  {
+    "rank": 425,
+    "nome": "Maria Vitoria Amancio",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2036.48,
+    "deducoes": 212.6,
+    "liquido": 1823.88
+  },
+  {
+    "rank": 426,
+    "nome": "Maria Eduarda Bertolini",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2036.48,
+    "deducoes": 152.88,
+    "liquido": 1883.6
+  },
+  {
+    "rank": 427,
+    "nome": "Maria Eduarda de Paula",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2036.48,
+    "deducoes": 926.34,
+    "liquido": 1110.14
+  },
+  {
+    "rank": 428,
+    "nome": "Tatiane Rogeria da Silva",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 2036.48,
+    "deducoes": 152.88,
+    "liquido": 1883.6
+  },
+  {
+    "rank": 429,
+    "nome": "Maria Luisa Brandi Mariano",
+    "cargo": "Conselheiro Tutelar",
+    "vinculo": "Conselho Tutelar",
+    "bruto": 2026.25,
+    "deducoes": 222.88,
+    "liquido": 1803.37
+  },
+  {
+    "rank": 430,
+    "nome": "Jhenifer da Silva Brocardo",
+    "cargo": "Conselheiro Tutelar",
+    "vinculo": "Conselho Tutelar",
+    "bruto": 2026.25,
+    "deducoes": 222.88,
+    "liquido": 1803.37
+  },
+  {
+    "rank": 431,
+    "nome": "Janaina de Almeida",
+    "cargo": "Conselheiro Tutelar",
+    "vinculo": "Conselho Tutelar",
+    "bruto": 2026.25,
+    "deducoes": 222.88,
+    "liquido": 1803.37
+  },
+  {
+    "rank": 432,
+    "nome": "Nathalia Fernanda Andreazi",
+    "cargo": "Conselheiro Tutelar",
+    "vinculo": "Conselho Tutelar",
+    "bruto": 2026.25,
+    "deducoes": 222.88,
+    "liquido": 1803.37
+  },
+  {
+    "rank": 433,
+    "nome": "Priscila Mengali",
+    "cargo": "Conselheiro Tutelar",
+    "vinculo": "Conselho Tutelar",
+    "bruto": 2026.25,
+    "deducoes": 222.88,
+    "liquido": 1803.37
+  },
+  {
+    "rank": 434,
+    "nome": "Roselaine Aparecida de Mello Maduene",
+    "cargo": "Auxiliar de Dentista",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2012.74,
+    "deducoes": 272.32,
+    "liquido": 1740.42
+  },
+  {
+    "rank": 435,
+    "nome": "Michele Cristina Pereira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2012.74,
+    "deducoes": 272.32,
+    "liquido": 1740.42
+  },
+  {
+    "rank": 436,
+    "nome": "Joel Inacio Fermino",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 2012.74,
+    "deducoes": 272.32,
+    "liquido": 1740.42
+  },
+  {
+    "rank": 437,
+    "nome": "Luisa Helena Bernardes Rodrigues",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1998.47,
+    "deducoes": 155.54,
+    "liquido": 1842.93
+  },
+  {
+    "rank": 438,
+    "nome": "Claudia Paredes",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1998.47,
+    "deducoes": 155.54,
+    "liquido": 1842.93
+  },
+  {
+    "rank": 439,
+    "nome": "Laine Ianca Carlos",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1998.47,
+    "deducoes": 155.54,
+    "liquido": 1842.93
+  },
+  {
+    "rank": 440,
+    "nome": "Noemi Yukari Takara",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 441,
+    "nome": "Leticia Cristina Valdomiro",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 442,
+    "nome": "Carolaine Pereira Pratis",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 443,
+    "nome": "Maria Eduarda dos Santos Prado",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 212.6,
+    "liquido": 1756.34
+  },
+  {
+    "rank": 444,
+    "nome": "Daiane Aparecida de Morais",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 445,
+    "nome": "Daniela Darque Jacon",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 212.6,
+    "liquido": 1756.34
+  },
+  {
+    "rank": 446,
+    "nome": "Adriele Roberta Beraldo",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 447,
+    "nome": "Victoria de Melo",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 448,
+    "nome": "Raissa da Silva Leoni",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 308.16,
+    "liquido": 1660.78
+  },
+  {
+    "rank": 449,
+    "nome": "Gabriel Henrique Ribeiro Penha",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 212.6,
+    "liquido": 1756.34
+  },
+  {
+    "rank": 450,
+    "nome": "Eloisa Gabrielli Cardoso Garcia",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1968.94,
+    "deducoes": 152.88,
+    "liquido": 1816.06
+  },
+  {
+    "rank": 451,
+    "nome": "Norma Pereira de Souza",
+    "cargo": "Auxiliar de D. Infanti - ADI",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 1968.94,
+    "deducoes": 275.65,
+    "liquido": 1693.29
+  },
+  {
+    "rank": 452,
+    "nome": "Aeliton Donizete Dionizio",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 1945.2,
+    "deducoes": 272.32,
+    "liquido": 1672.88
+  },
+  {
+    "rank": 453,
+    "nome": "Liliane Renata Silva de Oliveira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1945.2,
+    "deducoes": 150.74,
+    "liquido": 1794.46
+  },
+  {
+    "rank": 454,
+    "nome": "Andrea Cristina de Andrade Silva",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1868.95,
+    "deducoes": 60.07,
+    "liquido": 1808.88
+  },
+  {
+    "rank": 455,
+    "nome": "Silvana Regina Felicio de Sousa",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 1864.15,
+    "deducoes": 742.33,
+    "liquido": 1121.82
+  },
+  {
+    "rank": 456,
+    "nome": "Elaine Christina Roque",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1841.4,
+    "deducoes": 141.4,
+    "liquido": 1700.0
+  },
+  {
+    "rank": 457,
+    "nome": "Vilma Aparecida da Silva",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 1702.05,
+    "deducoes": 823.59,
+    "liquido": 878.46
+  },
+  {
+    "rank": 458,
+    "nome": "Solange Cristina Coelho Camilo",
+    "cargo": "Merendeira",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 1702.05,
+    "deducoes": 238.28,
+    "liquido": 1463.77
+  },
+  {
+    "rank": 459,
+    "nome": "Korina Clara de Oliveira",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1682.1,
+    "deducoes": 127.06,
+    "liquido": 1555.04
+  },
+  {
+    "rank": 460,
+    "nome": "Maria Isabel Borges",
+    "cargo": "Monitor do P. Espaco Amigo",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1621.0,
+    "deducoes": 121.57,
+    "liquido": 1499.43
+  },
+  {
+    "rank": 461,
+    "nome": "Évelyn Cristina Bernardes",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1443.89,
+    "deducoes": 108.29,
+    "liquido": 1335.6
+  },
+  {
+    "rank": 462,
+    "nome": "Leticia Cristina da Cruz Veiga",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1443.89,
+    "deducoes": 108.29,
+    "liquido": 1335.6
+  },
+  {
+    "rank": 463,
+    "nome": "Fabiana Corrêa Marques",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1421.28,
+    "deducoes": 106.59,
+    "liquido": 1314.69
+  },
+  {
+    "rank": 464,
+    "nome": "Claudete Maria Ferreira Viola",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1381.05,
+    "deducoes": 141.87,
+    "liquido": 1239.18
+  },
+  {
+    "rank": 465,
+    "nome": "Valeria Cristina da Costa",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 1282.5,
+    "deducoes": 59.92,
+    "liquido": 1222.58
+  },
+  {
+    "rank": 466,
+    "nome": "Giovana de Cassia Gonçalves",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1227.6,
+    "deducoes": 96.58,
+    "liquido": 1131.02
+  },
+  {
+    "rank": 467,
+    "nome": "Natali Zilda Lourenço Ricetto",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1142.1,
+    "deducoes": 85.65,
+    "liquido": 1056.45
+  },
+  {
+    "rank": 468,
+    "nome": "Marcela Maria Lopes da Cunha Pinto",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1120.23,
+    "deducoes": 84.01,
+    "liquido": 1036.22
+  },
+  {
+    "rank": 469,
+    "nome": "Bruna Dias de Souza",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 1116.72,
+    "deducoes": 83.75,
+    "liquido": 1032.97
+  },
+  {
+    "rank": 470,
+    "nome": "Livia Maria de Almeida Biazzi",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 920.7,
+    "deducoes": 69.05,
+    "liquido": 851.65
+  },
+  {
+    "rank": 471,
+    "nome": "Giovana de Cassia Gonçalves",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 920.7,
+    "deducoes": 72.43,
+    "liquido": 848.27
+  },
+  {
+    "rank": 472,
+    "nome": "Livia do Carmo Alves",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 920.7,
+    "deducoes": 69.05,
+    "liquido": 851.65
+  },
+  {
+    "rank": 473,
+    "nome": "Maria Clara Camilo",
+    "cargo": "Monitor do P. Espaco Amigo",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 864.53,
+    "deducoes": 64.83,
+    "liquido": 799.7
+  },
+  {
+    "rank": 474,
+    "nome": "Renata Cristina de Avila",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 767.25,
+    "deducoes": 57.54,
+    "liquido": 709.71
+  },
+  {
+    "rank": 475,
+    "nome": "Felippe Augusto Teixeira",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 761.4,
+    "deducoes": 85.77,
+    "liquido": 675.63
+  },
+  {
+    "rank": 476,
+    "nome": "Isadora Beatriz Peppe da Silva",
+    "cargo": "Auxiliar de D. Infantil - ADI",
+    "vinculo": "Contrato por Tempo Determinado",
+    "bruto": 710.99,
+    "deducoes": 36.91,
+    "liquido": 674.08
+  },
+  {
+    "rank": 477,
+    "nome": "Elenice Lotti",
+    "cargo": "Professor  PEB I",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 659.88,
+    "deducoes": 49.49,
+    "liquido": 610.39
+  },
+  {
+    "rank": 478,
+    "nome": "Natana Aparecida Pires",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 634.5,
+    "deducoes": 47.58,
+    "liquido": 586.92
+  },
+  {
+    "rank": 479,
+    "nome": "Rosemeire Ferreira Copola",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 613.8,
+    "deducoes": 46.03,
+    "liquido": 567.77
+  },
+  {
+    "rank": 480,
+    "nome": "Valeria Aparecida Fernochio Corsi",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 460.35,
+    "deducoes": 34.52,
+    "liquido": 425.83
+  },
+  {
+    "rank": 481,
+    "nome": "Pedro Henrique Braz Garcia",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 456.84,
+    "deducoes": 45.0,
+    "liquido": 411.84
+  },
+  {
+    "rank": 482,
+    "nome": "Carolina Machado Ramos Ranzani",
+    "cargo": "Conselheiro Tutelar Suplente",
+    "vinculo": "Conselho Tutelar",
+    "bruto": 393.98,
+    "deducoes": 18.57,
+    "liquido": 375.41
+  },
+  {
+    "rank": 483,
+    "nome": "Heloize Helena Nogueira Miranda",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 304.56,
+    "deducoes": 30.63,
+    "liquido": 273.93
+  },
+  {
+    "rank": 484,
+    "nome": "Cristiane Rossatti Marques Barzagli",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 153.45,
+    "deducoes": 11.5,
+    "liquido": 141.95
+  },
+  {
+    "rank": 485,
+    "nome": "Maria Luisa Lopes de Oliveira",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 153.45,
+    "deducoes": 11.5,
+    "liquido": 141.95
+  },
+  {
+    "rank": 486,
+    "nome": "Isabela Cristiny Maya",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 153.45,
+    "deducoes": 11.5,
+    "liquido": 141.95
+  },
+  {
+    "rank": 487,
+    "nome": "Livia Cristiny Bucci",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 153.45,
+    "deducoes": 15.23,
+    "liquido": 138.22
+  },
+  {
+    "rank": 488,
+    "nome": "Rafaela Cristina Pacetti Sebastião",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 153.45,
+    "deducoes": 11.5,
+    "liquido": 141.95
+  },
+  {
+    "rank": 489,
+    "nome": "Meire Elen Cervelin Candido",
+    "cargo": "Professor Substituto",
+    "vinculo": "Professora Substituta (C.L.T)",
+    "bruto": 126.9,
+    "deducoes": 9.51,
+    "liquido": 117.39
+  },
+  {
+    "rank": 490,
+    "nome": "Sandro Roberto Pereira",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 100.26,
+    "deducoes": 14.03,
+    "liquido": 86.23
+  },
+  {
+    "rank": 491,
+    "nome": "Alexandre Lorca Peres",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 100.26,
+    "deducoes": 14.03,
+    "liquido": 86.23
+  },
+  {
+    "rank": 492,
+    "nome": "Amilton Sebastiao de Almeida",
+    "cargo": "Serviços Gerais",
+    "vinculo": "Regime Jurídico Único",
+    "bruto": 100.26,
+    "deducoes": 14.03,
+    "liquido": 86.23
+  },
+  {
+    "rank": 493,
+    "nome": "Maria Aparecida de Sousa Limonge",
+    "cargo": "Servidor Estado",
+    "vinculo": "SERVIDOR ESTADO ( SEM INSS )",
+    "bruto": 64.44,
+    "deducoes": 0.0,
+    "liquido": 64.44
+  }
+]

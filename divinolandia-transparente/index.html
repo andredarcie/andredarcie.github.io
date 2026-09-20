@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Divinolândia Transparente</title>
+<meta name="description" content="Dados públicos de Divinolândia (SP) num lugar só: gastos da prefeitura, água e a bacia do Pardo, e a história do Quilombo do Careca.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="tema.css?v=1">
+<style>
+  /* Paleta e fontes vêm de tema.css. Cada página do projeto tem uma forma e uma cor:
+     quadrado = gastos (folha), círculo = água, triângulo = história (pardo). */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--dt-ground);
+    color: var(--dt-ink);
+    font-family: var(--dt-serif);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1220px; margin-inline: auto; padding-inline: 20px; }
+  a { color: inherit; }
+
+  /* Abertura: título e a paisagem das três formas, pousadas na linha do horizonte */
+  .abertura {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: end;
+    gap: 24px 48px;
+    padding-top: clamp(40px, 7vw, 88px);
+  }
+  .abertura-texto { padding-bottom: clamp(32px, 5vw, 64px); }
+  h1 {
+    margin: 0;
+    font-family: var(--dt-display);
+    font-weight: 700;
+    font-size: clamp(3.4rem, 9vw, 7rem);
+    line-height: .9;
+    letter-spacing: -.005em;
+  }
+  h1 span { display: block; }
+  .dek {
+    max-width: 34ch;
+    margin: 28px 0 0;
+    font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+    line-height: 1.5;
+    color: var(--dt-ink-2);
+  }
+
+  .paisagem { display: block; width: 100%; height: auto; max-height: 520px; }
+  .forma { mix-blend-mode: multiply; transform-box: fill-box; }
+  .f-serra { fill: var(--dt-pardo); transform-origin: 50% 100%; }
+  .f-sol { fill: var(--dt-water); transform-origin: 50% 50%; }
+  .f-bloco { fill: var(--dt-leaf); transform-origin: 0 100%; }
+
+  /* O único movimento sem clique: as formas chegam uma depois da outra */
+  @media (prefers-reduced-motion: no-preference) {
+    .f-serra { animation: sobe .8s cubic-bezier(.2, .7, .2, 1) both; }
+    .f-sol { animation: surge .8s cubic-bezier(.2, .7, .2, 1) .3s both; }
+    .f-bloco { animation: entra .7s cubic-bezier(.2, .7, .2, 1) .55s both; }
+  }
+  @keyframes sobe { from { transform: translateY(18%); opacity: 0; } }
+  @keyframes surge { from { transform: scale(.4); opacity: 0; } }
+  @keyframes entra { from { transform: translateX(-30%); opacity: 0; } }
+
+  /* As três páginas, cada uma com a sua forma */
+  .paginas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 48px 40px;
+    margin: 0;
+    padding: 48px 0 0;
+    list-style: none;
+    border-top: 3px solid var(--dt-ink);
+  }
+  .pagina { --giro: rotate(-12deg); }
+  .pagina--gastos { --cor: var(--dt-leaf); }
+  .pagina--agua { --cor: var(--dt-water); --giro: scale(1.12); }
+  .pagina--historia { --cor: var(--dt-pardo); }
+
+  .pagina a { display: block; text-decoration: none; }
+  .pagina a:focus-visible { outline: 3px solid var(--cor); outline-offset: 8px; }
+
+  .marca { display: flex; align-items: center; gap: 18px; }
+  .glifo {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    fill: var(--cor);
+    transition: transform .3s cubic-bezier(.2, .7, .2, 1);
+  }
+  .numero {
+    margin: 0;
+    font-family: var(--dt-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 3.4vw, 2.9rem);
+    line-height: 1;
+    color: var(--cor);
+  }
+  .numero-legenda { margin: 4px 0 0; font-size: .95rem; line-height: 1.35; color: var(--dt-muted); }
+
+  .pagina h2 {
+    margin: 26px 0 0;
+    font-family: var(--dt-display);
+    font-weight: 600;
+    font-size: 1.9rem;
+    line-height: 1.1;
+    text-decoration: underline 3px transparent;
+    text-underline-offset: 6px;
+    transition: text-decoration-color .2s ease;
+  }
+  .resumo { margin: 10px 0 0; color: var(--dt-ink-2); }
+  .fontes { margin: 12px 0 0; font-size: .88rem; line-height: 1.5; color: var(--dt-muted); }
+  .ir {
+    display: inline-block;
+    margin-top: 18px;
+    font-family: var(--dt-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--cor);
+    text-decoration: underline 2px;
+    text-underline-offset: 4px;
+  }
+  .pagina a:hover h2,
+  .pagina a:focus-visible h2 { text-decoration-color: var(--cor); }
+  .pagina a:hover .glifo,
+  .pagina a:focus-visible .glifo { transform: var(--giro); }
+
+  .colofao {
+    margin-top: 72px;
+    padding-block: 24px 48px;
+    border-top: 1px solid var(--dt-rule);
+    font-size: .88rem;
+    color: var(--dt-muted);
+  }
+  .colofao p { margin: 0; max-width: 70ch; }
+  .build { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 900px) {
+    .abertura { grid-template-columns: minmax(0, 1fr); }
+    .abertura-texto { padding-bottom: 8px; }
+    .paisagem { max-width: 460px; margin-left: auto; }
+    .paginas { grid-template-columns: minmax(0, 1fr); gap: 44px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .glifo, .pagina h2 { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="dt-bar" aria-label="Divinolândia Transparente">
+  <a class="dt-bar-marca" href="index.html" aria-current="page">Divinolândia Transparente</a>
+  <div class="dt-bar-links">
+    <a href="gastos/index.html">Gastos</a>
+    <a href="agua/index.html">Água</a>
+    <a href="historia/index.html">História</a>
+  </div>
+</nav>
+
+<header class="abertura wrap">
+  <div class="abertura-texto">
+    <h1>Divinolândia <span>Transparente</span></h1>
+    <p class="dek">Para onde vai o dinheiro da prefeitura, de onde vem a água e de onde veio a cidade. Os dados públicos de Divinolândia (SP) num lugar só, com a fonte de cada número.</p>
+  </div>
+  <svg class="paisagem" viewBox="0 0 600 500" aria-hidden="true" focusable="false">
+    <polygon class="forma f-serra" points="80,500 330,120 580,500"/>
+    <circle class="forma f-sol" cx="430" cy="190" r="118"/>
+    <rect class="forma f-bloco" x="24" y="300" width="200" height="200"/>
+  </svg>
+</header>
+
+<main class="wrap">
+  <ul class="paginas">
+    <li class="pagina pagina--gastos">
+      <a href="gastos/index.html">
+        <div class="marca">
+          <svg class="glifo" viewBox="0 0 56 56" aria-hidden="true" focusable="false"><rect x="4" y="4" width="48" height="48"/></svg>
+          <div>
+            <p class="numero">R$ 77,8 mi</p>
+            <p class="numero-legenda">empenhados pelo município em 2025</p>
+          </div>
+        </div>
+        <h2>Gastos da prefeitura</h2>
+        <p class="resumo">Salários dos servidores, maiores credores, empenhos, diárias de viagem, receitas, despesas e a folha do Hospital Regional.</p>
+        <p class="fontes">Fontes: Portal da Transparência da prefeitura, TCE-SP e Tesouro Nacional.</p>
+        <span class="ir">Ver os gastos</span>
+      </a>
+    </li>
+    <li class="pagina pagina--agua">
+      <a href="agua/index.html">
+        <div class="marca">
+          <svg class="glifo" viewBox="0 0 56 56" aria-hidden="true" focusable="false"><circle cx="28" cy="28" r="25"/></svg>
+          <div>
+            <p class="numero">R$ 5.705</p>
+            <p class="numero-legenda">gastos com gestão ambiental em 2025</p>
+          </div>
+        </div>
+        <h2>Água e a bacia do Pardo</h2>
+        <p class="resumo">Os problemas de água que aparecem nos relatórios oficiais e de onde pode vir dinheiro para resolvê-los: orçamento, FEHIDRO, fundo de saneamento e Sabesp.</p>
+        <p class="fontes">Fontes: Comitê da Bacia do Pardo, prefeitura e ARSESP, setembro de 2026.</p>
+        <span class="ir">Ler sobre a água</span>
+      </a>
+    </li>
+    <li class="pagina pagina--historia">
+      <a href="historia/index.html">
+        <div class="marca">
+          <svg class="glifo" viewBox="0 0 56 56" aria-hidden="true" focusable="false"><polygon points="28,3 54,51 2,51"/></svg>
+          <div>
+            <p class="numero">Século XVIII</p>
+            <p class="numero-legenda">quando o quilombo ocupava as cabeceiras do Rio Pardo</p>
+          </div>
+        </div>
+        <h2>Quilombo do Careca</h2>
+        <p class="resumo">O território negro livre que existia antes da cidade, contado a partir de documentos, mapas e memória.</p>
+        <p class="fontes">Fontes: arquivos históricos, cartografia da época e pesquisas acadêmicas.</p>
+        <span class="ir">Conhecer a história</span>
+      </a>
+    </li>
+  </ul>
+
+  <footer class="colofao">
+    <p>Projeto independente, sem vínculo com a Prefeitura de Divinolândia. Os dados vêm de fontes públicas, citadas em cada página. <span class="build">build 4</span></p>
+  </footer>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+{
+  "ano": "2025",
+  "fonte": "SICONFI (DCA, Anexo I-E) e TCE-SP (API de despesas)",
+  "gerado_em": "2026-09-15",
+  "total_empenhado": 77811711.47,
+  "total_pago": 70406051.83,
+  "total_anulado": 9970511.35,
+  "por_funcao": [
+    {
+      "funcao": "Educação",
+      "empenhado": 21116041.15,
+      "pago": 19529629.25
+    },
+    {
+      "funcao": "Saúde",
+      "empenhado": 15627542.94,
+      "pago": 14395867.74
+    },
+    {
+      "funcao": "Previdência Social",
+      "empenhado": 12492222.32,
+      "pago": 12469772.77
+    },
+    {
+      "funcao": "Administração",
+      "empenhado": 8386665.34,
+      "pago": 7326789.35
+    },
+    {
+      "funcao": "Repasses internos",
+      "empenhado": 5737194.26,
+      "pago": 4019204.61,
+      "interno": true
+    },
+    {
+      "funcao": "Transporte",
+      "empenhado": 3329027.15,
+      "pago": 2691860.75
+    },
+    {
+      "funcao": "Encargos Especiais",
+      "empenhado": 2977042.69,
+      "pago": 2972692.53
+    },
+    {
+      "funcao": "Urbanismo",
+      "empenhado": 2400062.05,
+      "pago": 2268914.66
+    },
+    {
+      "funcao": "Assistência Social",
+      "empenhado": 1734353.08,
+      "pago": 1396849.11
+    },
+    {
+      "funcao": "Legislativa",
+      "empenhado": 1253619.42,
+      "pago": 1232347.16
+    },
+    {
+      "funcao": "Desporto e Lazer",
+      "empenhado": 1053780.47,
+      "pago": 799656.89
+    },
+    {
+      "funcao": "Judiciária",
+      "empenhado": 752236.63,
+      "pago": 718507.93
+    },
+    {
+      "funcao": "Comércio e Serviços",
+      "empenhado": 369431.42,
+      "pago": 36363.9
+    },
+    {
+      "funcao": "Cultura",
+      "empenhado": 323866.95,
+      "pago": 303478.95
+    },
+    {
+      "funcao": "Agricultura",
+      "empenhado": 252920.04,
+      "pago": 238410.67
+    },
+    {
+      "funcao": "Gestão Ambiental",
+      "empenhado": 5705.56,
+      "pago": 5705.56
+    }
+  ],
+  "por_credor": [
+    {
+      "credor": "FOLHA DE PAGAMENTO",
+      "empenhado": 28987834.31,
+      "pago": 27463549.77,
+      "empenhos": 286
+    },
+    {
+      "credor": "APOSENTADORIAS E PENSÕES (FOLHA DO INSTITUTO DE PREVIDÊNCIA)",
+      "empenhado": 11247339.99,
+      "pago": 11247339.99,
+      "empenhos": 26
+    },
+    {
+      "credor": "INSTITUTO PREVID.DO MUNIC.DE DIVINOLANDIA",
+      "empenhado": 5779381.51,
+      "pago": 4061107.24,
+      "empenhos": 327
+    },
+    {
+      "credor": "VEROCHEQUE REFEIÇOES LTDA",
+      "empenhado": 4843426.54,
+      "pago": 3830545.09,
+      "empenhos": 19
+    },
+    {
+      "credor": "CONDERG-CONS.DES.R.GOV.S.J.B.V.-",
+      "empenhado": 3291457.49,
+      "pago": 3291457.49,
+      "empenhos": 18
+    },
+    {
+      "credor": "SAO PAULO TRIBUNAL DE JUSTICA",
+      "empenhado": 2415362.89,
+      "pago": 2415362.89,
+      "empenhos": 11
+    },
+    {
+      "credor": "LINK CARD ADMINISTRADORA DE BENEFICIOS EIRELI",
+      "empenhado": 2016665.54,
+      "pago": 1598882.56,
+      "empenhos": 32
+    },
+    {
+      "credor": "INSTITUTO NACIONAL DO SEGURO SOCIAL",
+      "empenhado": 1079692.26,
+      "pago": 972104.62,
+      "empenhos": 168
+    },
+    {
+      "credor": "FOLHA DE PAGTO C.M. DIVINOLÂNDIA",
+      "empenhado": 883764.59,
+      "pago": 883764.59,
+      "empenhos": 46
+    },
+    {
+      "credor": "LIUGONG LATIN AMERICA MAQUINAS PARA CONSTRUÇÃO PE",
+      "empenhado": 851500,
+      "pago": 851500,
+      "empenhos": 2
+    },
+    {
+      "credor": "GOVERNANÇABRASIL S/A TECNOLOGIA E GESTÃO EM SERVIÇ",
+      "empenhado": 660464.32,
+      "pago": 370583.83,
+      "empenhos": 8
+    },
+    {
+      "credor": "MINISTERIO DA FAZENDA - Secr. Rec. Federal Brasil",
+      "empenhado": 465486.48,
+      "pago": 465486.48,
+      "empenhos": 4
+    },
+    {
+      "credor": "CAIQUE TRANSPORTES LTDA",
+      "empenhado": 394082.1,
+      "pago": 377779.36,
+      "empenhos": 7
+    },
+    {
+      "credor": "LUCIANE DE ALMEIDA FAGUNDES ME",
+      "empenhado": 372079.41,
+      "pago": 355629.11,
+      "empenhos": 5
+    },
+    {
+      "credor": "VP ENGENHARIA E CONSTRUCOES LTDA ME",
+      "empenhado": 363732.42,
+      "pago": 31243.9,
+      "empenhos": 2
+    },
+    {
+      "credor": "REALIZZE CONSTRUÇÕES E ARQUITETURA LTDA",
+      "empenhado": 352217.67,
+      "pago": 186144.22,
+      "empenhos": 3
+    },
+    {
+      "credor": "TRANSER CENTRO DE GERENCIAMENTO DE RESIDUOS LTDA M",
+      "empenhado": 351325,
+      "pago": 28250,
+      "empenhos": 6
+    },
+    {
+      "credor": "CONSTRUTORA DIVINOLANDENSE LTDA",
+      "empenhado": 317760.01,
+      "pago": 234858.88,
+      "empenhos": 7
+    },
+    {
+      "credor": "TRANSPORTE ESCOLAR GRESPAN LTDA ME",
+      "empenhado": 302605.54,
+      "pago": 291187.71,
+      "empenhos": 3
+    },
+    {
+      "credor": "GENTE SEGURADORA S/A",
+      "empenhado": 302391.19,
+      "pago": 275743.07,
+      "empenhos": 47
+    },
+    {
+      "credor": "BANCO DO BRASIL SA",
+      "empenhado": 294408.24,
+      "pago": 294408.24,
+      "empenhos": 149
+    },
+    {
+      "credor": "CPFL ENERGIA",
+      "empenhado": 267660.43,
+      "pago": 267660.43,
+      "empenhos": 26
+    },
+    {
+      "credor": "ALEXANDRE TURQUETTI LOPES ME",
+      "empenhado": 252792.94,
+      "pago": 169306.94,
+      "empenhos": 10
+    },
+    {
+      "credor": "ELISANDRO TADEU BATISTA",
+      "empenhado": 237106.75,
+      "pago": 187107,
+      "empenhos": 9
+    },
+    {
+      "credor": "JEAN &amp; SERGIO TRANSPORTE ESCOLAR LTDA-ME",
+      "empenhado": 226743.32,
+      "pago": 218561.86,
+      "empenhos": 2
+    }
+  ],
+  "por_mes": [
+    {
+      "mes": "JAN",
+      "empenhado": 12559970.23,
+      "pago": 2628527.08
+    },
+    {
+      "mes": "FEV",
+      "empenhado": 6919227.83,
+      "pago": 7166146.23
+    },
+    {
+      "mes": "MAR",
+      "empenhado": 7237827.16,
+      "pago": 4530435.5
+    },
+    {
+      "mes": "ABR",
+      "empenhado": 5137451.42,
+      "pago": 6553620.36
+    },
+    {
+      "mes": "MAI",
+      "empenhado": 5339800.66,
+      "pago": 6011079.85
+    },
+    {
+      "mes": "JUN",
+      "empenhado": 5378719.7,
+      "pago": 6112043.87
+    },
+    {
+      "mes": "JUL",
+      "empenhado": 5046977.65,
+      "pago": 6088360.22
+    },
+    {
+      "mes": "AGO",
+      "empenhado": 6501834.26,
+      "pago": 5893566.8
+    },
+    {
+      "mes": "SET",
+      "empenhado": 5700584.55,
+      "pago": 5532292.55
+    },
+    {
+      "mes": "OUT",
+      "empenhado": 4247837.09,
+      "pago": 5755703.24
+    },
+    {
+      "mes": "NOV",
+      "empenhado": 2132010.97,
+      "pago": 4810913.81
+    },
+    {
+      "mes": "DEZ",
+      "empenhado": 11609469.95,
+      "pago": 9323362.32
+    }
+  ]
+}

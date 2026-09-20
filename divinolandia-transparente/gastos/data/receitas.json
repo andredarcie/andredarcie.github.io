@@ -1,0 +1,320 @@
+{
+  "ano": "2025",
+  "por_tipo": [
+    {
+      "tipo": "IPTU",
+      "valor": 2675299.04
+    },
+    {
+      "tipo": "ISS",
+      "valor": 1900783.01
+    },
+    {
+      "tipo": "ITBI",
+      "valor": 748072.18
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "valor": 253635.98
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "valor": 102207.39
+    },
+    {
+      "tipo": "Outros Tributos",
+      "valor": 79480.4
+    },
+    {
+      "tipo": "Não Tributária",
+      "valor": 66557.3
+    }
+  ],
+  "por_mes": [
+    {
+      "mes": "JANEIRO",
+      "valor": 3131015.17
+    },
+    {
+      "mes": "FEVEREIRO",
+      "valor": 249575.29
+    },
+    {
+      "mes": "MARCO",
+      "valor": 230567.36
+    },
+    {
+      "mes": "ABRIL",
+      "valor": 298616.13
+    },
+    {
+      "mes": "MAIO",
+      "valor": 200343.23
+    },
+    {
+      "mes": "JUNHO",
+      "valor": 197278.84
+    },
+    {
+      "mes": "JULHO",
+      "valor": 224895.5
+    },
+    {
+      "mes": "AGOSTO",
+      "valor": 234022.15
+    },
+    {
+      "mes": "SETEMBRO",
+      "valor": 305414.85
+    },
+    {
+      "mes": "OUTUBRO",
+      "valor": 235237.21
+    },
+    {
+      "mes": "NOVEMBRO",
+      "valor": 246778.78
+    },
+    {
+      "mes": "DEZEMBRO",
+      "valor": 272290.79
+    }
+  ],
+  "por_tributo": [
+    {
+      "tipo": "IPTU",
+      "tributo": "Imposto Predial",
+      "valor": 1568723.33
+    },
+    {
+      "tipo": "IPTU",
+      "tributo": "Imposto Territorial",
+      "valor": 1106575.71
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "SIMPLES NACIONAL",
+      "valor": 1039134.92
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "ISS Variavel",
+      "valor": 485757.73
+    },
+    {
+      "tipo": "ITBI",
+      "tributo": "Imp. Transmissão Bens Imóveis",
+      "valor": 406724.83
+    },
+    {
+      "tipo": "ITBI",
+      "tributo": "ITBI RURAL",
+      "valor": 341347.35
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "ISSQN RETIDO",
+      "valor": 320440.87
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "Taxa Licença de Funcionamento",
+      "valor": 214007.89
+    },
+    {
+      "tipo": "Outros Tributos",
+      "tributo": "Imposto de Renda Retido Fonte",
+      "valor": 79480.4
+    },
+    {
+      "tipo": "Não Tributária",
+      "tributo": "Taxa de Aluguel",
+      "valor": 44538.72
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "MEI - Microempreendedor Indivi",
+      "valor": 27536.85
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "ISS VARIÁVEL",
+      "valor": 27164.04
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Alvará de Licença",
+      "valor": 19147.6
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Concessão de Terreno Cem. Muni",
+      "valor": 15443.67
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "Tx Renov. VISA",
+      "valor": 14816.04
+    },
+    {
+      "tipo": "Não Tributária",
+      "tributo": "Multa",
+      "valor": 14808.0
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Confecçção de Tumulo",
+      "valor": 11603.13
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Sepultamento/Inumação",
+      "valor": 10947.67
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "Tx Fiscaliz VISA",
+      "valor": 9013.24
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Certidão",
+      "valor": 6942.69
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Expediente",
+      "valor": 6917.26
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "EXUMAÇÃO",
+      "valor": 5432.05
+    },
+    {
+      "tipo": "Não Tributária",
+      "tributo": "Taxa Ocupação Espaço",
+      "valor": 5284.04
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Retificação de Área",
+      "valor": 5182.8
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "Taxa de Localização art 59 CTM",
+      "valor": 4340.7
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Habite-se",
+      "valor": 4191.25
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "Taxa Licença Ambulante",
+      "valor": 3366.0
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Autorização de Obras Cemitério",
+      "valor": 3259.23
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Motoniveladora",
+      "valor": 3200.0
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "VISA RT Inicial",
+      "valor": 2850.54
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "TX ALTERACAO CADASTRAL",
+      "valor": 2822.43
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Aprovação de Projetos",
+      "valor": 2537.45
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Caminhão Pipa",
+      "valor": 2500.0
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "ENCERRAMENTO ATIVIDADE",
+      "valor": 1830.66
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Numerção Predial",
+      "valor": 1576.96
+    },
+    {
+      "tipo": "Não Tributária",
+      "tributo": "Preço de Embarque",
+      "valor": 1277.95
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "VISA Equip Renov",
+      "valor": 1140.16
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "TRANSLADO",
+      "valor": 668.55
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "Taxa NFSE Avulsa",
+      "valor": 658.6
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "TAXA LICENCA AMBULANTE",
+      "valor": 647.79
+    },
+    {
+      "tipo": "Taxas de Poder de Polícia",
+      "tributo": "VISA RT Subst",
+      "valor": 631.19
+    },
+    {
+      "tipo": "Não Tributária",
+      "tributo": "Honorario",
+      "valor": 568.59
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Autorização de Obras",
+      "valor": 501.42
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Pá Carregadeira",
+      "valor": 175.0
+    },
+    {
+      "tipo": "Taxa de Serviços",
+      "tributo": "Retroescavadeira",
+      "valor": 150.0
+    },
+    {
+      "tipo": "ISS",
+      "tributo": "I.S.S.Q.N.",
+      "valor": 90.0
+    },
+    {
+      "tipo": "Não Tributária",
+      "tributo": "Restituição",
+      "valor": 80.0
+    }
+  ]
+}
