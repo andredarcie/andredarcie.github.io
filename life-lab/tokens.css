@@ -1,0 +1,31 @@
+/* Hallmark · genre: editorial · macrostructure: Map / Diagram · theme: Garden · tone: caderno de campo · anchor hue: leaf green */
+:root {
+  --color-paper: oklch(97% 0.012 95);
+  --color-field: oklch(95% 0.019 104);
+  --color-panel: oklch(98.5% 0.009 95);
+  --color-ink: oklch(26% 0.026 150);
+  --color-muted: oklch(48% 0.025 145);
+  --color-line: oklch(82% 0.026 112);
+  --color-grid: oklch(63% 0.032 135);
+  --color-grass: oklch(52% 0.126 145);
+  --color-grass-light: oklch(66% 0.12 133);
+  --color-water: oklch(59% 0.117 225);
+  --color-water-light: oklch(79% 0.07 220);
+  --color-life: oklch(61% 0.15 25);
+  --color-eye: oklch(99% 0.006 95);
+  --color-coral: oklch(69% 0.15 30);
+  --color-cyan: oklch(72% 0.1 202);
+  --color-yellow: oklch(80% 0.13 90);
+  --color-lilac: oklch(72% 0.09 302);
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --text-label: 11px;
+  --text-helper: 12px;
+  --text-number: 30px;
+  --radius-panel: 12px;
+  --radius-pill: 999px;
+}

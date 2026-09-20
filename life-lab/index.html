@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Life Lab — arena de formas vivas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    /* Hallmark · genre: editorial · macrostructure: Map / Diagram · theme: Garden · tone: caderno de campo · anchor hue: leaf green · pre-emit critique: P5 H4 E4 S5 R5 V4 */
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; overflow-x: clip; }
+    body { background: var(--color-field); color: var(--color-ink); font-family: var(--font-body); }
+    .shell, main { min-height: 100dvh; }
+    .arena-wrap { position: fixed; inset: 0; background: var(--color-field); }
+    canvas { display: block; width: 100%; height: 100dvh; background: var(--color-field); cursor: crosshair; }
+    aside {
+      position: fixed;
+      z-index: 2;
+      top: max(var(--space-md), env(safe-area-inset-top));
+      right: max(var(--space-md), env(safe-area-inset-right));
+      width: 226px;
+      padding: var(--space-md);
+      background: var(--color-panel);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-panel);
+      box-shadow: 0 4px 18px color-mix(in oklch, var(--color-ink) 9%, transparent);
+    }
+    .section-label { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); margin-bottom: var(--space-sm); font-size: var(--text-label); font-weight: 600; letter-spacing: .06em; }
+    .live { display: inline-flex; align-items: center; gap: 5px; color: var(--color-muted); font-size: var(--text-label); font-weight: 400; letter-spacing: 0; white-space: nowrap; }
+    .live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--color-grass); }
+    .readout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--color-line); }
+    .stat { min-width: 0; padding-block: var(--space-sm); }
+    .stat:nth-child(odd) { padding-right: var(--space-sm); border-right: 1px solid var(--color-line); }
+    .stat:nth-child(even) { padding-left: var(--space-sm); }
+    .stat:nth-child(-n + 2) { border-bottom: 1px solid var(--color-line); }
+    .stat:nth-last-child(-n + 2) { padding-bottom: 0; }
+    .stat b { display: block; font-family: var(--font-display); font-size: var(--text-number); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .stat small { display: block; margin-top: 2px; color: var(--color-muted); font-size: var(--text-label); line-height: 1.3; }
+    .arena-meta {
+      position: fixed;
+      z-index: 2;
+      left: max(var(--space-md), env(safe-area-inset-left));
+      bottom: max(var(--space-md), env(safe-area-inset-bottom));
+      max-width: calc(100% - var(--space-lg));
+      margin: 0;
+      padding: var(--space-xs) var(--space-sm);
+      background: var(--color-panel);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-pill);
+      color: var(--color-muted);
+      font-size: var(--text-helper);
+      line-height: 1.3;
+      pointer-events: none;
+    }
+    @media (max-width: 540px) {
+      aside { width: 198px; padding: var(--space-sm); }
+      .stat b { font-size: 25px; }
+      .arena-meta { font-size: var(--text-label); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <main>
+      <section class="arena-wrap" aria-label="Campo de observação">
+        <canvas id="arena" aria-label="Arena com pequenos seres, capim e poças de água"></canvas>
+      </section>
+      <aside aria-label="Estado da arena">
+        <div class="section-label"><span>Life Lab</span><span class="live">ao vivo</span></div>
+        <div class="readout">
+          <div class="stat"><b id="count">12</b><small>bichos</small></div>
+          <div class="stat"><b id="grass-count">24</b><small>capim</small></div>
+          <div class="stat"><b id="pond-count">5</b><small>poças</small></div>
+          <div class="stat"><b id="clock">00:00</b><small>tempo</small></div>
+        </div>
+      </aside>
+      <p class="arena-meta">Toque no campo para criar uma vida</p>
+    </main>
+  </div>
+  <script>
+    const canvas = document.querySelector('#arena');
+    const ctx = canvas.getContext('2d');
+    const styles = getComputedStyle(document.documentElement);
+    const color = name => styles.getPropertyValue(`--color-${name}`).trim();
+    const paint = {
+      ink: color('ink'), panel: color('panel'), field: color('field'), grid: color('grid'),
+      grass: color('grass'), grassLight: color('grass-light'),
+      water: color('water'), waterLight: color('water-light'),
+      life: color('life'), eye: color('eye')
+    };
+    const palette = [color('coral'), color('cyan'), color('yellow'), color('lilac')];
+    const bodyFont = styles.getPropertyValue('--font-body').trim();
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const LIFE_SIZE = 10;
+    const VISION = 105;
+    const WALK_SPEED = 34;
+    const RUN_SPEED = 84;
+    const ACCELERATION = 145;
+    const BRAKING = 190;
+    const DRINK_RATE = 32;
+    let organisms = [], grass = [], grassRegrow = [], ponds = [], encounters = 0, elapsed = 0;
+
+    function resize() {
+      const r = canvas.getBoundingClientRect(), d = devicePixelRatio || 1;
+      canvas.width = r.width * d;
+      canvas.height = r.height * d;
+      ctx.setTransform(d, 0, 0, d, 0, 0);
+    }
+
+    function spot(type) {
+      return {
+        x: 26 + Math.random() * Math.max(0, canvas.clientWidth - 52),
+        y: 26 + Math.random() * Math.max(0, canvas.clientHeight - 52),
+        type,
+        lean: (Math.random() - .5) * 2,
+        size: 5 + Math.random() * 3
+      };
+    }
+
+    function make(x = Math.random() * canvas.clientWidth, y = Math.random() * canvas.clientHeight) {
+      const i = organisms.length, heading = Math.random() * Math.PI * 2;
+      return {
+        x, y, vx: 0, vy: 0, speed: 0, heading, wanderHeading: heading,
+        walkTimer: .6 + Math.random() * 1.8, restTimer: 0, gait: Math.random() * 6,
+        wanderPhase: Math.random() * Math.PI * 2, pace: .85 + Math.random() * .3,
+        size: LIFE_SIZE, color: palette[i % 4],
+        life: 100, hunger: 72 + Math.random() * 28, thirst: 72 + Math.random() * 28,
+        need: null, target: null, thought: 0, message: '', eating: 0, drinking: 0, drinkingPond: null
+      };
+    }
+
+    for (let i = 0; i < 12; i++) organisms.push(make());
+    for (let i = 0; i < 24; i++) grass.push(spot('grass'));
+    for (let i = 0; i < 5; i++) {
+      const radius = 22 + Math.random() * 14;
+      const capacity = 130 + Math.random() * 40;
+      ponds.push({
+        x: 35 + Math.random() * Math.max(0, canvas.clientWidth - 70),
+        y: 35 + Math.random() * Math.max(0, canvas.clientHeight - 70),
+        r: radius, fullRadius: radius, water: capacity, capacity
+      });
+    }
+
+    function nearest(o, items) {
+      let best = null, distance = VISION;
+      for (const item of items) {
+        const next = Math.hypot(item.x - o.x, item.y - o.y) - (item.r || 0);
+        if (next < distance) { best = item; distance = next; }
+      }
+      return best;
+    }
+
+    function drawBar(x, y, width, value, color) {
+      ctx.save();
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = paint.ink;
+      ctx.globalAlpha = .18;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + width, y); ctx.stroke();
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.lineTo(x + width * Math.max(0, Math.min(100, value)) / 100, y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw(o) {
+      ctx.save();
+      ctx.globalAlpha = .024;
+      ctx.fillStyle = o.color;
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, VISION, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = .13;
+      ctx.strokeStyle = o.color;
+      ctx.lineWidth = .7;
+      ctx.stroke();
+      ctx.restore();
+
+      if (o.thought > 0) {
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, o.thought * 3);
+        ctx.fillStyle = paint.panel;
+        ctx.strokeStyle = paint.ink;
+        ctx.lineWidth = .8;
+        ctx.beginPath();
+        ctx.roundRect(o.x + 11, o.y - 42, 66, 19, 5);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = paint.ink;
+        ctx.font = `500 10px ${bodyFont}`;
+        ctx.fillText(o.message, o.x + 16, o.y - 29);
+        ctx.beginPath();
+        ctx.arc(o.x + 10, o.y - 20, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      const moving = o.speed > 4;
+      const stride = Math.min(1.25, o.speed / WALK_SPEED);
+      const step = moving ? Math.sin(o.gait) * stride : 0;
+      const bob = moving && !reducedMotion.matches ? (1 - Math.cos(o.gait * 2)) * .7 * Math.min(1.25, o.speed / 42) : 0;
+      const sway = moving && !reducedMotion.matches ? Math.sin(o.gait) * Math.min(1.2, o.speed / 45) : 0;
+      const feeding = o.eating > 0 || o.drinking > 0;
+      const feedingTime = o.eating > 0 ? o.eating : o.drinking;
+      const feedingPulse = feeding && !reducedMotion.matches ? Math.sin(feedingTime * 20) : 0;
+      if (o.drinking > 0 && !reducedMotion.matches) {
+        const ripple = elapsed * 2.8 % 1;
+        ctx.save();
+        ctx.globalAlpha = (1 - ripple) * .55;
+        ctx.strokeStyle = paint.water;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(o.x + Math.cos(o.heading) * 9, o.y + Math.sin(o.heading) * 9, 3 + ripple * 9, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+      const bodyY = o.y - bob + (feeding ? feedingPulse * 1.2 : 0);
+      const bodyX = o.x + sway;
+      ctx.save();
+      ctx.strokeStyle = paint.ink;
+      ctx.lineWidth = 1.6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(bodyX - 4, bodyY + 5);
+      ctx.quadraticCurveTo(bodyX - 7, bodyY + 10, o.x - 5 + step * 2, bodyY + 15 - Math.max(0, step) * 3);
+      ctx.moveTo(bodyX + 4, bodyY + 5);
+      ctx.quadraticCurveTo(bodyX + 7, bodyY + 10, o.x + 5 - step * 2, bodyY + 15 - Math.max(0, -step) * 3);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(bodyX, bodyY);
+      ctx.strokeStyle = paint.ink;
+      ctx.lineWidth = 1.25;
+      ctx.fillStyle = o.color;
+      ctx.beginPath();
+      ctx.arc(0, 0, o.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.save();
+      ctx.clip();
+      ctx.globalAlpha = .29;
+      ctx.fillStyle = paint.eye;
+      ctx.beginPath();
+      ctx.ellipse(-3.8, -5.5, 4.2, 2.8, -.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = .16;
+      ctx.fillStyle = paint.ink;
+      ctx.beginPath();
+      ctx.ellipse(5, 7, 7, 4, -.35, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.fillStyle = paint.eye;
+      ctx.beginPath();
+      ctx.ellipse(-3.2, -2.3, 2.1, 2.5, 0, 0, Math.PI * 2);
+      ctx.ellipse(3.2, -2.3, 2.1, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = paint.ink;
+      const lookX = Math.cos(o.heading) * .7;
+      const lookY = Math.sin(o.heading) * .7;
+      ctx.beginPath();
+      ctx.arc(-3.2 + lookX, -2.3 + lookY, 1.05, 0, Math.PI * 2);
+      ctx.arc(3.2 + lookX, -2.3 + lookY, 1.05, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      const bx = o.x - 11;
+      drawBar(bx, o.y - 26, 22, o.life, paint.life);
+      drawBar(bx, o.y - 22, 22, o.hunger, paint.grass);
+      drawBar(bx, o.y - 18, 22, o.thirst, paint.water);
+    }
+
+    function puddlePath(p, radius) {
+      ctx.beginPath();
+      for (let i = 0; i <= 36; i++) {
+        const angle = i * Math.PI * 2 / 36;
+        const edge = 1 + Math.sin(angle * 3 + p.x * .03) * .07 + Math.sin(angle * 5 + p.y * .02) * .04;
+        const x = p.x + Math.cos(angle) * radius * edge;
+        const y = p.y + Math.sin(angle) * radius * edge * .93;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+    }
+
+    function drawWorld() {
+      for (const g of grass) {
+        ctx.save();
+        ctx.translate(g.x, g.y);
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 1.4;
+        ctx.strokeStyle = paint.grass;
+        ctx.beginPath();
+        ctx.moveTo(0, 3); ctx.quadraticCurveTo(-3, 0, -4 + g.lean, -g.size + 1);
+        ctx.moveTo(0, 3); ctx.quadraticCurveTo(3, -1, 4 + g.lean, -g.size + 2);
+        ctx.stroke();
+        ctx.strokeStyle = paint.grassLight;
+        ctx.beginPath();
+        ctx.moveTo(0, 3); ctx.quadraticCurveTo(g.lean, -2, g.lean, -g.size - 1);
+        ctx.stroke();
+        ctx.restore();
+      }
+      for (const p of ponds) {
+        ctx.save();
+        ctx.fillStyle = paint.water;
+        ctx.globalAlpha = .08;
+        puddlePath(p, p.fullRadius + 3);
+        ctx.fill();
+        ctx.globalAlpha = .5;
+        ctx.fillStyle = paint.waterLight;
+        puddlePath(p, p.r);
+        ctx.fill();
+        ctx.strokeStyle = paint.water;
+        ctx.globalAlpha = .8;
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+        ctx.fillStyle = paint.eye;
+        ctx.globalAlpha = .56;
+        ctx.beginPath();
+        ctx.ellipse(p.x - p.r * .24, p.y - p.r * .2, p.r * .2, Math.max(1, p.r * .045), -.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function move(o, dt, direction, desiredSpeed) {
+      if (desiredSpeed > 0) {
+        let avoidX = 0, avoidY = 0;
+        for (const other of organisms) {
+          if (other === o) continue;
+          const dx = o.x - other.x, dy = o.y - other.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance > 0 && distance < 28) {
+            const strength = (28 - distance) / 28;
+            avoidX += dx / distance * strength;
+            avoidY += dy / distance * strength;
+          }
+        }
+        direction = Math.atan2(
+          Math.sin(direction) + avoidY * .7,
+          Math.cos(direction) + avoidX * .7
+        );
+        const angle = Math.atan2(Math.sin(direction - o.heading), Math.cos(direction - o.heading));
+        const turn = (desiredSpeed > WALK_SPEED ? 4.6 : 3.1) * dt;
+        o.heading += Math.max(-turn, Math.min(turn, angle));
+        desiredSpeed *= Math.max(.28, 1 - Math.abs(angle) / Math.PI);
+      }
+
+      const change = (desiredSpeed > o.speed ? ACCELERATION : BRAKING) * dt;
+      o.speed += Math.max(-change, Math.min(change, desiredSpeed - o.speed));
+      o.vx = Math.cos(o.heading) * o.speed;
+      o.vy = Math.sin(o.heading) * o.speed;
+      o.x += o.vx * dt;
+      o.y += o.vy * dt;
+      o.gait += o.speed * dt * .17;
+
+      const x = Math.max(o.size, Math.min(canvas.clientWidth - o.size, o.x));
+      const y = Math.max(o.size, Math.min(canvas.clientHeight - o.size, o.y));
+      if (x !== o.x || y !== o.y) {
+        o.x = x; o.y = y; o.speed = 0;
+        o.wanderHeading = Math.atan2(canvas.clientHeight / 2 - o.y, canvas.clientWidth / 2 - o.x);
+      }
+    }
+
+    function update(dt) {
+      elapsed += dt;
+      for (const o of organisms) {
+        o.hunger = Math.max(0, o.hunger - dt * 1.15);
+        o.thirst = Math.max(0, o.thirst - dt * 1.45);
+        o.thought = Math.max(0, o.thought - dt);
+        if (o.hunger === 0 || o.thirst === 0) o.life -= dt * 5;
+
+        if (o.eating > 0 || o.drinking > 0) {
+          if (o.eating > 0) {
+            o.eating -= dt;
+            if (o.eating <= 0) o.hunger = Math.min(100, o.hunger + 42);
+          } else {
+            const pond = o.drinkingPond;
+            if (!pond || !ponds.includes(pond) || pond.water <= 0) {
+              o.drinking = 0;
+              o.drinkingPond = null;
+            } else {
+              const amount = Math.min(pond.water, DRINK_RATE * dt, (100 - o.thirst) / 1.2);
+              pond.water -= amount;
+              pond.r = pond.fullRadius * Math.sqrt(pond.water / pond.capacity);
+              o.thirst = Math.min(100, o.thirst + amount * 1.2);
+              o.drinking = Math.max(0, o.drinking - dt);
+              if (pond.water <= 1) {
+                ponds = ponds.filter(p => p !== pond);
+                o.drinking = 0;
+              }
+              if (o.drinking === 0) o.drinkingPond = null;
+            }
+          }
+          o.speed = 0; o.vx = 0; o.vy = 0;
+          continue;
+        }
+
+        const need = Math.min(o.hunger, o.thirst) < 68
+          ? (o.hunger <= o.thirst ? 'food' : 'water') : null;
+        if (need !== o.need) { o.need = need; o.target = null; }
+        if (o.target && !(need === 'food' ? grass : ponds).includes(o.target)) o.target = null;
+        if (need && !o.target) {
+          o.target = nearest(o, need === 'food' ? grass : ponds);
+          if (o.target) {
+            o.message = need === 'food' ? 'vi comida' : 'vi água';
+            o.thought = 1.4;
+          }
+        }
+
+        let direction = o.wanderHeading, desiredSpeed = 0;
+        if (o.target) {
+          const distance = Math.hypot(o.target.x - o.x, o.target.y - o.y);
+          const arrival = need === 'food' ? 12 : o.target.r + 5;
+          if (distance <= arrival) {
+            if (need === 'food') {
+              grass = grass.filter(g => g !== o.target);
+              grassRegrow.push(8 + Math.random() * 12);
+              o.eating = 1.15; o.message = 'nham nham';
+            } else {
+              o.drinking = 1.15; o.drinkingPond = o.target; o.message = 'glu glu';
+            }
+            o.thought = 1.15; o.target = null;
+            o.speed = 0; o.vx = 0; o.vy = 0;
+            continue;
+          }
+          direction = Math.atan2(o.target.y - o.y, o.target.x - o.x);
+          desiredSpeed = Math.min(RUN_SPEED * o.pace, Math.sqrt(2 * BRAKING * (distance - arrival)));
+          o.restTimer = 0;
+        } else {
+          if (o.restTimer > 0) {
+            o.restTimer -= dt;
+          } else {
+            o.walkTimer -= dt;
+            if (o.walkTimer <= 0) {
+              o.restTimer = .25 + Math.random() * .8;
+              o.walkTimer = 1.1 + Math.random() * 2.1;
+              o.wanderHeading += (Math.random() - .5) * 1.6;
+            } else {
+              o.wanderHeading += Math.sin(elapsed * .75 + o.wanderPhase) * .48 * dt;
+              direction = o.wanderHeading;
+              desiredSpeed = WALK_SPEED * o.pace * (.82 + .18 * Math.sin(elapsed * 1.3 + o.wanderPhase));
+            }
+          }
+          const margin = 35;
+          const inwardX = o.x < margin ? margin - o.x : o.x > canvas.clientWidth - margin ? canvas.clientWidth - margin - o.x : 0;
+          const inwardY = o.y < margin ? margin - o.y : o.y > canvas.clientHeight - margin ? canvas.clientHeight - margin - o.y : 0;
+          if (inwardX || inwardY) {
+            direction = Math.atan2(Math.sin(direction) + inwardY / margin * 2, Math.cos(direction) + inwardX / margin * 2);
+            o.wanderHeading = direction;
+            if (o.restTimer <= 0) desiredSpeed = Math.max(desiredSpeed, WALK_SPEED * .7);
+          }
+        }
+        move(o, dt, direction, desiredSpeed);
+      }
+
+      organisms = organisms.filter(o => o.life > 0);
+      for (let i = 0; i < organisms.length; i++) {
+        for (let j = i + 1; j < organisms.length; j++) {
+          if (Math.hypot(organisms[i].x - organisms[j].x, organisms[i].y - organisms[j].y) < 18 && Math.random() < dt * .12) encounters++;
+        }
+      }
+      for (let i = grassRegrow.length - 1; i >= 0; i--) {
+        grassRegrow[i] -= dt;
+        if (grassRegrow[i] <= 0) {
+          grass.push(spot('grass'));
+          grassRegrow.splice(i, 1);
+        }
+      }
+    }
+
+    function render() {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = paint.field;
+      ctx.fillRect(0, 0, w, h);
+      ctx.save();
+      ctx.fillStyle = paint.grid;
+      ctx.globalAlpha = .14;
+      for (let x = 18; x < w; x += 32) {
+        for (let y = 18; y < h; y += 32) ctx.fillRect(x, y, 1.2, 1.2);
+      }
+      ctx.restore();
+      drawWorld();
+      organisms.forEach(draw);
+      document.querySelector('#count').textContent = organisms.length;
+      document.querySelector('#grass-count').textContent = grass.length;
+      document.querySelector('#pond-count').textContent = ponds.length;
+      document.querySelector('#clock').textContent = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(Math.floor(elapsed % 60)).padStart(2, '0');
+    }
+
+    canvas.addEventListener('click', e => {
+      const r = canvas.getBoundingClientRect();
+      organisms.push(make(e.clientX - r.left, e.clientY - r.top));
+    });
+    window.addEventListener('resize', () => { resize(); render(); });
+    window.render_game_to_text = () => JSON.stringify({
+      coordinateSystem: 'origin top-left; x right, y down',
+      organisms: organisms.map(o => ({
+        x: Math.round(o.x), y: Math.round(o.y),
+        speed: Math.round(o.speed), need: o.need, target: Boolean(o.target),
+        life: Math.round(o.life), hunger: Math.round(o.hunger), thirst: Math.round(o.thirst)
+      })),
+      grass: grass.length, grassRegrowing: grassRegrow.length,
+      ponds: ponds.length, waterRemaining: ponds.map(p => Math.round(p.water)),
+      encounters, elapsed: Math.round(elapsed)
+    });
+    window.advanceTime = ms => {
+      for (let i = 0; i < Math.max(1, Math.round(ms / 16.67)); i++) update(1 / 60);
+      render();
+    };
+    resize(); render();
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(.05, (now - last) / 1000);
+      last = now; update(dt); render(); requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
