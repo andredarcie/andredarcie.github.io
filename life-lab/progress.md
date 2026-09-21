@@ -8,3 +8,57 @@ Original prompt: Crie um site web simples que é uma arena 2d de pequens formas 
 - Adicionados tamanho uniforme, barras de vida/fome/sede, capim, poças de água, consumo, morte por necessidades zeradas e busca por recurso dentro do campo de visão.
 - Adicionada percepção de comida com balão “vi comida”, corrida até o capim e animação “nham nham” durante a alimentação.
 - Movimento refatorado com aceleração, inércia, velocidade máxima, passeio sinuoso, curvas orgânicas e quique suave nas bordas.
+- Adicionado custo energético quadrático pela velocidade efetiva, com impacto maior sobre sede do que sobre fome.
+- Criado profiler determinístico em `scripts/profile-simulation.cjs`, com série temporal, teste isolado de movimento, interações, capturas e coleta de erros.
+- O perfil inicial revelou extinção por baixa acessibilidade a recursos e gargalo reprodutivo em população pequena.
+- Ajustados busca antecipada de recursos, varredura ativa, percepção emergencial, chuva hidratante, alcance para parceiros e balanceamento sexual dos filhotes.
+- Capim passou a escalar com a área da arena, entre 24 e 64 unidades, com densidade calibrada para capacidade de suporte visualmente administrável.
+- Perfil final de 600 s: população inicial 12, pico 58, final 49, 238 nascimentos, 201 mortes inferidas e nenhum erro de console.
+- Validação adicional com cinco sementes de 600 s: nenhuma extinção, população final entre 40 e 52, pico entre 50 e 65 e zero erros de console em todas as execuções.
+- Artefatos e análise final registrados em `output/simulation-profile/`.
+- Adicionado custo energético não linear baseado em `alcance² × abertura` e economia moderada para visão menor.
+- Alcance e abertura agora competem: a abertura máxima cai de 155° para 125° entre os extremos de alcance.
+- Perfil visual isolado validou multiplicadores de 0,889× a 1,192×, com erro apenas de ponto flutuante.
+- Seis sementes de 600 s foram repetidas sem erros de console ou violações genéticas; a semente 404 apresentou extinção demográfica apenas no perfil estendido, aos 840 s.
+- HUD compactada para 184 px no desktop e 168 px no celular, com tipografia, espaçamento, sombra e botões menores.
+- Fundo da HUD e dica inferior tornados translúcidos com blur; desktop e viewport móvel de 390 × 844 validados sem erros.
+- HUD reduzida ao mínimo prático: 132 px no desktop e 124 px no celular, com 141/139 px de altura e todos os indicadores e controles preservados.
+- Relógio compactado separadamente para não cortar os algarismos; desktop e viewport móvel de 390 × 844 validados sem sobreposição ou erros de console.
+- Redesign visual Hallmark aplicado com macroestrutura Marquee Hero e tema Carnival / Aqua Park, preservando integralmente a lógica da simulação.
+- Campo, malha, visão, organismos, expressões, barras, vegetação, poças, chuva, HUD e diálogos receberam uma nova linguagem visual desenhada em Canvas/CSS.
+- HUD manteve 124 px no celular e 132 px no desktop; rótulos de ação foram encurtados sem perder os nomes acessíveis completos.
+- Responsividade validada em 320, 375, 414, 768 e 1280 px: sem rolagem horizontal, texto clicável quebrado, cortes de HUD ou erros de console.
+- Perfil determinístico pós-redesign de 60 s: 34 bichos, 22 nascimentos, 2 eventos de chuva, diálogos e criação por clique funcionando, sem regressões ou violações genéticas.
+- Contrastes WCAG medidos entre 7,94:1 e 16,52:1 nas combinações principais; revisão Hallmark concluída em 58/58 gates.
+- Reprodução deixou de gerar filhotes instantaneamente: o casal agora passa por aproximação, cortejo circular e acasalamento antes da concepção.
+- A fêmea permanece grávida por cerca de 9 s (ajustados pela fertilidade), com silhueta e barra de gestação progressivas; o nascimento só é contabilizado quando o filhote aparece.
+- Nascimento ganhou animação própria com expansão do recém-nascido, anéis e partículas; o estado textual e a ficha genética expõem o progresso da gestação.
+- Nos 1,2 s finais, a mãe entra em trabalho de parto, interrompe o movimento, pulsa suavemente e avisa “vai nascer” antes do filhote surgir.
+- Alteração não executada nem validada por IA, conforme a regra local do projeto; aguarda teste manual do usuário.
+- Indicador interno da gestação reposicionado abaixo da boca, preservando a expressão facial durante toda a gravidez.
+- Busca de parceiros agora respeita tanto o alcance quanto a abertura do cone de visão; removida a percepção reprodutiva de 3× fora do campo visual.
+- Estas duas correções também não foram executadas ou validadas por IA; aguardam teste visual e comportamental do usuário.
+- Barras dos organismos ganharam painel compacto de contraste e ícones semânticos: coração para vida, folha para alimento, gota para água e ovo para gestação.
+- Balões de pensamento foram afastados verticalmente para não encobrir os indicadores; alteração aguarda teste visual do usuário.
+- Removida a percepção emergencial de recursos em 3× o alcance; comida e água agora só são descobertas dentro do alcance e da abertura reais do cone de visão.
+- Alvos já vistos continuam sendo perseguidos como memória espacial; ajuste de visão ainda aguarda teste comportamental do usuário.
+- Busca sem recurso visível agora divide a arena em nove regiões: o bicho escolhe áreas distantes e menos examinadas, caminha até elas e varre o entorno com uma rotação completa do cone de visão.
+- Comida e água continuam dependendo estritamente da visão; a exploração apenas decide para onde caminhar, com rota levemente aleatória e memória separada das regiões já verificadas para cada necessidade.
+- `render_game_to_text` passou a expor destino, região e estado de varredura da exploração; comportamento aguarda teste manual do usuário.
+- Mundo dividido em três biomas com proporções relativas baseadas nos percentuais fornecidos: deserto/xerófitas, taiga e campos/savana.
+- Cada bioma ganhou solo, textura, rótulo e vegetação próprios; fronteiras são orgânicas e acompanham o redimensionamento da arena.
+- Recursos passaram a respeitar o habitat: deserto é mais escasso e recebe oásis raros, taiga favorece água e savana favorece alimento; a lógica de consumo permaneceu a mesma.
+- Estado textual agora informa o bioma de cada organismo e a distribuição atual de alimento e poças por bioma; implementação aguarda teste visual e comportamental do usuário.
+- Área do mundo rebalanceada para exatamente ⅓ de deserto, ⅓ de taiga e ⅓ de savana; percentuais terrestres originais continuam apenas como metadados informativos.
+- Ondulações das fronteiras passaram a usar ciclos completos de média zero, preservando a divisão igual mesmo com contornos orgânicos e em qualquer tamanho de tela.
+- Rótulos visuais dos três biomas agora exibem ⅓; ajuste aguarda teste visual do usuário.
+- Adicionado sistema social bilateral: encontros próximos acumulam afinidade e, após convivência suficiente, os dois bichos se tornam aliados.
+- Cada bicho pode manter até dois aliados; os vínculos duram enquanto ambos estiverem vivos e são removidos automaticamente após uma morte.
+- Aliados visíveis caminham em formação e podem seguir um companheiro que já encontrou o mesmo recurso, sem receber coordenadas ocultas nem ultrapassar as regras do campo de visão.
+- Alianças ganharam linha pontilhada e símbolo de elo discretos, aviso “aliado!”, contagem na ficha genética e dados próprios no estado textual.
+- Casais em cortejo ou acasalamento não formam amizade automaticamente; reprodução, gestação e necessidades continuam tendo prioridade sobre o comportamento social.
+- Sistema social inspecionado apenas no código e não executado nem validado por IA, conforme a regra local; aguarda teste manual do usuário.
+- Adicionado slider compacto de velocidade à HUD, com ajuste contínuo em passos de 0,25× entre 0,25× e 4× e indicação numérica do valor atual.
+- O multiplicador acelera ou desacelera toda a simulação, incluindo movimento, necessidades, reprodução, clima e relógio interno.
+- Velocidades altas são divididas em pequenos passos de atualização para preservar colisões e transições; o estado textual também expõe `simulationSpeed`.
+- Controle de velocidade inspecionado apenas no código e não executado nem validado por IA; aguarda teste manual do usuário.

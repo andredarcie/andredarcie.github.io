@@ -1,31 +1,91 @@
-/* Hallmark · genre: editorial · macrostructure: Map / Diagram · theme: Garden · tone: caderno de campo · anchor hue: leaf green */
+/* Hallmark · genre: editorial · macrostructure: Marquee Hero · theme: Carnival / Aqua Park · tone: laboratório naturalista vibrante · anchor hue: turquoise · pre-emit critique: P5 H5 E5 S5 R4 V5 */
 :root {
-  --color-paper: oklch(97% 0.012 95);
-  --color-field: oklch(95% 0.019 104);
-  --color-panel: oklch(98.5% 0.009 95);
-  --color-ink: oklch(26% 0.026 150);
-  --color-muted: oklch(48% 0.025 145);
-  --color-line: oklch(82% 0.026 112);
-  --color-grid: oklch(63% 0.032 135);
-  --color-grass: oklch(52% 0.126 145);
-  --color-grass-light: oklch(66% 0.12 133);
-  --color-water: oklch(59% 0.117 225);
-  --color-water-light: oklch(79% 0.07 220);
-  --color-life: oklch(61% 0.15 25);
-  --color-eye: oklch(99% 0.006 95);
-  --color-coral: oklch(69% 0.15 30);
-  --color-cyan: oklch(72% 0.1 202);
-  --color-yellow: oklch(80% 0.13 90);
-  --color-lilac: oklch(72% 0.09 302);
-  --font-display: "Fraunces", Georgia, serif;
+  --color-paper: oklch(94% 0.04 180);
+  --color-paper-2: oklch(90% 0.048 178);
+  --color-paper-3: oklch(84% 0.055 175);
+  --color-field: oklch(95.5% 0.032 176);
+  --color-field-edge: oklch(90.5% 0.046 181);
+  --color-desert: oklch(91% 0.075 86);
+  --color-desert-edge: oklch(83% 0.1 73);
+  --color-desert-mark: oklch(51% 0.105 66);
+  --color-taiga: oklch(84% 0.058 166);
+  --color-taiga-edge: oklch(75% 0.09 158);
+  --color-taiga-mark: oklch(34% 0.085 161);
+  --color-savanna: oklch(90% 0.082 106);
+  --color-savanna-edge: oklch(81% 0.105 112);
+  --color-savanna-mark: oklch(45% 0.115 124);
+  --color-panel: oklch(97.5% 0.024 178);
+  --color-panel-strong: oklch(98.5% 0.018 180);
+  --color-ink: oklch(20% 0.06 200);
+  --color-ink-2: oklch(32% 0.05 198);
+  --color-muted: oklch(43% 0.045 195);
+  --color-rule: oklch(36% 0.24 35);
+  --color-line: oklch(67% 0.055 187);
+  --color-grid: oklch(48% 0.07 193);
+  --color-accent: oklch(72% 0.16 195);
+  --color-accent-2: oklch(36% 0.24 35);
+  --color-accent-ink: oklch(20% 0.06 200);
+  --color-focus: oklch(36% 0.24 35);
+  --color-shadow: oklch(20% 0.06 200);
+  --color-grass: oklch(47% 0.145 145);
+  --color-grass-light: oklch(73% 0.16 130);
+  --color-water: oklch(58% 0.14 215);
+  --color-water-light: oklch(84% 0.075 205);
+  --color-life: oklch(61% 0.2 28);
+  --color-eye: oklch(98.5% 0.018 180);
+  --color-coral: oklch(67% 0.19 31);
+  --color-cyan: oklch(70% 0.14 210);
+  --color-yellow: oklch(82% 0.17 93);
+  --color-lilac: oklch(68% 0.14 300);
+  --color-chart-1: oklch(55% 0.2 30);
+  --color-chart-2: oklch(52% 0.15 235);
+  --color-chart-3: oklch(50% 0.15 145);
+  --color-chart-4: oklch(52% 0.17 300);
+  --color-chart-5: oklch(61% 0.17 80);
+  --color-chart-6: oklch(55% 0.18 350);
+  --color-chart-7: oklch(55% 0.13 190);
+  --color-chart-8: oklch(50% 0.12 115);
+  --color-chart-9: oklch(62% 0.2 45);
+  --color-chart-10: oklch(60% 0.14 220);
+  --color-chart-11: oklch(69% 0.17 95);
+  --color-chart-12: oklch(61% 0.13 315);
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
   --font-body: "IBM Plex Sans", sans-serif;
+
+  --space-3xs: 2px;
+  --space-2xs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
   --space-md: 16px;
   --space-lg: 24px;
-  --text-label: 11px;
-  --text-helper: 12px;
-  --text-number: 30px;
-  --radius-panel: 12px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-base: 16px;
+  --text-md: 20px;
+  --text-lg: 25px;
+  --text-xl: 31px;
+  --text-2xl: 39px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 100ms;
+  --dur-short: 180ms;
+  --dur-long: 360ms;
+
+  --radius-panel: 7px;
+  --radius-control: 4px;
   --radius-pill: 999px;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-tooltip: 600;
 }
