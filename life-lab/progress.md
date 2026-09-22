@@ -150,3 +150,25 @@ Original prompt: Crie um site web simples que é uma arena 2d de pequens formas 
 - Superfície respira devagar, mais forte durante a chuva, e para com prefers-reduced-motion.
 - Removido fullWaterCapacity, que virava obsoleto assim que o conjunto de poças mudava; a capacidade passou a ser calculada na hora.
 - render_game_to_text trocou rain.refilled, que deixou de existir, pela fração de enchimento.
+- Bichos passaram a nascer pelados, e pelado é na cor do próprio gene de pigmento — como era no 2D. Isso resolve um conflito: o torso colorido era o que tornava o gene de cor visível na arena, e é ele que a seção "cor" do modal de evolução acompanha; se a roupa tomasse esse lugar, o gene sumiria de vista.
+- Roupa cobre tronco e pernas; cabeça e braços continuam mostrando o corpo, então vestir um grupo não apaga a genética de ninguém.
+- Amizade veste o grupo: a cor é sorteada uma vez, quando o vínculo nasce, e vale para todo mundo ligado por amizade, direta ou por tabela — não só para o par que acabou de se conhecer.
+- Ao juntar dois bandos que já vestiam cores diferentes, a mais usada vence e o outro lado troca de roupa; sem isso o mesmo grupo ficaria com duas cores.
+- Oito tons de tecido, todos mais escuros e fechados que qualquer cor de corpo, para a roupa ler como roupa e para grupos vizinhos não se confundirem.
+- Quem perde os aliados continua vestido: camisa não some, e um sobrevivente andando com a cor do bando extinto conta uma história.
+- Cada bicho passou a ter dois materiais, corpo e roupa, com troca só quando o estado muda de fato; os dois são descartados quando o bicho sai.
+- Ficha genética ganhou linha de roupa, fora dos alelos e marcada como tal, já que roupa não é herança.
+- Removidos da paleta o tom de pele e o de calça, que deixaram de existir, e a sombra que já não era usada.
+- Aliança virou tribo, nome e código: allies→tribe, MAX_ALLIES→MAX_TRIBE_BONDS, formAlliance→joinTribe, drawAlliances→drawTribeLinks, e "aliado!" virou "tribo!".
+- Achada a razão de eles se separarem: a formação só valia com o companheiro dentro do campo de visão E com o bicho sem fome. Como o limiar de busca é 78, eles passavam quase todo o tempo com fome, exploravam sozinhos e, uma vez fora de vista, nunca mais se reencontravam.
+- Trocado por coesão de bando: cada tribo tem um centro recalculado a cada tique, e quem se afasta ganha uma puxada de volta misturada à direção que já tinha. Como é mistura e não modo, o bicho continua caçando comida e explorando, só que sem se soltar do grupo.
+- Criado o alcance do chamado (340), maior que a visão e independente do cone. Isso afrouxa de propósito a regra antiga de "nada fora do campo de visão": bicho de bando se acha por chamado, não só de olho. Segue finito — passou disso, perdeu a tribo de vez, e não há coordenada onisciente.
+- Recurso à vista reduz a puxada a 40%: sem isso um membro que já enxergou comida seria arrastado de volta à formação e a tribo passaria fome junta só para andar bonito.
+- Longe do bando ninguém descansa: a coesão zera o repouso e impõe passo mínimo proporcional à distância.
+- Cortejo, acasalamento, gestação e alimentação continuam fora da coesão; essas etapas saem do laço antes e não são interrompidas.
+- Estado textual trocou a contagem de meias-arestas por uma lista de tribos, com tamanho, uniforme e centro de cada uma.
+- Traço entre membros passou a alcançar os mesmos 340 do chamado, para o desenho bater com a mecânica.
+- Campo de visão dos bichos virou opção e nasce desligado: com algumas dezenas de bichos a tela virava uma sopa de leques translúcidos, e o cone é ferramenta de inspeção, não cenário.
+- O botão entrou na barra de vista, junto do zoom e do enquadramento, em vez da HUD — ali não custa altura, que foi o que tanto trabalho deu para reduzir a 132/124 px.
+- Basta esconder o grupo inteiro na cena: tira tudo do desenho sem mexer em cone por cone a cada quadro, e a visibilidade individual continua valendo quando religa.
+- Estado ligado fica evidente com o botão invertido, além do aria-pressed; o rótulo acessível alterna entre mostrar e ocultar.

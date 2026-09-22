@@ -4,7 +4,6 @@ import * as THREE from 'three';
 // Os nomes dizem o papel; os valores são os que dominam a imagem.
 export const PALETTE = {
   sky: 0xd6f3de,
-  shadow: 0x94b2b0,
   grassDark: 0x8ab25c,
   grassShade: 0x7d9150,
   tile: 0xc8c6aa,
@@ -27,8 +26,6 @@ export const PALETTE = {
   waterDeep: 0x5d93a8,
   waterShine: 0xbfe6ef,
   pondBed: 0x9d8a5c,
-  skin: 0xe8c9a0,
-  legs: 0x55607a,
   hair: 0x4a3a2a
 };
 
@@ -120,9 +117,14 @@ const SHAPES = {
   bushUpper: new THREE.BoxGeometry(5.5, 4, 5.5)
 };
 const SHARED_SHAPES = new Set(Object.values(SHAPES));
-const SKIN_MATERIAL = new THREE.MeshLambertMaterial({ color: PALETTE.skin });
-const LEGS_MATERIAL = new THREE.MeshLambertMaterial({ color: PALETTE.legs });
 const HAIR_MATERIAL = new THREE.MeshLambertMaterial({ color: PALETTE.hair });
+
+// Tecido tingido: mais escuro e mais fechado que qualquer cor de corpo, para a roupa
+// ler como roupa e para dois grupos vizinhos nunca se confundirem.
+export const OUTFIT_COLORS = [
+  '#8c3b2e', '#2f5b86', '#3a7a5c', '#6d4a86',
+  '#a8762a', '#455168', '#94395e', '#2f7480'
+];
 // Água em Phong e não em Lambert pela única razão que importa aqui: Lambert não tem
 // brilho especular, e sem um reflexo a superfície lê como disco pintado, não como
 // água. Semitransparente porque em poça rasa se vê o fundo.
@@ -266,13 +268,18 @@ function createRock(seed) {
   return rock;
 }
 
+// O bicho nasce pelado, e pelado ele é da cor do próprio gene de pigmento — era assim
+// na versão 2D, e é o que mantém o gene de cor visível na arena, que é o que a seção
+// de cor do modal de evolução acompanha. Roupa cobre tronco e pernas; cabeça e braços
+// continuam mostrando o corpo, então vestir um grupo não apaga a genética de ninguém.
 function createCharacter(hasHair) {
   const group = new THREE.Group();
   // Grupo interno para o corpo: o de fora carrega posição no mundo, rumo e tamanho,
   // e o de dentro fica livre para o gingado, sem um sobrescrever o outro.
   const body = new THREE.Group();
   group.add(body);
-  const torsoMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  const outfitMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
   const build = (geometry, material, x, y, z) => {
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
@@ -280,18 +287,33 @@ function createCharacter(hasHair) {
     body.add(mesh);
     return mesh;
   };
-  const legLeft = build(SHAPES.leg, LEGS_MATERIAL, -1.4, HIP_HEIGHT, 0);
-  const legRight = build(SHAPES.leg, LEGS_MATERIAL, 1.4, HIP_HEIGHT, 0);
-  const torso = build(SHAPES.torso, torsoMaterial, 0, 8.4, 0);
-  const armLeft = build(SHAPES.arm, SKIN_MATERIAL, -3.7, SHOULDER_HEIGHT, 0);
-  const armRight = build(SHAPES.arm, SKIN_MATERIAL, 3.7, SHOULDER_HEIGHT, 0);
-  build(SHAPES.head, SKIN_MATERIAL, 0, 14, 0);
+  const legLeft = build(SHAPES.leg, bodyMaterial, -1.4, HIP_HEIGHT, 0);
+  const legRight = build(SHAPES.leg, bodyMaterial, 1.4, HIP_HEIGHT, 0);
+  const torso = build(SHAPES.torso, bodyMaterial, 0, 8.4, 0);
+  const armLeft = build(SHAPES.arm, bodyMaterial, -3.7, SHOULDER_HEIGHT, 0);
+  const armRight = build(SHAPES.arm, bodyMaterial, 3.7, SHOULDER_HEIGHT, 0);
+  build(SHAPES.head, bodyMaterial, 0, 14, 0);
   if (hasHair) {
     build(SHAPES.hair, HAIR_MATERIAL, 0, 16.4, 0);
     build(SHAPES.braid, HAIR_MATERIAL, 0, 13.4, -2.9);
   }
-  group.userData = { torsoMaterial, body, torso, legLeft, legRight, armLeft, armRight };
+  group.userData = {
+    bodyMaterial, outfitMaterial, body, torso, legLeft, legRight, armLeft, armRight
+  };
   return group;
+}
+
+// Troca de pano: só mexe no material quando o estado muda de fato, porque isso roda
+// para cada bicho a cada quadro.
+function dressCharacter(view, bodyColor, outfit) {
+  const { bodyMaterial, outfitMaterial, torso, legLeft, legRight } = view.userData;
+  bodyMaterial.color.set(bodyColor);
+  const wanted = outfit ? outfitMaterial : bodyMaterial;
+  if (outfit) outfitMaterial.color.set(outfit);
+  if (torso.material === wanted) return;
+  torso.material = wanted;
+  legLeft.material = wanted;
+  legRight.material = wanted;
 }
 
 // Um passo: pernas em oposição, braços na fase contrária às pernas do mesmo lado
@@ -417,6 +439,10 @@ export function createWorldView({ canvas, world }) {
   const foodLayer = new THREE.Group();
   const pondLayer = new THREE.Group();
   const visionLayer = new THREE.Group();
+  // Cones de visão nascem desligados: são ferramenta de inspeção, e com algumas dezenas
+  // de bichos a tela vira uma sopa de leques translúcidos. Esconder o grupo inteiro já
+  // tira tudo do desenho, sem precisar mexer em cone por cone a cada quadro.
+  visionLayer.visible = false;
   scene.add(organismLayer, foodLayer, pondLayer, visionLayer);
 
   const corpseLayer = new THREE.Group();
@@ -501,7 +527,7 @@ export function createWorldView({ canvas, world }) {
         view = { body, cone };
         organismViews.set(o.id, view);
       }
-      view.body.userData.torsoMaterial.color.set(o.color);
+      dressCharacter(view.body, o.color, o.outfit);
       const place = toScene(o.x, o.y);
 
       // Recém-nascido cresce até o tamanho, em vez de aparecer pronto do nada.
@@ -543,7 +569,8 @@ export function createWorldView({ canvas, world }) {
       visionLayer.remove(view.cone);
       view.cone.geometry.dispose();
       view.cone.material.dispose();
-      view.body.userData.torsoMaterial.dispose();
+      view.body.userData.bodyMaterial.dispose();
+      view.body.userData.outfitMaterial.dispose();
       organismViews.delete(id);
     }
   }
@@ -662,7 +689,7 @@ export function createWorldView({ canvas, world }) {
       let view = corpseViews.get(corpse);
       if (!view) {
         view = createCharacter(corpse.sex === 'female');
-        view.userData.torsoMaterial.color.set(corpse.color);
+        dressCharacter(view, corpse.color, corpse.outfit);
         // Pose neutra uma vez só: um corpo caído não anda, então nada a recalcular.
         poseCharacter(view, { gait: 0, pace: 0, lean: 0, bellyScale: 1, animate: false });
         corpseLayer.add(view);
@@ -678,7 +705,8 @@ export function createWorldView({ canvas, world }) {
     for (const [corpse, view] of corpseViews) {
       if (seen.has(corpse)) continue;
       corpseLayer.remove(view);
-      view.userData.torsoMaterial.dispose();
+      view.userData.bodyMaterial.dispose();
+      view.userData.outfitMaterial.dispose();
       corpseViews.delete(corpse);
     }
   }
@@ -735,6 +763,10 @@ export function createWorldView({ canvas, world }) {
     applyPan();
   }
 
+  function setVisionVisible(value) {
+    visionLayer.visible = Boolean(value);
+  }
+
   function zoomBy(factor) {
     zoomLevel = Math.max(.5, Math.min(3, zoomLevel * factor));
     applyCamera();
@@ -749,7 +781,7 @@ export function createWorldView({ canvas, world }) {
 
   return {
     resize, setGroundTexture, setScenery, syncOrganisms, syncFood, syncPonds, syncCorpses,
-    project, groundMatrix, pickGround, zoomBy, resetView, panByScreen,
+    project, groundMatrix, pickGround, zoomBy, resetView, panByScreen, setVisionVisible,
     render: () => renderer.render(scene, camera)
   };
 }

@@ -12,7 +12,8 @@ Life Lab é uma arena de vida artificial feita com HTML, CSS e JavaScript puro, 
 - Três biomas equilibrados: deserto/xerófita, taiga e campos/savana, pintados na textura da ilha a partir da mesma fronteira que a simulação usa.
 - Chuva, poças de água, vegetação e regeneração de recursos.
 - Reprodução com aproximação, cortejo, acasalamento, gravidez e animação de nascimento.
-- Sistema social: convivência cria afinidade; aliados caminham juntos e podem colaborar na busca por recursos.
+- Tribos: convivência cria afinidade e vira vínculo. Todo mundo ligado por amizade, direta ou por tabela, forma uma tribo que anda junta, colabora na busca por recursos e se mantém por perto mesmo fora do campo de visão — até o alcance do chamado, depois disso se perde de vez.
+- Os bichos nascem pelados, na cor do próprio gene de pigmento. Ao entrar numa tribo, ela inteira passa a vestir um uniforme de cor sorteada; cabeça e braços continuam à mostra, então a cor genética nunca some.
 - HUD compacta com genes, evolução populacional e slider de velocidade de `0,25×` a `4×`.
 
 ## Como abrir

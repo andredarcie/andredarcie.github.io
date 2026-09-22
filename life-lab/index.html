@@ -25,6 +25,7 @@
     #arena-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; background: none; }
     .view-controls { position: fixed; z-index: var(--z-sticky); right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); display: flex; gap: var(--space-3xs); padding: var(--space-3xs); background: color-mix(in oklch, var(--color-panel) 88%, transparent); border: 1px solid var(--color-ink); border-radius: var(--radius-control); box-shadow: 2px 2px 0 var(--color-shadow); }
     .view-controls button { width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 1px solid var(--color-ink); border-radius: var(--radius-control); background: var(--color-panel-strong); color: var(--color-ink); font: 600 14px var(--font-body); line-height: 1; cursor: pointer; }
+    .view-controls button[aria-pressed="true"] { background: var(--color-ink); color: var(--color-panel-strong); }
     .webgl-missing { position: fixed; inset: auto 16px 16px 16px; z-index: var(--z-modal); margin: 0; padding: var(--space-sm); border: 2px solid var(--color-ink); border-radius: var(--radius-panel); background: var(--color-panel); font-size: var(--text-sm); }
     aside {
       position: fixed;
@@ -183,10 +184,11 @@
       <p class="arena-meta" id="arena-hint">□ macho · ○ fêmea · toque para criar uma vida</p>
     </main>
   </div>
-  <div class="view-controls" role="group" aria-label="Câmera: use as setas ou WASD para mover">
+  <div class="view-controls" role="group" aria-label="Vista: setas ou WASD movem a câmera">
     <button id="view-in" type="button" aria-label="Aproximar">+</button>
     <button id="view-out" type="button" aria-label="Afastar">−</button>
     <button id="view-reset" type="button" aria-label="Enquadramento inicial">⟲</button>
+    <button id="view-vision" type="button" aria-pressed="false" aria-label="Mostrar o campo de visão dos bichos" title="Campo de visão dos bichos">◉</button>
   </div>
   <dialog id="genes-dialog" aria-labelledby="genes-title">
     <div class="dialog-heading">
@@ -202,6 +204,7 @@
     </p>
     <dl id="gene-list" class="gene-list">
       <div id="gene-color-row" class="gene-row"><dt>Cor</dt><dd><span class="gene-value"><span id="gene-swatch" class="gene-swatch"></span><span id="gene-color"></span></span><small id="allele-pigment" class="gene-alleles"></small></dd></div>
+      <div id="gene-outfit-row" class="gene-row"><dt>Roupa</dt><dd><span class="gene-value"><span id="outfit-swatch" class="gene-swatch"></span><span id="outfit-label"></span></span><small id="outfit-note" class="gene-alleles"></small></dd></div>
     </dl>
     <p class="gene-note">Cada bicho carrega duas cópias de cada gene, uma herdada do pai e outra da mãe, espalhadas por três locos. Na formação dos gametas cada loco sorteia uma das duas cópias, com chance pequena de mutação; o valor visível é a média das seis cópias, por isso um filhote pode superar os dois pais. A cor tem dominância: o alelo recessivo fica escondido no portador e pode reaparecer em um neto. Visão mais extensa consome mais energia, e alcance extremo limita a abertura que o olho consegue expressar.</p>
   </dialog>
@@ -223,7 +226,7 @@
     <p class="gene-note"><strong>Geração média</strong> conta quantas gerações separam os vivos dos doze fundadores. <strong>Variação genética</strong> é quanto da dispersão inicial ainda existe: como cada filhote sorteia alelos inteiros do pai e da mãe em vez de herdar a média dos dois, ela se mantém alta, e é dela que a seleção precisa para empurrar um gene. <strong>Deriva</strong> é o tanto que a média de um gene passearia sozinha, sem seleção nenhuma, só porque a população é finita — quanto mais gerações e menos bichos, maior essa margem; por isso um gene só é dado como selecionado quando anda mais do que o dobro dela. Atenção: para cima não quer dizer melhor — metabolismo menor consome menos recursos, e visão maior custa mais energia.</p>
   </dialog>
   <script type="module">
-    import { createWorldView, PALETTE, CHARACTER_HEIGHT, pseudoRandom } from './scene.js';
+    import { createWorldView, PALETTE, CHARACTER_HEIGHT, pseudoRandom, OUTFIT_COLORS } from './scene.js';
 
     const canvas = document.querySelector('#arena');
     const overlay = document.querySelector('#arena-overlay');
@@ -232,6 +235,7 @@
     const genesDialog = document.querySelector('#genes-dialog');
     const geneList = document.querySelector('#gene-list');
     const geneColorRow = document.querySelector('#gene-color-row');
+    const geneOutfitRow = document.querySelector('#gene-outfit-row');
     const evolutionToggle = document.querySelector('#evolution-toggle');
     const evolutionDialog = document.querySelector('#evolution-dialog');
     const evolutionPlot = document.querySelector('#evolution-plot');
@@ -306,9 +310,17 @@
     const SOCIAL_CONTACT_DISTANCE = 44;
     const SOCIAL_BOND_DURATION = 3;
     const SOCIAL_BOND_DECAY = .08;
-    const MAX_ALLIES = 2;
-    const ALLY_SPACING = 30;
-    const ALLY_FOLLOW_RANGE = 240;
+    const MAX_TRIBE_BONDS = 2;
+    const TRIBE_SPACING = 30;
+    const TRIBE_FOLLOW_RANGE = 240;
+    // Até onde um membro sente o resto da tribo. Deliberadamente maior que a visão e
+    // independente do cone: bicho de bando se acha por chamado, não só de olho. Isso
+    // afrouxa de propósito a regra antiga de "nada fora do campo de visão", mas segue
+    // finito — passou disso, perdeu a tribo de vez, e não há coordenada onisciente.
+    const TRIBE_CALL_RANGE = 340;
+    // Folga antes de a coesão começar a puxar; medida até o centro do bando, então
+    // numa dupla corresponde ao dobro disso entre os dois.
+    const TRIBE_LOOSE_DISTANCE = 46;
     const MAX_SIMULATION_STEP = .025;
     const INFANT_AGE = 18;
     const ELDER_AGE = 90;
@@ -604,10 +616,11 @@
         wanderPhase: Math.random() * Math.PI * 2, pace: genes.speed,
         sex, age, stage: age < genes.maturity ? 'infant' : age >= genes.longevity ? 'elder' : 'adult',
         size: age < genes.maturity ? LIFE_SIZE * (.55 + .45 * age / genes.maturity) : LIFE_SIZE,
-        color: palette[genes.pigment], life: 100, hunger: 100, thirst: 100,
+        color: palette[genes.pigment], outfit: null,
+        life: 100, hunger: 100, thirst: 100,
         need: null, target: null, thought: 0, message: '', eating: 0, drinking: 0,
         drinkingPond: null, pair: null, mateCooldown: 0, pregnancy: null,
-        birthAnimation: genome ? BIRTH_ANIMATION_DURATION : 0, allies: [],
+        birthAnimation: genome ? BIRTH_ANIMATION_DURATION : 0, tribe: [], band: null,
         search: {
           need: null, waypoint: null, scanTimer: 0, turn: Math.random() < .5 ? -1 : 1,
           checked: {
@@ -991,17 +1004,85 @@
       return a.id < b.id ? `${a.id}:${b.id}` : `${b.id}:${a.id}`;
     }
 
-    function areAllies(a, b) {
-      return a.allies.includes(b.id);
+    function sameTribe(a, b) {
+      return a.tribe.includes(b.id);
     }
 
-    function formAlliance(a, b) {
-      if (areAllies(a, b) || a.allies.length >= MAX_ALLIES || b.allies.length >= MAX_ALLIES) return;
-      a.allies.push(b.id);
-      b.allies.push(a.id);
+    // Uma tribo é tudo que está ligado por amizade, direta ou por tabela: com dois
+    // vínculos por bicho os grupos viram correntes, e é a corrente inteira que veste
+    // igual e anda junto, não só o par que acabou de se conhecer. Refeito a cada
+    // tique porque o centro do bando muda junto com quem se move.
+    function regroupTribes() {
+      const living = new Map(organisms.map(o => [o.id, o]));
+      for (const o of organisms) o.band = null;
+      const seen = new Set();
+      for (const start of organisms) {
+        if (seen.has(start.id) || !start.tribe.length) continue;
+        const members = [], queue = [start];
+        seen.add(start.id);
+        while (queue.length) {
+          const current = queue.shift();
+          members.push(current);
+          for (const id of current.tribe) {
+            if (seen.has(id)) continue;
+            const mate = living.get(id);
+            if (!mate) continue;
+            seen.add(id);
+            queue.push(mate);
+          }
+        }
+        if (members.length < 2) continue;
+        let x = 0, y = 0;
+        for (const member of members) { x += member.x; y += member.y; }
+        const band = { members, x: x / members.length, y: y / members.length };
+        for (const member of members) member.band = band;
+      }
+    }
+
+    // Puxada na direção do centro do bando, devolvida como mistura e não como modo:
+    // o bicho continua caçando comida, explorando ou fugindo, só que sem se soltar do
+    // grupo. Fora do alcance do chamado devolve nada, e aí ele está perdido mesmo.
+    function tribeCohesion(o) {
+      if (!o.band) return null;
+      const dx = o.band.x - o.x, dy = o.band.y - o.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance <= TRIBE_LOOSE_DISTANCE || distance > TRIBE_CALL_RANGE) return null;
+      const strain = (distance - TRIBE_LOOSE_DISTANCE) / (TRIBE_CALL_RANGE - TRIBE_LOOSE_DISTANCE);
+      return {
+        direction: Math.atan2(dy, dx),
+        weight: .35 + strain * 1.5,
+        urgency: Math.min(1, .35 + strain)
+      };
+    }
+
+    // A cor é sorteada uma vez, quando nasce a amizade. Se um dos lados já vestia
+    // alguma, a mais usada no grupo vence e o outro lado troca de roupa — senão, ao
+    // juntar dois bandos, o mesmo grupo ficaria com duas cores.
+    function dressTribe(member) {
+      const group = member.band ? member.band.members : [member];
+      const worn = new Map();
+      for (const o of group) {
+        if (o.outfit) worn.set(o.outfit, (worn.get(o.outfit) || 0) + 1);
+      }
+      let outfit = null, most = 0;
+      for (const [color, count] of worn) {
+        if (count > most) { outfit = color; most = count; }
+      }
+      outfit = outfit || OUTFIT_COLORS[Math.floor(Math.random() * OUTFIT_COLORS.length)];
+      for (const o of group) o.outfit = outfit;
+    }
+
+    function joinTribe(a, b) {
+      if (sameTribe(a, b) || a.tribe.length >= MAX_TRIBE_BONDS || b.tribe.length >= MAX_TRIBE_BONDS) return;
+      a.tribe.push(b.id);
+      b.tribe.push(a.id);
       socialBonds.delete(socialBondKey(a, b));
+      // Refaz os bandos antes de vestir: o vínculo acabou de nascer e o grupo do a
+      // ainda não inclui o b nem a tribo que vinha junto com ele.
+      regroupTribes();
+      dressTribe(a);
       for (const o of [a, b]) {
-        o.message = 'aliado!';
+        o.message = 'tribo!';
         o.thought = 1.8;
       }
     }
@@ -1009,7 +1090,7 @@
     function updateSocialBonds(dt) {
       const living = new Map(organisms.map(o => [o.id, o]));
       for (const o of organisms) {
-        o.allies = o.allies.filter(id => id !== o.id && living.has(id));
+        o.tribe = o.tribe.filter(id => id !== o.id && living.has(id));
       }
       for (const [key, bond] of socialBonds) {
         if (!living.has(bond.aId) || !living.has(bond.bId)) socialBonds.delete(key);
@@ -1020,19 +1101,19 @@
           const a = organisms[i], b = organisms[j];
           const distance = Math.hypot(a.x - b.x, a.y - b.y);
           if (distance < 18 && Math.random() < dt * .12) encounters++;
-          if (areAllies(a, b)) continue;
+          if (sameTribe(a, b)) continue;
 
           const key = socialBondKey(a, b);
           let bond = socialBonds.get(key);
           const pairedTogether = a.pair && a.pair === b.pair;
-          const canBond = a.allies.length < MAX_ALLIES && b.allies.length < MAX_ALLIES;
+          const canBond = a.tribe.length < MAX_TRIBE_BONDS && b.tribe.length < MAX_TRIBE_BONDS;
           if (distance <= SOCIAL_CONTACT_DISTANCE && !pairedTogether && canBond) {
             if (!bond) {
               bond = { aId: a.id, bId: b.id, value: 0 };
               socialBonds.set(key, bond);
             }
             bond.value += dt;
-            if (bond.value >= SOCIAL_BOND_DURATION) formAlliance(a, b);
+            if (bond.value >= SOCIAL_BOND_DURATION) joinTribe(a, b);
           } else if (bond) {
             bond.value -= dt * SOCIAL_BOND_DECAY;
             if (bond.value <= 0 || !canBond) socialBonds.delete(key);
@@ -1041,13 +1122,13 @@
       }
     }
 
-    function closestVisibleAlly(o, predicate) {
+    function closestVisibleMate(o, predicate) {
       let closest = null, closestDistance = Infinity;
-      for (const allyId of o.allies) {
-        const ally = organisms.find(candidate => candidate.id === allyId);
+      for (const mateId of o.tribe) {
+        const ally = organisms.find(candidate => candidate.id === mateId);
         if (!ally || ally.life <= 0 || !inVision(o, ally) || !predicate(ally)) continue;
         const distance = Math.hypot(ally.x - o.x, ally.y - o.y);
-        if (distance <= ALLY_FOLLOW_RANGE && distance < closestDistance) {
+        if (distance <= TRIBE_FOLLOW_RANGE && distance < closestDistance) {
           closest = ally;
           closestDistance = distance;
         }
@@ -1055,28 +1136,28 @@
       return closest;
     }
 
-    function alliedResourceGuide(o, need) {
-      return closestVisibleAlly(o, ally =>
+    function tribeResourceGuide(o, need) {
+      return closestVisibleMate(o, ally =>
         !ally.pair && !ally.pregnancy?.labor && ally.need === need && Boolean(ally.target));
     }
 
-    function alliedFormationGuide(o) {
-      return closestVisibleAlly(o, ally =>
+    function tribeFormationGuide(o) {
+      return closestVisibleMate(o, ally =>
         ally.id < o.id && !ally.pair && !ally.pregnancy?.labor);
     }
 
-    function followAllyMotion(o, ally) {
+    function followMateMotion(o, ally) {
       const dx = ally.x - o.x;
       const dy = ally.y - o.y;
       const distance = Math.hypot(dx, dy);
-      if (distance > ALLY_SPACING + 8) {
+      if (distance > TRIBE_SPACING + 8) {
         return {
           direction: Math.atan2(dy, dx),
           desiredSpeed: Math.min(RUN_SPEED * .62 * o.pace,
-            Math.max(WALK_SPEED * .82 * o.pace, ally.speed + (distance - ALLY_SPACING) * .36))
+            Math.max(WALK_SPEED * .82 * o.pace, ally.speed + (distance - TRIBE_SPACING) * .36))
         };
       }
-      if (distance < ALLY_SPACING - 10) {
+      if (distance < TRIBE_SPACING - 10) {
         return {
           direction: Math.atan2(-dy, -dx),
           desiredSpeed: WALK_SPEED * .42 * o.pace
@@ -1304,22 +1385,22 @@
       }
     }
 
-    function drawAlliances() {
+    function drawTribeLinks() {
       const byId = new Map(organisms.map(o => [o.id, o]));
       for (const o of organisms) {
-        for (const allyId of o.allies) {
-          if (o.id >= allyId) continue;
-          const ally = byId.get(allyId);
+        for (const mateId of o.tribe) {
+          if (o.id >= mateId) continue;
+          const ally = byId.get(mateId);
           if (!ally) continue;
           const distance = Math.hypot(ally.x - o.x, ally.y - o.y);
-          if (distance > ALLY_FOLLOW_RANGE * 1.25) continue;
+          if (distance > TRIBE_CALL_RANGE) continue;
           const x = (o.x + ally.x) / 2;
           const y = (o.y + ally.y) / 2;
 
           ctx.save();
           ctx.strokeStyle = paint.accent;
           ctx.lineWidth = 1.15;
-          ctx.globalAlpha = Math.max(.12, .42 - distance / (ALLY_FOLLOW_RANGE * 1.25) * .28);
+          ctx.globalAlpha = Math.max(.12, .42 - distance / TRIBE_CALL_RANGE * .28);
           ctx.setLineDash([3, 5]);
           ctx.beginPath();
           ctx.moveTo(o.x, o.y);
@@ -1739,10 +1820,10 @@
           desiredSpeed = Math.min(RUN_SPEED * o.pace, Math.sqrt(2 * BRAKING * (distance - arrival)));
           o.restTimer = 0;
         } else if (need) {
-          const guide = alliedResourceGuide(o, need);
+          const guide = tribeResourceGuide(o, need);
           if (guide) {
             clearResourceSearch(o);
-            const following = followAllyMotion(o, guide);
+            const following = followMateMotion(o, guide);
             direction = following.direction;
             desiredSpeed = following.desiredSpeed;
           } else {
@@ -1753,9 +1834,9 @@
           o.restTimer = 0;
         } else {
           clearResourceSearch(o);
-          const guide = alliedFormationGuide(o);
+          const guide = tribeFormationGuide(o);
           if (guide) {
-            const following = followAllyMotion(o, guide);
+            const following = followMateMotion(o, guide);
             direction = following.direction;
             desiredSpeed = following.desiredSpeed;
             o.restTimer = 0;
@@ -1784,13 +1865,29 @@
             if (o.restTimer <= 0) desiredSpeed = Math.max(desiredSpeed, WALK_SPEED * .7);
           }
         }
+        const cohesion = tribeCohesion(o);
+        if (cohesion) {
+          // Recurso à vista vence o bando: quem já enxergou comida ou água não larga
+          // o alvo para voltar para a formação, senão a tribo inteira passa fome junta
+          // só para andar bonito. Explorando, que é a maior parte do tempo, a puxada
+          // vale cheia.
+          const pull = cohesion.weight * (o.target ? .4 : 1);
+          direction = Math.atan2(
+            Math.sin(direction) + Math.sin(cohesion.direction) * pull,
+            Math.cos(direction) + Math.cos(cohesion.direction) * pull
+          );
+          // Longe do bando ninguém fica parado descansando.
+          desiredSpeed = Math.max(desiredSpeed, WALK_SPEED * o.pace * cohesion.urgency);
+          o.restTimer = 0;
+        }
         move(o, dt, { direction, desiredSpeed: desiredSpeed * stageSpeed(o) });
       }
 
       for (const o of organisms) {
         if (o.life <= 0) {
           corpses.push({ x: o.x, y: o.y, size: o.size, sex: o.sex, stage: o.stage,
-            color: o.color, direction: Math.random() < .5 ? -1 : 1, time: 0 });
+            color: o.color, outfit: o.outfit,
+            direction: Math.random() < .5 ? -1 : 1, time: 0 });
         }
       }
       organisms = organisms.filter(o => o.life > 0);
@@ -1806,6 +1903,7 @@
           grassRegrow.splice(i, 1);
         }
       }
+      regroupTribes();
       updateRain(dt);
       if (elapsed >= nextGeneSample) {
         captureGeneSnapshot();
@@ -1832,7 +1930,7 @@
       const ground = view.groundMatrix();
       ctx.save();
       ctx.transform(ground.a, ground.b, ground.c, ground.d, ground.e, ground.f);
-      drawAlliances();
+      drawTribeLinks();
       drawPairs();
       drawBirthEffects();
       ctx.restore();
@@ -1854,7 +1952,7 @@
       inspectToggle.setAttribute('aria-label', active ? 'Cancelar seleção de bicho' : 'Ver genes de um bicho');
       arenaHint.textContent = active
         ? 'Toque em um bicho para ver seus genes'
-        : '♂ sem cabelo · ♀ com cabelo · toque para criar uma vida · setas ou WASD movem a câmera';
+        : '♂ sem cabelo · ♀ com cabelo · mesma roupa = mesma tribo · setas ou WASD movem a câmera';
       canvas.style.cursor = active ? 'pointer' : 'crosshair';
     }
 
@@ -1889,8 +1987,9 @@
         geneList.append(row);
         geneRows.set(key, { spec, meter, value, alleles, link, paternal, maternal, expressed });
       }
-      // A cor não tem medidor: é um loco com dominância, não um valor numa faixa.
-      geneList.append(geneColorRow);
+      // Nem a cor nem a roupa têm medidor: uma é loco com dominância e a outra nem
+      // gene é, então as duas vão para o fim da lista, depois do que tem faixa.
+      geneList.append(geneColorRow, geneOutfitRow);
     }
 
     function openGenes(o) {
@@ -1919,16 +2018,24 @@
       document.querySelector('#gene-color').textContent = colorNames[o.genes.pigment] + carrier;
       document.querySelector('#allele-pigment').textContent =
         `pai ${colorNames[paternalPigment]} · mãe ${colorNames[maternalPigment]}`;
+      // Roupa não é herança: é marca de grupo social, por isso fica fora dos alelos.
+      const outfitSwatch = document.querySelector('#outfit-swatch');
+      outfitSwatch.style.display = o.outfit ? '' : 'none';
+      if (o.outfit) outfitSwatch.style.backgroundColor = o.outfit;
+      document.querySelector('#outfit-label').textContent = o.outfit ? 'uniforme da tribo' : 'pelado';
+      document.querySelector('#outfit-note').textContent = o.outfit
+        ? 'cor da tribo, sorteada quando ela nasceu'
+        : 'veste ao entrar numa tribo';
       document.querySelector('#genes-title').textContent = `Bicho #${o.id}`;
       const pregnancy = o.pregnancy
         ? ` · grávida ${Math.round(o.pregnancy.elapsed / o.pregnancy.duration * 100)}%`
         : '';
-      const alliance = ` · ${o.allies.length} aliado${o.allies.length === 1 ? '' : 's'}`;
+      const tribe = o.band ? ` · tribo de ${o.band.members.length}` : ' · sem tribo';
       const lineage = o.lineage
         ? ` · filho de #${o.lineage.fatherId} e #${o.lineage.motherId}`
         : ' · fundador, sem pais';
       document.querySelector('#gene-identity').textContent =
-        `${o.sex === 'male' ? 'Macho' : 'Fêmea'} · ${stageNames[o.stage]} · ${Math.floor(o.age)} s de vida${pregnancy}${alliance}${lineage}`;
+        `${o.sex === 'male' ? 'Macho' : 'Fêmea'} · ${stageNames[o.stage]} · ${Math.floor(o.age)} s de vida${pregnancy}${tribe}${lineage}`;
       document.querySelector('#gene-swatch').style.backgroundColor = o.color;
       genesDialog.showModal();
     }
@@ -2313,6 +2420,15 @@
     // Trocar de aba com a tecla apertada deixaria a câmera andando sozinha para sempre.
     window.addEventListener('blur', () => heldPanKeys.clear());
 
+    const visionToggle = document.querySelector('#view-vision');
+    visionToggle.addEventListener('click', () => {
+      const shown = visionToggle.getAttribute('aria-pressed') !== 'true';
+      visionToggle.setAttribute('aria-pressed', String(shown));
+      visionToggle.setAttribute('aria-label',
+        shown ? 'Ocultar o campo de visão dos bichos' : 'Mostrar o campo de visão dos bichos');
+      view.setVisionVisible(shown);
+    });
+
     document.querySelector('#view-in').addEventListener('click', () => view.zoomBy(1.25));
     document.querySelector('#view-out').addEventListener('click', () => view.zoomBy(.8));
     document.querySelector('#view-reset').addEventListener('click', () => view.resetView());
@@ -2325,10 +2441,10 @@
       simulationSpeed,
       organisms: organisms.map(o => ({
         id: o.id, x: Math.round(o.x), y: Math.round(o.y), genes: { ...o.genes },
-        genome: summarizeGenome(o.genome), lineage: o.lineage,
+        genome: summarizeGenome(o.genome), lineage: o.lineage, outfit: o.outfit,
         sex: o.sex, biome: biomeAt(o.x, o.y), stage: o.stage, age: Math.round(o.age), size: Math.round(o.size),
         speed: Math.round(o.speed), need: o.need, target: Boolean(o.target),
-        allies: [...o.allies],
+        tribe: [...o.tribe],
         exploration: o.search.waypoint ? {
           need: o.search.need,
           x: Math.round(o.search.waypoint.x),
@@ -2366,8 +2482,12 @@
       birthEffects: birthEffects.map(effect => ({
         x: Math.round(effect.x), y: Math.round(effect.y), time: Math.round(effect.time * 10) / 10
       })),
-      alliances: organisms.reduce((total, o) => total + o.allies.length, 0) / 2,
-      formingAlliances: socialBonds.size,
+      tribes: [...new Set(organisms.map(o => o.band).filter(Boolean))].map(band => ({
+        size: band.members.length,
+        outfit: band.members[0].outfit,
+        x: Math.round(band.x), y: Math.round(band.y)
+      })),
+      formingBonds: socialBonds.size,
       encounters, births, elapsed: Math.round(elapsed)
     });
     window.advanceTime = ms => {
