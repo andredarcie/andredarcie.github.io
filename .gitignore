@@ -46,3 +46,10 @@ tiny-creatures/screenshots/
 # ── divinolandia-transparente ─────────────────────────────────────────
 # Os scrapers de gastos/ gravam HTML, prints e zips de depuração em debug/.
 divinolandia-transparente/gastos/debug/
+
+# ── life-lab ──────────────────────────────────────────────────────────
+# Mesmo caso do tiny-creatures: perfis e capturas de automação, não são o site.
+life-lab/output/
+# Captura de referência do visual isométrico; a paleta já foi extraída dela
+# para scene.js, e são 620 KB que o site nunca serve.
+life-lab/mini.png
