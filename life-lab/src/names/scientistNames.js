@@ -64,35 +64,6 @@ const FEMALE = [
 // Garantia contra deslize ao crescer as listas: sobrenome que já é de um homem sai da
 // lista feminina, para dois bichos de sexos diferentes nunca dividirem o nome.
 const MALE_SET = new Set(MALE);
-const FEMALE_UNIQUE = FEMALE.filter(name => !MALE_SET.has(name));
 
-const NUMERALS = ['', ' II', ' III', ' IV', ' V', ' VI', ' VII', ' VIII', ' IX', ' X'];
-
-function shuffled(list) {
-  const copy = [...list];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-// Sorteia sem repetir: cada sexo tem uma fila embaralhada que vai sendo consumida.
-// Esgotada, é reembaralhada e a volta seguinte ganha numeral.
-export function createNamer() {
-  const queues = {
-    male: { source: [...new Set(MALE)], order: [], index: 0, round: 0 },
-    female: { source: [...new Set(FEMALE_UNIQUE)], order: [], index: 0, round: 0 }
-  };
-  return sex => {
-    const queue = queues[sex === 'female' ? 'female' : 'male'];
-    if (queue.index >= queue.order.length) {
-      queue.order = shuffled(queue.source);
-      queue.index = 0;
-      queue.round++;
-    }
-    const name = queue.order[queue.index++];
-    const numeral = NUMERALS[queue.round - 1] ?? ` ${queue.round}`;
-    return name + numeral;
-  };
-}
+export const MALE_SCIENTISTS = Object.freeze(MALE);
+export const FEMALE_SCIENTISTS = Object.freeze(FEMALE.filter(name => !MALE_SET.has(name)));

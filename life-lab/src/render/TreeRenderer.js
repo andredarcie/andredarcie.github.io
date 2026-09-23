@@ -1,0 +1,70 @@
+import * as THREE from 'three';
+import { pseudoRandom } from '../core/math.js';
+import { WOOD_MATERIALS } from './WoodMaterials.js';
+
+const STUMP_SHAPE = new THREE.CylinderGeometry(2.2, 2.6, 2.4, 8);
+
+// As árvores da simulação: tremem no golpe, tombam com a física da queda, viram
+// toco e rebrotam como muda que cresce.
+export class TreeRenderer {
+  #layer;
+  #props;
+  #space;
+  #views = new Map();
+  #fallAxis = new THREE.Vector3();
+
+  constructor(layer, propFactory, space) {
+    this.#layer = layer;
+    this.#props = propFactory;
+    this.#space = space;
+  }
+
+  sync(trees, { elapsed = 0, animate = true } = {}) {
+    for (const tree of trees) {
+      let view = this.#views.get(tree);
+      if (!view) {
+        view = this.#createView(tree);
+        this.#views.set(tree, view);
+      }
+      const { pivot, prop, stump } = view;
+      const fall = tree.fall;
+      if (fall) {
+        // Tomba em direção ao rumo de quem cortou: o eixo é o horizontal
+        // perpendicular a esse rumo, e o ângulo vem da física da simulação.
+        this.#fallAxis.set(Math.sin(fall.dir), 0, -Math.cos(fall.dir));
+        pivot.quaternion.setFromAxisAngle(this.#fallAxis, fall.angle);
+        // Deitada, o tronco não pode afundar no chão pela metade da grossura.
+        pivot.position.y = Math.sin(fall.angle) * 2.2;
+      } else {
+        pivot.quaternion.identity();
+        pivot.position.y = 0;
+      }
+      // Tremor do golpe: a copa balança rápido e o balanço morre em meio segundo.
+      const shake = animate ? Math.sin(elapsed * 42) * .045 * tree.shake : 0;
+      prop.rotation.set(shake, view.baseRotation, shake * .6);
+      prop.visible = !tree.stump;
+      // Muda nasce pequena e cresce até o tamanho de árvore.
+      prop.scale.setScalar(tree.stump ? 1 : .25 + .75 * tree.growth);
+      stump.visible = tree.stump || Boolean(fall);
+    }
+  }
+
+  // Pivô na base do tronco: é em volta dele que a árvore tomba. A árvore de dentro
+  // guarda o giro próprio, para o tombo não depender de para onde ela olhava.
+  #createView(tree) {
+    const pivot = new THREE.Group();
+    const prop = this.#props.build(tree.kind, tree.seed);
+    prop.rotation.y = pseudoRandom(tree.seed + 21) * Math.PI * 2;
+    pivot.add(prop);
+    const stump = new THREE.Mesh(STUMP_SHAPE, WOOD_MATERIALS);
+    stump.position.y = 1.2;
+    stump.castShadow = true;
+    stump.visible = false;
+    const place = this.#space.toScene(tree.x, tree.y);
+    pivot.position.set(place.x, 0, place.z);
+    stump.position.x = place.x;
+    stump.position.z = place.z;
+    this.#layer.add(pivot, stump);
+    return { pivot, prop, stump, baseRotation: prop.rotation.y };
+  }
+}
