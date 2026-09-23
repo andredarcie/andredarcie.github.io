@@ -7,9 +7,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="tokens.css?v=3" />
+  <!-- Cache-busting centralizado: cada módulo local aponta para a URL com ?v=N. Os .js
+       importam SEM query string. A cada alteração em qualquer .js, trocar TODOS os
+       ?v=N daqui pelo número novo e atualizar o BUILD N do rodapé para o mesmo número. -->
   <script type="importmap">
-  { "imports": { "three": "./lib/three.module.min.js" } }
+  { "imports": {
+    "three": "./lib/three.module.min.js",
+    "./scene.js": "./scene.js?v=3",
+    "./sky.js": "./sky.js?v=3",
+    "./names.js": "./names.js?v=3"
+  } }
   </script>
   <style>
     * { box-sizing: border-box; }
@@ -20,7 +28,8 @@
     .arena-wrap { position: fixed; inset: 0; background: var(--color-field); }
     .arena-wrap { position: relative; }
     canvas { display: block; width: 100%; height: 100dvh; }
-    #arena { background: var(--color-field); cursor: crosshair; }
+    /* touch-action: o arrasto passeia pelo mundo em vez de rolar a página. */
+    #arena { background: var(--color-field); cursor: crosshair; touch-action: none; }
     /* As barras, balões, corações e chuva continuam em 2D, projetados por cima da cena. */
     #arena-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; background: none; }
     .view-controls { position: fixed; z-index: var(--z-sticky); right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); display: flex; gap: var(--space-3xs); padding: var(--space-3xs); background: color-mix(in oklch, var(--color-panel) 88%, transparent); border: 1px solid var(--color-ink); border-radius: var(--radius-control); box-shadow: 2px 2px 0 var(--color-shadow); }
@@ -43,6 +52,7 @@
     .section-label { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2xs); margin-bottom: var(--space-2xs); font-family: var(--font-display); font-size: 11px; font-weight: 900; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
     .live { display: inline-flex; align-items: center; gap: var(--space-3xs); color: var(--color-ink-2); font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; letter-spacing: 0; text-transform: lowercase; white-space: nowrap; }
     .live::before { content: ''; width: 5px; height: 5px; flex: none; border: 1px solid var(--color-ink); border-radius: 50%; background: var(--color-grass-light); }
+    aside.night .live::before { background: var(--color-ink-2); }
     aside.raining .live::before { background: var(--color-water-light); }
     .readout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 2px solid var(--color-ink); }
     .stat { min-width: 0; padding-block: var(--space-2xs); }
@@ -136,6 +146,7 @@
     .pigment-head { color: var(--color-muted); font-size: var(--text-xs); }
     .pigment-head span { grid-column: span 2; }
     .pigment-head span:first-child { grid-column: span 1; }
+    .build-badge { display: block; margin-top: var(--space-2xs); color: var(--color-muted); font-size: 9px; font-weight: 600; letter-spacing: .06em; text-align: right; }
     .arena-meta { position: fixed; z-index: var(--z-sticky); left: max(6px, env(safe-area-inset-left)); bottom: max(6px, env(safe-area-inset-bottom)); max-width: calc(100% - var(--space-lg)); margin: 0; padding: var(--space-2xs) var(--space-xs); background: color-mix(in oklch, var(--color-panel) 84%, transparent); border: 1px solid var(--color-ink); border-radius: var(--radius-control); box-shadow: 2px 2px 0 var(--color-shadow); color: var(--color-ink-2); font-size: var(--text-xs); font-weight: 500; line-height: 1.1; pointer-events: none; }
     @keyframes dialog-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
     @media (hover: hover) and (pointer: fine) {
@@ -171,7 +182,7 @@
           <div class="stat"><b id="count">12</b><small>bichos</small></div>
           <div class="stat"><b id="grass-count">24</b><small>plantas</small></div>
           <div class="stat"><b id="pond-count">5</b><small>poças</small></div>
-          <div class="stat"><b id="clock">00:00</b><small>tempo</small></div>
+          <div class="stat" id="clock-stat"><b id="clock">06:12</b><small id="clock-label">dia 1</small></div>
         </div>
         <div class="speed-control">
           <label for="speed-range">velocidade</label>
@@ -180,11 +191,12 @@
         </div>
         <button id="inspect-toggle" class="inspect-button" type="button" aria-label="Ver genes de um bicho" aria-pressed="false">Ver genes</button>
         <button id="evolution-toggle" class="inspect-button" type="button" aria-label="Ver evolução dos genes">Ver evolução</button>
+        <small class="build-badge">BUILD 3</small>
       </aside>
       <p class="arena-meta" id="arena-hint">□ macho · ○ fêmea · toque para criar uma vida</p>
     </main>
   </div>
-  <div class="view-controls" role="group" aria-label="Vista: setas ou WASD movem a câmera">
+  <div class="view-controls" role="group" aria-label="Vista: arraste, setas ou WASD movem a câmera; roda do mouse dá zoom">
     <button id="view-in" type="button" aria-label="Aproximar">+</button>
     <button id="view-out" type="button" aria-label="Afastar">−</button>
     <button id="view-reset" type="button" aria-label="Enquadramento inicial">⟲</button>
@@ -226,7 +238,9 @@
     <p class="gene-note"><strong>Geração média</strong> conta quantas gerações separam os vivos dos doze fundadores. <strong>Variação genética</strong> é quanto da dispersão inicial ainda existe: como cada filhote sorteia alelos inteiros do pai e da mãe em vez de herdar a média dos dois, ela se mantém alta, e é dela que a seleção precisa para empurrar um gene. <strong>Deriva</strong> é o tanto que a média de um gene passearia sozinha, sem seleção nenhuma, só porque a população é finita — quanto mais gerações e menos bichos, maior essa margem; por isso um gene só é dado como selecionado quando anda mais do que o dobro dela. Atenção: para cima não quer dizer melhor — metabolismo menor consome menos recursos, e visão maior custa mais energia.</p>
   </dialog>
   <script type="module">
-    import { createWorldView, PALETTE, CHARACTER_HEIGHT, pseudoRandom, OUTFIT_COLORS } from './scene.js';
+    import { createWorldView, PALETTE, CHARACTER_HEIGHT, pseudoRandom, OUTFIT_COLORS, SURROUNDING_SCALE } from './scene.js';
+    import { skyAt, skyRate, DAY_LENGTH } from './sky.js';
+    import { createNamer } from './names.js';
 
     const canvas = document.querySelector('#arena');
     const overlay = document.querySelector('#arena-overlay');
@@ -253,7 +267,7 @@
       taiga: color('taiga'), taigaEdge: color('taiga-edge'), taigaMark: color('taiga-mark'),
       savanna: color('savanna'), savannaEdge: color('savanna-edge'), savannaMark: color('savanna-mark'),
       accent: color('accent'), accent2: color('accent-2'), shadow: color('shadow'),
-      grass: color('grass'), grassLight: color('grass-light'),
+      grass: color('grass'), grassLight: color('grass-light'), sleep: color('sleep'),
       water: color('water'), waterLight: color('water-light'),
       life: color('life'), eye: color('eye')
     };
@@ -274,6 +288,11 @@
     // tela cheia, então densidade de capim e dinâmica de população não mudam.
     const WORLD = { width: 900, height: 900 };
     const GROUND_TEXTURE_SIZE = 1024;
+    const SURROUNDING_TEXTURE_SIZE = 1024;
+    // Poeira de terra seca levantada pela árvore caindo.
+    const PALETTE_DUST = '#cdbd92';
+    // Profundidade da mata que emoldura a área dos bichos, medida da borda para fora.
+    const BORDER_FOREST_DEPTH = 200;
     let view;
     try {
       view = createWorldView({ canvas, world: WORLD });
@@ -303,6 +322,10 @@
     const VISION_ENERGY_MAX_MULTIPLIER = 1.25;
     const VISION_RANGE_ANGLE_PENALTY = 30;
     const NEED_RESOURCE_THRESHOLD = 78;
+    // Beliscar: abaixo desta fome, capim visível a até esta distância é comido de
+    // passagem, mesmo sem o bicho estar procurando comida.
+    const GRAZE_HUNGER = 90;
+    const GRAZE_RANGE = 45;
     const SEARCH_GRID_SIZE = 3;
     const SEARCH_SCAN_DURATION = 1.65;
     const SEARCH_SCAN_SPEED = Math.PI * 2 / SEARCH_SCAN_DURATION;
@@ -322,9 +345,14 @@
     // numa dupla corresponde ao dobro disso entre os dois.
     const TRIBE_LOOSE_DISTANCE = 46;
     const MAX_SIMULATION_STEP = .025;
-    const INFANT_AGE = 18;
-    const ELDER_AGE = 90;
-    const MATE_MIN_RESOURCE = 65;
+    // Idade conta em dias do céu, não em segundos de simulação: a vida de um bicho
+    // atravessa vários dias e noites, e como a noite passa 3× mais rápido, ela também
+    // envelhece 3× mais rápido no relógio da simulação — um dia é um dia. Amadurece
+    // em ~1 dia, fica velho perto do 5º e a velhice consome a vida em ~0,6 dia.
+    const INFANT_AGE = 1;
+    const ELDER_AGE = 5;
+    const ELDER_DECLINE_PER_DAY = 170;
+    const MATE_MIN_RESOURCE = 50;
     const MATE_COOLDOWN = 16;
     const COURTSHIP_DURATION = 2.4;
     const MATING_DURATION = 1.4;
@@ -337,7 +365,14 @@
     const DEATH_TOTAL = DEATH_FALL + DEATH_REST + DEATH_FADE;
     const GRASS_MIN_COUNT = 24;
     const GRASS_MAX_COUNT = 64;
-    const GRASS_AREA_PER_PATCH = 40000;
+    // Uma moita a cada 15.000 de área: 54 na ilha de 900 × 900. Com 24 (uma a cada
+    // 40.000) o bicho com fome ficava em média a 210 da moita mais próxima, o dobro
+    // do alcance da visão, e morria procurando com capim sobrando no mapa.
+    const GRASS_AREA_PER_PATCH = 15000;
+    // Moita comida renasce em 4 a 10 s (era 8 a 20). Com 54 moitas e a população
+    // passando de 25, o capim repunha menos do que se comia e a fome voltava.
+    const GRASS_REGROW_MIN = 4;
+    const GRASS_REGROW_SPREAD = 6;
     const POND_COUNT = 5;
     const RAIN_START_RATIO = .3;
     const RAIN_CRISIS_THIRST = 30;
@@ -355,8 +390,9 @@
       speed: { base: 1, min: .78, max: 1.22, mutation: .08 },
       metabolism: { base: 1, min: .8, max: 1.2, mutation: .07 },
       efficiency: { base: 1, min: .82, max: 1.18, mutation: .07 },
-      maturity: { base: INFANT_AGE, min: 15, max: 22, mutation: 1.6 },
-      longevity: { base: ELDER_AGE, min: 76, max: 106, mutation: 6 },
+      // Em dias; mesmas proporções de faixa e mutação de quando eram segundos.
+      maturity: { base: INFANT_AGE, min: .83, max: 1.22, mutation: .09 },
+      longevity: { base: ELDER_AGE, min: 4.2, max: 5.9, mutation: .33 },
       fertility: { base: 1, min: .8, max: 1.22, mutation: .07 }
     };
     // Cada gene quantitativo é poligênico e diploide: GENE_LOCI locos, dois alelos por
@@ -396,6 +432,92 @@
     const socialBonds = new Map();
     let encounters = 0, births = 0, elapsed = 0, rainEvents = 0, nextOrganismId = 1;
     let rain = null, inspectMode = false, simulationSpeed = 1;
+    // Dia e noite: o céu sai de sky.js e pesa na simulação por dois caminhos. No
+    // escuro o olho alcança menos — sem lua, menos da metade —, o que dá à seleção
+    // um motivo novo para favorecer visão longa. E de noite eles dormem.
+    const NIGHT_SIGHT = .45;
+    const MOON_SIGHT = .25;
+    let skyTime = 0, sky = skyAt(0), sight = 1;
+    const nameFor = createNamer();
+
+    // Energia: só o esforço gasta — andar (correr custa mais que o dobro de andar) e
+    // acasalar. Parado não gasta, e só dormindo ela volta. A noite passa 3× mais
+    // rápido, então a recuperação é bem mais veloz que o gasto: uma noite inteira
+    // devolve o que um dia inteiro gastou. Dormindo o metabolismo cai, e é por isso
+    // que dá para atravessar a noite sem acordar faminto.
+    // Calibrado pelo orçamento de uma noite (~80 de energia): andar custa 0,5/s e
+    // correr ~1,7/s, então um dia com busca de comida gasta ~70. Com 1 e 0,9 a
+    // corrida custava 4,7/s e quem saía atrás de capim apagava antes de achar.
+    const ENERGY_WALK_COST = .5;
+    const ENERGY_MOVE_COST = .4;
+    const ENERGY_SEX_RATE = 7;
+    const MATE_MIN_ENERGY = 35;
+    const ENERGY_RECOVERY = 3.2;
+    const SLEEP_METABOLISM = .35;
+    // Só vai dormir quem não está apertado; fome ou sede abaixo disto tiram da cama,
+    // desde que já tenha energia para levantar.
+    const SLEEP_MIN_NEED = 32;
+    const SLEEP_WAKE_NEED = 14;
+    const SLEEP_WAKE_ENERGY = 15;
+    // Cansado anda mais devagar: abaixo deste nível a passada vai encurtando.
+    const FATIGUE_ENERGY = 35;
+
+    // Fogueira: tribo com gente suficiente acende uma ao anoitecer, no meio do bando,
+    // e dorme em roda com os pés virados para o fogo. O fogo esquenta (energia volta
+    // mais rápido e o corpo gasta menos) e ilumina (em volta dele se enxerga quase
+    // como de dia). Chuva apaga; de manhã vira brasa e some.
+    const CAMPFIRE_MIN_TRIBE = 4;
+    const MAX_CAMPFIRES = 4;
+    const CAMPFIRE_START_LIGHT = .45;
+    const CAMPFIRE_END_LIGHT = .65;
+    // Quanto antes da própria hora de deitar o bicho já vai sentar perto do fogo.
+    const CAMPFIRE_GATHER_LEAD = .18;
+    const CAMPFIRE_WARM_RADIUS = 60;
+    const CAMPFIRE_LIGHT_RADIUS = 110;
+    const CAMPFIRE_REST_BONUS = .45;
+    const CAMPFIRE_METABOLISM_CUT = .25;
+    const CAMPFIRE_SEAT_TOLERANCE = 6;
+    let campfires = [];
+
+    // Madeira e abrigo. As árvores da taiga e da savana deixaram de ser cenário: são
+    // recurso. Quem ainda não tem teto (nem a tribo dele) corta árvore de dia, carrega
+    // as toras uma a uma e ergue uma cabana de toras. Dormir dentro rende muito mais
+    // do que dormir no chão ou em volta do fogo.
+    // Um golpe de machado a cada 1,8 s de simulação; o impacto cai a 68% do ciclo, no
+    // fim da descida rápida, e é nesse instante que a árvore sente o golpe.
+    const CHOP_SWING = 1.8;
+    const CHOP_IMPACT = CHOP_SWING * .68;
+    const CHOP_HITS = 8;
+    const CHOP_REACH = 9;
+    const ENERGY_PER_SWING = 1.2;
+    // Queda de um tronco rígido girando na base: aceleração angular proporcional ao
+    // seno do ângulo (g·3/2L). Começa quase de pé, então demora a pegar embalo e
+    // desaba no fim, que é o que se vê de verdade quando uma árvore cai.
+    const TREE_FALL_GRAVITY = 1.6;
+    const TREE_DOWN_TIME = 1.6;
+    const LOGS_PER_TREE = 3;
+    // Toco rebrota: depois de 2 dias vira muda, que leva 1 dia para virar árvore.
+    const TREE_REGROW_DAYS = 2;
+    const TREE_GROW_DAYS = 1;
+    // Árvore é grande: dá para ver de longe, bem além do cone de visão comum.
+    const TREE_LANDMARK_RANGE = 320;
+    const HUT_LOGS = 6;
+    const HUT_CAPACITY = 4;
+    const MAX_HUTS = 10;
+    const HUT_DOOR_OFFSET = 15;
+    const HUT_DELIVER_RADIUS = 18;
+    const HUT_DOOR_TOLERANCE = 6;
+    const HUT_SEEK_RANGE = 380;
+    // Dentro da cabana a energia volta 2,2× mais rápido e o corpo gasta 35% menos.
+    const HUT_REST_BONUS = 1.2;
+    const HUT_METABOLISM_CUT = .35;
+    const WORK_MIN_ENERGY = 35;
+    const WORK_MIN_LIGHT = .6;
+    // Tora no ombro: anda 20% mais devagar e cansa 30% mais.
+    const CARRY_SPEED = .8;
+    const CARRY_ENERGY = 1.3;
+    let trees = [], logs = [], huts = [], woodChips = [], fallDust = [];
+    let nextHutId = 1;
     let geneBaseline = null, geneSpreadBaseline = null, pigmentBaseline = null;
     let nextGeneSample = GENE_SAMPLE_INTERVAL;
     const rainDrops = Array.from({ length: 340 }, () => ({
@@ -413,6 +535,13 @@
       view.resize(r.width, r.height);
     }
 
+    // Idade em dias do céu; abaixo de um dia fala em horas, que é como se conta filhote.
+    function formatAge(days) {
+      if (days < 1) return `${Math.floor(days * 24)} h`;
+      const whole = Math.floor(days);
+      return `${whole} ${whole === 1 ? 'dia' : 'dias'} e ${Math.floor((days - whole) * 24)} h`;
+    }
+
     function formatSimulationSpeed(value) {
       const compact = Number(value).toFixed(2).replace(/0+$/, '').replace(/\.$/, '').replace('.', ',');
       return `${compact}×`;
@@ -427,8 +556,12 @@
         ? '1 vez' : `${formatted.replace('×', '')} vezes`);
     }
 
+    // Ritmo base do jogo: o "1×" do slider já roda a simulação no dobro do tempo
+    // real. O slider multiplica em cima disto.
+    const BASE_SIMULATION_SPEED = 2;
+
     function advanceSimulation(realSeconds) {
-      const duration = Math.max(0, realSeconds * simulationSpeed);
+      const duration = Math.max(0, realSeconds * BASE_SIMULATION_SPEED * simulationSpeed);
       if (duration === 0) return;
       const steps = Math.max(1, Math.ceil(duration / MAX_SIMULATION_STEP));
       const dt = duration / steps;
@@ -610,7 +743,7 @@
       const inherited = genome ?? createFounderGenome((id - 1) % palette.length);
       const genes = expressGenome(inherited);
       return {
-        id, genome: inherited, genes, lineage, generation,
+        id, name: nameFor(sex), genome: inherited, genes, lineage, generation,
         x, y, vx: 0, vy: 0, speed: 0, heading, wanderHeading: heading,
         walkTimer: .6 + Math.random() * 1.8, restTimer: 0, gait: Math.random() * 6,
         wanderPhase: Math.random() * Math.PI * 2, pace: genes.speed,
@@ -618,6 +751,11 @@
         size: age < genes.maturity ? LIFE_SIZE * (.55 + .45 * age / genes.maturity) : LIFE_SIZE,
         color: palette[genes.pigment], outfit: null,
         life: 100, hunger: 100, thirst: 100,
+        // Cada um tem sua hora: uns deitam ainda no crepúsculo, outros só no escuro,
+        // e acordam também espalhados. Sem isso a ilha inteira apagaria num estalo.
+        energy: 80 + Math.random() * 20, asleep: false,
+        carrying: false, chop: null, woodTarget: null, hut: null, inHut: false,
+        bedLight: .12 + Math.random() * .22, wakeLight: .22 + Math.random() * .3,
         need: null, target: null, thought: 0, message: '', eating: 0, drinking: 0,
         drinkingPond: null, pair: null, mateCooldown: 0, pregnancy: null,
         birthAnimation: genome ? BIRTH_ANIMATION_DURATION : 0, tribe: [], band: null,
@@ -647,13 +785,13 @@
         x: x - offsetX,
         y: y - offsetY,
         sex: 'male',
-        age: GENE_SPECS.maturity.max + Math.random() * 6
+        age: GENE_SPECS.maturity.max + Math.random() * .8
       }));
       organisms.push(createOrganism({
         x: x + offsetX,
         y: y + offsetY,
         sex: 'female',
-        age: GENE_SPECS.maturity.max + Math.random() * 6
+        age: GENE_SPECS.maturity.max + Math.random() * .8
       }));
     }
     const initialGrassCount = Math.max(GRASS_MIN_COUNT, Math.min(GRASS_MAX_COUNT,
@@ -700,9 +838,72 @@
         const roll = pseudoRandom(seed + 3);
         const kind = (SCENERY_KINDS[biome].find(([, limit]) => roll <= limit) ||
           SCENERY_KINDS[biome][0])[0];
+        // Árvore dentro do mundo é recurso da simulação, não enfeite: vai para a
+        // lista de árvores, que a cena desenha e anima à parte.
+        if (kind === 'conifer' || kind === 'broadleaf') {
+          trees.push({ id: trees.length + 1, x, y, kind, seed, health: CHOP_HITS, growth: 1,
+            stump: false, stumpAge: 0, fall: null, shake: 0, chopper: null });
+          continue;
+        }
         items.push({ x, y, seed, kind });
       }
+      // Mata em volta da área dos bichos: mais fechada que o normal do bioma, é ela
+      // que marca na paisagem onde o mundo acaba, agora que não há mais borda de ilha.
+      for (let i = 0; i < 480; i++) {
+        const seed = i * 17 + 50003;
+        const x = -BORDER_FOREST_DEPTH + pseudoRandom(seed) * (WORLD.width + BORDER_FOREST_DEPTH * 2);
+        const y = -BORDER_FOREST_DEPTH + pseudoRandom(seed + 1) * (WORLD.height + BORDER_FOREST_DEPTH * 2);
+        if (x > 0 && x < WORLD.width && y > 0 && y < WORLD.height) continue;
+        const biome = biomeAt(x, y);
+        if (pseudoRandom(seed + 2) > Math.min(1, SCENERY_DENSITY[biome] * 1.4)) continue;
+        const roll = pseudoRandom(seed + 3);
+        const kind = (SCENERY_KINDS[biome].find(([, limit]) => roll <= limit) ||
+          SCENERY_KINDS[biome][0])[0];
+        items.push({ x, y, seed, kind, decor: true });
+      }
       view.setScenery(items);
+    }
+
+    // O terreno de fora: mesmos biomas e mesmos tons do chão do mundo, sem os
+    // detalhes rasteiros, numa textura só que cobre SURROUNDING_SCALE vezes o mundo.
+    function paintSurroundings() {
+      const size = SURROUNDING_TEXTURE_SIZE;
+      const surface = document.createElement('canvas');
+      surface.width = size;
+      surface.height = size;
+      const paintCtx = surface.getContext('2d');
+      const rgb = value => [value >> 16 & 255, value >> 8 & 255, value & 255];
+      const tones = {
+        desert: PALETTE.desertGround.map(rgb),
+        taiga: PALETTE.taigaGround.map(rgb),
+        savanna: PALETTE.savannaGround.map(rgb)
+      };
+      // A textura começa (SURROUNDING_SCALE − 1) / 2 mundos antes da origem.
+      const offsetX = -WORLD.width * (SURROUNDING_SCALE - 1) / 2;
+      const offsetY = -WORLD.height * (SURROUNDING_SCALE - 1) / 2;
+      const stepX = WORLD.width * SURROUNDING_SCALE / size;
+      const stepY = WORLD.height * SURROUNDING_SCALE / size;
+      const image = paintCtx.createImageData(size, size);
+      const data = image.data;
+      let offset = 0;
+      for (let row = 0; row < size; row++) {
+        const worldY = offsetY + row * stepY;
+        const { desertEnd, taigaEnd } = biomeBoundaries(worldY);
+        for (let column = 0; column < size; column++, offset += 4) {
+          const worldX = offsetX + column * stepX;
+          const edge = groundNoise(worldX * 1.7, worldY * 1.7) * 24;
+          const biome = worldX < desertEnd + edge ? 'desert'
+            : worldX < taigaEnd + edge ? 'taiga' : 'savanna';
+          const variation = groundNoise(worldX * .55, worldY * .55);
+          const tone = tones[biome][variation > .34 ? 1 : variation < -.3 ? 2 : 0];
+          data[offset] = tone[0];
+          data[offset + 1] = tone[1];
+          data[offset + 2] = tone[2];
+          data[offset + 3] = 255;
+        }
+      }
+      paintCtx.putImageData(image, 0, 0);
+      view.setSurroundingTexture(surface);
     }
 
     // O chão da ilha é uma textura pintada uma vez: as faixas de bioma saem da mesma
@@ -887,18 +1088,28 @@
         1 + difference * VISION_ENERGY_LINEAR_COST + extremeCost));
     }
 
+    // Alcance efetivo agora: o gene diz até onde o olho vai com sol, a luz diz o resto.
+    function sightRange(o) {
+      return o.genes.visionRange * (campfires.length ? Math.max(sight, fireLight(o)) : sight);
+    }
+
     function inVision(o, item, radius = 0) {
       const dx = item.x - o.x, dy = item.y - o.y;
       const distance = Math.hypot(dx, dy);
-      if (distance - radius > o.genes.visionRange) return false;
+      if (distance - radius > sightRange(o)) return false;
       if (distance <= radius) return true;
       const bearing = Math.atan2(dy, dx);
       const angle = Math.abs(Math.atan2(Math.sin(bearing - o.heading), Math.cos(bearing - o.heading)));
       return angle <= visionHalfAngle(o) + Math.asin(Math.min(1, radius / distance));
     }
 
+    function grassWithin(o, range) {
+      const bite = nearest(o, grass);
+      return Boolean(bite) && Math.hypot(bite.x - o.x, bite.y - o.y) <= range;
+    }
+
     function nearest(o, items) {
-      let best = null, distance = o.genes.visionRange;
+      let best = null, distance = sightRange(o);
       for (const item of items) {
         const radius = item.r || 0;
         const next = Math.max(0, Math.hypot(item.x - o.x, item.y - o.y) - radius);
@@ -1138,12 +1349,467 @@
 
     function tribeResourceGuide(o, need) {
       return closestVisibleMate(o, ally =>
-        !ally.pair && !ally.pregnancy?.labor && ally.need === need && Boolean(ally.target));
+        !ally.pair && !ally.pregnancy?.labor && !ally.asleep && ally.need === need && Boolean(ally.target));
     }
 
     function tribeFormationGuide(o) {
       return closestVisibleMate(o, ally =>
-        ally.id < o.id && !ally.pair && !ally.pregnancy?.labor);
+        ally.id < o.id && !ally.pair && !ally.pregnancy?.labor && !ally.asleep);
+    }
+
+    // Calor que chega ao bicho: cheio colado no fogo, metade na borda do alcance.
+    function fireWarmth(o) {
+      let warmth = 0;
+      for (const fire of campfires) {
+        const distance = Math.hypot(fire.x - o.x, fire.y - o.y);
+        if (distance >= CAMPFIRE_WARM_RADIUS) continue;
+        warmth = Math.max(warmth, fire.flame * (1 - distance / CAMPFIRE_WARM_RADIUS * .5));
+      }
+      return warmth;
+    }
+
+    // Claridade do fogo no ponto do bicho, na mesma escala de `sight` (1 = dia).
+    function fireLight(o) {
+      let light = 0;
+      for (const fire of campfires) {
+        const distance = Math.hypot(fire.x - o.x, fire.y - o.y);
+        if (distance >= CAMPFIRE_LIGHT_RADIUS) continue;
+        light = Math.max(light, fire.flame * .9 * (1 - (distance / CAMPFIRE_LIGHT_RADIUS) ** 2));
+      }
+      return light;
+    }
+
+    function tribeFire(o) {
+      if (!o.band || !o.outfit) return null;
+      return campfires.find(fire => fire.outfit === o.outfit && !fire.dying) || null;
+    }
+
+    // Lugar fixo de cada um na roda. Os lugares são distribuídos pelo tamanho da tribo
+    // quando o fogo foi aceso, espaçados o bastante para ninguém ser empurrado pelo
+    // vizinho (o desvio entre bichos age abaixo de 28); quem chega além da conta abre
+    // uma segunda roda, mais larga, nos vãos da primeira.
+    function campfireSeat(fire, o) {
+      if (!fire.seats.has(o.id)) fire.seats.set(o.id, fire.seats.size);
+      const index = fire.seats.get(o.id);
+      const ring = Math.floor(index / fire.capacity), slot = index % fire.capacity;
+      const angle = (slot + ring * .5) * Math.PI * 2 / fire.capacity + fire.turn;
+      const radius = fire.radius + ring * 30;
+      return {
+        x: Math.max(20, Math.min(WORLD.width - 20, fire.x + Math.cos(angle) * radius)),
+        y: Math.max(20, Math.min(WORLD.height - 20, fire.y + Math.sin(angle) * radius))
+      };
+    }
+
+    // Chão firme para o fogo: o centro do bando, ou o ponto mais perto dele que não
+    // esteja dentro nem na beira de uma poça, e longe da borda da ilha.
+    function campfireSpot(x, y) {
+      const margin = 70;
+      const clampX = value => Math.max(margin, Math.min(WORLD.width - margin, value));
+      const clampY = value => Math.max(margin, Math.min(WORLD.height - margin, value));
+      for (let attempt = 0; attempt < 16; attempt++) {
+        const angle = attempt * 2.4, reach = attempt * 14;
+        const cx = clampX(x + Math.cos(angle) * reach), cy = clampY(y + Math.sin(angle) * reach);
+        if (ponds.every(pond => Math.hypot(pond.x - cx, pond.y - cy) > pond.fullRadius + 40)) {
+          return { x: cx, y: cy };
+        }
+      }
+      return { x: clampX(x), y: clampY(y) };
+    }
+
+    function updateCampfires(dt) {
+      // Só se acende fogo no fim do dia (ou já de noite, para tribo que se formou tarde);
+      // sem isso o crepúsculo da manhã acenderia outra fogueira logo antes de clarear.
+      const evening = sky.hour >= 12 || sky.daylight < .1;
+      if (evening && sky.daylight < CAMPFIRE_START_LIGHT) {
+        for (const band of new Set(organisms.map(o => o.band).filter(Boolean))) {
+          if (campfires.length >= MAX_CAMPFIRES) break;
+          const outfit = band.members[0].outfit;
+          if (!outfit || band.members.length < CAMPFIRE_MIN_TRIBE) continue;
+          if (campfires.some(fire => fire.outfit === outfit && !fire.dying)) continue;
+          const spot = campfireSpot(band.x, band.y);
+          const capacity = band.members.length + 1;
+          campfires.push({
+            x: spot.x, y: spot.y, outfit, capacity,
+            radius: Math.max(22, capacity * 30 / (Math.PI * 2)),
+            turn: Math.random() * Math.PI * 2, seats: new Map(),
+            flame: 0, dying: false, seed: Math.random() * 100
+          });
+          const herald = band.members.find(o => !o.asleep);
+          if (herald) { herald.message = 'fogueira!'; herald.thought = 1.8; }
+        }
+      }
+      const raining = rainStrength() > .4;
+      for (const fire of campfires) {
+        if (sky.daylight > CAMPFIRE_END_LIGHT) fire.dying = true;
+        if (!organisms.some(o => o.outfit === fire.outfit)) fire.dying = true;
+        // Pega devagar, apaga depressa na chuva, e de manhã vai morrendo em brasa.
+        // Depois da chuva a tribo reacende o mesmo fogo.
+        const target = fire.dying || raining ? 0 : 1;
+        const rate = target > fire.flame ? .7 : raining ? 1.4 : .3;
+        fire.flame += (target - fire.flame) * Math.min(1, dt * rate);
+      }
+      campfires = campfires.filter(fire => !(fire.dying && fire.flame < .02));
+    }
+
+    function fallAsleep(o) {
+      stopChop(o);
+      o.asleep = true;
+      o.target = null;
+      o.need = null;
+      o.restTimer = 0;
+      o.speed = 0; o.vx = 0; o.vy = 0;
+      clearResourceSearch(o);
+      o.thought = 0;
+    }
+
+    function wakeUp(o, message) {
+      o.asleep = false;
+      o.walkTimer = 0;
+      // Quem dormiu na cabana sai pela porta e devolve a vaga.
+      if (o.inHut && o.hut) {
+        o.x = o.hut.doorX;
+        o.y = o.hut.doorY;
+        o.heading = o.hut.angle;
+      }
+      o.inHut = false;
+      releaseBed(o);
+      if (message) { o.message = message; o.thought = 1.3; }
+    }
+
+    // ---- Madeira e cabanas ----
+
+    // A "casa" de um bicho é a tribo inteira; sem tribo, ele mesmo.
+    function shelterKey(o) {
+      return o.band && o.outfit ? o.outfit : `solo-${o.id}`;
+    }
+
+    function shelterGroupSize(o) {
+      return o.band ? o.band.members.length : 1;
+    }
+
+    function releaseBed(o) {
+      if (o.hut) o.hut.beds.delete(o.id);
+      o.hut = null;
+    }
+
+    function stopChop(o) {
+      if (o.chop && o.chop.tree.chopper === o.id) o.chop.tree.chopper = null;
+      o.chop = null;
+    }
+
+    function choppable(tree, o) {
+      return !tree.stump && !tree.fall && tree.growth >= 1 &&
+        (!tree.chopper || tree.chopper === o.id ||
+          !organisms.some(other => other.id === tree.chopper && other.chop?.tree === tree));
+    }
+
+    // Árvore alvo: a que já estava escolhida, se continua de pé; senão a mais perto à
+    // vista; senão a mais perto num raio grande — árvore se enxerga de longe.
+    function targetTree(o) {
+      if (o.woodTarget && trees.includes(o.woodTarget) && choppable(o.woodTarget, o)) return o.woodTarget;
+      let best = null, bestDistance = Infinity;
+      for (const tree of trees) {
+        if (!choppable(tree, o)) continue;
+        const distance = Math.hypot(tree.x - o.x, tree.y - o.y);
+        const seen = inVision(o, tree, 8);
+        if (!seen && distance > TREE_LANDMARK_RANGE) continue;
+        // Uma árvore à vista vale como se estivesse bem mais perto que uma lembrada.
+        const score = seen ? distance : distance + 200;
+        if (score < bestDistance) { best = tree; bestDistance = score; }
+      }
+      o.woodTarget = best;
+      return best;
+    }
+
+    function hutDoor(hut) {
+      hut.doorX = hut.x + Math.cos(hut.angle) * HUT_DOOR_OFFSET;
+      hut.doorY = hut.y + Math.sin(hut.angle) * HUT_DOOR_OFFSET;
+    }
+
+    // Terreno para a cabana: perto do bando, longe de poça, de outra cabana, do fogo,
+    // de árvore em pé e da borda do mundo.
+    function hutSpot(x, y) {
+      const margin = 45;
+      for (let attempt = 0; attempt < 40; attempt++) {
+        const angle = Math.random() * Math.PI * 2;
+        const reach = attempt < 1 ? 0 : 20 + Math.random() * (40 + attempt * 4);
+        const cx = Math.max(margin, Math.min(WORLD.width - margin, x + Math.cos(angle) * reach));
+        const cy = Math.max(margin, Math.min(WORLD.height - margin, y + Math.sin(angle) * reach));
+        if (ponds.some(pond => Math.hypot(pond.x - cx, pond.y - cy) < pond.fullRadius + 26)) continue;
+        if (huts.some(hut => Math.hypot(hut.x - cx, hut.y - cy) < 52)) continue;
+        if (campfires.some(fire => Math.hypot(fire.x - cx, fire.y - cy) < 42)) continue;
+        if (trees.some(tree => !tree.stump && Math.hypot(tree.x - cx, tree.y - cy) < 18)) continue;
+        return { x: cx, y: cy };
+      }
+      return null;
+    }
+
+    function ownerAlive(key) {
+      return organisms.some(o => o.life > 0 && shelterKey(o) === key);
+    }
+
+    // Obra da própria turma; se não houver, adota uma obra largada por um grupo que
+    // não existe mais; se não houver, abre uma nova perto do bando.
+    function buildSite(o, create) {
+      const key = shelterKey(o);
+      let site = huts.find(hut => !hut.built && hut.owner === key);
+      if (site || !create) return site || null;
+      site = huts.find(hut => !hut.built && Math.hypot(hut.x - o.x, hut.y - o.y) < 400 &&
+        !ownerAlive(hut.owner));
+      if (site) { site.owner = key; return site; }
+      if (huts.length >= MAX_HUTS) return null;
+      const centerX = o.band ? o.band.x : o.x, centerY = o.band ? o.band.y : o.y;
+      const spot = hutSpot(centerX, centerY);
+      if (!spot) return null;
+      site = {
+        id: nextHutId++, x: spot.x, y: spot.y, owner: key, logs: 0, built: false,
+        // Porta virada para o centro do bando, que é de onde a turma vem.
+        angle: Math.atan2(centerY - spot.y, centerX - spot.x) || Math.random() * Math.PI * 2,
+        beds: new Set(), seed: Math.random() * 100
+      };
+      hutDoor(site);
+      huts.push(site);
+      return site;
+    }
+
+    function needsShelter(o) {
+      const key = shelterKey(o);
+      const beds = huts.filter(hut => hut.built && hut.owner === key).length * HUT_CAPACITY;
+      return beds < shelterGroupSize(o) || Boolean(buildSite(o, false));
+    }
+
+    function approach(o, x, y, arrival) {
+      const distance = Math.hypot(x - o.x, y - o.y);
+      return {
+        direction: Math.atan2(y - o.y, x - o.x),
+        desiredSpeed: Math.min(WALK_SPEED * o.pace, Math.sqrt(2 * BRAKING * Math.max(0, distance - arrival)))
+      };
+    }
+
+    function chopHit(o, tree) {
+      tree.health--;
+      tree.shake = 1;
+      o.energy = Math.max(0, o.energy - ENERGY_PER_SWING);
+      woodChips.push({ x: tree.x, y: tree.y, dir: o.heading, time: 0, seed: Math.random() * 100 });
+      if (tree.health > 0) return;
+      // Cai para longe de quem cortou, que é para onde o corte empurra.
+      tree.fall = { angle: .04, speed: 0, dir: o.heading, phase: 'falling', timer: 0, landed: false };
+      stopChop(o);
+      o.woodTarget = null;
+      o.message = 'lá vai!';
+      o.thought = 1.6;
+    }
+
+    function chopTick(o, dt) {
+      const tree = o.chop.tree;
+      if (!trees.includes(tree) || tree.stump || tree.fall) { stopChop(o); return null; }
+      o.heading = Math.atan2(tree.y - o.y, tree.x - o.x);
+      const before = o.chop.timer;
+      o.chop.timer += dt;
+      if (before < CHOP_IMPACT && o.chop.timer >= CHOP_IMPACT) chopHit(o, tree);
+      if (o.chop && o.chop.timer >= CHOP_SWING) o.chop.timer -= CHOP_SWING;
+      return { direction: o.heading, desiredSpeed: 0 };
+    }
+
+    function canWork(o) {
+      return o.stage === 'adult' && o.energy > WORK_MIN_ENERGY && !o.pregnancy?.labor &&
+        sky.daylight > WORK_MIN_LIGHT;
+    }
+
+    // O trabalho da madeira, em ordem: tora no ombro vai para a obra; tora no chão à
+    // vista vai para o ombro; sem tora, corta árvore. Devolve o movimento do tique, ou
+    // nada quando o bicho não tem o que fazer com madeira agora.
+    function woodwork(o, dt) {
+      if (!canWork(o) || (!o.carrying && !needsShelter(o))) {
+        if (o.chop) stopChop(o);
+        return null;
+      }
+      if (o.carrying) {
+        const site = buildSite(o, true);
+        if (!site) return null;
+        if (Math.hypot(site.x - o.x, site.y - o.y) <= HUT_DELIVER_RADIUS) {
+          site.logs++;
+          o.carrying = false;
+          o.speed = 0; o.vx = 0; o.vy = 0;
+          if (site.logs >= HUT_LOGS) {
+            site.built = true;
+            o.message = 'cabana pronta!';
+          } else {
+            o.message = `tora ${site.logs}/${HUT_LOGS}`;
+          }
+          o.thought = 1.5;
+          return { direction: o.heading, desiredSpeed: 0 };
+        }
+        return approach(o, site.x, site.y, HUT_DELIVER_RADIUS - 3);
+      }
+      if (o.chop) return chopTick(o, dt);
+      const log = nearest(o, logs);
+      if (log) {
+        if (Math.hypot(log.x - o.x, log.y - o.y) <= 7) {
+          logs = logs.filter(item => item !== log);
+          o.carrying = true;
+          o.message = 'peguei a tora';
+          o.thought = 1.2;
+          return { direction: o.heading, desiredSpeed: 0 };
+        }
+        return approach(o, log.x, log.y, 5);
+      }
+      const tree = targetTree(o);
+      if (!tree) return null;
+      if (Math.hypot(tree.x - o.x, tree.y - o.y) <= CHOP_REACH) {
+        o.chop = { tree, timer: 0 };
+        tree.chopper = o.id;
+        o.heading = Math.atan2(tree.y - o.y, tree.x - o.x);
+        o.speed = 0; o.vx = 0; o.vy = 0;
+        o.message = 'vou cortar';
+        o.thought = 1.2;
+        return { direction: o.heading, desiredSpeed: 0 };
+      }
+      return approach(o, tree.x, tree.y, CHOP_REACH - 1);
+    }
+
+    function spawnLogs(tree) {
+      const dx = Math.cos(tree.fall.dir), dy = Math.sin(tree.fall.dir);
+      for (let i = 0; i < LOGS_PER_TREE; i++) {
+        const along = 6 + i * 7.5, side = (Math.random() - .5) * 3;
+        logs.push({
+          x: Math.max(8, Math.min(WORLD.width - 8, tree.x + dx * along - dy * side)),
+          y: Math.max(8, Math.min(WORLD.height - 8, tree.y + dy * along + dx * side)),
+          angle: tree.fall.dir + (Math.random() - .5) * .35,
+          seed: Math.random() * 100
+        });
+      }
+    }
+
+    function updateTrees(dt, days) {
+      for (const tree of trees) {
+        tree.shake = Math.max(0, tree.shake - dt * 2.5);
+        const fall = tree.fall;
+        if (fall) {
+          if (fall.phase === 'falling') {
+            fall.speed += TREE_FALL_GRAVITY * Math.sin(fall.angle) * dt;
+            fall.angle += fall.speed * dt;
+            if (fall.angle >= Math.PI / 2) {
+              fall.angle = Math.PI / 2;
+              if (!fall.landed) {
+                fall.landed = true;
+                fallDust.push({ x: tree.x, y: tree.y, dir: fall.dir, time: 0 });
+              }
+              // Quica um pouco na copa e assenta.
+              if (fall.speed > .35) fall.speed = -fall.speed * .18;
+              else { fall.phase = 'down'; fall.speed = 0; }
+            }
+          } else {
+            fall.timer += dt;
+            if (fall.timer >= TREE_DOWN_TIME) {
+              spawnLogs(tree);
+              tree.fall = null;
+              tree.stump = true;
+              tree.stumpAge = 0;
+              tree.chopper = null;
+            }
+          }
+        } else if (tree.stump) {
+          tree.stumpAge += days;
+          if (tree.stumpAge >= TREE_REGROW_DAYS) {
+            tree.stump = false;
+            tree.growth = 0;
+            tree.health = CHOP_HITS;
+          }
+        } else if (tree.growth < 1) {
+          tree.growth = Math.min(1, tree.growth + days / TREE_GROW_DAYS);
+        }
+      }
+      for (const chip of woodChips) chip.time += dt;
+      woodChips = woodChips.filter(chip => chip.time < .7);
+      for (const dust of fallDust) dust.time += dt;
+      fallDust = fallDust.filter(dust => dust.time < 1.6);
+    }
+
+    function updateHuts() {
+      const living = new Set(organisms.map(o => o.id));
+      for (const hut of huts) {
+        for (const id of hut.beds) if (!living.has(id)) hut.beds.delete(id);
+      }
+      // De dia ninguém segura vaga: quem reservou e acabou não dormindo devolve.
+      if (sky.daylight > .6) {
+        for (const o of organisms) if (o.hut && !o.asleep) releaseBed(o);
+      }
+    }
+
+    // Vaga numa cabana pronta: primeiro as da própria turma, depois a mais perto.
+    function claimHut(o) {
+      if (o.hut && huts.includes(o.hut) && o.hut.built) return o.hut;
+      o.hut = null;
+      const key = shelterKey(o);
+      let best = null, bestScore = Infinity;
+      for (const hut of huts) {
+        if (!hut.built || hut.beds.size >= HUT_CAPACITY) continue;
+        const distance = Math.hypot(hut.x - o.x, hut.y - o.y);
+        if (distance > HUT_SEEK_RANGE) continue;
+        const score = distance - (hut.owner === key ? 1000 : 0);
+        if (score < bestScore) { best = hut; bestScore = score; }
+      }
+      if (best) { best.beds.add(o.id); o.hut = best; }
+      return best;
+    }
+
+    // Onde passar a noite: vaga em cabana, senão lugar na roda da fogueira.
+    function restSpot(o) {
+      const hut = claimHut(o);
+      if (hut) return { x: hut.doorX, y: hut.doorY, faceX: hut.x, faceY: hut.y, hut };
+      const fire = tribeFire(o);
+      if (fire) {
+        const seat = campfireSeat(fire, o);
+        return { x: seat.x, y: seat.y, faceX: fire.x, faceY: fire.y, fire };
+      }
+      return null;
+    }
+
+    // Decide se o bicho deita ou levanta neste tique. Dormir de noite é hábito, não
+    // escolha: quem está bem alimentado deita quando escurece para ele. Quem zera a
+    // energia apaga onde estiver, de dia ou de noite, com fome ou sem.
+    function updateSleep(o) {
+      const hungriest = Math.min(o.hunger, o.thirst);
+      if (o.asleep) {
+        if (o.pregnancy?.labor) return wakeUp(o, null);
+        if (hungriest < SLEEP_WAKE_NEED && o.energy > SLEEP_WAKE_ENERGY) {
+          return wakeUp(o, o.hunger <= o.thirst ? 'que fome' : 'que sede');
+        }
+        const morning = sky.daylight >= o.wakeLight;
+        // Energia cheia só tira da cama fora da noite dele (é o cochilo de quem
+        // apagou de dia); de noite ele continua deitado até clarear.
+        if ((morning && o.energy > 55) || (o.energy >= 100 && sky.daylight > o.bedLight)) {
+          wakeUp(o, morning && sky.daylight < .9 ? 'bom dia' : null);
+        }
+        return;
+      }
+      if (o.pair || o.eating > 0 || o.drinking > 0 || o.pregnancy?.labor) return;
+      if (o.energy <= 0) return fallAsleep(o);
+      if (sky.daylight > o.bedLight || hungriest < SLEEP_MIN_NEED) return;
+      const spot = restSpot(o);
+      // Com vaga em cabana, entra pela porta e dorme lá dentro, fora de vista.
+      if (spot?.hut) {
+        if (Math.hypot(spot.x - o.x, spot.y - o.y) > HUT_DOOR_TOLERANCE) return;
+        o.inHut = true;
+        o.x = spot.hut.x;
+        o.y = spot.hut.y;
+        return fallAsleep(o);
+      }
+      // Com fogueira, só deita no próprio lugar da roda, com os pés para o fogo —
+      // deitar de costas tomba a cabeça para trás, para longe da chama.
+      if (spot?.fire) {
+        if (Math.hypot(spot.x - o.x, spot.y - o.y) > CAMPFIRE_SEAT_TOLERANCE) return;
+        o.heading = Math.atan2(spot.faceY - o.y, spot.faceX - o.x);
+        return fallAsleep(o);
+      }
+      // Sem fogo, dorme perto da tribo: longe do bando ainda anda até ele (a coesão
+      // puxa), e só deita quando chega. Perdido de vez, dorme onde estiver.
+      if (o.band) {
+        const distance = Math.hypot(o.band.x - o.x, o.band.y - o.y);
+        if (distance > TRIBE_LOOSE_DISTANCE && distance <= TRIBE_CALL_RANGE) return;
+      }
+      fallAsleep(o);
     }
 
     function followMateMotion(o, ally) {
@@ -1169,82 +1835,20 @@
       };
     }
 
-    function drawStatusIcon({ kind, x, y, color }) {
+    // Nome em cima da cabeça, com contorno claro para ler sobre grama, areia ou noite.
+    function drawName(head, o) {
       ctx.save();
-      ctx.translate(x, y);
-      ctx.fillStyle = color;
-      ctx.strokeStyle = paint.ink;
-      ctx.lineWidth = .55;
-      ctx.lineCap = 'round';
+      ctx.font = `600 10px ${bodyFont}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
       ctx.lineJoin = 'round';
-      ctx.beginPath();
-      if (kind === 'life') {
-        ctx.moveTo(0, 2.6);
-        ctx.bezierCurveTo(-3.8, .2, -3, -2.3, -1.2, -2.3);
-        ctx.bezierCurveTo(-.35, -2.3, 0, -1.6, 0, -1.05);
-        ctx.bezierCurveTo(0, -1.6, .35, -2.3, 1.2, -2.3);
-        ctx.bezierCurveTo(3, -2.3, 3.8, .2, 0, 2.6);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      } else if (kind === 'food') {
-        ctx.ellipse(0, 0, 2.8, 1.7, -.58, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(-2.1, 1.5);
-        ctx.lineTo(2.1, -1.5);
-        ctx.stroke();
-      } else if (kind === 'water') {
-        ctx.moveTo(0, -3.1);
-        ctx.bezierCurveTo(-.7, -1.7, -2.5, .1, -2.5, 1.25);
-        ctx.bezierCurveTo(-2.5, 2.7, -1.35, 3.4, 0, 3.4);
-        ctx.bezierCurveTo(1.35, 3.4, 2.5, 2.7, 2.5, 1.25);
-        ctx.bezierCurveTo(2.5, .1, .7, -1.7, 0, -3.1);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = paint.panelStrong;
-        ctx.ellipse(0, 0, 2.35, 3, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(0, .45, .9, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    function drawStatusBar({ x, y, width, value, color, kind }) {
-      ctx.save();
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = paint.ink;
-      ctx.globalAlpha = .2;
-      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + width, y); ctx.stroke();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2.2;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = paint.panelStrong;
+      ctx.globalAlpha = .92;
+      ctx.strokeText(o.name, head.x, head.y - 4);
+      ctx.fillStyle = paint.ink;
       ctx.globalAlpha = 1;
-      ctx.beginPath(); ctx.moveTo(x, y);
-      ctx.lineTo(x + width * Math.max(0, Math.min(100, value)) / 100, y);
-      ctx.stroke();
-      ctx.restore();
-      drawStatusIcon({ kind, x: x - 8, y, color });
-    }
-
-    function drawStatusPanel(x, y, pregnant) {
-      ctx.save();
-      ctx.fillStyle = paint.panelStrong;
-      ctx.globalAlpha = .78;
-      ctx.beginPath();
-      ctx.roundRect(x - 19, y - 3, 38, pregnant ? 20 : 15.5, 4);
-      ctx.fill();
-      ctx.strokeStyle = paint.ink;
-      ctx.lineWidth = .65;
-      ctx.globalAlpha = .28;
-      ctx.stroke();
+      ctx.fillText(o.name, head.x, head.y - 4);
       ctx.restore();
     }
 
@@ -1263,11 +1867,108 @@
     }
 
     // O corpo virou geometria na cena. Aqui fica só o que continua sendo interface:
-    // balão de pensamento e barras, em pixels de tela, ancorados na cabeça do bicho.
+    // balão de pensamento, "z" do sono e o nome, em pixels de tela, ancorados na
+    // cabeça do bicho.
+    // Três "z" subindo e sumindo em fila, do menor para o maior.
+    function drawSleepMarks(head, o) {
+      ctx.save();
+      ctx.fillStyle = paint.sleep;
+      ctx.strokeStyle = paint.panelStrong;
+      ctx.lineWidth = 2.4;
+      ctx.lineJoin = 'round';
+      for (let i = 0; i < 3; i++) {
+        const cycle = reducedMotion.matches ? i / 3
+          : (elapsed * .45 + i / 3 + o.wanderPhase) % 1;
+        const size = 7 + cycle * 6;
+        ctx.globalAlpha = reducedMotion.matches ? .85 : Math.sin(cycle * Math.PI) * .95;
+        ctx.font = `800 ${size}px ${displayFont}`;
+        const x = head.x + 6 + cycle * 10;
+        const y = head.y - 18 - cycle * 22;
+        ctx.strokeText('z', x, y);
+        ctx.fillText('z', x, y);
+      }
+      ctx.restore();
+    }
+
+    // Lascas de madeira saltando do corte: saem para os lados do golpe, sobem um tico
+    // e caem com gravidade. Em pixels de tela, ancoradas na altura do corte.
+    function drawWoodChips() {
+      if (reducedMotion.matches) return;
+      ctx.save();
+      for (const chip of woodChips) {
+        const origin = view.project(chip.x, chip.y, 4);
+        const t = chip.time;
+        ctx.globalAlpha = Math.max(0, 1 - t / .7);
+        for (let i = 0; i < 6; i++) {
+          const spread = (pseudoRandom(chip.seed + i) - .5) * 2.4;
+          const speed = 40 + pseudoRandom(chip.seed + i + 10) * 50;
+          const angle = -Math.PI / 2 + spread;
+          const x = origin.x + Math.cos(angle) * speed * t;
+          const y = origin.y + Math.sin(angle) * speed * t + 160 * t * t;
+          ctx.fillStyle = i % 2 ? '#c8a070' : '#e2c595';
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(t * 14 + i);
+          ctx.fillRect(-1.6, -.9, 3.2, 1.8);
+          ctx.restore();
+        }
+      }
+      ctx.restore();
+    }
+
+    // Poeira da queda: nuvens baixas ao longo do tronco caído, que crescem e somem.
+    // Desenhada deitada no chão (matriz do chão já aplicada).
+    function drawFallDust() {
+      for (const dust of fallDust) {
+        const progress = dust.time / 1.6;
+        ctx.save();
+        ctx.fillStyle = PALETTE_DUST;
+        for (let i = 0; i < 6; i++) {
+          const along = 6 + i * 5;
+          const x = dust.x + Math.cos(dust.dir) * along;
+          const y = dust.y + Math.sin(dust.dir) * along;
+          ctx.globalAlpha = (1 - progress) * .32;
+          ctx.beginPath();
+          ctx.arc(x, y, 5 + progress * (10 + i * 1.5), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    // Obra em andamento mostra quantas toras já tem; cabana com gente dormindo solta
+    // os "z" pelo telhado.
+    function drawHutMarks() {
+      for (const hut of huts) {
+        if (!hut.built) {
+          const anchor = view.project(hut.x, hut.y, 18);
+          ctx.save();
+          ctx.font = `600 10px ${bodyFont}`;
+          ctx.textAlign = 'center';
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = paint.panelStrong;
+          const label = `cabana ${hut.logs}/${HUT_LOGS}`;
+          ctx.strokeText(label, anchor.x, anchor.y);
+          ctx.fillStyle = paint.ink2;
+          ctx.fillText(label, anchor.x, anchor.y);
+          ctx.restore();
+          continue;
+        }
+        const sleepers = organisms.some(o => o.inHut && o.hut === hut);
+        if (sleepers) drawSleepMarks(view.project(hut.x, hut.y, 30), { wanderPhase: hut.seed });
+      }
+    }
+
     function draw(o) {
-      const head = view.project(o.x, o.y, CHARACTER_HEIGHT * (o.size / LIFE_SIZE));
+      // Dentro da cabana não aparece: nem corpo, nem nome; os "z" saem do telhado.
+      if (o.inHut) return;
+      // Deitado, a cabeça fica rente ao chão; o nome desce junto.
+      const lift = o.asleep ? 7 : CHARACTER_HEIGHT;
+      const head = view.project(o.x, o.y, lift * (o.size / LIFE_SIZE));
       const edge = overlay.clientWidth;
-      if (o.thought > 0) {
+      if (o.asleep) drawSleepMarks(head, o);
+      if (o.thought > 0 && !o.asleep) {
         ctx.save();
         ctx.globalAlpha = Math.min(1, o.thought * 3);
         ctx.font = `600 10px ${bodyFont}`;
@@ -1293,18 +1994,7 @@
         ctx.restore();
       }
 
-      const pregnancyProgress = o.pregnancy
-        ? Math.max(0, Math.min(1, o.pregnancy.elapsed / o.pregnancy.duration))
-        : 0;
-      const bx = head.x - 11, by = head.y - 16;
-      drawStatusPanel(head.x, by, Boolean(o.pregnancy));
-      drawStatusBar({ x: bx, y: by, width: 22, value: o.life, color: paint.life, kind: 'life' });
-      drawStatusBar({ x: bx, y: by + 4.5, width: 22, value: o.hunger, color: paint.grass, kind: 'food' });
-      drawStatusBar({ x: bx, y: by + 9, width: 22, value: o.thirst, color: paint.water, kind: 'water' });
-      if (o.pregnancy) {
-        drawStatusBar({ x: bx, y: by + 13.5, width: 22,
-          value: pregnancyProgress * 100, color: paint.accent2, kind: 'pregnancy' });
-      }
+      drawName(head, o);
     }
     function drawHeart({ x, y, scale = 1, alpha = 1 }) {
       ctx.save();
@@ -1457,10 +2147,14 @@
 
 
 
+    function rainStrength() {
+      return rain ? Math.max(0, Math.min(1, rain.time / .6, (RAIN_DURATION - rain.time) / .8)) : 0;
+    }
+
     function drawRain() {
       if (!rain) return;
       const w = overlay.clientWidth, h = overlay.clientHeight;
-      const strength = Math.max(0, Math.min(1, rain.time / .6, (RAIN_DURATION - rain.time) / .8));
+      const strength = rainStrength();
       const motionTime = reducedMotion.matches ? 0 : rain.time;
       const count = Math.min(rainDrops.length, Math.max(55, Math.round(w * h / 6500)));
       ctx.save();
@@ -1519,17 +2213,20 @@
 
     function canMate(o) {
       const minimum = MATE_MIN_RESOURCE + (1 - o.genes.fertility) * 18;
-      return o.stage === 'adult' && o.life > 0 && o.hunger >= minimum &&
+      return o.stage === 'adult' && o.life > 0 && !o.asleep && o.energy >= MATE_MIN_ENERGY &&
+        o.hunger >= minimum &&
         o.thirst >= minimum && o.mateCooldown <= 0 && !o.pregnancy &&
         o.eating <= 0 && o.drinking <= 0;
     }
 
     function stageSpeed(o) {
-      return o.stage === 'infant' ? .62 : o.stage === 'elder' ? .48 : 1;
+      const stage = o.stage === 'infant' ? .62 : o.stage === 'elder' ? .48 : 1;
+      const fatigue = o.energy < FATIGUE_ENERGY ? .55 + .45 * o.energy / FATIGUE_ENERGY : 1;
+      return stage * fatigue * (o.carrying ? CARRY_SPEED : 1);
     }
 
     function seekMate(observer) {
-      let partner = null, closest = observer.genes.visionRange;
+      let partner = null, closest = sightRange(observer);
       for (const candidate of organisms) {
         if (candidate.sex === observer.sex || candidate.pair || !canMate(candidate)) continue;
         if (!inVision(observer, candidate, candidate.size)) continue;
@@ -1621,6 +2318,7 @@
               duration: GESTATION_DURATION / fertility,
               genome: createZygote(createGamete(male.genome), createGamete(female.genome)),
               fatherId: male.id,
+              fatherName: male.name,
               generation: (male.generation + female.generation) / 2 + 1,
               labor: false
             };
@@ -1659,7 +2357,11 @@
           y,
           sex: chooseOffspringSex(),
           genome: mother.pregnancy.genome,
-          lineage: { fatherId: mother.pregnancy.fatherId, motherId: mother.id },
+          lineage: {
+            fatherId: mother.pregnancy.fatherId, motherId: mother.id,
+            // O nome vai junto: o pai pode já ter morrido quando a ficha for aberta.
+            fatherName: mother.pregnancy.fatherName, motherName: mother.name
+          },
           generation: mother.pregnancy.generation
         });
         child.heading = mother.heading + Math.PI;
@@ -1718,33 +2420,61 @@
 
     function update(dt) {
       elapsed += dt;
+      // Quanto do dia do céu passou neste passo: é nesta moeda que se envelhece.
+      const days = dt * skyRate(sky) / DAY_LENGTH;
+      skyTime += dt * skyRate(sky);
+      sky = skyAt(skyTime);
+      sight = Math.min(1, NIGHT_SIGHT + (1 - NIGHT_SIGHT) * sky.daylight + MOON_SIGHT * sky.moonlight);
+      const activity = .5 + .5 * sky.daylight;
       for (const o of organisms) {
-        o.age += dt;
+        o.age += days;
         o.stage = o.age >= o.genes.longevity ? 'elder' : o.age >= o.genes.maturity ? 'adult' : 'infant';
         o.size = o.stage === 'infant' ? LIFE_SIZE * (.55 + .45 * o.age / o.genes.maturity) : LIFE_SIZE;
         o.mateCooldown = Math.max(0, o.mateCooldown - dt);
         o.birthAnimation = Math.max(0, o.birthAnimation - dt);
-        if (o.stage === 'elder') o.life -= dt * 2.6;
+        if (o.stage === 'elder') o.life -= days * ELDER_DECLINE_PER_DAY;
         const movementLoad = (o.speed / RUN_SPEED) ** 2;
         const visionEnergy = visionEnergyMultiplier(o.genes);
+        // Dormindo, o olho fechado também não cobra o custo da visão; perto do fogo o
+        // corpo não gasta para se aquecer, e o metabolismo cai mais um pouco.
+        // Dentro da cabana o abrigo vale mais que o fogo.
+        const shelterCut = o.inHut ? HUT_METABOLISM_CUT : fireWarmth(o) * CAMPFIRE_METABOLISM_CUT;
+        const restFactor = o.asleep ? SLEEP_METABOLISM * (1 - shelterCut) : visionEnergy;
         const hungerDrain = BASE_HUNGER_DRAIN * o.genes.metabolism *
-          visionEnergy * (1 + movementLoad * MOVEMENT_HUNGER_COST);
+          restFactor * (1 + movementLoad * MOVEMENT_HUNGER_COST);
         const thirstDrain = BASE_THIRST_DRAIN * o.genes.metabolism *
-          visionEnergy * (1 + movementLoad * MOVEMENT_THIRST_COST);
+          restFactor * (1 + movementLoad * MOVEMENT_THIRST_COST);
         o.hunger = Math.max(0, o.hunger - dt * hungerDrain);
         o.thirst = Math.max(0, o.thirst - dt * thirstDrain);
+        const restBonus = !o.asleep ? 0
+          : o.inHut ? HUT_REST_BONUS : fireWarmth(o) * CAMPFIRE_REST_BONUS;
+        o.energy = o.asleep
+          ? Math.min(100, o.energy + dt * ENERGY_RECOVERY * (1 + restBonus))
+          : Math.max(0, o.energy - dt * ENERGY_WALK_COST * (o.speed / WALK_SPEED) *
+            (1 + movementLoad * ENERGY_MOVE_COST) * (o.carrying ? CARRY_ENERGY : 1));
+        if (o.pair && o.pair.phase !== 'approach') {
+          o.energy = Math.max(0, o.energy - dt * ENERGY_SEX_RATE);
+        }
         if (rain) o.thirst = Math.min(100, o.thirst + dt * RAIN_HYDRATION_RATE);
         o.thought = Math.max(0, o.thought - dt);
         if (o.hunger === 0 || o.thirst === 0) o.life -= dt * 5;
         if (o.life <= 0) continue;
 
+        updateSleep(o);
+        if (o.asleep) {
+          o.speed = 0; o.vx = 0; o.vy = 0;
+          continue;
+        }
+
         if (o.pregnancy?.labor) {
+          stopChop(o);
           o.speed = 0; o.vx = 0; o.vy = 0;
           continue;
         }
 
         if (!o.pair && canMate(o)) seekMate(o);
         if (o.pair) {
+          stopChop(o);
           if (o.pair.phase === 'approach') {
             const partner = o.sex === 'male' ? o.pair.female : o.pair.male;
             const distance = Math.hypot(partner.x - o.x, partner.y - o.y);
@@ -1783,8 +2513,18 @@
           continue;
         }
 
-        const need = Math.min(o.hunger, o.thirst) < NEED_RESOURCE_THRESHOLD
+        let need = Math.min(o.hunger, o.thirst) < NEED_RESOURCE_THRESHOLD
           ? (o.hunger <= o.thirst ? 'food' : 'water') : null;
+        // Comer de passagem: sem fome de verdade ainda, mas com a barriga já não
+        // cheia, o bicho que dá com uma moita logo ali belisca, em vez de só procurar
+        // comida quando aperta. Não sai atrás dela: só vale a moita que está perto.
+        if (!need && o.hunger < GRAZE_HUNGER) {
+          const grazing = o.need === 'food' && o.target && grass.includes(o.target);
+          if (grazing || grassWithin(o, GRAZE_RANGE)) need = 'food';
+        }
+        // Fome e sede passam na frente do machado; o dano na árvore fica, e ela
+        // continua ferida esperando o próximo lenhador.
+        if (need && o.chop) stopChop(o);
         if (need !== o.need) {
           o.need = need;
           o.target = null;
@@ -1800,14 +2540,14 @@
           }
         }
 
-        let direction = o.wanderHeading, desiredSpeed = 0;
+        let direction = o.wanderHeading, desiredSpeed = 0, seat = null, working = false;
         if (o.target) {
           const distance = Math.hypot(o.target.x - o.x, o.target.y - o.y);
           const arrival = need === 'food' ? 12 : o.target.r + 5;
           if (distance <= arrival) {
             if (need === 'food') {
               grass = grass.filter(g => g !== o.target);
-              grassRegrow.push(8 + Math.random() * 12);
+              grassRegrow.push(GRASS_REGROW_MIN + Math.random() * GRASS_REGROW_SPREAD);
               o.eating = 1.15; o.message = 'nham nham';
             } else {
               o.drinking = 1.15; o.drinkingPond = o.target; o.message = 'glu glu';
@@ -1834,8 +2574,28 @@
           o.restTimer = 0;
         } else {
           clearResourceSearch(o);
-          const guide = tribeFormationGuide(o);
-          if (guide) {
+          // Perto da hora de deitar, quem tem cabana vai para a porta dela e quem tem
+          // fogueira vai para o seu lugar na roda, de frente para o fogo.
+          seat = sky.daylight < o.bedLight + CAMPFIRE_GATHER_LEAD ? restSpot(o) : null;
+          if (seat) stopChop(o);
+          // De dia, sem fome nem sede, quem não tem teto trabalha na madeira.
+          const work = seat ? null : woodwork(o, dt);
+          working = Boolean(work);
+          const guide = seat || work ? null : tribeFormationGuide(o);
+          if (seat) {
+            const distance = Math.hypot(seat.x - o.x, seat.y - o.y);
+            if (distance > 2) {
+              direction = Math.atan2(seat.y - o.y, seat.x - o.x);
+              desiredSpeed = Math.min(WALK_SPEED * o.pace, Math.sqrt(2 * BRAKING * distance));
+            } else {
+              o.heading = Math.atan2(seat.faceY - o.y, seat.faceX - o.x);
+            }
+            o.restTimer = 0;
+          } else if (work) {
+            direction = work.direction;
+            desiredSpeed = work.desiredSpeed;
+            o.restTimer = 0;
+          } else if (guide) {
             const following = followMateMotion(o, guide);
             direction = following.direction;
             desiredSpeed = following.desiredSpeed;
@@ -1846,26 +2606,30 @@
             } else {
               o.walkTimer -= dt;
               if (o.walkTimer <= 0) {
-                o.restTimer = .25 + Math.random() * .8;
+                o.restTimer = (.25 + Math.random() * .8) * (3 - 2 * activity);
                 o.walkTimer = 1.1 + Math.random() * 2.1;
                 o.wanderHeading += (Math.random() - .5) * 1.6;
               } else {
                 o.wanderHeading += Math.sin(elapsed * .75 + o.wanderPhase) * .48 * dt;
                 direction = o.wanderHeading;
-                desiredSpeed = WALK_SPEED * o.pace * (.82 + .18 * Math.sin(elapsed * 1.3 + o.wanderPhase));
+                desiredSpeed = WALK_SPEED * o.pace * activity *
+                  (.82 + .18 * Math.sin(elapsed * 1.3 + o.wanderPhase));
               }
             }
           }
           const margin = 35;
           const inwardX = o.x < margin ? margin - o.x : o.x > WORLD.width - margin ? WORLD.width - margin - o.x : 0;
           const inwardY = o.y < margin ? margin - o.y : o.y > WORLD.height - margin ? WORLD.height - margin - o.y : 0;
-          if (inwardX || inwardY) {
+          if (!seat && !working && (inwardX || inwardY)) {
             direction = Math.atan2(Math.sin(direction) + inwardY / margin * 2, Math.cos(direction) + inwardX / margin * 2);
             o.wanderHeading = direction;
             if (o.restTimer <= 0) desiredSpeed = Math.max(desiredSpeed, WALK_SPEED * .7);
           }
         }
-        const cohesion = tribeCohesion(o);
+        // A caminho do lugar na roda a coesão sai de cena: o fogo já está no bando.
+        // Trabalhando também: o lenhador parado no machado não larga a árvore para
+        // voltar à formação, e quem leva tora vai para a obra, que fica no bando.
+        const cohesion = seat || working ? null : tribeCohesion(o);
         if (cohesion) {
           // Recurso à vista vence o bando: quem já enxergou comida ou água não larga
           // o alvo para voltar para a formação, senão a tribo inteira passa fome junta
@@ -1885,6 +2649,12 @@
 
       for (const o of organisms) {
         if (o.life <= 0) {
+          // Morreu com tora no ombro: a tora fica no chão. Morreu na cabana: o corpo
+          // aparece na porta, não escondido lá dentro.
+          if (o.carrying) logs.push({ x: o.x, y: o.y, angle: o.heading, seed: Math.random() * 100 });
+          if (o.inHut && o.hut) { o.x = o.hut.doorX; o.y = o.hut.doorY; }
+          stopChop(o);
+          releaseBed(o);
           corpses.push({ x: o.x, y: o.y, size: o.size, sex: o.sex, stage: o.stage,
             color: o.color, outfit: o.outfit,
             direction: Math.random() < .5 ? -1 : 1, time: 0 });
@@ -1904,6 +2674,9 @@
         }
       }
       regroupTribes();
+      updateCampfires(dt);
+      updateTrees(dt, days);
+      updateHuts();
       updateRain(dt);
       if (elapsed >= nextGeneSample) {
         captureGeneSnapshot();
@@ -1912,6 +2685,11 @@
     }
 
     function render() {
+      view.setSky(sky, { overcast: rainStrength() });
+      view.syncCampfires(campfires, { elapsed, animate: !reducedMotion.matches, daylight: sky.daylight });
+      view.syncTrees(trees, { elapsed, animate: !reducedMotion.matches, fallDown: TREE_DOWN_TIME });
+      view.syncLogs(logs);
+      view.syncHuts(huts, HUT_LOGS);
       view.syncFood(grass);
       view.syncPonds(ponds, { elapsed, raining: Boolean(rain), animate: !reducedMotion.matches });
       view.syncCorpses(corpses, DEATH_TOTAL, LIFE_SIZE);
@@ -1920,7 +2698,9 @@
         elapsed,
         walkSpeed: WALK_SPEED,
         birthDuration: BIRTH_ANIMATION_DURATION,
-        lifeSize: LIFE_SIZE
+        lifeSize: LIFE_SIZE,
+        sight: o => sightRange(o) / o.genes.visionRange,
+        chopSwing: CHOP_SWING
       });
       view.render();
 
@@ -1933,17 +2713,25 @@
       drawTribeLinks();
       drawPairs();
       drawBirthEffects();
+      drawFallDust();
       ctx.restore();
+      drawWoodChips();
+      drawHutMarks();
       organisms.forEach(draw);
       drawPairHearts();
       drawRain();
 
       document.querySelector('aside').classList.toggle('raining', Boolean(rain));
-      document.querySelector('.live').textContent = rain ? 'chovendo' : 'ao vivo';
+      document.querySelector('aside').classList.toggle('night', sky.daylight < .35);
+      document.querySelector('.live').textContent = rain ? 'chovendo' : sky.period;
       document.querySelector('#count').textContent = organisms.length;
       document.querySelector('#grass-count').textContent = grass.length;
       document.querySelector('#pond-count').textContent = ponds.length;
-      document.querySelector('#clock').textContent = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(Math.floor(elapsed % 60)).padStart(2, '0');
+      const minutes = Math.floor(sky.hour * 60);
+      document.querySelector('#clock').textContent = String(Math.floor(minutes / 60)).padStart(2, '0') + ':' + String(minutes % 60).padStart(2, '0');
+      document.querySelector('#clock-label').textContent = `dia ${sky.day}`;
+      document.querySelector('#clock-stat').title =
+        `${sky.season} · lua ${Math.round(sky.illumination * 100)}% iluminada`;
     }
     function setInspectMode(active) {
       inspectMode = active;
@@ -1952,7 +2740,7 @@
       inspectToggle.setAttribute('aria-label', active ? 'Cancelar seleção de bicho' : 'Ver genes de um bicho');
       arenaHint.textContent = active
         ? 'Toque em um bicho para ver seus genes'
-        : '♂ sem cabelo · ♀ com cabelo · mesma roupa = mesma tribo · setas ou WASD movem a câmera';
+        : '♂ sem cabelo · ♀ com cabelo · mesma roupa = mesma tribo · arraste ou use setas/WASD para passear';
       canvas.style.cursor = active ? 'pointer' : 'crosshair';
     }
 
@@ -2026,16 +2814,20 @@
       document.querySelector('#outfit-note').textContent = o.outfit
         ? 'cor da tribo, sorteada quando ela nasceu'
         : 'veste ao entrar numa tribo';
-      document.querySelector('#genes-title').textContent = `Bicho #${o.id}`;
+      document.querySelector('#genes-title').textContent = o.name;
       const pregnancy = o.pregnancy
         ? ` · grávida ${Math.round(o.pregnancy.elapsed / o.pregnancy.duration * 100)}%`
         : '';
       const tribe = o.band ? ` · tribo de ${o.band.members.length}` : ' · sem tribo';
       const lineage = o.lineage
-        ? ` · filho de #${o.lineage.fatherId} e #${o.lineage.motherId}`
+        ? ` · ${o.sex === 'male' ? 'filho' : 'filha'} de ${o.lineage.fatherName} e ${o.lineage.motherName}`
         : ' · fundador, sem pais';
+      // As barras saíram de cima da cabeça; o estado do corpo fica aqui na ficha,
+      // como retrato do momento em que ela foi aberta.
+      const condition = ` · vida ${Math.round(o.life)} · fome ${Math.round(o.hunger)}` +
+        ` · sede ${Math.round(o.thirst)} · energia ${Math.round(o.energy)}${o.asleep ? ' (dormindo)' : ''}`;
       document.querySelector('#gene-identity').textContent =
-        `${o.sex === 'male' ? 'Macho' : 'Fêmea'} · ${stageNames[o.stage]} · ${Math.floor(o.age)} s de vida${pregnancy}${tribe}${lineage}`;
+        `${o.sex === 'male' ? 'Macho' : 'Fêmea'} · ${stageNames[o.stage]} · ${formatAge(o.age)} de vida${pregnancy}${tribe}${lineage}${condition}`;
       document.querySelector('#gene-swatch').style.backgroundColor = o.color;
       genesDialog.showModal();
     }
@@ -2116,7 +2908,7 @@
     function formatGeneValue(key, value) {
       if (key === 'visionRange') return `${Math.round(value)} px`;
       if (key === 'visionAngle') return `${Math.round(value)}°`;
-      if (key === 'maturity' || key === 'longevity') return `${Math.round(value)} s`;
+      if (key === 'maturity' || key === 'longevity') return `${value.toFixed(1).replace('.', ',')} dias`;
       return `${value.toFixed(2).replace('.', ',')}×`;
     }
 
@@ -2340,9 +3132,45 @@
       renderEvolution();
     });
     document.querySelector('#evolution-close').addEventListener('click', () => evolutionDialog.close());
+    // Arrastar passeia pelo mundo, com mouse ou dedo. Agora que o enquadramento
+    // inicial não mostra o mundo inteiro, no celular é o único jeito de passear.
+    // Até alguns pixels de folga o gesto ainda conta como toque, senão tremer o dedo
+    // ao tocar para criar um bicho viraria passeio.
+    const DRAG_THRESHOLD = 6;
+    let drag = null, suppressClick = false;
+    canvas.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      drag = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+    });
+    canvas.addEventListener('pointermove', event => {
+      if (!drag || event.pointerId !== drag.id) return;
+      const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+      if (!drag.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      if (!drag.moved) {
+        drag.moved = true;
+        canvas.setPointerCapture(event.pointerId);
+      }
+      // O mundo acompanha o dedo, então a câmera anda no sentido contrário.
+      view.panByScreen(-dx, -dy);
+      drag.x = event.clientX;
+      drag.y = event.clientY;
+    });
+    const endDrag = event => {
+      if (!drag || event.pointerId !== drag.id) return;
+      suppressClick = drag.moved;
+      drag = null;
+    };
+    canvas.addEventListener('pointerup', endDrag);
+    canvas.addEventListener('pointercancel', endDrag);
+    canvas.addEventListener('wheel', event => {
+      event.preventDefault();
+      view.zoomBy(event.deltaY < 0 ? 1.1 : 1 / 1.1);
+    }, { passive: false });
+
     canvas.addEventListener('click', e => {
+      if (suppressClick) { suppressClick = false; return; }
       // A arena não é mais o próprio canvas: o ponto de tela vira ponto do chão
-      // por interseção com o plano da ilha, senão semear e inspecionar erram o alvo.
+      // por interseção com o plano do mundo, senão semear e inspecionar erram o alvo.
       const hit = view.pickGround(e.clientX, e.clientY);
       if (!hit) return;
       const x = hit.x, y = hit.y;
@@ -2440,9 +3268,9 @@
       coordinateSystem: 'origin top-left; x right, y down',
       simulationSpeed,
       organisms: organisms.map(o => ({
-        id: o.id, x: Math.round(o.x), y: Math.round(o.y), genes: { ...o.genes },
+        id: o.id, name: o.name, x: Math.round(o.x), y: Math.round(o.y), genes: { ...o.genes },
         genome: summarizeGenome(o.genome), lineage: o.lineage, outfit: o.outfit,
-        sex: o.sex, biome: biomeAt(o.x, o.y), stage: o.stage, age: Math.round(o.age), size: Math.round(o.size),
+        sex: o.sex, biome: biomeAt(o.x, o.y), stage: o.stage, ageDays: Math.round(o.age * 100) / 100, size: Math.round(o.size),
         speed: Math.round(o.speed), need: o.need, target: Boolean(o.target),
         tribe: [...o.tribe],
         exploration: o.search.waypoint ? {
@@ -2461,7 +3289,21 @@
           labor: o.pregnancy.labor
         } : null,
         birthAnimation: Math.round(o.birthAnimation * 10) / 10,
-        life: Math.round(o.life), hunger: Math.round(o.hunger), thirst: Math.round(o.thirst)
+        life: Math.round(o.life), hunger: Math.round(o.hunger), thirst: Math.round(o.thirst),
+        energy: Math.round(o.energy), asleep: o.asleep,
+        carrying: o.carrying, chopping: Boolean(o.chop), inHut: o.inHut
+      })),
+      trees: {
+        standing: trees.filter(tree => !tree.stump && !tree.fall && tree.growth >= 1).length,
+        growing: trees.filter(tree => !tree.stump && tree.growth < 1).length,
+        falling: trees.filter(tree => tree.fall).length,
+        stumps: trees.filter(tree => tree.stump).length
+      },
+      logs: logs.length,
+      huts: huts.map(hut => ({
+        x: Math.round(hut.x), y: Math.round(hut.y), logs: hut.logs, built: hut.built,
+        owner: hut.owner, beds: hut.beds.size,
+        sleeping: organisms.filter(o => o.inHut && o.hut === hut).length
       })),
       grass: grass.length, grassRegrowing: grassRegrow.length,
       ponds: ponds.length, waterRemaining: ponds.map(p => Math.round(p.water)),
@@ -2478,6 +3320,24 @@
           Math.max(1, pondCapacity()) * 100) / 100
       } : null,
       rainEvents,
+      sky: {
+        day: sky.day, hour: Math.round(sky.hour * 100) / 100, period: sky.period,
+        season: sky.season,
+        sunAltitude: Math.round(sky.sun.altitude * 10) / 10,
+        moonAltitude: Math.round(sky.moon.altitude * 10) / 10,
+        moonIllumination: Math.round(sky.illumination * 100) / 100,
+        daylight: Math.round(sky.daylight * 100) / 100,
+        rate: Math.round(skyRate(sky) * 100) / 100,
+        sight: Math.round(sight * 100) / 100,
+        sleeping: organisms.filter(o => o.asleep).length
+      },
+      campfires: campfires.map(fire => ({
+        x: Math.round(fire.x), y: Math.round(fire.y), outfit: fire.outfit,
+        flame: Math.round(fire.flame * 100) / 100, dying: fire.dying,
+        seated: [...fire.seats.keys()].length,
+        sleepingAround: organisms.filter(o => o.asleep &&
+          Math.hypot(o.x - fire.x, o.y - fire.y) < CAMPFIRE_WARM_RADIUS).length
+      })),
       corpses: corpses.map(c => ({ x: Math.round(c.x), y: Math.round(c.y), time: Math.round(c.time * 10) / 10 })),
       birthEffects: birthEffects.map(effect => ({
         x: Math.round(effect.x), y: Math.round(effect.y), time: Math.round(effect.time * 10) / 10
@@ -2495,6 +3355,7 @@
       render();
     };
     paintGround();
+    paintSurroundings();
     placeScenery();
     setSimulationSpeed(speedRange.valueAsNumber);
     buildGeneRows();
