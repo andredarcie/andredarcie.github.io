@@ -1,4 +1,4 @@
-import { WORLD } from '../config/world.js';
+import { WORLD, FOOTPRINT } from '../config/world.js';
 import {
   CAMPFIRE_MIN_TRIBE, MAX_CAMPFIRES, CAMPFIRE_START_LIGHT, CAMPFIRE_END_LIGHT,
   CAMPFIRE_WARM_RADIUS, CAMPFIRE_LIGHT_RADIUS
@@ -11,11 +11,13 @@ export class CampfireSystem {
   #state;
   #sky;
   #weather;
+  #occupancy;
 
-  constructor(state, skyClock, weather) {
+  constructor(state, skyClock, weather, occupancy) {
     this.#state = state;
     this.#sky = skyClock;
     this.#weather = weather;
+    this.#occupancy = occupancy;
   }
 
   hasAny() {
@@ -103,17 +105,17 @@ export class CampfireSystem {
   }
 
   // Chão firme para o fogo: o centro do bando, ou o ponto mais perto dele que não
-  // esteja dentro nem na beira de uma poça, e longe da borda da ilha.
+  // esteja dentro nem na beira de uma poça, longe da borda da ilha e sem árvore,
+  // pedra, cabana ou outro fogo no lugar. Moita de capim não impede: o fogo a cobre.
   #spotNear(x, y) {
     const margin = 70;
     const clampX = value => Math.max(margin, Math.min(WORLD.width - margin, value));
     const clampY = value => Math.max(margin, Math.min(WORLD.height - margin, value));
-    for (let attempt = 0; attempt < 16; attempt++) {
-      const angle = attempt * 2.4, reach = attempt * 14;
+    for (let attempt = 0; attempt < 24; attempt++) {
+      const angle = attempt * 2.4, reach = attempt * 12;
       const cx = clampX(x + Math.cos(angle) * reach), cy = clampY(y + Math.sin(angle) * reach);
-      if (this.#state.ponds.every(pond => Math.hypot(pond.x - cx, pond.y - cy) > pond.fullRadius + 40)) {
-        return { x: cx, y: cy };
-      }
+      if (this.#state.ponds.some(pond => Math.hypot(pond.x - cx, pond.y - cy) <= pond.fullRadius + 40)) continue;
+      if (this.#occupancy.isFree(cx, cy, FOOTPRINT.campfire, { ignore: ['food'] })) return { x: cx, y: cy };
     }
     return { x: clampX(x), y: clampY(y) };
   }

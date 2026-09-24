@@ -2,7 +2,7 @@ import { WORLD } from '../config/world.js';
 import { LIFE_SIZE, MATE_MIN_ENERGY } from '../config/organisms.js';
 import {
   MATE_MIN_RESOURCE, MATE_COOLDOWN, COURTSHIP_DURATION, MATING_DURATION, GESTATION_DURATION,
-  LABOR_DURATION, BIRTH_ANIMATION_DURATION
+  LABOR_DURATION, BIRTH_ANIMATION_DURATION, NEWBORN_DISTANCE
 } from '../config/reproduction.js';
 import { Pair } from '../entities/Pair.js';
 
@@ -110,7 +110,8 @@ export class ReproductionSystem {
         mother.eating = 0;
         mother.drinking = 0;
         mother.drinkingPond = null;
-        mother.say('vai nascer', LABOR_DURATION);
+        mother.say('vai nascer', 1.6);
+        this.#events.emit('labor', { mother });
       }
       if (mother.pregnancy.elapsed < mother.pregnancy.duration) continue;
       newborns.push(this.#deliver(mother));
@@ -184,16 +185,21 @@ export class ReproductionSystem {
       generation: (male.generation + female.generation) / 2 + 1,
       labor: false
     };
+    // Cor do bebê já definida na concepção: o bebê que sai no parto tem a cor que o
+    // filhote vai ter, sem trocar de cor no instante em que vira bicho.
+    female.pregnancy.color = this.#factory.colorOf(female.pregnancy.genome);
     female.say('grávida', 1.8);
     return true;
   }
 
+  // O filhote nasce onde o bebê do parto terminou de sair: à frente da mãe deitada,
+  // entre os pés dela, virado para ela.
   #deliver(mother) {
-    const offset = mother.size + LIFE_SIZE * .72;
+    const offset = NEWBORN_DISTANCE * mother.size / LIFE_SIZE;
     const x = Math.max(LIFE_SIZE, Math.min(WORLD.width - LIFE_SIZE,
-      mother.x - Math.cos(mother.heading) * offset));
+      mother.x + Math.cos(mother.heading) * offset));
     const y = Math.max(LIFE_SIZE, Math.min(WORLD.height - LIFE_SIZE,
-      mother.y - Math.sin(mother.heading) * offset));
+      mother.y + Math.sin(mother.heading) * offset));
     const child = this.#factory.create({
       x,
       y,

@@ -1,5 +1,12 @@
 import { LIFE_SIZE, CHARACTER_HEIGHT } from '../../config/organisms.js';
 
+// Altura do boneco na tela (px) em que nome e balão somem de vez e em que já
+// aparecem inteiros; entre as duas, desbotam.
+// No PC em tela cheia o boneco tem ~15 px na visão inteira (nomes à vista); no
+// celular em pé, ~4 px (nomes só depois de aproximar uns 3×).
+const LABEL_HIDE_BELOW = 8;
+const LABEL_FULL_AT = 12;
+
 // O que continua sendo interface em cima de cada bicho, em pixels de tela e
 // ancorado na cabeça: "z" do sono, lágrimas, balão de pensamento e o nome.
 export class OrganismLabelsLayer {
@@ -16,25 +23,33 @@ export class OrganismLabelsLayer {
   }
 
   draw(frame) {
-    for (const o of this.#state.organisms) this.#drawOrganism(frame, o);
+    // Com o mundo inteiro numa tela pequena o boneco fica minúsculo, e nome e balão
+    // por cima de cada um virariam uma sopa de texto. Eles aparecem aos poucos
+    // conforme o boneco cresce na tela (aproximando).
+    const feet = frame.project(0, 0, 0), top = frame.project(0, 0, CHARACTER_HEIGHT);
+    const text = Math.min(1, Math.max(0, (feet.y - top.y - LABEL_HIDE_BELOW) /
+      (LABEL_FULL_AT - LABEL_HIDE_BELOW)));
+    for (const o of this.#state.organisms) this.#drawOrganism(frame, o, text);
   }
 
-  #drawOrganism({ ctx, project, elapsed, width }, o) {
+  #drawOrganism({ ctx, project, elapsed, width }, o, text) {
     // Dentro da cabana não aparece: nem corpo, nem nome; os "z" saem do telhado.
     if (o.inHut) return;
-    // Deitado, a cabeça fica rente ao chão; o nome desce junto.
-    const lift = o.asleep ? 7 : CHARACTER_HEIGHT;
+    // Deitado (dormindo ou no parto), a cabeça fica rente ao chão; o nome desce junto.
+    const lying = o.asleep || o.pregnancy?.labor;
+    const lift = lying ? 7 : CHARACTER_HEIGHT;
     const head = project(o.x, o.y, lift * (o.size / LIFE_SIZE));
     if (o.asleep) this.#glyphs.sleepMarks(ctx, head, o.wanderPhase, elapsed);
     if (o.crying) this.#drawTears(ctx, head, o, elapsed);
-    if (o.thought > 0 && !o.asleep) this.#drawBubble(ctx, head, o, width);
-    this.#drawName(ctx, head, o);
+    if (text <= 0) return;
+    if (o.thought > 0 && !o.asleep) this.#drawBubble(ctx, head, o, width, text);
+    this.#drawName(ctx, head, o, text);
   }
 
-  #drawBubble(ctx, head, o, edge) {
+  #drawBubble(ctx, head, o, edge, opacity) {
     const paint = this.#theme.paint;
     ctx.save();
-    ctx.globalAlpha = Math.min(1, o.thought * 3);
+    ctx.globalAlpha = Math.min(1, o.thought * 3) * opacity;
     ctx.font = `600 10px ${this.#theme.bodyFont}`;
     const bubbleWidth = Math.max(50, Math.ceil(ctx.measureText(o.message).width) + 16);
     const bubbleX = Math.max(4, Math.min(edge - bubbleWidth - 4, head.x + 11));
@@ -59,7 +74,7 @@ export class OrganismLabelsLayer {
   }
 
   // Nome em cima da cabeça, com contorno claro para ler sobre grama, areia ou noite.
-  #drawName(ctx, head, o) {
+  #drawName(ctx, head, o, opacity) {
     const paint = this.#theme.paint;
     ctx.save();
     ctx.font = `600 10px ${this.#theme.bodyFont}`;
@@ -68,10 +83,10 @@ export class OrganismLabelsLayer {
     ctx.lineJoin = 'round';
     ctx.lineWidth = 3;
     ctx.strokeStyle = paint.panelStrong;
-    ctx.globalAlpha = .92;
+    ctx.globalAlpha = .92 * opacity;
     ctx.strokeText(o.name, head.x, head.y - 4);
     ctx.fillStyle = paint.ink;
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = opacity;
     ctx.fillText(o.name, head.x, head.y - 4);
     ctx.restore();
   }

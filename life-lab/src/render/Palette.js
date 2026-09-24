@@ -20,8 +20,12 @@ export const PALETTE = Object.freeze({
   leafMid: 0x83995d,
   leafLight: 0xadc365,
   water: 0x7fb2c4,
-  waterDeep: 0x5d93a8,
   waterShine: 0xbfe6ef,
-  pondBed: 0x9d8a5c,
+  // Laterais do tabuleiro: terra escura logo abaixo da grama, argila no meio e rocha
+  // no fundo, como o corte de um barranco.
+  soilTop: 0x7c5c3c,
+  soilDeep: 0x94704a,
+  bedrock: 0x716a60,
+  bedrockDark: 0x57514a,
   hair: 0x4a3a2a
 });

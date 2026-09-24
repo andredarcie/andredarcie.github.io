@@ -1,8 +1,10 @@
 // Mundo: tamanho, biomas e o que cresce em cada um.
 
-// O mundo é um quadrado fixo. A área (810.000) é quase a mesma da arena antiga em
-// tela cheia, então densidade de capim e dinâmica de população não mudam.
-export const WORLD = Object.freeze({ width: 900, height: 900 });
+// O mundo é um quadrado fixo. Já foi 900 × 900; depois 636 × 636 (metade da área),
+// 509 × 509 e agora 407 × 407 (cada um com lado 20% menor, 64% da área). O que é
+// contado (árvores, capim, detalhe do chão) acompanha a área, então a densidade fica
+// a mesma.
+export const WORLD = Object.freeze({ width: 407, height: 407 });
 
 export const BIOMES = Object.freeze([
   { id: 'desert', label: 'Deserto', earthShare: 19, worldShare: 1 / 3 },
@@ -12,13 +14,29 @@ export const BIOMES = Object.freeze([
 export const DESERT_END = BIOMES[0].worldShare;
 export const TAIGA_END = BIOMES[0].worldShare + BIOMES[1].worldShare;
 
-export const GROUND_TEXTURE_SIZE = 1024;
-export const SURROUNDING_TEXTURE_SIZE = 1024;
-// O terreno continua além da área dos bichos, até longe o bastante para nenhum
-// zoom mostrar o fim dele.
-export const SURROUNDING_SCALE = 5;
-// Profundidade da mata que emoldura a área dos bichos, medida da borda para fora.
-export const BORDER_FOREST_DEPTH = 200;
+// 2048 para o chão continuar nítido de perto (zoom e telas de alta densidade).
+export const GROUND_TEXTURE_SIZE = 2048;
+// O mundo é um tabuleiro flutuando no céu: esta é a grossura do bloco de terra
+// embaixo do chão, com as laterais retas mostrando o corte.
+export const BOARD_THICKNESS = 46;
+// Quantos pontos sorteados para enfeite e árvore dentro do mundo. Nem todo ponto
+// vira planta (clareira, poça, densidade do bioma).
+export const SCENERY_SAMPLES = 94;
+// Traços de detalhe rasteiro pintados no chão.
+export const GROUND_DETAIL_STROKES = 270;
+
+// Quanto de chão cada coisa ocupa (raio, em unidades), para nada nascer dentro de
+// outra: árvore dentro de árvore, capim ou pedra dentro de lago, lago em cima de
+// cabana. Um pouco menor que a copa, porque copa pode encostar em copa.
+export const FOOTPRINT = Object.freeze({
+  conifer: 8, broadleaf: 10, cactus: 5, rock: 6, shrub: 6,
+  food: 6, campfire: 9
+});
+// Folga mínima entre duas coisas vizinhas, além dos raios.
+export const FOOTPRINT_GAP = 2;
+// Margem de lama em volta de um lago, que também conta como chão dele: nada nasce
+// ali, e lago novo não nasce com a margem em cima de nada.
+export const POND_CLEARANCE = 8;
 
 // Vegetação por bioma. A densidade não copia o habitatWeight de propósito: a taiga é
 // a mais fechada em árvore e a savana a mais aberta, ainda que seja a savana que

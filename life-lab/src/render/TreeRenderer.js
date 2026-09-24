@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { pseudoRandom } from '../core/math.js';
 import { WOOD_MATERIALS } from './WoodMaterials.js';
+import { PropFactory } from './PropFactory.js';
+import { createContactShadow } from './ContactShadow.js';
 
 const STUMP_SHAPE = new THREE.CylinderGeometry(2.2, 2.6, 2.4, 8);
 
@@ -19,7 +21,7 @@ export class TreeRenderer {
     this.#space = space;
   }
 
-  sync(trees, { elapsed = 0, animate = true } = {}) {
+  sync(trees, { elapsed = 0, animate = true, wind = 0 } = {}) {
     for (const tree of trees) {
       let view = this.#views.get(tree);
       if (!view) {
@@ -41,21 +43,53 @@ export class TreeRenderer {
       }
       // Tremor do golpe: a copa balança rápido e o balanço morre em meio segundo.
       const shake = animate ? Math.sin(elapsed * 42) * .045 * tree.shake : 0;
-      prop.rotation.set(shake, view.baseRotation, shake * .6);
+      // Vento: balanço lento, cada árvore na sua fase para a mata não ondular em
+      // bloco. Caída ou em toco não balança.
+      const sway = fall || tree.stump ? 0 : wind * .014;
+      const phase = view.swayPhase;
+      prop.rotation.set(
+        shake + Math.sin(elapsed * 1.3 + phase) * sway,
+        view.baseRotation,
+        shake * .6 + Math.sin(elapsed * 1.1 + phase * 1.7) * sway * .7
+      );
       prop.visible = !tree.stump;
       // Muda nasce pequena e cresce até o tamanho de árvore.
       prop.scale.setScalar(tree.stump ? 1 : .25 + .75 * tree.growth);
       stump.visible = tree.stump || Boolean(fall);
+      // Mancha acompanha a copa: cresce com a muda, some quando ela tomba e fica
+      // pequena sob o toco.
+      const standing = fall ? Math.cos(fall.angle) : 1;
+      const cover = tree.stump ? .3 : (.25 + .75 * tree.growth) * standing;
+      view.contact.scale.setScalar(view.footprint * Math.max(.3, cover));
     }
+  }
+
+  // Árvores em pé que podem tapar um bicho atrás delas (OcclusionFader). Caindo não
+  // entra: a queda é rápida e o tronco deitado não esconde ninguém.
+  occluders() {
+    const list = [];
+    for (const [tree, view] of this.#views) {
+      if (tree.stump || tree.fall || !view.prop.visible) continue;
+      const growth = view.prop.scale.x;
+      list.push({
+        object: view.prop,
+        x: view.pivot.position.x, z: view.pivot.position.z,
+        radius: view.footprint * growth,
+        height: PropFactory.height(tree.kind) * growth
+      });
+    }
+    return list;
   }
 
   // Pivô na base do tronco: é em volta dele que a árvore tomba. A árvore de dentro
   // guarda o giro próprio, para o tombo não depender de para onde ela olhava.
   #createView(tree) {
     const pivot = new THREE.Group();
-    const prop = this.#props.build(tree.kind, tree.seed);
+    const prop = this.#props.build(tree.kind, tree.seed, { withShadow: false });
     prop.rotation.y = pseudoRandom(tree.seed + 21) * Math.PI * 2;
     pivot.add(prop);
+    // A mancha de contato fica no chão, fora do pivô: não tomba junto com a árvore.
+    const contact = createContactShadow(PropFactory.footprint(tree.kind));
     const stump = new THREE.Mesh(STUMP_SHAPE, WOOD_MATERIALS);
     stump.position.y = 1.2;
     stump.castShadow = true;
@@ -64,7 +98,13 @@ export class TreeRenderer {
     pivot.position.set(place.x, 0, place.z);
     stump.position.x = place.x;
     stump.position.z = place.z;
-    this.#layer.add(pivot, stump);
-    return { pivot, prop, stump, baseRotation: prop.rotation.y };
+    contact.position.x = place.x;
+    contact.position.z = place.z;
+    this.#layer.add(pivot, stump, contact);
+    return {
+      pivot, prop, stump, contact, footprint: PropFactory.footprint(tree.kind),
+      baseRotation: prop.rotation.y,
+      swayPhase: pseudoRandom(tree.seed + 37) * Math.PI * 2
+    };
   }
 }

@@ -10,6 +10,9 @@ export class WorldState {
     this.corpses = [];
     this.birthEffects = [];
     this.trees = [];
+    // Enfeites fixos do chão (pedra, cacto, arbusto): não fazem nada na simulação,
+    // mas ocupam lugar, e ninguém pode nascer em cima deles.
+    this.scenery = [];
     this.logs = [];
     this.huts = [];
     this.campfires = [];

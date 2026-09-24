@@ -1,17 +1,19 @@
 // Capim, poças e chuva.
 
-export const GRASS_MIN_COUNT = 24;
-export const GRASS_MAX_COUNT = 64;
-// Uma moita a cada 15.000 de área: 54 na ilha de 900 × 900. Com 24 (uma a cada
+export const GRASS_MIN_COUNT = 6;
+export const GRASS_MAX_COUNT = 13;
+// Uma moita a cada 15.000 de área: 11 no mundo de 407 × 407. Com uma a cada
 // 40.000) o bicho com fome ficava em média a 210 da moita mais próxima, o dobro
 // do alcance da visão, e morria procurando com capim sobrando no mapa.
 export const GRASS_AREA_PER_PATCH = 15000;
-// Moita comida renasce em 4 a 10 s (era 8 a 20). Com 54 moitas e a população
-// passando de 25, o capim repunha menos do que se comia e a fome voltava.
+// Moita comida renasce em 4 a 10 s (era 8 a 20). Com o capim devagar e a população
+// crescendo, ele repunha menos do que se comia e a fome voltava.
 export const GRASS_REGROW_MIN = 4;
 export const GRASS_REGROW_SPREAD = 6;
 
-export const POND_COUNT = 5;
+// Eram 5 no mundo de 900; 3 desde então, mantidas nos menores, porque com 2 uma
+// poça seca já deixa metade do mapa sem água.
+export const POND_COUNT = 3;
 export const RAIN_START_RATIO = .3;
 export const RAIN_CRISIS_THIRST = 30;
 export const RAIN_CRISIS_SHARE = .25;

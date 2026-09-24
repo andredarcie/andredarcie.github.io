@@ -1,11 +1,13 @@
 import { pseudoRandom } from '../core/math.js';
+import { PropFactory } from './PropFactory.js';
 
-// Enfeites fixos: pedras, cactos, arbustos e a mata da borda. Recebe a lista pronta
+// Enfeites fixos: pedras, cactos e arbustos. Recebe a lista pronta
 // de quem conhece os biomas e só decide como cada espécie é feita de blocos.
 export class SceneryRenderer {
   #layer;
   #props;
   #space;
+  #occluders = [];
 
   constructor(layer, propFactory, space) {
     this.#layer = layer;
@@ -22,16 +24,25 @@ export class SceneryRenderer {
         if (node.isMesh && !this.#props.isShared(node.geometry)) node.geometry.dispose();
       });
     }
+    this.#occluders = [];
     for (const item of items) {
       const prop = this.#props.build(item.kind, item.seed);
       if (!prop) continue;
       const place = this.#space.toScene(item.x, item.y);
       prop.position.set(place.x, 0, place.z);
       prop.rotation.y = pseudoRandom(item.seed + 21) * Math.PI * 2;
-      // A mata de fora é só moldura: longe do mapa de sombra e numerosa, projetar
-      // sombra dela custaria caro sem aparecer.
-      if (item.decor) prop.traverse(node => { node.castShadow = false; });
       this.#layer.add(prop);
+      const size = prop.scale.x;
+      this.#occluders.push({
+        object: prop, x: place.x, z: place.z,
+        radius: PropFactory.footprint(item.kind) * size,
+        height: PropFactory.height(item.kind) * size
+      });
     }
+  }
+
+  // Enfeites que podem tapar um bicho atrás deles (OcclusionFader).
+  occluders() {
+    return this.#occluders;
   }
 }

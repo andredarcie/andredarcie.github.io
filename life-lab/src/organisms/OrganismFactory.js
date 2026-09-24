@@ -1,5 +1,5 @@
 import { WORLD } from '../config/world.js';
-import { LIFE_SIZE, SEARCH_GRID_SIZE } from '../config/organisms.js';
+import { LIFE_SIZE, SEARCH_GRID_SIZE, FOUNDER_PAIRS } from '../config/organisms.js';
 import { GENE_SPECS, PIGMENT_COUNT } from '../config/genetics.js';
 import { BIRTH_ANIMATION_DURATION } from '../config/reproduction.js';
 import { Organism } from '../entities/Organism.js';
@@ -51,10 +51,15 @@ export class OrganismFactory {
     });
   }
 
-  // Seis casais de adultos jovens, cada casal perto um do outro.
+  // Cor do corpo que um genoma vai mostrar (o pigmento expresso).
+  colorOf(genome) {
+    return this.#pigmentColors[this.#genetics.express(genome).pigment];
+  }
+
+  // Casais de adultos jovens, cada casal perto um do outro.
   createFounders() {
     const founders = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < FOUNDER_PAIRS; i++) {
       const x = WORLD.width * (.18 + Math.random() * .64);
       const y = WORLD.height * (.18 + Math.random() * .64);
       const angle = Math.random() * Math.PI * 2;

@@ -7,6 +7,8 @@ const WINDOW_LIT = new THREE.Color(0xffc56a);
 // quantas toras ela custa é regra da simulação, então cada tora ergue a fração
 // correspondente das fiadas.
 const HUT_TOTAL_COURSES = 6;
+// Altura da cabana com telhado e chaminé, para saber quem ela tapa.
+const HUT_HEIGHT = 30;
 
 // As cabanas na cena: refeitas só quando mudam de forma, com a bandeira balançando
 // e as janelas acendendo quando tem gente dentro no escuro.
@@ -62,5 +64,20 @@ export class HutRenderer {
       this.#model.dispose(view.group);
       this.#views.delete(hut);
     }
+  }
+
+  // Cabanas que podem tapar um bicho atrás delas (OcclusionFader).
+  occluders() {
+    const list = [];
+    for (const [hut, view] of this.#views) {
+      const size = hutSize(hut.capacity);
+      list.push({
+        object: view.group,
+        x: view.group.position.x, z: view.group.position.z,
+        radius: Math.max(size.width, size.depth) * .55,
+        height: HUT_HEIGHT
+      });
+    }
+    return list;
   }
 }

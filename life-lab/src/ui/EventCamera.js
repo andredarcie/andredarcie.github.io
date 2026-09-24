@@ -1,5 +1,9 @@
 import { EVENT_CAM_SECONDS, EVENT_CAM_SPAN, EVENT_KIND_LABEL } from '../config/ui.js';
 
+// Quando o bebê nasce durante a tomada do parto, o relógio volta para este ponto
+// (fração já "gasta"): sobra tempo de ver o filhote se levantar.
+const BIRTH_REPLAY_SHARE = .35;
+
 // Câmera de acontecimentos: nascimento, morte e cabana pronta aparecem numa janela
 // com zoom no canto. Um de cada vez: enquanto um está no ar, os que vierem são
 // ignorados — no mesmo instante, vale o primeiro.
@@ -23,8 +27,20 @@ export class EventCamera {
     this.#progress = root.querySelector('#event-cam-progress');
     this.#kindLabel = root.querySelector('#event-cam-kind');
     this.#text = root.querySelector('#event-cam-text');
-    events.on('birth', ({ mother, child, x, y }) =>
-      this.#show('birth', `${mother.name} teve ${child.name}`, x, y, child));
+    // O parto aparece desde o começo, acompanhando a mãe; quando o bebê nasce, a
+    // mesma tomada troca a legenda, passa a seguir o filhote e ganha mais tempo no ar.
+    events.on('labor', ({ mother }) =>
+      this.#show('birth', `${mother.name} está em trabalho de parto`, mother.x, mother.y, mother, mother));
+    events.on('birth', ({ mother, child, x, y }) => {
+      const shot = this.#shot;
+      if (shot && shot.laborOf === mother) {
+        shot.follow = child;
+        shot.started = performance.now() - EVENT_CAM_SECONDS * 1000 * BIRTH_REPLAY_SHARE;
+        this.#text.textContent = `${mother.name} teve ${child.name}`;
+        return;
+      }
+      this.#show('birth', `${mother.name} teve ${child.name}`, x, y, child);
+    });
     events.on('death', ({ organism, cause }) =>
       this.#show('death', `${organism.name} morreu${cause ? ' ' + cause : ''}`, organism.x, organism.y));
     events.on('hutBuilt', ({ hut, builder }) =>
@@ -60,9 +76,9 @@ export class EventCamera {
     return rect;
   }
 
-  #show(kind, text, x, y, follow = null) {
+  #show(kind, text, x, y, follow = null, laborOf = null) {
     if (this.#shot) return;
-    this.#shot = { kind, text, x, y, follow, started: performance.now() };
+    this.#shot = { kind, text, x, y, follow, laborOf, started: performance.now() };
     this.#inset.reset();
     this.#panel.dataset.kind = kind;
     this.#kindLabel.textContent = EVENT_KIND_LABEL[kind];

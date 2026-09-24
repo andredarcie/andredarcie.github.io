@@ -17,6 +17,8 @@ import { FlagModel } from './FlagModel.js';
 import { HutModel } from './HutModel.js';
 import { HutRenderer } from './HutRenderer.js';
 import { InsetRenderer } from './InsetRenderer.js';
+import { GrassRenderer } from './GrassRenderer.js';
+import { OcclusionFader } from './OcclusionFader.js';
 
 // A cena 3D inteira, vista de fora como uma coisa só: monta o renderer, a câmera e um
 // renderizador por tipo de coisa do mundo, e expõe só o que o resto do jogo usa.
@@ -28,7 +30,9 @@ export class WorldView {
   constructor({ canvas, world }) {
     this.#canvas = canvas;
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    // Densidade de pixels real da tela até 3: celular costuma ter 3, e travar em 2
+    // desenhava a cena em resolução menor e esticava, serrilhando as bordas.
+    renderer.setPixelRatio(Math.min(3, window.devicePixelRatio || 1));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // Sem tone mapping de propósito: qualquer curva filmica desviaria as cores medidas.
     renderer.toneMapping = THREE.NoToneMapping;
@@ -46,6 +50,7 @@ export class WorldView {
     this.sky = new SkyRenderer(scene, renderer, this.camera, world);
     this.scenery = new SceneryRenderer(this.#layer(), props, space);
     this.terrain = new TerrainRenderer(scene, renderer, world);
+    this.grass = new GrassRenderer(this.#layer(), space);
     const bodyLayer = new THREE.Group();
     const foodLayer = new THREE.Group();
     const pondLayer = new THREE.Group();
@@ -64,6 +69,10 @@ export class WorldView {
     this.logs = new LogRenderer(logLayer, space);
     this.huts = new HutRenderer(hutLayer, new HutModel(new FlagModel()), space);
     this.inset = new InsetRenderer(renderer, scene, this.camera, space);
+    this.occlusion = new OcclusionFader(this.camera, {
+      targets: this.organisms,
+      occluders: [this.trees, this.scenery, this.huts]
+    });
   }
 
   resize(width, height) {

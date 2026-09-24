@@ -112,6 +112,9 @@ export class CorpseRenderer {
       const fleshOpacity = rot < .5 ? 1 : Math.max(0, 1 - (rot - .5) / .42);
       for (const material of data.flesh) material.opacity = fleshOpacity;
       data.body.visible = fleshOpacity > .01;
+      // O olho usa material compartilhado e opaco: some antes, quando a carne já
+      // está translúcida, em vez de ficar boiando no ar.
+      for (const eye of data.eyes) eye.visible = fleshOpacity > .6;
       // Murchar: a carne perde volume, sobretudo na largura.
       const wither = 1 - Math.min(1, rot / .9) * .28;
       data.body.scale.set(wither, 1, wither);
@@ -137,7 +140,8 @@ export class CorpseRenderer {
     const view = characters.create(corpse.sex === 'female');
     characters.dress(view, corpse.color, corpse.outfit);
     // Pose neutra uma vez só: um corpo caído não anda, então nada a recalcular.
-    characters.pose(view, { gait: 0, pace: 0, lean: 0, bellyScale: 1, animate: false });
+    // Olhos fechados de vez.
+    characters.pose(view, { gait: 0, pace: 0, lean: 0, bellyScale: 1, animate: false, eyes: 0 });
     const data = view.userData;
     // Cabelo sai do material compartilhado, porque vai apodrecer junto com o resto.
     data.hairMaterial = characters.hairMaterial.clone();

@@ -1,38 +1,41 @@
 import { pseudoRandom } from '../core/math.js';
-import { WORLD, BORDER_FOREST_DEPTH, SCENERY_DENSITY, SCENERY_KINDS } from '../config/world.js';
+import { WORLD, SCENERY_DENSITY, SCENERY_KINDS, SCENERY_SAMPLES, FOOTPRINT } from '../config/world.js';
 import { CHOP_HITS } from '../config/settlement.js';
 import { Tree } from '../entities/Tree.js';
 
-// Decide o que nasce onde: pedra, cacto e arbusto viram enfeite; árvore dentro do
-// mundo vira recurso da simulação; a mata em volta marca onde o mundo acaba. A cena
-// não sorteia nada — recebe a lista pronta e só decide como cada coisa é de blocos.
+// Decide o que nasce onde: pedra, cacto e arbusto viram enfeite; árvore vira recurso
+// da simulação. A cena não sorteia nada — recebe a lista pronta e só decide como cada
+// coisa é de blocos.
 export class SceneryPlanner {
   #state;
   #biomes;
+  #occupancy;
 
-  constructor(state, biomes) {
+  constructor(state, biomes, occupancy) {
     this.#state = state;
     this.#biomes = biomes;
+    this.#occupancy = occupancy;
   }
 
-  // Planta as árvores no estado e devolve os enfeites para a cena.
+  // Planta as árvores e os enfeites no estado (um de cada vez, cada um conferindo o
+  // lugar contra os que já nasceram) e devolve os enfeites para a cena.
   plan() {
-    const items = [];
+    const items = this.#state.scenery;
     const margin = 34;
     const clearing = Math.min(WORLD.width, WORLD.height) * .27;
-    for (let i = 0; i < 460; i++) {
+    for (let i = 0; i < SCENERY_SAMPLES; i++) {
       const seed = i * 13 + 7;
       const x = margin + pseudoRandom(seed) * (WORLD.width - margin * 2);
       const y = margin + pseudoRandom(seed + 1) * (WORLD.height - margin * 2);
       // A clareira do meio fica aberta: é onde os bichos se juntam e onde os nomes e
       // balões precisam de espaço livre para serem lidos.
       if (Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < clearing) continue;
-      // Desvia das poças que existem agora. A chuva reposiciona poças depois, e aí
-      // uma árvore pode acabar dentro de uma: é só visual, não atrapalha beber.
-      if (this.#state.ponds.some(pond => Math.hypot(x - pond.x, y - pond.y) < pond.fullRadius + 14)) continue;
       const biome = this.#biomes.biomeAt(x, y);
       if (pseudoRandom(seed + 2) > SCENERY_DENSITY[biome]) continue;
       const kind = SceneryPlanner.#kindFor(biome, pseudoRandom(seed + 3));
+      // Nem dentro de lago, nem em cima de outra planta ou pedra. A chuva abre lagos
+      // novos depois, mas eles também conferem o lugar (PondSystem).
+      if (!this.#occupancy.isFree(x, y, FOOTPRINT[kind] ?? 5)) continue;
       // Árvore dentro do mundo é recurso da simulação, não enfeite: vai para a
       // lista de árvores, que a cena desenha e anima à parte.
       if (kind === 'conifer' || kind === 'broadleaf') {
@@ -42,17 +45,6 @@ export class SceneryPlanner {
         continue;
       }
       items.push({ x, y, seed, kind });
-    }
-    // Mata em volta da área dos bichos: mais fechada que o normal do bioma, é ela
-    // que marca na paisagem onde o mundo acaba, agora que não há mais borda de ilha.
-    for (let i = 0; i < 480; i++) {
-      const seed = i * 17 + 50003;
-      const x = -BORDER_FOREST_DEPTH + pseudoRandom(seed) * (WORLD.width + BORDER_FOREST_DEPTH * 2);
-      const y = -BORDER_FOREST_DEPTH + pseudoRandom(seed + 1) * (WORLD.height + BORDER_FOREST_DEPTH * 2);
-      if (x > 0 && x < WORLD.width && y > 0 && y < WORLD.height) continue;
-      const biome = this.#biomes.biomeAt(x, y);
-      if (pseudoRandom(seed + 2) > Math.min(1, SCENERY_DENSITY[biome] * 1.4)) continue;
-      items.push({ x, y, seed, kind: SceneryPlanner.#kindFor(biome, pseudoRandom(seed + 3)), decor: true });
     }
     return items;
   }

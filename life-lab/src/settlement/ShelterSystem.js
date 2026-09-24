@@ -1,17 +1,23 @@
 import { WORLD } from '../config/world.js';
 import { HUT_MIN_CAPACITY, MAX_HUTS, HUT_SEEK_RANGE } from '../config/settlement.js';
 import { Hut } from '../entities/Hut.js';
+import { hutSize } from './HutDimensions.js';
+
+// Chão que a cabana ocupa ao nascer: o tamanho base (4 vagas).
+const HUT_FOOTPRINT = Math.max(hutSize(HUT_MIN_CAPACITY).width, hutSize(HUT_MIN_CAPACITY).depth) * .62;
 
 // Cabanas: de quem é cada uma, onde uma obra nova assenta, quem tem vaga para dormir
 // e como a cabana cresce junto com a tribo dona.
 export class ShelterSystem {
   #state;
   #sky;
+  #occupancy;
   #nextHutId = 1;
 
-  constructor(state, skyClock) {
+  constructor(state, skyClock, occupancy) {
     this.#state = state;
     this.#sky = skyClock;
+    this.#occupancy = occupancy;
   }
 
   // A "casa" de um bicho é a tribo inteira; sem tribo, ele mesmo.
@@ -129,8 +135,9 @@ export class ShelterSystem {
     }
   }
 
-  // Terreno para a cabana: perto do bando, longe de poça, de outra cabana, do fogo,
-  // de árvore em pé e da borda do mundo.
+  // Terreno para a cabana: perto do bando, longe de poça, de outra cabana, do fogo e
+  // da borda do mundo, e em chão livre — nada de árvore, toco (rebrotaria dentro da
+  // cabana), pedra, cacto, arbusto ou moita de capim embaixo.
   #spotNear(x, y) {
     const state = this.#state;
     const margin = 45;
@@ -143,7 +150,7 @@ export class ShelterSystem {
       // Folga para a cabana vizinha poder crescer com a tribo dela.
       if (state.huts.some(hut => Math.hypot(hut.x - cx, hut.y - cy) < 80)) continue;
       if (state.campfires.some(fire => Math.hypot(fire.x - cx, fire.y - cy) < 52)) continue;
-      if (state.trees.some(tree => !tree.stump && Math.hypot(tree.x - cx, tree.y - cy) < 18)) continue;
+      if (!this.#occupancy.isFree(cx, cy, HUT_FOOTPRINT, { ignore: ['hut', 'campfire'] })) continue;
       return { x: cx, y: cy };
     }
     return null;

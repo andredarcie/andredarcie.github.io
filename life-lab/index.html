@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css?v=12" />
+  <link rel="stylesheet" href="tokens.css?v=27" />
   <!-- Cache-busting centralizado: cada módulo local aponta para a URL com ?v=N. Os .js
        importam SEM query string. A cada alteração em qualquer .js, trocar TODOS os
        ?v=N daqui pelo número novo e atualizar o BUILD N do painel para o mesmo número.
@@ -15,117 +15,129 @@
   <script type="importmap">
   { "imports": {
     "three": "./lib/three.module.min.js",
-    "./src/app/DebugApi.js": "./src/app/DebugApi.js?v=12",
-    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=12",
-    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=12",
-    "./src/app/StateSerializer.js": "./src/app/StateSerializer.js?v=12",
-    "./src/app/Viewport.js": "./src/app/Viewport.js?v=12",
-    "./src/config/death.js": "./src/config/death.js?v=12",
-    "./src/config/environment.js": "./src/config/environment.js?v=12",
-    "./src/config/genetics.js": "./src/config/genetics.js?v=12",
-    "./src/config/organisms.js": "./src/config/organisms.js?v=12",
-    "./src/config/reproduction.js": "./src/config/reproduction.js?v=12",
-    "./src/config/settlement.js": "./src/config/settlement.js?v=12",
-    "./src/config/social.js": "./src/config/social.js?v=12",
-    "./src/config/ui.js": "./src/config/ui.js?v=12",
-    "./src/config/world.js": "./src/config/world.js?v=12",
-    "./src/core/EventBus.js": "./src/core/EventBus.js?v=12",
-    "./src/core/math.js": "./src/core/math.js?v=12",
-    "./src/core/ShuffledQueue.js": "./src/core/ShuffledQueue.js?v=12",
-    "./src/entities/Band.js": "./src/entities/Band.js?v=12",
-    "./src/entities/Campfire.js": "./src/entities/Campfire.js?v=12",
-    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=12",
-    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=12",
-    "./src/entities/Hut.js": "./src/entities/Hut.js?v=12",
-    "./src/entities/Log.js": "./src/entities/Log.js?v=12",
-    "./src/entities/Organism.js": "./src/entities/Organism.js?v=12",
-    "./src/entities/Pair.js": "./src/entities/Pair.js?v=12",
-    "./src/entities/Pond.js": "./src/entities/Pond.js?v=12",
-    "./src/entities/Tree.js": "./src/entities/Tree.js?v=12",
-    "./src/genetics/Genetics.js": "./src/genetics/Genetics.js?v=12",
-    "./src/input/ArenaClickHandler.js": "./src/input/ArenaClickHandler.js?v=12",
-    "./src/input/CameraController.js": "./src/input/CameraController.js?v=12",
-    "./src/main.js": "./src/main.js?v=12",
-    "./src/names/ScientistNameGenerator.js": "./src/names/ScientistNameGenerator.js?v=12",
-    "./src/names/scientistNames.js": "./src/names/scientistNames.js?v=12",
-    "./src/names/tribeNameParts.js": "./src/names/tribeNameParts.js?v=12",
-    "./src/names/TribeNameRegistry.js": "./src/names/TribeNameRegistry.js?v=12",
-    "./src/organisms/Foraging.js": "./src/organisms/Foraging.js?v=12",
-    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=12",
-    "./src/organisms/Metabolism.js": "./src/organisms/Metabolism.js?v=12",
-    "./src/organisms/OrganismBrain.js": "./src/organisms/OrganismBrain.js?v=12",
-    "./src/organisms/OrganismFactory.js": "./src/organisms/OrganismFactory.js?v=12",
-    "./src/organisms/Perception.js": "./src/organisms/Perception.js?v=12",
-    "./src/organisms/SleepBehavior.js": "./src/organisms/SleepBehavior.js?v=12",
-    "./src/organisms/VisionPhysiology.js": "./src/organisms/VisionPhysiology.js?v=12",
-    "./src/organisms/Wandering.js": "./src/organisms/Wandering.js?v=12",
-    "./src/overlay/Glyphs.js": "./src/overlay/Glyphs.js?v=12",
-    "./src/overlay/layers/BirthEffectsLayer.js": "./src/overlay/layers/BirthEffectsLayer.js?v=12",
-    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=12",
-    "./src/overlay/layers/FliesLayer.js": "./src/overlay/layers/FliesLayer.js?v=12",
-    "./src/overlay/layers/HutMarksLayer.js": "./src/overlay/layers/HutMarksLayer.js?v=12",
-    "./src/overlay/layers/OrganismLabelsLayer.js": "./src/overlay/layers/OrganismLabelsLayer.js?v=12",
-    "./src/overlay/layers/PairHeartsLayer.js": "./src/overlay/layers/PairHeartsLayer.js?v=12",
-    "./src/overlay/layers/PairRingsLayer.js": "./src/overlay/layers/PairRingsLayer.js?v=12",
-    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=12",
-    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=12",
-    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=12",
-    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=12",
-    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=12",
-    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=12",
-    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=12",
-    "./src/render/FlagModel.js": "./src/render/FlagModel.js?v=12",
-    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=12",
-    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=12",
-    "./src/render/HutModel.js": "./src/render/HutModel.js?v=12",
-    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=12",
-    "./src/render/InsetRenderer.js": "./src/render/InsetRenderer.js?v=12",
-    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=12",
-    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=12",
-    "./src/render/Palette.js": "./src/render/Palette.js?v=12",
-    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=12",
-    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=12",
-    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=12",
-    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=12",
-    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=12",
-    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=12",
-    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=12",
-    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=12",
-    "./src/render/WorldView.js": "./src/render/WorldView.js?v=12",
-    "./src/settlement/CampfireSystem.js": "./src/settlement/CampfireSystem.js?v=12",
-    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=12",
-    "./src/settlement/ShelterSystem.js": "./src/settlement/ShelterSystem.js?v=12",
-    "./src/settlement/Woodcutting.js": "./src/settlement/Woodcutting.js?v=12",
-    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=12",
-    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=12",
-    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=12",
-    "./src/social/BandFormation.js": "./src/social/BandFormation.js?v=12",
-    "./src/social/DeathSystem.js": "./src/social/DeathSystem.js?v=12",
-    "./src/social/MourningSystem.js": "./src/social/MourningSystem.js?v=12",
-    "./src/social/ReproductionSystem.js": "./src/social/ReproductionSystem.js?v=12",
-    "./src/social/TribeSystem.js": "./src/social/TribeSystem.js?v=12",
-    "./src/stats/GeneReadings.js": "./src/stats/GeneReadings.js?v=12",
-    "./src/stats/GeneStatistics.js": "./src/stats/GeneStatistics.js?v=12",
-    "./src/ui/Dom.js": "./src/ui/Dom.js?v=12",
-    "./src/ui/EventCamera.js": "./src/ui/EventCamera.js?v=12",
-    "./src/ui/EvolutionDialog.js": "./src/ui/EvolutionDialog.js?v=12",
-    "./src/ui/EvolutionPlot.js": "./src/ui/EvolutionPlot.js?v=12",
-    "./src/ui/Format.js": "./src/ui/Format.js?v=12",
-    "./src/ui/GeneDialog.js": "./src/ui/GeneDialog.js?v=12",
-    "./src/ui/HudPanel.js": "./src/ui/HudPanel.js?v=12",
-    "./src/ui/InspectMode.js": "./src/ui/InspectMode.js?v=12",
-    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=12",
-    "./src/ui/SpeedControl.js": "./src/ui/SpeedControl.js?v=12",
-    "./src/ui/Theme.js": "./src/ui/Theme.js?v=12",
-    "./src/ui/TribeListPanel.js": "./src/ui/TribeListPanel.js?v=12",
-    "./src/ui/ViewControls.js": "./src/ui/ViewControls.js?v=12",
-    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=12",
-    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=12",
-    "./src/world/GrassField.js": "./src/world/GrassField.js?v=12",
-    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=12",
-    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=12",
-    "./src/world/Weather.js": "./src/world/Weather.js?v=12",
-    "./src/world/WorldState.js": "./src/world/WorldState.js?v=12"
+    "./src/app/DebugApi.js": "./src/app/DebugApi.js?v=27",
+    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=27",
+    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=27",
+    "./src/app/StateSerializer.js": "./src/app/StateSerializer.js?v=27",
+    "./src/app/Viewport.js": "./src/app/Viewport.js?v=27",
+    "./src/config/death.js": "./src/config/death.js?v=27",
+    "./src/config/environment.js": "./src/config/environment.js?v=27",
+    "./src/config/genetics.js": "./src/config/genetics.js?v=27",
+    "./src/config/organisms.js": "./src/config/organisms.js?v=27",
+    "./src/config/reproduction.js": "./src/config/reproduction.js?v=27",
+    "./src/config/settlement.js": "./src/config/settlement.js?v=27",
+    "./src/config/social.js": "./src/config/social.js?v=27",
+    "./src/config/ui.js": "./src/config/ui.js?v=27",
+    "./src/config/world.js": "./src/config/world.js?v=27",
+    "./src/core/EventBus.js": "./src/core/EventBus.js?v=27",
+    "./src/core/math.js": "./src/core/math.js?v=27",
+    "./src/core/geometry.js": "./src/core/geometry.js?v=27",
+    "./src/core/ShuffledQueue.js": "./src/core/ShuffledQueue.js?v=27",
+    "./src/entities/Band.js": "./src/entities/Band.js?v=27",
+    "./src/entities/Campfire.js": "./src/entities/Campfire.js?v=27",
+    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=27",
+    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=27",
+    "./src/entities/Hut.js": "./src/entities/Hut.js?v=27",
+    "./src/entities/Log.js": "./src/entities/Log.js?v=27",
+    "./src/entities/Organism.js": "./src/entities/Organism.js?v=27",
+    "./src/entities/Pair.js": "./src/entities/Pair.js?v=27",
+    "./src/entities/Pond.js": "./src/entities/Pond.js?v=27",
+    "./src/entities/Tree.js": "./src/entities/Tree.js?v=27",
+    "./src/genetics/Genetics.js": "./src/genetics/Genetics.js?v=27",
+    "./src/input/ArenaClickHandler.js": "./src/input/ArenaClickHandler.js?v=27",
+    "./src/input/CameraController.js": "./src/input/CameraController.js?v=27",
+    "./src/main.js": "./src/main.js?v=27",
+    "./src/names/ScientistNameGenerator.js": "./src/names/ScientistNameGenerator.js?v=27",
+    "./src/names/scientistNames.js": "./src/names/scientistNames.js?v=27",
+    "./src/names/tribeNameParts.js": "./src/names/tribeNameParts.js?v=27",
+    "./src/names/TribeNameRegistry.js": "./src/names/TribeNameRegistry.js?v=27",
+    "./src/organisms/Foraging.js": "./src/organisms/Foraging.js?v=27",
+    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=27",
+    "./src/organisms/Metabolism.js": "./src/organisms/Metabolism.js?v=27",
+    "./src/organisms/OrganismBrain.js": "./src/organisms/OrganismBrain.js?v=27",
+    "./src/organisms/OrganismFactory.js": "./src/organisms/OrganismFactory.js?v=27",
+    "./src/organisms/Perception.js": "./src/organisms/Perception.js?v=27",
+    "./src/organisms/SleepBehavior.js": "./src/organisms/SleepBehavior.js?v=27",
+    "./src/organisms/VisionPhysiology.js": "./src/organisms/VisionPhysiology.js?v=27",
+    "./src/organisms/Wandering.js": "./src/organisms/Wandering.js?v=27",
+    "./src/overlay/Glyphs.js": "./src/overlay/Glyphs.js?v=27",
+    "./src/overlay/layers/BirthEffectsLayer.js": "./src/overlay/layers/BirthEffectsLayer.js?v=27",
+    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=27",
+    "./src/overlay/layers/FliesLayer.js": "./src/overlay/layers/FliesLayer.js?v=27",
+    "./src/overlay/layers/HutMarksLayer.js": "./src/overlay/layers/HutMarksLayer.js?v=27",
+    "./src/overlay/layers/OrganismLabelsLayer.js": "./src/overlay/layers/OrganismLabelsLayer.js?v=27",
+    "./src/overlay/layers/PairHeartsLayer.js": "./src/overlay/layers/PairHeartsLayer.js?v=27",
+    "./src/overlay/layers/PairRingsLayer.js": "./src/overlay/layers/PairRingsLayer.js?v=27",
+    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=27",
+    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=27",
+    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=27",
+    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=27",
+    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=27",
+    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=27",
+    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=27",
+    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=27",
+    "./src/render/Shading.js": "./src/render/Shading.js?v=27",
+    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=27",
+    "./src/render/PondShape.js": "./src/render/PondShape.js?v=27",
+    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=27",
+    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=27",
+    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=27",
+    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=27",
+    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=27",
+    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=27",
+    "./src/render/FlagModel.js": "./src/render/FlagModel.js?v=27",
+    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=27",
+    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=27",
+    "./src/render/HutModel.js": "./src/render/HutModel.js?v=27",
+    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=27",
+    "./src/render/InsetRenderer.js": "./src/render/InsetRenderer.js?v=27",
+    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=27",
+    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=27",
+    "./src/render/Palette.js": "./src/render/Palette.js?v=27",
+    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=27",
+    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=27",
+    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=27",
+    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=27",
+    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=27",
+    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=27",
+    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=27",
+    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=27",
+    "./src/render/WorldView.js": "./src/render/WorldView.js?v=27",
+    "./src/settlement/CampfireSystem.js": "./src/settlement/CampfireSystem.js?v=27",
+    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=27",
+    "./src/settlement/ShelterSystem.js": "./src/settlement/ShelterSystem.js?v=27",
+    "./src/settlement/Woodcutting.js": "./src/settlement/Woodcutting.js?v=27",
+    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=27",
+    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=27",
+    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=27",
+    "./src/social/BandFormation.js": "./src/social/BandFormation.js?v=27",
+    "./src/social/DeathSystem.js": "./src/social/DeathSystem.js?v=27",
+    "./src/social/MourningSystem.js": "./src/social/MourningSystem.js?v=27",
+    "./src/social/ReproductionSystem.js": "./src/social/ReproductionSystem.js?v=27",
+    "./src/social/TribeSystem.js": "./src/social/TribeSystem.js?v=27",
+    "./src/stats/GeneReadings.js": "./src/stats/GeneReadings.js?v=27",
+    "./src/stats/GeneStatistics.js": "./src/stats/GeneStatistics.js?v=27",
+    "./src/ui/Dom.js": "./src/ui/Dom.js?v=27",
+    "./src/ui/EventCamera.js": "./src/ui/EventCamera.js?v=27",
+    "./src/ui/EvolutionDialog.js": "./src/ui/EvolutionDialog.js?v=27",
+    "./src/ui/EvolutionPlot.js": "./src/ui/EvolutionPlot.js?v=27",
+    "./src/ui/Format.js": "./src/ui/Format.js?v=27",
+    "./src/ui/GeneDialog.js": "./src/ui/GeneDialog.js?v=27",
+    "./src/ui/HudPanel.js": "./src/ui/HudPanel.js?v=27",
+    "./src/ui/InspectMode.js": "./src/ui/InspectMode.js?v=27",
+    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=27",
+    "./src/ui/SpeedControl.js": "./src/ui/SpeedControl.js?v=27",
+    "./src/ui/Theme.js": "./src/ui/Theme.js?v=27",
+    "./src/ui/TribeListPanel.js": "./src/ui/TribeListPanel.js?v=27",
+    "./src/ui/ViewControls.js": "./src/ui/ViewControls.js?v=27",
+    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=27",
+    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=27",
+    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=27",
+    "./src/world/GrassField.js": "./src/world/GrassField.js?v=27",
+    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=27",
+    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=27",
+    "./src/world/Weather.js": "./src/world/Weather.js?v=27",
+    "./src/world/WorldState.js": "./src/world/WorldState.js?v=27"
   } }
   </script>
   <style>
@@ -141,6 +153,8 @@
     #arena { background: var(--color-field); cursor: crosshair; touch-action: none; }
     /* As barras, balões, corações e chuva continuam em 2D, projetados por cima da cena. */
     #arena-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; background: none; }
+    /* Vinheta: escurece de leve os cantos e puxa o olho para o meio da cena. */
+    .arena-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 58%, rgb(12 16 24 / .22) 100%); }
     .view-controls { position: fixed; z-index: var(--z-sticky); right: max(8px, env(safe-area-inset-right)); bottom: max(8px, env(safe-area-inset-bottom)); display: flex; gap: var(--space-3xs); padding: var(--space-3xs); background: color-mix(in oklch, var(--color-panel) 88%, transparent); border: 1px solid var(--color-ink); border-radius: var(--radius-control); box-shadow: 2px 2px 0 var(--color-shadow); }
     .view-controls button { width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 1px solid var(--color-ink); border-radius: var(--radius-control); background: var(--color-panel-strong); color: var(--color-ink); font: 600 14px var(--font-body); line-height: 1; cursor: pointer; }
     .view-controls button[aria-pressed="true"] { background: var(--color-ink); color: var(--color-panel-strong); }
@@ -324,9 +338,9 @@
       <aside aria-label="Estado da arena">
         <div class="section-label"><span>Life Lab</span><span class="live">ao vivo</span></div>
         <div class="readout">
-          <div class="stat"><b id="count">12</b><small>bichos</small></div>
-          <div class="stat"><b id="grass-count">24</b><small>plantas</small></div>
-          <div class="stat"><b id="pond-count">5</b><small>poças</small></div>
+          <div class="stat"><b id="count">4</b><small>bichos</small></div>
+          <div class="stat"><b id="grass-count">11</b><small>plantas</small></div>
+          <div class="stat"><b id="pond-count">3</b><small>poças</small></div>
           <div class="stat" id="clock-stat"><b id="clock">06:12</b><small id="clock-label">dia 1</small></div>
         </div>
         <div class="speed-control">
@@ -336,7 +350,7 @@
         </div>
         <button id="inspect-toggle" class="inspect-button" type="button" aria-label="Ver genes de um bicho" aria-pressed="false">Ver genes</button>
         <button id="evolution-toggle" class="inspect-button" type="button" aria-label="Ver evolução dos genes">Ver evolução</button>
-        <small class="build-badge">BUILD 12</small>
+        <small class="build-badge">BUILD 27</small>
       </aside>
       <section class="tribes-panel" aria-label="Tribos existentes">
         <div class="section-label"><span>Tribos</span><span id="tribe-total" class="tribe-count">0</span></div>
@@ -357,10 +371,10 @@
       <p class="arena-meta" id="arena-hint">□ macho · ○ fêmea · toque para criar uma vida</p>
     </main>
   </div>
-  <div class="view-controls" role="group" aria-label="Vista: arraste, setas ou WASD movem a câmera; roda do mouse dá zoom">
+  <div class="view-controls" role="group" aria-label="Vista: roda do mouse ou pinça dão zoom; aproximado, arraste, setas ou WASD movem a câmera">
     <button id="view-in" type="button" aria-label="Aproximar">+</button>
     <button id="view-out" type="button" aria-label="Afastar">−</button>
-    <button id="view-reset" type="button" aria-label="Enquadramento inicial">⟲</button>
+    <button id="view-reset" type="button" aria-label="Ver o mundo inteiro" title="Ver o mundo inteiro">⟲</button>
     <button id="view-vision" type="button" aria-pressed="false" aria-label="Mostrar o campo de visão dos bichos" title="Campo de visão dos bichos">◉</button>
   </div>
   <dialog id="genes-dialog" aria-labelledby="genes-title">

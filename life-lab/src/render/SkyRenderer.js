@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { smoothstep, pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
+import { CAMERA_FAR } from './CameraRig.js';
 
 // Os dois únicos botões de iluminação. O ambiente sozinho já entrega a cor base da
 // paleta nas faces viradas para cima; o sol só acrescenta o degradê das laterais.
@@ -47,7 +48,23 @@ const SUN_KEYS = [
 const OVERCAST_SKY = 0x9aa4aa;
 const OVERCAST_HEMI = 0xd4d8dc;
 const STAR_COUNT = 320;
-const SKY_DEPTH = -5800;
+// Nuvens do céu em volta do tabuleiro: posição (fração da meia-tela, y para cima),
+// largura (fração da meia-largura), velocidade de deriva e qual desenho.
+const SKY_CLOUDS = [
+  { x: -.85, y: -.78, width: .62, speed: .010, variant: 0 },
+  { x: .55, y: -.9, width: .8, speed: .007, variant: 1 },
+  { x: .05, y: -.62, width: .45, speed: .013, variant: 2 },
+  { x: -.4, y: .72, width: .5, speed: .006, variant: 1 },
+  { x: .8, y: .55, width: .42, speed: .009, variant: 0 },
+  { x: -1.1, y: .2, width: .36, speed: .011, variant: 2 },
+  { x: 1.05, y: -.3, width: .4, speed: .008, variant: 0 }
+];
+// Névoa de profundidade: a partir de um pouco antes do canto mais perto do tabuleiro,
+// o que está mais fundo vai tomando a cor do horizonte. Em larguras do mundo.
+const FOG_START = .6;
+const FOG_SPAN = 5.4;
+const WORLD_UP = new THREE.Vector3(0, 1, 0);
+const SKY_DEPTH = -(CAMERA_FAR - 400);
 
 function interpolateKeys(keys, altitude) {
   if (altitude <= keys[0].at) return [keys[0], keys[0], 0];
@@ -95,6 +112,17 @@ export class SkyRenderer {
   #skyHorizon = new THREE.Color();
   #overcastSky = new THREE.Color(OVERCAST_SKY);
   #overcastHemi = new THREE.Color(OVERCAST_HEMI);
+  #skyLayer;
+  #fog;
+  #clouds = [];
+  #cloudMaterials = [];
+  #cloudTone = new THREE.Color();
+  #maxShadowReach = 0;
+  #shadowReach = 0;
+  #lightForward = new THREE.Vector3();
+  #lightRight = new THREE.Vector3();
+  #lightUp = new THREE.Vector3();
+  #snappedFocus = new THREE.Vector3();
 
   constructor(scene, renderer, cameraRig, world) {
     this.#rig = cameraRig;
@@ -107,6 +135,14 @@ export class SkyRenderer {
     this.#skyTexture = new THREE.CanvasTexture(skyCanvas);
     this.#skyTexture.colorSpace = THREE.SRGBColorSpace;
     scene.background = this.#skyTexture;
+    // Perspectiva aérea: o canto de trás do tabuleiro fica um pouco mais claro e
+    // puxado para a cor do céu, e isso dá profundidade que a câmera ortográfica sozinha
+    // não dá. A cor acompanha o horizonte a cada quadro.
+    const worldSize = Math.max(world.width, world.height);
+    scene.fog = new THREE.Fog(PALETTE.sky,
+      cameraRig.radius - worldSize * FOG_START,
+      cameraRig.radius - worldSize * FOG_START + worldSize * FOG_SPAN);
+    this.#fog = scene.fog;
 
     this.#hemisphere = new THREE.HemisphereLight(0xffffff, 0xcfe4c6, LIGHT_AMBIENT);
     scene.add(this.#hemisphere);
@@ -117,11 +153,10 @@ export class SkyRenderer {
     sun.position.set(-world.width * .6, world.width * 1.1, -world.height * .35);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
-    const reach = Math.max(world.width, world.height) * .8;
-    sun.shadow.camera.left = -reach;
-    sun.shadow.camera.right = reach;
-    sun.shadow.camera.top = reach;
-    sun.shadow.camera.bottom = -reach;
+    // Alcance máximo do mapa de sombra (o mundo inteiro); o alcance de verdade
+    // acompanha o enquadramento a cada quadro, ver #fitShadow.
+    this.#maxShadowReach = Math.max(world.width, world.height) * .8;
+    this.#applyShadowReach(sun, this.#maxShadowReach);
     sun.shadow.camera.near = 1;
     sun.shadow.camera.far = LIGHT_DISTANCE * 2.2;
     sun.shadow.bias = -.0012;
@@ -139,19 +174,28 @@ export class SkyRenderer {
     const skyLayer = new THREE.Group();
     skyLayer.position.z = SKY_DEPTH;
     cameraRig.camera.add(skyLayer);
+    this.#skyLayer = skyLayer;
     this.#buildStars(skyLayer, renderer);
     this.#buildSunDisc(skyLayer);
     this.#buildMoonDisc(skyLayer);
+    this.#buildClouds(skyLayer);
   }
 
   // Recebe o céu calculado pela astronomia e acende a cena de acordo. `overcast` vai
   // de 0 (céu limpo) a 1 (chuva cheia) e abafa sol, lua e estrelas.
-  update(sky, { overcast = 0 } = {}) {
+  // Cor do horizonte agora (a água reflete). Só leitura: é o objeto de trabalho.
+  get horizonColor() {
+    return this.#skyHorizon;
+  }
+
+  // `time`: relógio para a deriva das nuvens (parado com movimento reduzido).
+  update(sky, { overcast = 0, time = 0 } = {}) {
     const altitude = sky.sun.altitude;
     toSceneDirection(sky.sun, this.#sunDirection);
     toSceneDirection(sky.moon, this.#moonDirection);
     const cloud = overcast * .7;
     this.#paintBackground(sky, altitude, cloud);
+    this.#fog.color.copy(this.#skyHorizon);
 
     const [from, to, t] = interpolateKeys(SKY_KEYS, altitude);
     this.#blend(SKY_KEYS, altitude, 'hemiSky', this.#hemisphere.color);
@@ -166,7 +210,7 @@ export class SkyRenderer {
       smoothstep(-3, -10, altitude) * (1 - overcast * .8);
     const useSun = altitude > -3;
     const direction = useSun ? this.#sunDirection : this.#moonDirection;
-    this.#sun.position.copy(direction).multiplyScalar(LIGHT_DISTANCE);
+    this.#fitShadow(direction);
     if (useSun) {
       this.#blend(SUN_KEYS, altitude, 'color', this.#sun.color);
       this.#sun.intensity = LIGHT_SUN * sunStrength;
@@ -175,6 +219,47 @@ export class SkyRenderer {
       this.#sun.intensity = MOON_LIGHT * moonStrength;
     }
     this.#updateCelestials(sky, altitude, overcast);
+    this.#updateClouds(sky, overcast, time);
+  }
+
+  // O mapa de sombra tem resolução fixa; espalhado pelo mundo inteiro, com zoom cada
+  // pixel dele vira um degrau serrilhado na borda da sombra. Então ele cobre só o
+  // que a tela mostra (com folga para a sombra comprida do sol baixo de quem está
+  // logo fora do quadro) e anda junto com a câmera: quanto mais zoom, mais nítida.
+  #fitShadow(direction) {
+    const reach = Math.min(this.#maxShadowReach,
+      Math.max(90, this.#rig.visibleHalfSize() * 1.5 + 40));
+    if (Math.abs(reach - this.#shadowReach) > .5) this.#applyShadowReach(this.#sun, reach);
+    const focus = this.#snapToShadowTexels(this.#rig.focus, direction, reach);
+    this.#sun.target.position.copy(focus);
+    this.#sun.position.copy(direction).multiplyScalar(LIGHT_DISTANCE).add(focus);
+  }
+
+  // Se o mapa de sombra desliza pelo mundo em frações de pixel, a borda de cada
+  // sombra é reamostrada a cada quadro e tremula enquanto a câmera passeia. Andando
+  // em passos de um pixel do próprio mapa (medido nos eixos da luz), cada sombra cai
+  // sempre nos mesmos pixels e fica parada.
+  #snapToShadowTexels(focus, direction, reach) {
+    const texel = reach * 2 / this.#sun.shadow.mapSize.x;
+    const forward = this.#lightForward.copy(direction).negate();
+    const right = this.#lightRight.crossVectors(forward, WORLD_UP);
+    if (right.lengthSq() < 1e-6) return focus;
+    right.normalize();
+    const up = this.#lightUp.crossVectors(right, forward).normalize();
+    const alongRight = focus.dot(right), alongUp = focus.dot(up);
+    return this.#snappedFocus.copy(focus)
+      .addScaledVector(right, Math.round(alongRight / texel) * texel - alongRight)
+      .addScaledVector(up, Math.round(alongUp / texel) * texel - alongUp);
+  }
+
+  #applyShadowReach(sun, reach) {
+    const camera = sun.shadow.camera;
+    camera.left = -reach;
+    camera.right = reach;
+    camera.top = reach;
+    camera.bottom = -reach;
+    camera.updateProjectionMatrix();
+    this.#shadowReach = reach;
   }
 
   #paintBackground(sky, altitude, cloud) {
@@ -197,8 +282,12 @@ export class SkyRenderer {
   #updateCelestials(sky, altitude, overcast) {
     // Câmera: o que fica preso à tela é dimensionado pelo enquadramento visível, que
     // muda com zoom e com o tamanho da janela.
+    // O centro do que se vê pode não ser o foco (a HUD empurra o mundo para um lado):
+    // o fundo acompanha esse centro.
     const camera = this.#rig.camera;
-    const halfWidth = camera.right / camera.zoom, halfHeight = camera.top / camera.zoom;
+    const { centerX, centerY, halfWidth, halfHeight } = this.#rig.visibleFrame();
+    this.#skyLayer.position.x = centerX;
+    this.#skyLayer.position.y = centerY;
     this.#cameraRight.setFromMatrixColumn(camera.matrixWorld, 0);
     this.#stars.scale.set(halfWidth, halfHeight, 1);
     this.#starMaterial.opacity = (1 - smoothstep(-15, -4, altitude)) * (1 - overcast);
@@ -257,7 +346,7 @@ export class SkyRenderer {
     starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
     this.#starMaterial = new THREE.PointsMaterial({
       size: 1.7 * renderer.getPixelRatio(), sizeAttenuation: false, vertexColors: true,
-      transparent: true, opacity: 0, depthWrite: false
+      transparent: true, opacity: 0, depthWrite: false, fog: false
     });
     this.#stars = new THREE.Points(starGeometry, this.#starMaterial);
     this.#stars.frustumCulled = false;
@@ -266,10 +355,11 @@ export class SkyRenderer {
 
   #buildSunDisc(skyLayer) {
     const discGeometry = new THREE.CircleGeometry(1, 40);
+    // O céu fica fora da névoa: ele é o fundo, não algo longe dentro dela.
     this.#sunDisc = new THREE.Mesh(discGeometry, new THREE.MeshBasicMaterial({
-      color: 0xfff6e0, transparent: true, depthWrite: false }));
+      color: 0xfff6e0, transparent: true, depthWrite: false, fog: false }));
     this.#sunGlow = new THREE.Mesh(discGeometry, new THREE.MeshBasicMaterial({
-      color: 0xfff6e0, transparent: true, opacity: .22, depthWrite: false }));
+      color: 0xfff6e0, transparent: true, opacity: .22, depthWrite: false, fog: false }));
     this.#sunGlow.position.z = -1;
     skyLayer.add(this.#sunGlow, this.#sunDisc);
   }
@@ -282,8 +372,85 @@ export class SkyRenderer {
     this.#moonTexture = new THREE.CanvasTexture(moonCanvas);
     this.#moonTexture.colorSpace = THREE.SRGBColorSpace;
     this.#moonDisc = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({
-      map: this.#moonTexture, transparent: true, depthWrite: false }));
+      map: this.#moonTexture, transparent: true, depthWrite: false, fog: false }));
     skyLayer.add(this.#moonDisc);
+  }
+
+  // Nuvens fofas em volta do tabuleiro, mais embaixo dele: é o que faz o vazio em
+  // volta parecer céu e o tabuleiro parecer suspenso. Três desenhos em canvas,
+  // repetidos com tamanhos diferentes; ficam no fundo, atrás do tabuleiro.
+  #buildClouds(skyLayer) {
+    const textures = [0, 1, 2].map(variant => {
+      const texture = new THREE.CanvasTexture(SkyRenderer.#paintCloud(variant));
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    });
+    const shape = new THREE.PlaneGeometry(2, 1);
+    for (const spec of SKY_CLOUDS) {
+      const material = new THREE.MeshBasicMaterial({
+        map: textures[spec.variant], transparent: true, depthWrite: false, fog: false
+      });
+      const mesh = new THREE.Mesh(shape, material);
+      // Na frente das estrelas e do sol, ainda atrás de tudo do mundo.
+      mesh.position.z = 20;
+      skyLayer.add(mesh);
+      this.#clouds.push({ mesh, spec });
+      this.#cloudMaterials.push(material);
+    }
+  }
+
+  static #paintCloud(variant) {
+    const width = 256, height = 128;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    // Bolhas sobrepostas, maiores no meio, com a base achatada como nuvem de verdade.
+    const count = 6 + variant * 2;
+    for (let i = 0; i < count; i++) {
+      const t = (i + .5) / count;
+      const x = width * (.14 + t * .72) + (pseudoRandom(variant * 31 + i) - .5) * 20;
+      const radius = height * (.2 + Math.sin(t * Math.PI) * .2 + pseudoRandom(variant * 17 + i) * .08);
+      const y = height * .68 - radius * .55;
+      const puff = context.createRadialGradient(x, y, radius * .2, x, y, radius);
+      puff.addColorStop(0, 'rgba(255, 255, 255, .95)');
+      puff.addColorStop(.6, 'rgba(255, 255, 255, .7)');
+      puff.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      context.fillStyle = puff;
+      context.fillRect(0, 0, width, height);
+    }
+    // Barriga sombreada: a parte de baixo da nuvem pega menos luz.
+    context.globalCompositeOperation = 'source-atop';
+    const belly = context.createLinearGradient(0, height * .3, 0, height * .8);
+    belly.addColorStop(0, 'rgba(120, 135, 160, 0)');
+    belly.addColorStop(1, 'rgba(120, 135, 160, .35)');
+    context.fillStyle = belly;
+    context.fillRect(0, 0, width, height);
+    context.globalCompositeOperation = 'source-over';
+    return canvas;
+  }
+
+  // Deriva lenta para o lado, dando a volta pela borda da tela; cor e opacidade
+  // seguem a hora (brancas de dia, rosadas no crepúsculo, azul-escuras de noite) e o
+  // tempo fechado as deixa mais densas e cinzentas.
+  #updateClouds(sky, overcast, time) {
+    const { halfWidth, halfHeight } = this.#rig.visibleFrame();
+    const tone = this.#cloudTone.set(0xffffff).lerp(this.#skyHorizon, .3)
+      .multiplyScalar(.28 + .72 * sky.daylight);
+    const opacity = (.5 + .35 * overcast) * (.45 + .55 * sky.daylight);
+    for (const material of this.#cloudMaterials) {
+      material.color.copy(tone);
+      material.opacity = opacity;
+    }
+    for (const { mesh, spec } of this.#clouds) {
+      // Faixa de -1,6 a 1,6 meias-larguras: a nuvem sai inteira antes de voltar.
+      const span = 3.2;
+      const x = ((spec.x + 1.6 + time * spec.speed) % span + span) % span - 1.6;
+      mesh.position.x = x * halfWidth;
+      mesh.position.y = spec.y * halfHeight;
+      const width = spec.width * halfWidth;
+      mesh.scale.set(width, width, 1);
+    }
   }
 
   #paintMoon(phase) {

@@ -8,6 +8,7 @@ import { ScientistNameGenerator } from './names/ScientistNameGenerator.js';
 import { TribeNameRegistry } from './names/TribeNameRegistry.js';
 import { WorldState } from './world/WorldState.js';
 import { BiomeMap } from './world/BiomeMap.js';
+import { SpaceOccupancy } from './world/SpaceOccupancy.js';
 import { GrassField } from './world/GrassField.js';
 import { PondSystem } from './world/PondSystem.js';
 import { Weather } from './world/Weather.js';
@@ -49,6 +50,9 @@ import { HutMarksLayer } from './overlay/layers/HutMarksLayer.js';
 import { OrganismLabelsLayer } from './overlay/layers/OrganismLabelsLayer.js';
 import { PairHeartsLayer } from './overlay/layers/PairHeartsLayer.js';
 import { RainLayer } from './overlay/layers/RainLayer.js';
+import { CloudShadowsLayer } from './overlay/layers/CloudShadowsLayer.js';
+import { PondRipplesLayer } from './overlay/layers/PondRipplesLayer.js';
+import { FirefliesLayer } from './overlay/layers/FirefliesLayer.js';
 import { HudPanel } from './ui/HudPanel.js';
 import { TribeListPanel } from './ui/TribeListPanel.js';
 import { SpeedControl } from './ui/SpeedControl.js';
@@ -58,6 +62,7 @@ import { EvolutionPlot } from './ui/EvolutionPlot.js';
 import { EvolutionDialog } from './ui/EvolutionDialog.js';
 import { EventCamera } from './ui/EventCamera.js';
 import { ViewControls } from './ui/ViewControls.js';
+import { HudObstacleTracker } from './ui/HudObstacleTracker.js';
 import { CameraController } from './input/CameraController.js';
 import { ArenaClickHandler } from './input/ArenaClickHandler.js';
 import { FrameRenderer } from './app/FrameRenderer.js';
@@ -90,11 +95,12 @@ const state = new WorldState();
 const skyClock = new SkyClock(new Astronomy());
 const biomes = new BiomeMap();
 const tribeNames = new TribeNameRegistry();
-const grassField = new GrassField(state, biomes);
-const ponds = new PondSystem(state, biomes);
+const occupancy = new SpaceOccupancy(state);
+const grassField = new GrassField(state, biomes, occupancy);
+const ponds = new PondSystem(state, biomes, occupancy);
 const weather = new Weather(state, ponds);
 const forest = new ForestSystem(state);
-const campfires = new CampfireSystem(state, skyClock, weather);
+const campfires = new CampfireSystem(state, skyClock, weather, occupancy);
 const vision = new VisionPhysiology();
 const genetics = new Genetics(vision);
 const factory = new OrganismFactory(genetics, new ScientistNameGenerator(), theme.pigments);
@@ -103,7 +109,7 @@ const locomotion = new Locomotion(state);
 const foraging = new Foraging({ state, perception, grassField, ponds });
 const bands = new BandFormation(state);
 const tribes = new TribeSystem({ state, perception, tribeNames, bands });
-const shelter = new ShelterSystem(state, skyClock);
+const shelter = new ShelterSystem(state, skyClock, occupancy);
 const woodcutting = new Woodcutting({ state, skyClock, perception, locomotion, shelter, forest, events });
 const sleep = new SleepBehavior({ skyClock, shelter, campfires, woodcutting, foraging });
 const mourning = new MourningSystem({ state, locomotion, woodcutting });
@@ -130,6 +136,8 @@ const overlay = new OverlayRenderer({
   cameraRig: view.camera,
   state,
   groundLayers: [
+    new CloudShadowsLayer(state, skyClock, weather, motion),
+    new PondRipplesLayer(state, weather, theme, motion),
     new PairRingsLayer(state, theme),
     new BirthEffectsLayer(state, theme, motion),
     new FallDustLayer(state)
@@ -137,6 +145,7 @@ const overlay = new OverlayRenderer({
   screenLayers: [
     new WoodChipsLayer(state, motion),
     new FliesLayer(state, theme, motion),
+    new FirefliesLayer(state, skyClock, weather, motion),
     new HutMarksLayer(state, theme, glyphs),
     new OrganismLabelsLayer(state, theme, motion, glyphs),
     new PairHeartsLayer(state, motion, glyphs),
@@ -168,6 +177,14 @@ const frameRenderer = new FrameRenderer({
   panels: [new TribeListPanel(root, state, tribeNames), new HudPanel(root, state, skyClock)]
 });
 const viewport = new Viewport(canvas, view, overlay);
+// O que fica por cima da cena o tempo todo; o tabuleiro, centrado, cresce até
+// encostar neles.
+const hudObstacles = new HudObstacleTracker({
+  canvas,
+  cameraRig: view.camera,
+  panels: ['.hud-stack > aside', '.tribes-panel', '.view-controls', '#arena-hint']
+    .map(selector => root.querySelector(selector))
+});
 DebugApi.install(window, {
   serializer: new StateSerializer({ state, skyClock, simulation, genetics, biomes, ponds, tribeNames }),
   simulation, frameRenderer
@@ -175,14 +192,30 @@ DebugApi.install(window, {
 
 // ---- O mundo de pé ----
 state.organisms.push(...factory.createFounders());
-grassField.seed();
+// Nesta ordem, cada um conferindo o chão contra quem já nasceu (SpaceOccupancy):
+// lagos primeiro (são os maiores), depois árvores e enfeites, por último o capim.
 ponds.restore();
+const sceneryItems = new SceneryPlanner(state, biomes, occupancy).plan();
+grassField.seed();
 const painter = new GroundPainter(biomes);
 view.terrain.setGroundTexture(painter.paintGround());
-view.terrain.setSurroundingTexture(painter.paintSurroundings());
-view.scenery.set(new SceneryPlanner(state, biomes).plan());
+// Cada lateral do tabuleiro com a coluna u da textura apontando para o ponto certo da
+// beirada (o sentido de u em cada face é o do BoxGeometry), para a franja de grama
+// bater com o bioma logo acima.
+view.terrain.setSideTextures({
+  east: painter.paintSide(u => ({ x: WORLD.width, y: WORLD.height * (1 - u) })),
+  west: painter.paintSide(u => ({ x: 0, y: WORLD.height * u })),
+  south: painter.paintSide(u => ({ x: WORLD.width * u, y: WORLD.height })),
+  north: painter.paintSide(u => ({ x: WORLD.width * (1 - u), y: 0 }))
+});
+view.scenery.set(sceneryItems);
+view.grass.plant({
+  toneAt: (x, y) => painter.toneAt(x, y),
+  biomeAt: (x, y) => biomes.biomeAt(x, y)
+});
 geneStatistics.capture();
 viewport.resize();
+hudObstacles.measure();
 frameRenderer.render();
 
 window.addEventListener('resize', () => {
@@ -193,6 +226,7 @@ window.addEventListener('resize', () => {
 
 new GameLoop(dt => {
   cameraController.update(dt);
+  view.camera.update(dt);
   simulation.advance(dt);
   frameRenderer.render();
 }).start();

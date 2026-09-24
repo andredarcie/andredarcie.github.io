@@ -1,6 +1,10 @@
 // Corpo, movimento, necessidades e sono dos bichos.
 
 export const LIFE_SIZE = 10;
+// Casais fundadores no começo da simulação: acompanharam a área do mundo (6 no de
+// 900, 3 no de 636, 2 no de 509) e param em 2 no de 407 — com 1 casal só, uma
+// morte cedo acaba com a população.
+export const FOUNDER_PAIRS = 2;
 // Altura do boneco em unidades da cena; o nome e os balões ancoram nela.
 export const CHARACTER_HEIGHT = 16;
 export const VISION = 105;

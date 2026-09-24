@@ -5,7 +5,8 @@
 // mais rápido e o corpo gasta menos) e ilumina (em volta dele se enxerga quase
 // como de dia). Chuva apaga; de manhã vira brasa e some.
 export const CAMPFIRE_MIN_TRIBE = 4;
-export const MAX_CAMPFIRES = 4;
+// Metade do limite de antes, junto com o mundo pela metade.
+export const MAX_CAMPFIRES = 2;
 export const CAMPFIRE_START_LIGHT = .45;
 export const CAMPFIRE_END_LIGHT = .65;
 // Quanto antes da própria hora de deitar o bicho já vai sentar perto do fogo.
@@ -42,7 +43,7 @@ export const HUT_LOGS = 4;
 // Uma cabana por tribo, e a tribo inteira sempre cabe: a cabana cresce junto com
 // ela (hutSize). Nunca é menor que 4 vagas, então sobra lugar para um andarilho.
 export const HUT_MIN_CAPACITY = 4;
-export const MAX_HUTS = 10;
+export const MAX_HUTS = 2;
 export const HUT_DOOR_TOLERANCE = 6;
 export const HUT_SEEK_RANGE = 380;
 // Dentro da cabana a energia volta 2,2× mais rápido e o corpo gasta 35% menos.
