@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Solar Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: dark;
+    --holo:#7fe9ff; --holo-dim:rgba(127,233,255,.55); --holo-faint:rgba(127,233,255,.18);
+    --amber:#ffb347; --red:#ff5a4a; --green:#7dffb0;
+    --glow:0 0 6px rgba(127,233,255,.55), 0 0 1px rgba(127,233,255,.9);
+    --mono:"Share Tech Mono",ui-monospace,Menlo,Consolas,monospace;
+    --head:"Orbitron","Share Tech Mono",ui-monospace,monospace; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#000; font-family:var(--mono); color:var(--holo);
+    -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; touch-action:none;
+    -webkit-touch-callout:none; overscroll-behavior:none; }
+  #c { position:fixed; inset:0; width:100%; height:100%; display:block; }
+
+  /* ================= VISOR DO CAPACETE ================= */
+  #visor { position:fixed; inset:0; pointer-events:none; z-index:2;
+    background:
+      radial-gradient(ellipse 118% 100% at 50% 46%, transparent 60%, rgba(2,10,20,.45) 76%, rgba(0,3,8,.92) 92%, #000 100%); }
+  /* reflexo do vidro */
+  #visor::before { content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(112deg, transparent 14%, rgba(200,235,255,.045) 19%, rgba(200,235,255,.015) 23%, transparent 27%),
+      linear-gradient(112deg, transparent 70%, rgba(200,235,255,.03) 73%, transparent 76%),
+      radial-gradient(ellipse 70% 22% at 50% -6%, rgba(170,220,255,.10), transparent 70%); }
+  /* scanlines holográficas */
+  #visor::after { content:""; position:absolute; inset:0; opacity:.55;
+    background:repeating-linear-gradient(to bottom, rgba(127,233,255,.035) 0 1px, transparent 1px 3px); }
+  /* borda interna curva do visor */
+  #rim { position:fixed; left:-6%; right:-6%; top:-10%; bottom:-10%; border-radius:50% / 46%; pointer-events:none; z-index:2;
+    box-shadow: inset 0 0 0 1px rgba(127,233,255,.10), inset 0 0 90px rgba(60,160,255,.10); }
+  /* embaçado da respiração */
+  #fog { position:fixed; left:20%; right:20%; bottom:-8%; height:30%; pointer-events:none; z-index:2;
+    background:radial-gradient(ellipse at 50% 100%, rgba(220,240,255,.10), transparent 70%);
+    animation:breath 4.2s ease-in-out infinite; }
+  @keyframes breath { 0%,100% { opacity:.15; } 45% { opacity:.9; } }
+  body.alert #visor { box-shadow: inset 0 0 160px rgba(255,60,40,.35); animation:alertpulse 1s ease-in-out infinite; }
+  @keyframes alertpulse { 50% { box-shadow: inset 0 0 90px rgba(255,60,40,.15); } }
+
+  .hud { position:fixed; z-index:5; pointer-events:none; text-shadow:var(--glow); }
+
+  /* ================= PAINÉIS LATERAIS ================= */
+  .panel { top:16px; width:200px; padding:10px 12px 9px; font-size:12px; line-height:1.55;
+    background:linear-gradient(180deg, rgba(10,40,60,.30), rgba(10,40,60,.12));
+    border-top:1px solid var(--holo-faint); border-bottom:1px solid var(--holo-faint); }
+  .panel::before, .panel::after { content:""; position:absolute; width:12px; height:12px; border:1.5px solid var(--holo-dim); }
+  .panel::before { top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .panel::after { bottom:-1px; right:-1px; border-left:none; border-top:none; }
+  #pEnv { right:4.5%; transform:perspective(700px) rotateY(-14deg); transform-origin:right center; }
+  .ph { display:flex; justify-content:space-between; align-items:baseline; font-family:var(--head); font-weight:800;
+    font-size:10px; letter-spacing:3px; margin-bottom:6px; color:var(--holo); }
+  .pf { margin-top:6px; text-align:right; font-size:9px; letter-spacing:2px; color:var(--holo-dim); text-shadow:none; }
+  .ph small { font-family:var(--mono); font-weight:400; letter-spacing:1px; color:var(--holo-dim); font-size:10px; }
+  .row { display:flex; justify-content:space-between; gap:8px; white-space:nowrap; }
+  .row .k { color:var(--holo-dim); letter-spacing:1px; }
+  .row .v { color:#d9faff; text-align:right; overflow:hidden; text-overflow:ellipsis; }
+  .row.warn .v { color:var(--amber); }
+  .row.crit .v { color:var(--red); animation:blink .6s steps(2) infinite; }
+  @keyframes blink { 50% { opacity:.3; } }
+
+  /* ================= BÚSSOLA ================= */
+  #compass { top:14px; left:50%; width:300px; margin-left:-150px; height:30px; overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+            mask-image:linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); }
+  #tape { position:absolute; top:0; left:0; height:100%; will-change:transform; }
+  #tape b { position:absolute; top:2px; transform:translateX(-50%); font-weight:400; font-size:11px; color:var(--holo-dim); }
+  #tape b.c { color:#e6fbff; font-family:var(--head); font-weight:800; font-size:12px; }
+  #tape s { position:absolute; bottom:2px; width:1px; height:6px; background:var(--holo-dim); }
+  #tape s.l { height:10px; background:var(--holo); }
+  #cmark { top:42px; left:50%; transform:translateX(-50%); width:0; height:0;
+    border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:6px solid var(--amber); filter:drop-shadow(0 0 3px var(--amber)); }
+  #hdg { top:48px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--amber); text-shadow:0 0 5px rgba(255,179,71,.6); }
+
+  /* local atual */
+  #loc { top:66px; left:50%; transform:translateX(-50%); text-align:center; white-space:nowrap; }
+  #locName { font-family:var(--head); font-weight:800; font-size:16px; letter-spacing:7px; color:#e6fbff; }
+  #locSub { font-size:11px; letter-spacing:2px; color:var(--holo-dim); margin-top:2px; }
+  body[data-mode="fly"] #loc, body[data-mode="takeoff"] #loc, body[data-mode="landing"] #loc { top:62px; }
+
+  /* ================= RETÍCULA ================= */
+  #reticle { left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; opacity:.8; }
+  body:not([data-mode="foot"]) #reticle { display:none; }
+
+
+  /* aviso central */
+  #warn { top:34%; left:50%; transform:translate(-50%,-50%); display:none; font-family:var(--head); font-weight:800;
+    font-size:15px; letter-spacing:4px; color:var(--red); text-shadow:0 0 10px rgba(255,90,74,.8);
+    padding:6px 16px; border-top:1px solid rgba(255,90,74,.6); border-bottom:1px solid rgba(255,90,74,.6);
+    animation:blink .5s steps(2) infinite; white-space:nowrap; }
+
+  /* prompt de interação */
+  #prompt { left:50%; top:calc(50% + 46px); transform:translateX(-50%); display:none; font-size:13px; letter-spacing:2px;
+    color:var(--amber); text-shadow:0 0 6px rgba(255,179,71,.7); padding:5px 14px; white-space:nowrap;
+    border-left:2px solid var(--amber); border-right:2px solid var(--amber); background:rgba(40,25,0,.25); }
+  #prompt b { color:#fff; border:1px solid var(--amber); padding:0 5px; margin-right:6px; }
+
+  #helpline { right:5%; bottom:6%; max-width:42vw; text-align:right; font-size:11px; line-height:1.6;
+    color:var(--holo-dim); text-shadow:none; }
+  #helpline b { color:var(--holo); font-weight:400; }
+
+  /* ================= RÓTULOS NO MUNDO ================= */
+  #labels { position:fixed; inset:0; pointer-events:none; z-index:3; overflow:hidden; }
+  .lbl { position:absolute; left:0; top:0; white-space:nowrap; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--holo); text-shadow:var(--glow); display:none; padding-left:12px; }
+  .lbl::before { content:""; position:absolute; left:0; top:50%; width:6px; height:6px; margin-top:-3px;
+    border:1px solid var(--holo); transform:rotate(45deg); }
+  .lbl i { font-style:normal; color:var(--holo-dim); margin-left:6px; letter-spacing:0; }
+  .lbl.tgt { color:var(--amber); text-shadow:0 0 6px rgba(255,179,71,.7); padding-left:0; }
+  .lbl.tgt::before { left:50%; width:38px; height:38px; margin:-19px 0 0 -19px; border:1.5px solid var(--amber);
+    transform:none; border-radius:2px;
+    -webkit-mask: linear-gradient(#000 0 0) top left/10px 10px no-repeat, linear-gradient(#000 0 0) top right/10px 10px no-repeat,
+                  linear-gradient(#000 0 0) bottom left/10px 10px no-repeat, linear-gradient(#000 0 0) bottom right/10px 10px no-repeat;
+            mask: linear-gradient(#000 0 0) top left/10px 10px no-repeat, linear-gradient(#000 0 0) top right/10px 10px no-repeat,
+                  linear-gradient(#000 0 0) bottom left/10px 10px no-repeat, linear-gradient(#000 0 0) bottom right/10px 10px no-repeat; }
+  .lbl.tgt span, .lbl.tgt i { position:relative; top:30px; }
+  /* alvo fora da tela: só uma seta apontando pra ele + nome pequeno embaixo */
+  .lbl em { display:none; }
+  .lbl.edge::before { display:none; }
+  .lbl.edge { font-size:9px; letter-spacing:1.5px; opacity:.85; }
+  .lbl.edge em { display:block; position:absolute; left:50%; top:50%; width:0; height:0; margin:-7px 0 0 -6px;
+    border-top:7px solid transparent; border-bottom:7px solid transparent; border-left:13px solid currentColor;
+    transform:rotate(var(--a)); transform-origin:6px 7px; filter:drop-shadow(0 0 3px currentColor); }
+  .lbl.edge span, .lbl.edge i { position:relative; top:16px; }
+  .lbl.ship { color:var(--green); text-shadow:0 0 6px rgba(125,255,176,.6); }
+  .lbl.ship::before { border-color:var(--green); }
+
+  /* ================= CONTROLES ================= */
+  #tgtpanel { position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:6; display:none; align-items:center; gap:6px; }
+  #tgtName { min-width:92px; text-align:center; font-family:var(--head); font-size:11px; font-weight:800; letter-spacing:3px;
+    text-transform:uppercase; color:var(--amber); text-shadow:0 0 6px rgba(255,179,71,.6); }
+  .btn { font:12px/1 var(--mono); letter-spacing:2px; color:var(--holo); background:rgba(10,40,60,.35);
+    border:1px solid var(--holo-dim); padding:8px 10px; cursor:pointer; -webkit-appearance:none; text-shadow:var(--glow); }
+  .btn:active { background:rgba(127,233,255,.3); }
+
+  .tb { position:fixed; z-index:6; display:none; font:12px/1 var(--mono); letter-spacing:2px; color:var(--holo);
+    background:rgba(10,40,60,.3); border:1.5px solid var(--holo-dim); border-radius:50%; width:76px; height:76px;
+    cursor:pointer; -webkit-appearance:none; text-shadow:var(--glow); box-shadow:inset 0 0 14px rgba(127,233,255,.15); }
+  .tb:active, .tb.on { background:rgba(127,233,255,.3); }
+  #bJump, #bBoost { right:calc(24px + env(safe-area-inset-right)); bottom:calc(30px + env(safe-area-inset-bottom)); width:86px; height:86px; }
+  #bAct { position:fixed; z-index:6; display:none; left:50%; top:calc(50% + 44px); transform:translateX(-50%);
+    font:14px/1 var(--mono); letter-spacing:3px; color:var(--amber); background:rgba(40,25,0,.35);
+    border:1.5px solid var(--amber); padding:13px 24px; cursor:pointer; text-shadow:0 0 6px rgba(255,179,71,.7); }
+
+  #stick { display:none; position:fixed; width:120px; height:120px; border-radius:50%; z-index:4; pointer-events:none;
+    border:1.5px solid var(--holo-dim); background:rgba(127,233,255,.05); box-shadow:inset 0 0 18px rgba(127,233,255,.12); }
+  #nub { position:absolute; width:56px; height:56px; border-radius:50%; left:30px; top:30px;
+    background:rgba(127,233,255,.22); border:1px solid var(--holo); }
+  /* manche virtual do voo (lado direito) */
+  #steer { display:none; position:fixed; width:120px; height:120px; border-radius:50%; z-index:4; pointer-events:none;
+    border:1.5px solid rgba(255,179,71,.6); background:rgba(255,179,71,.05); box-shadow:inset 0 0 18px rgba(255,179,71,.12); }
+  #steerNub { position:absolute; width:56px; height:56px; border-radius:50%; left:30px; top:30px;
+    background:rgba(255,179,71,.22); border:1px solid var(--amber); }
+
+  /* ================= CELULAR ================= */
+  @media (max-width: 760px) {
+    .panel { top:96px; width:148px; font-size:10px; padding:7px 8px; line-height:1.45; }
+    #pEnv { right:10px; }
+    .ph { font-size:8px; letter-spacing:2px; margin-bottom:3px; }
+    #compass { width:200px; margin-left:-100px; }
+    #locName { font-size:13px; letter-spacing:5px; }
+  }
+  /* celular deitado (paisagem): pouca altura, HUD mais compacto */
+  @media (max-height: 500px) {
+    .panel { top:8px; width:150px; font-size:10px; padding:6px 8px; line-height:1.4; }
+    #pEnv { right:calc(10px + env(safe-area-inset-right)); }
+    .ph { font-size:8px; letter-spacing:2px; margin-bottom:2px; }
+    #compass { top:6px; width:220px; margin-left:-110px; }
+    #cmark { top:34px; } #hdg { top:40px; }
+    #loc { top:54px; } body[data-mode="fly"] #loc, body[data-mode="takeoff"] #loc, body[data-mode="landing"] #loc { top:46px; }
+    #locName { font-size:12px; letter-spacing:5px; } #locSub { font-size:9px; }
+    #tgtpanel { top:6px; } .btn { padding:7px 9px; }
+    #bAct { top:auto; bottom:calc(18px + env(safe-area-inset-bottom)); }
+  }
+  .rot { display:none; margin-top:18px; font-size:12px; color:var(--amber); }
+  @media (orientation: portrait) { body.touch .rot { display:block; } }
+
+  /* ================= TELA INICIAL ================= */
+  #overlay { position:fixed; inset:0; z-index:10; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; padding:24px;
+    background:radial-gradient(ellipse at 50% 125%, rgba(255,150,60,.30), transparent 55%),
+               radial-gradient(circle at 50% 40%, #0b1d36, #02040a 75%); }
+  #overlay h1 { font-family:var(--head); font-size:32px; font-weight:800; letter-spacing:10px; text-transform:uppercase;
+    margin-bottom:10px; color:#e6fbff; text-shadow:var(--glow); }
+  #overlay .sub { font-size:14px; color:#9fc6d8; margin-bottom:26px; max-width:400px; line-height:1.6; }
+  #startbtn { font:16px/1 var(--mono); letter-spacing:4px; text-transform:uppercase; color:var(--amber);
+    background:rgba(40,25,0,.35); border:1.5px solid var(--amber); padding:15px 34px; cursor:pointer;
+    text-shadow:0 0 8px rgba(255,179,71,.7); box-shadow:0 0 24px rgba(255,160,60,.2); }
+  #startbtn:disabled { color:var(--holo-dim); border-color:var(--holo-faint); box-shadow:none; text-shadow:none; cursor:wait; }
+  #overlay .ctrl { margin-top:26px; font-size:12px; color:#7f9fb4; line-height:1.9; max-width:440px; }
+  #overlay .ctrl b { color:#cfeaf5; font-weight:400; }
+</style>
+</head>
+<body data-mode="foot">
+  <canvas id="c"></canvas>
+  <div id="labels"></div>
+
+  <!-- visor -->
+  <div id="visor"></div><div id="rim"></div><div id="fog"></div>
+
+  <!-- ambiente / navegação -->
+  <div class="hud panel" id="pEnv">
+    <div class="ph"><span id="envHead">ENV</span><small id="envSub"></small></div>
+    <div class="row" id="r0"><span class="k" id="k0"></span><span class="v" id="v0"></span></div>
+    <div class="row" id="r1"><span class="k" id="k1"></span><span class="v" id="v1"></span></div>
+    <div class="row" id="r2"><span class="k" id="k2"></span><span class="v" id="v2"></span></div>
+    <div class="row" id="r3"><span class="k" id="k3"></span><span class="v" id="v3"></span></div>
+    <div class="row" id="r4"><span class="k" id="k4"></span><span class="v" id="v4"></span></div>
+    <div class="row" id="r5"><span class="k" id="k5"></span><span class="v" id="v5"></span></div>
+    <div class="pf" id="build">BUILD 14</div>
+  </div>
+
+  <!-- bússola -->
+  <div class="hud" id="compass"><div id="tape"></div></div>
+  <div class="hud" id="cmark"></div>
+  <div class="hud" id="hdg">000°</div>
+  <div class="hud" id="loc"><div id="locName"></div><div id="locSub"></div></div>
+
+  <!-- retícula -->
+  <svg class="hud" id="reticle" viewBox="0 0 34 34" fill="none" stroke="#7fe9ff" stroke-width="1.2">
+    <circle cx="17" cy="17" r="9" stroke-opacity=".55"/>
+    <path d="M17 2v6M17 26v6M2 17h6M26 17h6"/>
+    <circle cx="17" cy="17" r="1.2" fill="#7fe9ff" stroke="none"/>
+  </svg>
+
+  <div class="hud" id="warn"></div>
+  <div class="hud" id="prompt"></div>
+  <div class="hud" id="helpline"></div>
+
+  <div id="tgtpanel">
+    <button class="btn" id="bPrev">&#9664;</button>
+    <div id="tgtName">Mars</div>
+    <button class="btn" id="bNext">&#9654;</button>
+  </div>
+
+  <button class="tb" id="bJump">JUMP</button>
+  <button class="tb" id="bBoost">BOOST</button>
+  <button id="bAct">BOARD</button>
+
+  <div id="stick"><div id="nub"></div></div>
+  <div id="steer"><div id="steerNub"></div></div>
+
+  <div id="overlay">
+    <h1>Solar Explorer</h1>
+    <div class="sub">Walk on every rocky world of the Solar System and dive into the clouds of the gas giants. When you are done, climb back into your ship and fly to the next one.</div>
+    <button id="startbtn" disabled>Building planets…</button>
+    <div class="rot">Tip: turn your phone sideways for the best view</div>
+    <div class="ctrl" id="ctrlhelp">
+      <b>On foot</b> — WASD move · Mouse look · Space jump · Shift run · E board ship<br>
+      <b>In the ship</b> — W/S thrust · Mouse steer · A/D turn · Shift boost<br>
+      Q/R pick target · E land
+    </div>
+  </div>
+
+  <script type="importmap">
+  { "imports": { "three": "./lib/three.module.min.js?v=14" } }
+  </script>
+  <script type="module" src="./game.js?v=14"></script>
+  <script>
+    if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
+      document.getElementById('ctrlhelp').innerHTML =
+        '<b>Left side</b>: walk, or thrust and turn in the ship<br><b>Right side</b>: drag to look; in the ship, hold and push to steer<br>Buttons for jump, boost, board and land';
+    }
+  </script>
+</body>
+</html>

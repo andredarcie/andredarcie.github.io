@@ -496,12 +496,12 @@
       </div>
       <p class="games-note">Making small games is a hobby of mine.</p>
       <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
-        <span class="arrow">▸</span><span class="label">Show my games (13)</span>
+        <span class="arrow">▸</span><span class="label">Show my games (14)</span>
       </button>
 
       <div id="games-panel" hidden>
         <div class="filters" role="group" aria-label="Filter games by category">
-          <span class="flabel"><b id="games-count">13</b> games · filter</span>
+          <span class="flabel"><b id="games-count">14</b> games · filter</span>
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
           <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
           <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
@@ -581,6 +581,11 @@
           <a class="card" href="house/" data-cat="sim">
             <div class="card-title">House Walkthrough</div>
             <div class="card-desc">First-person walking sim of a house built faithfully from its floor plan.</div>
+            <span class="card-tag">Sim</span>
+          </a>
+          <a class="card" href="explorer/index.html" data-cat="sim">
+            <div class="card-title">Solar Explorer</div>
+            <div class="card-desc">First-person walking sim across the Solar System: walk the rocky worlds, dive into the gas giants and fly your ship to the next.</div>
             <span class="card-tag">Sim</span>
           </a>
         </div>
@@ -788,7 +793,7 @@
         var willOpen = panel.hasAttribute('hidden');
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        label.textContent = willOpen ? 'Hide games' : 'Show my games (13)';
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (14)';
       });
 
       var revealP = document.getElementById('reveal-proto');
