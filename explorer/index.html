@@ -212,11 +212,29 @@
     font:11px/1 var(--mono); letter-spacing:1px; color:var(--holo-dim); background:none; border:none; padding:6px; cursor:pointer;
     opacity:.55; text-shadow:var(--glow); -webkit-appearance:none; }
   #bTime.on { opacity:1; color:var(--amber); }
-  /* botão de música, ao lado do relógio: riscado quando desligado */
-  #bSound { position:fixed; z-index:6; top:calc(8px + env(safe-area-inset-top)); left:calc(10px + env(safe-area-inset-left));
-    font:13px/1 var(--mono); color:var(--holo-dim); background:none; border:none; padding:6px; cursor:pointer; opacity:.55;
-    text-shadow:var(--glow); -webkit-appearance:none; }
-  #bSound.off { text-decoration:line-through; opacity:.3; }
+  /* pausa: botão só no celular (no PC é o Esc) + menu */
+  #bPause { position:fixed; z-index:7; display:none; top:calc(6px + env(safe-area-inset-top)); right:calc(8px + env(safe-area-inset-right));
+    font:13px/1 var(--mono); color:var(--holo); background:rgba(10,40,60,.3); border:1px solid var(--holo-faint);
+    width:38px; height:34px; cursor:pointer; -webkit-appearance:none; text-shadow:var(--glow); }
+  body.touch #bPause { display:block; }
+  body.touch #bTime { right:calc(54px + env(safe-area-inset-right)); }
+  #pauseMenu { position:fixed; inset:0; z-index:9; display:none; align-items:center; justify-content:center;
+    background:rgba(2,6,12,.62); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); touch-action:auto; }
+  .pm { min-width:min(320px, 86vw); padding:22px 24px 16px; background:rgba(8,22,34,.82); border:1px solid var(--holo-faint);
+    box-shadow:0 0 30px rgba(0,0,0,.6); text-align:center; }
+  .pm h2 { font-family:var(--head); font-weight:800; font-size:18px; letter-spacing:8px; text-transform:uppercase; color:#e6fbff;
+    margin-bottom:16px; text-shadow:var(--glow); }
+  .pmb { font:13px/1 var(--mono); letter-spacing:2px; color:var(--holo); background:rgba(10,40,60,.45); border:1px solid var(--holo-dim);
+    padding:9px 14px; cursor:pointer; -webkit-appearance:none; min-width:64px; }
+  .pmb.on { color:#04140c; background:var(--green); border-color:var(--green); }
+  .pmb.main { display:block; width:100%; margin-bottom:14px; padding:13px; font-size:15px; letter-spacing:4px; text-transform:uppercase;
+    color:var(--amber); border-color:var(--amber); background:rgba(40,25,0,.35); }
+  .pmrow { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 2px; border-top:1px solid var(--holo-faint);
+    font-size:13px; letter-spacing:2px; color:var(--holo-dim); text-transform:uppercase; }
+  .pmrow input[type=range] { flex:1; accent-color:var(--amber); touch-action:pan-x; min-width:90px; }
+  .pmrow b { font-weight:400; color:#d9faff; min-width:40px; text-align:right; }
+  .pmhint { margin-top:10px; font-size:11px; color:var(--holo-dim); letter-spacing:1px; }
+  body.touch .pmhint { display:none; }
   #build { position:fixed; z-index:5; left:calc(8px + env(safe-area-inset-left)); bottom:calc(6px + env(safe-area-inset-bottom));
     font:9px/1 var(--mono); letter-spacing:1px; color:var(--holo-dim); opacity:.35; pointer-events:none; }
   #helpline { display:none; }
@@ -238,8 +256,18 @@
   <div class="hud" id="loc"><div id="locName"></div><div id="locSub"></div></div>
   <div class="hud" id="readout"></div>
   <button id="bTime" title="Time speed">&#9201;</button>
-  <button id="bSound" title="Music (M)">&#9835;</button>
-  <div id="build">BUILD 26</div>
+  <button id="bPause" title="Pause">&#10074;&#10074;</button>
+  <div id="pauseMenu">
+    <div class="pm">
+      <h2>Paused</h2>
+      <button id="pmResume" class="pmb main">Resume</button>
+      <div class="pmrow" id="pmMusicRow"><span>Music</span><button id="pmMusic" class="pmb">ON</button></div>
+      <div class="pmrow" id="pmVolRow"><span>Volume</span><input id="pmVol" type="range" min="0" max="100" step="1"><b id="pmVolVal">45%</b></div>
+      <div class="pmrow" id="pmFsRow"><span>Fullscreen</span><button id="pmFs" class="pmb">OFF</button></div>
+      <div class="pmhint" id="pmHint">Esc to resume</div>
+    </div>
+  </div>
+  <div id="build">BUILD 28</div>
 
   <div class="hud" id="warn"></div>
   <div class="hud" id="prompt"></div>
@@ -272,9 +300,9 @@
   </div>
 
   <script type="importmap">
-  { "imports": { "three": "./lib/three.module.min.js?v=26" } }
+  { "imports": { "three": "./lib/three.module.min.js?v=28" } }
   </script>
-  <script type="module" src="./game.js?v=26"></script>
+  <script type="module" src="./game.js?v=28"></script>
   <script>
     if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
       document.getElementById('ctrlhelp').innerHTML =

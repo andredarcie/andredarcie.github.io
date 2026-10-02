@@ -1267,8 +1267,6 @@ function hullTexture() {
   x.fillStyle = 'rgba(70,75,82,.6)';
   for (let gx = 0; gx < W; gx += 64) for (let gy = 0; gy < H; gy += 12) { x.beginPath(); x.arc(gx + 4, gy, 1.3, 0, 7); x.fill(); }
   // faixa laranja + filete escuro (vira um anel ao redor da fuselagem)
-  x.fillStyle = '#e8732a'; x.fillRect(0, 300, W, 26);
-  x.fillStyle = '#2b3038'; x.fillRect(0, 330, W, 6);
   for (let i = 0; i < 1800; i++) { x.fillStyle = `rgba(40,40,40,${r() * .05})`; x.fillRect(r() * W, r() * H, 2, 2); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
   return t;
@@ -1312,17 +1310,59 @@ function hudGlassTexture() {
 
 // caixa afunilada: a face da frente (-Z) ou de trás (+Z) encolhe e desce — dá o visual facetado
 function taperBox(w, h, d, sx, sy, dy, front = true) {
-  const g = new THREE.BoxGeometry(w, h, d), p = g.attributes.position;
+  const g = boxUV(new THREE.BoxGeometry(w, h, d), w, h, d), p = g.attributes.position;
   for (let i = 0; i < p.count; i++) {
     if ((front && p.getZ(i) < 0) || (!front && p.getZ(i) > 0)) p.setXYZ(i, p.getX(i) * sx, p.getY(i) * sy + dy, p.getZ(i));
   }
   g.computeVertexNormals();
   return g;
 }
+// UV de cada face proporcional ao tamanho real (a textura repete a cada HULL_TILE, sem esticar)
+const HULL_TILE = 2;
+function boxUV(g, w, h, d) {
+  const uv = g.attributes.uv;
+  // ordem das faces do BoxGeometry: +x, -x (u=d, v=h) · +y, -y (u=w, v=d) · +z, -z (u=w, v=h); 4 vértices cada
+  const sz = [[d, h], [d, h], [w, d], [w, d], [w, h], [w, h]];
+  for (let f = 0; f < 6; f++) for (let k = 0; k < 4; k++) {
+    const i = f * 4 + k; uv.setXY(i, uv.getX(i) * sz[f][0] / HULL_TILE, uv.getY(i) * sz[f][1] / HULL_TILE);
+  }
+  return g;
+}
+// funde as malhas estáticas filhas diretas de um grupo que usam o mesmo material (menos draw calls)
+function mergeStatic(group, keep) {
+  const byMat = new Map();
+  for (const m of group.children) if (m.isMesh && !keep.has(m)) {
+    if (!byMat.has(m.material)) byMat.set(m.material, []);
+    byMat.get(m.material).push(m);
+  }
+  for (const [mat, list] of byMat) {
+    if (list.length < 2) continue;
+    const parts = list.map(m => {
+      m.updateMatrix();
+      let geo = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry.clone();
+      geo.applyMatrix4(m.matrix);
+      if (!geo.attributes.uv) geo.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array(geo.attributes.position.count * 2), 2));
+      return geo;
+    });
+    const n = parts.reduce((s, g) => s + g.attributes.position.count, 0);
+    const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2);
+    let o = 0;
+    for (const g of parts) {
+      pos.set(g.attributes.position.array, o * 3); nor.set(g.attributes.normal.array, o * 3); uv.set(g.attributes.uv.array, o * 2);
+      o += g.attributes.position.count;
+    }
+    const merged = new THREE.BufferGeometry();
+    merged.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    merged.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+    merged.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    for (const m of list) group.remove(m);
+    group.add(new THREE.Mesh(merged, mat));
+  }
+}
 
 function buildShip() {
   const g = new THREE.Group();
-  const hullTex = hullTexture();
+  const hullTex = hullTexture(); hullTex.wrapS = hullTex.wrapT = THREE.RepeatWrapping;
   const hull = new THREE.MeshStandardMaterial({ map: hullTex, metalness: .45, roughness: .4, flatShading: true });
   const hullFlat = new THREE.MeshStandardMaterial({ color: 0xdfe4ea, metalness: .45, roughness: .42, flatShading: true });
   const dark = new THREE.MeshStandardMaterial({ color: 0x272c34, metalness: .6, roughness: .45, flatShading: true });
@@ -1330,8 +1370,9 @@ function buildShip() {
   const acc = new THREE.MeshStandardMaterial({ color: 0xe8732a, metalness: .2, roughness: .45, flatShading: true });
   const glass = new THREE.MeshStandardMaterial({ color: 0x9cc8e8, metalness: .2, roughness: .04, transparent: true, opacity: .28, depthWrite: false, side: THREE.DoubleSide });
   const glow = new THREE.MeshBasicMaterial({ color: 0x7fdcff, toneMapped: false });
-  const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); g.add(m); return m; };
-  const box = (w, h, d, mat, x, y, z) => add(new THREE.BoxGeometry(w, h, d), mat, x, y, z);
+  const keep = new Set();                                   // peças que não podem ser fundidas (animadas/únicas)
+  const add = (geo, mat, x, y, z, parent = g) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); parent.add(m); return m; };
+  const box = (w, h, d, mat, x, y, z, parent = g) => add(boxUV(new THREE.BoxGeometry(w, h, d), w, h, d), mat, x, y, z, parent);
   // viga quadrada entre dois pontos
   const beam = (a, b, t, mat, parent = g) => {
     const d = new V3().subVectors(b, a), m = new THREE.Mesh(new THREE.BoxGeometry(t, d.length(), t), mat);
@@ -1344,11 +1385,14 @@ function buildShip() {
   box(.55, 1.95, 3.4, hull, .875, .025, -2.0);                                           // parede direita
   box(1.2, 1.1, 3.4, hull, 0, -.4, -2.0);                                                // ventre sob o piso
   add(taperBox(2.3, 1.8, 3.7, .82, .8, -.05, false), hull, 0, -.05, 1.55);               // corpo traseiro (z -0.3 .. 3.4)
-  box(.5, .26, 2.6, hullFlat, 0, .97, 1.4);                                              // espinha dorsal
+  // topo do corpo traseiro desce de y .85 (z -0.3) a y .62 (z 3.4): espinha e derivas seguem essa rampa
+  const REAR_SLOPE = Math.atan2(.85 - .62, 3.7);
+  const rearTop = z => .85 + (.62 - .85) * (z + .3) / 3.7;
+  box(.5, .26, 2.6, hullFlat, 0, rearTop(1.4) + .1, 1.4).rotation.x = REAR_SLOPE;        // espinha dorsal (encostada no casco)
   box(1.5, .1, 6.6, dark, 0, -1.0, -1.0);                                                // placa ventral
   for (const s of [-1, 1]) {
     box(.06, .3, 4.2, acc, s * 1.17, .25, -1.6);                                         // faixa laranja lateral
-    box(.4, .5, .9, dark, s * 1.25, -.25, .25);                                          // entradas de ar
+    for (const y of [.2, .58]) box(.14, .05, .34, gun, s * 1.21, y, -.5);               // degraus de embarque no costado
   }
 
   // ----- canopy anguloso (perfil extrudado), com dobradiça na traseira -----
@@ -1357,10 +1401,8 @@ function buildShip() {
   const shp = new THREE.Shape();
   prof.forEach(([z, y], i) => { const px = -(z + .3), py = y - 1.0; i ? shp.lineTo(px, py) : shp.moveTo(px, py); });
   shp.closePath();
-  // forma no plano XY (x = -(z+0.3), y = altura); extruda 1.32 de largura e gira pra Z ficar pra frente
   const cGeo = new THREE.ExtrudeGeometry(shp, { depth: 1.32, bevelEnabled: false }).translate(0, 0, -.66).rotateY(Math.PI / 2);
-  const cMesh = new THREE.Mesh(cGeo, glass); canopy.add(cMesh);
-  // moldura: arestas do perfil nos dois lados + travessas
+  canopy.add(new THREE.Mesh(cGeo, glass));
   for (const sx of [-.66, .66]) for (let i = 0; i < prof.length - 1; i++) {
     const a = new V3(sx, prof[i][1] - 1.0, prof[i][0] + .3), b = new V3(sx, prof[i + 1][1] - 1.0, prof[i + 1][0] + .3);
     beam(a, b, .06, dark, canopy);
@@ -1376,12 +1418,12 @@ function buildShip() {
   const seatM = new THREE.MeshStandardMaterial({ color: 0x2b2622, roughness: .85, flatShading: true });
   const panelM = new THREE.MeshStandardMaterial({ color: 0x23272d, roughness: .6, metalness: .4, flatShading: true });
   const plane = (w, h, mat, x, y, z, ry) => { const m = add(new THREE.PlaneGeometry(w, h), mat, x, y, z); m.rotation.y = ry; return m; };
-  plane(3.4, .85, wallM, -.598, .575, -2.0, Math.PI / 2);                               // interna esquerda (olha pra +X)
-  plane(3.4, .85, wallM, .598, .575, -2.0, -Math.PI / 2);                               // interna direita
-  plane(1.2, .85, wallM, 0, .575, -3.698, 0);                                            // fundo da frente
-  plane(1.2, .85, wallM, 0, .575, -.302, Math.PI);                                       // fundo de trás
-  add(new THREE.PlaneGeometry(1.2, 3.4).rotateX(-Math.PI / 2), padM, 0, .152, -2.0);    // piso
-  for (const s of [-1, 1]) box(.08, .07, 3.4, padM, s * .62, 1.02, -2.0);                // borda acolchoada
+  plane(3.4, .85, wallM, -.598, .575, -2.0, Math.PI / 2);
+  plane(3.4, .85, wallM, .598, .575, -2.0, -Math.PI / 2);
+  plane(1.2, .85, wallM, 0, .575, -3.698, 0);
+  plane(1.2, .85, wallM, 0, .575, -.302, Math.PI);
+  add(new THREE.PlaneGeometry(1.2, 3.4).rotateX(-Math.PI / 2), padM, 0, .152, -2.0);
+  for (const s of [-1, 1]) box(.08, .07, 3.4, padM, s * .62, 1.02, -2.0);
   box(1.32, .07, .08, padM, 0, 1.02, -3.66);
 
   // assento
@@ -1391,13 +1433,10 @@ function buildShip() {
   for (const sx of [-.28, .28]) box(.06, .5, .14, seatM, sx, .72, -1.33).rotation.x = .18;
   for (const sx of [-.12, .12]) box(.05, .6, .02, acc, sx, .78, -1.39).rotation.x = .18;
 
-  // painel, telas, LEDs, vidro do HUD
+  // painel, telas, vidro do HUD
   box(.98, .4, .1, panelM, 0, .78, -2.6).rotation.x = -.42;
   box(1.1, .05, .32, padM, 0, .99, -2.66);
   for (const [i, sx] of [[0, -.24], [1, .24]]) add(new THREE.PlaneGeometry(.36, .3), new THREE.MeshBasicMaterial({ map: mfd[i].tex, toneMapped: false }), sx, .8, -2.53).rotation.x = -.42;
-  const ledCols = [0xff9a3a, 0x7fe9ff, 0x7dffb0, 0xff5a4a];
-  for (let i = 0; i < 12; i++) box(.035, .02, .035, new THREE.MeshBasicMaterial({ color: ledCols[i % 4], toneMapped: false }),
-    -.42 + (i % 6) * .17, .61 + Math.floor(i / 6) * .045, -2.5 + Math.floor(i / 6) * .02).rotation.x = -.42;
   add(new THREE.PlaneGeometry(.3, .24), new THREE.MeshBasicMaterial({ map: hudGlassTexture(), transparent: true, opacity: .55,
     blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }), 0, 1.13, -2.58).rotation.x = -.25;
   // manche, manete, consoles
@@ -1407,7 +1446,19 @@ function buildShip() {
   box(.16, .14, .9, panelM, .42, .5, -1.85);
   beam(new V3(-.42, .57, -1.85), new V3(-.42, .72, -1.95), .04, gun);
   box(.06, .05, .08, acc, -.42, .73, -1.96);
-  for (let i = 0; i < 5; i++) for (const sx of [-.42, .42]) box(.03, .015, .03, new THREE.MeshBasicMaterial({ color: ledCols[(i + (sx > 0 ? 2 : 0)) % 4], toneMapped: false }), sx + (i % 2 ? .03 : -.03), .575, -1.6 - i * .12);
+  // LEDs do painel e dos consoles: um único InstancedMesh colorido
+  {
+    const ledCols = [0xff9a3a, 0x7fe9ff, 0x7dffb0, 0xff5a4a], spots = [];
+    for (let i = 0; i < 12; i++) spots.push([-.42 + (i % 6) * .17, .61 + Math.floor(i / 6) * .045, -2.5 + Math.floor(i / 6) * .02, -.42, ledCols[i % 4], .035, .02]);
+    for (let i = 0; i < 5; i++) for (const sx of [-.42, .42]) spots.push([sx + (i % 2 ? .03 : -.03), .575, -1.6 - i * .12, 0, ledCols[(i + (sx > 0 ? 2 : 0)) % 4], .03, .015]);
+    const leds = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false }), spots.length);
+    const m4 = new THREE.Matrix4(), q4 = new Q(), s4 = new V3(), p4 = new V3(), c4 = new THREE.Color(), _ledAx = new V3(1, 0, 0);
+    spots.forEach(([x, y, z, rx, col, w, hh], i) => {
+      m4.compose(p4.set(x, y, z), q4.setFromAxisAngle(_ledAx, rx), s4.set(w, hh, w));
+      leds.setMatrixAt(i, m4); leds.setColorAt(i, c4.set(col));
+    });
+    g.add(leds); keep.add(leds);
+  }
   const cabin = new THREE.PointLight(0x9fd8ff, .5, 2.6, 2); cabin.position.set(0, 1.15, -2.0); g.add(cabin);
 
   // ----- piloto em blocos -----
@@ -1416,11 +1467,11 @@ function buildShip() {
   const visorM = new THREE.MeshStandardMaterial({ color: 0xc9902a, metalness: .95, roughness: .12 });
   const gloveM = new THREE.MeshStandardMaterial({ color: 0x3a3f47, roughness: .8, flatShading: true });
   const pb = (w, h, d, mat, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); pilot.add(m); return m; };
-  pb(.4, .4, .42, suitM, 0, 1.1, -1.62);                                                 // capacete
-  const vis = new THREE.Mesh(new THREE.PlaneGeometry(.32, .2), visorM); vis.position.set(0, 1.12, -1.835); vis.rotation.y = Math.PI; pilot.add(vis); // viseira (só por fora)
-  pb(.44, .48, .3, suitM, 0, .72, -1.52);                                                // tronco
-  pb(.36, .4, .14, suitM, 0, .76, -1.32);                                                // mochila
-  pb(.24, .1, .03, acc, 0, .84, -1.68);                                                  // painel do peito
+  pb(.4, .4, .42, suitM, 0, 1.1, -1.62);
+  const vis = new THREE.Mesh(new THREE.PlaneGeometry(.32, .2), visorM); vis.position.set(0, 1.12, -1.835); vis.rotation.y = Math.PI; pilot.add(vis);
+  pb(.44, .48, .3, suitM, 0, .72, -1.52);
+  pb(.36, .4, .14, suitM, 0, .76, -1.32);
+  pb(.24, .1, .03, acc, 0, .84, -1.68);
   for (const sx of [-1, 1]) {
     const sh = new V3(sx * .24, .88, -1.52), el = new V3(sx * .27, .62, -1.78);
     const hand = sx < 0 ? new V3(-.42, .72, -1.95) : new V3(0, .64, -2.0);
@@ -1432,44 +1483,56 @@ function buildShip() {
   }
   pilot.visible = false;
 
-  // ----- asas (sem chanfro: arestas retas) -----
+  // ----- asas: pontas, faixa e luz de navegação são FILHAS da asa (herdam o diedro e ficam encaixadas) -----
+  const lampMat = col => new THREE.MeshBasicMaterial({ color: col, toneMapped: false });
   const wingGeo = s => {
     const sh = new THREE.Shape();
     sh.moveTo(0, -1.4); sh.lineTo(4.4 * s, 1.2); sh.lineTo(4.7 * s, 2.1); sh.lineTo(4.2 * s, 2.3); sh.lineTo(0, 2.5); sh.closePath();
-    return new THREE.ExtrudeGeometry(sh, { depth: .2, bevelEnabled: false }).rotateX(Math.PI / 2).translate(0, .1, 0);
+    return new THREE.ExtrudeGeometry(sh, { depth: .2, bevelEnabled: false }).rotateX(Math.PI / 2).translate(0, .1, 0);   // espessura y -.1..+.1
   };
+  const navLamps = {};
   for (const s of [-1, 1]) {
-    add(wingGeo(s), hullFlat, s * .9, -.35, 0).rotation.z = s * .06;
-    box(.25, .32, 1.2, acc, s * 5.55, -.38, 1.6);
-    box(1.6, .03, .5, acc, s * 3.6, -.22, 1.2).rotation.y = s * -.5;
+    const wing = add(wingGeo(s), hullFlat, s * .9, -.35, 0);
+    wing.rotation.z = s * .06;                                                               // diedro
+    keep.add(wing);
+    // ponta laranja alinhada à borda da ponta (de (4.4, 1.2) a (4.7, 2.1) no plano da asa)
+    const tip = box(.2, .24, .98, acc, s * 4.6, 0, 1.66, wing); tip.rotation.y = s * Math.atan2(.3, .9);
+    box(1.6, .02, .5, acc, s * 2.7, .11, 1.0, wing).rotation.y = s * -.5;                    // faixa na face de cima
+    navLamps[s] = box(.16, .16, .16, lampMat(s < 0 ? 0xff3030 : 0x30ff60), s * 4.74, 0, 1.75, wing);
   }
-  // derivas
+
+  // ----- derivas: base apoiada na rampa do corpo traseiro -----
   const finShape = new THREE.Shape();
   finShape.moveTo(0, 0); finShape.lineTo(1.6, 0); finShape.lineTo(1.9, 1.7); finShape.lineTo(1.2, 1.8); finShape.closePath();
   const finGeo = new THREE.ExtrudeGeometry(finShape, { depth: .14, bevelEnabled: false }).rotateY(-Math.PI / 2).translate(.07, 0, 0);
-  for (const s of [-1, 1]) add(finGeo.clone(), hullFlat, s * .7, .7, 1.4).rotation.z = s * -.42;
+  for (const s of [-1, 1]) {
+    const fin = add(finGeo.clone(), hullFlat, s * .7, rearTop(1.4) - .04, 1.4);
+    fin.rotation.set(REAR_SLOPE, 0, s * -.42);
+    keep.add(fin);
+  }
 
-  // ----- naceles quadradas -----
+  // ----- naceles quadradas + pilones até o corpo -----
   for (const s of [-1, 1]) {
     const x = s * 1.6;
     add(taperBox(1.05, 1.0, 3.0, .85, .85, 0), hullFlat, x, -.3, 2.2);
-    box(.8, .75, .12, dark, x, -.3, .66);                                                // entrada
-    for (const [w, h, ox, oy] of [[1.1, .1, 0, .5], [1.1, .1, 0, -.5], [.1, 1.0, .5, 0], [.1, 1.0, -.5, 0]]) box(w, h, .5, gun, x + ox, -.3 + oy, 3.9); // bocal (moldura)
-    add(new THREE.PlaneGeometry(.9, .9), glow, x, -.3, 3.72);                            // brilho interno
-    box(1.12, 1.07, .1, acc, x, -.3, 1.2);                                               // anel laranja
+    box(.8, .75, .12, dark, x, -.3, .66);                                                    // entrada de ar
+    box(.5, .45, 2.7, hullFlat, s * 1.0, -.3, 2.15);                                         // pilone (fecha a fenda corpo↔nacele)
+    for (const [w, h, ox, oy] of [[1.1, .1, 0, .5], [1.1, .1, 0, -.5], [.1, 1.0, .5, 0], [.1, 1.0, -.5, 0]]) box(w, h, .5, gun, x + ox, -.3 + oy, 3.9);
+    add(new THREE.PlaneGeometry(.9, .9), glow, x, -.3, 3.72);
+    box(1.12, 1.07, .1, acc, x, -.3, 1.2);
   }
 
-  // ----- trem de pouso -----
+  // ----- trem de pouso (grupo que recolhe no voo; pivô no ventre) -----
+  const gear = new THREE.Group(); gear.position.y = -.95; g.add(gear);
   for (const [x, z] of [[1.5, 1.7], [-1.5, 1.7], [0, -2.6]]) {
-    beam(new V3(x * .6, -.95, z - .3), new V3(x, -SHIP_H + .08, z), .14, gun);
-    beam(new V3(x * .6, -.95, z + .4), new V3(x, -1.2, z), .09, dark);
-    box(.55, .08, .55, dark, x, -SHIP_H + .04, z);
+    beam(new V3(x * .6, 0, z - .3), new V3(x, -SHIP_H + .95 + .08, z), .14, gun, gear);
+    beam(new V3(x * .6, 0, z + .4), new V3(x, -.25, z), .09, dark, gear);
+    box(.55, .08, .55, dark, x, -SHIP_H + .95 + .04, z, gear);
   }
 
-  // ----- luzes de navegação e estrobo (cubinhos) -----
-  const lamp = (col, x, y, z) => box(.16, .16, .16, new THREE.MeshBasicMaterial({ color: col, toneMapped: false }), x, y, z);
-  const navL = lamp(0xff3030, -5.7, -.38, 1.6), navR = lamp(0x30ff60, 5.7, -.38, 1.6);
-  const strobe = lamp(0xffffff, 0, 1.15, 2.6);
+  // ----- estrobo e luz do motor -----
+  const strobe = box(.16, .16, .16, lampMat(0xffffff), 0, rearTop(2.6) + .3, 2.6);
+  keep.add(strobe);
   const engLight = new THREE.PointLight(0x7fdcff, 0, 14, 2); engLight.position.set(0, -.3, 4.6); g.add(engLight);
 
   // ----- chamas de 4 lados -----
@@ -1479,12 +1542,34 @@ function buildShip() {
   for (const s of [-1, 1]) {
     const f = add(new THREE.ConeGeometry(.6, 3, 4, 1, true).rotateY(Math.PI / 4).translate(0, 1.5, 0).rotateX(Math.PI / 2), flameMat, s * 1.6, -.3, 3.95);
     f.add(new THREE.Mesh(new THREE.ConeGeometry(.28, 1.6, 4, 1, true).rotateY(Math.PI / 4).translate(0, .8, 0).rotateX(Math.PI / 2), coreMat));
-    flames.push(f);
+    flames.push(f); keep.add(f);
   }
+
+  mergeStatic(g, keep);
+  // só as peças grandes projetam sombra (casco fundido, asas, derivas, naceles, trem de pouso)
+  g.traverse(o => { if (o.isMesh) { o.castShadow = o.receiveShadow = !!(o.material.isMeshStandardMaterial && !o.material.transparent); } });
+  for (const c of [pilot, canopy]) c.traverse(o => { if (o.isMesh) o.castShadow = false; });
+
   g.userData.flames = flames;
-  g.userData.blink = { navL, navR, strobe, engLight };
-  g.userData.canopy = canopy; g.userData.pilot = pilot; g.userData.cabin = cabin;
+  g.userData.blink = { navL: navLamps[-1], navR: navLamps[1], strobe, engLight };
+  g.userData.canopy = canopy; g.userData.pilot = pilot; g.userData.cabin = cabin; g.userData.gear = gear;
   return g;
+}
+
+// colisão a pé com a nave: caixas no plano da nave (fuselagem e asas/naceles), em coordenadas locais
+const SHIP_BOXES = [{ x0: -1.3, x1: 1.3, z0: -5.4, z1: 4.2 }, { x0: -5.8, x1: 5.8, z0: .5, z1: 2.4 }];
+const _sl = new V3(), _sq = new Q();
+function shipPushOut(p, up) {
+  _sl.copy(p).sub(ship.pos).applyQuaternion(_sq.copy(ship.q).invert());
+  if (_sl.y > 3 || _sl.y < -3) return;                     // bem acima/abaixo da nave: nada a fazer
+  const R = .4;
+  for (const b of SHIP_BOXES) {
+    const dx0 = _sl.x - (b.x0 - R), dx1 = (b.x1 + R) - _sl.x, dz0 = _sl.z - (b.z0 - R), dz1 = (b.z1 + R) - _sl.z;
+    if (dx0 <= 0 || dx1 <= 0 || dz0 <= 0 || dz1 <= 0) continue;
+    const m = Math.min(dx0, dx1, dz0, dz1);               // sai pelo lado mais próximo
+    if (m === dx0) _sl.x -= dx0; else if (m === dx1) _sl.x += dx1; else if (m === dz0) _sl.z -= dz0; else _sl.z += dz1;
+  }
+  p.copy(_sl).applyQuaternion(ship.q).add(ship.pos);
 }
 
 const ship = {
@@ -1494,7 +1579,6 @@ const ship = {
   target: 0, thrust: 0,
 };
 world.add(ship.group);
-ship.group.traverse(o => { if (o.isMesh && !o.material.transparent) { o.castShadow = true; o.receiveShadow = true; } });
 
 function alignedQ(up, fwdHint, out) {
   const f = _aq1.copy(fwdHint).addScaledVector(up, -fwdHint.dot(up));
@@ -1556,6 +1640,9 @@ const key = c => keys.has(c);
 addEventListener('keydown', e => {
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.code)) e.preventDefault();
   if (e.repeat) return;
+  // alguns navegadores entregam o Esc E soltam o mouse juntos: ignora o Esc logo depois de pausar
+  if (e.code === 'Escape' && started) { if (!(paused && performance.now() - pauseAt < 400)) setPaused(!paused); return; }
+  if (paused) return;
   keys.add(e.code);
   if (!started) return;
   if (e.code === 'Space') jumpQ = true;
@@ -1570,7 +1657,7 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => keys.delete(e.code));
 addEventListener('blur', () => keys.clear());
 
-canvas.addEventListener('click', () => { if (started && !isTouch && document.pointerLockElement !== canvas) canvas.requestPointerLock(); });
+canvas.addEventListener('click', () => { if (started && !paused && !isTouch && document.pointerLockElement !== canvas) canvas.requestPointerLock(); });
 addEventListener('mousemove', e => {
   if (document.pointerLockElement !== canvas) return;
   look.dx += e.movementX; look.dy += e.movementY;
@@ -1582,6 +1669,7 @@ const steerEl = document.getElementById('steer'), steerNub = document.getElement
 for (const ev of ['gesturestart', 'gesturechange', 'contextmenu']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
+  if (paused) return;
   for (const t of e.changedTouches) {
     if (t.clientX < innerWidth / 2 && joy.id === null) {
       joy.id = t.identifier; joy.ox = t.clientX; joy.oy = t.clientY; joy.x = joy.y = 0;
@@ -1645,7 +1733,7 @@ const $ = id => document.getElementById(id);
 const hud = {
   loc: $('loc'), locName: $('locName'), locSub: $('locSub'), prompt: $('prompt'), warn: $('warn'), help: $('helpline'),
   tgtpanel: $('tgtpanel'), tgtName: $('tgtName'), bAct: $('bAct'), bJump: $('bJump'), bBoost: $('bBoost'),
-  readout: $('readout'), bTime: $('bTime'), bSound: $('bSound'),
+  readout: $('readout'), bTime: $('bTime'),
 };
 const cache = {};
 function setText(el, k, txt) { if (cache[k] !== txt) { cache[k] = txt; el.innerHTML = txt; } }
@@ -1726,7 +1814,7 @@ function updateFoot(dt) {
     if (d < min && d > 1e-4) player.pos.addScaledVector(_tmp, (min - d) / d);
   };
   for (const col of b.colliders) pushOut(_colW.copy(col.p).applyQuaternion(b.q).add(c), col.r);
-  if (ship.body === b) pushOut(ship.ground, 3.2);
+  if (ship.body === b) shipPushOut(player.pos, _up);   // caixas da fuselagem e das asas
 
   // chão
   _tmp.copy(player.pos).sub(c);
@@ -1900,7 +1988,7 @@ function updateLanding(dt) {
 
 // ----- cenas de embarque e desembarque (câmera em 1ª pessoa entre pontos-chave) -----
 const SEAT_EYE = new V3(0, 1.13, -1.74);     // olho do piloto (local da nave)
-const SIDE_PT = new V3(2.3, 1.7, -1.9);     // ao lado do cockpit, em cima da asa direita
+const SIDE_PT = new V3(2.3, 1.53, .1);      // em pé na raiz da asa direita (topo da asa ≈ -0,17 + olho 1,7)
 let cut = null;
 const _cp = new V3(), _cq = new Q(), _cq2 = new Q(), _cm = new THREE.Matrix4();
 const shipToWorld = (local, out) => out.copy(local).applyQuaternion(ship.q).add(ship.pos);
@@ -1991,7 +2079,7 @@ function placePlayerOutside() {
   const up = ship.dir;
   _fwd.set(0, 0, -1).applyQuaternion(ship.q);
   _right.set(1, 0, 0).applyQuaternion(ship.q).addScaledVector(up, -_right.dot(up)).normalize();
-  _tmp.copy(ship.ground).addScaledVector(_right, 6).sub(b.center).normalize();
+  _tmp.copy(ship.ground).addScaledVector(_right, 6.6).sub(b.center).normalize();
   player.pos.copy(b.center).addScaledVector(_tmp, groundR(b, _tmp));
   player.f.copy(_fwd).addScaledVector(up, -_fwd.dot(up)).normalize();
   player.hv.set(0, 0, 0); player.vr = 0; player.pitch = 0; player.grounded = true; player.eye = EYE;
@@ -2246,8 +2334,8 @@ function updateHud(dt) {
     setShow(hud.help, 'hs', showHelp);
     if (showHelp) {
     let h = '';
-    if (foot) h = '<b>WASD</b> move · <b>Mouse</b> look · <b>Space</b> jump · <b>Shift</b> run<br>Find your ship and press <b>E</b> to travel · <b>, .</b> time · <b>M</b> music · <b>H</b> hide this';
-    else if (fly) h = '<b>W/S</b> thrust · <b>Mouse</b> steer · <b>A/D</b> turn · <b>Shift</b> boost<br>turbo is automatic in open space · <b>Q/R</b> target · <b>E</b> land when close · <b>, .</b> time · <b>M</b> music · <b>H</b> hide';
+    if (foot) h = '<b>WASD</b> move · <b>Mouse</b> look · <b>Space</b> jump · <b>Shift</b> run<br>Find your ship and press <b>E</b> to travel · <b>, .</b> time · <b>Esc</b> pause · <b>H</b> hide this';
+    else if (fly) h = '<b>W/S</b> thrust · <b>Mouse</b> steer · <b>A/D</b> turn · <b>Shift</b> boost<br>turbo is automatic in open space · <b>Q/R</b> target · <b>E</b> land when close · <b>, .</b> time · <b>Esc</b> pause · <b>H</b> hide';
     if (document.pointerLockElement !== canvas && started && h) h = '<b>Click</b> to capture the mouse<br>' + h;
     setText(hud.help, 'hl', h);
     }
@@ -2302,6 +2390,14 @@ function updateCockpit(dt) {
     x.beginPath(); x.moveTo(70, 128); x.lineTo(108, 128); x.lineTo(118, 140); x.moveTo(186, 128); x.lineTo(148, 128); x.lineTo(138, 140); x.stroke();
     x.strokeStyle = 'rgba(127,233,255,.5)'; x.lineWidth = 2; x.beginPath(); x.arc(128, 128, 112, 0, 7); x.stroke();
     tex.needsUpdate = true; }
+}
+
+let gearK = 1;
+function updateGear(dt) {
+  const target = mode === 'fly' ? .04 : 1;                 // recolhido em voo; desce no pouso/decolagem/no chão
+  gearK += (target - gearK) * (1 - Math.exp(-3 * dt));
+  const gr = ship.group.userData.gear;
+  gr.scale.y = gearK; gr.visible = gearK > .06;
 }
 
 function updateFlames() {
@@ -2372,10 +2468,12 @@ function adaptRes(dt) {
   else perf.good = 0;
 }
 const T0 = performance.now();
+let gameTime = 0;   // segundos de jogo (não conta a pausa) — anima sol, nuvens e gasosos
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), .05);
-  if (started) {
+  if (started && !paused) {
+    gameTime += dt;
     // o tempo para durante pouso/decolagem/embarque/desembarque (as animações usam posições fixas)
     const frozen = mode === 'landing' || mode === 'takeoff' || mode === 'boarding' || mode === 'exiting';
     updateBodies(frozen ? 0 : dt * TIME_STEPS[timeIdx]);
@@ -2389,15 +2487,16 @@ function frame() {
     if (mode !== 'fly') canLand = null;
   }
   look.dx = look.dy = 0; jumpQ = false; actQ = false;
-  adaptRes(dt);
+  if (!paused) adaptRes(dt);
   updateMusic(dt);
   if (mode !== 'fly') { inGas = null; gasDepth = 0; gasNear = null; landBlock = null; ship.turbo = false; }
-  const tSec = (performance.now() - T0) / 1000;
+  const tSec = gameTime;
   for (const u of TIME_UNIFORMS) u.value = tSec;
 
   ship.group.position.copy(ship.pos);
   ship.group.quaternion.copy(ship.q);
   updateFlames();
+  updateGear(dt);
   updateCockpit(dt);
 
   const flying = mode === 'fly' || mode === 'landing' || mode === 'takeoff';
@@ -2453,19 +2552,79 @@ async function init() {
 // Opus (WebM, ~2 MB) onde o navegador suporta; AAC (M4A, ~3 MB) como reserva (Safari antigo)
 const music = new Audio(new Audio().canPlayType('audio/webm; codecs="opus"') ? 'audio/theme.webm?v=2' : 'audio/theme.m4a?v=2');
 music.loop = true; music.preload = 'auto'; music.volume = 0;
-const MUSIC_VOL = .45;
-let musicOn = true, musicOk = true;
-music.addEventListener('error', () => { musicOk = false; hud.bSound.style.display = 'none'; });   // sem o arquivo: segue sem som
-function startMusic() { if (musicOk) music.play().catch(() => {}); }    // precisa do clique do Launch (regra dos navegadores)
-function toggleMusic() { musicOn = !musicOn; if (musicOn) startMusic(); hud.bSound.classList.toggle('off', !musicOn); }
+// preferências salvas neste navegador (se o storage falhar, usa o padrão)
+const prefs = (() => { try { return JSON.parse(localStorage.getItem('solarExplorer') || '{}'); } catch (e) { return {}; } })();
+const savePrefs = () => { try { localStorage.setItem('solarExplorer', JSON.stringify({ musicOn, musicVol })); } catch (e) {} };
+let musicOn = prefs.musicOn !== false, musicVol = typeof prefs.musicVol === 'number' ? prefs.musicVol : .45, musicOk = true;
+music.addEventListener('error', () => { musicOk = false; updatePauseUI(); });   // sem o arquivo: segue sem som
+function startMusic() { if (musicOk && musicOn) music.play().catch(() => {}); }    // precisa de um clique antes (regra dos navegadores)
+function toggleMusic() { musicOn = !musicOn; if (musicOn) startMusic(); savePrefs(); updatePauseUI(); }
 // fade suave até o volume alvo (e até zero ao desligar, aí pausa)
 function updateMusic(dt) {
   if (!musicOk || !started) return;
-  const target = musicOn ? MUSIC_VOL : 0;
+  const target = musicOn ? musicVol : 0;
   music.volume = clamp(music.volume + clamp(target - music.volume, -dt / 1.5, dt / 4), 0, 1);
   if (!musicOn && music.volume === 0 && !music.paused) music.pause();
 }
-bindBtn('bSound', toggleMusic);
+
+// =====================================================================
+// PAUSA: Esc no PC (ou perder a captura do mouse), botão ❚❚ no celular.
+// Congela tudo (física, relógio da simulação, animação dos shaders) e mostra som/volume/tela cheia.
+// =====================================================================
+let paused = false, pauseAt = 0;
+const pauseMenu = $('pauseMenu'), pmMusic = $('pmMusic'), pmVol = $('pmVol'), pmFs = $('pmFs');
+const fsRoot = document.documentElement;
+const canFS = !!(fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen);
+const isFS = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+function toggleFS() {
+  try {
+    if (isFS()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else { const p = (fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen).call(fsRoot, { navigationUI: 'hide' }); p?.catch?.(() => {}); }
+  } catch (e) {}
+}
+function updatePauseUI() {
+  pmMusic.textContent = musicOn ? 'ON' : 'OFF';
+  pmMusic.classList.toggle('on', musicOn);
+  pmVol.value = Math.round(musicVol * 100);
+  $('pmVolVal').textContent = Math.round(musicVol * 100) + '%';
+  $('pmMusicRow').style.display = $('pmVolRow').style.display = musicOk ? '' : 'none';
+  $('pmFsRow').style.display = canFS ? '' : 'none';
+  pmFs.textContent = isFS() ? 'ON' : 'OFF';
+  pmFs.classList.toggle('on', isFS());
+}
+function setPaused(p) {
+  if (!started || paused === p) return;
+  paused = p;
+  if (p) pauseAt = performance.now();
+  pauseMenu.style.display = p ? 'flex' : 'none';
+  if (p) {
+    keys.clear(); joy.id = null; joy.x = joy.y = 0; lookId = null;
+    stickEl.style.display = steerEl.style.display = 'none';
+    if (document.pointerLockElement === canvas) document.exitPointerLock();
+    updatePauseUI();
+  } else {
+    clock.getDelta();                                       // não pula o tempo que ficou pausado
+    if (!isTouch) canvas.requestPointerLock?.();
+  }
+}
+// o navegador usa o Esc pra soltar o mouse (e não entrega o Esc pro jogo): perder a captura = pausar
+document.addEventListener('pointerlockchange', () => {
+  if (started && !paused && !isTouch && document.pointerLockElement !== canvas) setPaused(true);
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
+document.addEventListener('fullscreenchange', updatePauseUI);
+document.addEventListener('webkitfullscreenchange', updatePauseUI);
+bindBtn('bPause', () => setPaused(true));
+bindBtn('pmResume', () => setPaused(false));
+bindBtn('pmMusic', toggleMusic);
+bindBtn('pmFs', toggleFS);
+pmVol.addEventListener('input', () => {
+  musicVol = pmVol.value / 100;
+  if (musicOk) music.volume = musicVol;            // ajuste imediato (sem esperar o fade)
+  if (musicVol > 0 && !musicOn) { musicOn = true; startMusic(); }
+  savePrefs(); updatePauseUI();
+});
+for (const ev of ['pointerdown', 'touchstart']) pmVol.addEventListener(ev, e => e.stopPropagation(), { passive: true });
 
 startBtn.addEventListener('click', () => {
   $('overlay').style.display = 'none';
