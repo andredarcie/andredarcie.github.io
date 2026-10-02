@@ -710,7 +710,7 @@ function glowTexture(stops) {
         float act = 1. - smoothstep(.12, .3, abs(abs(p.y) - .28));
         float spot = smoothstep(.6, .75, snoise(p*6. + vec3(3., 1., uTime*.002))) * act;
         float pen = smoothstep(.5, .62, snoise(p*6. + vec3(3., 1., uTime*.002))) * act;
-        float mu = max(dot(normalize(vNV), normalize(-vVP)), 0.);
+        float mu = max(dot(normalize(vNV), normalize(vV)), 0.);
         vec3 c = mix(vec3(1., .74, .36), vec3(1., .95, .78), .5 + .9*g) * (.94 + .1*g2);
         c = mix(c, c*.55, pen*.6);
         c = mix(c, vec3(.28, .1, .03), spot*.9);
@@ -1654,10 +1654,13 @@ const STATIONS = PLANETS.filter(b => STATION_DEF[b.id]).map(b => {
   const d = sun.clone().multiplyScalar(Math.cos(55 * D2R)).addScaledVector(side, Math.sin(55 * D2R));
   const n2 = N.clone().addScaledVector(d, -N.dot(d));
   if (n2.lengthSq() > 1e-4) d.multiplyScalar(Math.cos(def.el * D2R)).addScaledVector(n2.normalize(), Math.sin(def.el * D2R)).normalize();
-  // "cima" da estação = norte do planeta (as faixas ficam deitadas na janela)
+  // "cima" da estação: entre o norte do planeta (faixas quase deitadas na janela) e o Sol — assim o Sol fica
+  // alto no céu da estação e ilumina o piso, em vez de bater rasante pela traseira
   const up = N.clone().addScaledVector(d, -N.dot(d));
   if (up.lengthSq() < 1e-4) up.set(0, 1, 0).addScaledVector(d, -d.y);
   up.normalize();
+  const sunUp = sun.clone().addScaledVector(d, -sun.dot(d));
+  if (sunUp.lengthSq() > 1e-4) up.add(sunUp.normalize().multiplyScalar(1.1)).normalize();
   const right = new V3().crossVectors(up, d).normalize();
   const q = new Q().setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, d));
   const st = { station: true, name: def.name, planet: b, k: def.k, off: d.multiplyScalar(b.R * def.k), q, qInv: q.clone().invert(), up,
@@ -2258,7 +2261,272 @@ function footCamera() {
   _m.makeBasis(_right, _up, _tmp.copy(player.f).negate());
   camera.quaternion.setFromRotationMatrix(_m).multiply(_q1.setFromAxisAngle(AX, player.pitch));
   player.eye += ((player.inWater ? 1.05 : EYE) - player.eye) * .15;   // na água a câmera desce (andando com água pela cintura)
-  camera.position.copy(player.pos).addScaledVector(_up, player.eye);
+  camera.position.copy(player.pos).addScaledVector(_up, player.eye + av.bob * .8);   // a cabeça sobe e desce com o passo
+}
+
+// =====================================================================
+// CORPO DO JOGADOR — traje de EVA estilo NASA (EMU): torso rígido branco,
+// módulo de controle no peito (com o visor no topo, lido olhando pra baixo),
+// mochila de suporte de vida, rolamentos metálicos na cintura/ombros/pulsos,
+// sanfonas nos cotovelos e joelhos, faixas vermelhas nas pernas, luvas e botas.
+// Esqueleto de grupos encaixados (quadril → coluna → ombros → cotovelos →
+// pulsos; quadril → joelhos → tornozelos) animado por código: passada com
+// balanço do quadril, braços opostos às pernas, corrida, salto, respiração.
+// Proporções de um adulto de ~1,80 m com o traje; o olho fica a 1,70 m.
+// O capacete só projeta sombra (a câmera está dentro dele).
+// =====================================================================
+// 1ª pessoa: o olho fica à frente do corpo (como nos jogos em 1ª pessoa) — olhando pra baixo vê-se a FRENTE do
+// peito, da barriga e das pernas, e não o topo delas; FP_SPINE_BACK sobra pra ajuste fino (0 = postura normal)
+const AV_EYE_FWD = .4, FP_SPINE_BACK = 0;
+// tecido do traje: trama ripstop branca, levemente irregular, com costuras
+function suitTexture() {
+  const S = 256, c = document.createElement('canvas'); c.width = c.height = S;
+  const x = c.getContext('2d'), r = rng(515);
+  x.fillStyle = '#ffffff'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 9000; i++) { const k = 222 + r() * 33 | 0; x.fillStyle = `rgba(${k},${k},${k - 6},.4)`; x.fillRect(r() * S | 0, r() * S | 0, 1 + (r() * 2 | 0), 1); }
+  x.strokeStyle = 'rgba(150,150,140,.2)'; x.lineWidth = 1;
+  for (let i = 0; i <= S; i += 16) {
+    x.beginPath(); x.moveTo(i + .5, 0); x.lineTo(i + .5, S); x.stroke();
+    x.beginPath(); x.moveTo(0, i + .5); x.lineTo(S, i + .5); x.stroke();
+  }
+  x.strokeStyle = 'rgba(115,112,104,.4)'; x.lineWidth = 2; x.setLineDash([4, 3]);
+  for (const y of [64, 192]) { x.beginPath(); x.moveTo(0, y); x.lineTo(S, y); x.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 2); t.anisotropy = 4;
+  return t;
+}
+// bandeira no ombro esquerdo
+function flagTexture() {
+  const c = document.createElement('canvas'); c.width = 130; c.height = 78;
+  const x = c.getContext('2d');
+  for (let i = 0; i < 13; i++) { x.fillStyle = i % 2 ? '#f4f4f4' : '#b22234'; x.fillRect(0, i * 6, 130, 6); }
+  x.fillStyle = '#3c3b6e'; x.fillRect(0, 0, 52, 42);
+  x.fillStyle = '#f4f4f4';
+  for (let j = 0; j < 5; j++) for (let i = 0; i < 6; i++) { x.beginPath(); x.arc(5 + i * 8.4 + (j % 2) * 4, 5 + j * 8, 1.4, 0, 7); x.fill(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+// visor de cristal líquido no topo do módulo do peito
+function dcmTexture() {
+  const c = document.createElement('canvas'); c.width = 128; c.height = 40;
+  const x = c.getContext('2d');
+  x.fillStyle = '#0a130f'; x.fillRect(0, 0, 128, 40);
+  x.fillStyle = '#7dffb0'; x.font = '15px monospace';
+  x.fillText('O2  98%', 8, 17); x.fillText('4.3 PSI', 8, 34);
+  x.fillStyle = '#ffb347'; x.fillText('BAT 87', 70, 17); x.fillText('H2O OK', 70, 34);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function buildAvatar() {
+  const root = new THREE.Group();
+  const fabTex = suitTexture();
+  const fab = new THREE.MeshStandardMaterial({ map: fabTex, color: 0xf3f1ec, roughness: .92 });
+  const fabDk = new THREE.MeshStandardMaterial({ map: fabTex, color: 0xd6d3cb, roughness: .95 });
+  const shell = new THREE.MeshStandardMaterial({ color: 0xf5f5f2, roughness: .42, metalness: .05 });
+  const metal = new THREE.MeshStandardMaterial({ color: 0xb9c0c8, roughness: .28, metalness: .85 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x2b2e33, roughness: .75 });
+  const grey = new THREE.MeshStandardMaterial({ color: 0x8f959c, roughness: .55, metalness: .25 });
+  const blue = new THREE.MeshStandardMaterial({ color: 0x2f5fb3, roughness: .5 });
+  const red = new THREE.MeshStandardMaterial({ color: 0xb3262b, roughness: .8 });
+  const gloveM = new THREE.MeshStandardMaterial({ color: 0xe0dfda, roughness: .8 });
+  const rubber = new THREE.MeshStandardMaterial({ color: 0x3a3c40, roughness: .85 });
+  const ghost = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false });   // invisível, mas projeta sombra
+  const mesh = (geo, mat, parent, x = 0, y = 0, z = 0) => {
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+  };
+  const joint = (parent, x, y, z) => { const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g); return g; };
+  const seg = LOWQ ? 10 : 16;
+  const cap = (r, len) => new THREE.CapsuleGeometry(r, len, 4, seg);
+  const ringG = (r, t) => new THREE.TorusGeometry(r, t, 6, seg + 8).rotateX(Math.PI / 2);   // anel em volta do eixo Y
+  const bellows = (parent, r, y0, n) => { for (let i = 0; i < n; i++) mesh(ringG(r, .012), fabDk, parent, 0, y0 - i * .024); };
+
+  // peças que a câmera em 1ª pessoa atravessaria (capacete e anel do pescoço): aparecem só em 3ª pessoa; em 1ª trocam pro material invisível e só fazem sombra (setAvatarThird)
+  const tp = [];
+  const tpm = (geo, mat, parent, x, y, z) => { const m = mesh(geo, mat, parent, x, y, z); m.userData.mat = mat; m.material = ghost; tp.push(m); return m; };
+
+  // ----- quadril: calção do traje, assento e rolamento da cintura -----
+  const hips = joint(root, 0, .96, 0);
+  mesh(new THREE.SphereGeometry(.18, seg + 4, 12), fab, hips, 0, .03, -.005).scale.set(1.2, .8, .95);   // calção arredondado (de cima parece a barriga)
+  mesh(cap(.15, .15).rotateZ(Math.PI / 2), fab, hips, 0, -.06, .01).scale.set(1, 1, .88);
+  mesh(ringG(.178, .02), metal, hips, 0, .13, 0).scale.set(1.2, 1, .88);
+
+  // ----- tronco rígido (HUT), módulo do peito, mochila e capacete -----
+  const spine = joint(hips, 0, .12, 0);
+  mesh(cap(.18, .17), shell, spine, 0, .23, 0).scale.set(1.5, 1, .95);
+  mesh(cap(.13, .1), fab, spine, 0, .02, -.02).scale.set(1.6, 1, 1.08);           // barriga: tecido entre o torso e a cintura
+  tpm(ringG(.13, .022), metal, spine, 0, .5, -.01);                                // anel do pescoço (prende o capacete)
+  {
+    const helm = joint(spine, 0, .63, -.035);
+    const gold = new THREE.MeshStandardMaterial({ color: 0xc9952e, metalness: .55, roughness: .22, side: THREE.DoubleSide });   // sem mapa de ambiente: metal puro ficaria preto
+    tpm(new THREE.SphereGeometry(.165, 24, 18), shell, helm);                      // casca
+    tpm(new THREE.SphereGeometry(.172, 24, 14, Math.PI * 1.5 - 1.05, 2.1, .7, 1.25), gold, helm);   // viseira dourada
+    tpm(new THREE.CylinderGeometry(.175, .175, .05, 24, 1, true, Math.PI * .5 - 1.2, 2.4), shell, helm, 0, .1, 0);   // capuz da viseira
+    for (const s of [-1, 1]) {
+      tpm(new THREE.BoxGeometry(.05, .075, .13), grey, helm, s * .16, .07, -.02);  // lanterna/câmera do capacete
+      tpm(new THREE.BoxGeometry(.03, .04, .01), gold, helm, s * .16, .07, -.087);
+    }
+  }
+  {
+    const dcm = joint(spine, 0, .18, -.215); dcm.rotation.x = -.32;               // inclinado pra ser lido de cima
+    mesh(new THREE.BoxGeometry(.31, .13, .12), shell, dcm);
+    mesh(new THREE.BoxGeometry(.31, .015, .125), grey, dcm, 0, -.067, 0);
+    const scr = new THREE.Mesh(new THREE.PlaneGeometry(.13, .04), new THREE.MeshBasicMaterial({ map: dcmTexture(), toneMapped: false, color: 0xb0b0b0 }));
+    scr.rotation.x = -Math.PI / 2; scr.position.set(-.045, .0655, .005); dcm.add(scr);
+    const knob = (mat, x, r) => { const k = mesh(new THREE.CylinderGeometry(r, r, .03, 12), mat, dcm, x, -.005, -.07); k.rotation.x = Math.PI / 2; };
+    knob(dark, -.1, .022); knob(blue, -.033, .018); knob(grey, .035, .02); knob(red, .105, .015);   // vazão, ventilação, água, purga
+    mesh(new THREE.BoxGeometry(.06, .03, .03), dark, dcm, .09, .05, .02);
+    mesh(new THREE.BoxGeometry(.2, .05, .06), grey, dcm, 0, .02, .07);              // suporte preso ao torso
+  }
+  mesh(new THREE.BoxGeometry(.5, .64, .22), shell, spine, 0, .25, .29);            // mochila de suporte de vida (PLSS)
+  mesh(new THREE.BoxGeometry(.46, .09, .2), grey, spine, 0, -.1, .29);
+  mesh(new THREE.BoxGeometry(.3, .1, .06), grey, spine, 0, .45, .41);
+
+  // ----- braços: rolamento do ombro, braço, sanfona do cotovelo, antebraço, pulso, luva -----
+  const arms = [];
+  for (const s of [-1, 1]) {
+    const sh = joint(spine, s * .285, .37, 0);
+    mesh(new THREE.SphereGeometry(.098, seg, 10), fab, sh);
+    mesh(ringG(.09, .02), metal, sh, 0, -.05, 0);
+    mesh(cap(.082, .17), fab, sh, 0, -.17, 0);
+    if (s < 0) {
+      const fl = new THREE.Mesh(new THREE.PlaneGeometry(.09, .055), new THREE.MeshStandardMaterial({ map: flagTexture(), roughness: .9 }));
+      fl.position.set(-.084, -.12, 0); fl.rotation.y = -Math.PI / 2; sh.add(fl);
+    }
+    const el = joint(sh, 0, -.31, 0);
+    bellows(el, .078, .03, 3);
+    mesh(cap(.071, .15), fab, el, 0, -.14, 0);
+    if (s < 0) {                                                                   // checklist no punho esquerdo
+      mesh(new THREE.BoxGeometry(.075, .095, .022), shell, el, 0, -.17, -.072);
+      mesh(new THREE.BoxGeometry(.08, .012, .028), dark, el, 0, -.12, -.072);
+    } else mesh(new THREE.BoxGeometry(.05, .035, .05), metal, el, 0, -.2, -.07);    // espelho de punho
+    const wr = joint(el, 0, -.275, 0);
+    mesh(ringG(.058, .014), metal, wr, 0, .012, 0);
+    mesh(new THREE.CylinderGeometry(.064, .055, .075, seg), gloveM, wr, 0, -.035, 0);   // punho da luva
+    const hand = joint(wr, 0, -.075, 0);
+    mesh(new THREE.BoxGeometry(.05, .105, .096), gloveM, hand, 0, -.05, 0);    // palma virada pro corpo
+    mesh(new THREE.BoxGeometry(.006, .09, .08), rubber, hand, -s * .027, -.05, 0);  // palma emborrachada
+    for (let i = 0; i < 4; i++) {
+      const f = joint(hand, 0, -.1, -.036 + i * .024);
+      f.rotation.z = -s * (.45 + i * .06);                                          // dedos curvados pra dentro
+      mesh(cap(.0135, .05), gloveM, f, 0, -.033, 0);
+      mesh(new THREE.SphereGeometry(.0145, 8, 6), rubber, f, 0, -.064, 0);
+    }
+    const th = joint(hand, -s * .02, -.035, -.05);
+    th.rotation.set(-.5, 0, -s * .5);
+    mesh(cap(.015, .045), gloveM, th, 0, -.032, 0);
+    arms.push({ s, sh, el, wr });
+  }
+
+  // ----- pernas: coxa com faixas vermelhas, sanfona do joelho, canela, bota -----
+  const legs = [];
+  for (const s of [-1, 1]) {
+    const hp = joint(hips, s * .118, -.03, 0);
+    mesh(cap(.108, .25), fab, hp, 0, -.21, 0);
+    for (const y of [-.13, -.2]) mesh(new THREE.CylinderGeometry(.11, .11, .026, seg + 4, 1, true), red, hp, 0, y, 0);
+    const kn = joint(hp, 0, -.43, 0);
+    bellows(kn, .099, .035, 3);
+    mesh(cap(.094, .24), fab, kn, 0, -.19, 0);
+    const an = joint(kn, 0, -.385, 0);
+    mesh(new THREE.CylinderGeometry(.098, .092, .13, seg), fabDk, an, 0, -.01, 0);    // cano da bota
+    mesh(new THREE.BoxGeometry(.145, .09, .27), fab, an, 0, -.065, -.045);            // corpo da bota
+    mesh(cap(.065, .03).rotateZ(Math.PI / 2), fab, an, 0, -.07, -.175).scale.set(1, 1, .9);  // bico arredondado
+    mesh(new THREE.BoxGeometry(.155, .035, .31), rubber, an, 0, -.105, -.05);          // sola
+    legs.push({ s, hp, kn, an });
+  }
+  root.visible = false;
+  world.add(root);
+  return { root, hips, spine, arms, legs, tp, ghost, third: false };
+}
+const avatar = buildAvatar();
+const av = { ph: 0, wk: 0, run: 0, air: 0, bob: 0, t: 0 };
+// ---------- depuração (só em localhost): câmera orbital em 3ª pessoa pra conferir o corpo pelo console ----------
+// SE.dbg.orbit = { yaw: 2.5, pitch: .15, dist: 3.2, h: 1 } · SE.keys.add('KeyW') anda · SE.dbg.orbit = null volta
+const dbg = { orbit: null };
+function orbitCamera() {
+  const o = dbg.orbit;
+  bodyUp(player.body, player.pos, _avU);
+  _avF.copy(player.f).addScaledVector(_avU, -player.f.dot(_avU)).normalize();
+  _avR.crossVectors(_avF, _avU).normalize();
+  const c = _tmp2.copy(player.pos).addScaledVector(_avU, o.h);
+  camera.position.copy(c)
+    .addScaledVector(_avF, Math.cos(o.yaw) * Math.cos(o.pitch) * o.dist)
+    .addScaledVector(_avR, Math.sin(o.yaw) * Math.cos(o.pitch) * o.dist)
+    .addScaledVector(_avU, Math.sin(o.pitch) * o.dist);
+  lookQ(camera.position, c, _avU, camera.quaternion);
+}
+if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) window.SE = { dbg, player, av, keys, avatar, camera, V3, setPitch: p => { player.pitch = p; },
+  // SE.place('mars') pousa a nave e põe o jogador ao lado; num gasoso, vai pra estação dele
+  place: id => {
+    const b = BODIES.find(x => x.id === id);
+    if (b.st) dockShip(b.st);
+    else { const d = pickLandingDir(b); parkShip(b, d, new V3(0, 1, 0).addScaledVector(d, -d.y)); }
+    placePlayerOutside(); mode = 'foot';
+  } };
+const _avU = new V3(), _avR = new V3(), _avM = new THREE.Matrix4(), _avF = new V3();
+
+// 3ª pessoa: capacete e anel do pescoço aparecem; 1ª pessoa: só fazem sombra
+function setAvatarThird(on) {
+  if (avatar.third === on) return;
+  avatar.third = on;
+  for (const m of avatar.tp) m.material = on ? m.userData.mat : avatar.ghost;
+}
+function updateAvatar(dt) {
+  const A = avatar, R = A.root;
+  R.visible = mode === 'foot';
+  setAvatarThird(!!dbg.orbit);
+  if (!R.visible) { av.bob = 0; return; }
+  const b = player.body;
+  // corpo segue o rumo do olhar (só a guinada), com o tronco um pouco atrás do olho
+  bodyUp(b, player.pos, _avU);
+  _avF.copy(player.f).addScaledVector(_avU, -player.f.dot(_avU)).normalize();
+  _avR.crossVectors(_avF, _avU).normalize();
+  _avM.makeBasis(_avR, _avU, _tmp2.copy(_avF).negate());
+  R.quaternion.setFromRotationMatrix(_avM);
+  R.position.copy(player.pos).addScaledVector(_avF, -AV_EYE_FWD).addScaledVector(_avU, player.eye - EYE);
+
+  // ritmo da passada: passos mais longos correndo e em gravidade baixa (passos saltados)
+  const hs = player.hv.length(), fw = player.hv.dot(_avF);
+  const lowG = clamp(Math.pow(12 / b.g, .3), 1, 1.6);
+  const k = 1 - Math.exp(-8 * dt);
+  av.wk += (smooth(.25, 3.5, hs) - av.wk) * k;
+  av.run += (smooth(2, 8, hs) - av.run) * k;          // 5,5 m/s (o andar normal do jogo) já é um trote
+  av.air += ((player.grounded ? 0 : 1) - av.air) * (1 - Math.exp(-10 * dt));
+  // comprimento do passo: ~0,75 m andando devagar, ~1,6 m trotando a 5,5 m/s, ~2 m correndo (3 a 5 passos/s)
+  const step = L(smooth(1, 6, hs), .55 + .15 * hs, 1.6 + .08 * (hs - 5.5)) * lowG;
+  if (player.grounded) av.ph += (fw < -.3 * hs ? -1 : 1) * hs * dt / step * Math.PI;   // andando de costas: ciclo ao contrário
+  av.t += dt;
+  const wk = av.wk * (1 - av.air), run = av.run, air = av.air;
+  const Ah = .3 + .32 * run, Ak = .6 + 1.05 * run, Aa = .28 + .28 * run;
+
+  // pernas: quadril pra frente/trás, joelho dobra no balanço (mais correndo), tornozelo mantém a sola quase plana
+  for (const lg of A.legs) {
+    const p = av.ph + (lg.s > 0 ? Math.PI : 0), sw = Math.sin(p), cw = Math.cos(p);
+    let hip = Ah * sw * wk;
+    let kn = wk * (Ak * Math.pow(Math.max(0, cw), 1.5) + .07) + (1 - wk) * .03;
+    hip = L(air, hip, lg.s < 0 ? .45 : -.08);                                      // no ar: uma perna à frente, joelhos dobrados
+    kn = L(air, kn, lg.s < 0 ? .8 : .4);
+    lg.hp.rotation.set(hip, 0, lg.s * .025);
+    lg.kn.rotation.x = -kn;
+    lg.an.rotation.x = -(hip - kn) * .85 - .25 * wk * Math.max(0, -sw) * (1 - air);   // empurra com a ponta do pé
+  }
+  // quadril: sobe no meio do apoio e desce nos dois apoios, balança de lado e gira um pouco
+  const bobA = (.022 + .035 * run) * wk;
+  av.bob = bobA * (Math.cos(2 * av.ph) - 1) * .5;
+  A.hips.position.set(Math.sin(av.ph) * .018 * wk, .96 + av.bob - .04 * air, 0);
+  A.hips.rotation.set(0, -.1 * Math.sin(av.ph) * wk, .03 * Math.sin(av.ph) * wk);         // o lado da perna que avança vai junto
+  // tronco: gira ao contrário do quadril, inclina pra frente correndo, respira parado
+  A.spine.rotation.set(-(.04 * wk + .1 * run), .16 * Math.sin(av.ph) * wk, -.03 * Math.sin(av.ph) * wk);
+  A.spine.position.set(0, .12 + .004 * Math.sin(av.t * 1.7), A.third ? 0 : FP_SPINE_BACK);
+  // braços: balançam opostos às pernas; o traje pressurizado deixa os braços meio abertos e o cotovelo dobrado
+  for (const a of A.arms) {
+    const p = av.ph + (a.s > 0 ? 0 : Math.PI), sw = Math.sin(p);
+    let shx = Aa * sw * wk + .02 * Math.sin(av.t * 1.7 + a.s);
+    let elx = .3 + .12 * wk + 1.05 * run + .15 * Math.max(0, sw) * wk;
+    shx = L(air, shx, .55); elx = L(air, elx, .75);
+    a.sh.rotation.set(shx, 0, a.s * (.17 + .12 * air + .04 * run));
+    a.el.rotation.x = elx;
+    a.wr.rotation.set(0, a.s * .15, 0);
+  }
 }
 
 // =====================================================================
@@ -2949,8 +3217,10 @@ function frame() {
   const flying = mode === 'fly' || mode === 'landing' || mode === 'takeoff';
   ship.group.userData.pilot.visible = flying || (cut ? ship.group.userData.pilot.visible : false);
   if (mode === 'foot') footCamera(); else if (flying) chaseCamera(dt);   // nas cenas a câmera já foi posta
+  updateAvatar(paused ? 0 : dt);
+  if (dbg.orbit && mode === 'foot') orbitCamera();
   // a pé e nas cenas a câmera fica colada nas coisas; em voo (13 m atrás da nave) dá pra afastar o near
-  const near = (mode === 'fly' || mode === 'landing' || mode === 'takeoff') ? 1 : (mode === 'foot' ? .2 : .05);
+  const near = (mode === 'fly' || mode === 'landing' || mode === 'takeoff') ? 1 : (mode === 'foot' ? .07 : .05);   // a pé: perto pra ver o próprio peito
   if (camera.near !== near) { camera.near = near; camera.updateProjectionMatrix(); }
   camera.updateMatrixWorld();
   updateSky();
