@@ -134,6 +134,9 @@
   .lbl.edge span, .lbl.edge i { position:relative; top:16px; }
   .lbl.ship { color:var(--green); text-shadow:0 0 6px rgba(125,255,176,.6); }
   .lbl.ship::before { border-color:var(--green); }
+  /* estações orbitais: círculo branco-quente */
+  .lbl.st { color:#ffe2b0; text-shadow:0 0 6px rgba(255,200,120,.55); }
+  .lbl.st::before { border-color:#ffe2b0; border-radius:50%; transform:none; }
 
   /* ================= CONTROLES ================= */
   #tgtpanel { position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:6; display:none; align-items:center; gap:6px; }
@@ -267,7 +270,7 @@
       <div class="pmhint" id="pmHint">Esc to resume</div>
     </div>
   </div>
-  <div id="build">BUILD 28</div>
+  <div id="build">BUILD 29</div>
 
   <div class="hud" id="warn"></div>
   <div class="hud" id="prompt"></div>
@@ -288,21 +291,21 @@
 
   <div id="overlay">
     <h1>Solar Explorer</h1>
-    <div class="sub">Walk on every rocky world of the Solar System and dive into the clouds of the gas giants. When you are done, climb back into your ship and fly to the next one.</div>
+    <div class="sub">Walk on every rocky world of the Solar System and dive into the clouds of the gas giants, or dock at their orbital stations and take in the view. When you are done, climb back into your ship and fly to the next one.</div>
     <button id="startbtn" disabled>Building planets…</button>
     <div class="rot">Tip: turn your phone sideways for the best view</div>
     <div class="ctrl" id="ctrlhelp">
       <b>On foot</b> — WASD move · Mouse look · Space jump · Shift run · E board ship<br>
       <b>In the ship</b> — W/S thrust · Mouse steer · A/D turn · Shift boost<br>
-      Turbo kicks in by itself in open space · Q/R pick target · E land<br>
+      Turbo kicks in by itself in open space · Q/R pick target · E land / dock<br>
       , and . slow down / speed up time
     </div>
   </div>
 
   <script type="importmap">
-  { "imports": { "three": "./lib/three.module.min.js?v=28" } }
+  { "imports": { "three": "./lib/three.module.min.js?v=29" } }
   </script>
-  <script type="module" src="./game.js?v=28"></script>
+  <script type="module" src="./game.js?v=29"></script>
   <script>
     if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
       document.getElementById('ctrlhelp').innerHTML =

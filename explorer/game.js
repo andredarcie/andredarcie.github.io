@@ -1619,6 +1619,418 @@ function pickLandingDir(b) {
 }
 
 // =====================================================================
+// ESTAÇÕES ORBITAIS — uma por gigante gasoso, parada de frente pro planeta
+// no lado do dia (~55° do Sol, pra aparecer o terminador). Salão com cúpula
+// de vidro (vista panorâmica), corredor e plataforma de pouso pra nave.
+// Referencial local: +Y = cima (gravidade artificial puxa pra -Y), -Z = planeta.
+// A estação acompanha só a translação do planeta (não gira junto com ele).
+// =====================================================================
+const STATION_DEF = {
+  jupiter: { name: 'Galileo Station', k: 1.55, el: 12 },
+  saturn: { name: 'Cassini Station', k: 1.85, el: 20 },     // mais alta e mais acima do equador: anéis vistos de cima
+  uranus: { name: 'Herschel Station', k: 1.6, el: 12 },
+  neptune: { name: 'Le Verrier Station', k: 1.6, el: 12 },
+};
+const ST_DOME = 20, ST_WALK = 17.6, ST_PAD = new V3(0, 0, 49), ST_PARK = new V3(0, SHIP_H, 49);
+// onde dá pra andar (planta baixa em coords locais): salão redondo, corredor e plataforma
+const stWalk = (x, z) => x * x + z * z < ST_WALK * ST_WALK || (Math.abs(x) < 1.8 && z > 0 && z < 37) || (Math.abs(x) < 12.4 && z > 36 && z < 61.6);
+// bancos de frente pra vista (bloqueiam a pé): [x0, x1, z0, z1]
+const ST_BENCHES = [[-7.4, -2.6, -9.1, -7.6], [2.6, 7.4, -9.1, -7.6]];
+// sólidos pra colisão da nave: [x0, x1, y0, y1, z0, z1] — plataforma, corredor, painéis solares
+const ST_SOLID = [[-13, 13, -1.2, 0, 36, 62], [-2.7, 2.7, -.3, 3.7, 17, 36.5], [-52, 52, -5.6, -4.4, -5, 5]];
+const _stL = new V3(), _stPrev = new V3(), _stV = new V3(), _stW = new V3();
+const toStation = (st, p, out) => out.copy(p).sub(st.center).applyQuaternion(st.qInv);
+const fromStation = (st, l, out) => out.copy(l).applyQuaternion(st.q).add(st.center);
+// "cima" de quem está num corpo: radial nos planetas, fixo na estação
+const bodyUp = (b, p, out) => b.station ? out.copy(b.up) : out.copy(p).sub(b.center).normalize();
+
+const STATIONS = PLANETS.filter(b => STATION_DEF[b.id]).map(b => {
+  const def = STATION_DEF[b.id];
+  const sun = b.center.clone().negate().normalize();
+  const N = new V3(0, 1, 0).applyQuaternion(b.tiltQ);                 // polo norte do planeta
+  const side = new V3().crossVectors(N, sun);
+  if (side.lengthSq() < .04) side.crossVectors(sun, new V3(0, 1, 0));   // polo quase apontado pro Sol (Urano)
+  side.normalize();
+  const d = sun.clone().multiplyScalar(Math.cos(55 * D2R)).addScaledVector(side, Math.sin(55 * D2R));
+  const n2 = N.clone().addScaledVector(d, -N.dot(d));
+  if (n2.lengthSq() > 1e-4) d.multiplyScalar(Math.cos(def.el * D2R)).addScaledVector(n2.normalize(), Math.sin(def.el * D2R)).normalize();
+  // "cima" da estação = norte do planeta (as faixas ficam deitadas na janela)
+  const up = N.clone().addScaledVector(d, -N.dot(d));
+  if (up.lengthSq() < 1e-4) up.set(0, 1, 0).addScaledVector(d, -d.y);
+  up.normalize();
+  const right = new V3().crossVectors(up, d).normalize();
+  const q = new Q().setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, d));
+  const st = { station: true, name: def.name, planet: b, k: def.k, off: d.multiplyScalar(b.R * def.k), q, qInv: q.clone().invert(), up,
+    center: new V3(), padW: new V3(), dC: b.dC, dQ: new Q(), g: 12, colliders: [], group: null, lightC: new THREE.Color(b.atmo) };
+  b.st = st;
+  placeStation(st);
+  return st;
+});
+function placeStation(st) {
+  st.center.copy(st.planet.center).add(st.off);
+  fromStation(st, ST_PAD, st.padW);
+  if (st.group) st.group.position.copy(st.center);
+}
+// luz refletida pelo planeta gigante (só acesa perto de uma estação)
+const planetLight = new THREE.DirectionalLight(0xffffff, 0);
+world.add(planetLight); world.add(planetLight.target);
+
+// tubo em arco horizontal (ângulo a: x = r·sen a, z = r·cos a — mesma convenção do CylinderGeometry)
+function arcTube(r, y, a0, a1, tube, seg, closed = false) {
+  const c = new THREE.Curve();
+  c.getPoint = (t, o = new V3()) => { const a = a0 + (a1 - a0) * t; return o.set(Math.sin(a) * r, y, Math.cos(a) * r); };
+  return new THREE.TubeGeometry(c, seg, tube, 6, closed);
+}
+// nervura da cúpula: meio círculo de um lado ao outro passando pelo topo
+function meridianTube(R, az, tube, seg) {
+  const c = new THREE.Curve();
+  c.getPoint = (t, o = new V3()) => { const e = t * Math.PI; return o.set(Math.cos(e) * Math.sin(az) * R, Math.sin(e) * R, Math.cos(e) * Math.cos(az) * R); };
+  return new THREE.TubeGeometry(c, seg, tube, 6, false);
+}
+
+// piso do salão: anéis concêntricos de placas (o canvas inteiro vira o disco)
+function stationFloorTexture() {
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S;
+  const x = c.getContext('2d'), r = rng(321), m = S / 2;
+  x.fillStyle = '#1d2026'; x.fillRect(0, 0, S, S);
+  x.strokeStyle = 'rgba(8,10,13,.9)'; x.lineWidth = 2;
+  for (let k = 1; k < 10; k++) {
+    const r0 = m * (k - 1) / 9, r1 = m * k / 9, n = 6 + k * 6;
+    for (let i = 0; i < n; i++) {
+      const a0 = i / n * Math.PI * 2, a1 = (i + 1) / n * Math.PI * 2, t = 40 + r() * 16 | 0;
+      x.fillStyle = `rgb(${t},${t + 3},${t + 8})`;
+      x.beginPath(); x.arc(m, m, r1, a0, a1); x.arc(m, m, r0, a1, a0, true); x.closePath(); x.fill(); x.stroke();
+    }
+  }
+  x.strokeStyle = 'rgba(127,233,255,.35)'; x.lineWidth = 3;
+  for (const rr of [.33, .345, .62]) { x.beginPath(); x.arc(m, m, m * rr, 0, 7); x.stroke(); }
+  x.strokeStyle = 'rgba(232,115,42,.75)'; x.lineWidth = 6;
+  x.beginPath(); x.arc(m, m, m * .085, 0, 7); x.stroke();
+  for (let i = 0; i < 2600; i++) { x.fillStyle = `rgba(0,0,0,${r() * .08})`; x.fillRect(r() * S, r() * S, 2, 2); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  return t;
+}
+// plataforma de pouso: placas, borda zebrada e o círculo de toque
+function padTexture() {
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S;
+  const x = c.getContext('2d'), r = rng(654), m = S / 2;
+  x.fillStyle = '#3a3e45'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) {
+    const t = 52 + r() * 14 | 0; x.fillStyle = `rgb(${t},${t + 2},${t + 6})`; x.fillRect(i * 128 + 2, j * 128 + 2, 124, 124);
+  }
+  // borda zebrada amarelo/preto
+  x.save(); x.beginPath(); x.rect(0, 0, S, S); x.rect(44, 44, S - 88, S - 88); x.clip('evenodd');
+  x.fillStyle = '#e8b52a'; x.fillRect(0, 0, S, S); x.fillStyle = '#16181b';
+  for (let k = -S; k < S * 2; k += 64) { x.beginPath(); x.moveTo(k, 0); x.lineTo(k + 32, 0); x.lineTo(k + 32 - S, S); x.lineTo(k - S, S); x.closePath(); x.fill(); }
+  x.restore();
+  x.strokeStyle = '#e8732a'; x.lineWidth = 14;
+  x.beginPath(); x.arc(m, m, 330, 0, 7); x.stroke();
+  x.lineWidth = 5; x.beginPath(); x.arc(m, m, 290, 0, 7); x.stroke();
+  x.fillStyle = 'rgba(230,236,240,.85)';
+  x.fillRect(m - 130, m - 150, 50, 300); x.fillRect(m + 80, m - 150, 50, 300); x.fillRect(m - 80, m - 25, 160, 50);
+  for (let i = 0; i < 3000; i++) { x.fillStyle = `rgba(0,0,0,${r() * .1})`; x.fillRect(r() * S, r() * S, 3, 3); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  return t;
+}
+// painel solar: células azul-escuras com filetes prateados
+function solarTexture() {
+  const S = 256, c = document.createElement('canvas'); c.width = c.height = S;
+  const x = c.getContext('2d');
+  x.fillStyle = '#c9ced4'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 4; j++) {
+    const gr = x.createLinearGradient(0, j * 64, 0, j * 64 + 64);
+    gr.addColorStop(0, '#1b2f5c'); gr.addColorStop(1, '#0f1d3d');
+    x.fillStyle = gr; x.fillRect(i * 32 + 2, j * 64 + 2, 28, 60);
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(4, 2);
+  return t;
+}
+// placa com o nome da estação (redesenha quando a fonte Orbitron termina de carregar)
+function signTexture(st) {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 256;
+  const x = c.getContext('2d'), t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  const altKm = Math.round((st.k - 1) * st.planet.R / KM / 100) * 100, name = st.name.toUpperCase();
+  const draw = () => {
+    x.clearRect(0, 0, 1024, 256);
+    x.fillStyle = 'rgba(4,16,24,.82)'; x.fillRect(8, 8, 1008, 240);
+    x.strokeStyle = 'rgba(127,233,255,.7)'; x.lineWidth = 4; x.strokeRect(8, 8, 1008, 240);
+    x.fillStyle = '#e8732a'; x.fillRect(8, 8, 20, 240);
+    x.textAlign = 'center'; x.fillStyle = '#e6fbff';
+    let fs = 92; x.font = `800 ${fs}px Orbitron, "Share Tech Mono", monospace`;
+    while (x.measureText(name).width > 920 && fs > 40) { fs -= 4; x.font = `800 ${fs}px Orbitron, "Share Tech Mono", monospace`; }
+    x.fillText(name, 524, 130);
+    x.fillStyle = '#7fe9ff'; x.font = '40px "Share Tech Mono", monospace';
+    x.fillText(`${st.planet.name.toUpperCase()} ORBIT · ALT ${altKm.toLocaleString('en-US')} KM`, 524, 204);
+    t.needsUpdate = true;
+  };
+  draw(); document.fonts?.ready?.then(draw);
+  return t;
+}
+
+let ST_MAT = null;
+function stationMaterials() {
+  if (ST_MAT) return ST_MAT;
+  const hullTex = hullTexture(); hullTex.wrapS = hullTex.wrapT = THREE.RepeatWrapping; hullTex.repeat.set(14, 3);
+  ST_MAT = {
+    hull: new THREE.MeshStandardMaterial({ map: hullTex, metalness: .45, roughness: .45, side: THREE.DoubleSide }),
+    plate: new THREE.MeshStandardMaterial({ color: 0xd3d8de, metalness: .4, roughness: .5 }),
+    dark: new THREE.MeshStandardMaterial({ color: 0x2a3038, metalness: .6, roughness: .45 }),
+    rib: new THREE.MeshStandardMaterial({ color: 0x4a525c, metalness: .7, roughness: .35 }),
+    acc: new THREE.MeshStandardMaterial({ color: 0xe8732a, metalness: .2, roughness: .5 }),
+    floor: new THREE.MeshStandardMaterial({ map: stationFloorTexture(), metalness: .25, roughness: .55 }),
+    pad: new THREE.MeshStandardMaterial({ map: padTexture(), metalness: .3, roughness: .75 }),
+    solar: new THREE.MeshStandardMaterial({ map: solarTexture(), metalness: .5, roughness: .3 }),
+    glass: new THREE.MeshStandardMaterial({ color: 0xcfe8ff, metalness: .1, roughness: .04, transparent: true, opacity: .08, depthWrite: false, side: THREE.DoubleSide }),
+    glassLow: new THREE.MeshStandardMaterial({ color: 0x9cc8e8, metalness: .2, roughness: .05, transparent: true, opacity: .2, depthWrite: false, side: THREE.DoubleSide }),
+    warm: new THREE.MeshBasicMaterial({ color: 0xffd7a0, toneMapped: false }),
+    cyan: new THREE.MeshBasicMaterial({ color: 0x7fe9ff, toneMapped: false }),
+    red: new THREE.MeshBasicMaterial({ color: 0xff3a2a, toneMapped: false }),
+    win: new THREE.MeshBasicMaterial({ color: 0xffc98a, toneMapped: false }),
+  };
+  return ST_MAT;
+}
+
+function buildStation(st) {
+  const M = stationMaterials(), b = st.planet;
+  const g = new THREE.Group(); st.group = g;
+  g.position.copy(st.center); g.quaternion.copy(st.q);
+  world.add(g);
+  const add = (geo, mat, x = 0, y = 0, z = 0, shadow = true) => {
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = shadow; m.receiveShadow = true; g.add(m); return m;
+  };
+  const box = (w, h, d, mat, x, y, z, shadow) => add(new THREE.BoxGeometry(w, h, d), mat, x, y, z, shadow);
+  const beam = (a, c, t, mat) => {
+    const d = new V3().subVectors(c, a), m = add(new THREE.BoxGeometry(t, d.length(), t), mat);
+    m.position.copy(a).addScaledVector(d, .5); m.quaternion.setFromUnitVectors(UPY, d.normalize()); return m;
+  };
+
+  // ----- salão: piso, casco por baixo (com janelinhas acesas) -----
+  add(new THREE.CylinderGeometry(20.4, 20.4, .6, 96), [M.plate, M.floor, M.plate], 0, -.3, 0);
+  const prof = [[0, -12], [2.6, -11.6], [5.5, -9.4], [9, -7.2], [15, -4.6], [19.4, -2.4], [20.6, -.9], [20.6, -.55]];
+  add(new THREE.LatheGeometry(prof.map(([r, y]) => new THREE.Vector2(r, y)), 64), M.hull);
+  {
+    const ringsW = [[44, 17.6, -3.4], [28, 11.1, -6.4]], n = ringsW.reduce((s, w) => s + w[0], 0);
+    const wins = new THREE.InstancedMesh(new THREE.BoxGeometry(1.1, .45, .3), M.win, n);
+    let k = 0;
+    for (const [cnt, r, y] of ringsW) for (let i = 0; i < cnt; i++) {
+      const a = (i + .5) / cnt * Math.PI * 2;
+      _pm.compose(_pp.set(Math.sin(a) * r, y, Math.cos(a) * r), _pq.setFromAxisAngle(UPY, a), _ps.set(1, 1, 1));
+      wins.setMatrixAt(k++, _pm);
+    }
+    g.add(wins);
+  }
+
+  // ----- cúpula de vidro (com o vão da porta do corredor) e nervuras -----
+  {
+    const gg = new THREE.SphereGeometry(ST_DOME, 72, 22, 0, Math.PI * 2, 0, Math.PI / 2);
+    const idx = gg.index.array, p = gg.attributes.position, keep = [];
+    for (let i = 0; i < idx.length; i += 3) {
+      let cx = 0, cy = 0, cz = 0;
+      for (let j = 0; j < 3; j++) { cx += p.getX(idx[i + j]); cy += p.getY(idx[i + j]); cz += p.getZ(idx[i + j]); }
+      if (cz > 0 && Math.abs(cx / 3) < 2.9 && cy / 3 < 3.9) continue;
+      keep.push(idx[i], idx[i + 1], idx[i + 2]);
+    }
+    gg.setIndex(keep);
+    const glass = add(gg, M.glass, 0, 0, 0, false); glass.receiveShadow = false; glass.renderOrder = 2;
+  }
+  for (let i = 0; i < 6; i++) add(meridianTube(ST_DOME + .05, (15 + i * 30) * D2R, .14, 48), M.rib);   // nenhuma bem na frente nem na porta
+  for (const e of [42, 68]) add(arcTube(ST_DOME * Math.cos(e * D2R) + .05, ST_DOME * Math.sin(e * D2R), 0, Math.PI * 2, .11, 96, true), M.rib);
+  add(arcTube(ST_DOME + .1, .15, 0, Math.PI * 2, .35, 128, true), M.rib);
+  add(new THREE.CylinderGeometry(1.4, 1.7, .6, 24), M.dark, 0, ST_DOME - .05, 0);
+  // moldura da porta onde o corredor entra na cúpula
+  for (const s of [-1, 1]) box(1.9, 4.9, 1.6, M.plate, s * 3.4, 2.45, 19.3);
+  box(8.7, 1.2, 1.6, M.plate, 0, 4.4, 19.1);
+
+  // ----- dentro do salão: parapeito de vidro, pedestal com a maquete do planeta, bancos, lunetas -----
+  const GAP = .17;
+  add(new THREE.CylinderGeometry(18, 18, 1, 96, 1, true, GAP, Math.PI * 2 - 2 * GAP), M.glassLow, 0, .5, 0, false).receiveShadow = false;
+  add(arcTube(18, 1.02, GAP, Math.PI * 2 - GAP, .06, 120), M.rib);
+  add(arcTube(18.15, .03, GAP, Math.PI * 2 - GAP, .05, 120), M.cyan, 0, 0, 0, false);
+  for (let i = 0; i < 24; i++) {
+    const a = (i + .5) / 24 * Math.PI * 2;
+    if (a < GAP + .05 || a > Math.PI * 2 - GAP - .05) continue;
+    box(.08, 1.02, .08, M.rib, Math.sin(a) * 18, .51, Math.cos(a) * 18);
+  }
+  add(new THREE.CylinderGeometry(1, 1.35, 1, 32), M.dark, 0, .5, 0);
+  add(arcTube(1.03, 1, 0, Math.PI * 2, .04, 48, true), M.cyan, 0, 0, 0, false);
+  {
+    // maquete: o mesmo shader do planeta, girando junto com ele e na mesma orientação da vista
+    const mini = new THREE.Group(); mini.position.set(0, 2.4, 0); g.add(mini);
+    const inner = new THREE.Group(); inner.scale.setScalar(.8); mini.add(inner);
+    inner.add(new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), b.gasMat));
+    if (b.rings) { const rm = ringMesh(b); rm.scale.setScalar(1 / b.R); inner.add(rm); }
+    st.mini = mini;
+  }
+  st.colliders.push({ p: new V3(0, 0, 0), r: 1.35 });
+  for (const [x0, x1, z0, z1] of ST_BENCHES) {
+    const cx = (x0 + x1) / 2, w = x1 - x0, cz = (z0 + z1) / 2;
+    box(w, .12, .9, M.plate, cx, .48, cz - .1);
+    box(w, .7, .1, M.plate, cx, .95, z1 - .1);
+    for (const s of [-1, 1]) box(.12, .46, .8, M.dark, cx + s * (w / 2 - .3), .23, cz - .1);
+  }
+  for (const sx of [-9, 9]) {
+    const top = new V3(sx, 1.3, -11.5);
+    for (let i = 0; i < 3; i++) { const a = i / 3 * Math.PI * 2; beam(top, new V3(sx + Math.sin(a) * .55, 0, -11.5 + Math.cos(a) * .55), .06, M.rib); }
+    const dir = new V3(-sx * .02, Math.sin(18 * D2R), -Math.cos(18 * D2R)).normalize();
+    const tube = add(new THREE.CylinderGeometry(.13, .17, 1.8, 16), M.plate, sx, 1.45, -11.5);
+    tube.quaternion.setFromUnitVectors(UPY, dir);
+    st.colliders.push({ p: new V3(sx, 0, -11.5), r: .7 });
+  }
+  // placas com o nome: dentro (acima da porta, virada pro salão) e fora (acima da eclusa, virada pra plataforma)
+  {
+    const sm = new THREE.MeshBasicMaterial({ map: signTexture(st), transparent: true, toneMapped: false });
+    add(new THREE.PlaneGeometry(7.2, 1.8), sm, 0, 6.3, 18.3, false).rotation.y = Math.PI;
+    box(6.3, 1.7, .15, M.dark, 0, 5.4, 36.85);
+    add(new THREE.PlaneGeometry(6, 1.5), sm, 0, 5.4, 36.95, false);
+  }
+
+  // ----- corredor envidraçado até a eclusa -----
+  const CZ0 = 17, CZ1 = 36.4, CL = CZ1 - CZ0, CZ = (CZ0 + CZ1) / 2;
+  box(5, .3, CL, M.plate, 0, -.15, CZ);
+  for (const s of [-1, 1]) {
+    box(.26, 1, CL, M.plate, s * 2.33, .5, CZ);
+    box(.26, .9, CL, M.plate, s * 2.33, 3.05, CZ);
+    add(new THREE.BoxGeometry(.05, 1.6, CL), M.glassLow, s * 2.33, 1.8, CZ, false).receiveShadow = false;
+    for (let z = CZ0 + 1.2; z < CZ1; z += 3.2) box(.36, 3.5, .3, M.rib, s * 2.33, 1.75, z);
+    add(new THREE.BoxGeometry(.06, .03, CL - .4), M.cyan, s * 1.95, .02, CZ, false);
+  }
+  box(5.2, .26, CL, M.plate, 0, 3.6, CZ);
+  add(new THREE.BoxGeometry(.6, .04, CL - .6), M.warm, 0, 3.45, CZ, false);
+  for (const s of [-1, 1]) box(.7, 4.2, 1, M.dark, s * 2.6, 2.1, CZ1);
+  box(5.9, .7, 1, M.dark, 0, 4.25, CZ1);
+  box(4.4, .12, .12, M.acc, 0, 3.85, CZ1 - .45);
+
+  // ----- plataforma de pouso, guarda-corpo, luzes de borda e estrutura por baixo -----
+  add(new THREE.BoxGeometry(26, 1.2, 26), [M.plate, M.plate, M.pad, M.dark, M.plate, M.plate], 0, -.6, ST_PAD.z);
+  const rail = (x0, z0, x1, z1) => {
+    const len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.round(len / 3.2)), ang = Math.atan2(x1 - x0, z1 - z0);
+    for (const y of [1.05, .55]) box(.08, .08, len, M.rib, (x0 + x1) / 2, y, (z0 + z1) / 2).rotation.y = ang;
+    for (let i = 0; i <= n; i++) box(.1, 1.05, .1, M.rib, x0 + (x1 - x0) * i / n, .525, z0 + (z1 - z0) * i / n);
+  };
+  rail(-12.8, 36.3, -12.8, 61.8); rail(12.8, 36.3, 12.8, 61.8); rail(-12.8, 61.8, 12.8, 61.8);
+  rail(-12.8, 36.3, -3, 36.3); rail(3, 36.3, 12.8, 36.3);
+  {
+    const pts = [];
+    for (let i = 0; i < 10; i++) { const t = -11.7 + i * 2.6; pts.push([t, 37.3], [t, 60.7], [-11.7, 37.3 + i * 2.6], [11.7, 37.3 + i * 2.6]); }
+    const leds = new THREE.InstancedMesh(new THREE.BoxGeometry(.3, .06, .3), M.cyan, pts.length);
+    pts.forEach(([px, pz], i) => { _pm.compose(_pp.set(px, .03, pz), _pq.identity(), _ps.set(1, 1, 1)); leds.setMatrixAt(i, _pm); });
+    g.add(leds);
+  }
+  box(1.4, 1.4, 50, M.dark, 0, -2.4, 37);
+  for (const s of [-1, 1]) {
+    beam(new V3(s * 11, -1.2, 60), new V3(s * .6, -2.4, 42), .5, M.dark);
+    beam(new V3(s * 11, -1.2, 38), new V3(s * 6, -4.6, 15), .6, M.dark);
+  }
+
+  // ----- painéis solares virados pro Sol, antena embaixo -----
+  _stV.copy(st.center).negate().normalize().applyQuaternion(st.qInv);
+  const tilt = Math.atan2(_stV.z, _stV.y);
+  for (const s of [-1, 1]) {
+    box(40, .5, .5, M.dark, s * 32, -5, 0);
+    box(.8, 1.6, 1.6, M.plate, s * 12.6, -5, 0);
+    for (const cx of [21.5, 41.5]) box(17.5, .12, 8.5, M.solar, s * cx, -5, 0).rotation.x = tilt;
+  }
+  add(new THREE.CylinderGeometry(.25, .25, 4, 8), M.rib, 0, -13.6, 0);
+  add(new THREE.SphereGeometry(3, 24, 8, 0, Math.PI * 2, 0, .85), M.hull, 0, -17.8, 0);
+
+  // ----- faróis vermelhos piscando (topo da cúpula, cantos da plataforma, pontas dos painéis) -----
+  const beacons = new THREE.Group(); g.add(beacons);
+  const bGeo = new THREE.SphereGeometry(.22, 10, 8);
+  for (const [x, y, z] of [[0, ST_DOME + .5, 0], [-12.8, 1.25, 36.3], [12.8, 1.25, 36.3], [-12.8, 1.25, 61.8], [12.8, 1.25, 61.8], [-52.2, -5, 0], [52.2, -5, 0]]) {
+    const m = new THREE.Mesh(bGeo, M.red); m.position.set(x, y, z); beacons.add(m);
+  }
+  st.beacons = beacons;
+}
+
+// a pé na estação: chão plano em y = 0 local, presa à planta baixa (desliza nas bordas)
+function pushBoxXZ(l, bx, R) {
+  const dx0 = l.x - (bx[0] - R), dx1 = (bx[1] + R) - l.x, dz0 = l.z - (bx[2] - R), dz1 = (bx[3] + R) - l.z;
+  if (dx0 <= 0 || dx1 <= 0 || dz0 <= 0 || dz1 <= 0) return;
+  const m = Math.min(dx0, dx1, dz0, dz1);
+  if (m === dx0) l.x -= dx0; else if (m === dx1) l.x += dx1; else if (m === dz0) l.z -= dz0; else l.z += dz1;
+}
+function stationGround(st) {
+  const l = toStation(st, player.pos, _stL);
+  for (const bx of ST_BENCHES) pushBoxXZ(l, bx, .4);
+  if (!stWalk(l.x, l.z)) {
+    if (stWalk(l.x, _stPrev.z)) l.z = _stPrev.z;
+    else if (stWalk(_stPrev.x, l.z)) l.x = _stPrev.x;
+    else { l.x = _stPrev.x; l.z = _stPrev.z; }
+  }
+  if (l.y <= 0 || (player.grounded && player.vr <= 0 && l.y < .45)) { l.y = 0; if (player.vr < 0) player.vr = 0; player.grounded = true; }
+  else player.grounded = false;
+  player.inWater = false;
+  fromStation(st, l, player.pos);
+}
+
+// colisão da nave com a estação: esfera (cúpula + casco) e caixas; corta a velocidade contra a parede
+function pushBox(l, bx, m, v) {
+  const p = [l.x - (bx[0] - m), (bx[1] + m) - l.x, l.y - (bx[2] - m), (bx[3] + m) - l.y, l.z - (bx[4] - m), (bx[5] + m) - l.z];
+  for (const d of p) if (d <= 0) return false;
+  let k = 0;
+  for (let i = 1; i < 6; i++) if (p[i] < p[k]) k = i;
+  const ax = 'xyz'[k >> 1], s = k & 1 ? 1 : -1;
+  l[ax] += s * p[k];
+  if (v[ax] * s < 0) v[ax] = 0;
+  return true;
+}
+function stationCollide() {
+  for (const st of STATIONS) {
+    const l = toStation(st, ship.pos, _stL);
+    if (l.lengthSq() > 160 * 160) continue;
+    _stV.copy(ship.vel).applyQuaternion(st.qInv);
+    let hit = false;
+    _stW.set(l.x, l.y + 3, l.z);
+    const r = _stW.length(), R = ST_DOME + 4.5;
+    if (r < R && r > 1e-3) {
+      _stW.divideScalar(r); l.copy(_stW).multiplyScalar(R); l.y -= 3;
+      const vn = _stV.dot(_stW); if (vn < 0) _stV.addScaledVector(_stW, -vn);
+      hit = true;
+    }
+    for (const bx of ST_SOLID) if (pushBox(l, bx, 2.4, _stV)) hit = true;
+    if (hit) { fromStation(st, l, ship.pos); ship.vel.copy(_stV).applyQuaternion(st.q); }
+  }
+}
+
+// atracar: curva por cima da estação (nada de atravessar a cúpula) e descida na vertical até a plataforma
+function startDocking(st) {
+  mode = 'landing'; ship.vel.set(0, 0, 0);
+  const l0 = toStation(st, ship.pos, new V3());
+  anim = { st, l0, c1: new V3(l0.x, Math.max(l0.y, 60), l0.z), c2: new V3(ST_PARK.x, 60, ST_PARK.z), q0: ship.q.clone(), t: 0,
+    dur: clamp(2.8 + l0.distanceTo(ST_PARK) / 70, 3.2, 6.5) };
+}
+function dockShip(st) {
+  ship.body = st; ship.dir.copy(st.up);
+  ship.ground.copy(st.padW);
+  fromStation(st, ST_PARK, ship.pos); ship.q.copy(st.q);   // bico virado pro planeta
+  ship.vel.set(0, 0, 0);
+}
+
+// faróis, maquete, visibilidade e a luz que o planeta joga na estação mais próxima
+function updateStations() {
+  const eye = camera.position, on = (gameTime % 1.6) < .12;
+  let near = null, nd = Infinity;
+  for (const st of STATIONS) {
+    if (!st.group) continue;
+    const d = eye.distanceTo(st.center);
+    st.group.visible = d < 80000;
+    if (d < nd) { nd = d; near = st; }
+    st.beacons.visible = on;
+    st.mini.quaternion.copy(st.qInv).multiply(st.planet.q);
+  }
+  if (near && nd < 4000) {
+    const b = near.planet;
+    _stW.copy(b.center).sub(eye).normalize();                        // da câmera pro planeta
+    planetLight.position.copy(eye).addScaledVector(_stW, 100);
+    planetLight.target.position.copy(eye);
+    // fração iluminada vista daqui (fase) × fluxo do Sol lá × albedo/tamanho aparente
+    const lit = .5 * (1 - _stV.copy(b.center).negate().normalize().dot(_stW));
+    planetLight.color.copy(near.lightC);
+    planetLight.intensity = SUN_I * (AU / b.center.length()) ** 2 * .25 * lit;
+  } else planetLight.intensity = 0;
+}
+
+// =====================================================================
 // JOGADOR / ESTADO
 // =====================================================================
 let mode = 'foot'; // foot | fly | landing | takeoff
@@ -1768,6 +2180,12 @@ const shipLabel = document.createElement('div');
 shipLabel.className = 'lbl ship'; shipLabel.innerHTML = '<em></em><span>Your ship</span><i></i>';
 labelsEl.appendChild(shipLabel);
 const shipLabelDist = shipLabel.querySelector('i');
+for (const st of STATIONS) {
+  const el = document.createElement('div'); el.className = 'lbl st';
+  el.innerHTML = `<em></em><span>${st.name}</span><i></i>`;
+  labelsEl.appendChild(el);
+  st.lbl = { el, dist: el.querySelector('i'), vis: false, txt: '' };
+}
 
 const fmtDist = d => d >= AU * .01 ? (d / AU).toFixed(d >= AU ? 2 : 3) + ' AU' : d >= 1e6 ? (d / 1e6).toFixed(2) + 'M' : d >= 1000 ? (d / 1000).toFixed(1) + 'k' : Math.round(d) + ' m';
 const fmtSpd = v => v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e4 ? (v / 1000).toFixed(0) + 'k' : Math.round(v) + '';
@@ -1785,7 +2203,8 @@ function nearShip() { return ship.body === player.body && player.pos.distanceTo(
 
 function updateFoot(dt) {
   const b = player.body, c = b.center;
-  _up.copy(player.pos).sub(c).normalize();
+  bodyUp(b, player.pos, _up);
+  if (b.station) toStation(b, player.pos, _stPrev);   // pra deslizar nas bordas da planta
 
   player.f.applyAxisAngle(_up, -look.dx * FOOT_SENS);
   player.pitch = clamp(player.pitch - look.dy * FOOT_SENS, -1.45, 1.45);
@@ -1817,21 +2236,23 @@ function updateFoot(dt) {
   if (ship.body === b) shipPushOut(player.pos, _up);   // caixas da fuselagem e das asas
 
   // chão
-  _tmp.copy(player.pos).sub(c);
-  let r = _tmp.length(); _tmp.divideScalar(r);
-  const gr = groundR(b, _tmp);
-  player.inWater = !!b.sea && RAW <= 0;
-  if (r <= gr || (player.grounded && player.vr <= 0 && r - gr < .45)) {
-    r = gr; if (player.vr < 0) player.vr = 0; player.grounded = true;
-  } else player.grounded = false;
-  player.pos.copy(c).addScaledVector(_tmp, r);
+  if (b.station) stationGround(b);
+  else {
+    _tmp.copy(player.pos).sub(c);
+    let r = _tmp.length(); _tmp.divideScalar(r);
+    const gr = groundR(b, _tmp);
+    player.inWater = !!b.sea && RAW <= 0;
+    if (r <= gr || (player.grounded && player.vr <= 0 && r - gr < .45)) {
+      r = gr; if (player.vr < 0) player.vr = 0; player.grounded = true;
+    } else player.grounded = false;
+    player.pos.copy(c).addScaledVector(_tmp, r);
+  }
 
   if (actQ && nearShip()) board();
 }
 
 function footCamera() {
-  const c = player.body.center;
-  _up.copy(player.pos).sub(c).normalize();
+  bodyUp(player.body, player.pos, _up);
   player.f.addScaledVector(_up, -player.f.dot(_up)).normalize();
   _right.crossVectors(player.f, _up).normalize();
   _m.makeBasis(_right, _up, _tmp.copy(player.f).negate());
@@ -1868,7 +2289,7 @@ function autoLevel(dt) {
   ship.q.premultiply(_q1.setFromAxisAngle(_fwd, ang * Math.min(1, 2.2 * w * dt))).normalize();
 }
 
-let canLand = null, landBlock = null;
+let canLand = null, landBlock = null, canDock = null;
 // turbo "supercruise" AUTOMÁTICO: em espaço aberto liga sozinho, perto de planeta/Sol desliga sozinho.
 // A velocidade-alvo é proporcional à distância até o corpo mais próximo (longe = milhões/s; chegando
 // perto desacelera sozinho, sem nunca atravessar nada). +50% em relação ao BUILD 19.
@@ -1953,6 +2374,7 @@ function updateFly(dt) {
     const vr = ship.vel.dot(_tmp); if (vr < 0) ship.vel.addScaledVector(_tmp, -vr * 1.5);
     warn('HULL MELTING — PULL AWAY');
   } else if (sd < SUN.R * 1.15) warn('HEAT WARNING');
+  stationCollide();
 
   const nb = nearestPlanet(ship.pos);
   const close = nb.alt < Math.max(80, nb.b.R * .7);
@@ -1963,7 +2385,10 @@ function updateFly(dt) {
     if (RAW <= .02) { landBlock = 'WATER BELOW · FIND LAND TO SET DOWN'; canLand = null; }
   }
   gasNear = (close && nb.b.gas && !inGas) ? nb.b : null;
-  if (actQ && canLand) startLanding(canLand, _tmp.copy(ship.pos).sub(canLand.center));
+  canDock = null;
+  if (!inGas) for (const st of STATIONS) if (ship.pos.distanceTo(st.padW) < 260) canDock = st;
+  if (actQ && canDock) startDocking(canDock);
+  else if (actQ && canLand) startLanding(canLand, _tmp.copy(ship.pos).sub(canLand.center));
 }
 
 function startLanding(b, dirW) {
@@ -1976,6 +2401,15 @@ function startLanding(b, dirW) {
 function updateLanding(dt) {
   anim.t += dt;
   const k = ease(Math.min(1, anim.t / anim.dur));
+  if (anim.st) {   // atracando numa estação: Bézier cúbica em coords da estação
+    const st = anim.st, u = 1 - k;
+    _stL.copy(anim.l0).multiplyScalar(u * u * u).addScaledVector(anim.c1, 3 * u * u * k).addScaledVector(anim.c2, 3 * u * k * k).addScaledVector(ST_PARK, k * k * k);
+    fromStation(st, _stL, ship.pos);
+    ship.q.slerpQuaternions(anim.q0, st.q, smooth(0, .75, k));
+    ship.thrust = .35 * (1 - k);
+    if (anim.t >= anim.dur) { dockShip(st); startExit(); }
+    return;
+  }
   _tmp.copy(anim.d0).lerp(anim.d1, k).normalize();
   ship.pos.copy(anim.b.center).addScaledVector(_tmp, L(k, anim.r0, anim.r1));
   ship.q.slerpQuaternions(anim.q0, anim.q1, k);
@@ -2018,7 +2452,7 @@ function board() {
   // pose atual (olho do jogador) → asa → assento → atrás da nave
   const p0 = { t: 0, p: camera.position.clone(), q: camera.quaternion.clone() };
   cut = { t: 0, dur: 3.4, keys: [p0, pose(1.0, sidePose, new V3(0, .6, -2.2)), pose(1.8, seatPose), pose(2.6, seatPose), pose(3.4, chasePose)] };
-  ship.target = (PLANETS.indexOf(ship.body) + 1) % PLANETS.length;
+  ship.target = (PLANETS.indexOf(ship.body.planet || ship.body) + 1) % PLANETS.length;
   if (document.pointerLockElement !== canvas && !isTouch && started) canvas.requestPointerLock?.();
 }
 function updateBoarding(dt) {
@@ -2044,7 +2478,7 @@ function updateExiting(dt) {
   canopyOpen(t < 2.3 ? smooth(.4, 1.1, t) : 1 - smooth(2.4, 3.1, t));
   ship.group.userData.pilot.visible = t < .95;
   playPoses(cut.keys, t);
-  if (t >= cut.dur) { cut = null; canopyOpen(0); mode = 'foot'; showLoc(player.body.name, 'SURFACE'); }
+  if (t >= cut.dur) { cut = null; canopyOpen(0); mode = 'foot'; showLoc(player.body.name, player.body.station ? player.body.planet.name.toUpperCase() + ' ORBIT' : 'SURFACE'); }
 }
 
 function startTakeoff() {
@@ -2067,7 +2501,7 @@ function updateTakeoff(dt) {
 
 // pose da câmera a pé (mesma conta do footCamera, sem aplicar)
 function footPose(outP, outQ) {
-  _up.copy(player.pos).sub(player.body.center).normalize();
+  bodyUp(player.body, player.pos, _up);
   _right.crossVectors(player.f, _up).normalize();
   _m.makeBasis(_right, _up, _tmp2.copy(player.f).negate());
   outQ.setFromRotationMatrix(_m).multiply(_q1.setFromAxisAngle(AX, player.pitch));
@@ -2079,8 +2513,11 @@ function placePlayerOutside() {
   const up = ship.dir;
   _fwd.set(0, 0, -1).applyQuaternion(ship.q);
   _right.set(1, 0, 0).applyQuaternion(ship.q).addScaledVector(up, -_right.dot(up)).normalize();
-  _tmp.copy(ship.ground).addScaledVector(_right, 6.6).sub(b.center).normalize();
-  player.pos.copy(b.center).addScaledVector(_tmp, groundR(b, _tmp));
+  if (b.station) player.pos.copy(ship.ground).addScaledVector(_right, 6.6);   // piso plano da plataforma
+  else {
+    _tmp.copy(ship.ground).addScaledVector(_right, 6.6).sub(b.center).normalize();
+    player.pos.copy(b.center).addScaledVector(_tmp, groundR(b, _tmp));
+  }
   player.f.copy(_fwd).addScaledVector(up, -_fwd.dot(up)).normalize();
   player.hv.set(0, 0, 0); player.vr = 0; player.pitch = 0; player.grounded = true; player.eye = EYE;
 }
@@ -2245,7 +2682,7 @@ function updateLabels() {
     const isT = flying && b === tgt;
     // marcadores discretos de todos os planetas (só quando estão na tela); o alvo tem colchete + distância
     if (isT) show = true;
-    else if (b !== player.body || flying) {
+    else if ((b !== player.body && b !== player.body.planet) || flying) {   // da estação o planeta dispensa rótulo
       if (scene.fog.density >= .005) show = false;                       // dentro de nuvens/neblina não se vê nada
       else if (flying) show = true;
       else { _tmp.copy(b.center).sub(eye); show = _tmp.dot(_up) > 0; }   // a pé: só os que estão acima do horizonte
@@ -2266,6 +2703,14 @@ function updateLabels() {
     if (d > 14) { ss = placeLabel(shipLabel, ship.ground, true); shipLabelDist.textContent = fmtDist(d); }
   }
   shipLabel.style.display = ss ? 'block' : 'none';
+  // estações: aparecem voando perto do planeta delas (com seta na borda quando fora da tela)
+  for (const st of STATIONS) {
+    const lb = st.lbl, d = eye.distanceTo(st.center);
+    let show = mode === 'fly' && !inGas && d < st.planet.R * 10;
+    if (show) show = placeLabel(lb.el, st.center, true);
+    if (show) { const txt = fmtDist(d); if (lb.txt !== txt) { lb.txt = txt; lb.dist.textContent = txt; } }
+    if (lb.vis !== show) { lb.vis = show; lb.el.style.display = show ? 'block' : 'none'; }
+  }
 }
 
 // nome do lugar: aparece ao chegar e some sozinho
@@ -2281,7 +2726,7 @@ function updateHud(dt) {
   // ----- chegada a um planeta / mergulho num gasoso -----
   if (fly) {
     const nb = nearestPlanet(ship.pos);
-    if (nb.alt < nb.b.R * 3 && lastNear !== nb.b) { lastNear = nb.b; showLoc(nb.b.name, nb.b.gas ? 'GAS GIANT · NO SOLID SURFACE' : 'APPROACHING'); }
+    if (nb.alt < nb.b.R * 3 && lastNear !== nb.b) { lastNear = nb.b; showLoc(nb.b.name, nb.b.st ? `GAS GIANT · ${nb.b.st.name.toUpperCase()} IN ORBIT` : 'APPROACHING'); }
     else if (lastNear && ship.pos.distanceTo(lastNear.center) - lastNear.R > lastNear.R * 6) lastNear = null;
     if (inGas && lastGas !== inGas) { lastGas = inGas; showLoc('Inside ' + inGas.name, 'DESCENDING'); }
     if (!inGas) lastGas = null;
@@ -2306,6 +2751,7 @@ function updateHud(dt) {
   // ----- prompt / botão de ação -----
   let act = null;
   if (foot && nearShip()) act = ['BOARD', '<b>E</b>BOARD SHIP'];
+  else if (fly && canDock) act = ['DOCK', `<b>E</b>DOCK AT ${canDock.name.toUpperCase()}`];
   else if (fly && canLand) act = ['LAND', `<b>E</b>LAND ON ${canLand.name.toUpperCase()}`];
   const info = gasNear ? `NO SOLID SURFACE · DIVE INTO ${gasNear.name.toUpperCase()}` : landBlock;
   if (isTouch) {
@@ -2335,7 +2781,7 @@ function updateHud(dt) {
     if (showHelp) {
     let h = '';
     if (foot) h = '<b>WASD</b> move · <b>Mouse</b> look · <b>Space</b> jump · <b>Shift</b> run<br>Find your ship and press <b>E</b> to travel · <b>, .</b> time · <b>Esc</b> pause · <b>H</b> hide this';
-    else if (fly) h = '<b>W/S</b> thrust · <b>Mouse</b> steer · <b>A/D</b> turn · <b>Shift</b> boost<br>turbo is automatic in open space · <b>Q/R</b> target · <b>E</b> land when close · <b>, .</b> time · <b>Esc</b> pause · <b>H</b> hide';
+    else if (fly) h = '<b>W/S</b> thrust · <b>Mouse</b> steer · <b>A/D</b> turn · <b>Shift</b> boost<br>turbo is automatic in open space · <b>Q/R</b> target · <b>E</b> land / dock when close · <b>, .</b> time · <b>Esc</b> pause · <b>H</b> hide';
     if (document.pointerLockElement !== canvas && started && h) h = '<b>Click</b> to capture the mouse<br>' + h;
     setText(hud.help, 'hl', h);
     }
@@ -2439,6 +2885,7 @@ function updateBodies(simDt) {
     b.dQ.copy(b.q).multiply(_qi.copy(_oq).invert());
     b.group.position.copy(b.center); b.group.quaternion.copy(b.q);
   }
+  for (const st of STATIONS) placeStation(st);   // depois dos planetas: segue a translação deles
 }
 // leva um ponto preso à superfície junto com o planeta (translação + giro do quadro)
 // p - centroAntigo = p - (centro - dC) → gira pelo giro do quadro → soma o centro novo
@@ -2484,7 +2931,7 @@ function frame() {
     else if (mode === 'takeoff') updateTakeoff(dt);
     else if (mode === 'boarding') updateBoarding(dt);
     else if (mode === 'exiting') updateExiting(dt);
-    if (mode !== 'fly') canLand = null;
+    if (mode !== 'fly') canLand = canDock = null;
   }
   look.dx = look.dy = 0; jumpQ = false; actQ = false;
   if (!paused) adaptRes(dt);
@@ -2509,6 +2956,7 @@ function frame() {
   updateSky();
   trackCamera();
   updateDust();
+  updateStations();
   updateTurboFx(dt);
   if (started) { updateLabels(); updateHud(dt); }
   // origem flutuante: câmera na origem, mundo deslocado; desenha; desfaz
@@ -2531,6 +2979,9 @@ async function init() {
     await new Promise(r => setTimeout(r, 0));
     buildBody(b);
   }
+  startBtn.textContent = 'Building stations…';
+  await new Promise(r => setTimeout(r, 0));
+  for (const st of STATIONS) buildStation(st);
   // nave estacionada na Terra, jogador de frente pra ela
   const earth = BODIES.find(b => b.id === 'earth');
   const d = pickLandingDir(earth);
