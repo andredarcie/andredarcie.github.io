@@ -57,6 +57,10 @@
   .ph { display:flex; justify-content:space-between; align-items:baseline; font-family:var(--head); font-weight:800;
     font-size:10px; letter-spacing:3px; margin-bottom:6px; color:var(--holo); }
   .pf { margin-top:6px; text-align:right; font-size:9px; letter-spacing:2px; color:var(--holo-dim); text-shadow:none; }
+  .tclock { margin-top:7px; padding-top:6px; border-top:1px solid var(--holo-faint); font-size:11px; color:#d9faff; letter-spacing:1px; }
+  .tctl { display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:4px; pointer-events:auto; }
+  .tctl span { font-size:11px; color:var(--amber); letter-spacing:1px; text-shadow:0 0 5px rgba(255,179,71,.5); }
+  .tctl .btn { padding:3px 10px; font-size:13px; }
   .ph small { font-family:var(--mono); font-weight:400; letter-spacing:1px; color:var(--holo-dim); font-size:10px; }
   .row { display:flex; justify-content:space-between; gap:8px; white-space:nowrap; }
   .row .k { color:var(--holo-dim); letter-spacing:1px; }
@@ -195,6 +199,32 @@
   #startbtn:disabled { color:var(--holo-dim); border-color:var(--holo-faint); box-shadow:none; text-shadow:none; cursor:wait; }
   #overlay .ctrl { margin-top:26px; font-size:12px; color:#7f9fb4; line-height:1.9; max-width:440px; }
   #overlay .ctrl b { color:#cfeaf5; font-weight:400; }
+  /* ================= HUD LIMPA ================= */
+  #visor::before, #visor::after { display:none; }
+  #visor { background:radial-gradient(ellipse 125% 105% at 50% 48%, transparent 66%, rgba(0,4,10,.35) 84%, rgba(0,0,0,.75) 100%); }
+  #loc { top:calc(26px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 1s; }
+  #loc.show { opacity:1; }
+  body[data-mode] #loc { top:calc(26px + env(safe-area-inset-top)); }
+  #readout { left:50%; bottom:calc(16px + env(safe-area-inset-bottom)); transform:translateX(-50%); font-size:12px; letter-spacing:2px;
+    color:var(--holo-dim); white-space:nowrap; }
+  #readout.crit { color:var(--red); }
+  #bTime { position:fixed; z-index:6; top:calc(8px + env(safe-area-inset-top)); right:calc(10px + env(safe-area-inset-right));
+    font:11px/1 var(--mono); letter-spacing:1px; color:var(--holo-dim); background:none; border:none; padding:6px; cursor:pointer;
+    opacity:.55; text-shadow:var(--glow); -webkit-appearance:none; }
+  #bTime.on { opacity:1; color:var(--amber); }
+  /* botão de música, ao lado do relógio: riscado quando desligado */
+  #bSound { position:fixed; z-index:6; top:calc(8px + env(safe-area-inset-top)); left:calc(10px + env(safe-area-inset-left));
+    font:13px/1 var(--mono); color:var(--holo-dim); background:none; border:none; padding:6px; cursor:pointer; opacity:.55;
+    text-shadow:var(--glow); -webkit-appearance:none; }
+  #bSound.off { text-decoration:line-through; opacity:.3; }
+  #build { position:fixed; z-index:5; left:calc(8px + env(safe-area-inset-left)); bottom:calc(6px + env(safe-area-inset-bottom));
+    font:9px/1 var(--mono); letter-spacing:1px; color:var(--holo-dim); opacity:.35; pointer-events:none; }
+  #helpline { display:none; }
+  /* marcadores de planeta: losango pequeno + nome bem apagado, sem distância (só o alvo mostra distância) */
+  .lbl.dim { font-size:9px; letter-spacing:1.5px; color:rgba(127,233,255,.5); text-shadow:0 0 3px #000; }
+  .lbl.dim::before { width:5px; height:5px; margin-top:-2.5px; border-color:rgba(127,233,255,.6); }
+  .lbl.dim i { display:none; }
+  body.touch #readout { bottom:auto; top:calc(52px + env(safe-area-inset-top)); }
 </style>
 </head>
 <body data-mode="foot">
@@ -202,32 +232,14 @@
   <div id="labels"></div>
 
   <!-- visor -->
-  <div id="visor"></div><div id="rim"></div><div id="fog"></div>
+  <div id="visor"></div>
 
-  <!-- ambiente / navegação -->
-  <div class="hud panel" id="pEnv">
-    <div class="ph"><span id="envHead">ENV</span><small id="envSub"></small></div>
-    <div class="row" id="r0"><span class="k" id="k0"></span><span class="v" id="v0"></span></div>
-    <div class="row" id="r1"><span class="k" id="k1"></span><span class="v" id="v1"></span></div>
-    <div class="row" id="r2"><span class="k" id="k2"></span><span class="v" id="v2"></span></div>
-    <div class="row" id="r3"><span class="k" id="k3"></span><span class="v" id="v3"></span></div>
-    <div class="row" id="r4"><span class="k" id="k4"></span><span class="v" id="v4"></span></div>
-    <div class="row" id="r5"><span class="k" id="k5"></span><span class="v" id="v5"></span></div>
-    <div class="pf" id="build">BUILD 14</div>
-  </div>
-
-  <!-- bússola -->
-  <div class="hud" id="compass"><div id="tape"></div></div>
-  <div class="hud" id="cmark"></div>
-  <div class="hud" id="hdg">000°</div>
+  <!-- HUD mínima -->
   <div class="hud" id="loc"><div id="locName"></div><div id="locSub"></div></div>
-
-  <!-- retícula -->
-  <svg class="hud" id="reticle" viewBox="0 0 34 34" fill="none" stroke="#7fe9ff" stroke-width="1.2">
-    <circle cx="17" cy="17" r="9" stroke-opacity=".55"/>
-    <path d="M17 2v6M17 26v6M2 17h6M26 17h6"/>
-    <circle cx="17" cy="17" r="1.2" fill="#7fe9ff" stroke="none"/>
-  </svg>
+  <div class="hud" id="readout"></div>
+  <button id="bTime" title="Time speed">&#9201;</button>
+  <button id="bSound" title="Music (M)">&#9835;</button>
+  <div id="build">BUILD 26</div>
 
   <div class="hud" id="warn"></div>
   <div class="hud" id="prompt"></div>
@@ -254,18 +266,19 @@
     <div class="ctrl" id="ctrlhelp">
       <b>On foot</b> — WASD move · Mouse look · Space jump · Shift run · E board ship<br>
       <b>In the ship</b> — W/S thrust · Mouse steer · A/D turn · Shift boost<br>
-      Q/R pick target · E land
+      Turbo kicks in by itself in open space · Q/R pick target · E land<br>
+      , and . slow down / speed up time
     </div>
   </div>
 
   <script type="importmap">
-  { "imports": { "three": "./lib/three.module.min.js?v=14" } }
+  { "imports": { "three": "./lib/three.module.min.js?v=26" } }
   </script>
-  <script type="module" src="./game.js?v=14"></script>
+  <script type="module" src="./game.js?v=26"></script>
   <script>
     if (matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
       document.getElementById('ctrlhelp').innerHTML =
-        '<b>Left side</b>: walk, or thrust and turn in the ship<br><b>Right side</b>: drag to look; in the ship, hold and push to steer<br>Buttons for jump, boost, board and land';
+        '<b>Left side</b>: walk, or thrust and turn in the ship<br><b>Right side</b>: drag to look; in the ship, hold and push to steer<br>Buttons for jump, boost, board and land · turbo is automatic in open space';
     }
   </script>
 </body>

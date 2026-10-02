@@ -53,3 +53,5 @@ life-lab/output/
 # Captura de referência do visual isométrico; a paleta já foi extraída dela
 # para scene.js, e são 620 KB que o site nunca serve.
 life-lab/mini.png
+# Original da trilha do explorer (192 kbps); o site usa as versões comprimidas em explorer/audio/.
+explorer/audio/source/
