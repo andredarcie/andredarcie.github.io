@@ -40,7 +40,32 @@ O **Jantar / Cozinha é o hub de circulação** e todos os ambientes privativos 
 | WC Social | 0,70 × 2,10 | parede **leste** do WC, ponta norte |
 | Suíte Master | 0,80 × 2,10 | parede **sul** da suíte, ponta leste (o canto NO da cozinha encosta nela) |
 
-A sala de estar liga na cozinha por uma **abertura de 1,65 m** (sem porta).
+A sala de estar liga na cozinha por um **vão livre de ~2,22 m** (sem porta): a cota 2,40 vai da
+parede oeste da sala até um toco de parede de 0,70 junto à divisa leste. O "1,65" da planta é o
+trecho da cozinha a oeste da sala (da parede da cozinha até a parede Dorm.1/Sala), não o vão.
+
+### Coordenadas medidas (BUILD 17 do walkthrough)
+
+Lidas em pixels da `house.jpeg` (64,68 px/m nos dois eixos; x = (px−28)/64,68, z = (1357−py)/64,68;
+x 0 = divisa oeste, z 0 = alinhamento da rua). Paredes de 0,20. Todas conferem com as cotas vermelhas.
+
+| Ambiente | x (face a face) | z (face a face) |
+|---|---|---|
+| Garagem | 0,20 – 4,30 | 0,19 – 5,80 (rampa 25% em 0,19 – 1,39) |
+| Jardim da frente | 4,30 – 9,80 | 0,19 – 1,99 |
+| Dorm. 1 | 4,50 – 6,51 | 2,20 – 5,80 |
+| Sala | 6,69 – 9,80 | 2,20 – 5,80 |
+| Jantar / Cozinha | 5,06 – 9,80 | 5,98 – 10,14 |
+| Dorm. 02 | 1,70 – 4,85 | 5,98 – 8,55 |
+| WC Social | 2,35 – 4,85 | 8,74 – 10,14 |
+| Suíte (quarto) | 2,35 – 6,15 | 10,34 – 13,14 |
+| Suíte (nicho) | 4,76 – 6,15 | 13,14 – 15,74 |
+| WC Suíte | 2,35 – 4,55 | 13,34 – 15,74 |
+| Área de Serviço | 6,35 – 9,80 | 10,34 – 15,94 |
+| Quintal | 0,20 – 9,80 | 15,94 – 19,79 |
+
+A casa encosta na divisa leste (sala e cozinha); o corredor lateral oeste tem 1,30 junto ao Dorm.02
+e 1,95 junto ao WC social/suíte.
 O único "corredor" da casa é a faixa externa a céu aberto na lateral oeste (área permeável).
 
 ## Descrição ambiente a ambiente
