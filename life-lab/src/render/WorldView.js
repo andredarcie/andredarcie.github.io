@@ -11,6 +11,8 @@ import { FoodRenderer } from './FoodRenderer.js';
 import { PondRenderer } from './PondRenderer.js';
 import { CorpseRenderer } from './CorpseRenderer.js';
 import { CampfireRenderer } from './CampfireRenderer.js';
+import { PrimordialFlameRenderer } from './PrimordialFlameRenderer.js';
+import { BloodRenderer } from './BloodRenderer.js';
 import { TreeRenderer } from './TreeRenderer.js';
 import { LogRenderer } from './LogRenderer.js';
 import { FlagModel } from './FlagModel.js';
@@ -51,6 +53,8 @@ export class WorldView {
     this.scenery = new SceneryRenderer(this.#layer(), props, space);
     this.terrain = new TerrainRenderer(scene, renderer, world);
     this.grass = new GrassRenderer(this.#layer(), space);
+    // Sangue logo depois da grama: no chão, antes dos corpos que pisam nele.
+    this.blood = new BloodRenderer(this.#layer(), space);
     const bodyLayer = new THREE.Group();
     const foodLayer = new THREE.Group();
     const pondLayer = new THREE.Group();
@@ -61,6 +65,7 @@ export class WorldView {
     this.ponds = new PondRenderer(pondLayer, space);
     this.corpses = new CorpseRenderer(this.#layer(), characters, space);
     this.campfires = new CampfireRenderer(this.#layer(), scene, props, space);
+    this.primordialFlame = new PrimordialFlameRenderer(this.#layer(), scene, space);
     const treeLayer = new THREE.Group();
     const logLayer = new THREE.Group();
     const hutLayer = new THREE.Group();

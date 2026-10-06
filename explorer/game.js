@@ -185,14 +185,14 @@ function bodyCenter(b, jd, out) {
 function makeBodies() {
   const B = [];
 
-  B.push({ id: 'sun', name: 'Sun', R: km(695700), star: true });
+  B.push({ id: 'sun', name: 'Sun', R: rkm(695700), star: true });
 
   { // MERCÚRIO — cinza-acastanhado, saturado de crateras, raios claros, bacia Caloris
     const n1 = makeNoise(101), n2 = makeNoise(104), cr = makeCraters(102, 170, .025, .26, 2.6);
     const caloris = ll(30, 160);
     const rays = [makeRayCrater(ll(-11, -31), .035, 105), makeRayCrater(ll(58, 20), .03, 106), makeRayCrater(ll(-40, 120), .028, 107), makeRayCrater(ll(12, -95), .025, 108)];
     const DK = C(0x5b5650), LT = C(0xa29c92), MD = C(0x847e76), RAY = C(0xd4d0c8), CAL = C(0xa09480);
-    B.push({ id: 'mercury', name: 'Mercury', R: km(2439.7), gReal: .38, seed: 1,
+    B.push({ id: 'mercury', name: 'Mercury', R: rkm(2439.7), gReal: .38, seed: 1,
       height: (x, y, z) => {
         const r = fbm(n1, x * 2.4, y * 2.4, z * 2.4, 5); RAW = r;
         const cb = blob(x, y, z, caloris, .42);
@@ -210,7 +210,7 @@ function makeBodies() {
     const n1 = makeNoise(201), n2 = makeNoise(202);
     const ishtar = ll(70, 0), maxwell = ll(65, 3), aph1 = ll(-5, 90), aph2 = ll(-10, 130), maat = ll(.5, 194), sif = ll(22, -8);
     const PL = C(0x4c3d31), FL = C(0x33281f), HI = C(0x7a6650), TS = C(0x8c7a62);
-    B.push({ id: 'venus', name: 'Venus', R: km(6051.8), tilt: 3, gReal: .9, seed: 2,
+    B.push({ id: 'venus', name: 'Venus', R: rkm(6051.8), tilt: 3, gReal: .9, seed: 2,
       atmo: 0xfff0c8, atmoScale: 1.17, sky: 0xc08442, sunset: 0x8a4a20,
       clouds: { r: 1.1, kind: 1, color: 0xeadcb2, under: 0xa8692e, cover: 0, opacity: 1, scale: 2.2, speed: .02 },
       fog: { color: 0xb87a3e, density: .018, below: 1.1 },
@@ -241,7 +241,7 @@ function makeBodies() {
       v.sort((a, b) => a - b);
       return v[Math.floor(v.length * .71)];
     })();
-    B.push({ id: 'earth', name: 'Earth', R: km(6371), tilt: 23.4, gReal: 1, seed: 3, sea: true,
+    B.push({ id: 'earth', name: 'Earth', R: rkm(6371), tilt: 23.4, gReal: 1, seed: 3, sea: true,
       atmo: 0x6fa8ff, atmoScale: 1.12, sky: 0x5b9ae8, sunset: 0xff8f50,
       ocean: { color: 0x0a2850 },
       clouds: { r: 1.075, kind: 0, color: 0xffffff, under: 0xc9d1dc, cover: .54, opacity: .95, scale: 2.6, speed: .006 },
@@ -279,7 +279,7 @@ function makeBodies() {
       for (const [c, r] of MARIA) m = Math.max(m, 1 - smooth(.7, 1.05, Math.sqrt(chord2(x, y, z, c)) / r + n2(x * 5, y * 5, z * 5) * .2));
       return m;
     };
-    B.push({ id: 'moon', name: 'Moon', R: km(1737.4), parent: 'earth', moonDist: km(384400), gReal: .17, seed: 4, tidal: true,
+    B.push({ id: 'moon', name: 'Moon', R: rkm(1737.4), parent: 'earth', moonDist: km(384400), gReal: .17, seed: 4, tidal: true,
       height: (x, y, z) => {
         const m = maria(x, y, z); RAW = m;
         return fbm(n1, x * 2, y * 2, z * 2, 4) * 1.2 + cr(x, y, z) * (1 - .6 * m) - m * 1.1;
@@ -295,7 +295,7 @@ function makeBodies() {
     const tharsis = ll(0, -110), olympus = ll(18, -134), montes = [ll(12, -104), ll(1, -112), ll(-9, -121)], hellas = ll(-42, 70), argyre = ll(-50, -43), elysium = ll(25, 147);
     const RUST = C(0xb5603a), BR = C(0xd19461), DK = C(0x6a3f2d), CAP = C(0xf2ece4), FLOORC = C(0xd8a47a);
     const dark = (x, y, z) => smooth(.02, .22, fbm(n2, x * 1.3 + 4, y * 1.3, z * 1.3, 4)) * (1 - smooth(.15, .55, y));
-    B.push({ id: 'mars', name: 'Mars', R: km(3389.5), tilt: 25.2, gReal: .38, seed: 5,
+    B.push({ id: 'mars', name: 'Mars', R: rkm(3389.5), tilt: 25.2, gReal: .38, seed: 5,
       atmo: 0xe8a070, atmoScale: 1.08, sky: 0xc9956a, sunset: 0x6a8acc,
       height: (x, y, z) => {
         const r = fbm(n1, x * 1.7, y * 1.7, z * 1.7, 5); RAW = r;
@@ -331,23 +331,23 @@ function makeBodies() {
 
   // ---------- gigantes gasosos ----------
   // bands: [latitude inicial (de 90 pra baixo), cor] — faixas reais de cada planeta
-  B.push({ id: 'jupiter', name: 'Jupiter', R: km(69911), tilt: 3.1, gReal: 2.53, seed: 6, gas: true, kind: 0,
+  B.push({ id: 'jupiter', name: 'Jupiter', R: rkm(69911), tilt: 3.1, gReal: 2.53, seed: 6, gas: true, kind: 0,
     atmo: 0xead6b0, atmoScale: 1.04, sky: 0xc8a474, sunset: 0xa86a3a, deep: 0x5a3a24,
     bands: [[90, 0x868b96], [62, 0x9f9484], [48, 0xc8b9a0], [37, 0xa47a5a], [28, 0xe8dcc6], [20, 0xa05e3c], [8, 0xe4cca6], [-8, 0x9c5d3e],
       [-19, 0xe9ddc9], [-27, 0xac8264], [-35, 0xd1c1a7], [-46, 0xa49684], [-62, 0x868b96]],
     warp: .035, turb: 1, spot: { lat: -22, lon: 40, sLat: 6, sLon: 13, color: 0xc4633a } });
-  B.push({ id: 'saturn', name: 'Saturn', R: km(58232), tilt: 26.7, gReal: 1.07, seed: 7, gas: true, kind: 1,
+  B.push({ id: 'saturn', name: 'Saturn', R: rkm(58232), tilt: 26.7, gReal: 1.07, seed: 7, gas: true, kind: 1,
     atmo: 0xf2dfae, atmoScale: 1.04, sky: 0xd4bb86, sunset: 0xb07a40, deep: 0x6a5434,
     bands: [[90, 0x6f7f8c], [78, 0xb3a588], [62, 0xc9b48c], [44, 0xd6be8e], [24, 0xe0c895], [9, 0xead6a6], [-9, 0xdcc08c], [-24, 0xd0b484],
       [-44, 0xc4a87c], [-62, 0xa89676]],
     warp: .02, turb: .35,
     rings: { inner: 1.2, outer: 2.36, kind: 'saturn' } });
-  B.push({ id: 'uranus', name: 'Uranus', R: km(25362), tilt: 97.8, gReal: .89, seed: 8, gas: true, kind: 2,
+  B.push({ id: 'uranus', name: 'Uranus', R: rkm(25362), tilt: 97.8, gReal: .89, seed: 8, gas: true, kind: 2,
     atmo: 0xb4f2f8, atmoScale: 1.04, sky: 0x86d2dc, sunset: 0x4a8c9a, deep: 0x1e4a56,
     bands: [[90, 0xc3eaec], [60, 0xb4e2e6], [35, 0xa8dbe0], [10, 0xa0d5da], [-10, 0xa3d7dc], [-35, 0xaadce0], [-60, 0xb4e2e6]],
     warp: .01, turb: .15,
     rings: { inner: 1.6, outer: 2.05, kind: 'uranus' } });
-  B.push({ id: 'neptune', name: 'Neptune', R: km(24622), tilt: 28.3, gReal: 1.14, seed: 9, gas: true, kind: 3,
+  B.push({ id: 'neptune', name: 'Neptune', R: rkm(24622), tilt: 28.3, gReal: 1.14, seed: 9, gas: true, kind: 3,
     atmo: 0x6a9aff, atmoScale: 1.04, sky: 0x3a64c8, sunset: 0x203a80, deep: 0x0c1840,
     bands: [[90, 0x2f55b0], [60, 0x3a63c6], [35, 0x4473d8], [15, 0x4a7de0], [-15, 0x3e6dd4], [-35, 0x3762c9], [-60, 0x2f55b0]],
     warp: .03, turb: .6, spot: { lat: -20, lon: 120, sLat: 5, sLon: 11, color: 0x1d2f78 },

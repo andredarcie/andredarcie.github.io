@@ -57,6 +57,11 @@ export class StateSerializer {
         fill: Math.round(this.#ponds.totalWater() / Math.max(1, this.#ponds.totalCapacity()) * 100) / 100
       } : null,
       rainEvents: state.rainEvents,
+      flame: state.flame ? {
+        x: Math.round(state.flame.x), y: Math.round(state.flame.y),
+        holderId: state.flame.holder?.id ?? null, transfers: state.flame.transfers,
+        fighting: state.organisms.filter(o => o.foe).length
+      } : null,
       sky: {
         day: sky.day, hour: Math.round(sky.hour * 100) / 100, period: sky.period,
         season: sky.season,
@@ -99,6 +104,11 @@ export class StateSerializer {
     return {
       id: o.id, name: o.name, x: Math.round(o.x), y: Math.round(o.y), genes: { ...o.genes },
       genome: this.#genetics.summarize(o.genome), lineage: o.lineage, outfit: o.outfit,
+      brain: {
+        species: o.mind.species, hidden: o.mind.genome.hidden.length,
+        links: o.mind.genome.conns.filter(c => c.enabled).length,
+        outputs: o.mind.outputs.map(value => Math.round(value * 100) / 100)
+      },
       sex: o.sex, biome: this.#biomes.biomeAt(o.x, o.y), stage: o.stage,
       ageDays: Math.round(o.age * 100) / 100, size: Math.round(o.size),
       speed: Math.round(o.speed), need: o.need, target: Boolean(o.target),
@@ -121,7 +131,9 @@ export class StateSerializer {
       birthAnimation: Math.round(o.birthAnimation * 10) / 10,
       life: Math.round(o.life), hunger: Math.round(o.hunger), thirst: Math.round(o.thirst),
       energy: Math.round(o.energy), asleep: o.asleep,
-      carrying: o.carrying, chopping: Boolean(o.chop), inHut: o.inHut
+      carrying: o.carrying, chopping: Boolean(o.chop), inHut: o.inHut,
+      torch: o.torch, fighting: o.foe ? { foeId: o.foe.id, role: o.foeRole, weapon: o.weapon } : null,
+      wounds: Math.round(o.wounds * 10) / 10, bleeding: Math.round(o.bleed * 10) / 10
     };
   }
 }

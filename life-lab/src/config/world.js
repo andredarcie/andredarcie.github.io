@@ -1,10 +1,10 @@
 // Mundo: tamanho, biomas e o que cresce em cada um.
 
 // O mundo é um quadrado fixo. Já foi 900 × 900; depois 636 × 636 (metade da área),
-// 509 × 509 e agora 407 × 407 (cada um com lado 20% menor, 64% da área). O que é
-// contado (árvores, capim, detalhe do chão) acompanha a área, então a densidade fica
-// a mesma.
-export const WORLD = Object.freeze({ width: 407, height: 407 });
+// 509 × 509 e 407 × 407. Agora 820 × 820 (~4× a área do de 407), para caber 100
+// bichos de uma vez. O que é contado (árvores, capim, poças, detalhe do chão)
+// acompanha a área, então a densidade fica a mesma.
+export const WORLD = Object.freeze({ width: 820, height: 820 });
 
 export const BIOMES = Object.freeze([
   { id: 'desert', label: 'Deserto', earthShare: 19, worldShare: 1 / 3 },
@@ -21,9 +21,9 @@ export const GROUND_TEXTURE_SIZE = 2048;
 export const BOARD_THICKNESS = 46;
 // Quantos pontos sorteados para enfeite e árvore dentro do mundo. Nem todo ponto
 // vira planta (clareira, poça, densidade do bioma).
-export const SCENERY_SAMPLES = 94;
+export const SCENERY_SAMPLES = 380;
 // Traços de detalhe rasteiro pintados no chão.
-export const GROUND_DETAIL_STROKES = 270;
+export const GROUND_DETAIL_STROKES = 1100;
 
 // Quanto de chão cada coisa ocupa (raio, em unidades), para nada nascer dentro de
 // outra: árvore dentro de árvore, capim ou pedra dentro de lago, lago em cima de

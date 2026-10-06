@@ -1,10 +1,20 @@
 import { WALK_SPEED, RUN_SPEED, BRAKING, SLEEP_MIN_NEED } from '../config/organisms.js';
 
+// Quanto da puxada do bando sobra para quem procura recurso sem nada à vista.
+const SEARCH_COHESION = .15;
+
 // Um tique de vida de um bicho, com a ordem de prioridade entre os comportamentos:
 // corpo → sono → luto → parto → namoro → comer/beber em andamento → necessidade →
 // (sem necessidade) cama, trabalho, bando ou passeio → puxada do bando → passo.
 // Cada comportamento mora na própria classe; aqui só se decide quem fala primeiro.
+// A rede neural de cada bicho (NeuralControl) pensa logo depois do corpo, e as
+// decisões dela entram nos comportamentos: apetite e prioridade na necessidade,
+// rumo e pressa na exploração e no passeio, apego na puxada do bando, cobiça e
+// coragem na disputa pela Chama Primordial (FlameQuest). Briga passa na frente até
+// do sono: quem apanha dormindo acorda.
 export class OrganismBrain {
+  #mind;
+  #flameQuest;
   #metabolism;
   #sleep;
   #mourning;
@@ -16,7 +26,9 @@ export class OrganismBrain {
   #locomotion;
   #wandering;
 
-  constructor({ metabolism, sleep, mourning, reproduction, foraging, woodcutting, tribes, bands, locomotion, wandering }) {
+  constructor({ mind, flameQuest, metabolism, sleep, mourning, reproduction, foraging, woodcutting, tribes, bands, locomotion, wandering }) {
+    this.#mind = mind;
+    this.#flameQuest = flameQuest;
     this.#metabolism = metabolism;
     this.#sleep = sleep;
     this.#mourning = mourning;
@@ -32,12 +44,14 @@ export class OrganismBrain {
   tick(o, dt, { days, activity }) {
     this.#metabolism.tick(o, dt, days);
     if (o.life <= 0) return;
+    if (this.#flameQuest.fight(o, dt)) return;
 
     this.#sleep.update(o);
     if (o.asleep) {
       o.halt();
       return;
     }
+    this.#mind.think(o, dt);
 
     // Luto passa na frente de trabalho, passeio e namoro; só a necessidade
     // apertada (tratada dentro do luto) e o parto passam na frente dele.
@@ -57,6 +71,7 @@ export class OrganismBrain {
     }
 
     if (this.#foraging.consume(o, dt)) return;
+    if (this.#flameQuest.pursue(o, dt)) return;
 
     // Com sono, a fome e a sede moderadas deixam de ser sentidas como urgência: na
     // hora de deitar, quem não está apertado vai para a cama (cabana, roda do fogo
@@ -65,8 +80,11 @@ export class OrganismBrain {
     const drowsy = this.#sleep.nearBedtime(o) && o.hungriest >= SLEEP_MIN_NEED;
     const need = this.#foraging.decideNeed(o, drowsy);
     // Fome e sede passam na frente do machado; o dano na árvore fica, e ela
-    // continua ferida esperando o próximo lenhador.
+    // continua ferida esperando o próximo lenhador. E da tora: com fome ninguém
+    // atravessa a ilha com peso no ombro (20% mais lento, 30% mais cansaço) — na
+    // simulação sem tela os famintos morriam carregando tora o tempo todo.
     if (need && o.chop) this.#woodcutting.stopChop(o);
+    if (need) this.#woodcutting.dropLoad(o);
     this.#foraging.updateTarget(o, need);
 
     let motion = { direction: o.wanderHeading, desiredSpeed: 0 };
@@ -94,9 +112,10 @@ export class OrganismBrain {
     if (cohesion) {
       // Recurso à vista vence o bando: quem já enxergou comida ou água não larga
       // o alvo para voltar para a formação, senão a tribo inteira passa fome junta
-      // só para andar bonito. Explorando, que é a maior parte do tempo, a puxada
-      // vale cheia.
-      const pull = cohesion.weight * (o.target ? .4 : 1);
+      // só para andar bonito. Procurando comida ou água sem nada à vista, a puxada
+      // também cai: no mundo de 820 o bando come a região dele, e o faminto preso à
+      // formação não sai dela para procurar. Passeando, a puxada vale cheia.
+      const pull = cohesion.weight * (o.target ? .4 : need ? SEARCH_COHESION : 1) * this.#mind.bond(o);
       motion = {
         direction: Math.atan2(
           Math.sin(motion.direction) + Math.sin(cohesion.direction) * pull,

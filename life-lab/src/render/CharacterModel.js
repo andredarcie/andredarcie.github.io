@@ -47,6 +47,20 @@ const AXE_HANDLE_SHAPE = new THREE.BoxGeometry(.7, 9.5, .7).translate(0, -3.4, 0
 const AXE_HEAD_SHAPE = new THREE.BoxGeometry(3.4, 2.2, .6).translate(-1.3, -7.6, 0);
 const AXE_HANDLE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xa0784a });
 const AXE_HEAD_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x9aa2a8 });
+// Armas de briga, na mão direita como o machado: porrete de madeira com a ponta
+// grossa e lança comprida com ponta de pedra lascada (a mão segura no primeiro terço).
+const CLUB_SHAPE = new THREE.BoxGeometry(1.1, 6.5, 1.1).translate(0, -3, 0);
+const CLUB_KNOB_SHAPE = new THREE.BoxGeometry(2.2, 2.8, 2.2).translate(0, -6.6, 0);
+const CLUB_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6b4a2c });
+const SPEAR_SHAFT_SHAPE = new THREE.BoxGeometry(.5, 21, .5).translate(0, -6.5, 0);
+const SPEAR_TIP_SHAPE = new THREE.BoxGeometry(1.2, 2.6, .5).translate(0, -18.2, 0);
+const SPEAR_TIP_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x55555e });
+// Ferida aberta: talho vermelho-escuro por cima do corpo (e da roupa).
+const WOUND_SHAPE = new THREE.BoxGeometry(1.7, 1.1, .3);
+const WOUND_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x7a0a10 });
+// Toco do pescoço de quem perdeu a cabeça.
+const STUMP_SHAPE = new THREE.BoxGeometry(2.6, .9, 2.6);
+const STUMP_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x8e1016 });
 
 // Um golpe de machado lateral, em quatro tempos: levar o machado para trás girando o
 // tronco devagar (preparo), descer rápido e acelerando até o impacto, o tranco do
@@ -92,17 +106,24 @@ export class CharacterModel {
     belly.visible = false;
     const armLeft = build(SHAPES.arm, bodyMaterial, -3.7, SHOULDER_HEIGHT, 0);
     const armRight = build(SHAPES.arm, bodyMaterial, 3.7, SHOULDER_HEIGHT, 0);
-    build(SHAPES.head, bodyMaterial, 0, 14, 0);
+    // Giro em y depois do x: com o braço já erguido para a frente, o y o leva para os
+    // lados no plano horizontal (a varrida do porrete). Sem y, é igual ao XYZ.
+    armRight.rotation.order = 'YXZ';
+    const head = build(SHAPES.head, bodyMaterial, 0, 14, 0);
     // Pequenos demais para projetar sombra que se veja: fora do mapa de sombra.
     const eyes = [-EYE_SPREAD, EYE_SPREAD].map(x => {
       const eye = build(SHAPES.eye, EYE_MATERIAL, x, EYE_HEIGHT, EYE_DEPTH);
       eye.castShadow = false;
       return eye;
     });
+    // Tudo o que sai junto quando a cabeça é arrancada.
+    const headParts = [head, ...eyes];
     if (hasHair) {
-      build(SHAPES.hair, HAIR_MATERIAL, 0, 16.4, 0);
-      build(SHAPES.braid, HAIR_MATERIAL, 0, 13.4, -2.9);
+      headParts.push(build(SHAPES.hair, HAIR_MATERIAL, 0, 16.4, 0));
+      headParts.push(build(SHAPES.braid, HAIR_MATERIAL, 0, 13.4, -2.9));
     }
+    const stump = build(STUMP_SHAPE, STUMP_MATERIAL, 0, 11.8, 0);
+    stump.visible = false;
     // Machado na mão direita, só à vista enquanto corta.
     const axe = new THREE.Group();
     axe.position.y = HAND_OFFSET;
@@ -113,12 +134,43 @@ export class CharacterModel {
     }
     axe.visible = false;
     armRight.add(axe);
+    const weaponOf = parts => {
+      const group = new THREE.Group();
+      group.position.y = HAND_OFFSET;
+      for (const [shape, material] of parts) {
+        const part = new THREE.Mesh(shape, material);
+        part.castShadow = true;
+        group.add(part);
+      }
+      group.visible = false;
+      armRight.add(group);
+      return group;
+    };
+    const club = weaponOf([[CLUB_SHAPE, CLUB_MATERIAL], [CLUB_KNOB_SHAPE, CLUB_MATERIAL]]);
+    const spear = weaponOf([[SPEAR_SHAFT_SHAPE, AXE_HANDLE_MATERIAL], [SPEAR_TIP_SHAPE, SPEAR_TIP_MATERIAL]]);
+    // Feridas em lugares fixos, aparecendo uma a uma: peito, barriga, braço, coxa e
+    // rosto; a do braço e a da perna presas ao membro, para balançar junto.
+    const wound = (parent, x, y, z, turn = 0) => {
+      const mesh = new THREE.Mesh(WOUND_SHAPE, WOUND_MATERIAL);
+      mesh.position.set(x, y, z);
+      mesh.rotation.z = turn;
+      mesh.visible = false;
+      parent.add(mesh);
+      return mesh;
+    };
+    const wounds = [
+      wound(body, 1.2, 10, 1.7, .5),
+      wound(body, -1.3, 7.4, 1.7, -.4),
+      wound(armLeft, 0, -3, 1.2, .3),
+      wound(legRight, 0, -2.4, 1.3, -.5),
+      wound(body, -1.6, 15, 2.6, .2)
+    ];
     // Tora no ombro direito, deitada para a frente, como se carrega de verdade.
     const shoulderLog = build(CARRIED_LOG_SHAPE, WOOD_MATERIALS, 3.3, 12.6, 0);
     shoulderLog.visible = false;
     group.userData = {
       bodyMaterial, outfitMaterial, body, torso, belly, legLeft, legRight, armLeft, armRight, axe,
-      shoulderLog, eyes
+      shoulderLog, eyes, club, spear, wounds, headParts, stump
     };
     return group;
   }
@@ -179,12 +231,98 @@ export class CharacterModel {
       armRight.rotation.z = -.15;
     }
 
+    // Chama Primordial: braço esquerdo erguido, como quem carrega uma tocha.
+    const { torch = false, strike = 0 } = motion;
+    if (torch && !crying && rest < .5) {
+      armLeft.rotation.x = -2.95;
+      armLeft.rotation.z = .12;
+    }
+    // Briga: arma na mão, guarda alta, o golpe de cada arma e o recuo de quem apanha.
+    const { weapon = null, guard = false, strikeKind = null, hurt = 0, wounds = 0 } = motion;
+    const { club, spear } = view.userData;
+    club.visible = weapon === 'club';
+    spear.visible = weapon === 'spear';
+    armRight.rotation.y = 0;
+    club.rotation.x = 0;
+    axe.rotation.x = 0;
+    spear.position.y = HAND_OFFSET;
+    if (weapon === 'axe') axe.visible = true;
+    view.userData.wounds.forEach((mark, i) => { mark.visible = i < wounds; });
+    if (guard && strike <= 0 && rest < .5 && chop === null) CharacterModel.#poseGuard(view, weapon, torch);
+    if (strike > 0) CharacterModel.#poseStrike(view, strikeKind, 1 - strike);
+    if (hurt > 0 && rest < .5) {
+      // Recuo: o tronco joga para trás e torce com o tranco.
+      body.rotation.x -= .38 * hurt;
+      body.rotation.z += .14 * hurt;
+    }
+
     const { pregnancy = 0, labor = null } = motion;
     CharacterModel.#poseBelly(view, pregnancy);
     if (labor) CharacterModel.#poseLabor(view, labor, rest);
     else if (pregnancy > .55 && chop === null && !carrying && !crying) {
       CharacterModel.#poseLatePregnancy(view, pregnancy, gait, pace, animate, awake);
     }
+  }
+
+  // Guarda: meio agachado, arma à frente e o outro braço protegendo o corpo.
+  static #poseGuard(view, weapon, torch) {
+    const { body, legLeft, legRight, armLeft, armRight } = view.userData;
+    body.rotation.x += .12;
+    legLeft.rotation.x = -.25;
+    legRight.rotation.x = .2;
+    armRight.rotation.x = weapon === 'spear' ? -1.35 : -1.05;
+    armRight.rotation.z = weapon === 'spear' ? .1 : -.25;
+    // Porrete e machado de pé, apontando para cima e para a frente, prontos para descer.
+    const { club, axe } = view.userData;
+    club.rotation.x = -1.15;
+    axe.rotation.x = -1.05;
+    if (!torch) {
+      armLeft.rotation.x = -1.2;
+      armLeft.rotation.z = .45;
+    }
+  }
+
+  // Um golpe por arma, com `p` de 0 a 1 ao longo da animação:
+  // porrete: puxa para o lado e varre na horizontal, com o tronco girando junto;
+  // lança: recolhe e estoca reto para a frente, num bote do corpo inteiro;
+  // machado: ergue acima da cabeça e desce de cima a baixo.
+  static #poseStrike(view, kind, p) {
+    const { body, legLeft, legRight, armRight, spear } = view.userData;
+    const phase = (from, to) => Math.max(0, Math.min(1, (p - from) / (to - from)));
+    if (kind === 'spear') {
+      // A lança fica na horizontal: recua ao longo do próprio eixo (o braço puxa para
+      // trás, o corpo inclina para trás) e então avança de uma vez no bote.
+      const draw = easeInOut(phase(0, .4)), thrust = phase(.4, .55), back = easeInOut(phase(.6, 1));
+      const reach = thrust * (1 - back);
+      const pulled = draw * (1 - thrust);
+      armRight.rotation.x = -1.5 - .1 * reach;
+      armRight.rotation.z = .1;
+      spear.position.y = HAND_OFFSET + 5 * pulled - 3 * reach;
+      body.rotation.x += -.16 * pulled + .38 * reach;
+      legLeft.rotation.x = -.5 * reach;
+      legRight.rotation.x = .35 * reach;
+    } else if (kind === 'axe') {
+      const lift = easeInOut(phase(0, .5)), chop = phase(.5, .65), back = easeInOut(phase(.7, 1));
+      const down = chop * chop;
+      armRight.rotation.x = -3.05 * lift * (1 - down) - .55 * down * (1 - back) - .9 * (1 - lift) * (1 - back);
+      armRight.rotation.z = -.15;
+      body.rotation.x += -.18 * lift * (1 - down) + .42 * down * (1 - back);
+    } else {
+      // Braço na horizontal à frente; o giro em y o leva para trás pela direita e
+      // depois varre até a esquerda, com o tronco girando junto.
+      const wind = easeInOut(phase(0, .45)), sweep = phase(.45, .65), back = easeInOut(phase(.7, 1));
+      const swing = 1.25 * wind - 2.45 * sweep * sweep;
+      armRight.rotation.x = -1.5 * Math.max(wind, 1 - back) - .1;
+      armRight.rotation.y = swing * (1 - back);
+      armRight.rotation.z = 0;
+      body.rotation.y = (.5 * wind - 1 * sweep) * (1 - back);
+    }
+  }
+
+  // Cabeça arrancada: some do corpo e fica só o toco do pescoço.
+  behead(view) {
+    for (const part of view.userData.headParts) part.visible = false;
+    view.userData.stump.visible = true;
   }
 
   // A barriga cresce devagar no começo e bem mais no fim, como de verdade: quase nada

@@ -1,6 +1,10 @@
 // Cortejo, gestação e parto.
 
 export const MATE_MIN_RESOURCE = 50;
+// Teto da população: com bichos vivos + grávidas + casais em cortejo neste número,
+// ninguém começa namoro novo. Vaga só abre com morte, e quem a ocupa é a cria de
+// quem conseguiu acasalar — é aqui que a seleção das redes neurais aperta.
+export const MAX_POPULATION = 100;
 export const MATE_COOLDOWN = 16;
 export const COURTSHIP_DURATION = 2.4;
 export const MATING_DURATION = 1.4;

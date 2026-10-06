@@ -1,6 +1,8 @@
 import { GENE_SPECS, GENE_TRAITS, PIGMENT_NAMES } from '../config/genetics.js';
 import { Dom } from './Dom.js';
 import { Format } from './Format.js';
+import { BrainDiagram } from './BrainDiagram.js';
+import { WEAPONS } from '../config/combat.js';
 
 const STAGE_NAMES = { infant: 'infância', adult: 'adulto', elder: 'idoso' };
 
@@ -11,6 +13,7 @@ export class GeneDialog {
   #dialog;
   #genetics;
   #tribeNames;
+  #brain;
   #rows = new Map();
 
   constructor(root, genetics, tribeNames) {
@@ -18,6 +21,7 @@ export class GeneDialog {
     this.#dialog = root.querySelector('#genes-dialog');
     this.#genetics = genetics;
     this.#tribeNames = tribeNames;
+    this.#brain = new BrainDiagram(root.querySelector('#brain-diagram'));
     root.querySelector('#genes-close').addEventListener('click', () => this.#dialog.close());
     this.#buildRows();
   }
@@ -63,7 +67,17 @@ export class GeneDialog {
     root.querySelector('#genes-title').textContent = o.name;
     root.querySelector('#gene-identity').textContent = this.#identity(o);
     root.querySelector('#gene-swatch').style.backgroundColor = o.color;
+    root.querySelector('#brain-summary').textContent = this.#brainSummary(o);
+    this.#brain.render(o);
     this.#dialog.showModal();
+  }
+
+  #brainSummary(o) {
+    const { genome, species } = o.mind;
+    const links = genome.conns.filter(c => c.enabled).length;
+    const hidden = genome.hidden.length;
+    return `${species ? `Espécie ${species}` : 'Espécie ainda não agrupada'} · ` +
+      `${hidden} ${hidden === 1 ? 'neurônio oculto' : 'neurônios ocultos'} · ${links} ligações ativas`;
   }
 
   #identity(o) {
@@ -77,7 +91,10 @@ export class GeneDialog {
       : ' · fundador, sem pais';
     // As barras saíram de cima da cabeça; o estado do corpo fica aqui na ficha,
     // como retrato do momento em que ela foi aberta.
-    const condition = ` · vida ${Math.round(o.life)} · fome ${Math.round(o.hunger)}` +
+    const combat = (o.weapon ? ` · luta com ${WEAPONS[o.weapon].label}` : '') +
+      (o.wounds >= .5 ? ` · ${Math.ceil(o.wounds)} ${Math.ceil(o.wounds) === 1 ? 'ferida' : 'feridas'}` : '') +
+      (o.bleed > 0 ? ' · sangrando' : '');
+    const condition = `${combat} · vida ${Math.round(o.life)} · fome ${Math.round(o.hunger)}` +
       ` · sede ${Math.round(o.thirst)} · energia ${Math.round(o.energy)}${o.asleep ? ' (dormindo)' : ''}`;
     return `${o.sex === 'male' ? 'Macho' : 'Fêmea'} · ${STAGE_NAMES[o.stage]} · ${Format.age(o.age)} de vida` +
       `${pregnancy}${tribe}${lineage}${condition}`;

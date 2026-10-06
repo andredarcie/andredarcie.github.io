@@ -4,7 +4,8 @@ import { EVENT_CAM_SECONDS, EVENT_CAM_SPAN, EVENT_KIND_LABEL } from '../config/u
 // (fração já "gasta"): sobra tempo de ver o filhote se levantar.
 const BIRTH_REPLAY_SHARE = .35;
 
-// Câmera de acontecimentos: nascimento, morte e cabana pronta aparecem numa janela
+// Câmera de acontecimentos: nascimento, morte, cabana pronta e a Chama Primordial
+// trocando de mão aparecem numa janela
 // com zoom no canto. Um de cada vez: enquanto um está no ar, os que vierem são
 // ignorados — no mesmo instante, vale o primeiro.
 export class EventCamera {
@@ -43,6 +44,10 @@ export class EventCamera {
     });
     events.on('death', ({ organism, cause }) =>
       this.#show('death', `${organism.name} morreu${cause ? ' ' + cause : ''}`, organism.x, organism.y));
+    events.on('flameTaken', ({ taker, from }) =>
+      this.#show('flame', from
+        ? `${taker.name} tomou a chama de ${from.name}`
+        : `${taker.name} pegou a Chama Primordial`, taker.x, taker.y, taker));
     events.on('hutBuilt', ({ hut, builder }) =>
       this.#show('hut', `${builder.name} terminou a cabana`, hut.x, hut.y));
   }

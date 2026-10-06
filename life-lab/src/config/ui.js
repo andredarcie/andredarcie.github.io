@@ -4,8 +4,10 @@
 // com zoom no canto. A duração é em tempo real, para dar para ver mesmo com a
 // simulação acelerada.
 export const EVENT_CAM_SECONDS = 7;
-export const EVENT_CAM_SPAN = Object.freeze({ birth: 38, death: 42, hut: 62 });
-export const EVENT_KIND_LABEL = Object.freeze({ birth: 'nascimento', death: 'morte', hut: 'cabana' });
+export const EVENT_CAM_SPAN = Object.freeze({ birth: 38, death: 42, hut: 62, flame: 48 });
+export const EVENT_KIND_LABEL = Object.freeze({
+  birth: 'nascimento', death: 'morte', hut: 'cabana', flame: 'chama primordial'
+});
 
 // Câmera no teclado, como nos jogos de estratégia: sentido em pixels de tela.
 export const PAN_KEYS = Object.freeze({

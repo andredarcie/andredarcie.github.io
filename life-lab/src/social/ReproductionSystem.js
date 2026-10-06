@@ -1,9 +1,13 @@
 import { WORLD } from '../config/world.js';
 import { LIFE_SIZE, MATE_MIN_ENERGY } from '../config/organisms.js';
 import {
-  MATE_MIN_RESOURCE, MATE_COOLDOWN, COURTSHIP_DURATION, MATING_DURATION, GESTATION_DURATION,
+  MATE_MIN_RESOURCE, MAX_POPULATION, MATE_COOLDOWN, COURTSHIP_DURATION, MATING_DURATION, GESTATION_DURATION,
   LABOR_DURATION, BIRTH_ANIMATION_DURATION, NEWBORN_DISTANCE
 } from '../config/reproduction.js';
+import {
+  COMPAT_THRESHOLD, SCARCE_ROOM, FLAME_RESERVED_ROOM, SPECIES_QUOTA_SLACK, CULL_MIN_SPECIES
+} from '../config/brain.js';
+import { Fitness } from '../brain/Fitness.js';
 import { Pair } from '../entities/Pair.js';
 
 // Do olhar ao nascimento: quem está em condição de acasalar, a aproximação, o
@@ -12,14 +16,21 @@ export class ReproductionSystem {
   #state;
   #perception;
   #genetics;
+  #neat;
   #factory;
   #events;
   #motion;
+  // Vagas para namoro novo neste passo (ver MAX_POPULATION), recontadas uma vez por
+  // passo da simulação, na primeira consulta — inclusive no primeiro passo, antes de
+  // qualquer update().
+  #room = 0;
+  #roomAt = -1;
 
-  constructor({ state, perception, genetics, factory, events, motionPreference }) {
+  constructor({ state, perception, genetics, neat, factory, events, motionPreference }) {
     this.#state = state;
     this.#perception = perception;
     this.#genetics = genetics;
+    this.#neat = neat;
     this.#factory = factory;
     this.#events = events;
     this.#motion = motionPreference;
@@ -30,9 +41,42 @@ export class ReproductionSystem {
     this.updatePregnancies(dt);
   }
 
+  // Seleção pelas vagas (rtNEAT sem matar ninguém). Com vaga sobrando, todos podem.
+  // Escassa: as últimas são da tribo da Chama; espécie acima da cota de aptidão
+  // espera; e numa espécie grande só a metade de cima em aptidão reproduz.
+  #earnsRoom(o) {
+    const room = this.#room;
+    if (room > SCARCE_ROOM) return true;
+    const holder = this.#state.flame?.holder;
+    const keeper = Boolean(holder) && (o === holder || (Boolean(o.band) && o.band === holder.band));
+    // Chama no chão: ninguém guarda, a reserva não vale (senão as 3 vagas sobravam).
+    if (room <= FLAME_RESERVED_ROOM && holder) return keeper;
+    if (keeper) return true;
+    const species = this.#speciesOf(o);
+    // Espécie nova está na carência: ainda não provou nada, fica fora da cota e do corte.
+    if (!species || species.fresh) return true;
+    // Estagnada tem cota zero (ver SpeciesTracker), então espera aqui.
+    if (species.size >= species.quota + SPECIES_QUOTA_SLACK) return false;
+    return species.size < CULL_MIN_SPECIES || Fitness.of(o) >= species.median;
+  }
+
+  #speciesOf(o) {
+    return this.#state.species.find(entry => entry.id === o.mind.species);
+  }
+
+  #availableRoom() {
+    const state = this.#state;
+    if (this.#roomAt !== state.elapsed) {
+      this.#roomAt = state.elapsed;
+      const pregnant = state.organisms.reduce((total, o) => total + (o.pregnancy ? 1 : 0), 0);
+      this.#room = MAX_POPULATION - state.organisms.length - pregnant - state.pairs.length;
+    }
+    return this.#room;
+  }
+
   canMate(o) {
     const minimum = MATE_MIN_RESOURCE + (1 - o.genes.fertility) * 18;
-    return o.stage === 'adult' && o.life > 0 && !o.asleep && !o.mourn && o.energy >= MATE_MIN_ENERGY &&
+    return this.#availableRoom() > 0 && this.#earnsRoom(o) && o.stage === 'adult' && o.life > 0 && !o.asleep && !o.mourn && o.energy >= MATE_MIN_ENERGY &&
       o.hunger >= minimum &&
       o.thirst >= minimum && o.mateCooldown <= 0 && !o.pregnancy &&
       o.eating <= 0 && o.drinking <= 0;
@@ -43,6 +87,10 @@ export class ReproductionSystem {
     for (const candidate of this.#state.organisms) {
       if (candidate.sex === observer.sex || candidate.pair || !this.canMate(candidate)) continue;
       if (!this.#perception.inVision(observer, candidate, candidate.size)) continue;
+      // Isolamento reprodutivo: redes distantes demais (outra espécie no NEAT) não
+      // cruzam — salvo o raro bicho que aceita parceiro de outra espécie.
+      if (!observer.mind.outcross && !candidate.mind.outcross &&
+        this.#neat.distance(observer.mind.genome, candidate.mind.genome) > COMPAT_THRESHOLD) continue;
       const distance = Math.max(0, Math.hypot(candidate.x - observer.x, candidate.y - observer.y) - candidate.size);
       if (distance < closest) { partner = candidate; closest = distance; }
     }
@@ -51,6 +99,7 @@ export class ReproductionSystem {
     const female = observer.sex === 'female' ? observer : partner;
     const pair = new Pair(male, female);
     this.#state.pairs.push(pair);
+    this.#room--;
     for (const o of [male, female]) {
       o.pair = pair;
       o.need = null;
@@ -180,6 +229,11 @@ export class ReproductionSystem {
       duration: GESTATION_DURATION / fertility,
       genome: this.#genetics.createZygote(
         this.#genetics.createGamete(male.genome), this.#genetics.createGamete(female.genome)),
+      // A rede neural também se define aqui: cruzamento NEAT das redes do pai e da
+      // mãe, alinhadas pelos números de inovação, e mutação de peso e topologia.
+      brain: this.#neat.offspring(male.mind.genome, female.mind.genome, Fitness.of(male), Fitness.of(female),
+        [['father', male], ['mother', female]]
+          .filter(([, parent]) => this.#speciesOf(parent)?.champion === parent.id).map(([role]) => role)),
       fatherId: male.id,
       fatherName: male.name,
       generation: (male.generation + female.generation) / 2 + 1,
@@ -205,6 +259,7 @@ export class ReproductionSystem {
       y,
       sex: this.#offspringSex(),
       genome: mother.pregnancy.genome,
+      brain: mother.pregnancy.brain,
       lineage: {
         fatherId: mother.pregnancy.fatherId, motherId: mother.id,
         // O nome vai junto: o pai pode já ter morrido quando a ficha for aberta.
@@ -216,6 +271,10 @@ export class ReproductionSystem {
     child.wanderHeading = child.heading;
     this.#state.birthEffects.push({ x, y, color: child.color, time: 0 });
     this.#events.emit('birth', { mother, child, x, y });
+    // Filho conta na aptidão dos dois (o pai pode já ter morrido; aí não conta).
+    mother.record.offspring++;
+    const father = this.#state.organisms.find(o => o.id === mother.pregnancy.fatherId);
+    if (father) father.record.offspring++;
     mother.pregnancy = null;
     mother.mateCooldown = MATE_COOLDOWN * .55 / mother.genes.fertility;
     mother.say('nasceu!', 1.8);

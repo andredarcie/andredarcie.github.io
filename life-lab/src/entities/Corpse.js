@@ -15,5 +15,8 @@ export class Corpse {
     this.time = 0;
     this.age = 0;
     this.seed = Math.random() * 100;
+    // Morte em combate: as feridas à vista e se a cabeça foi arrancada.
+    this.wounds = Math.ceil(organism.wounds ?? 0);
+    this.beheaded = Boolean(organism.beheaded);
   }
 }

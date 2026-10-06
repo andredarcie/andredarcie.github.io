@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Treino de Lógica</title>
+  <meta name="description" content="Desafios progressivos de lógica de programação em JavaScript, direto no navegador.">
+  <!-- Aplica o tema salvo antes de pintar a página (evita piscar claro→escuro) -->
+  <script>
+    try {
+      var tema = localStorage.getItem("treino-logica:tema");
+      if (tema === "light" || tema === "dark") document.documentElement.setAttribute("data-theme", tema);
+    } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="css/estilo.css?v=2">
+</head>
+<body>
+
+  <!-- Topo: marca + placar + barra de progresso geral -->
+  <header class="topo">
+    <div class="marca">
+      <span class="logo" aria-hidden="true">{ }</span>
+      <div>
+        <h1>Treino de Lógica</h1>
+        <p>Desafios de programação em JavaScript</p>
+      </div>
+    </div>
+    <div class="placar">
+      <div class="placar-item">
+        <strong id="placar-concluidos">0/0</strong>
+        <small>concluídos</small>
+      </div>
+      <div class="placar-item">
+        <strong id="placar-pontos">0</strong>
+        <small>pontos</small>
+      </div>
+      <button type="button" class="tema" id="tema" title="Alternar tema">◐ Auto</button>
+    </div>
+    <div class="barra" role="progressbar" aria-label="Progresso geral" aria-valuemin="0" aria-valuemax="100" id="barra">
+      <div class="barra-preenchida" id="barra-preenchida"></div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- Lateral: lista de desafios agrupada por categoria -->
+    <aside class="lateral" id="lateral">
+      <button type="button" class="lateral-alternar" id="lateral-alternar" aria-expanded="false" aria-controls="lista-desafios">
+        Lista de desafios
+      </button>
+      <nav class="lista" id="lista-desafios" aria-label="Desafios"></nav>
+      <details class="ajuda">
+        <summary>Como funciona</summary>
+        <ul>
+          <li>Escreva a função pedida e clique em <strong>Executar</strong>: ela é testada com vários casos.</li>
+          <li>A cada erro, uma nova dica é liberada.</li>
+          <li>Depois de 3 erros, a solução fica disponível — mas vê-la antes de acertar zera os pontos do desafio.</li>
+          <li>Acertar de primeira vale 50% de bônus.</li>
+          <li>Atalhos: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> executa, <kbd>Ctrl</kbd>+<kbd>/</kbd> comenta linhas,
+            <kbd>Tab</kbd>/<kbd>Shift</kbd>+<kbd>Tab</kbd> indentam, <kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> trocam de desafio.</li>
+        </ul>
+      </details>
+      <button type="button" class="zerar" id="zerar">Zerar progresso</button>
+    </aside>
+
+    <!-- Área principal: o desafio aberto -->
+    <main class="desafio" id="desafio">
+      <div class="desafio-cabecalho">
+        <div class="etiquetas">
+          <span class="etiqueta" id="etiqueta-categoria"></span>
+          <span class="etiqueta" id="etiqueta-nivel"></span>
+          <span class="etiqueta" id="etiqueta-pontos"></span>
+          <span class="etiqueta etiqueta-status" id="etiqueta-status" hidden></span>
+        </div>
+        <h2 id="titulo"></h2>
+      </div>
+
+      <div class="enunciado" id="enunciado"></div>
+
+      <h3 class="secao">Exemplos</h3>
+      <div class="exemplos" id="exemplos"></div>
+
+      <details class="dicas" id="dicas" hidden>
+        <summary id="dicas-resumo">Dicas</summary>
+        <ol id="dicas-lista"></ol>
+      </details>
+
+      <div class="editor">
+        <div class="editor-barra">
+          <span>solucao.js</span>
+          <span class="editor-atalho">Ctrl + Enter executa · Esc sai do editor</span>
+        </div>
+        <div class="editor-corpo">
+          <pre class="editor-linhas" id="editor-linhas" aria-hidden="true">1</pre>
+          <div class="editor-area">
+            <!-- Camada colorida atrás do textarea (o texto do textarea fica transparente) -->
+            <pre class="editor-realce" id="editor-realce" aria-hidden="true"></pre>
+            <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"
+                      aria-label="Sua solução em JavaScript"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <button type="button" class="botao primario" id="executar">Executar</button>
+        <button type="button" class="botao" id="restaurar">Restaurar código inicial</button>
+        <span class="acoes-espaco"></span>
+        <span class="tentativas" id="tentativas"></span>
+        <button type="button" class="botao" id="ver-solucao">Ver solução</button>
+      </div>
+      <p class="aviso-solucao" id="aviso-solucao" hidden>Ver a solução antes de acertar faz este desafio valer 0 pontos.</p>
+
+      <section class="feedback" id="feedback" hidden aria-live="polite"></section>
+
+      <section class="solucao" id="solucao" hidden>
+        <div class="solucao-topo">
+          <h3 class="secao">Solução de referência</h3>
+          <button type="button" class="botao pequeno" id="usar-solucao">Copiar para o editor</button>
+        </div>
+        <pre class="codigo-bloco" id="solucao-codigo"></pre>
+      </section>
+
+      <nav class="navegacao" aria-label="Navegação entre desafios">
+        <button type="button" class="botao" id="anterior">← Anterior</button>
+        <button type="button" class="botao" id="proximo">Próximo →</button>
+      </nav>
+    </main>
+  </div>
+
+  <footer class="rodape">
+    Seu progresso fica salvo neste navegador. <span class="build">BUILD 2</span>
+  </footer>
+
+  <!-- Scripts clássicos (sem módulos) para funcionar também abrindo o arquivo direto, via file:// -->
+  <script src="js/desafios.js?v=2"></script>
+  <script src="js/realce.js?v=2"></script>
+  <script src="js/executor.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

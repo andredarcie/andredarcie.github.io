@@ -33,29 +33,41 @@ export class TribeSystem {
       if (!living.has(bond.aId) || !living.has(bond.bId)) state.socialBonds.delete(key);
     }
 
+    // Com 100 bichos são ~5.000 pares por passo: o par longe sai pela distância ao
+    // quadrado, sem raiz nem chave de texto. Só quem está em contato cresce o vínculo;
+    // os vínculos que não cresceram neste passo esfriam no laço de baixo, que só
+    // percorre os vínculos existentes.
+    const contact = SOCIAL_CONTACT_DISTANCE * SOCIAL_CONTACT_DISTANCE;
+    const grown = new Set();
     for (let i = 0; i < organisms.length; i++) {
+      const a = organisms[i];
       for (let j = i + 1; j < organisms.length; j++) {
-        const a = organisms[i], b = organisms[j];
-        const distance = Math.hypot(a.x - b.x, a.y - b.y);
-        if (distance < 18 && Math.random() < dt * .12) state.encounters++;
-        if (this.sameTribe(a, b)) continue;
-
-        const key = TribeSystem.#bondKey(a, b);
-        let bond = state.socialBonds.get(key);
+        const b = organisms[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const distance2 = dx * dx + dy * dy;
+        if (distance2 < 324 && Math.random() < dt * .12) state.encounters++;
+        if (distance2 > contact || this.sameTribe(a, b)) continue;
         const pairedTogether = a.pair && a.pair === b.pair;
         const canBond = a.tribe.length < MAX_TRIBE_BONDS && b.tribe.length < MAX_TRIBE_BONDS;
-        if (distance <= SOCIAL_CONTACT_DISTANCE && !pairedTogether && canBond) {
-          if (!bond) {
-            bond = { aId: a.id, bId: b.id, value: 0 };
-            state.socialBonds.set(key, bond);
-          }
-          bond.value += dt;
-          if (bond.value >= SOCIAL_BOND_DURATION) this.#join(a, b);
-        } else if (bond) {
-          bond.value -= dt * SOCIAL_BOND_DECAY;
-          if (bond.value <= 0 || !canBond) state.socialBonds.delete(key);
+        if (pairedTogether || !canBond) continue;
+        const key = TribeSystem.#bondKey(a, b);
+        let bond = state.socialBonds.get(key);
+        if (!bond) {
+          bond = { aId: a.id, bId: b.id, value: 0 };
+          state.socialBonds.set(key, bond);
         }
+        bond.value += dt;
+        grown.add(key);
+        if (bond.value >= SOCIAL_BOND_DURATION) this.#join(a, b);
       }
+    }
+    for (const [key, bond] of state.socialBonds) {
+      if (grown.has(key)) continue;
+      const a = living.get(bond.aId), b = living.get(bond.bId);
+      if (this.sameTribe(a, b)) continue;
+      const canBond = a.tribe.length < MAX_TRIBE_BONDS && b.tribe.length < MAX_TRIBE_BONDS;
+      bond.value -= dt * SOCIAL_BOND_DECAY;
+      if (bond.value <= 0 || !canBond) state.socialBonds.delete(key);
     }
   }
 

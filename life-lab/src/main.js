@@ -16,6 +16,12 @@ import { ForestSystem } from './world/ForestSystem.js';
 import { SceneryPlanner } from './world/SceneryPlanner.js';
 import { VisionPhysiology } from './organisms/VisionPhysiology.js';
 import { Genetics } from './genetics/Genetics.js';
+import { Neat } from './brain/Neat.js';
+import { SpeciesTracker } from './brain/SpeciesTracker.js';
+import { NeuralControl } from './organisms/NeuralControl.js';
+import { FlameQuest } from './organisms/FlameQuest.js';
+import { PrimordialFlameSystem } from './flame/PrimordialFlameSystem.js';
+import { BloodSystem } from './world/BloodSystem.js';
 import { OrganismFactory } from './organisms/OrganismFactory.js';
 import { Perception } from './organisms/Perception.js';
 import { Locomotion } from './organisms/Locomotion.js';
@@ -34,6 +40,7 @@ import { ShelterSystem } from './settlement/ShelterSystem.js';
 import { Woodcutting } from './settlement/Woodcutting.js';
 import { GeneStatistics } from './stats/GeneStatistics.js';
 import { GeneReadings } from './stats/GeneReadings.js';
+import { BrainStatistics } from './stats/BrainStatistics.js';
 import { Simulation } from './simulation/Simulation.js';
 import { WorldView } from './render/WorldView.js';
 import { GroundPainter } from './render/GroundPainter.js';
@@ -49,6 +56,7 @@ import { FliesLayer } from './overlay/layers/FliesLayer.js';
 import { HutMarksLayer } from './overlay/layers/HutMarksLayer.js';
 import { OrganismLabelsLayer } from './overlay/layers/OrganismLabelsLayer.js';
 import { PairHeartsLayer } from './overlay/layers/PairHeartsLayer.js';
+import { FightLayer } from './overlay/layers/FightLayer.js';
 import { RainLayer } from './overlay/layers/RainLayer.js';
 import { CloudShadowsLayer } from './overlay/layers/CloudShadowsLayer.js';
 import { PondRipplesLayer } from './overlay/layers/PondRipplesLayer.js';
@@ -60,6 +68,7 @@ import { InspectMode } from './ui/InspectMode.js';
 import { GeneDialog } from './ui/GeneDialog.js';
 import { EvolutionPlot } from './ui/EvolutionPlot.js';
 import { EvolutionDialog } from './ui/EvolutionDialog.js';
+import { BrainEvolutionPanel } from './ui/BrainEvolutionPanel.js';
 import { EventCamera } from './ui/EventCamera.js';
 import { ViewControls } from './ui/ViewControls.js';
 import { HudObstacleTracker } from './ui/HudObstacleTracker.js';
@@ -100,13 +109,16 @@ const grassField = new GrassField(state, biomes, occupancy);
 const ponds = new PondSystem(state, biomes, occupancy);
 const weather = new Weather(state, ponds);
 const forest = new ForestSystem(state);
-const campfires = new CampfireSystem(state, skyClock, weather, occupancy);
+const primordialFlame = new PrimordialFlameSystem({ state, events, occupancy });
+const campfires = new CampfireSystem(state, skyClock, weather, occupancy, primordialFlame);
 const vision = new VisionPhysiology();
 const genetics = new Genetics(vision);
-const factory = new OrganismFactory(genetics, new ScientistNameGenerator(), theme.pigments);
+const neat = new Neat();
+const factory = new OrganismFactory(genetics, neat, new ScientistNameGenerator(), theme.pigments);
 const perception = new Perception(skyClock, vision, campfires);
+const mind = new NeuralControl({ state, perception, skyClock });
 const locomotion = new Locomotion(state);
-const foraging = new Foraging({ state, perception, grassField, ponds });
+const foraging = new Foraging({ state, perception, grassField, ponds, mind });
 const bands = new BandFormation(state);
 const tribes = new TribeSystem({ state, perception, tribeNames, bands });
 const shelter = new ShelterSystem(state, skyClock, occupancy);
@@ -114,19 +126,28 @@ const woodcutting = new Woodcutting({ state, skyClock, perception, locomotion, s
 const sleep = new SleepBehavior({ skyClock, shelter, campfires, woodcutting, foraging });
 const mourning = new MourningSystem({ state, locomotion, woodcutting });
 const reproduction = new ReproductionSystem({
-  state, perception, genetics, factory, events, motionPreference: motion
+  state, perception, genetics, neat, factory, events, motionPreference: motion
 });
 const death = new DeathSystem({ state, events, mourning, woodcutting, shelter, forest });
 const metabolism = new Metabolism({ state, visionPhysiology: vision, campfires });
+const blood = new BloodSystem(state, events);
+const flameQuest = new FlameQuest({
+  state, perception, locomotion, primordialFlame, sleep, woodcutting, mind, blood
+});
 const brain = new OrganismBrain({
-  metabolism, sleep, mourning, reproduction, foraging, woodcutting, tribes, bands, locomotion,
-  wandering: new Wandering(state)
+  mind, flameQuest, metabolism, sleep, mourning, reproduction, foraging, woodcutting, tribes, bands, locomotion,
+  wandering: new Wandering(state, mind)
 });
 const geneStatistics = new GeneStatistics(state, events);
+const species = new SpeciesTracker(state, neat);
+const brainStatistics = new BrainStatistics(state, events);
 // Depois dos bichos, as fases do mundo nesta ordem.
 const simulation = new Simulation({
   state, skyClock, brain,
-  phases: [death, reproduction, tribes, grassField, bands, campfires, forest, shelter, weather, geneStatistics]
+  phases: [
+    blood, death, primordialFlame, reproduction, tribes, grassField, bands, campfires, forest, shelter, weather,
+    geneStatistics, species
+  ]
 });
 
 // ---- Interface ----
@@ -149,6 +170,7 @@ const overlay = new OverlayRenderer({
     new HutMarksLayer(state, theme, glyphs),
     new OrganismLabelsLayer(state, theme, motion, glyphs),
     new PairHeartsLayer(state, motion, glyphs),
+    new FightLayer(state, theme),
     new RainLayer(state, weather, theme, motion)
   ]
 });
@@ -156,6 +178,7 @@ const geneDialog = new GeneDialog(root, genetics, tribeNames);
 const geneReadings = new GeneReadings(geneStatistics);
 const evolutionDialog = new EvolutionDialog({
   root, theme, geneStatistics, geneReadings, events,
+  brainPanel: new BrainEvolutionPanel({ root, theme, brainStatistics }),
   plot: new EvolutionPlot(root.querySelector('#evolution-plot'), theme, geneStatistics, geneReadings)
 });
 const eventCamera = new EventCamera({ root, canvas, state, inset: view.inset, events });
@@ -174,7 +197,7 @@ const cameraController = new CameraController({
 new ArenaClickHandler({ canvas, view, state, factory, inspectMode, geneDialog, cameraController });
 const frameRenderer = new FrameRenderer({
   state, skyClock, weather, perception, motionPreference: motion, view, eventCamera, overlay,
-  panels: [new TribeListPanel(root, state, tribeNames), new HudPanel(root, state, skyClock)]
+  panels: [new TribeListPanel(root, state, tribeNames), new HudPanel(root, state, skyClock, tribeNames)]
 });
 const viewport = new Viewport(canvas, view, overlay);
 // O que fica por cima da cena o tempo todo; o tabuleiro, centrado, cresce até
@@ -187,16 +210,18 @@ const hudObstacles = new HudObstacleTracker({
 });
 DebugApi.install(window, {
   serializer: new StateSerializer({ state, skyClock, simulation, genetics, biomes, ponds, tribeNames }),
-  simulation, frameRenderer
+  simulation, frameRenderer, state, cameraRig: view.camera
 });
 
 // ---- O mundo de pé ----
 state.organisms.push(...factory.createFounders());
+species.regroup();
 // Nesta ordem, cada um conferindo o chão contra quem já nasceu (SpaceOccupancy):
 // lagos primeiro (são os maiores), depois árvores e enfeites, por último o capim.
 ponds.restore();
 const sceneryItems = new SceneryPlanner(state, biomes, occupancy).plan();
 grassField.seed();
+primordialFlame.place();
 const painter = new GroundPainter(biomes);
 view.terrain.setGroundTexture(painter.paintGround());
 // Cada lateral do tabuleiro com a coluna u da textura apontando para o ponto certo da

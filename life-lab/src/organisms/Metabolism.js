@@ -23,6 +23,7 @@ export class Metabolism {
 
   tick(o, dt, days) {
     o.age += days;
+    o.record.days += days;
     o.stage = o.age >= o.genes.longevity ? 'elder' : o.age >= o.genes.maturity ? 'adult' : 'infant';
     o.size = o.stage === 'infant' ? LIFE_SIZE * (.55 + .45 * o.age / o.genes.maturity) : LIFE_SIZE;
     o.mateCooldown = Math.max(0, o.mateCooldown - dt);

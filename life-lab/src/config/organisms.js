@@ -1,10 +1,15 @@
 // Corpo, movimento, necessidades e sono dos bichos.
 
 export const LIFE_SIZE = 10;
-// Casais fundadores no começo da simulação: acompanharam a área do mundo (6 no de
-// 900, 3 no de 636, 2 no de 509) e param em 2 no de 407 — com 1 casal só, uma
-// morte cedo acaba com a população.
-export const FOUNDER_PAIRS = 2;
+// Casais fundadores no começo da simulação: 50 casais, 100 bichos, cada um com
+// uma rede neural própria — a população já nasce no teto (MAX_POPULATION) e a
+// seleção decide quem abre vaga e quem a ocupa.
+export const FOUNDER_PAIRS = 50;
+// Os fundadores nascem adultos com idades espalhadas por esta faixa (em dias),
+// para não envelhecerem todos juntos. Com 2,2 a velhice ainda vinha em onda: na
+// simulação sem tela a população caía para 34–47 no dia 6. Com 3,2 os mais velhos
+// já começam perto da velhice e as mortes (e as vagas) se espalham do dia 1 ao 5.
+export const FOUNDER_AGE_SPREAD = 3.2;
 // Altura do boneco em unidades da cena; o nome e os balões ancoram nela.
 export const CHARACTER_HEIGHT = 16;
 export const VISION = 105;
@@ -28,7 +33,8 @@ export const NEED_RESOURCE_THRESHOLD = 78;
 // passagem, mesmo sem o bicho estar procurando comida.
 export const GRAZE_HUNGER = 90;
 export const GRAZE_RANGE = 45;
-export const SEARCH_GRID_SIZE = 3;
+// Zonas de busca por lado: ~164 de lado cada no mundo de 820.
+export const SEARCH_GRID_SIZE = 5;
 export const SEARCH_SCAN_DURATION = 1.65;
 export const SEARCH_SCAN_SPEED = Math.PI * 2 / SEARCH_SCAN_DURATION;
 export const SEARCH_ARRIVAL_RADIUS = 20;

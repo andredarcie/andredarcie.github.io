@@ -22,6 +22,9 @@ export class DeathSystem {
   }
 
   static causeOf(o) {
+    if (o.slainBy && o.beheaded) return `decapitado por ${o.slainBy}`;
+    if (o.slainBy) return `pelas mãos de ${o.slainBy}`;
+    if (o.bledOut && o.woundedBy) return `sangrando, ferido por ${o.woundedBy}`;
     if (o.hunger <= 0 && o.thirst <= 0) return 'de fome e sede';
     if (o.hunger <= 0) return 'de fome';
     if (o.thirst <= 0) return 'de sede';
@@ -45,6 +48,8 @@ export class DeathSystem {
       this.#mourning.callMourners(o, corpse);
     }
     state.organisms = state.organisms.filter(o => o.life > 0);
+    // Quem brigava com um morto larga a briga já, sem esperar o próximo tique.
+    for (const o of state.organisms) if (o.foe && o.foe.life <= 0) { o.foe = null; o.foeRole = null; }
     for (const corpse of state.corpses) {
       corpse.time += dt;
       corpse.age += days;

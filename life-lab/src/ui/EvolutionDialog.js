@@ -17,8 +17,10 @@ export class EvolutionDialog {
   #visible;
   #rows = new Map();
   #pigmentRows = [];
+  #brainPanel;
 
-  constructor({ root, theme, geneStatistics, geneReadings, plot, events }) {
+  constructor({ root, theme, geneStatistics, geneReadings, plot, events, brainPanel }) {
+    this.#brainPanel = brainPanel;
     this.#root = root;
     this.#dialog = root.querySelector('#evolution-dialog');
     this.#legend = root.querySelector('#evolution-legend');
@@ -71,6 +73,7 @@ export class EvolutionDialog {
     }
     this.#renderPigments(latest);
     this.#plot.draw(this.#traits, this.#visible);
+    this.#brainPanel?.render();
   }
 
   #renderTraitRow(trait, reading, spread, scale) {

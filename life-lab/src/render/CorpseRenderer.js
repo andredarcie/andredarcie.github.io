@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { addVerticalShade } from './Shading.js';
 
 // Esqueleto de blocos montado nas mesmas medidas do boneco (pés em y = 0, frente em
 // +z), para ficar exatamente dentro do corpo e aparecer no lugar certo quando a
@@ -24,7 +25,20 @@ const BONE_SHAPES = {
 const ROT_GREEN = new THREE.Color(0x6d7a45);
 const ROT_DARK = new THREE.Color(0x3d3325);
 
-function createSkeleton(boneMaterial, socketMaterial) {
+// Cabeça arrancada: o mesmo bloco da cabeça do boneco, rolada no chão ao lado do
+// corpo, na carne do próprio corpo (apodrece e some junto com ele).
+// Mesmo degradê do boneco: o material do corpo pinta por cor de vértice, e sem ela
+// a cabeça saía preta (visto rodando o jogo).
+const LOOSE_HEAD_SHAPE = addVerticalShade(new THREE.BoxGeometry(5, 5, 5), .86, 1.08);
+const LOOSE_HAIR_SHAPE = addVerticalShade(new THREE.BoxGeometry(5.4, 1.4, 5.4), .85, 1.12);
+// Olhos fechados: dois riscos escuros na frente da cabeça.
+const LOOSE_EYE_SHAPE = new THREE.BoxGeometry(1, .25, .3);
+const LOOSE_EYE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x26201a });
+const NECK_CUT_SHAPE = new THREE.BoxGeometry(4.2, .4, 4.2);
+const NECK_CUT_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x8e1016 });
+
+// `headless`: decapitado, o esqueleto que sobra fica sem crânio.
+function createSkeleton(boneMaterial, socketMaterial, headless = false) {
   const skeleton = new THREE.Group();
   const bone = (shape, x, y, z, material = boneMaterial) => {
     const mesh = new THREE.Mesh(BONE_SHAPES[shape], material);
@@ -32,11 +46,13 @@ function createSkeleton(boneMaterial, socketMaterial) {
     mesh.castShadow = true;
     skeleton.add(mesh);
   };
-  bone('skull', 0, 14.3, 0);
-  bone('jaw', 0, 11.9, .5);
-  bone('socket', -1, 14.6, 2.1, socketMaterial);
-  bone('socket', 1, 14.6, 2.1, socketMaterial);
-  bone('nose', 0, 13.5, 2.1, socketMaterial);
+  if (!headless) {
+    bone('skull', 0, 14.3, 0);
+    bone('jaw', 0, 11.9, .5);
+    bone('socket', -1, 14.6, 2.1, socketMaterial);
+    bone('socket', 1, 14.6, 2.1, socketMaterial);
+    bone('nose', 0, 13.5, 2.1, socketMaterial);
+  }
   for (let i = 0; i < 7; i++) bone('vertebra', 0, 5.9 + i * .82, -1.1);
   bone('clavicle', 0, 11.1, .5);
   // Costelas em "U": frente e os dois lados, quatro pares descendo pelo peito.
@@ -102,6 +118,14 @@ export class CorpseRenderer {
       view.rotation.set(0, Math.PI / 2 - corpse.heading, 0);
       view.rotateZ(corpse.direction * tip);
       view.scale.setScalar(corpse.size / lifeSize);
+      if (data.looseHead) {
+        // A cabeça rolou para longe do corpo, na direção oposta à que ele olhava.
+        const away = corpse.heading + Math.PI + corpse.direction * .6;
+        const reach = 11 * corpse.size / lifeSize * Math.min(1, corpse.time / fall);
+        const loose = this.#space.toScene(corpse.x + Math.cos(away) * reach, corpse.y + Math.sin(away) * reach);
+        data.looseHead.position.set(loose.x, 2.5 * corpse.size / lifeSize, loose.z);
+        data.looseHead.scale.setScalar(corpse.size / lifeSize);
+      }
 
       // Decomposição: esverdeia, escurece, murcha e a carne vai sumindo até só o
       // esqueleto ficar. A partir daí, ele espera os 2 dias e desbota no fim.
@@ -114,7 +138,11 @@ export class CorpseRenderer {
       data.body.visible = fleshOpacity > .01;
       // O olho usa material compartilhado e opaco: some antes, quando a carne já
       // está translúcida, em vez de ficar boiando no ar.
-      for (const eye of data.eyes) eye.visible = fleshOpacity > .6;
+      for (const eye of data.eyes) eye.visible = fleshOpacity > .6 && !corpse.beheaded;
+      // As feridas e o corte do pescoço somem junto com a carne.
+      data.woundMarks.forEach((mark, i) => { mark.visible = fleshOpacity > .6 && i < corpse.wounds; });
+      data.stump.visible = corpse.beheaded && fleshOpacity > .6;
+      if (data.looseHead) data.looseHead.visible = fleshOpacity > .01;
       // Murchar: a carne perde volume, sobretudo na largura.
       const wither = 1 - Math.min(1, rot / .9) * .28;
       data.body.scale.set(wither, 1, wither);
@@ -129,6 +157,7 @@ export class CorpseRenderer {
       if (seen.has(corpse)) continue;
       this.#layer.remove(view);
       const data = view.userData;
+      if (data.looseHead) this.#layer.remove(data.looseHead);
       for (const material of [data.bodyMaterial, data.outfitMaterial, data.hairMaterial,
         data.boneMaterial, data.socketMaterial]) material.dispose();
       this.#views.delete(corpse);
@@ -155,9 +184,40 @@ export class CorpseRenderer {
     data.hairBase = characters.hairMaterial.color.clone();
     data.boneMaterial = new THREE.MeshLambertMaterial({ color: 0xe9e1c8, transparent: true });
     data.socketMaterial = new THREE.MeshLambertMaterial({ color: 0x2a2218, transparent: true });
-    data.skeleton = createSkeleton(data.boneMaterial, data.socketMaterial);
+    data.skeleton = createSkeleton(data.boneMaterial, data.socketMaterial, corpse.beheaded);
     data.skeleton.visible = false;
     view.add(data.skeleton);
+    data.woundMarks = data.wounds;
+    data.looseHead = null;
+    if (corpse.beheaded) {
+      characters.behead(view);
+      data.looseHead = this.#looseHead(corpse, data);
+      this.#layer.add(data.looseHead);
+    }
     return view;
+  }
+
+  // A cabeça no chão: bloco da cabeça com o cabelo (se tinha), deitada de lado e com
+  // o corte do pescoço à mostra.
+  #looseHead(corpse, data) {
+    const head = new THREE.Group();
+    const skull = new THREE.Mesh(LOOSE_HEAD_SHAPE, data.bodyMaterial);
+    skull.castShadow = true;
+    head.add(skull);
+    if (corpse.sex === 'female') {
+      const hair = new THREE.Mesh(LOOSE_HAIR_SHAPE, data.hairMaterial);
+      hair.position.y = 2.4;
+      head.add(hair);
+    }
+    for (const side of [-1, 1]) {
+      const eye = new THREE.Mesh(LOOSE_EYE_SHAPE, LOOSE_EYE_MATERIAL);
+      eye.position.set(side * 1.15, .5, 2.55);
+      head.add(eye);
+    }
+    const cut = new THREE.Mesh(NECK_CUT_SHAPE, NECK_CUT_MATERIAL);
+    cut.position.y = -2.55;
+    head.add(cut);
+    head.rotation.set(Math.PI / 2 * corpse.direction, corpse.seed, .3);
+    return head;
   }
 }

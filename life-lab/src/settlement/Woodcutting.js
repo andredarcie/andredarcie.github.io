@@ -29,6 +29,13 @@ export class Woodcutting {
     o.chop = null;
   }
 
+  // Larga a tora ali mesmo; ela fica no chão para quem vier buscar depois.
+  dropLoad(o) {
+    if (!o.carrying) return;
+    this.#forest.dropLog(o.x, o.y, o.heading);
+    o.carrying = false;
+  }
+
   // O trabalho da madeira, em ordem: tora no ombro vai para a obra; tora no chão à
   // vista vai para o ombro; sem tora, corta árvore. Devolve o movimento do tique, ou
   // nada quando o bicho não tem o que fazer com madeira agora.

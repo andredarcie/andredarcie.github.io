@@ -42,6 +42,9 @@ export class FrameRenderer {
     const wind = animate ? .35 + .65 * overcast : 0;
     view.sky.update(sky, { overcast, time: animate ? elapsed : 0 });
     view.campfires.sync(state.campfires, { elapsed, animate, daylight: sky.daylight });
+    view.primordialFlame.sync(state.flame, {
+      elapsed, animate, daylight: sky.daylight, lifeSize: LIFE_SIZE, ponds: state.ponds
+    });
     view.trees.sync(state.trees, { elapsed, animate, wind });
     view.logs.sync(state.logs);
     view.huts.sync(state.huts, HUT_LOGS, { elapsed, animate, daylight: sky.daylight });
@@ -51,6 +54,7 @@ export class FrameRenderer {
     view.ponds.sync(state.ponds, {
       elapsed, raining: Boolean(state.rain), animate, sky: view.sky.horizonColor
     });
+    view.blood.sync(state.bloodStains, state.bloodDrops, { ponds: state.ponds, animate });
     view.corpses.sync(state.corpses, {
       fall: DEATH_FALL, decay: DECAY_DAYS, total: CORPSE_DAYS, lifeSize: LIFE_SIZE
     });

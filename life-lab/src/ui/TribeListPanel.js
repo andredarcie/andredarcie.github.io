@@ -26,7 +26,10 @@ export class TribeListPanel {
     }
     const rows = [...sizes].map(([outfit, size]) => ({ outfit, size, name: this.#names.nameOf(outfit) }))
       .sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
-    const key = rows.map(row => `${row.outfit}:${row.size}:${row.name}`).join('|');
+    const holder = this.#state.flame?.holder;
+    const keeper = holder?.band ? holder.outfit : null;
+    for (const row of rows) row.keeper = row.outfit === keeper;
+    const key = rows.map(row => `${row.outfit}:${row.size}:${row.name}:${row.keeper}`).join('|');
     if (key === this.#key) return;
     this.#key = key;
     this.#total.textContent = rows.length;
@@ -44,7 +47,14 @@ export class TribeListPanel {
     const size = Dom.create('span', 'tribe-size');
     size.textContent = row.size;
     size.setAttribute('aria-label', `${row.size} ${row.size === 1 ? 'membro' : 'membros'}`);
-    item.append(swatch, name, size);
+    // A tribo que guarda a Chama Primordial ganha a marca dela; nas outras a coluna
+    // fica vazia, para os números continuarem alinhados.
+    const mark = Dom.create('span', 'tribe-flame');
+    if (row.keeper) {
+      mark.textContent = 'chama';
+      mark.title = 'guarda a Chama Primordial';
+    }
+    item.append(swatch, name, mark, size);
     return item;
   }
 }

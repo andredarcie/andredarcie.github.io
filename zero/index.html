@@ -106,7 +106,32 @@ body.mobile #textbox{bottom:4vh}
   <div class="go"></div>
 </div>
 
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
-<script type="module" src="main.js?v=41"></script>
+<!-- cache-busting: cada módulo local mapeado para ?v=N; a cada mudança de .js, trocar TODOS os ?v=N -->
+<script type="importmap">{"imports":{
+  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
+  "./src/audio.js":"./src/audio.js?v=47",
+  "./src/config.js":"./src/config.js?v=47",
+  "./src/debug.js":"./src/debug.js?v=47",
+  "./src/dialog.js":"./src/dialog.js?v=47",
+  "./src/input.js":"./src/input.js?v=47",
+  "./src/kit.js":"./src/kit.js?v=47",
+  "./src/renderer.js":"./src/renderer.js?v=47",
+  "./src/state.js":"./src/state.js?v=47",
+  "./src/story.js":"./src/story.js?v=47",
+  "./src/terminal.js":"./src/terminal.js?v=47",
+  "./src/ui.js":"./src/ui.js?v=47",
+  "./src/scenes/index.js":"./src/scenes/index.js?v=47",
+  "./src/scenes/aviao.js":"./src/scenes/aviao.js?v=47",
+  "./src/scenes/corredor.js":"./src/scenes/corredor.js?v=47",
+  "./src/scenes/empresa.js":"./src/scenes/empresa.js?v=47",
+  "./src/scenes/loja.js":"./src/scenes/loja.js?v=47",
+  "./src/scenes/metro.js":"./src/scenes/metro.js?v=47",
+  "./src/scenes/plataforma.js":"./src/scenes/plataforma.js?v=47",
+  "./src/scenes/praia.js":"./src/scenes/praia.js?v=47",
+  "./src/scenes/quarto.js":"./src/scenes/quarto.js?v=47",
+  "./src/scenes/recepcao.js":"./src/scenes/recepcao.js?v=47",
+  "./src/scenes/rua.js":"./src/scenes/rua.js?v=47"
+}}</script>
+<script type="module" src="main.js?v=47"></script>
 </body>
 </html>

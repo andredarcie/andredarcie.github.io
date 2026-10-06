@@ -7,6 +7,12 @@ export class Organism {
     this.name = fields.name;
     this.genome = fields.genome;
     this.genes = fields.genes;
+    // Rede neural (NEAT): genoma da rede, a rede montada e o que ela sentiu e
+    // decidiu da última vez que pensou.
+    this.mind = fields.mind;
+    // O que conta na aptidão (brain/Fitness.js): filhos, mordidas, segundos da tribo
+    // com a Chama e dias vividos desde que nasceu (ou foi fundado).
+    this.record = { offspring: 0, bites: 0, flameTime: 0, days: 0 };
     this.lineage = fields.lineage;
     this.generation = fields.generation;
     // Corpo no espaço.
@@ -63,6 +69,31 @@ export class Organism {
     this.tribe = [];
     this.band = null;
     this.search = fields.search;
+    // Chama Primordial e briga: se carrega a chama, contra quem briga ('attack' ou
+    // 'defend'), relógios do golpe e do fôlego, lampejo de dor e quem o matou.
+    this.torch = false;
+    this.foe = null;
+    this.foeRole = null;
+    this.fightIdle = 0;
+    this.strikeTimer = 0;
+    this.strike = 0;
+    this.fightCooldown = 0;
+    this.hurt = 0;
+    this.slainBy = null;
+    // Arma (da tradição da tribo) e o golpe em andamento: duração, tipo, alvo e se
+    // já acertou. Feridas abertas (fecham devagar), segundos de sangria, quem feriu,
+    // e como morreu: sangrando ou decapitado.
+    this.weapon = null;
+    this.strikeSwing = 1;
+    this.strikeKind = null;
+    this.strikeTarget = null;
+    this.strikeLanded = true;
+    this.wounds = 0;
+    this.bleed = 0;
+    this.dripTimer = 0;
+    this.woundedBy = null;
+    this.bledOut = false;
+    this.beheaded = false;
   }
 
   get hungriest() {

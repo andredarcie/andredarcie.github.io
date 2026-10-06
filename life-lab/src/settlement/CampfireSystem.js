@@ -3,25 +3,30 @@ import {
   CAMPFIRE_MIN_TRIBE, MAX_CAMPFIRES, CAMPFIRE_START_LIGHT, CAMPFIRE_END_LIGHT,
   CAMPFIRE_WARM_RADIUS, CAMPFIRE_LIGHT_RADIUS
 } from '../config/settlement.js';
+import { FLAME_CAMPFIRE_MIN_TRIBE } from '../config/flame.js';
 import { Campfire } from '../entities/Campfire.js';
 
 // Fogueiras de tribo: quando acendem, onde cada um senta, quanto esquentam e quanto
-// iluminam, e como pegam, apagam na chuva e morrem em brasa de manhã.
+// iluminam, e como pegam, apagam na chuva e morrem em brasa de manhã. A Chama
+// Primordial entra aqui como mais uma fonte de luz e calor, e a tribo que a guarda
+// acende fogo com pouca gente e não deixa a chuva apagar.
 export class CampfireSystem {
   #state;
   #sky;
   #weather;
   #occupancy;
+  #primordial;
 
-  constructor(state, skyClock, weather, occupancy) {
+  constructor(state, skyClock, weather, occupancy, primordialFlame) {
     this.#state = state;
     this.#sky = skyClock;
     this.#weather = weather;
     this.#occupancy = occupancy;
+    this.#primordial = primordialFlame;
   }
 
   hasAny() {
-    return this.#state.campfires.length > 0;
+    return this.#state.campfires.length > 0 || Boolean(this.#state.flame);
   }
 
   // Calor que chega ao bicho: cheio colado no fogo, metade na borda do alcance.
@@ -32,7 +37,7 @@ export class CampfireSystem {
       if (distance >= CAMPFIRE_WARM_RADIUS) continue;
       warmth = Math.max(warmth, fire.flame * (1 - distance / CAMPFIRE_WARM_RADIUS * .5));
     }
-    return warmth;
+    return Math.max(warmth, this.#primordial.warmthAt(o));
   }
 
   // Claridade do fogo no ponto do bicho, na mesma escala da visão (1 = dia).
@@ -43,7 +48,7 @@ export class CampfireSystem {
       if (distance >= CAMPFIRE_LIGHT_RADIUS) continue;
       light = Math.max(light, fire.flame * .9 * (1 - (distance / CAMPFIRE_LIGHT_RADIUS) ** 2));
     }
-    return light;
+    return Math.max(light, this.#primordial.lightAt(o));
   }
 
   fireFor(o) {
@@ -73,11 +78,14 @@ export class CampfireSystem {
     // Só se acende fogo no fim do dia (ou já de noite, para tribo que se formou tarde);
     // sem isso o crepúsculo da manhã acenderia outra fogueira logo antes de clarear.
     const evening = sky.hour >= 12 || sky.daylight < .1;
+    const keeper = this.#primordial.keeperOutfit();
     if (evening && sky.daylight < CAMPFIRE_START_LIGHT) {
       for (const band of new Set(state.organisms.map(o => o.band).filter(Boolean))) {
-        if (state.campfires.length >= MAX_CAMPFIRES) break;
         const outfit = band.members[0].outfit;
-        if (!outfit || band.members.length < CAMPFIRE_MIN_TRIBE) continue;
+        // A tribo da chama sempre tem fogo, mesmo com as fogueiras no limite.
+        if (state.campfires.length >= MAX_CAMPFIRES && outfit !== keeper) continue;
+        const minimum = outfit === keeper ? FLAME_CAMPFIRE_MIN_TRIBE : CAMPFIRE_MIN_TRIBE;
+        if (!outfit || band.members.length < minimum) continue;
         if (state.campfires.some(fire => fire.outfit === outfit && !fire.dying)) continue;
         const spot = this.#spotNear(band.x, band.y);
         const capacity = band.members.length + 1;
@@ -97,7 +105,9 @@ export class CampfireSystem {
       if (!state.organisms.some(o => o.outfit === fire.outfit)) fire.dying = true;
       // Pega devagar, apaga depressa na chuva, e de manhã vai morrendo em brasa.
       // Depois da chuva a tribo reacende o mesmo fogo.
-      const target = fire.dying || raining ? 0 : 1;
+      // Fogo aceso com a Chama Primordial não apaga na chuva.
+      const sheltered = fire.outfit === keeper;
+      const target = fire.dying || (raining && !sheltered) ? 0 : 1;
       const rate = target > fire.flame ? .7 : raining ? 1.4 : .3;
       fire.flame += (target - fire.flame) * Math.min(1, dt * rate);
     }

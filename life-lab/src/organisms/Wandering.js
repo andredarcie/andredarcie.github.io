@@ -3,11 +3,14 @@ import { WALK_SPEED } from '../config/organisms.js';
 
 // O passeio de quem não tem nada para fazer: anda, para, muda de rumo aos poucos, e
 // de noite anda mais devagar e descansa mais. Perto da borda, vira para dentro.
+// Rumo e pressa do passeio levam o palpite da rede neural do bicho.
 export class Wandering {
   #state;
+  #mind;
 
-  constructor(state) {
+  constructor(state, mind) {
     this.#state = state;
+    this.#mind = mind;
   }
 
   // `activity` vai de .5 (noite) a 1 (dia).
@@ -26,10 +29,10 @@ export class Wandering {
       o.wanderHeading += (Math.random() - .5) * 1.6;
       return { direction: heading, desiredSpeed: 0 };
     }
-    o.wanderHeading += Math.sin(elapsed * .75 + o.wanderPhase) * .48 * dt;
+    o.wanderHeading += (Math.sin(elapsed * .75 + o.wanderPhase) * .48 + this.#mind.strollTurn(o)) * dt;
     return {
       direction: o.wanderHeading,
-      desiredSpeed: WALK_SPEED * o.pace * activity *
+      desiredSpeed: WALK_SPEED * o.pace * activity * this.#mind.strollHaste(o) *
         (.82 + .18 * Math.sin(elapsed * 1.3 + o.wanderPhase))
     };
   }

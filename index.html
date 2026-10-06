@@ -349,7 +349,7 @@
       <div class="sec-head">
         <h2>Projects</h2>
         <span class="rule"></span>
-        <span class="count">14</span>
+        <span class="count">16</span>
       </div>
 
       <div class="subhead"><span>Tools &amp; experiments</span><span class="count">3</span></div>
@@ -371,7 +371,7 @@
         </a>
       </div>
 
-      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">11</span></div>
+      <div class="subhead"><span>Data, guides &amp; sites</span><span class="count">13</span></div>
       <div class="grid">
         <a class="card" href="https://www.openvideogamedata.com/" target="_blank" rel="noopener">
           <div class="card-title">OpenVideoGameData</div>
@@ -417,6 +417,26 @@
           <div class="card-title">Divinolândia Transparente</div>
           <div class="card-desc">Public data about Divinolândia in one place: city spending, water and the town's history.</div>
           <span class="card-tag">Site</span>
+        </a>
+        <a class="card" href="divinolandia-transparente/gastos/">
+          <div class="card-title">Gastos de Divinolândia</div>
+          <div class="card-desc">An independent public-data portal that makes the city's 2026 spending easier to explore.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="job/">
+          <div class="card-title">Radar de vagas dev</div>
+          <div class="card-desc">An analysis of what developer job listings ask for beyond programming languages and frameworks.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="journey/">
+          <div class="card-title">Um ano subindo o litoral</div>
+          <div class="card-desc">An interactive map of a 2024 journey through Brazil's Northeast, built from a personal photo archive.</div>
+          <span class="card-tag">Data</span>
+        </a>
+        <a class="card" href="dive/">
+          <div class="card-title">Mergulho no DDIA</div>
+          <div class="card-desc">A chapter-by-chapter Portuguese guide to Designing Data-Intensive Applications.</div>
+          <span class="card-tag">Guide</span>
         </a>
       </div>
     </section>
@@ -496,12 +516,12 @@
       </div>
       <p class="games-note">Making small games is a hobby of mine.</p>
       <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
-        <span class="arrow">▸</span><span class="label">Show my games (14)</span>
+        <span class="arrow">▸</span><span class="label">Show my games (16)</span>
       </button>
 
       <div id="games-panel" hidden>
         <div class="filters" role="group" aria-label="Filter games by category">
-          <span class="flabel"><b id="games-count">14</b> games · filter</span>
+          <span class="flabel"><b id="games-count">16</b> games · filter</span>
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
           <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
           <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
@@ -586,6 +606,11 @@
           <a class="card" href="explorer/index.html" data-cat="sim">
             <div class="card-title">Solar Explorer</div>
             <div class="card-desc">First-person walking sim across the Solar System: walk the rocky worlds, dive into the gas giants and fly your ship to the next.</div>
+            <span class="card-tag">Sim</span>
+          </a>
+          <a class="card" href="life-lab/" data-cat="sim">
+            <div class="card-title">Life Lab</div>
+            <div class="card-desc">A living-world simulation where organisms evolve, build tribes and adapt to changing biomes.</div>
             <span class="card-tag">Sim</span>
           </a>
         </div>
@@ -793,7 +818,7 @@
         var willOpen = panel.hasAttribute('hidden');
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        label.textContent = willOpen ? 'Hide games' : 'Show my games (14)';
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (16)';
       });
 
       var revealP = document.getElementById('reveal-proto');

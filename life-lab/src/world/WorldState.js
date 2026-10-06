@@ -18,7 +18,14 @@ export class WorldState {
     this.campfires = [];
     this.woodChips = [];
     this.fallDust = [];
+    // Sangue: gotas no ar e manchas no chão (BloodSystem).
+    this.bloodDrops = [];
+    this.bloodStains = [];
     this.socialBonds = new Map();
+    // Espécies do NEAT ([{ id, size }], maior primeiro), refeitas pelo SpeciesTracker.
+    this.species = [];
+    // A Chama Primordial (PrimordialFlame), única na ilha.
+    this.flame = null;
     this.rain = null;
     this.encounters = 0;
     this.births = 0;

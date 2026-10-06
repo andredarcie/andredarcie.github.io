@@ -66,7 +66,7 @@ export class GeneStatistics {
         max = Math.max(max, value);
         squares += (value - values[key]) ** 2;
       }
-      // Desvio amostral (n − 1): os 12 fundadores são uma amostra pequena e o
+      // Desvio amostral (n − 1): os fundadores são uma amostra e o
       // divisor por n subestimaria a dispersão inicial, inflando a comparação.
       spreads[key] = { min, max, deviation: Math.sqrt(squares / Math.max(1, count - 1)) };
     }

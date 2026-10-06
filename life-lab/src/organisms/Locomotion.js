@@ -18,6 +18,8 @@ export class Locomotion {
       for (const other of this.#state.organisms) {
         if (other === o || (o.pair && (other === o.pair.male || other === o.pair.female))) continue;
         const dx = o.x - other.x, dy = o.y - other.y;
+        // Corte pelo quadrado antes da raiz: com 100 bichos quase todos estão longe.
+        if (dx > 28 || dx < -28 || dy > 28 || dy < -28) continue;
         const distance = Math.hypot(dx, dy);
         if (distance > 0 && distance < 28) {
           const strength = (28 - distance) / 28;

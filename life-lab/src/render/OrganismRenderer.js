@@ -3,6 +3,7 @@ import { createContactShadow } from './ContactShadow.js';
 import { groundHeight } from './PondShape.js';
 import { smoothstep } from '../core/math.js';
 import { NEWBORN_DISTANCE } from '../config/reproduction.js';
+import { HURT_FLASH } from '../config/flame.js';
 
 // Raio da sombra de contato de um bicho adulto, em unidades do boneco.
 const CONTACT_RADIUS = 5.5;
@@ -85,6 +86,16 @@ export class OrganismRenderer {
         chop: o.chop ? (animate ? o.chop.timer / chopSwing : .68) : null,
         carrying: o.carrying,
         crying: o.crying,
+        // Chama Primordial erguida na mão esquerda. Na briga: arma na mão, guarda
+        // alta, o golpe da arma (fração que falta, 1 → 0), o recuo de quem apanha e
+        // as feridas abertas.
+        torch: o.torch,
+        weapon: o.foe || o.strike > 0 ? o.weapon : null,
+        guard: Boolean(o.foe) && o.speed < 6,
+        strike: o.strike > 0 && animate ? o.strike / o.strikeSwing : 0,
+        strikeKind: o.strikeKind,
+        hurt: animate ? o.hurt / HURT_FLASH : 0,
+        wounds: Math.ceil(o.wounds),
         eyes: OrganismRenderer.#eyeOpening(o, view.rest, animate, elapsed, labor),
         elapsed
       });

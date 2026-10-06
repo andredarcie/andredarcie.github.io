@@ -1,8 +1,11 @@
 import { WORLD } from '../config/world.js';
 import {
-  WALK_SPEED, RUN_SPEED, BRAKING, DRINK_RATE, NEED_RESOURCE_THRESHOLD, GRAZE_HUNGER, GRAZE_RANGE,
+  WALK_SPEED, RUN_SPEED, BRAKING, DRINK_RATE, GRAZE_HUNGER, GRAZE_RANGE,
   SEARCH_GRID_SIZE, SEARCH_SCAN_DURATION, SEARCH_SCAN_SPEED, SEARCH_ARRIVAL_RADIUS
 } from '../config/organisms.js';
+
+// Quanto cada zona de distância desconta na escolha do próximo ponto de busca.
+const SEARCH_DISTANCE_COST = 6;
 
 // Comer e beber: decidir o que falta, enxergar o recurso, ir até ele, consumir, e —
 // quando nada está à vista — explorar a ilha zona por zona atrás dele.
@@ -11,8 +14,10 @@ export class Foraging {
   #perception;
   #grass;
   #ponds;
+  #mind;
 
-  constructor({ state, perception, grassField, ponds }) {
+  constructor({ state, perception, grassField, ponds, mind }) {
+    this.#mind = mind;
     this.#state = state;
     this.#perception = perception;
     this.#grass = grassField;
@@ -30,7 +35,10 @@ export class Foraging {
     if (o.eating <= 0 && o.drinking <= 0) return false;
     if (o.eating > 0) {
       o.eating -= dt;
-      if (o.eating <= 0) o.hunger = Math.min(100, o.hunger + 42 * o.genes.efficiency);
+      if (o.eating <= 0) {
+        o.hunger = Math.min(100, o.hunger + 42 * o.genes.efficiency);
+        o.record.bites++;
+      }
     } else {
       const pond = o.drinkingPond;
       if (!pond || !this.#state.ponds.includes(pond) || pond.water <= 0) {
@@ -52,9 +60,12 @@ export class Foraging {
   // O que falta agora. `drowsy`: com sono, a fome e a sede moderadas deixam de ser
   // sentidas como urgência — quem não está apertado vai para a cama em vez de sair
   // atrás de comida no escuro.
+  // O limiar e a prioridade entre comida e água vêm da rede neural do bicho.
   decideNeed(o, drowsy) {
-    let need = o.hungriest < NEED_RESOURCE_THRESHOLD
-      ? (o.hunger <= o.thirst ? 'food' : 'water') : null;
+    const threshold = this.#mind.needThreshold(o);
+    const hungry = o.hunger < threshold, thirsty = o.thirst < threshold;
+    let need = hungry && thirsty ? (this.#mind.prefersFood(o) ? 'food' : 'water')
+      : hungry ? 'food' : thirsty ? 'water' : null;
     if (drowsy) need = null;
     // Comer de passagem: sem fome de verdade ainda, mas com a barriga já não
     // cheia, o bicho que dá com uma moita logo ali belisca, em vez de só procurar
@@ -145,8 +156,8 @@ export class Foraging {
     const directHeading = Math.atan2(dy, dx);
     const weave = Math.sin(this.#state.elapsed * 1.9 + o.wanderPhase) * .16;
     return {
-      direction: directHeading + weave,
-      desiredSpeed: WALK_SPEED * o.pace * 1.05
+      direction: directHeading + weave + this.#mind.exploreTurn(o),
+      desiredSpeed: WALK_SPEED * o.pace * 1.05 * this.#mind.exploreHaste(o)
     };
   }
 
@@ -177,7 +188,10 @@ export class Foraging {
       const gridDistance = Math.hypot(column - currentColumn, row - currentRow);
       const lastChecked = search.checked[need][zone];
       const staleness = lastChecked < 0 ? 40 : Math.min(40, this.#state.elapsed - lastChecked);
-      const score = staleness + gridDistance * 4 + Math.random() * 3 -
+      // Perto vale mais: no mundo de 820 (grade 5 × 5), o bônus por distância que a
+      // grade 3 × 3 tinha mandava o faminto sempre para o canto oposto, a 500 de
+      // distância, cruzando o centro já comido a cada alvo perdido.
+      const score = staleness - gridDistance * SEARCH_DISTANCE_COST + Math.random() * 3 -
         (zone === currentZone ? 10 : 0);
       if (score > bestScore) { bestScore = score; chosenZone = zone; }
     }
