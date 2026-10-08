@@ -1,5 +1,5 @@
 /*
- * desafios.js — banco de desafios.
+ * desafios.js — banco de desafios (em Python).
  *
  * A ordem do array é a trilha sugerida: por categoria e, dentro dela,
  * do nível iniciante para o intermediário.
@@ -12,7 +12,8 @@
  *   enunciado   HTML do enunciado
  *   funcao      nome da função que o usuário precisa escrever
  *   parametros  parâmetros do código inicial (ex.: "a, b")
- *   testes      [{ chamada: "expressão JS", esperado: valor }]
+ *   testes      [{ chamada: "expressão Python", esperado: "literal Python" }]
+ *               o esperado é lido com ast.literal_eval e mostrado com repr()
  *               os primeiros `exemplos` testes aparecem como exemplo (padrão 2)
  *   dicas       mostradas uma por vez, a cada tentativa errada
  *   solucao     código de referência (liberado após 3 erros ou ao acertar)
@@ -22,7 +23,7 @@
 window.CATEGORIAS = [
   { id: "condicionais", nome: "Condicionais" },
   { id: "loops", nome: "Loops" },
-  { id: "arrays", nome: "Arrays" },
+  { id: "arrays", nome: "Listas" },
   { id: "funcoes", nome: "Funções" },
   { id: "algoritmos", nome: "Algoritmos" },
 ];
@@ -37,30 +38,28 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Par ou ímpar",
     enunciado:
-      "<p>Escreva a função <code>parOuImpar(n)</code> que recebe um número inteiro e retorna o texto " +
+      "<p>Escreva a função <code>par_ou_impar(n)</code> que recebe um número inteiro e retorna o texto " +
       "<code>\"par\"</code> se ele for par, ou <code>\"ímpar\"</code> se for ímpar.</p>" +
       "<p>Atenção: números negativos também podem aparecer.</p>",
-    funcao: "parOuImpar",
+    funcao: "par_ou_impar",
     parametros: "n",
     testes: [
-      { chamada: "parOuImpar(4)", esperado: "par" },
-      { chamada: "parOuImpar(7)", esperado: "ímpar" },
-      { chamada: "parOuImpar(0)", esperado: "par" },
-      { chamada: "parOuImpar(-3)", esperado: "ímpar" },
-      { chamada: "parOuImpar(-8)", esperado: "par" },
+      { chamada: "par_ou_impar(4)", esperado: "'par'" },
+      { chamada: "par_ou_impar(7)", esperado: "'ímpar'" },
+      { chamada: "par_ou_impar(0)", esperado: "'par'" },
+      { chamada: "par_ou_impar(-3)", esperado: "'ímpar'" },
+      { chamada: "par_ou_impar(-8)", esperado: "'par'" },
     ],
     dicas: [
       "O operador % devolve o resto da divisão. Um número é par quando o resto da divisão por 2 é zero.",
-      "Cuidado: em JavaScript, -3 % 2 vale -1 (e não 1). Compare o resto com 0 em vez de comparar com 1.",
+      "Em Python a comparação de igualdade é `==` (um `=` só é atribuição). E não esqueça dos `:` no fim do `if` e do `else`.",
       "Confira se o texto retornado está exatamente igual: \"ímpar\" leva acento.",
     ],
     solucao:
-      "function parOuImpar(n) {\n" +
-      "  if (n % 2 === 0) {\n" +
-      "    return \"par\";\n" +
-      "  }\n" +
-      "  return \"ímpar\";\n" +
-      "}",
+      "def par_ou_impar(n):\n" +
+      "    if n % 2 == 0:\n" +
+      "        return \"par\"\n" +
+      "    return \"ímpar\"\n",
   },
   {
     id: "maior-de-tres",
@@ -68,16 +67,19 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Maior de três",
     enunciado:
-      "<p>Escreva <code>maiorDeTres(a, b, c)</code>, que retorna o maior dos três números recebidos.</p>" +
-      "<p>Tente resolver só com <code>if</code>, sem usar <code>Math.max</code>.</p>",
-    funcao: "maiorDeTres",
+      "<p>Escreva <code>maior_de_tres(a, b, c)</code>, que retorna o maior dos três números recebidos.</p>" +
+      "<p>Resolva só com <code>if</code>, sem usar <code>max()</code>.</p>",
+    funcao: "maior_de_tres",
     parametros: "a, b, c",
     testes: [
-      { chamada: "maiorDeTres(1, 5, 3)", esperado: 5 },
-      { chamada: "maiorDeTres(9, 2, 4)", esperado: 9 },
-      { chamada: "maiorDeTres(2, 2, 8)", esperado: 8 },
-      { chamada: "maiorDeTres(-1, -7, -3)", esperado: -1 },
-      { chamada: "maiorDeTres(6, 6, 6)", esperado: 6 },
+      { chamada: "maior_de_tres(1, 5, 3)", esperado: "5" },
+      { chamada: "maior_de_tres(9, 2, 4)", esperado: "9" },
+      { chamada: "maior_de_tres(2, 2, 8)", esperado: "8" },
+      { chamada: "maior_de_tres(-1, -7, -3)", esperado: "-1" },
+      { chamada: "maior_de_tres(6, 6, 6)", esperado: "6" },
+    ],
+    proibido: [
+      { padrao: "\\bmax\\s*\\(", mensagem: "Neste desafio a ideia é resolver sem max() — use if." },
     ],
     dicas: [
       "Guarde o primeiro número numa variável `maior` e depois compare com os outros dois.",
@@ -85,12 +87,13 @@ window.DESAFIOS = [
       "Lembre de retornar o valor com `return` no final.",
     ],
     solucao:
-      "function maiorDeTres(a, b, c) {\n" +
-      "  let maior = a;\n" +
-      "  if (b > maior) maior = b;\n" +
-      "  if (c > maior) maior = c;\n" +
-      "  return maior;\n" +
-      "}",
+      "def maior_de_tres(a, b, c):\n" +
+      "    maior = a\n" +
+      "    if b > maior:\n" +
+      "        maior = b\n" +
+      "    if c > maior:\n" +
+      "        maior = c\n" +
+      "    return maior\n",
   },
   {
     id: "faixa-etaria",
@@ -98,38 +101,41 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Faixa etária",
     enunciado:
-      "<p>Escreva <code>classificarIdade(idade)</code> que retorna a faixa etária:</p>" +
+      "<p>Escreva <code>classificar_idade(idade)</code> que retorna a faixa etária:</p>" +
       "<ul>" +
       "<li>0 a 12 → <code>\"criança\"</code></li>" +
       "<li>13 a 17 → <code>\"adolescente\"</code></li>" +
       "<li>18 a 59 → <code>\"adulto\"</code></li>" +
       "<li>60 ou mais → <code>\"idoso\"</code></li>" +
       "</ul>",
-    funcao: "classificarIdade",
+    funcao: "classificar_idade",
     parametros: "idade",
     testes: [
-      { chamada: "classificarIdade(8)", esperado: "criança" },
-      { chamada: "classificarIdade(30)", esperado: "adulto" },
-      { chamada: "classificarIdade(12)", esperado: "criança" },
-      { chamada: "classificarIdade(13)", esperado: "adolescente" },
-      { chamada: "classificarIdade(17)", esperado: "adolescente" },
-      { chamada: "classificarIdade(18)", esperado: "adulto" },
-      { chamada: "classificarIdade(59)", esperado: "adulto" },
-      { chamada: "classificarIdade(60)", esperado: "idoso" },
-      { chamada: "classificarIdade(91)", esperado: "idoso" },
+      { chamada: "classificar_idade(8)", esperado: "'criança'" },
+      { chamada: "classificar_idade(30)", esperado: "'adulto'" },
+      { chamada: "classificar_idade(12)", esperado: "'criança'" },
+      { chamada: "classificar_idade(13)", esperado: "'adolescente'" },
+      { chamada: "classificar_idade(17)", esperado: "'adolescente'" },
+      { chamada: "classificar_idade(18)", esperado: "'adulto'" },
+      { chamada: "classificar_idade(59)", esperado: "'adulto'" },
+      { chamada: "classificar_idade(60)", esperado: "'idoso'" },
+      { chamada: "classificar_idade(91)", esperado: "'idoso'" },
     ],
     dicas: [
-      "Use uma sequência de if / else if, testando as faixas da menor para a maior idade.",
+      "Use uma sequência de `if` / `elif` / `else`, testando as faixas da menor para a maior idade.",
       "Os limites são inclusivos: 12 ainda é criança, 13 já é adolescente. Revise o uso de < e <=.",
       "Confira acentos e letras: \"criança\" tem ç.",
     ],
     solucao:
-      "function classificarIdade(idade) {\n" +
-      "  if (idade <= 12) return \"criança\";\n" +
-      "  if (idade <= 17) return \"adolescente\";\n" +
-      "  if (idade <= 59) return \"adulto\";\n" +
-      "  return \"idoso\";\n" +
-      "}",
+      "def classificar_idade(idade):\n" +
+      "    if idade <= 12:\n" +
+      "        return \"criança\"\n" +
+      "    elif idade <= 17:\n" +
+      "        return \"adolescente\"\n" +
+      "    elif idade <= 59:\n" +
+      "        return \"adulto\"\n" +
+      "    else:\n" +
+      "        return \"idoso\"\n",
   },
   {
     id: "calculadora",
@@ -143,31 +149,32 @@ window.DESAFIOS = [
     funcao: "calculadora",
     parametros: "a, operador, b",
     testes: [
-      { chamada: 'calculadora(2, "+", 3)', esperado: 5 },
-      { chamada: 'calculadora(10, "/", 4)', esperado: 2.5 },
-      { chamada: 'calculadora(7, "-", 9)', esperado: -2 },
-      { chamada: 'calculadora(6, "*", 7)', esperado: 42 },
-      { chamada: 'calculadora(5, "/", 0)', esperado: "erro" },
-      { chamada: 'calculadora(1, "%", 1)', esperado: "erro" },
+      { chamada: 'calculadora(2, "+", 3)', esperado: "5" },
+      { chamada: 'calculadora(10, "/", 4)', esperado: "2.5" },
+      { chamada: 'calculadora(7, "-", 9)', esperado: "-2" },
+      { chamada: 'calculadora(6, "*", 7)', esperado: "42" },
+      { chamada: 'calculadora(5, "/", 0)', esperado: "'erro'" },
+      { chamada: 'calculadora(1, "%", 1)', esperado: "'erro'" },
     ],
     dicas: [
-      "Quando uma mesma variável é comparada com vários valores, o `switch (operador)` deixa o código mais limpo que vários if.",
-      "Em JavaScript, 5 / 0 não dá erro: dá Infinity. Por isso você precisa checar `b === 0` antes de dividir.",
-      "O `default` do switch (ou o último else) cobre os operadores desconhecidos.",
+      "Compare o operador com cada símbolo usando `if operador == \"+\":`, depois `elif`, e assim por diante.",
+      "Em Python, 5 / 0 não devolve infinito: lança ZeroDivisionError e o programa para. Cheque `b == 0` antes de dividir.",
+      "O `else` final cobre os operadores desconhecidos. (Quem já conhece pode usar `match operador:` com `case \"+\":`.)",
     ],
     solucao:
-      "function calculadora(a, operador, b) {\n" +
-      "  switch (operador) {\n" +
-      "    case \"+\": return a + b;\n" +
-      "    case \"-\": return a - b;\n" +
-      "    case \"*\": return a * b;\n" +
-      "    case \"/\":\n" +
-      "      if (b === 0) return \"erro\";\n" +
-      "      return a / b;\n" +
-      "    default:\n" +
-      "      return \"erro\";\n" +
-      "  }\n" +
-      "}",
+      "def calculadora(a, operador, b):\n" +
+      "    if operador == \"+\":\n" +
+      "        return a + b\n" +
+      "    elif operador == \"-\":\n" +
+      "        return a - b\n" +
+      "    elif operador == \"*\":\n" +
+      "        return a * b\n" +
+      "    elif operador == \"/\":\n" +
+      "        if b == 0:\n" +
+      "            return \"erro\"\n" +
+      "        return a / b\n" +
+      "    else:\n" +
+      "        return \"erro\"\n",
   },
   {
     id: "ano-bissexto",
@@ -175,29 +182,28 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Ano bissexto",
     enunciado:
-      "<p>Escreva <code>anoBissexto(ano)</code> que retorna <code>true</code> se o ano for bissexto e " +
-      "<code>false</code> caso contrário.</p>" +
+      "<p>Escreva <code>ano_bissexto(ano)</code> que retorna <code>True</code> se o ano for bissexto e " +
+      "<code>False</code> caso contrário.</p>" +
       "<p>Regra: um ano é bissexto se for divisível por 4, <strong>exceto</strong> os divisíveis por 100 — " +
       "a não ser que também sejam divisíveis por 400.</p>",
-    funcao: "anoBissexto",
+    funcao: "ano_bissexto",
     parametros: "ano",
     testes: [
-      { chamada: "anoBissexto(2024)", esperado: true },
-      { chamada: "anoBissexto(1900)", esperado: false },
-      { chamada: "anoBissexto(2023)", esperado: false },
-      { chamada: "anoBissexto(2000)", esperado: true },
-      { chamada: "anoBissexto(2100)", esperado: false },
-      { chamada: "anoBissexto(1600)", esperado: true },
+      { chamada: "ano_bissexto(2024)", esperado: "True" },
+      { chamada: "ano_bissexto(1900)", esperado: "False" },
+      { chamada: "ano_bissexto(2023)", esperado: "False" },
+      { chamada: "ano_bissexto(2000)", esperado: "True" },
+      { chamada: "ano_bissexto(2100)", esperado: "False" },
+      { chamada: "ano_bissexto(1600)", esperado: "True" },
     ],
     dicas: [
-      "Divisível por X é o mesmo que `ano % X === 0`.",
+      "Divisível por X é o mesmo que `ano % X == 0`.",
       "1900 é divisível por 4 e por 100, mas não por 400 — então NÃO é bissexto. 2000 é divisível por 400, então é.",
-      "Dá para escrever tudo numa linha: (divisível por 4 E não por 100) OU divisível por 400.",
+      "Em Python os operadores lógicos são palavras: `and`, `or`, `not`. Dá para escrever tudo numa linha: (divisível por 4 and não por 100) or divisível por 400.",
     ],
     solucao:
-      "function anoBissexto(ano) {\n" +
-      "  return (ano % 4 === 0 && ano % 100 !== 0) || ano % 400 === 0;\n" +
-      "}",
+      "def ano_bissexto(ano):\n" +
+      "    return (ano % 4 == 0 and ano % 100 != 0) or ano % 400 == 0\n",
   },
   {
     id: "fizzbuzz-numero",
@@ -205,36 +211,38 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "FizzBuzz de um número",
     enunciado:
-      "<p>Escreva <code>fizzBuzzNumero(n)</code> que retorna:</p>" +
+      "<p>Escreva <code>fizz_buzz_numero(n)</code> que retorna:</p>" +
       "<ul>" +
       "<li><code>\"FizzBuzz\"</code> se n for divisível por 3 e por 5</li>" +
       "<li><code>\"Fizz\"</code> se for divisível só por 3</li>" +
       "<li><code>\"Buzz\"</code> se for divisível só por 5</li>" +
       "<li>o próprio número <strong>como texto</strong> nos outros casos (ex.: <code>\"7\"</code>)</li>" +
       "</ul>",
-    funcao: "fizzBuzzNumero",
+    funcao: "fizz_buzz_numero",
     parametros: "n",
     testes: [
-      { chamada: "fizzBuzzNumero(9)", esperado: "Fizz" },
-      { chamada: "fizzBuzzNumero(15)", esperado: "FizzBuzz" },
-      { chamada: "fizzBuzzNumero(10)", esperado: "Buzz" },
-      { chamada: "fizzBuzzNumero(7)", esperado: "7" },
-      { chamada: "fizzBuzzNumero(3)", esperado: "Fizz" },
-      { chamada: "fizzBuzzNumero(30)", esperado: "FizzBuzz" },
-      { chamada: "fizzBuzzNumero(1)", esperado: "1" },
+      { chamada: "fizz_buzz_numero(9)", esperado: "'Fizz'" },
+      { chamada: "fizz_buzz_numero(15)", esperado: "'FizzBuzz'" },
+      { chamada: "fizz_buzz_numero(10)", esperado: "'Buzz'" },
+      { chamada: "fizz_buzz_numero(7)", esperado: "'7'" },
+      { chamada: "fizz_buzz_numero(3)", esperado: "'Fizz'" },
+      { chamada: "fizz_buzz_numero(30)", esperado: "'FizzBuzz'" },
+      { chamada: "fizz_buzz_numero(1)", esperado: "'1'" },
     ],
     dicas: [
       "A ordem dos if importa: teste o caso \"divisível por 3 e por 5\" ANTES dos outros.",
       "Divisível por 3 e por 5 é o mesmo que divisível por 15.",
-      "Para o último caso, converta o número em texto com String(n).",
+      "Para o último caso, converta o número em texto com `str(n)`.",
     ],
     solucao:
-      "function fizzBuzzNumero(n) {\n" +
-      "  if (n % 15 === 0) return \"FizzBuzz\";\n" +
-      "  if (n % 3 === 0) return \"Fizz\";\n" +
-      "  if (n % 5 === 0) return \"Buzz\";\n" +
-      "  return String(n);\n" +
-      "}",
+      "def fizz_buzz_numero(n):\n" +
+      "    if n % 15 == 0:\n" +
+      "        return \"FizzBuzz\"\n" +
+      "    if n % 3 == 0:\n" +
+      "        return \"Fizz\"\n" +
+      "    if n % 5 == 0:\n" +
+      "        return \"Buzz\"\n" +
+      "    return str(n)\n",
   },
 
   // ===================================================================
@@ -246,29 +254,30 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Soma de 1 até N",
     enunciado:
-      "<p>Escreva <code>somaAte(n)</code> que retorna a soma de todos os inteiros de 1 até <code>n</code>.</p>" +
-      "<p>Se <code>n</code> for 0, o resultado é 0.</p>",
-    funcao: "somaAte",
+      "<p>Escreva <code>soma_ate(n)</code> que retorna a soma de todos os inteiros de 1 até <code>n</code>.</p>" +
+      "<p>Se <code>n</code> for 0, o resultado é 0. Use um loop (sem <code>sum()</code>).</p>",
+    funcao: "soma_ate",
     parametros: "n",
     testes: [
-      { chamada: "somaAte(5)", esperado: 15 },
-      { chamada: "somaAte(10)", esperado: 55 },
-      { chamada: "somaAte(1)", esperado: 1 },
-      { chamada: "somaAte(0)", esperado: 0 },
-      { chamada: "somaAte(100)", esperado: 5050 },
+      { chamada: "soma_ate(5)", esperado: "15" },
+      { chamada: "soma_ate(10)", esperado: "55" },
+      { chamada: "soma_ate(1)", esperado: "1" },
+      { chamada: "soma_ate(0)", esperado: "0" },
+      { chamada: "soma_ate(100)", esperado: "5050" },
+    ],
+    proibido: [
+      { padrao: "\\bsum\\s*\\(", mensagem: "Neste desafio a ideia é somar com um loop, sem sum()." },
     ],
     dicas: [
-      "Crie uma variável `total` começando em 0 e use um for de 1 até n.",
-      "A condição do for precisa incluir o próprio n: use `i <= n`.",
+      "Crie uma variável `total = 0` e use `for i in range(...)`.",
+      "`range(a, b)` vai de a até b - 1: o b fica de fora. Para incluir o n, use `range(1, n + 1)`.",
     ],
     solucao:
-      "function somaAte(n) {\n" +
-      "  let total = 0;\n" +
-      "  for (let i = 1; i <= n; i++) {\n" +
-      "    total += i;\n" +
-      "  }\n" +
-      "  return total;\n" +
-      "}",
+      "def soma_ate(n):\n" +
+      "    total = 0\n" +
+      "    for i in range(1, n + 1):\n" +
+      "        total += i\n" +
+      "    return total\n",
   },
   {
     id: "tabuada",
@@ -276,28 +285,26 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Tabuada",
     enunciado:
-      "<p>Escreva <code>tabuada(n)</code> que retorna um array com os resultados de " +
+      "<p>Escreva <code>tabuada(n)</code> que retorna uma lista com os resultados de " +
       "<code>n × 1</code> até <code>n × 10</code>, nessa ordem.</p>",
     funcao: "tabuada",
     parametros: "n",
     testes: [
-      { chamada: "tabuada(2)", esperado: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20] },
-      { chamada: "tabuada(7)", esperado: [7, 14, 21, 28, 35, 42, 49, 56, 63, 70] },
-      { chamada: "tabuada(0)", esperado: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
-      { chamada: "tabuada(-1)", esperado: [-1, -2, -3, -4, -5, -6, -7, -8, -9, -10] },
+      { chamada: "tabuada(2)", esperado: "[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]" },
+      { chamada: "tabuada(7)", esperado: "[7, 14, 21, 28, 35, 42, 49, 56, 63, 70]" },
+      { chamada: "tabuada(0)", esperado: "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]" },
+      { chamada: "tabuada(-1)", esperado: "[-1, -2, -3, -4, -5, -6, -7, -8, -9, -10]" },
     ],
     dicas: [
-      "Comece com um array vazio: `const resultado = [];`",
-      "Use um for de 1 até 10 e, a cada volta, faça `resultado.push(n * i)`.",
+      "Comece com uma lista vazia: `resultado = []`",
+      "Use `for i in range(1, 11):` e, a cada volta, faça `resultado.append(n * i)`.",
     ],
     solucao:
-      "function tabuada(n) {\n" +
-      "  const resultado = [];\n" +
-      "  for (let i = 1; i <= 10; i++) {\n" +
-      "    resultado.push(n * i);\n" +
-      "  }\n" +
-      "  return resultado;\n" +
-      "}",
+      "def tabuada(n):\n" +
+      "    resultado = []\n" +
+      "    for i in range(1, 11):\n" +
+      "        resultado.append(n * i)\n" +
+      "    return resultado\n",
   },
   {
     id: "fatorial",
@@ -307,28 +314,29 @@ window.DESAFIOS = [
     enunciado:
       "<p>Escreva <code>fatorial(n)</code>. O fatorial de n é o produto de todos os inteiros de 1 até n: " +
       "<code>5! = 5 × 4 × 3 × 2 × 1 = 120</code>.</p>" +
-      "<p>Por definição, <code>0! = 1</code>.</p>",
+      "<p>Por definição, <code>0! = 1</code>. Use um loop (sem <code>math.factorial</code>).</p>",
     funcao: "fatorial",
     parametros: "n",
     testes: [
-      { chamada: "fatorial(5)", esperado: 120 },
-      { chamada: "fatorial(0)", esperado: 1 },
-      { chamada: "fatorial(1)", esperado: 1 },
-      { chamada: "fatorial(7)", esperado: 5040 },
-      { chamada: "fatorial(10)", esperado: 3628800 },
+      { chamada: "fatorial(5)", esperado: "120" },
+      { chamada: "fatorial(0)", esperado: "1" },
+      { chamada: "fatorial(1)", esperado: "1" },
+      { chamada: "fatorial(7)", esperado: "5040" },
+      { chamada: "fatorial(10)", esperado: "3628800" },
+    ],
+    proibido: [
+      { padrao: "\\bfactorial\\b", mensagem: "Neste desafio a ideia é multiplicar com um loop, sem math.factorial." },
     ],
     dicas: [
       "Numa multiplicação acumulada, a variável começa em 1 (e não em 0, senão tudo vira 0).",
-      "Se o loop vai de 2 até n, o caso n = 0 já devolve 1 sem precisar de if.",
+      "Se o loop for `range(2, n + 1)`, o caso n = 0 já devolve 1 sem precisar de if.",
     ],
     solucao:
-      "function fatorial(n) {\n" +
-      "  let resultado = 1;\n" +
-      "  for (let i = 2; i <= n; i++) {\n" +
-      "    resultado *= i;\n" +
-      "  }\n" +
-      "  return resultado;\n" +
-      "}",
+      "def fatorial(n):\n" +
+      "    resultado = 1\n" +
+      "    for i in range(2, n + 1):\n" +
+      "        resultado *= i\n" +
+      "    return resultado\n",
   },
   {
     id: "contar-vogais",
@@ -336,32 +344,30 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Contar vogais",
     enunciado:
-      "<p>Escreva <code>contarVogais(texto)</code> que retorna quantas vogais (a, e, i, o, u) existem no texto, " +
+      "<p>Escreva <code>contar_vogais(texto)</code> que retorna quantas vogais (a, e, i, o, u) existem no texto, " +
       "contando maiúsculas e minúsculas.</p>" +
       "<p>Os textos dos testes não têm acentos.</p>",
-    funcao: "contarVogais",
+    funcao: "contar_vogais",
     parametros: "texto",
     testes: [
-      { chamada: 'contarVogais("programar")', esperado: 3 },
-      { chamada: 'contarVogais("JavaScript")', esperado: 3 },
-      { chamada: 'contarVogais("xyz")', esperado: 0 },
-      { chamada: 'contarVogais("")', esperado: 0 },
-      { chamada: 'contarVogais("AEIOU aeiou")', esperado: 10 },
+      { chamada: 'contar_vogais("programar")', esperado: "3" },
+      { chamada: 'contar_vogais("Paralelepipedo")', esperado: "7" },
+      { chamada: 'contar_vogais("xyz")', esperado: "0" },
+      { chamada: 'contar_vogais("")', esperado: "0" },
+      { chamada: 'contar_vogais("AEIOU aeiou")', esperado: "10" },
     ],
     dicas: [
-      "Dá para percorrer um texto letra por letra com `for (const letra of texto)`.",
-      "Transforme o texto em minúsculas antes com `texto.toLowerCase()` para não precisar testar \"A\" e \"a\".",
-      "`\"aeiou\".includes(letra)` diz se a letra é uma vogal.",
+      "Dá para percorrer um texto letra por letra com `for letra in texto:`.",
+      "Transforme o texto em minúsculas antes com `texto.lower()` para não precisar testar \"A\" e \"a\".",
+      "`letra in \"aeiou\"` diz se a letra é uma vogal.",
     ],
     solucao:
-      "function contarVogais(texto) {\n" +
-      "  const vogais = \"aeiou\";\n" +
-      "  let total = 0;\n" +
-      "  for (const letra of texto.toLowerCase()) {\n" +
-      "    if (vogais.includes(letra)) total++;\n" +
-      "  }\n" +
-      "  return total;\n" +
-      "}",
+      "def contar_vogais(texto):\n" +
+      "    total = 0\n" +
+      "    for letra in texto.lower():\n" +
+      "        if letra in \"aeiou\":\n" +
+      "            total += 1\n" +
+      "    return total\n",
   },
   {
     id: "soma-digitos",
@@ -369,31 +375,29 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Soma dos dígitos",
     enunciado:
-      "<p>Escreva <code>somaDigitos(n)</code> que retorna a soma dos dígitos de um inteiro não negativo. " +
+      "<p>Escreva <code>soma_digitos(n)</code> que retorna a soma dos dígitos de um inteiro não negativo. " +
       "Exemplo: <code>4096</code> → <code>4 + 0 + 9 + 6 = 19</code>.</p>" +
       "<p>Desafio extra: resolva só com matemática, sem converter o número em texto.</p>",
-    funcao: "somaDigitos",
+    funcao: "soma_digitos",
     parametros: "n",
     testes: [
-      { chamada: "somaDigitos(123)", esperado: 6 },
-      { chamada: "somaDigitos(4096)", esperado: 19 },
-      { chamada: "somaDigitos(9)", esperado: 9 },
-      { chamada: "somaDigitos(0)", esperado: 0 },
-      { chamada: "somaDigitos(1001)", esperado: 2 },
+      { chamada: "soma_digitos(123)", esperado: "6" },
+      { chamada: "soma_digitos(4096)", esperado: "19" },
+      { chamada: "soma_digitos(9)", esperado: "9" },
+      { chamada: "soma_digitos(0)", esperado: "0" },
+      { chamada: "soma_digitos(1001)", esperado: "2" },
     ],
     dicas: [
-      "`n % 10` dá o último dígito. `Math.floor(n / 10)` remove o último dígito.",
-      "Repita com `while (n > 0)`: some o último dígito e depois corte-o.",
+      "`n % 10` dá o último dígito. `n // 10` (divisão inteira) remove o último dígito.",
+      "Repita com `while n > 0:` — some o último dígito e depois corte-o. Cuidado: `n / 10` dá número quebrado e o loop não termina como você espera.",
     ],
     solucao:
-      "function somaDigitos(n) {\n" +
-      "  let soma = 0;\n" +
-      "  while (n > 0) {\n" +
-      "    soma += n % 10;\n" +
-      "    n = Math.floor(n / 10);\n" +
-      "  }\n" +
-      "  return soma;\n" +
-      "}",
+      "def soma_digitos(n):\n" +
+      "    soma = 0\n" +
+      "    while n > 0:\n" +
+      "        soma += n % 10\n" +
+      "        n = n // 10\n" +
+      "    return soma\n",
   },
   {
     id: "numero-primo",
@@ -401,34 +405,36 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Número primo",
     enunciado:
-      "<p>Escreva <code>ehPrimo(n)</code> que retorna <code>true</code> se n for primo.</p>" +
+      "<p>Escreva <code>eh_primo(n)</code> que retorna <code>True</code> se n for primo e <code>False</code> se não for.</p>" +
       "<p>Um número primo é maior que 1 e só é divisível por 1 e por ele mesmo. " +
       "0 e 1 <strong>não</strong> são primos.</p>",
-    funcao: "ehPrimo",
+    funcao: "eh_primo",
     parametros: "n",
     testes: [
-      { chamada: "ehPrimo(7)", esperado: true },
-      { chamada: "ehPrimo(10)", esperado: false },
-      { chamada: "ehPrimo(2)", esperado: true },
-      { chamada: "ehPrimo(1)", esperado: false },
-      { chamada: "ehPrimo(0)", esperado: false },
-      { chamada: "ehPrimo(9)", esperado: false },
-      { chamada: "ehPrimo(97)", esperado: true },
-      { chamada: "ehPrimo(100)", esperado: false },
+      { chamada: "eh_primo(7)", esperado: "True" },
+      { chamada: "eh_primo(10)", esperado: "False" },
+      { chamada: "eh_primo(2)", esperado: "True" },
+      { chamada: "eh_primo(1)", esperado: "False" },
+      { chamada: "eh_primo(0)", esperado: "False" },
+      { chamada: "eh_primo(9)", esperado: "False" },
+      { chamada: "eh_primo(97)", esperado: "True" },
+      { chamada: "eh_primo(100)", esperado: "False" },
     ],
     dicas: [
-      "Trate primeiro o caso especial: se n < 2, retorne false.",
-      "Teste os divisores de 2 até n - 1. Se algum dividir n sem resto, ele não é primo.",
-      "Otimização: basta testar até a raiz quadrada de n (condição `i * i <= n`). Cuidado para não pular o 9 = 3 × 3.",
+      "Trate primeiro o caso especial: se n < 2, retorne False.",
+      "Teste os divisores com `for i in range(2, n):`. Se algum dividir n sem resto, ele não é primo.",
+      "Otimização: basta testar enquanto `i * i <= n` (um while). Cuidado para não pular o 9 = 3 × 3.",
     ],
     solucao:
-      "function ehPrimo(n) {\n" +
-      "  if (n < 2) return false;\n" +
-      "  for (let i = 2; i * i <= n; i++) {\n" +
-      "    if (n % i === 0) return false;\n" +
-      "  }\n" +
-      "  return true;\n" +
-      "}",
+      "def eh_primo(n):\n" +
+      "    if n < 2:\n" +
+      "        return False\n" +
+      "    i = 2\n" +
+      "    while i * i <= n:\n" +
+      "        if n % i == 0:\n" +
+      "            return False\n" +
+      "        i += 1\n" +
+      "    return True\n",
   },
   {
     id: "fibonacci",
@@ -443,33 +449,28 @@ window.DESAFIOS = [
     funcao: "fibonacci",
     parametros: "n",
     testes: [
-      { chamada: "fibonacci(7)", esperado: 13 },
-      { chamada: "fibonacci(10)", esperado: 55 },
-      { chamada: "fibonacci(0)", esperado: 0 },
-      { chamada: "fibonacci(1)", esperado: 1 },
-      { chamada: "fibonacci(2)", esperado: 1 },
-      { chamada: "fibonacci(20)", esperado: 6765 },
+      { chamada: "fibonacci(7)", esperado: "13" },
+      { chamada: "fibonacci(10)", esperado: "55" },
+      { chamada: "fibonacci(0)", esperado: "0" },
+      { chamada: "fibonacci(1)", esperado: "1" },
+      { chamada: "fibonacci(2)", esperado: "1" },
+      { chamada: "fibonacci(20)", esperado: "6765" },
     ],
     dicas: [
       "Guarde dois valores: o termo anterior e o atual. Comece com 0 e 1.",
       "A cada volta do loop, o novo atual é a soma dos dois, e o anterior passa a ser o atual antigo.",
-      "Use uma variável temporária para não perder um valor durante a troca.",
+      "Python troca duas variáveis de uma vez, sem variável temporária: `anterior, atual = atual, anterior + atual`.",
     ],
     solucao:
-      "function fibonacci(n) {\n" +
-      "  let anterior = 0;\n" +
-      "  let atual = 1;\n" +
-      "  for (let i = 0; i < n; i++) {\n" +
-      "    const proximo = anterior + atual;\n" +
-      "    anterior = atual;\n" +
-      "    atual = proximo;\n" +
-      "  }\n" +
-      "  return anterior;\n" +
-      "}",
+      "def fibonacci(n):\n" +
+      "    anterior, atual = 0, 1\n" +
+      "    for _ in range(n):\n" +
+      "        anterior, atual = atual, anterior + atual\n" +
+      "    return anterior\n",
   },
 
   // ===================================================================
-  // ARRAYS
+  // LISTAS
   // ===================================================================
   {
     id: "soma-array",
@@ -477,29 +478,31 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Soma dos elementos",
     enunciado:
-      "<p>Escreva <code>somaArray(numeros)</code> que retorna a soma de todos os números do array. " +
-      "Um array vazio soma 0.</p>",
-    funcao: "somaArray",
+      "<p>Escreva <code>soma_lista(numeros)</code> que retorna a soma de todos os números da lista. " +
+      "Uma lista vazia soma 0.</p>" +
+      "<p>Percorra a lista com um loop, sem usar <code>sum()</code>.</p>",
+    funcao: "soma_lista",
     parametros: "numeros",
     testes: [
-      { chamada: "somaArray([1, 2, 3])", esperado: 6 },
-      { chamada: "somaArray([])", esperado: 0 },
-      { chamada: "somaArray([10])", esperado: 10 },
-      { chamada: "somaArray([-5, 10, -2])", esperado: 3 },
-      { chamada: "somaArray([1.5, 2.5])", esperado: 4 },
+      { chamada: "soma_lista([1, 2, 3])", esperado: "6" },
+      { chamada: "soma_lista([])", esperado: "0" },
+      { chamada: "soma_lista([10])", esperado: "10" },
+      { chamada: "soma_lista([-5, 10, -2])", esperado: "3" },
+      { chamada: "soma_lista([1.5, 2.5])", esperado: "4.0" },
+    ],
+    proibido: [
+      { padrao: "\\bsum\\s*\\(", mensagem: "Neste desafio a ideia é somar com um loop, sem sum()." },
     ],
     dicas: [
-      "Comece um acumulador em 0 e percorra o array com `for (const n of numeros)`.",
-      "Não esqueça de retornar o acumulador depois do loop.",
+      "Comece um acumulador em 0 e percorra a lista com `for n in numeros:`.",
+      "Não esqueça de retornar o acumulador depois do loop — fora dele, com a indentação do `for`.",
     ],
     solucao:
-      "function somaArray(numeros) {\n" +
-      "  let total = 0;\n" +
-      "  for (const n of numeros) {\n" +
-      "    total += n;\n" +
-      "  }\n" +
-      "  return total;\n" +
-      "}",
+      "def soma_lista(numeros):\n" +
+      "    total = 0\n" +
+      "    for n in numeros:\n" +
+      "        total += n\n" +
+      "    return total\n",
   },
   {
     id: "maior-elemento",
@@ -507,33 +510,33 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Maior elemento",
     enunciado:
-      "<p>Escreva <code>maiorElemento(numeros)</code> que retorna o maior número do array. " +
-      "O array sempre terá pelo menos um elemento.</p>" +
-      "<p>Resolva sem <code>Math.max</code>.</p>",
-    funcao: "maiorElemento",
+      "<p>Escreva <code>maior_elemento(numeros)</code> que retorna o maior número da lista. " +
+      "A lista sempre terá pelo menos um elemento.</p>" +
+      "<p>Resolva sem <code>max()</code>.</p>",
+    funcao: "maior_elemento",
     parametros: "numeros",
     testes: [
-      { chamada: "maiorElemento([3, 9, 2])", esperado: 9 },
-      { chamada: "maiorElemento([-4, -1, -8])", esperado: -1 },
-      { chamada: "maiorElemento([7])", esperado: 7 },
-      { chamada: "maiorElemento([1, 2, 3, 4, 5])", esperado: 5 },
-      { chamada: "maiorElemento([50, 2, 50, 1])", esperado: 50 },
+      { chamada: "maior_elemento([3, 9, 2])", esperado: "9" },
+      { chamada: "maior_elemento([-4, -1, -8])", esperado: "-1" },
+      { chamada: "maior_elemento([7])", esperado: "7" },
+      { chamada: "maior_elemento([1, 2, 3, 4, 5])", esperado: "5" },
+      { chamada: "maior_elemento([50, 2, 50, 1])", esperado: "50" },
     ],
     proibido: [
-      { padrao: "Math\\.max", mensagem: "Neste desafio a ideia é resolver sem Math.max — use um loop." },
+      { padrao: "\\bmax\\s*\\(", mensagem: "Neste desafio a ideia é resolver sem max() — use um loop." },
+      { padrao: "\\bsort(ed)?\\s*\\(", mensagem: "Neste desafio a ideia é não ordenar — percorra a lista guardando o maior." },
     ],
     dicas: [
-      "Comece supondo que o maior é o primeiro elemento: `let maior = numeros[0];`",
-      "Se você começou com `let maior = 0`, um array só de negativos vai dar errado. Comece pelo primeiro elemento.",
+      "Comece supondo que o maior é o primeiro elemento: `maior = numeros[0]`",
+      "Se você começou com `maior = 0`, uma lista só de negativos vai dar errado. Comece pelo primeiro elemento.",
     ],
     solucao:
-      "function maiorElemento(numeros) {\n" +
-      "  let maior = numeros[0];\n" +
-      "  for (let i = 1; i < numeros.length; i++) {\n" +
-      "    if (numeros[i] > maior) maior = numeros[i];\n" +
-      "  }\n" +
-      "  return maior;\n" +
-      "}",
+      "def maior_elemento(numeros):\n" +
+      "    maior = numeros[0]\n" +
+      "    for n in numeros:\n" +
+      "        if n > maior:\n" +
+      "            maior = n\n" +
+      "    return maior\n",
   },
   {
     id: "filtrar-pares",
@@ -541,29 +544,28 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Filtrar pares",
     enunciado:
-      "<p>Escreva <code>filtrarPares(numeros)</code> que retorna um <strong>novo</strong> array só com os números pares, " +
+      "<p>Escreva <code>filtrar_pares(numeros)</code> que retorna uma <strong>nova</strong> lista só com os números pares, " +
       "mantendo a ordem original.</p>",
-    funcao: "filtrarPares",
+    funcao: "filtrar_pares",
     parametros: "numeros",
     testes: [
-      { chamada: "filtrarPares([1, 2, 3, 4, 5, 6])", esperado: [2, 4, 6] },
-      { chamada: "filtrarPares([1, 3, 5])", esperado: [] },
-      { chamada: "filtrarPares([])", esperado: [] },
-      { chamada: "filtrarPares([0, -2, 7])", esperado: [0, -2] },
-      { chamada: "filtrarPares([8, 8, 1])", esperado: [8, 8] },
+      { chamada: "filtrar_pares([1, 2, 3, 4, 5, 6])", esperado: "[2, 4, 6]" },
+      { chamada: "filtrar_pares([1, 3, 5])", esperado: "[]" },
+      { chamada: "filtrar_pares([])", esperado: "[]" },
+      { chamada: "filtrar_pares([0, -2, 7])", esperado: "[0, -2]" },
+      { chamada: "filtrar_pares([8, 8, 1])", esperado: "[8, 8]" },
     ],
     dicas: [
-      "Crie um array vazio e use `push` para colocar só os elementos que passam no teste `n % 2 === 0`.",
-      "Também dá para resolver em uma linha com `numeros.filter(...)`.",
+      "Crie uma lista vazia e use `append` para colocar só os elementos que passam no teste `n % 2 == 0`.",
+      "Também dá para resolver em uma linha com uma list comprehension: `[n for n in numeros if ...]`.",
     ],
     solucao:
-      "function filtrarPares(numeros) {\n" +
-      "  const pares = [];\n" +
-      "  for (const n of numeros) {\n" +
-      "    if (n % 2 === 0) pares.push(n);\n" +
-      "  }\n" +
-      "  return pares;\n" +
-      "}",
+      "def filtrar_pares(numeros):\n" +
+      "    pares = []\n" +
+      "    for n in numeros:\n" +
+      "        if n % 2 == 0:\n" +
+      "            pares.append(n)\n" +
+      "    return pares\n",
   },
   {
     id: "media",
@@ -571,64 +573,59 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Média",
     enunciado:
-      "<p>Escreva <code>media(numeros)</code> que retorna a média aritmética dos números do array " +
+      "<p>Escreva <code>media(numeros)</code> que retorna a média aritmética dos números da lista " +
       "(soma dividida pela quantidade).</p>" +
-      "<p>Se o array estiver vazio, retorne <code>0</code>.</p>",
+      "<p>Se a lista estiver vazia, retorne <code>0</code>.</p>",
     funcao: "media",
     parametros: "numeros",
     testes: [
-      { chamada: "media([2, 4, 6])", esperado: 4 },
-      { chamada: "media([1, 2])", esperado: 1.5 },
-      { chamada: "media([])", esperado: 0 },
-      { chamada: "media([10])", esperado: 10 },
-      { chamada: "media([-3, 3])", esperado: 0 },
+      { chamada: "media([2, 4, 6])", esperado: "4.0" },
+      { chamada: "media([1, 2])", esperado: "1.5" },
+      { chamada: "media([])", esperado: "0" },
+      { chamada: "media([10])", esperado: "10.0" },
+      { chamada: "media([-3, 3])", esperado: "0.0" },
     ],
     dicas: [
-      "Some tudo como no desafio \"Soma dos elementos\" e divida por `numeros.length`.",
-      "Array vazio: 0 / 0 dá NaN em JavaScript. Trate esse caso antes com um if.",
+      "Some tudo (aqui pode usar `sum(numeros)`) e divida pela quantidade, `len(numeros)`.",
+      "Lista vazia: dividir por 0 lança ZeroDivisionError. Trate esse caso antes com um if.",
     ],
     solucao:
-      "function media(numeros) {\n" +
-      "  if (numeros.length === 0) return 0;\n" +
-      "  let soma = 0;\n" +
-      "  for (const n of numeros) {\n" +
-      "    soma += n;\n" +
-      "  }\n" +
-      "  return soma / numeros.length;\n" +
-      "}",
+      "def media(numeros):\n" +
+      "    if len(numeros) == 0:\n" +
+      "        return 0\n" +
+      "    return sum(numeros) / len(numeros)\n",
   },
   {
     id: "inverter-array",
     categoria: "arrays",
     nivel: "intermediario",
-    titulo: "Inverter array",
+    titulo: "Inverter lista",
     enunciado:
-      "<p>Escreva <code>inverterArray(lista)</code> que retorna um novo array com os elementos em ordem inversa.</p>" +
-      "<p>Não vale usar <code>.reverse()</code>: monte o array invertido com um loop.</p>",
-    funcao: "inverterArray",
+      "<p>Escreva <code>inverter_lista(lista)</code> que retorna uma nova lista com os elementos em ordem inversa.</p>" +
+      "<p>Não vale usar <code>.reverse()</code>, <code>reversed()</code> nem o fatiamento <code>[::-1]</code>: " +
+      "monte a lista invertida com um loop.</p>",
+    funcao: "inverter_lista",
     parametros: "lista",
     testes: [
-      { chamada: "inverterArray([1, 2, 3])", esperado: [3, 2, 1] },
-      { chamada: 'inverterArray(["a", "b"])', esperado: ["b", "a"] },
-      { chamada: "inverterArray([])", esperado: [] },
-      { chamada: "inverterArray([42])", esperado: [42] },
-      { chamada: "inverterArray([1, 2, 3, 4])", esperado: [4, 3, 2, 1] },
+      { chamada: "inverter_lista([1, 2, 3])", esperado: "[3, 2, 1]" },
+      { chamada: 'inverter_lista(["a", "b"])', esperado: "['b', 'a']" },
+      { chamada: "inverter_lista([])", esperado: "[]" },
+      { chamada: "inverter_lista([42])", esperado: "[42]" },
+      { chamada: "inverter_lista([1, 2, 3, 4])", esperado: "[4, 3, 2, 1]" },
     ],
     proibido: [
-      { padrao: "\\.reverse\\s*\\(", mensagem: "Neste desafio não vale usar .reverse() — percorra o array de trás para frente." },
+      { padrao: "\\.reverse\\s*\\(|\\breversed\\s*\\(|::\\s*-", mensagem: "Neste desafio não vale usar .reverse(), reversed() nem [::-1] — percorra a lista de trás para frente." },
     ],
     dicas: [
-      "O último índice de um array é `lista.length - 1`.",
-      "Faça um for que começa no último índice e vai diminuindo até 0 (`i--`), dando `push` em cada elemento.",
+      "O último índice de uma lista é `len(lista) - 1`.",
+      "`range(len(lista) - 1, -1, -1)` conta de trás para frente até 0. Dê `append` em `lista[i]` a cada volta.",
     ],
     solucao:
-      "function inverterArray(lista) {\n" +
-      "  const invertido = [];\n" +
-      "  for (let i = lista.length - 1; i >= 0; i--) {\n" +
-      "    invertido.push(lista[i]);\n" +
-      "  }\n" +
-      "  return invertido;\n" +
-      "}",
+      "def inverter_lista(lista):\n" +
+      "    invertida = []\n" +
+      "    for i in range(len(lista) - 1, -1, -1):\n" +
+      "        invertida.append(lista[i])\n" +
+      "    return invertida\n",
   },
   {
     id: "remover-duplicados",
@@ -636,30 +633,29 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Remover duplicados",
     enunciado:
-      "<p>Escreva <code>removerDuplicados(lista)</code> que retorna um novo array sem elementos repetidos, " +
+      "<p>Escreva <code>remover_duplicados(lista)</code> que retorna uma nova lista sem elementos repetidos, " +
       "mantendo a ordem da <strong>primeira</strong> aparição de cada um.</p>",
-    funcao: "removerDuplicados",
+    funcao: "remover_duplicados",
     parametros: "lista",
     testes: [
-      { chamada: "removerDuplicados([1, 2, 2, 3, 1])", esperado: [1, 2, 3] },
-      { chamada: 'removerDuplicados(["a", "a", "b"])', esperado: ["a", "b"] },
-      { chamada: "removerDuplicados([])", esperado: [] },
-      { chamada: "removerDuplicados([5, 4, 5, 4, 3])", esperado: [5, 4, 3] },
-      { chamada: "removerDuplicados([7, 7, 7])", esperado: [7] },
+      { chamada: "remover_duplicados([1, 2, 2, 3, 1])", esperado: "[1, 2, 3]" },
+      { chamada: 'remover_duplicados(["a", "a", "b"])', esperado: "['a', 'b']" },
+      { chamada: "remover_duplicados([])", esperado: "[]" },
+      { chamada: "remover_duplicados([5, 4, 5, 4, 3])", esperado: "[5, 4, 3]" },
+      { chamada: "remover_duplicados([7, 7, 7])", esperado: "[7]" },
     ],
     dicas: [
-      "Monte um array de resultado e, antes de dar push, verifique se o elemento já está nele.",
-      "`resultado.includes(x)` retorna true se x já foi adicionado.",
-      "Alternativa elegante: `[...new Set(lista)]` (o Set guarda só valores únicos e mantém a ordem).",
+      "Monte uma lista de resultado e, antes de dar `append`, verifique se o elemento já está nela.",
+      "`x not in resultado` é True quando x ainda não foi adicionado.",
+      "Cuidado com `list(set(lista))`: o set remove repetidos, mas não garante a ordem. `list(dict.fromkeys(lista))` garante.",
     ],
     solucao:
-      "function removerDuplicados(lista) {\n" +
-      "  const resultado = [];\n" +
-      "  for (const item of lista) {\n" +
-      "    if (!resultado.includes(item)) resultado.push(item);\n" +
-      "  }\n" +
-      "  return resultado;\n" +
-      "}",
+      "def remover_duplicados(lista):\n" +
+      "    resultado = []\n" +
+      "    for item in lista:\n" +
+      "        if item not in resultado:\n" +
+      "            resultado.append(item)\n" +
+      "    return resultado\n",
   },
 
   {
@@ -668,41 +664,38 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Segundo maior",
     enunciado:
-      "<p>Escreva <code>segundoMaior(numeros)</code> que retorna o segundo maior valor <strong>distinto</strong> " +
-      "do array. Em <code>[5, 5, 4]</code> a resposta é <code>4</code>, não <code>5</code>.</p>" +
-      "<p>O array sempre terá pelo menos dois valores diferentes. Tente percorrê-lo uma vez só, sem ordenar.</p>",
-    funcao: "segundoMaior",
+      "<p>Escreva <code>segundo_maior(numeros)</code> que retorna o segundo maior valor <strong>distinto</strong> " +
+      "da lista. Em <code>[5, 5, 4]</code> a resposta é <code>4</code>, não <code>5</code>.</p>" +
+      "<p>A lista sempre terá pelo menos dois valores diferentes. Tente percorrê-la uma vez só, sem ordenar.</p>",
+    funcao: "segundo_maior",
     parametros: "numeros",
     testes: [
-      { chamada: "segundoMaior([3, 9, 2])", esperado: 3 },
-      { chamada: "segundoMaior([5, 5, 4])", esperado: 4 },
-      { chamada: "segundoMaior([-1, -2, -3])", esperado: -2 },
-      { chamada: "segundoMaior([10, 10, 9, 8])", esperado: 9 },
-      { chamada: "segundoMaior([1, 2])", esperado: 1 },
-      { chamada: "segundoMaior([4, 1, 7, 7, 6])", esperado: 6 },
+      { chamada: "segundo_maior([3, 9, 2])", esperado: "3" },
+      { chamada: "segundo_maior([5, 5, 4])", esperado: "4" },
+      { chamada: "segundo_maior([-1, -2, -3])", esperado: "-2" },
+      { chamada: "segundo_maior([10, 10, 9, 8])", esperado: "9" },
+      { chamada: "segundo_maior([1, 2])", esperado: "1" },
+      { chamada: "segundo_maior([4, 1, 7, 7, 6])", esperado: "6" },
     ],
     proibido: [
-      { padrao: "\\.sort\\s*\\(", mensagem: "Neste desafio a ideia é não ordenar — guarde o maior e o segundo maior enquanto percorre o array." },
+      { padrao: "\\bsort(ed)?\\s*\\(", mensagem: "Neste desafio a ideia é não ordenar — guarde o maior e o segundo maior enquanto percorre a lista." },
     ],
     dicas: [
-      "Guarde duas variáveis: `maior` e `segundo`. Comece as duas com `-Infinity`.",
+      "Guarde duas variáveis: `maior` e `segundo`. Comece as duas com `float(\"-inf\")` (menos infinito).",
       "Se um número é maior que `maior`, o antigo `maior` vira o `segundo`.",
       "Se ele não é maior que `maior`, mas é maior que `segundo` (e diferente de `maior`), ele vira o novo `segundo`.",
     ],
     solucao:
-      "function segundoMaior(numeros) {\n" +
-      "  let maior = -Infinity;\n" +
-      "  let segundo = -Infinity;\n" +
-      "  for (const n of numeros) {\n" +
-      "    if (n > maior) {\n" +
-      "      segundo = maior;\n" +
-      "      maior = n;\n" +
-      "    } else if (n < maior && n > segundo) {\n" +
-      "      segundo = n;\n" +
-      "    }\n" +
-      "  }\n" +
-      "  return segundo;\n" +
-      "}",
+      "def segundo_maior(numeros):\n" +
+      "    maior = float(\"-inf\")\n" +
+      "    segundo = float(\"-inf\")\n" +
+      "    for n in numeros:\n" +
+      "        if n > maior:\n" +
+      "            segundo = maior\n" +
+      "            maior = n\n" +
+      "        elif maior > n > segundo:\n" +
+      "            segundo = n\n" +
+      "    return segundo\n",
   },
 
   // ===================================================================
@@ -719,19 +712,18 @@ window.DESAFIOS = [
     funcao: "saudacao",
     parametros: "nome",
     testes: [
-      { chamada: 'saudacao("Ana")', esperado: "Olá, Ana!" },
-      { chamada: 'saudacao("Bruno")', esperado: "Olá, Bruno!" },
-      { chamada: 'saudacao("Mundo")', esperado: "Olá, Mundo!" },
+      { chamada: 'saudacao("Ana")', esperado: "'Olá, Ana!'" },
+      { chamada: 'saudacao("Bruno")', esperado: "'Olá, Bruno!'" },
+      { chamada: 'saudacao("Mundo")', esperado: "'Olá, Mundo!'" },
     ],
     dicas: [
-      "Use `return` — mostrar com console.log não conta como retornar.",
-      "Junte textos com + (`\"Olá, \" + nome`) ou use uma template string, que é um texto entre crases com ${nome} dentro.",
+      "Use `return` — mostrar com print() não conta como retornar (sem return a função devolve None).",
+      "Junte textos com + (`\"Olá, \" + nome`) ou use uma f-string: `f\"Olá, {nome}!\"`.",
       "Confira a vírgula, o espaço depois dela e a exclamação no final.",
     ],
     solucao:
-      "function saudacao(nome) {\n" +
-      "  return \"Olá, \" + nome + \"!\";\n" +
-      "}",
+      "def saudacao(nome):\n" +
+      "    return f\"Olá, {nome}!\"\n",
   },
   {
     id: "contar-palavras",
@@ -739,29 +731,26 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Contar palavras",
     enunciado:
-      "<p>Escreva <code>contarPalavras(frase)</code> que retorna quantas palavras a frase tem.</p>" +
+      "<p>Escreva <code>contar_palavras(frase)</code> que retorna quantas palavras a frase tem.</p>" +
       "<p>As palavras podem estar separadas por mais de um espaço, e pode haver espaços no começo e no fim. " +
       "Uma frase vazia (ou só com espaços) tem 0 palavras.</p>",
-    funcao: "contarPalavras",
+    funcao: "contar_palavras",
     parametros: "frase",
     testes: [
-      { chamada: 'contarPalavras("eu gosto de lógica")', esperado: 4 },
-      { chamada: 'contarPalavras("  muitos   espaços  aqui ")', esperado: 3 },
-      { chamada: 'contarPalavras("uma")', esperado: 1 },
-      { chamada: 'contarPalavras("")', esperado: 0 },
-      { chamada: 'contarPalavras("    ")', esperado: 0 },
+      { chamada: 'contar_palavras("eu gosto de lógica")', esperado: "4" },
+      { chamada: 'contar_palavras("  muitos   espaços  aqui ")', esperado: "3" },
+      { chamada: 'contar_palavras("uma")', esperado: "1" },
+      { chamada: 'contar_palavras("")', esperado: "0" },
+      { chamada: 'contar_palavras("    ")', esperado: "0" },
     ],
     dicas: [
-      "`frase.trim()` remove os espaços do começo e do fim.",
-      "`texto.split(\" \")` quebra nos espaços, mas espaços repetidos geram pedaços vazios. Ignore os pedaços vazios (ou use `split(/\\s+/)`).",
-      "Trate a frase vazia à parte: depois do trim, se sobrar \"\", a resposta é 0.",
+      "`frase.split(\" \")` quebra em cada espaço, mas espaços repetidos geram pedaços vazios (\"\").",
+      "`frase.split()` SEM argumento já ignora espaços repetidos e os das pontas.",
+      "`len(lista)` dá a quantidade de itens da lista.",
     ],
     solucao:
-      "function contarPalavras(frase) {\n" +
-      "  const limpa = frase.trim();\n" +
-      "  if (limpa === \"\") return 0;\n" +
-      "  return limpa.split(/\\s+/).length;\n" +
-      "}",
+      "def contar_palavras(frase):\n" +
+      "    return len(frase.split())\n",
   },
   {
     id: "capitalizar",
@@ -770,30 +759,25 @@ window.DESAFIOS = [
     titulo: "Capitalizar palavras",
     enunciado:
       "<p>Escreva <code>capitalizar(frase)</code> que retorna a frase com a primeira letra de cada palavra " +
-      "em maiúscula. O resto de cada palavra fica como está.</p>" +
+      "em maiúscula. O resto de cada palavra fica <strong>como está</strong>.</p>" +
       "<p>As palavras estão separadas por um único espaço.</p>",
     funcao: "capitalizar",
     parametros: "frase",
     testes: [
-      { chamada: 'capitalizar("olá mundo")', esperado: "Olá Mundo" },
-      { chamada: 'capitalizar("javaScript é legal")', esperado: "JavaScript É Legal" },
-      { chamada: 'capitalizar("a")', esperado: "A" },
-      { chamada: 'capitalizar("")', esperado: "" },
+      { chamada: 'capitalizar("olá mundo")', esperado: "'Olá Mundo'" },
+      { chamada: 'capitalizar("javaScript é legal")', esperado: "'JavaScript É Legal'" },
+      { chamada: 'capitalizar("a")', esperado: "'A'" },
+      { chamada: 'capitalizar("")', esperado: "''" },
     ],
     dicas: [
-      "Quebre a frase em palavras com `split(\" \")`, transforme cada uma e junte de volta com `join(\" \")`.",
-      "Para uma palavra: `palavra.charAt(0).toUpperCase() + palavra.slice(1)`.",
-      "`map` aplica uma função a cada elemento do array e devolve o array transformado.",
+      "Quebre a frase em palavras com `split(\" \")`, transforme cada uma e junte de volta com `\" \".join(palavras)`.",
+      "`.title()` e `.capitalize()` deixam o resto da palavra em minúscula (\"Javascript\") — por isso não servem aqui.",
+      "Para uma palavra: `palavra[:1].upper() + palavra[1:]`. O fatiamento `[:1]` não quebra com texto vazio, ao contrário de `palavra[0]`.",
     ],
     solucao:
-      "function capitalizar(frase) {\n" +
-      "  return frase\n" +
-      "    .split(\" \")\n" +
-      "    .map(function (palavra) {\n" +
-      "      return palavra.charAt(0).toUpperCase() + palavra.slice(1);\n" +
-      "    })\n" +
-      "    .join(\" \");\n" +
-      "}",
+      "def capitalizar(frase):\n" +
+      "    palavras = frase.split(\" \")\n" +
+      "    return \" \".join(p[:1].upper() + p[1:] for p in palavras)\n",
   },
   {
     id: "aplicar-duas-vezes",
@@ -802,25 +786,25 @@ window.DESAFIOS = [
     titulo: "Aplicar duas vezes",
     enunciado:
       "<p>Funções podem receber outras funções como parâmetro.</p>" +
-      "<p>Escreva <code>aplicarDuasVezes(fn, valor)</code> que aplica <code>fn</code> ao valor e, depois, " +
-      "aplica <code>fn</code> de novo ao resultado. Ou seja, retorna <code>fn(fn(valor))</code>.</p>",
-    funcao: "aplicarDuasVezes",
+      "<p>Escreva <code>aplicar_duas_vezes(fn, valor)</code> que aplica <code>fn</code> ao valor e, depois, " +
+      "aplica <code>fn</code> de novo ao resultado. Ou seja, retorna <code>fn(fn(valor))</code>.</p>" +
+      "<p>Nos testes, <code>lambda n: n * 2</code> é uma função curta, sem nome, que devolve o dobro de n.</p>",
+    funcao: "aplicar_duas_vezes",
     parametros: "fn, valor",
     testes: [
-      { chamada: "aplicarDuasVezes(n => n * 2, 3)", esperado: 12 },
-      { chamada: "aplicarDuasVezes(n => n + 10, 0)", esperado: 20 },
-      { chamada: 'aplicarDuasVezes(s => s + "!", "oi")', esperado: "oi!!" },
-      { chamada: "aplicarDuasVezes(n => n * n, 3)", esperado: 81 },
+      { chamada: "aplicar_duas_vezes(lambda n: n * 2, 3)", esperado: "12" },
+      { chamada: "aplicar_duas_vezes(lambda n: n + 10, 0)", esperado: "20" },
+      { chamada: 'aplicar_duas_vezes(lambda s: s + "!", "oi")', esperado: "'oi!!'" },
+      { chamada: "aplicar_duas_vezes(lambda n: n * n, 3)", esperado: "81" },
     ],
     dicas: [
-      "`fn` é uma função como qualquer outra: você pode chamá-la com `fn(algumaCoisa)`.",
+      "`fn` é uma função como qualquer outra: você pode chamá-la com `fn(alguma_coisa)`.",
       "Chame uma vez, guarde o resultado, e chame de novo passando esse resultado.",
     ],
     solucao:
-      "function aplicarDuasVezes(fn, valor) {\n" +
-      "  const primeira = fn(valor);\n" +
-      "  return fn(primeira);\n" +
-      "}",
+      "def aplicar_duas_vezes(fn, valor):\n" +
+      "    primeira = fn(valor)\n" +
+      "    return fn(primeira)\n",
   },
   {
     id: "compor-funcoes",
@@ -834,21 +818,20 @@ window.DESAFIOS = [
     funcao: "compor",
     parametros: "f, g",
     testes: [
-      { chamada: "compor(n => n + 1, n => n * 2)(5)", esperado: 11 },
-      { chamada: "compor(n => n * 2, n => n + 1)(5)", esperado: 12 },
-      { chamada: 'compor(s => s.toUpperCase(), s => s.trim())("  oi  ")', esperado: "OI" },
-      { chamada: "compor(n => n, n => n)(7)", esperado: 7 },
+      { chamada: "compor(lambda n: n + 1, lambda n: n * 2)(5)", esperado: "11" },
+      { chamada: "compor(lambda n: n * 2, lambda n: n + 1)(5)", esperado: "12" },
+      { chamada: 'compor(lambda s: s.upper(), lambda s: s.strip())("  oi  ")', esperado: "'OI'" },
+      { chamada: "compor(lambda n: n, lambda n: n)(7)", esperado: "7" },
     ],
     dicas: [
-      "O retorno de `compor` não é um número: é uma função. Algo como `return function (x) { ... };`",
-      "Dentro da função retornada, aplique g em x e passe o resultado para f.",
+      "O retorno de `compor` não é um número: é uma função. Dá para definir uma função dentro da outra com `def` e retorná-la pelo nome (sem parênteses).",
+      "Dentro da função interna, aplique g em x e passe o resultado para f. Versão curta: `return lambda x: f(g(x))`.",
     ],
     solucao:
-      "function compor(f, g) {\n" +
-      "  return function (x) {\n" +
-      "    return f(g(x));\n" +
-      "  };\n" +
-      "}",
+      "def compor(f, g):\n" +
+      "    def composta(x):\n" +
+      "        return f(g(x))\n" +
+      "    return composta\n",
   },
 
   // ===================================================================
@@ -860,32 +843,32 @@ window.DESAFIOS = [
     nivel: "iniciante",
     titulo: "Busca linear",
     enunciado:
-      "<p>Escreva <code>buscaLinear(lista, alvo)</code> que procura o alvo percorrendo a lista do começo ao fim " +
+      "<p>Escreva <code>busca_linear(lista, alvo)</code> que procura o alvo percorrendo a lista do começo ao fim " +
       "e retorna o <strong>índice</strong> da primeira ocorrência. Se não encontrar, retorna <code>-1</code>.</p>" +
-      "<p>Não vale usar <code>indexOf</code>, <code>findIndex</code> nem <code>includes</code>.</p>",
-    funcao: "buscaLinear",
+      "<p>Não vale usar <code>.index()</code>.</p>",
+    funcao: "busca_linear",
     parametros: "lista, alvo",
     testes: [
-      { chamada: "buscaLinear([4, 8, 15, 16], 15)", esperado: 2 },
-      { chamada: "buscaLinear([4, 8, 15], 99)", esperado: -1 },
-      { chamada: "buscaLinear([7, 7, 7], 7)", esperado: 0 },
-      { chamada: "buscaLinear([], 1)", esperado: -1 },
-      { chamada: 'buscaLinear(["a", "b", "c"], "c")', esperado: 2 },
+      { chamada: "busca_linear([4, 8, 15, 16], 15)", esperado: "2" },
+      { chamada: "busca_linear([4, 8, 15], 99)", esperado: "-1" },
+      { chamada: "busca_linear([7, 7, 7], 7)", esperado: "0" },
+      { chamada: "busca_linear([], 1)", esperado: "-1" },
+      { chamada: 'busca_linear(["a", "b", "c"], "c")', esperado: "2" },
     ],
     proibido: [
-      { padrao: "\\.(indexOf|findIndex|includes)\\s*\\(", mensagem: "Neste desafio a busca precisa ser feita com o seu próprio loop (sem indexOf, findIndex ou includes)." },
+      { padrao: "\\.(index|find)\\s*\\(", mensagem: "Neste desafio a busca precisa ser feita com o seu próprio loop (sem .index())." },
     ],
     dicas: [
-      "Use um for com índice (`let i = 0; i < lista.length; i++`), porque você precisa devolver a posição.",
-      "Assim que achar, retorne `i` na hora. O `return -1` fica depois do loop.",
+      "Você precisa devolver a posição, então percorra pelos índices: `for i in range(len(lista)):`.",
+      "Assim que achar, retorne `i` na hora. O `return -1` fica depois do loop, fora dele.",
+      "Jeito pythônico: `for i, item in enumerate(lista):` entrega o índice e o valor juntos.",
     ],
     solucao:
-      "function buscaLinear(lista, alvo) {\n" +
-      "  for (let i = 0; i < lista.length; i++) {\n" +
-      "    if (lista[i] === alvo) return i;\n" +
-      "  }\n" +
-      "  return -1;\n" +
-      "}",
+      "def busca_linear(lista, alvo):\n" +
+      "    for i, item in enumerate(lista):\n" +
+      "        if item == alvo:\n" +
+      "            return i\n" +
+      "    return -1\n",
   },
   {
     id: "palindromo",
@@ -894,35 +877,34 @@ window.DESAFIOS = [
     titulo: "Palíndromo",
     enunciado:
       "<p>Um palíndromo é um texto que se lê igual de trás para frente, como <em>arara</em>.</p>" +
-      "<p>Escreva <code>ehPalindromo(texto)</code> que retorna <code>true</code> ou <code>false</code>, " +
+      "<p>Escreva <code>eh_palindromo(texto)</code> que retorna <code>True</code> ou <code>False</code>, " +
       "ignorando maiúsculas/minúsculas e espaços. Os testes não têm acentos nem pontuação.</p>",
-    funcao: "ehPalindromo",
+    funcao: "eh_palindromo",
     parametros: "texto",
     testes: [
-      { chamada: 'ehPalindromo("arara")', esperado: true },
-      { chamada: 'ehPalindromo("javascript")', esperado: false },
-      { chamada: 'ehPalindromo("Ana")', esperado: true },
-      { chamada: 'ehPalindromo("A base do teto desaba")', esperado: true },
-      { chamada: 'ehPalindromo("socorram me subi no onibus em marrocos")', esperado: true },
-      { chamada: 'ehPalindromo("ab")', esperado: false },
+      { chamada: 'eh_palindromo("arara")', esperado: "True" },
+      { chamada: 'eh_palindromo("python")', esperado: "False" },
+      { chamada: 'eh_palindromo("Ana")', esperado: "True" },
+      { chamada: 'eh_palindromo("A base do teto desaba")', esperado: "True" },
+      { chamada: 'eh_palindromo("socorram me subi no onibus em marrocos")', esperado: "True" },
+      { chamada: 'eh_palindromo("ab")', esperado: "False" },
     ],
     dicas: [
-      "Primeiro normalize: minúsculas (`toLowerCase`) e sem espaços (`split(\" \").join(\"\")`).",
+      "Primeiro normalize: minúsculas (`lower()`) e sem espaços (`replace(\" \", \"\")`).",
       "Compare o primeiro caractere com o último, o segundo com o penúltimo, e assim por diante, usando dois índices.",
-      "Atalho válido: inverter o texto com `split(\"\").reverse().join(\"\")` e comparar com o original.",
+      "Atalho válido em Python: `limpo[::-1]` é o texto invertido. Basta comparar com o original.",
     ],
     solucao:
-      "function ehPalindromo(texto) {\n" +
-      "  const limpo = texto.toLowerCase().split(\" \").join(\"\");\n" +
-      "  let i = 0;\n" +
-      "  let j = limpo.length - 1;\n" +
-      "  while (i < j) {\n" +
-      "    if (limpo[i] !== limpo[j]) return false;\n" +
-      "    i++;\n" +
-      "    j--;\n" +
-      "  }\n" +
-      "  return true;\n" +
-      "}",
+      "def eh_palindromo(texto):\n" +
+      "    limpo = texto.lower().replace(\" \", \"\")\n" +
+      "    i = 0\n" +
+      "    j = len(limpo) - 1\n" +
+      "    while i < j:\n" +
+      "        if limpo[i] != limpo[j]:\n" +
+      "            return False\n" +
+      "        i += 1\n" +
+      "        j -= 1\n" +
+      "    return True\n",
   },
   {
     id: "anagrama",
@@ -932,30 +914,28 @@ window.DESAFIOS = [
     enunciado:
       "<p>Duas palavras são anagramas quando usam exatamente as mesmas letras, nas mesmas quantidades, " +
       "em outra ordem: <em>roma</em> e <em>amor</em>.</p>" +
-      "<p>Escreva <code>saoAnagramas(a, b)</code> que retorna <code>true</code> ou <code>false</code>, " +
+      "<p>Escreva <code>sao_anagramas(a, b)</code> que retorna <code>True</code> ou <code>False</code>, " +
       "ignorando maiúsculas/minúsculas e espaços.</p>",
-    funcao: "saoAnagramas",
+    funcao: "sao_anagramas",
     parametros: "a, b",
     testes: [
-      { chamada: 'saoAnagramas("roma", "amor")', esperado: true },
-      { chamada: 'saoAnagramas("abc", "abd")', esperado: false },
-      { chamada: 'saoAnagramas("Roma", "Mora")', esperado: true },
-      { chamada: 'saoAnagramas("aab", "abb")', esperado: false },
-      { chamada: 'saoAnagramas("dormitory", "dirty room")', esperado: true },
-      { chamada: 'saoAnagramas("ab", "abc")', esperado: false },
+      { chamada: 'sao_anagramas("roma", "amor")', esperado: "True" },
+      { chamada: 'sao_anagramas("abc", "abd")', esperado: "False" },
+      { chamada: 'sao_anagramas("Roma", "Mora")', esperado: "True" },
+      { chamada: 'sao_anagramas("aab", "abb")', esperado: "False" },
+      { chamada: 'sao_anagramas("dormitory", "dirty room")', esperado: "True" },
+      { chamada: 'sao_anagramas("ab", "abc")', esperado: "False" },
     ],
     dicas: [
       "Normalize os dois textos do mesmo jeito: minúsculas e sem espaços.",
-      "Se você ordenar as letras dos dois textos, anagramas viram textos idênticos: `texto.split(\"\").sort().join(\"\")`.",
-      "Outra saída: conte as letras de cada um (como em \"Contar frequência\") e compare as contagens.",
+      "Se você ordenar as letras dos dois textos, anagramas viram listas idênticas: `sorted(texto)` devolve a lista de letras em ordem.",
+      "Outra saída: conte as letras de cada um (como em \"Contar frequência\") e compare os dicionários.",
     ],
     solucao:
-      "function saoAnagramas(a, b) {\n" +
-      "  function normalizar(texto) {\n" +
-      "    return texto.toLowerCase().split(\" \").join(\"\").split(\"\").sort().join(\"\");\n" +
-      "  }\n" +
-      "  return normalizar(a) === normalizar(b);\n" +
-      "}",
+      "def sao_anagramas(a, b):\n" +
+      "    def normalizar(texto):\n" +
+      "        return sorted(texto.lower().replace(\" \", \"\"))\n" +
+      "    return normalizar(a) == normalizar(b)\n",
   },
   {
     id: "mdc",
@@ -965,29 +945,29 @@ window.DESAFIOS = [
     enunciado:
       "<p>Escreva <code>mdc(a, b)</code> que retorna o máximo divisor comum de dois inteiros não negativos.</p>" +
       "<p>Use o algoritmo de Euclides: enquanto <code>b</code> não for zero, troque <code>(a, b)</code> por " +
-      "<code>(b, a % b)</code>. Quando <code>b</code> chegar a zero, <code>a</code> é a resposta.</p>",
+      "<code>(b, a % b)</code>. Quando <code>b</code> chegar a zero, <code>a</code> é a resposta. " +
+      "(Sem <code>math.gcd</code>.)</p>",
     funcao: "mdc",
     parametros: "a, b",
     testes: [
-      { chamada: "mdc(12, 18)", esperado: 6 },
-      { chamada: "mdc(17, 5)", esperado: 1 },
-      { chamada: "mdc(100, 75)", esperado: 25 },
-      { chamada: "mdc(7, 0)", esperado: 7 },
-      { chamada: "mdc(0, 9)", esperado: 9 },
+      { chamada: "mdc(12, 18)", esperado: "6" },
+      { chamada: "mdc(17, 5)", esperado: "1" },
+      { chamada: "mdc(100, 75)", esperado: "25" },
+      { chamada: "mdc(7, 0)", esperado: "7" },
+      { chamada: "mdc(0, 9)", esperado: "9" },
+    ],
+    proibido: [
+      { padrao: "\\bgcd\\b", mensagem: "Neste desafio implemente o algoritmo de Euclides você mesmo, sem math.gcd." },
     ],
     dicas: [
-      "Use `while (b !== 0)`.",
-      "Na troca, guarde `a % b` numa variável temporária antes de sobrescrever a e b.",
+      "Use `while b != 0:`.",
+      "Atribuição dupla faz a troca numa linha só, sem variável temporária: `a, b = b, a % b`.",
     ],
     solucao:
-      "function mdc(a, b) {\n" +
-      "  while (b !== 0) {\n" +
-      "    const resto = a % b;\n" +
-      "    a = b;\n" +
-      "    b = resto;\n" +
-      "  }\n" +
-      "  return a;\n" +
-      "}",
+      "def mdc(a, b):\n" +
+      "    while b != 0:\n" +
+      "        a, b = b, a % b\n" +
+      "    return a\n",
   },
   {
     id: "busca-binaria",
@@ -995,43 +975,41 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Busca binária",
     enunciado:
-      "<p>Escreva <code>buscaBinaria(lista, alvo)</code>. A lista está <strong>ordenada</strong> em ordem crescente; " +
+      "<p>Escreva <code>busca_binaria(lista, alvo)</code>. A lista está <strong>ordenada</strong> em ordem crescente; " +
       "retorne o índice do alvo ou <code>-1</code> se ele não existir.</p>" +
       "<p>Em vez de olhar elemento por elemento, olhe o meio da faixa: se o alvo for maior, descarte a metade " +
       "da esquerda; se for menor, descarte a da direita. Repita até achar ou a faixa ficar vazia.</p>",
-    funcao: "buscaBinaria",
+    funcao: "busca_binaria",
     parametros: "lista, alvo",
     testes: [
-      { chamada: "buscaBinaria([1, 3, 5, 7, 9, 11], 7)", esperado: 3 },
-      { chamada: "buscaBinaria([1, 3, 5], 4)", esperado: -1 },
-      { chamada: "buscaBinaria([1, 3, 5, 7, 9, 11], 1)", esperado: 0 },
-      { chamada: "buscaBinaria([1, 3, 5, 7, 9, 11], 11)", esperado: 5 },
-      { chamada: "buscaBinaria([], 3)", esperado: -1 },
-      { chamada: "buscaBinaria([2, 4, 6, 8, 10, 12, 14, 16], 14)", esperado: 6 },
+      { chamada: "busca_binaria([1, 3, 5, 7, 9, 11], 7)", esperado: "3" },
+      { chamada: "busca_binaria([1, 3, 5], 4)", esperado: "-1" },
+      { chamada: "busca_binaria([1, 3, 5, 7, 9, 11], 1)", esperado: "0" },
+      { chamada: "busca_binaria([1, 3, 5, 7, 9, 11], 11)", esperado: "5" },
+      { chamada: "busca_binaria([], 3)", esperado: "-1" },
+      { chamada: "busca_binaria([2, 4, 6, 8, 10, 12, 14, 16], 14)", esperado: "6" },
     ],
     proibido: [
-      { padrao: "\\.(indexOf|findIndex|includes)\\s*\\(", mensagem: "Neste desafio implemente a busca binária você mesmo (sem indexOf, findIndex ou includes)." },
+      { padrao: "\\.(index|find)\\s*\\(|\\bbisect\\b", mensagem: "Neste desafio implemente a busca binária você mesmo (sem .index() nem bisect)." },
     ],
     dicas: [
-      "Mantenha dois índices: `inicio = 0` e `fim = lista.length - 1`. Repita enquanto `inicio <= fim`.",
-      "O meio é `Math.floor((inicio + fim) / 2)`.",
+      "Mantenha dois índices: `inicio = 0` e `fim = len(lista) - 1`. Repita enquanto `inicio <= fim`.",
+      "O meio é `(inicio + fim) // 2` — com `//`, porque índice precisa ser inteiro.",
       "Se `lista[meio] < alvo`, faça `inicio = meio + 1`; se for maior, `fim = meio - 1`. Sem o +1/-1 o loop pode não terminar.",
     ],
     solucao:
-      "function buscaBinaria(lista, alvo) {\n" +
-      "  let inicio = 0;\n" +
-      "  let fim = lista.length - 1;\n" +
-      "  while (inicio <= fim) {\n" +
-      "    const meio = Math.floor((inicio + fim) / 2);\n" +
-      "    if (lista[meio] === alvo) return meio;\n" +
-      "    if (lista[meio] < alvo) {\n" +
-      "      inicio = meio + 1;\n" +
-      "    } else {\n" +
-      "      fim = meio - 1;\n" +
-      "    }\n" +
-      "  }\n" +
-      "  return -1;\n" +
-      "}",
+      "def busca_binaria(lista, alvo):\n" +
+      "    inicio = 0\n" +
+      "    fim = len(lista) - 1\n" +
+      "    while inicio <= fim:\n" +
+      "        meio = (inicio + fim) // 2\n" +
+      "        if lista[meio] == alvo:\n" +
+      "            return meio\n" +
+      "        if lista[meio] < alvo:\n" +
+      "            inicio = meio + 1\n" +
+      "        else:\n" +
+      "            fim = meio - 1\n" +
+      "    return -1\n",
   },
   {
     id: "bubble-sort",
@@ -1039,42 +1017,36 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Ordenação (Bubble Sort)",
     enunciado:
-      "<p>Escreva <code>ordenar(lista)</code> que retorna um novo array com os números em ordem crescente, " +
-      "<strong>sem usar</strong> <code>.sort()</code>.</p>" +
-      "<p>Sugestão — Bubble Sort: percorra o array comparando vizinhos e trocando os que estão fora de ordem. " +
+      "<p>Escreva <code>ordenar(lista)</code> que retorna uma nova lista com os números em ordem crescente, " +
+      "<strong>sem usar</strong> <code>.sort()</code> nem <code>sorted()</code>.</p>" +
+      "<p>Sugestão — Bubble Sort: percorra a lista comparando vizinhos e trocando os que estão fora de ordem. " +
       "A cada passada, o maior valor \"borbulha\" para o fim. Repita até não haver mais trocas.</p>",
     funcao: "ordenar",
     parametros: "lista",
     testes: [
-      { chamada: "ordenar([5, 2, 9, 1])", esperado: [1, 2, 5, 9] },
-      { chamada: "ordenar([3, -1, 0])", esperado: [-1, 0, 3] },
-      { chamada: "ordenar([])", esperado: [] },
-      { chamada: "ordenar([1, 2, 3])", esperado: [1, 2, 3] },
-      { chamada: "ordenar([4, 4, 2, 4])", esperado: [2, 4, 4, 4] },
-      { chamada: "ordenar([10, 9, 8, 7, 6, 5])", esperado: [5, 6, 7, 8, 9, 10] },
+      { chamada: "ordenar([5, 2, 9, 1])", esperado: "[1, 2, 5, 9]" },
+      { chamada: "ordenar([3, -1, 0])", esperado: "[-1, 0, 3]" },
+      { chamada: "ordenar([])", esperado: "[]" },
+      { chamada: "ordenar([1, 2, 3])", esperado: "[1, 2, 3]" },
+      { chamada: "ordenar([4, 4, 2, 4])", esperado: "[2, 4, 4, 4]" },
+      { chamada: "ordenar([10, 9, 8, 7, 6, 5])", esperado: "[5, 6, 7, 8, 9, 10]" },
     ],
     proibido: [
-      { padrao: "\\.sort\\s*\\(", mensagem: "Neste desafio não vale usar .sort() — implemente a ordenação com loops." },
+      { padrao: "\\bsort(ed)?\\s*\\(", mensagem: "Neste desafio não vale usar .sort() nem sorted() — implemente a ordenação com loops." },
     ],
     dicas: [
-      "Trabalhe numa cópia para não alterar o original: `const copia = lista.slice();`",
+      "Trabalhe numa cópia para não alterar a original: `copia = lista[:]` (ou `list(lista)`).",
       "Dois loops: o externo conta as passadas; o interno compara `copia[j]` com `copia[j + 1]`.",
-      "Para trocar dois elementos: `const temp = copia[j]; copia[j] = copia[j + 1]; copia[j + 1] = temp;`",
+      "Para trocar dois elementos: `copia[j], copia[j + 1] = copia[j + 1], copia[j]`.",
     ],
     solucao:
-      "function ordenar(lista) {\n" +
-      "  const copia = lista.slice();\n" +
-      "  for (let i = 0; i < copia.length - 1; i++) {\n" +
-      "    for (let j = 0; j < copia.length - 1 - i; j++) {\n" +
-      "      if (copia[j] > copia[j + 1]) {\n" +
-      "        const temp = copia[j];\n" +
-      "        copia[j] = copia[j + 1];\n" +
-      "        copia[j + 1] = temp;\n" +
-      "      }\n" +
-      "    }\n" +
-      "  }\n" +
-      "  return copia;\n" +
-      "}",
+      "def ordenar(lista):\n" +
+      "    copia = lista[:]\n" +
+      "    for i in range(len(copia) - 1):\n" +
+      "        for j in range(len(copia) - 1 - i):\n" +
+      "            if copia[j] > copia[j + 1]:\n" +
+      "                copia[j], copia[j + 1] = copia[j + 1], copia[j]\n" +
+      "    return copia\n",
   },
   {
     id: "frequencia",
@@ -1082,28 +1054,29 @@ window.DESAFIOS = [
     nivel: "intermediario",
     titulo: "Contar frequência",
     enunciado:
-      "<p>Escreva <code>contarFrequencia(lista)</code> que retorna um objeto dizendo quantas vezes cada valor " +
-      "aparece. Exemplo: <code>[\"a\", \"b\", \"a\"]</code> vira <code>{ a: 2, b: 1 }</code>.</p>" +
-      "<p>A ordem das chaves no objeto não importa.</p>",
-    funcao: "contarFrequencia",
+      "<p>Escreva <code>contar_frequencia(lista)</code> que retorna um dicionário dizendo quantas vezes cada valor " +
+      "aparece. Exemplo: <code>[\"a\", \"b\", \"a\"]</code> vira <code>{\"a\": 2, \"b\": 1}</code>.</p>" +
+      "<p>A ordem das chaves no dicionário não importa. Sem <code>collections.Counter</code>.</p>",
+    funcao: "contar_frequencia",
     parametros: "lista",
     testes: [
-      { chamada: 'contarFrequencia(["a", "b", "a"])', esperado: { a: 2, b: 1 } },
-      { chamada: "contarFrequencia([])", esperado: {} },
-      { chamada: 'contarFrequencia(["sol", "sol", "sol"])', esperado: { sol: 3 } },
-      { chamada: "contarFrequencia([1, 2, 1, 3, 1])", esperado: { 1: 3, 2: 1, 3: 1 } },
+      { chamada: 'contar_frequencia(["a", "b", "a"])', esperado: "{'a': 2, 'b': 1}" },
+      { chamada: "contar_frequencia([])", esperado: "{}" },
+      { chamada: 'contar_frequencia(["sol", "sol", "sol"])', esperado: "{'sol': 3}" },
+      { chamada: "contar_frequencia([1, 2, 1, 3, 1])", esperado: "{1: 3, 2: 1, 3: 1}" },
+    ],
+    proibido: [
+      { padrao: "\\bCounter\\b", mensagem: "Neste desafio monte o dicionário você mesmo, sem Counter." },
     ],
     dicas: [
-      "Comece com um objeto vazio: `const contagem = {};`",
-      "Para cada item, se `contagem[item]` ainda não existe, ele vale `undefined`. Trate isso com `(contagem[item] || 0) + 1`.",
+      "Comece com um dicionário vazio: `contagem = {}`",
+      "Ler uma chave que não existe com `contagem[item]` dá KeyError. Use `contagem.get(item, 0) + 1` — o get devolve 0 quando a chave ainda não existe.",
     ],
     solucao:
-      "function contarFrequencia(lista) {\n" +
-      "  const contagem = {};\n" +
-      "  for (const item of lista) {\n" +
-      "    contagem[item] = (contagem[item] || 0) + 1;\n" +
-      "  }\n" +
-      "  return contagem;\n" +
-      "}",
+      "def contar_frequencia(lista):\n" +
+      "    contagem = {}\n" +
+      "    for item in lista:\n" +
+      "        contagem[item] = contagem.get(item, 0) + 1\n" +
+      "    return contagem\n",
   },
 ];

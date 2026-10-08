@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Treino de Lógica</title>
-  <meta name="description" content="Desafios progressivos de lógica de programação em JavaScript, direto no navegador.">
+  <meta name="description" content="Desafios progressivos de lógica de programação em Python, direto no navegador.">
   <!-- Aplica o tema salvo antes de pintar a página (evita piscar claro→escuro) -->
   <script>
     try {
@@ -12,17 +12,17 @@
       if (tema === "light" || tema === "dark") document.documentElement.setAttribute("data-theme", tema);
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="css/estilo.css?v=2">
+  <link rel="stylesheet" href="css/estilo.css?v=7">
 </head>
 <body>
 
   <!-- Topo: marca + placar + barra de progresso geral -->
   <header class="topo">
     <div class="marca">
-      <span class="logo" aria-hidden="true">{ }</span>
+      <span class="logo" aria-hidden="true">&gt;&gt;&gt;</span>
       <div>
         <h1>Treino de Lógica</h1>
-        <p>Desafios de programação em JavaScript</p>
+        <p>Desafios de programação em Python</p>
       </div>
     </div>
     <div class="placar">
@@ -53,11 +53,13 @@
         <summary>Como funciona</summary>
         <ul>
           <li>Escreva a função pedida e clique em <strong>Executar</strong>: ela é testada com vários casos.</li>
+          <li>O Python roda no próprio navegador (Pyodide). Na primeira vez ele é baixado da internet e leva alguns segundos.</li>
           <li>A cada erro, uma nova dica é liberada.</li>
           <li>Depois de 3 erros, a solução fica disponível — mas vê-la antes de acertar zera os pontos do desafio.</li>
           <li>Acertar de primeira vale 50% de bônus.</li>
-          <li>Atalhos: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> executa, <kbd>Ctrl</kbd>+<kbd>/</kbd> comenta linhas,
-            <kbd>Tab</kbd>/<kbd>Shift</kbd>+<kbd>Tab</kbd> indentam, <kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> trocam de desafio.</li>
+          <li>Atalhos: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> executa, <kbd>Ctrl</kbd>+<kbd>/</kbd> comenta linhas com #,
+            <kbd>Tab</kbd>/<kbd>Shift</kbd>+<kbd>Tab</kbd> indentam,
+            sugestões de código: <kbd>↑</kbd>/<kbd>↓</kbd> escolhem, <kbd>Tab</kbd> ou <kbd>Enter</kbd> completam, <kbd>Ctrl</kbd>+<kbd>Espaço</kbd> abre, <kbd>Esc</kbd> fecha; <kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> trocam de desafio.</li>
         </ul>
       </details>
       <button type="button" class="zerar" id="zerar">Zerar progresso</button>
@@ -87,7 +89,7 @@
 
       <div class="editor">
         <div class="editor-barra">
-          <span>solucao.js</span>
+          <span>solucao.py</span>
           <span class="editor-atalho">Ctrl + Enter executa · Esc sai do editor</span>
         </div>
         <div class="editor-corpo">
@@ -96,7 +98,7 @@
             <!-- Camada colorida atrás do textarea (o texto do textarea fica transparente) -->
             <pre class="editor-realce" id="editor-realce" aria-hidden="true"></pre>
             <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"
-                      aria-label="Sua solução em JavaScript"></textarea>
+                      aria-label="Sua solução em Python"></textarea>
           </div>
         </div>
       </div>
@@ -128,13 +130,14 @@
   </div>
 
   <footer class="rodape">
-    Seu progresso fica salvo neste navegador. <span class="build">BUILD 2</span>
+    Seu progresso fica salvo neste navegador. <span class="build">BUILD 7</span>
   </footer>
 
   <!-- Scripts clássicos (sem módulos) para funcionar também abrindo o arquivo direto, via file:// -->
-  <script src="js/desafios.js?v=2"></script>
-  <script src="js/realce.js?v=2"></script>
-  <script src="js/executor.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/desafios.js?v=7"></script>
+  <script src="js/realce.js?v=7"></script>
+  <script src="js/executor.js?v=7"></script>
+  <script src="js/autocompletar.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
 </body>
 </html>

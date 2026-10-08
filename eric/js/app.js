@@ -15,7 +15,7 @@
   const NOME_NIVEL = { iniciante: "Iniciante", intermediario: "Intermediário" };
   const ERROS_PARA_SOLUCAO = 3;
   const EXEMPLOS_PADRAO = 2;
-  const RECUO = "  ";
+  const RECUO = "    "; // PEP 8: 4 espaços
 
   const porId = {};
   DESAFIOS.forEach(function (d) { porId[d.id] = d; });
@@ -24,7 +24,8 @@
   // Progresso — tudo que precisa sobreviver a um recarregamento da página
   // =========================================================================
   const Progresso = (function () {
-    const CHAVE = "treino-logica:progresso:v1";
+    // Chave nova na troca de JavaScript para Python: o progresso e os códigos da versão JS não valem aqui
+    const CHAVE = "treino-logica:progresso:python:v1";
 
     function vazio() {
       return {
@@ -140,7 +141,7 @@
   }
 
   function codigoInicial(d) {
-    return "function " + d.funcao + "(" + d.parametros + ") {\n" + RECUO + "// seu código aqui\n" + RECUO + "\n}\n";
+    return "def " + d.funcao + "(" + d.parametros + "):\n" + RECUO + "# seu código aqui\n" + RECUO + "pass\n";
   }
 
   function nomeCategoria(id) {
@@ -272,11 +273,12 @@
       const linha = criar("div", "exemplo");
       linha.appendChild(document.createTextNode(t.chamada));
       linha.appendChild(criar("span", "seta", "→"));
-      linha.appendChild(document.createTextNode(Executor.formatar(t.esperado)));
+      linha.appendChild(document.createTextNode(t.esperado));
       el.exemplos.appendChild(linha);
     });
 
     const salvo = Progresso.codigo(d.id);
+    sugestoes.fechar();
     el.codigo.value = typeof salvo === "string" ? salvo : codigoInicial(d);
     el.codigo.scrollTop = 0;
     el.codigo.scrollLeft = 0;
@@ -347,7 +349,7 @@
   function definirExecutando(sim) {
     executando = sim;
     el.executar.disabled = sim;
-    el.executar.textContent = sim ? "Executando…" : "Executar";
+    el.executar.textContent = !sim ? "Executar" : Executor.carregado() ? "Executando…" : "Carregando Python…";
   }
 
   async function executar() {
@@ -456,9 +458,9 @@
       }
     }
 
-    // --- Saída de console.log fora das chamadas de teste ---
+    // --- Saída de print() fora das chamadas de teste ---
     if (resultado.saidaInicial && resultado.saidaInicial.length) {
-      fb.appendChild(criar("div", "console", "console:\n" + resultado.saidaInicial.join("\n")));
+      fb.appendChild(criar("div", "console", "print:\n" + resultado.saidaInicial.join("\n")));
     }
 
     // --- Tabela de testes ---
@@ -479,7 +481,7 @@
         tr.appendChild(criar("td", "", r.esperado));
         const recebido = criar("td", "", r.recebido);
         (r.logs || []).forEach(function (linha) {
-          recebido.appendChild(criar("span", "log", "console: " + linha));
+          recebido.appendChild(criar("span", "log", "print: " + linha));
         });
         tr.appendChild(recebido);
         tbody.appendChild(tr);
@@ -604,21 +606,24 @@
   }
 
   function desindentar(linhas) {
-    return linhas.map(function (l) { return l.replace(/^ {1,2}/, ""); });
+    return linhas.map(function (l) { return l.replace(/^ {1,4}/, ""); });
   }
 
   function alternarComentario(linhas) {
     const comConteudo = linhas.filter(function (l) { return l.trim() !== ""; });
-    const todasComentadas = comConteudo.length > 0 && comConteudo.every(function (l) { return /^\s*\/\//.test(l); });
+    const todasComentadas = comConteudo.length > 0 && comConteudo.every(function (l) { return /^\s*#/.test(l); });
     return linhas.map(function (l) {
       if (l.trim() === "") return l;
-      if (todasComentadas) return l.replace(/^(\s*)\/\/ ?/, "$1");
-      return l.replace(/^(\s*)/, "$1// ");
+      if (todasComentadas) return l.replace(/^(\s*)# ?/, "$1");
+      return l.replace(/^(\s*)/, "$1# ");
     });
   }
 
   function aoTeclar(e) {
     const ctrl = e.ctrlKey || e.metaKey;
+
+    // Lista de sugestões aberta: setas, Tab, Enter e Esc são dela
+    if (sugestoes.teclar(e)) return;
 
     // Ctrl/Cmd + Enter: executar
     if (e.key === "Enter" && ctrl) {
@@ -653,28 +658,37 @@
       return;
     }
 
-    // "}" numa linha só com espaços: recua um nível antes de fechar o bloco
-    if (e.key === "}" && campo.selectionStart === campo.selectionEnd) {
+    // Backspace no recuo (só espaços antes do cursor): apaga um nível inteiro de 4 espaços
+    if (e.key === "Backspace" && campo.selectionStart === campo.selectionEnd) {
       const antes = campo.value.slice(0, campo.selectionStart);
       const linhaAtual = antes.slice(antes.lastIndexOf("\n") + 1);
-      if (/^\s+$/.test(linhaAtual) && linhaAtual.length >= RECUO.length) {
+      if (/^ +$/.test(linhaAtual)) {
+        const apagar = linhaAtual.length % RECUO.length || RECUO.length;
         e.preventDefault();
-        campo.setSelectionRange(campo.selectionStart - RECUO.length, campo.selectionStart);
-        inserirNoCursor("}");
+        campo.setSelectionRange(campo.selectionStart - apagar, campo.selectionStart);
+        if (!document.execCommand("delete")) {
+          campo.setRangeText("", campo.selectionStart, campo.selectionEnd, "end");
+          aoEditar();
+        }
       }
       return;
     }
 
-    // Enter: mantém a indentação; depois de "{" entra um nível (e separa o "}" se ele estiver colado)
+    // Enter: mantém a indentação; depois de ":" (ou de "(", "[", "{") entra um nível;
+    // depois de return/pass/break/continue/raise sai um nível
     if (e.key === "Enter" && !e.shiftKey && !e.altKey) {
       const v = campo.value;
       const antes = v.slice(0, campo.selectionStart);
       const linhaAtual = antes.slice(antes.lastIndexOf("\n") + 1);
-      const recuo = (linhaAtual.match(/^\s*/) || [""])[0];
-      const abreBloco = /[{[(]\s*$/.test(linhaAtual);
+      let recuo = (linhaAtual.match(/^\s*/) || [""])[0];
+      const semComentario = linhaAtual.replace(/\s*#.*$/, "");
+      const abreBloco = /[:{[(]\s*$/.test(semComentario);
+      const abreParenteses = /[{[(]\s*$/.test(semComentario);
       const fechaLogoDepois = /^[}\])]/.test(v.slice(campo.selectionEnd));
+      const encerraBloco = /^\s*(return|pass|break|continue|raise)\b/.test(linhaAtual);
+      if (encerraBloco) recuo = recuo.slice(0, Math.max(0, recuo.length - RECUO.length));
       e.preventDefault();
-      if (abreBloco && fechaLogoDepois) {
+      if (abreParenteses && fechaLogoDepois) {
         const posCursor = campo.selectionStart + 1 + recuo.length + RECUO.length;
         inserirNoCursor("\n" + recuo + RECUO + "\n" + recuo);
         campo.setSelectionRange(posCursor, posCursor);
@@ -684,10 +698,13 @@
     }
   }
 
-  function aoEditar() {
+  function aoEditar(e) {
     atualizarEditor();
+    sugestoes.aoDigitar(e);
     if (atual) Progresso.guardarCodigo(atual.id, campo.value);
   }
+
+  const sugestoes = window.Autocompletar.anexar(campo, campo.parentNode, inserirNoCursor);
 
   campo.addEventListener("keydown", aoTeclar);
   campo.addEventListener("input", aoEditar);
@@ -753,6 +770,7 @@
   // Início: #id do endereço > último desafio aberto > primeiro pendente
   // =========================================================================
   aplicarTema(temaSalvo());
+  Executor.preparar(); // o Pyodide leva alguns segundos: já começa a baixar enquanto o usuário lê o enunciado
   renderPlacar();
   const inicial = porId[location.hash.slice(1)] ||
     porId[Progresso.atual()] ||

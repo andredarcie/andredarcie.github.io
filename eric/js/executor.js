@@ -1,152 +1,169 @@
 /*
- * executor.js — roda o código do usuário contra os testes de um desafio.
+ * executor.js — roda o código Python do usuário contra os testes de um desafio.
  *
- * O código roda dentro de um Web Worker criado a partir de um Blob. Isso:
+ * O Python é o Pyodide (CPython compilado para WebAssembly), carregado de uma CDN
+ * dentro de um Web Worker criado a partir de um Blob. Isso:
  *   - isola o código da página (ele não enxerga nem quebra a interface);
  *   - permite matar o worker se o código travar (loop infinito) após um tempo limite.
- * Se o navegador não deixar criar o worker, cai para execução direta na página.
+ * Carregar o Pyodide leva alguns segundos, então o worker é reaproveitado entre
+ * execuções e só é recriado quando precisa ser morto (tempo esgotado ou falha).
  *
- * API: window.Executor.executar(codigo, nomeFuncao, testes) -> Promise<{ erro, resultados }>
- *      window.Executor.formatar(valor) -> texto legível de um valor JS
+ * API: window.Executor.preparar()                        -> começa a carregar o Python
+ *      window.Executor.carregado()                       -> true se o Python já está pronto
+ *      window.Executor.executar(codigo, funcao, testes)  -> Promise<{ erro, saidaInicial, resultados }>
  */
 (function () {
   "use strict";
 
-  const TEMPO_LIMITE_MS = 2000;
+  const TEMPO_LIMITE_MS = 3000;
+  const URL_PYODIDE = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
 
   // -------------------------------------------------------------------------
-  // As três funções abaixo também rodam DENTRO do worker: são convertidas em
-  // texto com toString(). Por isso não podem usar nada definido fora delas.
+  // Lado Python: compila o código do usuário UMA vez e avalia cada chamada de
+  // teste no mesmo namespace. Recebe e devolve JSON.
   // -------------------------------------------------------------------------
-
-  /** Converte um valor JS em texto legível (strings com aspas, arrays, objetos). */
-  function formatar(valor, profundidade) {
-    profundidade = profundidade || 0;
-    if (profundidade > 5) return "…";
-    if (valor === undefined) return "undefined";
-    if (valor === null) return "null";
-    if (typeof valor === "string") return JSON.stringify(valor);
-    if (typeof valor === "number") return Object.is(valor, -0) ? "0" : String(valor);
-    if (typeof valor === "bigint") return valor + "n";
-    if (typeof valor === "function") return "[função]";
-    if (Array.isArray(valor)) {
-      return "[" + valor.map(function (item) { return formatar(item, profundidade + 1); }).join(", ") + "]";
-    }
-    if (typeof valor === "object") {
-      const chaves = Object.keys(valor);
-      if (chaves.length === 0) return "{}";
-      return "{ " + chaves.map(function (k) {
-        return k + ": " + formatar(valor[k], profundidade + 1);
-      }).join(", ") + " }";
-    }
-    return String(valor);
-  }
-
-  /** Igualdade profunda: compara arrays e objetos pelo conteúdo. */
-  function iguais(a, b) {
-    if (Object.is(a, b)) return true;
-    // Números: tolera erro de ponto flutuante (0.1 + 0.2 vs 0.3)
-    if (typeof a === "number" && typeof b === "number") return Math.abs(a - b) < 1e-9;
-    if (Array.isArray(a) !== Array.isArray(b)) return false;
-    if (Array.isArray(a)) {
-      if (a.length !== b.length) return false;
-      for (let i = 0; i < a.length; i++) {
-        if (!iguais(a[i], b[i])) return false;
-      }
-      return true;
-    }
-    if (a && b && typeof a === "object" && typeof b === "object") {
-      const chavesA = Object.keys(a);
-      const chavesB = Object.keys(b);
-      if (chavesA.length !== chavesB.length) return false;
-      for (const k of chavesA) {
-        if (!Object.prototype.hasOwnProperty.call(b, k) || !iguais(a[k], b[k])) return false;
-      }
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Compila o código do usuário UMA vez e avalia cada chamada de teste no mesmo escopo.
-   * Retorna { erro, saidaInicial, resultados: [{ chamada, esperado, recebido, passou, logs }] }.
-   */
-  function rodarTestes(codigo, nomeFuncao, testes) {
-    // console falso: o destino das linhas é trocado a cada teste
-    const saida = { linhas: [] };
-    function escrever() {
-      const partes = [];
-      for (let i = 0; i < arguments.length; i++) {
-        const arg = arguments[i];
-        partes.push(typeof arg === "string" ? arg : formatar(arg));
-      }
-      saida.linhas.push(partes.join(" "));
-    }
-    const consoleFalso = { log: escrever, info: escrever, warn: escrever, error: escrever, debug: escrever };
-
-    function descreverErro(erro) {
-      if (erro && typeof erro === "object" && "message" in erro) {
-        return (erro.name || "Erro") + ": " + erro.message;
-      }
-      return "Erro: " + String(erro);
-    }
-
-    // O código do usuário vira o corpo de uma função. No fim, devolvemos um
-    // "avaliador" que usa eval direto e por isso enxerga as declarações dele.
-    let avaliar;
-    try {
-      avaliar = new Function(
-        "console",
-        codigo + "\n;return function (__chamada__) { return eval(__chamada__); };"
-      )(consoleFalso);
-    } catch (erro) {
-      const prefixo = erro instanceof SyntaxError ? "Erro de sintaxe — " : "Erro ao carregar o código — ";
-      return { erro: prefixo + descreverErro(erro), saidaInicial: saida.linhas, resultados: [] };
-    }
-    const saidaInicial = saida.linhas;
-
-    if (avaliar("typeof " + nomeFuncao) !== "function") {
-      return {
-        erro: "Não encontrei a função " + nomeFuncao + "(...). Confira se o nome está escrito exatamente assim.",
-        saidaInicial: saidaInicial,
-        resultados: [],
-      };
-    }
-
-    const resultados = testes.map(function (teste) {
-      saida.linhas = [];
-      const r = {
-        chamada: teste.chamada,
-        esperado: formatar(teste.esperado),
-        recebido: "",
-        passou: false,
-        logs: saida.linhas,
-      };
-      try {
-        const valor = avaliar(teste.chamada);
-        r.recebido = formatar(valor);
-        r.passou = iguais(valor, teste.esperado);
-      } catch (erro) {
-        r.recebido = descreverErro(erro);
-      }
-      return r;
-    });
-
-    return { erro: null, saidaInicial: saidaInicial, resultados: resultados };
-  }
+  const FONTE_PYTHON = [
+    "import ast, json, math",
+    "from contextlib import redirect_stdout, redirect_stderr",
+    "",
+    "ARQUIVO = 'solucao.py'",
+    "LIMITE_SAIDA = 20000  # caracteres de print guardados por fase",
+    "LIMITE_REPR = 500",
+    "",
+    "class Saida:",
+    "    def __init__(self):",
+    "        self.partes = []",
+    "        self.tamanho = 0",
+    "    def write(self, s):",
+    "        if self.tamanho < LIMITE_SAIDA:",
+    "            self.partes.append(s)",
+    "        self.tamanho += len(s)",
+    "        return len(s)",
+    "    def flush(self):",
+    "        pass",
+    "    def linhas(self):",
+    "        texto = ''.join(self.partes)[:LIMITE_SAIDA]",
+    "        if self.tamanho > LIMITE_SAIDA:",
+    "            texto += '\\n… (saída cortada)'",
+    "        linhas = texto.split('\\n')",
+    "        if linhas and linhas[-1] == '':",
+    "            linhas.pop()",
+    "        return linhas",
+    "",
+    "def mostrar(valor):",
+    "    try:",
+    "        texto = repr(valor)",
+    "    except Exception:",
+    "        texto = '<valor sem representação>'",
+    "    return texto if len(texto) <= LIMITE_REPR else texto[:LIMITE_REPR] + '…'",
+    "",
+    "def iguais(a, b):",
+    "    # bool é subclasse de int em Python: True não pode passar por 1",
+    "    if isinstance(a, bool) or isinstance(b, bool):",
+    "        return type(a) is type(b) and a == b",
+    "    if isinstance(a, (int, float)) and isinstance(b, (int, float)):",
+    "        if isinstance(a, int) and isinstance(b, int):",
+    "            return a == b",
+    "        # tolera erro de ponto flutuante (0.1 + 0.2 vs 0.3)",
+    "        return math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-9)",
+    "    if type(a) is not type(b):",
+    "        return False",
+    "    if isinstance(a, (list, tuple)):",
+    "        return len(a) == len(b) and all(iguais(x, y) for x, y in zip(a, b))",
+    "    if isinstance(a, dict):",
+    "        return a.keys() == b.keys() and all(iguais(a[k], b[k]) for k in a)",
+    "    return a == b",
+    "",
+    "def descrever_erro(erro):",
+    "    linha = None",
+    "    tb = erro.__traceback__",
+    "    while tb is not None:",
+    "        if tb.tb_frame.f_code.co_filename == ARQUIVO:",
+    "            linha = tb.tb_lineno",
+    "        tb = tb.tb_next",
+    "    texto = type(erro).__name__",
+    "    if str(erro):",
+    "        texto += ': ' + str(erro)",
+    "    if linha is not None:",
+    "        texto += ' (linha ' + str(linha) + ')'",
+    "    return texto",
+    "",
+    "def normalizar_nome(nome):",
+    "    return nome.replace('_', '').lower()",
+    "",
+    "def rodar_testes(codigo, funcao, testes_json):",
+    "    testes = json.loads(testes_json)",
+    "    resposta = {'erro': None, 'saidaInicial': [], 'resultados': []}",
+    "",
+    "    try:",
+    "        compilado = compile(codigo, ARQUIVO, 'exec')",
+    "    except SyntaxError as erro:",
+    "        tipo = 'Erro de indentação' if isinstance(erro, IndentationError) else 'Erro de sintaxe'",
+    "        resposta['erro'] = tipo + ' — linha ' + str(erro.lineno) + ': ' + str(erro.msg)",
+    "        return json.dumps(resposta, ensure_ascii=False)",
+    "",
+    "    ns = {'__name__': '__main__', '__builtins__': __builtins__}",
+    "    saida = Saida()",
+    "    try:",
+    "        with redirect_stdout(saida), redirect_stderr(saida):",
+    "            exec(compilado, ns)",
+    "    except BaseException as erro:",
+    "        resposta['saidaInicial'] = saida.linhas()",
+    "        resposta['erro'] = 'Erro ao carregar o código — ' + descrever_erro(erro)",
+    "        return json.dumps(resposta, ensure_ascii=False)",
+    "    resposta['saidaInicial'] = saida.linhas()",
+    "",
+    "    if not callable(ns.get(funcao)):",
+    "        parecido = [n for n in ns if n != funcao and normalizar_nome(n) == normalizar_nome(funcao)]",
+    "        msg = 'Não encontrei a função ' + funcao + '(...). Confira se o nome está escrito exatamente assim.'",
+    "        if parecido:",
+    "            msg += ' Encontrei ' + parecido[0] + ' — em Python o nome precisa ser idêntico, com os _ e minúsculas.'",
+    "        resposta['erro'] = msg",
+    "        return json.dumps(resposta, ensure_ascii=False)",
+    "",
+    "    for teste in testes:",
+    "        esperado = ast.literal_eval(teste['esperado'])",
+    "        r = {'chamada': teste['chamada'], 'esperado': mostrar(esperado), 'recebido': '', 'passou': False, 'logs': []}",
+    "        saida = Saida()",
+    "        try:",
+    "            with redirect_stdout(saida), redirect_stderr(saida):",
+    "                valor = eval(compile(teste['chamada'], '<teste>', 'eval'), ns)",
+    "            r['recebido'] = mostrar(valor)",
+    "            r['passou'] = iguais(valor, esperado)",
+    "        except RecursionError:",
+    "            r['recebido'] = 'RecursionError: recursão sem fim (a função chama a si mesma sem parar)'",
+    "        except BaseException as erro:",
+    "            r['recebido'] = descrever_erro(erro)",
+    "        r['logs'] = saida.linhas()",
+    "        resposta['resultados'].append(r)",
+    "",
+    "    return json.dumps(resposta, ensure_ascii=False)",
+  ].join("\n");
 
   // -------------------------------------------------------------------------
-  // Montagem do worker
+  // Fonte do worker: carrega o Pyodide, define o lado Python e atende pedidos.
   // -------------------------------------------------------------------------
-
   const FONTE_WORKER =
-    [formatar, iguais, rodarTestes].map(String).join("\n\n") +
-    "\n\nself.onmessage = function (e) {\n" +
+    "var URL_PYODIDE = " + JSON.stringify(URL_PYODIDE) + ";\n" +
+    "var FONTE_PYTHON = " + JSON.stringify(FONTE_PYTHON) + ";\n" +
+    "var rodar = null;\n" +
+    "(async function () {\n" +
+    "  try {\n" +
+    "    importScripts(URL_PYODIDE + 'pyodide.js');\n" +
+    "    var pyodide = await loadPyodide({ indexURL: URL_PYODIDE });\n" +
+    "    pyodide.runPython(FONTE_PYTHON);\n" +
+    "    rodar = pyodide.globals.get('rodar_testes');\n" +
+    "    self.postMessage({ tipo: 'pronto' });\n" +
+    "  } catch (erro) {\n" +
+    "    self.postMessage({ tipo: 'falha', erro: String(erro && erro.message || erro) });\n" +
+    "  }\n" +
+    "})();\n" +
+    "self.onmessage = function (e) {\n" +
     "  var d = e.data;\n" +
     "  var resposta;\n" +
-    "  try { resposta = rodarTestes(d.codigo, d.funcao, d.testes); }\n" +
+    "  try { resposta = JSON.parse(rodar(d.codigo, d.funcao, JSON.stringify(d.testes))); }\n" +
     "  catch (erro) { resposta = { erro: 'Erro inesperado — ' + (erro && erro.message || erro), saidaInicial: [], resultados: [] }; }\n" +
-    "  self.postMessage(resposta);\n" +
+    "  self.postMessage({ tipo: 'resultado', resposta: resposta });\n" +
     "};\n";
 
   let urlWorker = null;
@@ -157,51 +174,92 @@
     return urlWorker;
   }
 
-  /** Execução direta na página — só usada se Web Workers não estiverem disponíveis. */
-  function executarSemWorker(codigo, nomeFuncao, testes) {
-    try {
-      return Promise.resolve(rodarTestes(codigo, nomeFuncao, testes));
-    } catch (erro) {
-      return Promise.resolve({ erro: "Erro inesperado — " + (erro && erro.message), saidaInicial: [], resultados: [] });
-    }
+  // Worker atual e a promessa de que ele terminou de carregar o Python
+  let worker = null;
+  let prontoPromessa = null;
+  let estaPronto = false;
+
+  function descartarWorker() {
+    if (worker) worker.terminate();
+    worker = null;
+    prontoPromessa = null;
+    estaPronto = false;
   }
 
-  function executar(codigo, nomeFuncao, testes) {
-    let worker;
+  /** Cria o worker (se ainda não existe) e devolve uma promessa que resolve quando o Python está pronto. */
+  function preparar() {
+    if (prontoPromessa) return prontoPromessa;
     try {
       worker = new Worker(obterUrlWorker());
     } catch (e) {
-      return executarSemWorker(codigo, nomeFuncao, testes);
+      worker = null;
+      return Promise.reject(new Error("este navegador não permitiu criar um Web Worker"));
     }
-
-    return new Promise(function (resolver) {
-      let terminou = false;
-      function finalizar(resultado) {
-        if (terminou) return;
-        terminou = true;
-        clearTimeout(relogio);
-        worker.terminate();
-        resolver(resultado);
-      }
-
-      const relogio = setTimeout(function () {
-        finalizar({
-          erro: "Tempo esgotado: seu código demorou mais de " + (TEMPO_LIMITE_MS / 1000) +
-                " segundos. Provavelmente há um loop infinito — confira a condição de parada dos seus loops.",
-          saidaInicial: [],
-          resultados: [],
-        });
-      }, TEMPO_LIMITE_MS);
-
-      worker.onmessage = function (e) { finalizar(e.data); };
-      worker.onerror = function (e) {
-        e.preventDefault();
-        finalizar({ erro: "Erro — " + (e.message || "falha ao executar o código"), saidaInicial: [], resultados: [] });
+    const w = worker;
+    prontoPromessa = new Promise(function (resolver, rejeitar) {
+      w.onmessage = function (e) {
+        if (e.data.tipo === "pronto") { estaPronto = true; resolver(w); }
+        else if (e.data.tipo === "falha") rejeitar(new Error(e.data.erro));
       };
-
-      worker.postMessage({ codigo: codigo, funcao: nomeFuncao, testes: testes });
+      w.onerror = function (e) {
+        e.preventDefault();
+        rejeitar(new Error(e.message || "falha ao iniciar o worker"));
+      };
     });
+    // Falhou ao carregar (ex.: sem internet): a próxima execução tenta de novo do zero
+    prontoPromessa.catch(function () { if (worker === w) descartarWorker(); });
+    return prontoPromessa;
   }
 
-  window.Executor = { executar: executar, formatar: formatar };
+  function erroCarregamento(erro) {
+    return {
+      erro: "Não consegui carregar o Python (Pyodide) — " + (erro && erro.message || erro) +
+            ". Ele vem da internet na primeira vez; confira a conexão e tente de novo.",
+      saidaInicial: [],
+      resultados: [],
+    };
+  }
+
+  function executar(codigo, nomeFuncao, testes) {
+    return preparar().then(function (w) {
+      return new Promise(function (resolver) {
+        let terminou = false;
+        function finalizar(resultado) {
+          if (terminou) return;
+          terminou = true;
+          clearTimeout(relogio);
+          resolver(resultado);
+        }
+
+        // O relógio só começa depois que o Python está carregado
+        const relogio = setTimeout(function () {
+          descartarWorker();
+          preparar().catch(function () {}); // já recarrega para a próxima tentativa
+          finalizar({
+            erro: "Tempo esgotado: seu código demorou mais de " + (TEMPO_LIMITE_MS / 1000) +
+                  " segundos. Provavelmente há um loop infinito — confira a condição de parada dos seus while.",
+            saidaInicial: [],
+            resultados: [],
+          });
+        }, TEMPO_LIMITE_MS);
+
+        w.onmessage = function (e) {
+          if (e.data.tipo === "resultado") finalizar(e.data.resposta);
+        };
+        w.onerror = function (e) {
+          e.preventDefault();
+          descartarWorker();
+          finalizar({ erro: "Erro — " + (e.message || "falha ao executar o código"), saidaInicial: [], resultados: [] });
+        };
+
+        w.postMessage({ codigo: codigo, funcao: nomeFuncao, testes: testes });
+      });
+    }, erroCarregamento);
+  }
+
+  window.Executor = {
+    preparar: function () { preparar().catch(function () {}); },
+    carregado: function () { return estaPronto; },
+    executar: executar,
+  };
 })();

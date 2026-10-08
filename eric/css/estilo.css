@@ -433,6 +433,41 @@ kbd {
 
 .editor:focus-within { box-shadow: 0 0 0 3px color-mix(in srgb, var(--acento) 35%, transparent); }
 
+/* Lista de sugestões do autocompletar (flutua dentro da .editor-area, escura como o editor) */
+.autocompletar {
+  position: absolute;
+  z-index: 5;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  min-width: 220px;
+  max-width: calc(100% - 8px);
+  background: #2a2b30;
+  border: 1px solid #3c3e45;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  font-family: var(--fonte-codigo);
+  font-size: 13px;
+  color: var(--codigo-tinta);
+}
+.autocompletar[hidden] { display: none; }
+
+.autocompletar-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.autocompletar-item.escolhido { background: color-mix(in srgb, #748ffc 35%, transparent); }
+.autocompletar-nome { overflow: hidden; text-overflow: ellipsis; }
+.autocompletar-nome strong { color: #ffd43b; font-weight: 600; }
+.autocompletar-detalhe { color: var(--codigo-linhas); }
+.autocompletar-tipo { color: var(--codigo-linhas); font-size: 11px; font-family: var(--fonte); }
+
 /* ---------- Ações ---------- */
 
 .acoes {
