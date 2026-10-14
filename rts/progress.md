@@ -1,5 +1,7 @@
 Original prompt: Crie um site web simples que é uma arena 2d de pequens formas de vida que andam nela feitos de forma geometricas. ELes andam livremente
 
+- Adicionada uma camada de efeitos sonoros procedurais por Web Audio: tiros, golpes, machado, colheita, construções, unidades treinadas, ondas, alarme, sino, mortes e vitórias. O áudio nasce somente após gesto do jogador e pode ser ligado/desligado pelo botão musical da barra superior; a preferência fica guardada no navegador.
+
 - Criada arena vanilla com canvas, 12 organismos geométricos e movimento livre com colisão nas bordas.
 - Adicionado clique para semear novos organismos, leitura ao vivo, famílias visuais e layout responsivo.
 - Expostos `window.render_game_to_text` e `window.advanceTime(ms)` para testes automatizados.

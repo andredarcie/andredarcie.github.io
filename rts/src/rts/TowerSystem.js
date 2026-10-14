@@ -14,11 +14,13 @@ export class TowerSystem {
   #state;
   #units;
   #ledger;
+  #events;
 
-  constructor({ state, units, ledger }) {
+  constructor({ state, units, ledger, events }) {
     this.#state = state;
     this.#units = units;
     this.#ledger = ledger;
+    this.#events = events;
   }
 
   // O que a trincheira faz agora, pelos níveis das melhorias (a Igreja Nova tem os
@@ -78,6 +80,7 @@ export class TowerSystem {
     });
     // Fumaça da pólvora negra na boca da arma.
     this.#state.shots.push({ x: tower.x, y: tower.y, z, tx: tower.x, ty: tower.y, tz: z, puffOnly: true, time: 0, life: 1 });
+    this.#events.emit('towerShot', { scatter: stats.scatter });
   }
 
   // Bala até o peito do alvo; se ele morreu no caminho, ela se perde onde ele estava.

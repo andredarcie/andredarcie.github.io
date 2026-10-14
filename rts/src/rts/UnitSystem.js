@@ -479,6 +479,7 @@ export class UnitSystem {
         tx: target.x + (hit ? 0 : (Math.random() - .5) * 18), ty: target.y + (hit ? 0 : (Math.random() - .5) * 18),
         tz: isBuilding ? 10 : 8, cannon: Boolean(u.stats.cannon), time: 0, life: u.stats.cannon ? 1.6 : 1.1
       });
+      this.#events.emit('strike', { weapon: 'bullet', cannon: Boolean(u.stats.cannon) });
       if (u.stats.cannon) {
         this.#state.sparks.push({ x: target.x, y: target.y, time: 0, life: .7, radius: 22, kind: 'blast' });
       }
@@ -487,6 +488,7 @@ export class UnitSystem {
         return;
       }
     }
+    else this.#events.emit('strike', { weapon: u.weapon, cannon: false });
     if (isBuilding) this.#hitBuilding(u, target);
     else this.#hitUnit(u, target);
   }
@@ -640,6 +642,7 @@ export class UnitSystem {
       tree.health--;
       tree.shake = 1;
       this.#state.woodChips.push({ x: tree.x, y: tree.y, dir: u.heading, time: 0, seed: Math.random() * 100 });
+      this.#events.emit('chop', { x: tree.x, y: tree.y });
       if (tree.health <= 0) {
         // Cai para longe de quem deu o último golpe.
         tree.fall = { angle: .04, speed: 0, dir: u.heading, phase: 'falling', timer: 0, landed: false };
@@ -705,6 +708,7 @@ export class UnitSystem {
     u.eating = 0;
     patch.stock -= FOOD_PER_TRIP;
     u.carryFood = FOOD_PER_TRIP;
+    this.#events.emit('gather', { x: patch.x, y: patch.y });
     if (patch.stock <= 0) this.#grassField.eat(patch);
   }
 

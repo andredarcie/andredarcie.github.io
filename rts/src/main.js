@@ -55,6 +55,7 @@ import { PlayerInput } from './input/PlayerInput.js';
 import { FrameRenderer } from './app/FrameRenderer.js';
 import { Viewport } from './app/Viewport.js';
 import { GameLoop } from './app/GameLoop.js';
+import { AudioManager } from './audio/AudioManager.js';
 
 // Clareira em volta da vila, livre de cenário na hora de plantar o mundo.
 const BASE_CLEARING = 72;
@@ -87,6 +88,7 @@ try {
 const params = new URLSearchParams(location.search);
 let level = DIFFICULTY[params.get('level')] ? params.get('level') : 'normal';
 const events = new EventBus();
+const audio = new AudioManager({ events, root });
 const state = new WorldState();
 const skyClock = new SkyClock(new Astronomy());
 const biomes = new BiomeMap();
@@ -105,7 +107,7 @@ const units = new UnitSystem({ state, locomotion, grassField, forest, blood, eve
 const vespers = new Vespers({ state, skyClock, events });
 const waves = new WaveDirector({ state, units, ledger, events });
 waves.setDifficulty(level);
-const towers = new TowerSystem({ state, units, ledger });
+const towers = new TowerSystem({ state, units, ledger, events });
 const selection = new Selection();
 // A onda solta os invasores e as torres atiram antes; as unidades cumprem depois,
 // no mesmo passo, e é nelas que quem morreu sai do mundo.
