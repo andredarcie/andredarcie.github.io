@@ -1,0 +1,174 @@
+Original prompt: Crie um site web simples que é uma arena 2d de pequens formas de vida que andam nela feitos de forma geometricas. ELes andam livremente
+
+- Criada arena vanilla com canvas, 12 organismos geométricos e movimento livre com colisão nas bordas.
+- Adicionado clique para semear novos organismos, leitura ao vivo, famílias visuais e layout responsivo.
+- Expostos `window.render_game_to_text` e `window.advanceTime(ms)` para testes automatizados.
+- Teste Playwright concluído: movimento, clique de semeadura e estado textual verificados; sem erros de console.
+- Arena expandida para 100% da viewport, com controles e indicadores flutuando sobre o campo.
+- Adicionados tamanho uniforme, barras de vida/fome/sede, capim, poças de água, consumo, morte por necessidades zeradas e busca por recurso dentro do campo de visão.
+- Adicionada percepção de comida com balão “vi comida”, corrida até o capim e animação “nham nham” durante a alimentação.
+- Movimento refatorado com aceleração, inércia, velocidade máxima, passeio sinuoso, curvas orgânicas e quique suave nas bordas.
+- Adicionado custo energético quadrático pela velocidade efetiva, com impacto maior sobre sede do que sobre fome.
+- Criado profiler determinístico em `scripts/profile-simulation.cjs`, com série temporal, teste isolado de movimento, interações, capturas e coleta de erros.
+- O perfil inicial revelou extinção por baixa acessibilidade a recursos e gargalo reprodutivo em população pequena.
+- Ajustados busca antecipada de recursos, varredura ativa, percepção emergencial, chuva hidratante, alcance para parceiros e balanceamento sexual dos filhotes.
+- Capim passou a escalar com a área da arena, entre 24 e 64 unidades, com densidade calibrada para capacidade de suporte visualmente administrável.
+- Perfil final de 600 s: população inicial 12, pico 58, final 49, 238 nascimentos, 201 mortes inferidas e nenhum erro de console.
+- Validação adicional com cinco sementes de 600 s: nenhuma extinção, população final entre 40 e 52, pico entre 50 e 65 e zero erros de console em todas as execuções.
+- Artefatos e análise final registrados em `output/simulation-profile/`.
+- Adicionado custo energético não linear baseado em `alcance² × abertura` e economia moderada para visão menor.
+- Alcance e abertura agora competem: a abertura máxima cai de 155° para 125° entre os extremos de alcance.
+- Perfil visual isolado validou multiplicadores de 0,889× a 1,192×, com erro apenas de ponto flutuante.
+- Seis sementes de 600 s foram repetidas sem erros de console ou violações genéticas; a semente 404 apresentou extinção demográfica apenas no perfil estendido, aos 840 s.
+- HUD compactada para 184 px no desktop e 168 px no celular, com tipografia, espaçamento, sombra e botões menores.
+- Fundo da HUD e dica inferior tornados translúcidos com blur; desktop e viewport móvel de 390 × 844 validados sem erros.
+- HUD reduzida ao mínimo prático: 132 px no desktop e 124 px no celular, com 141/139 px de altura e todos os indicadores e controles preservados.
+- Relógio compactado separadamente para não cortar os algarismos; desktop e viewport móvel de 390 × 844 validados sem sobreposição ou erros de console.
+- Redesign visual Hallmark aplicado com macroestrutura Marquee Hero e tema Carnival / Aqua Park, preservando integralmente a lógica da simulação.
+- Campo, malha, visão, organismos, expressões, barras, vegetação, poças, chuva, HUD e diálogos receberam uma nova linguagem visual desenhada em Canvas/CSS.
+- HUD manteve 124 px no celular e 132 px no desktop; rótulos de ação foram encurtados sem perder os nomes acessíveis completos.
+- Responsividade validada em 320, 375, 414, 768 e 1280 px: sem rolagem horizontal, texto clicável quebrado, cortes de HUD ou erros de console.
+- Perfil determinístico pós-redesign de 60 s: 34 bichos, 22 nascimentos, 2 eventos de chuva, diálogos e criação por clique funcionando, sem regressões ou violações genéticas.
+- Contrastes WCAG medidos entre 7,94:1 e 16,52:1 nas combinações principais; revisão Hallmark concluída em 58/58 gates.
+- Reprodução deixou de gerar filhotes instantaneamente: o casal agora passa por aproximação, cortejo circular e acasalamento antes da concepção.
+- A fêmea permanece grávida por cerca de 9 s (ajustados pela fertilidade), com silhueta e barra de gestação progressivas; o nascimento só é contabilizado quando o filhote aparece.
+- Nascimento ganhou animação própria com expansão do recém-nascido, anéis e partículas; o estado textual e a ficha genética expõem o progresso da gestação.
+- Nos 1,2 s finais, a mãe entra em trabalho de parto, interrompe o movimento, pulsa suavemente e avisa “vai nascer” antes do filhote surgir.
+- Alteração não executada nem validada por IA, conforme a regra local do projeto; aguarda teste manual do usuário.
+- Indicador interno da gestação reposicionado abaixo da boca, preservando a expressão facial durante toda a gravidez.
+- Busca de parceiros agora respeita tanto o alcance quanto a abertura do cone de visão; removida a percepção reprodutiva de 3× fora do campo visual.
+- Estas duas correções também não foram executadas ou validadas por IA; aguardam teste visual e comportamental do usuário.
+- Barras dos organismos ganharam painel compacto de contraste e ícones semânticos: coração para vida, folha para alimento, gota para água e ovo para gestação.
+- Balões de pensamento foram afastados verticalmente para não encobrir os indicadores; alteração aguarda teste visual do usuário.
+- Removida a percepção emergencial de recursos em 3× o alcance; comida e água agora só são descobertas dentro do alcance e da abertura reais do cone de visão.
+- Alvos já vistos continuam sendo perseguidos como memória espacial; ajuste de visão ainda aguarda teste comportamental do usuário.
+- Busca sem recurso visível agora divide a arena em nove regiões: o bicho escolhe áreas distantes e menos examinadas, caminha até elas e varre o entorno com uma rotação completa do cone de visão.
+- Comida e água continuam dependendo estritamente da visão; a exploração apenas decide para onde caminhar, com rota levemente aleatória e memória separada das regiões já verificadas para cada necessidade.
+- `render_game_to_text` passou a expor destino, região e estado de varredura da exploração; comportamento aguarda teste manual do usuário.
+- Mundo dividido em três biomas com proporções relativas baseadas nos percentuais fornecidos: deserto/xerófitas, taiga e campos/savana.
+- Cada bioma ganhou solo, textura, rótulo e vegetação próprios; fronteiras são orgânicas e acompanham o redimensionamento da arena.
+- Recursos passaram a respeitar o habitat: deserto é mais escasso e recebe oásis raros, taiga favorece água e savana favorece alimento; a lógica de consumo permaneceu a mesma.
+- Estado textual agora informa o bioma de cada organismo e a distribuição atual de alimento e poças por bioma; implementação aguarda teste visual e comportamental do usuário.
+- Área do mundo rebalanceada para exatamente ⅓ de deserto, ⅓ de taiga e ⅓ de savana; percentuais terrestres originais continuam apenas como metadados informativos.
+- Ondulações das fronteiras passaram a usar ciclos completos de média zero, preservando a divisão igual mesmo com contornos orgânicos e em qualquer tamanho de tela.
+- Rótulos visuais dos três biomas agora exibem ⅓; ajuste aguarda teste visual do usuário.
+- Adicionado sistema social bilateral: encontros próximos acumulam afinidade e, após convivência suficiente, os dois bichos se tornam aliados.
+- Cada bicho pode manter até dois aliados; os vínculos duram enquanto ambos estiverem vivos e são removidos automaticamente após uma morte.
+- Aliados visíveis caminham em formação e podem seguir um companheiro que já encontrou o mesmo recurso, sem receber coordenadas ocultas nem ultrapassar as regras do campo de visão.
+- Alianças ganharam linha pontilhada e símbolo de elo discretos, aviso “aliado!”, contagem na ficha genética e dados próprios no estado textual.
+- Casais em cortejo ou acasalamento não formam amizade automaticamente; reprodução, gestação e necessidades continuam tendo prioridade sobre o comportamento social.
+- Sistema social inspecionado apenas no código e não executado nem validado por IA, conforme a regra local; aguarda teste manual do usuário.
+- Adicionado slider compacto de velocidade à HUD, com ajuste contínuo em passos de 0,25× entre 0,25× e 4× e indicação numérica do valor atual.
+- O multiplicador acelera ou desacelera toda a simulação, incluindo movimento, necessidades, reprodução, clima e relógio interno.
+- Velocidades altas são divididas em pequenos passos de atualização para preservar colisões e transições; o estado textual também expõe `simulationSpeed`.
+- Controle de velocidade inspecionado apenas no código e não executado nem validado por IA; aguarda teste manual do usuário.
+- Skills de clean code TypeScript instaladas a partir de `ertugrul-dmr/clean-code-skills`, usando apenas a trilha TypeScript por ser a mais próxima deste JavaScript.
+- Aplicada limpeza Boy Scout sem alterar a mecânica: `make` virou `createOrganism` com opções nomeadas, `spot` virou `createFoodPatch` e `newPond` virou `createPond`.
+- Removida propriedade/parâmetro morto de comida, removido comentário de metadados do CSS e reduzidos argumentos posicionais em rotinas de desenho e movimento.
+- Alterações de qualidade revisadas estaticamente e não executadas nem validadas por IA, conforme a regra local; aguarda teste manual do usuário.
+- Herança refeita em modelo diploide: a média dos pais deixou de ser herdada e foi substituída por genoma com três locos por gene e duas cópias por loco.
+- Meiose com recombinação livre: cada loco sorteia uma das duas cópias do indivíduo ao formar o gameta, e a mutação passou a ser rara e por alelo (4%), não por filhote.
+- Fecundação passou a ocorrer no acasalamento: a gestação carrega o zigoto pronto, então o filhote mantém o genoma mesmo se o pai morrer durante a gravidez.
+- Alelos fundadores ocupam toda a faixa legal de cada gene, então a população nasce parecendo uniforme mas guarda alelos extremos escondidos; a variância herdável deixa de colapsar a cada geração.
+- Cor virou loco com série de dominância: o alelo recessivo fica oculto no portador e pode reaparecer num neto; fundadores nascem homozigotos, como a geração P de um cruzamento clássico.
+- Ficha genética agora mostra, em cada gene, o valor expresso e as duas contribuições (pai · mãe); `render_game_to_text` expõe o mesmo em `genome`.
+- Removido o campo morto `initial` de `GENE_SPECS` e unificada a formatação de valores em `formatGeneValue`.
+- Alteração inspecionada apenas por checagem de sintaxe e não executada nem validada por IA, conforme a regra local; aguarda teste manual do usuário.
+- Pendente para a visão longa realmente se fixar: mortalidade por escassez que a chuva não resgate, fecundidade proporcional à energia em vez do limiar de 65 e uma visualização de distribuição de alelos.
+- Ficha genética reconstruída em volta do genoma: as oito linhas passaram a ser montadas em JS e cada gene ganhou um medidor com o trilho da faixa possível, as duas cópias herdadas e um risco no valor expresso.
+- Marcadores repetem o vocabulário da arena: quadrado para a cópia do pai e círculo para a da mãe, mesmo □ macho / ○ fêmea do rodapé; a forma carrega a identidade, não só a cor.
+- Paleta do medidor validada pelo validador de dataviz como rampa ordinal de um tom só (trilho, ligação, marcas, risco): monotonia, salto de luminosidade e contraste do extremo claro passaram; texto em 7,4:1 e 11,7:1, marcas em 4,8:1 sobre o trilho.
+- Ficha passou a mostrar a linhagem ("filho de #12 e #7" ou "fundador, sem pais") e, na cor, o portador do alelo recessivo.
+- Modal de evolução ganhou a faixa entre o menor e o maior bicho vivo em cada gene e o indicador de variação genética, a dispersão atual da população como fração da inicial.
+- Variação genética usa desvio amostral (n − 1) para não inflar a comparação com os 12 fundadores; é o número que despencava com a herança por média e agora deve ficar perto de 100%.
+- Interface não foi aberta nem conferida visualmente por IA, conforme a regra local; aguarda teste manual do usuário.
+- Modal de evolução reescrito para responder o que está sendo selecionado, e não só desenhar linhas.
+- Cores saíram do gráfico de linhas: eram proporções de 0 a 100% dividindo o mesmo eixo automático dos genes e esmagavam as linhas deles, que agora aparecem numa escala própria de 0,5 em 0,5%.
+- Adicionado rastreio de geração: fundador é geração 0 e o filhote é a média dos pais + 1; a geração média da população entra no resumo.
+- Cada gene virou um cartão com barra divergente centrada no zero: o lado diz a direção, o comprimento diz o tamanho da mudança e a cor diz se ela passou da margem de deriva.
+- Margem de deriva calculada como σ·√(gerações / vivos): abaixo de dois desvios o cartão diz "dentro do acaso" e mostra o número; acima, diz qual lado dos alelos está vencendo.
+- Manchete do modal resume quantos dos oito genes já mudaram mais do que o acaso explicaria, com estado próprio para quando ainda não passaram gerações suficientes.
+- Cartões são ordenados do que mais mudou para o que menos mudou, mas só na abertura do modal, para não pularem durante a leitura.
+- Cor ganhou seção própria com duas barras por alelo: quanto da população mostra a cor e quanto do pool genético carrega o alelo (contando as duas cópias), com listras marcando o pool.
+- Modal não foi aberto nem conferido visualmente por IA, conforme a regra local; aguarda teste manual do usuário.
+- Revisão do modal encontrou quatro problemas, todos corrigidos: com a população extinta `r?.threshold !== null` dava verdadeiro para leitura nula e a manchete errava o estado; as cores tinham perdido a comparação com o início ao sair do gráfico de linhas; os rótulos do eixo usavam ponto decimal em vez de vírgula; e o texto prometia ordenação contínua quando ela só acontece na abertura.
+- Cada barra de cor ganhou um risco na posição inicial, então ganho e perda se leem sem coluna extra: barra além do risco é ganho, aquém é perda.
+- Documentado no código que a margem de deriva usa a contagem de vivos no lugar do tamanho efetivo, que é sempre menor; por isso ela é um piso e o corte exige o dobro.
+- Visual refeito em three.js a partir de mini.png: ilha quadrada flutuante com estratos de terra e recorte irregular no fundo, câmera ortográfica isométrica, chão texturizado, árvores em blocos e bichos voxel.
+- Paleta extraída da referência pixel a pixel (PNG decodificado com zlib), não escolhida a olho: fundo #d6f3de, terra #d7c590, gramas #b8cc71/#a2b962/#8ab25c, lajota #c8c6aa e quatro estratos de solo.
+- Ângulo da câmera derivado da própria imagem: o losango tem altura/largura 0,583, e arcsen disso dá 35,26°, que é a isometria verdadeira do eixo (1,1,1).
+- Iluminação sem tone mapping para o hex medido chegar intacto: ambiente 0,62 entrega a cor base nas faces de cima e o sol 1,4 só acrescenta o degradê das laterais. São os dois únicos números de ajuste.
+- Mundo desacoplado do tamanho da janela: passou a ser uma ilha fixa de 900 × 900, área quase igual à da arena antiga em tela cheia, então densidade de capim e dinâmica de população não mudaram.
+- Sobreposição 2D preservada sobre a cena: barras, ícones, balões, corações, chuva e efeito de nascimento continuam no mesmo código, agora projetados.
+- Projeção ortográfica de um plano é afim, então basta uma matriz para o que pertence ao chão (linhas de aliança, anel de cortejo, anéis de nascimento) voltar a funcionar sem alteração, deitado na ilha.
+- Clique passou a mirar por interseção com o plano do chão, para semear e inspecionar continuarem certos; adicionados os controles de zoom e enquadramento da referência.
+- Sexo voltou a ser legível: em voxel todos ficaram iguais, então a fêmea ganhou bloco de cabelo, que aparece em qualquer ângulo e não disputa com a cor do tronco, que é identidade genética.
+- Revisão pegou e corrigiu: vazamento de geometria e material a cada bicho e arbusto criado, plano do chão brigando com a face do estrato de terra, borda da poça mais baixa que a água, ambiguidade de ordem de Euler no cone de visão e enquadramento que cortava a ilha em tela estreita.
+- Página passou a exigir servidor local: usa módulos ES, que o navegador bloqueia em file://.
+- Nada disso foi aberto em navegador por IA, conforme a regra local; é a mudança menos verificável feita até aqui e aguarda teste manual.
+- Biomas reforçados em duas frentes: o chão deixou de ser três faixas chapadas e a vegetação deixou de ignorar em que bioma nasce.
+- Chão passou a ser pintado pixel a pixel em ImageData, com três tons por bioma sorteados por ruído — é a variação interna que tira o aspecto de faixa chapada.
+- A fronteira entre biomas ganhou serrilhado orgânico: o mesmo ruído desloca a divisa em até 24 px de mundo, no lugar do corte reto por linha de varredura.
+- Detalhe rasteiro próprio de cada bioma: ondulação de areia no deserto, serrapilheira na taiga e tufo seco na savana, 1300 traços distribuídos por biomeAt.
+- Três espécies novas de bloco: conífera que afina para cima (a silhueta que faz a taiga ser reconhecida de longe), cacto com braços e pedra.
+- A cena deixou de sortear vegetação: recebe a lista pronta de quem conhece os biomas, e só decide como cada espécie é montada de blocos. A densidade não copia o habitatWeight de propósito — taiga fechada em árvore, savana aberta, ainda que a savana produza mais capim.
+- Clareira central e entorno das poças ficam livres de vegetação, para os bichos e suas barras continuarem legíveis.
+- Removidos da paleta os tons soltos que os arrays por bioma substituíram.
+- Revisão pegou uma quebra grave que o node --check não vê: ao remover o anel de árvores antigo eu cortei junto o bloco de geometria e material compartilhados, deixando SHAPES e mais sete nomes usados e nunca declarados — página em branco garantida. Restaurados.
+- Também corrigido: setScenery descartava a geometria compartilhada com o capim da simulação ao ser chamado de novo, o que quebraria todo o capim da arena.
+- Passou a existir uma checagem de identificadores não declarados, rodada fora do projeto, porque node --check só valida sintaxe e não pegaria esse tipo de erro.
+- Nada aberto em navegador por IA, conforme a regra local; aguarda teste manual.
+- Humanoides passaram a andar de verdade: pernas em oposição, braços na fase contrária às pernas do mesmo lado, corpo subindo duas vezes por ciclo e balanço lateral, tudo com amplitude proporcional à velocidade.
+- A causa de os membros não se mexerem não era falta de dado — gait, speed e birthAnimation já existiam na simulação; a cena é que os ignorava.
+- Geometria de perna e braço deslocada para o ponto de giro cair no quadril e no ombro: com o pivô no centro do bloco o membro tesoura em volta de si mesmo em vez de balançar pendurado.
+- Corpo ganhou grupo interno próprio, para o gingado não brigar com posição no mundo, rumo e tamanho, que ficam no grupo de fora.
+- Cadência corrigida: na escala crua do gait a passada daria 18 unidades e o pé precisaria de seno 1,71 para ficar plantado, que é impossível. Dobrando a fase a passada cai para 9,2 e a amplitude necessária vira 59°; ficou em 41°, que deixa ~30% de deslize e ainda parece passada.
+- Registrado no código que a cadência rápida não é defeito: o bicho anda 2,1 alturas de corpo por segundo, então para o tamanho dele aquilo é trote.
+- Recuperado o que se perdeu na passagem para 3D e que a versão 2D tinha: recém-nascido crescendo em vez de aparecer pronto, pulso no trabalho de parto, inclinação para a frente ao comer e beber, e barriga progressiva na gestação.
+- prefers-reduced-motion volta a ser respeitado: sem animação, os membros ficam em repouso e o filhote nasce no tamanho final.
+- Removidos dois 10 mágicos que duplicavam o LIFE_SIZE do index dentro da cena.
+- Nada aberto em navegador por IA, conforme a regra local; aguarda teste manual.
+- Câmera ganhou passeio no teclado, estilo jogo de estratégia: setas ou WASD movem enquanto a tecla está pressionada, com inércia leve na partida e na parada e diagonal normalizada para não andar mais rápido que a reta.
+- O sentido é medido em pixels de tela, não em unidades do mundo: numa vista a 45° "para cima" é uma diagonal, e a conversão sai de inverter a matriz do chão, que já existia e já embute o zoom — então a mesma tecla percorre a mesma distância na tela em qualquer aproximação.
+- Passeio limitado a 0,62 do tamanho do mundo, para dar liberdade sem permitir perder a ilha de vista; o botão de enquadramento agora zera zoom e posição.
+- applyPan passou a atualizar a matriz de mundo da câmera: lookAt muda a orientação mas não a matriz, que só seria refeita no próximo render, e sem isso o clique para semear e inspecionar miraria pela câmera anterior.
+- Teclado cede a vez quando um diálogo está aberto ou o foco está num campo, senão a seta moveria a câmera e o slider de velocidade ao mesmo tempo; teclas presas são soltas quando a janela perde o foco.
+- A câmera anda em tempo real, não em tempo de simulação: o slider de velocidade acelera os bichos, não o passeio de quem está olhando.
+- Nada aberto em navegador por IA, conforme a regra local; aguarda teste manual.
+- Corrigido o passeio de câmera que fazia a tela parecer travada: o limite era fixo em 0,62 do mundo, dimensionado como se o mapa fosse grande, mas a ilha tem pouco mais que uma tela de largura — em 0,6 s segurando a tecla o centro da vista ia parar 108 unidades além da borda e sobrava só fundo vazio, com a simulação rodando atrás.
+- Limite passou a depender do zoom: com a ilha inteira na tela quase não há para onde passear, e a folga abre conforme o zoom fecha o enquadramento. Nunca dá para empurrar a ilha para fora da vista.
+- Afastar o zoom agora puxa o foco de volta junto, senão a ilha sairia de vista sem ninguém apertar tecla nenhuma.
+- Velocidade caiu de 820 para 450 px/s, porque o passeio útil aqui é curto e velocidade alta só serve para perder o alvo.
+- O laço de animação ganhou rede de segurança: era ponto único de falha, e qualquer exceção matava o requestAnimationFrame do fim, congelando a página inteira sem dizer por quê. Agora avisa na tela e no console, e segue rodando.
+- Chuva deixou de repor água de um salto. Pior que isso: ela chamava restorePonds, que destruía todas as poças e recriava em posições novas já cheias — a poça teleportava no meio da chuva.
+- Agora cada poça sobe um tanto por segundo e enche em 3,4 s, dentro dos 5 s de chuva; e poça que secou não volta do nada, uma nova se forma como fio de água e cresce junto.
+- O raio virou consequência do volume num lugar só (levelPond), em vez de ser recalculado solto no código de beber; era essa separação que permitia encher sem crescer.
+- Poça nova começa com 4% da capacidade, não zero: a regra que apaga poça abaixo de 1 fazia o primeiro bicho que bebesse dela matar a recém-nascida.
+- Água refeita: deixou de ser dois cilindros de 12 lados empilhados e virou disco de borda amassada (poça redonda não existe), em três variantes compartilhadas com giro próprio por poça.
+- Material passou de Lambert para Phong pela razão que importa: Lambert não tem especular, e sem reflexo a superfície lê como disco pintado. Semitransparente, porque em poça rasa se vê o fundo.
+- Leito de terra úmida fica no tamanho cheio mesmo com a poça baixa, então a marca que sobra quando a água recua conta a história da seca.
+- Superfície respira devagar, mais forte durante a chuva, e para com prefers-reduced-motion.
+- Removido fullWaterCapacity, que virava obsoleto assim que o conjunto de poças mudava; a capacidade passou a ser calculada na hora.
+- render_game_to_text trocou rain.refilled, que deixou de existir, pela fração de enchimento.
+- Bichos passaram a nascer pelados, e pelado é na cor do próprio gene de pigmento — como era no 2D. Isso resolve um conflito: o torso colorido era o que tornava o gene de cor visível na arena, e é ele que a seção "cor" do modal de evolução acompanha; se a roupa tomasse esse lugar, o gene sumiria de vista.
+- Roupa cobre tronco e pernas; cabeça e braços continuam mostrando o corpo, então vestir um grupo não apaga a genética de ninguém.
+- Amizade veste o grupo: a cor é sorteada uma vez, quando o vínculo nasce, e vale para todo mundo ligado por amizade, direta ou por tabela — não só para o par que acabou de se conhecer.
+- Ao juntar dois bandos que já vestiam cores diferentes, a mais usada vence e o outro lado troca de roupa; sem isso o mesmo grupo ficaria com duas cores.
+- Oito tons de tecido, todos mais escuros e fechados que qualquer cor de corpo, para a roupa ler como roupa e para grupos vizinhos não se confundirem.
+- Quem perde os aliados continua vestido: camisa não some, e um sobrevivente andando com a cor do bando extinto conta uma história.
+- Cada bicho passou a ter dois materiais, corpo e roupa, com troca só quando o estado muda de fato; os dois são descartados quando o bicho sai.
+- Ficha genética ganhou linha de roupa, fora dos alelos e marcada como tal, já que roupa não é herança.
+- Removidos da paleta o tom de pele e o de calça, que deixaram de existir, e a sombra que já não era usada.
+- Aliança virou tribo, nome e código: allies→tribe, MAX_ALLIES→MAX_TRIBE_BONDS, formAlliance→joinTribe, drawAlliances→drawTribeLinks, e "aliado!" virou "tribo!".
+- Achada a razão de eles se separarem: a formação só valia com o companheiro dentro do campo de visão E com o bicho sem fome. Como o limiar de busca é 78, eles passavam quase todo o tempo com fome, exploravam sozinhos e, uma vez fora de vista, nunca mais se reencontravam.
+- Trocado por coesão de bando: cada tribo tem um centro recalculado a cada tique, e quem se afasta ganha uma puxada de volta misturada à direção que já tinha. Como é mistura e não modo, o bicho continua caçando comida e explorando, só que sem se soltar do grupo.
+- Criado o alcance do chamado (340), maior que a visão e independente do cone. Isso afrouxa de propósito a regra antiga de "nada fora do campo de visão": bicho de bando se acha por chamado, não só de olho. Segue finito — passou disso, perdeu a tribo de vez, e não há coordenada onisciente.
+- Recurso à vista reduz a puxada a 40%: sem isso um membro que já enxergou comida seria arrastado de volta à formação e a tribo passaria fome junta só para andar bonito.
+- Longe do bando ninguém descansa: a coesão zera o repouso e impõe passo mínimo proporcional à distância.
+- Cortejo, acasalamento, gestação e alimentação continuam fora da coesão; essas etapas saem do laço antes e não são interrompidas.
+- Estado textual trocou a contagem de meias-arestas por uma lista de tribos, com tamanho, uniforme e centro de cada uma.
+- Traço entre membros passou a alcançar os mesmos 340 do chamado, para o desenho bater com a mecânica.
+- Campo de visão dos bichos virou opção e nasce desligado: com algumas dezenas de bichos a tela virava uma sopa de leques translúcidos, e o cone é ferramenta de inspeção, não cenário.
+- O botão entrou na barra de vista, junto do zoom e do enquadramento, em vez da HUD — ali não custa altura, que foi o que tanto trabalho deu para reduzir a 132/124 px.
+- Basta esconder o grupo inteiro na cena: tira tudo do desenho sem mexer em cone por cone a cada quadro, e a visibilidade individual continua valendo quando religa.
+- Estado ligado fica evidente com o botão invertido, além do aria-pressed; o rótulo acessível alterna entre mostrar e ocultar.

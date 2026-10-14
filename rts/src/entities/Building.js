@@ -1,9 +1,10 @@
 import { hutSize } from '../settlement/HutDimensions.js';
 import { HUT_LOGS } from '../config/settlement.js';
 
-// Construção do RTS. Cabana (lodge, house) e fogueira de guerra (camp) usam os
+// Construção do jogo. Cabana (hall, lodge, house) e fogueira de guerra (camp) usam os
 // renderizadores que já existiam: por isso carrega os campos que eles leem
-// (logs/built/capacity/owner/angle da cabana; flame/seed da fogueira).
+// (logs/built/capacity/owner/angle da cabana; flame/seed da fogueira). A torre tem
+// renderizador próprio (TowerRenderer).
 export class Building {
   constructor({ id, team, kind, stats, x, y, angle, outfit, built = false }) {
     this.id = id;
@@ -32,17 +33,32 @@ export class Building {
     // Fila de treino ([{ type, time }]) e para onde vai quem sai dela.
     this.queue = [];
     this.rally = null;
+    // Trincheira: níveis das melhorias, recarga do tiro, alvo e para onde o atirador mira.
+    this.levels = { power: 0, range: 0, scatter: 0 };
+    this.cooldown = 0;
+    this.target = null;
+    this.aim = angle;
     this.hurt = 0;
     this.doorX = x;
     this.doorY = y;
     this.placeDoor();
   }
 
+  // Desenhadas pelo modelo das construções do sertão (SertaoBuildingModel).
   get isHut() {
-    return this.kind !== 'camp';
+    return ['hall', 'lodge', 'house', 'curral', 'igrejanova'].includes(this.kind);
   }
 
-  // Na fogueira a "porta" é um ponto ao lado da roda de pedras.
+  // Atira sozinha: a trincheira e as torres da Igreja Nova.
+  get shoots() {
+    return this.isTower || Boolean(this.stats.turret);
+  }
+
+  get isTower() {
+    return this.kind === 'tower';
+  }
+
+  // Na fogueira e na torre a "porta" é um ponto ao lado.
   placeDoor() {
     const offset = this.isHut ? hutSize(this.capacity).width / 2 + 7 : this.radius + 6;
     this.doorX = this.x + Math.cos(this.angle) * offset;

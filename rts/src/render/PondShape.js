@@ -1,3 +1,5 @@
+import { hillHeight } from '../world/Hills.js';
+
 // A forma de um lago, que o chão (a bacia) e a água (a superfície) precisam concordar.
 //
 // A bacia é uma tigela: fundo em parábola, profundidade proporcional ao raio cheio.
@@ -23,9 +25,9 @@ export function bedHeight(normalized, fullRadius) {
   return -fullRadius * POND_DEPTH_RATIO * (1 - normalized * normalized);
 }
 
-// Altura do chão num ponto do mundo, com as tigelas de todos os lagos: é onde os pés
-// de quem anda por ali pisam.
-export function groundHeight(x, y, ponds) {
+// Altura do chão num ponto do mundo, com os morros e as tigelas de todos os lagos: é
+// onde os pés de quem anda por ali pisam.
+export function groundHeight(x, y, ponds = []) {
   let height = 0;
   for (const pond of ponds) {
     const dx = x - pond.x, dy = y - pond.y;
@@ -34,7 +36,7 @@ export function groundHeight(x, y, ponds) {
     const normalized = Math.hypot(dx, dy) / (pond.fullRadius * rimWobble(Math.atan2(dy, dx), pondSeed(pond)));
     height = Math.min(height, bedHeight(normalized, pond.fullRadius));
   }
-  return height;
+  return height + hillHeight(x, y);
 }
 
 // Onde fica a superfície da água: a altura do fundo no ponto em que a água encosta

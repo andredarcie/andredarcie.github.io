@@ -1,10 +1,12 @@
 import { WORLD } from '../config/world.js';
-import { BUILDING_TYPES, UNIT_TYPES, FORMATION_SPACING, TRAIN_QUEUE_MAX } from '../config/rts.js';
+import { BUILDING_TYPES, UNIT_TYPES, FORMATION_SPACING, TRAIN_QUEUE_MAX, TOWER_UPGRADES, TRADE } from '../config/rts.js';
 import { Building } from '../entities/Building.js';
+import { onRoad } from '../world/Roads.js';
+import { TeamLedger } from './TeamLedger.js';
 
-// As ordens do jogo, iguais para o jogador e para a IA: andar, atacar, colher,
-// construir, treinar e erguer obra. Quem chama recebe { ok, reason } quando a ordem
-// pode ser recusada, para avisar o jogador.
+// As ordens do jogo: andar, atacar, colher, construir (ou consertar), treinar,
+// erguer obra e melhorar torre. Quem chama recebe { ok, reason } quando a ordem pode
+// ser recusada, para avisar o jogador.
 export class Commands {
   #state;
   #ledger;
@@ -69,14 +71,14 @@ export class Commands {
   train(building, type) {
     const teamId = building.team;
     const stats = UNIT_TYPES[type];
-    if (!building.built) return { ok: false, reason: 'Not finished yet' };
-    if (!building.stats.trains.includes(type)) return { ok: false, reason: 'Cannot train here' };
-    if (building.queue.length >= TRAIN_QUEUE_MAX) return { ok: false, reason: 'Queue is full' };
+    if (!building.built) return { ok: false, reason: 'Ainda não está pronto' };
+    if (!building.stats.trains.includes(type)) return { ok: false, reason: 'Não se treina isso aqui' };
+    if (building.queue.length >= TRAIN_QUEUE_MAX) return { ok: false, reason: 'A fila está cheia' };
     if (this.#ledger.population(teamId) >= this.#ledger.popCap(teamId)) {
-      return { ok: false, reason: 'Population limit — build a House' };
+      return { ok: false, reason: 'Sem lugar para morar — construa uma casa de taipa' };
     }
     const missing = this.#ledger.shortage(teamId, stats.cost);
-    if (missing) return { ok: false, reason: `Not enough ${missing}` };
+    if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
     this.#ledger.spend(teamId, stats.cost);
     building.queue.push({ type, time: 0 });
     return { ok: true };
@@ -88,28 +90,70 @@ export class Commands {
     if (item) this.#ledger.refund(building.team, UNIT_TYPES[item.type].cost);
   }
 
+  // Nada se constrói em cima da estrada, mas dá para cavar colado na beira dela: a
+  // conta é contra o leito pintado (onRoad), não contra os círculos reservados, que
+  // somados ao raio da obra empurravam a trincheira para longe da estrada.
   canPlace(kind, x, y) {
     const stats = BUILDING_TYPES[kind];
     const margin = stats.radius + 6;
     if (x < margin || y < margin || x > WORLD.width - margin || y > WORLD.height - margin) return false;
+    if (onRoad(x, y, stats.radius * .7)) return false;
     return this.#occupancy.isFree(x, y, stats.radius + 4, { ignore: ['reserved'] });
+  }
+
+  // Próximo nível de uma melhoria da torre: { cost } ou null se já está no máximo.
+  nextUpgrade(tower, track) {
+    const costs = TOWER_UPGRADES[track].costs;
+    const level = tower.levels[track];
+    return level < costs.length ? { cost: costs[level], level: level + 1 } : null;
+  }
+
+  upgradeTower(tower, track) {
+    if (!tower.built) return { ok: false, reason: 'Ainda não está pronto' };
+    const next = this.nextUpgrade(tower, track);
+    if (!next) return { ok: false, reason: 'Já está no nível máximo' };
+    const missing = this.#ledger.shortage(tower.team, next.cost);
+    if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
+    this.#ledger.spend(tower.team, next.cost);
+    tower.levels[track] = next.level;
+    this.#events.emit('upgraded', { building: tower, track });
+    return { ok: true };
+  }
+
+  // Construção única (a Igreja Nova) que já existe, em obra ou pronta.
+  alreadyBuilt(kind) {
+    return Boolean(BUILDING_TYPES[kind].unique) && this.#state.buildings.some(b => b.kind === kind);
+  }
+
+  // Troca do Vilanova: `give` de um recurso por `get` do outro.
+  trade(teamId, from) {
+    const to = from === 'food' ? 'wood' : 'food';
+    if (!this.#state.organisms.some(u => u.team === teamId && u.stats.trader && u.life > 0)) {
+      return { ok: false, reason: 'Só com Antônio Vilanova no arraial' };
+    }
+    const cost = { [from]: TRADE.give };
+    const missing = this.#ledger.shortage(teamId, cost);
+    if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
+    this.#ledger.spend(teamId, cost);
+    this.#ledger.deposit(teamId, to, TRADE.get);
+    return { ok: true };
   }
 
   // Paga e marca a obra no chão. Quem constrói é quem chamou (build) depois.
   place(teamId, kind, x, y) {
     const stats = BUILDING_TYPES[kind];
-    if (!this.canPlace(kind, x, y)) return { ok: false, reason: 'Can’t build there' };
+    if (this.alreadyBuilt(kind)) return { ok: false, reason: `${stats.label}: só pode haver uma` };
+    if (!this.canPlace(kind, x, y)) return { ok: false, reason: 'Não dá para construir aí' };
     const missing = this.#ledger.shortage(teamId, stats.cost);
-    if (missing) return { ok: false, reason: `Not enough ${missing}` };
+    if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
     this.#ledger.spend(teamId, stats.cost);
     const building = this.spawnBuilding(teamId, kind, x, y, false);
     return { ok: true, building };
   }
 
-  spawnBuilding(teamId, kind, x, y, built) {
+  spawnBuilding(teamId, kind, x, y, built, angle = Math.atan2(WORLD.height / 2 - y, WORLD.width / 2 - x)) {
     const state = this.#state;
     // Porta virada para o meio do mapa: é por onde a turma sai.
-    const angle = Math.atan2(WORLD.height / 2 - y, WORLD.width / 2 - x);
     const building = new Building({
       id: state.newId(), team: teamId, kind, stats: BUILDING_TYPES[kind], x, y, angle,
       outfit: state.teams[teamId].outfit, built

@@ -2,7 +2,7 @@
 // (OrganismRenderer, CorpseRenderer, sangue), mais o que o RTS precisa: time, tipo,
 // ordem atual e o alvo da briga.
 export class Unit {
-  constructor({ id, team, type, stats, x, y, heading, sex, color, outfit }) {
+  constructor({ id, team, type, stats, x, y, heading, sex, color, outfit, trousers = null, look = null, hpScale = 1, power = 1 }) {
     this.id = id;
     this.team = team;
     this.type = type;
@@ -22,13 +22,35 @@ export class Unit {
     this.size = stats.size;
     this.color = color;
     this.outfit = outfit;
+    this.trousers = trousers;
     // Os renderizadores criam o leque de visão a partir disto; fica escondido.
     this.genes = { visionAngle: 120, visionRange: stats.sight };
-    this.maxLife = stats.hp;
-    this.life = stats.hp;
+    this.maxLife = stats.hp * hpScale;
+    this.life = this.maxLife;
+    // Multiplica o dano do golpe: invasor de onda avançada bate mais forte.
+    this.power = power;
+    // O traje (CharacterModel.equip): chapéu, saia, camisolão, correame, canhão...
+    this.look = look;
+    // Sob a pregação de Antônio Conselheiro (ou o comando de João Abade): bate mais
+    // forte (`boost`) e se recupera.
+    this.inspired = false;
+    this.boost = 1;
+    // Tocaia: parado na caatinga, some da vista do inimigo; `ambush` multiplica o
+    // primeiro golpe de quem saiu dela.
+    this.hidden = false;
+    this.still = 0;
+    this.ambush = 1;
+    // Da tropa: sede (segundos desde a última água), debandada e o fuzil largado.
+    this.thirst = 0;
+    this.flee = 0;
+    this.disarmed = false;
+    this.gone = false;
+    // Fogo da flecha incendiária: segundos que ainda queima e o dano por segundo.
+    this.burn = 0;
+    this.burnDps = 0;
     this.birthAnimation = 0;
     this.energy = 100;
-    // Ordem dada (move, attackMove, attack, gather, build) e o que o soldado
+    // Ordem dada (move, attackMove, attack, gather, build, raid) e o que o soldado
     // persegue por conta própria; `post` é onde ele estava de guarda.
     this.order = null;
     this.engage = null;
@@ -49,7 +71,7 @@ export class Unit {
     this.thought = 0;
     this.message = '';
     // Briga: arma (sempre à mostra no soldado), golpe em andamento e feridas.
-    this.weapon = stats.weapon;
+    this.weapon = stats.weapon ?? (stats.cannon ? 'cannon' : null);
     this.armed = type !== 'worker';
     this.foe = null;
     this.strike = 0;

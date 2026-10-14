@@ -7,12 +7,12 @@
 export const WORLD = Object.freeze({ width: 820, height: 820 });
 
 export const BIOMES = Object.freeze([
-  { id: 'desert', label: 'Deserto', earthShare: 19, worldShare: 1 / 3 },
-  { id: 'taiga', label: 'Taiga', earthShare: 11.5, worldShare: 1 / 3 },
-  { id: 'savanna', label: 'Savana', earthShare: 10.5, worldShare: 1 / 3 }
+  { id: 'riverbed', label: 'Leito do Vaza-Barris', earthShare: 19, worldShare: .2 },
+  { id: 'thicket', label: 'Caatinga fechada', earthShare: 11.5, worldShare: .42 },
+  { id: 'scrub', label: 'Caatinga aberta', earthShare: 10.5, worldShare: .38 }
 ]);
-export const DESERT_END = BIOMES[0].worldShare;
-export const TAIGA_END = BIOMES[0].worldShare + BIOMES[1].worldShare;
+export const RIVER_END = BIOMES[0].worldShare;
+export const THICKET_END = BIOMES[0].worldShare + BIOMES[1].worldShare;
 
 // 2048 para o chão continuar nítido de perto (zoom e telas de alta densidade).
 export const GROUND_TEXTURE_SIZE = 2048;
@@ -21,15 +21,15 @@ export const GROUND_TEXTURE_SIZE = 2048;
 export const BOARD_THICKNESS = 46;
 // Quantos pontos sorteados para enfeite e árvore dentro do mundo. Nem todo ponto
 // vira planta (clareira, poça, densidade do bioma).
-export const SCENERY_SAMPLES = 380;
+export const SCENERY_SAMPLES = 760;
 // Traços de detalhe rasteiro pintados no chão.
-export const GROUND_DETAIL_STROKES = 1100;
+export const GROUND_DETAIL_STROKES = 2600;
 
 // Quanto de chão cada coisa ocupa (raio, em unidades), para nada nascer dentro de
 // outra: árvore dentro de árvore, capim ou pedra dentro de lago, lago em cima de
 // cabana. Um pouco menor que a copa, porque copa pode encostar em copa.
 export const FOOTPRINT = Object.freeze({
-  conifer: 8, broadleaf: 10, cactus: 5, rock: 6, shrub: 6,
+  umbuzeiro: 11, catingueira: 6, mandacaru: 4, xiquexique: 4, rock: 5, macambira: 3, garrancho: 3,
   food: 6, campfire: 9
 });
 // Folga mínima entre duas coisas vizinhas, além dos raios.
@@ -38,14 +38,16 @@ export const FOOTPRINT_GAP = 2;
 // ali, e lago novo não nasce com a margem em cima de nada.
 export const POND_CLEARANCE = 8;
 
-// Vegetação por bioma. A densidade não copia o habitatWeight de propósito: a taiga é
-// a mais fechada em árvore e a savana a mais aberta, ainda que seja a savana que
-// produz mais capim. Mato alto não é pasto.
-export const SCENERY_DENSITY = Object.freeze({ desert: .3, taiga: .8, savanna: .6 });
+// Vegetação por bioma, a da caatinga na seca. No areal do rio, pedra e lajedo,
+// xique-xique e um ou outro umbuzeiro; na caatinga fechada, catingueira e garrancho
+// emaranhados com mandacaru e macambira; na aberta, chão de pedra com mandacaru,
+// xique-xique e garrancho. Catingueira e umbuzeiro são árvores (dão madeira); o
+// resto é enfeite.
+export const SCENERY_DENSITY = Object.freeze({ riverbed: .35, thicket: .9, scrub: .65 });
 export const SCENERY_KINDS = Object.freeze({
-  desert: [['cactus', .42], ['rock', .84], ['shrub', 1]],
-  taiga: [['conifer', .74], ['shrub', .9], ['rock', 1]],
-  savanna: [['broadleaf', .6], ['shrub', .92], ['rock', 1]]
+  riverbed: [['rock', .3], ['xiquexique', .52], ['garrancho', .7], ['umbuzeiro', .82], ['macambira', 1]],
+  thicket: [['catingueira', .34], ['garrancho', .62], ['macambira', .76], ['mandacaru', .86], ['umbuzeiro', .92], ['rock', 1]],
+  scrub: [['garrancho', .3], ['mandacaru', .46], ['catingueira', .62], ['xiquexique', .78], ['rock', .9], ['macambira', 1]]
 });
 
 // Passo máximo da simulação: o tempo de cada quadro é fatiado nisso.

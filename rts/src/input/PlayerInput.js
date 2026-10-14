@@ -9,7 +9,8 @@ const DOUBLE_TAP = 320;
 
 // O toque no mundo vira ordem. Com nada selecionado, toque seleciona. Com tropas na
 // mão: tocar no chão anda (soldado ataca o que achar no caminho), na árvore ou na
-// moita colhe, no inimigo ataca, na obra própria constrói. Com uma construção na
+// moita colhe, no inimigo ataca, na obra própria constrói (ou conserta, se ela está
+// machucada). Com uma construção na
 // mão, tocar no chão marca o ponto de encontro. Segurar o dedo e arrastar faz o
 // laço que seleciona um grupo.
 export class PlayerInput {
@@ -87,9 +88,11 @@ export class PlayerInput {
     }
     if (building) {
       const workers = own.filter(u => u.type === 'worker');
-      if (!building.built && workers.length) {
+      const damaged = building.built && building.life < building.maxLife - .5;
+      if ((!building.built || damaged) && workers.length) {
         this.#commands.build(workers, building);
         this.#ping(building.x, building.y, 'build');
+        if (damaged) this.#hud.toast(`Consertando: ${building.stats.label}`);
         return;
       }
       selection.setBuilding(building);
@@ -119,7 +122,7 @@ export class PlayerInput {
         x: resource?.x ?? point.x, y: resource?.y ?? point.y, resource
       });
       this.#ping(resource?.x ?? point.x, resource?.y ?? point.y, 'rally');
-      this.#hud.toast(resource ? 'Rally set: new workers will gather there' : 'Rally point set');
+      this.#hud.toast(resource ? 'Ponto de encontro marcado: quem sair já vai trabalhar ali' : 'Ponto de encontro marcado');
       return;
     }
     selection.clear();
@@ -155,7 +158,7 @@ export class PlayerInput {
     if (workers.length) this.#commands.build(workers, result.building);
     selection.stopPlacing();
     this.#ping(point.x, point.y, 'build');
-    this.#hud.toast(`${BUILDING_TYPES[kind].label} placed`);
+    this.#hud.toast(`${BUILDING_TYPES[kind].label}: obra marcada`);
   }
 
   // A unidade mais perto do toque. Mede na tela, na altura do peito, porque é o

@@ -3,6 +3,7 @@ import { pseudoRandom } from '../core/math.js';
 import { WOOD_MATERIALS } from './WoodMaterials.js';
 import { PropFactory } from './PropFactory.js';
 import { createContactShadow } from './ContactShadow.js';
+import { hillHeight } from '../world/Hills.js';
 
 const STUMP_SHAPE = new THREE.CylinderGeometry(2.2, 2.6, 2.4, 8);
 
@@ -36,10 +37,10 @@ export class TreeRenderer {
         this.#fallAxis.set(Math.sin(fall.dir), 0, -Math.cos(fall.dir));
         pivot.quaternion.setFromAxisAngle(this.#fallAxis, fall.angle);
         // Deitada, o tronco não pode afundar no chão pela metade da grossura.
-        pivot.position.y = Math.sin(fall.angle) * 2.2;
+        pivot.position.y = view.ground + Math.sin(fall.angle) * 2.2;
       } else {
         pivot.quaternion.identity();
-        pivot.position.y = 0;
+        pivot.position.y = view.ground;
       }
       // Tremor do golpe: a copa balança rápido e o balanço morre em meio segundo.
       const shake = animate ? Math.sin(elapsed * 42) * .045 * tree.shake : 0;
@@ -91,7 +92,8 @@ export class TreeRenderer {
     // A mancha de contato fica no chão, fora do pivô: não tomba junto com a árvore.
     const contact = createContactShadow(PropFactory.footprint(tree.kind));
     const stump = new THREE.Mesh(STUMP_SHAPE, WOOD_MATERIALS);
-    stump.position.y = 1.2;
+    const ground = hillHeight(tree.x, tree.y);
+    stump.position.y = ground + 1.2;
     stump.castShadow = true;
     stump.visible = false;
     const place = this.#space.toScene(tree.x, tree.y);
@@ -100,9 +102,10 @@ export class TreeRenderer {
     stump.position.z = place.z;
     contact.position.x = place.x;
     contact.position.z = place.z;
+    contact.position.y += ground;
     this.#layer.add(pivot, stump, contact);
     return {
-      pivot, prop, stump, contact, footprint: PropFactory.footprint(tree.kind),
+      pivot, prop, stump, contact, ground, footprint: PropFactory.footprint(tree.kind),
       baseRotation: prop.rotation.y,
       swayPhase: pseudoRandom(tree.seed + 37) * Math.PI * 2
     };

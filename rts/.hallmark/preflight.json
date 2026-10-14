@@ -1,0 +1,10 @@
+{
+  "date": "2026-09-20",
+  "framework": "vanilla HTML and Canvas 2D",
+  "sources": ["index.html", "tokens.css"],
+  "font_stack": "Arial Narrow and Inter fallbacks in tokens.css before redesign",
+  "palette": "warm paper with coral, cyan, yellow, and lilac creature colors",
+  "motion": "native requestAnimationFrame simulation; no animation library",
+  "spacing": "local CSS custom properties",
+  "preserved": ["full viewport arena", "no top bar or headline", "canvas interaction", "simulation behavior"]
+}

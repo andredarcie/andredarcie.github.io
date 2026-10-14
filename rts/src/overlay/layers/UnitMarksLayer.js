@@ -32,14 +32,16 @@ export class UnitMarksLayer {
           this.#state.teams[u.team].ring);
       }
       if (u.thought > 0 && u.team === 'player' && figure > 9) this.#note(ctx, head, u.message);
+      // Os chefes e o Conselheiro levam o nome por cima, para serem achados na roda.
+      else if ((u.stats.hero || u.type === 'conselheiro') && figure > 7) this.#label(ctx, u.stats.label, head.x, head.y - 7, '#ffd36b');
     }
   }
 
   #building(ctx, project, b) {
     const isSelected = this.#selection.building === b || this.#selection.enemy === b;
-    const height = b.isHut ? 34 + hutSize(b.capacity).depth * .12 : 16;
+    const height = b.isHut ? 34 + hutSize(b.capacity).depth * .12 : b.isTower ? 44 + b.levels.range * 5 : 16;
     const anchor = project(b.x, b.y, height);
-    const width = b.isHut ? 46 : 34;
+    const width = b.isHut ? 46 : b.isTower ? 30 : 34;
     let y = anchor.y;
     if (!b.built) {
       this.#bar(ctx, anchor.x - width / 2, y, width, 5, b.progress, '#ffd08a');
@@ -64,7 +66,7 @@ export class UnitMarksLayer {
     ctx.fillRect(x, y, width * value, height);
   }
 
-  #label(ctx, text, x, y) {
+  #label(ctx, text, x, y, color = '#fff') {
     ctx.save();
     ctx.font = `700 10px ${this.#theme.bodyFont}`;
     ctx.textAlign = 'center';
@@ -72,7 +74,7 @@ export class UnitMarksLayer {
     ctx.lineWidth = 3;
     ctx.strokeStyle = 'rgba(10, 14, 18, .8)';
     ctx.strokeText(text, x, y);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = color;
     ctx.fillText(text, x, y);
     ctx.restore();
   }

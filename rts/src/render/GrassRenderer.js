@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import { pseudoRandom } from '../core/math.js';
 import { hutSize } from '../settlement/HutDimensions.js';
+import { hillHeight } from '../world/Hills.js';
 
-// Tufos por unidade de área, e quanto cada bioma tem do máximo. A clareira do meio,
-// de terra batida, fica quase pelada.
+// Tufos por unidade de área, e quanto cada bioma tem do máximo. A praça do meio, de
+// terra batida, fica quase pelada, e a estrada pelada de vez.
 const TUFTS_PER_AREA = 1 / 62;
-const BIOME_DENSITY = Object.freeze({ desert: .16, taiga: .75, savanna: 1 });
-const CLEARING_RADIUS = .29;
+// Capim do sertão na seca é ralo: o chão aparece entre os tufos.
+const BIOME_DENSITY = Object.freeze({ riverbed: .12, thicket: .4, scrub: .55 });
+const CLEARING_RADIUS = .17;
 const CLEARING_DENSITY = .12;
 const BLADES_PER_TUFT = 5;
 
@@ -64,8 +66,9 @@ export class GrassRenderer {
   }
 
   // Semeia os tufos uma vez: onde, de que tamanho e de que cor. `toneAt(x, y)` dá a
-  // cor do chão em [r, g, b] 0..255; `biomeAt(x, y)` o bioma.
-  plant({ toneAt, biomeAt }) {
+  // cor do chão em [r, g, b] 0..255; `biomeAt(x, y)` o bioma; `bare(x, y)` diz onde
+  // não nasce nada (a estrada).
+  plant({ toneAt, biomeAt, bare = () => false }) {
     const world = this.#space.world;
     const attempts = Math.round(world.width * world.height * TUFTS_PER_AREA);
     const clearing = Math.min(world.width, world.height) * CLEARING_RADIUS;
@@ -74,6 +77,7 @@ export class GrassRenderer {
       const seed = i * 11 + 90001;
       const x = 3 + pseudoRandom(seed) * (world.width - 6);
       const y = 3 + pseudoRandom(seed + 1) * (world.height - 6);
+      if (bare(x, y)) continue;
       let chance = BIOME_DENSITY[biomeAt(x, y)] ?? .5;
       if (Math.hypot(x - world.width / 2, y - world.height / 2) < clearing) chance *= CLEARING_DENSITY;
       if (pseudoRandom(seed + 2) > chance) continue;
@@ -132,7 +136,7 @@ export class GrassRenderer {
         return;
       }
       const place = this.#space.toScene(tuft.x, tuft.y);
-      this.#position.set(place.x, 0, place.z);
+      this.#position.set(place.x, hillHeight(tuft.x, tuft.y), place.z);
       this.#rotation.setFromAxisAngle(this.#up, tuft.turn);
       this.#scale.set(tuft.width, tuft.height, tuft.width);
       mesh.setMatrixAt(index, this.#matrix.compose(this.#position, this.#rotation, this.#scale));

@@ -1,7 +1,8 @@
-import { AI_LEVELS } from '../config/rts.js';
+import { DIFFICULTY } from '../config/rts.js';
+import { SERTOES } from '../config/sertoes.js';
 
 // As telas fora da partida: a de abertura (dificuldade e como jogar), a pausa
-// (velocidade, recomeçar) e a de fim (vitória ou derrota).
+// (velocidade, recomeçar) e a de fim (quantas ondas a vila aguentou).
 export class GameMenu {
   #root;
   #simulation;
@@ -45,8 +46,14 @@ export class GameMenu {
       if ($('#pause-dialog').open) this.#resume();
       else this.#pause();
     });
+    // Celular bloqueado, aba trocada: a partida pausa sozinha, para ninguém voltar e
+    // achar a igreja caída.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && this.#started && !$('#result-dialog').open && !$('#pause-dialog').open) this.#pause();
+    });
     this.#markSpeed();
     this.#markLevels();
+    $('#start-epigraph').textContent = SERTOES.forte.text;
     $('#start-dialog').showModal();
   }
 
@@ -57,14 +64,21 @@ export class GameMenu {
     this.#onStart(this.#level);
   }
 
-  showResult(victory, { time }) {
+  // `waves`: ondas vencidas; `best`: o recorde nesta dificuldade (já contando esta).
+  showResult({ waves, best, record }) {
     const $ = selector => this.#root.querySelector(selector);
     for (const dialog of this.#root.querySelectorAll('dialog[open]')) dialog.close();
-    $('#result-title').textContent = victory ? 'Victory!' : 'Defeat';
-    $('#result-kicker').textContent = victory ? 'The Red Tribe has fallen' : 'Your tribe has fallen';
-    const minutes = Math.floor(time / 2 / 60), seconds = Math.floor(time / 2 % 60);
-    $('#result-text').textContent = `Match time ${minutes}:${String(seconds).padStart(2, '0')} on ${AI_LEVELS[this.#level].label}.`;
-    $('#result-dialog').dataset.victory = String(victory);
+    $('#result-kicker').textContent = 'A igreja caiu';
+    const plural = waves === 1 ? 'onda' : 'ondas';
+    $('#result-title').textContent = `${waves} ${plural}`;
+    const held = `Belo Monte resistiu a ${waves} ${plural} do Exército.`;
+    const level = DIFFICULTY[this.#level].label.toLowerCase();
+    $('#result-text').textContent = record && waves > 0
+      ? `Recorde novo no ${level}! ${held}`
+      : `${held} Recorde no ${level}: ${best}.`;
+    // O fecho do livro: a Canudos de verdade caiu em 5 de outubro de 1897.
+    $('#result-quote').textContent = SERTOES.fim.text;
+    $('#result-dialog').dataset.victory = String(record && waves > 0);
     this.#markLevels();
     $('#result-dialog').showModal();
   }
@@ -82,7 +96,7 @@ export class GameMenu {
   }
 
   #bindLevels(container, onPick) {
-    container.replaceChildren(...Object.entries(AI_LEVELS).map(([id, level]) => {
+    container.replaceChildren(...Object.entries(DIFFICULTY).map(([id, level]) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'level';

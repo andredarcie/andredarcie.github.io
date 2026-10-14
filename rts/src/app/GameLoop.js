@@ -32,7 +32,7 @@ export class GameLoop {
   }
 
   #report(error) {
-    console.error('[tiny-tribes] frame error:', error);
+    console.error('[canudos] erro no quadro:', error);
     let banner = document.querySelector('#frame-error');
     if (!banner) {
       banner = document.createElement('p');
@@ -41,7 +41,7 @@ export class GameLoop {
       document.body.append(banner);
     }
     banner.textContent = this.#errors > FRAME_ERROR_LIMIT
-      ? `The game stopped after repeated errors: ${error.message}. See the console.`
-      : `Error drawing the frame: ${error.message}. See the console.`;
+      ? `O jogo parou depois de erros seguidos: ${error.message}. Veja o console.`
+      : `Erro ao desenhar o quadro: ${error.message}. Veja o console.`;
   }
 }

@@ -1,10 +1,12 @@
 import { WORLD } from '../config/world.js';
+import { ROADS, HILLS } from '../config/rts.js';
+import { roadPath } from '../world/Roads.js';
 
 // Quantas vezes por segundo o mapinha se redesenha.
 const REDRAW_RATE = 6;
 
 // Mapinha no canto: o tabuleiro visto de cima no mesmo giro da câmera (losango),
-// com árvores, moitas, lagos, construções e unidades dos dois times, e o contorno do
+// com as estradas, árvores, moitas, lagos, construções, a vila e os invasores, e o contorno do
 // que a tela mostra agora. Tocar ou arrastar nele leva a câmera para lá.
 export class Minimap {
   #canvas;
@@ -81,11 +83,39 @@ export class Minimap {
     ctx.beginPath();
     corners.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
     ctx.closePath();
-    ctx.fillStyle = '#7fa35a';
+    ctx.fillStyle = '#b8905c';
     ctx.fill();
     ctx.strokeStyle = 'rgba(20, 30, 20, .7)';
     ctx.lineWidth = 1;
     ctx.stroke();
+
+    // Os morros, mais claros, com o contorno de pedra.
+    for (const hill of HILLS) {
+      const p = this.#toMap(hill.x, hill.y);
+      const r = hill.radius * this.#scale();
+      ctx.fillStyle = 'rgba(214, 196, 160, .8)';
+      ctx.strokeStyle = 'rgba(120, 100, 70, .6)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, r * 1.4, r * .7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    // As estradas: a da próxima onda (ou da onda em curso) em vermelho.
+    const wave = state.wave;
+    const hot = new Set(!wave ? [] : wave.phase === 'calm' ? wave.next.roads : wave.queue.map(item => item.road));
+    ctx.lineCap = 'round';
+    for (const road of ROADS) {
+      ctx.strokeStyle = hot.has(road) ? 'rgba(255, 90, 70, .9)' : 'rgba(205, 180, 130, .7)';
+      ctx.lineWidth = hot.has(road) ? 2.4 : 1.6;
+      ctx.beginPath();
+      roadPath(road).forEach((point, i) => {
+        const p = this.#toMap(point.x, point.y);
+        if (i) ctx.lineTo(p.x, p.y);
+        else ctx.moveTo(p.x, p.y);
+      });
+      ctx.stroke();
+    }
 
     const dot = (x, y, radius, color) => {
       const p = this.#toMap(x, y);
@@ -96,13 +126,13 @@ export class Minimap {
     for (const pond of state.ponds) {
       const p = this.#toMap(pond.x, pond.y);
       const r = Math.max(1.5, pond.r * this.#scale());
-      ctx.fillStyle = '#4f9fd0';
+      ctx.fillStyle = '#8aa59a';
       ctx.beginPath();
       ctx.ellipse(p.x, p.y, r * 1.4, r * .7, 0, 0, Math.PI * 2);
       ctx.fill();
     }
-    for (const tree of state.trees) if (!tree.stump) dot(tree.x, tree.y, 1.2, '#2f5a2c');
-    for (const patch of state.grass) dot(patch.x, patch.y, 1, '#d34a6a');
+    for (const tree of state.trees) if (!tree.stump) dot(tree.x, tree.y, 1.2, '#6a6a4c');
+    for (const patch of state.grass) dot(patch.x, patch.y, 1, '#4f7a2c');
     for (const log of state.logs) dot(log.x, log.y, 1, '#8a5a2b');
     for (const b of state.buildings) {
       const team = state.teams[b.team];
@@ -111,7 +141,11 @@ export class Minimap {
       ctx.strokeStyle = '#111';
       ctx.strokeRect(p.x - 3.6, p.y - 2.2, 7.2, 4.4);
     }
-    for (const u of state.organisms) dot(u.x, u.y, 1.5, state.teams[u.team].ring);
+    for (const u of state.organisms) {
+      // O comboio e a Matadeira se destacam: são alvo que vale a pena caçar.
+      if (u.stats.convoy || u.type === 'matadeira') dot(u.x, u.y, 3, '#ffb84a');
+      else dot(u.x, u.y, 1.5, state.teams[u.team].ring);
+    }
     ctx.globalAlpha = 1;
     this.#drawView(ctx);
   }

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { PALETTE } from './Palette.js';
 import { BOARD_THICKNESS } from '../config/world.js';
 import { rimWobble, pondSeed, bedHeight } from './PondShape.js';
+import { hillHeight } from '../world/Hills.js';
 
 // Ordem das faces no BoxGeometry do three.js: +x, −x, +y, −y, +z, −z.
 const SIDE_FACES = Object.freeze({ east: 0, west: 1, south: 4, north: 5 });
@@ -99,7 +100,10 @@ export class TerrainRenderer {
           shade = Math.min(shade, 1 - bank * bank * .34 - bed * .22);
         }
       }
-      position.setY(i, height);
+      // Morro: sobe o chão; a encosta, de pedra exposta, fica um tico mais clara.
+      const hill = hillHeight(worldX, worldY);
+      if (hill > 0) shade = Math.min(1.12, shade + hill * .008);
+      position.setY(i, height + hill);
       color.setXYZ(i, shade, shade * .97, shade * .93);
     }
     position.needsUpdate = true;

@@ -1,6 +1,7 @@
-import { WORLD, DESERT_END, TAIGA_END } from '../config/world.js';
+import { WORLD, RIVER_END, THICKET_END } from '../config/world.js';
 
-// Onde começa e termina cada bioma. As faixas correm em x (deserto, taiga, savana) e
+// Onde começa e termina cada bioma. As faixas correm em x (leito do rio, caatinga
+// fechada, caatinga aberta) e
 // a fronteira ondula em y; a textura do chão usa a mesma conta, então o que se vê
 // bate com onde comida e água realmente aparecem.
 export class BiomeMap {
@@ -11,22 +12,23 @@ export class BiomeMap {
     const secondWave = Math.sin(progress * Math.PI * 2 + 1.8) * width * .017 +
       Math.sin(progress * Math.PI * 8 + .5) * width * .006;
     return {
-      desertEnd: width * DESERT_END + firstWave,
-      taigaEnd: width * TAIGA_END + secondWave
+      riverEnd: width * RIVER_END + firstWave,
+      thicketEnd: width * THICKET_END + secondWave
     };
   }
 
   biomeAt(x, y) {
     const boundaries = this.boundaries(y);
-    if (x < boundaries.desertEnd) return 'desert';
-    if (x < boundaries.taigaEnd) return 'taiga';
-    return 'savanna';
+    if (x < boundaries.riverEnd) return 'riverbed';
+    if (x < boundaries.thicketEnd) return 'thicket';
+    return 'scrub';
   }
 
-  // Chance de um recurso vingar no bioma: o deserto quase não segura água nem capim.
+  // Chance de um recurso vingar no bioma: água só sobra em poça e cacimba no leito do
+  // rio; roça e fruta vingam na vazante do rio e na caatinga aberta.
   habitatWeight(biome, resource) {
-    if (resource === 'water') return biome === 'desert' ? .28 : biome === 'taiga' ? 1 : .72;
-    return biome === 'desert' ? .35 : biome === 'taiga' ? .78 : 1;
+    if (resource === 'water') return biome === 'riverbed' ? 1 : biome === 'thicket' ? .3 : .2;
+    return biome === 'riverbed' ? 1 : biome === 'thicket' ? .12 : .25;
   }
 
   // Ruído suave e determinístico: serve tanto para serrilhar a fronteira entre

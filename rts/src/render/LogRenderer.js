@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { WOOD_MATERIALS, LOG_RADIUS } from './WoodMaterials.js';
+import { hillHeight } from '../world/Hills.js';
 
 const GROUND_LOG_SHAPE = new THREE.CylinderGeometry(LOG_RADIUS, LOG_RADIUS, 9, 8).rotateZ(Math.PI / 2);
 
@@ -27,7 +28,7 @@ export class LogRenderer {
         this.#views.set(log, mesh);
       }
       const place = this.#space.toScene(log.x, log.y);
-      mesh.position.set(place.x, LOG_RADIUS, place.z);
+      mesh.position.set(place.x, LOG_RADIUS + hillHeight(log.x, log.y), place.z);
       // Deitada ao longo do tronco caído: o eixo da tora é o x local, girado para o rumo.
       mesh.rotation.set(0, -log.angle, 0);
     }

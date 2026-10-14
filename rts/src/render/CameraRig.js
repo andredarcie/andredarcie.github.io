@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { hillHeight } from '../world/Hills.js';
 import { BOARD_THICKNESS } from '../config/world.js';
 import { BoardFraming } from './BoardFraming.js';
 
@@ -196,9 +197,10 @@ export class CameraRig {
 
   // Projeta um ponto do mundo da simulação para pixels do canvas de sobreposição,
   // que é onde continuam desenhados os nomes, os balões e a chuva.
+  // `lift` conta a partir do chão: em cima de morro, o chão já está mais alto.
   project(x, y, lift = 0) {
     const place = this.#space.toScene(x, y);
-    this.#projected.set(place.x, lift, place.z);
+    this.#projected.set(place.x, lift + hillHeight(x, y), place.z);
     this.#projected.project(this.camera);
     return {
       x: (this.#projected.x * .5 + .5) * this.viewWidth,
@@ -214,6 +216,16 @@ export class CameraRig {
     this.#raycaster.setFromCamera(this.#pointer, this.camera);
     const hit = new THREE.Vector3();
     if (!this.#raycaster.ray.intersectPlane(this.#groundPlane, hit)) return null;
+    // Morro: o raio bate no plano do chão atrás da encosta. Algumas voltas subindo o
+    // plano até a altura do relevo naquele ponto acertam o lugar tocado.
+    const plane = this.#groundPlane.clone();
+    for (let i = 0; i < 4; i++) {
+      const world = this.#space.toWorld(hit.x, hit.z);
+      const height = hillHeight(world.x, world.y);
+      if (height <= 0 && i === 0) break;
+      plane.constant = this.#groundPlane.constant - height;
+      if (!this.#raycaster.ray.intersectPlane(plane, hit)) break;
+    }
     return this.#space.toWorld(hit.x, hit.z);
   }
 

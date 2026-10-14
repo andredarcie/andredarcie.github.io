@@ -22,13 +22,12 @@ export class SceneryPlanner {
   plan() {
     const items = this.#state.scenery;
     const margin = 34;
-    const clearing = Math.min(WORLD.width, WORLD.height) * .27;
+    const clearing = Math.min(WORLD.width, WORLD.height) * .2;
     for (let i = 0; i < SCENERY_SAMPLES; i++) {
       const seed = i * 13 + 7;
       const x = margin + pseudoRandom(seed) * (WORLD.width - margin * 2);
       const y = margin + pseudoRandom(seed + 1) * (WORLD.height - margin * 2);
-      // A clareira do meio fica aberta: é onde os bichos se juntam e onde os nomes e
-      // balões precisam de espaço livre para serem lidos.
+      // A clareira do meio fica aberta: é a praça e o casario de Belo Monte.
       if (Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < clearing) continue;
       const biome = this.#biomes.biomeAt(x, y);
       if (pseudoRandom(seed + 2) > SCENERY_DENSITY[biome]) continue;
@@ -38,7 +37,7 @@ export class SceneryPlanner {
       if (!this.#occupancy.isFree(x, y, FOOTPRINT[kind] ?? 5)) continue;
       // Árvore dentro do mundo é recurso da simulação, não enfeite: vai para a
       // lista de árvores, que a cena desenha e anima à parte.
-      if (kind === 'conifer' || kind === 'broadleaf') {
+      if (kind === 'umbuzeiro' || kind === 'catingueira') {
         this.#state.trees.push(new Tree({
           id: this.#state.trees.length + 1, x, y, kind, seed, health: CHOP_HITS
         }));

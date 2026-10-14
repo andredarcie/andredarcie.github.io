@@ -1,6 +1,8 @@
 import { pseudoRandom } from '../core/math.js';
 import { WORLD, GROUND_TEXTURE_SIZE, GROUND_DETAIL_STROKES } from '../config/world.js';
 import { PALETTE } from './Palette.js';
+import { ROADS, HILLS } from '../config/rts.js';
+import { roadPath } from '../world/Roads.js';
 
 // Textura de cada lateral do tabuleiro: comprida no sentido da beirada.
 const SIDE_TEXTURE_WIDTH = 1024;
@@ -14,24 +16,25 @@ const rgb = value => [value >> 16 & 255, value >> 8 & 255, value & 255];
 export class GroundPainter {
   #biomes;
   #tones = {
-    desert: PALETTE.desertGround.map(rgb),
-    taiga: PALETTE.taigaGround.map(rgb),
-    savanna: PALETTE.savannaGround.map(rgb)
+    riverbed: PALETTE.riverbedGround.map(rgb),
+    thicket: PALETTE.thicketGround.map(rgb),
+    scrub: PALETTE.scrubGround.map(rgb)
   };
 
   constructor(biomes) {
     this.#biomes = biomes;
   }
 
-  // O chão da área dos bichos: biomas, detalhe rasteiro, clareira e lajotas.
+  // O chão do tabuleiro: biomas, detalhe rasteiro, a praça da vila e as estradas.
   paintGround() {
     const size = GROUND_TEXTURE_SIZE;
     const scale = size / WORLD.height;
     const { surface, context } = GroundPainter.#canvas(size);
     this.#paintBiomes(context, size, 0, 0, 1 / scale, 1 / scale);
     this.#paintDetail(context, size);
+    GroundPainter.#paintHills(context, size);
     GroundPainter.#paintClearing(context, size);
-    GroundPainter.#paintTiles(context, size);
+    GroundPainter.#paintRoads(context, size);
     return surface;
   }
 
@@ -102,11 +105,11 @@ export class GroundPainter {
     return this.#toneWithin(this.#biomes.boundaries(clampedY), clampedX, clampedY);
   }
 
-  #toneWithin({ desertEnd, taigaEnd }, worldX, worldY) {
+  #toneWithin({ riverEnd, thicketEnd }, worldX, worldY) {
     const biomes = this.#biomes;
     const edge = biomes.noise(worldX * 1.7, worldY * 1.7) * 24;
-    const biome = worldX < desertEnd + edge ? 'desert'
-      : worldX < taigaEnd + edge ? 'taiga' : 'savanna';
+    const biome = worldX < riverEnd + edge ? 'riverbed'
+      : worldX < thicketEnd + edge ? 'thicket' : 'scrub';
     const variation = biomes.noise(worldX * .55, worldY * .55);
     return this.#tones[biome][variation > .34 ? 1 : variation < -.3 ? 2 : 0];
   }
@@ -138,8 +141,8 @@ export class GroundPainter {
     context.putImageData(image, 0, 0);
   }
 
-  // Detalhe rasteiro, um traço por bioma: ondulação de areia no deserto,
-  // serrapilheira na taiga e tufo seco na savana.
+  // Detalhe rasteiro, um traço por bioma: ondulação de areia no leito do rio, galho
+  // e folha seca na caatinga fechada e tufo de capim seco na aberta.
   // Os tamanhos foram afinados numa textura de 1024; `k` os acompanha quando a
   // textura cresce, para o traço ter o mesmo tamanho no mundo.
   #paintDetail(context, size) {
@@ -151,15 +154,15 @@ export class GroundPainter {
       const nx = pseudoRandom(seed), ny = pseudoRandom(seed + 1);
       const biome = this.#biomes.biomeAt(nx * WORLD.width, ny * WORLD.height);
       const x = nx * size, y = ny * size;
-      if (biome === 'desert') {
-        context.strokeStyle = hex(PALETTE.desertGround[2]);
-        context.globalAlpha = .45;
+      if (biome === 'riverbed') {
+        context.strokeStyle = hex(PALETTE.riverbedGround[2]);
+        context.globalAlpha = .18;
         context.lineWidth = 1.6 * k;
         context.beginPath();
         context.arc(x, y + 6 * k, 7 * k, Math.PI * 1.15, Math.PI * 1.85);
-      } else if (biome === 'taiga') {
+      } else if (biome === 'thicket') {
         const tilt = pseudoRandom(seed + 2) * Math.PI;
-        context.strokeStyle = hex(PALETTE.needle);
+        context.strokeStyle = hex(PALETTE.litter);
         context.globalAlpha = .34;
         context.lineWidth = 1.4 * k;
         context.beginPath();
@@ -175,10 +178,52 @@ export class GroundPainter {
       }
       context.stroke();
     }
+    // Cascalho e pedrisco soltos por todo o chão do sertão, mais no areal e na
+    // caatinga aberta: pontinhos claros e escuros, cada um com a sua sombrinha.
+    for (let i = 0; i < GROUND_DETAIL_STROKES * .8; i++) {
+      const seed = i * 13 + 5;
+      const nx = pseudoRandom(seed), ny = pseudoRandom(seed + 1);
+      const biome = this.#biomes.biomeAt(nx * WORLD.width, ny * WORLD.height);
+      if (biome === 'thicket' && pseudoRandom(seed + 2) > .4) continue;
+      const x = nx * size, y = ny * size;
+      const r = (.7 + pseudoRandom(seed + 3) * 1.3) * k;
+      context.globalAlpha = .35;
+      context.fillStyle = '#3e2e1e';
+      context.fillRect(x - r + k * .6, y - r * .5 + k * .6, r * 2, r * 1.2);
+      context.globalAlpha = .75;
+      context.fillStyle = pseudoRandom(seed + 4) > .5 ? hex(PALETTE.rockLight) : hex(PALETTE.rockWarm);
+      context.fillRect(x - r, y - r * .5, r * 2, r * 1.2);
+    }
     context.restore();
   }
 
-  // Clareira de terra batida no meio, o miolo gasto da referência.
+  // Os morros: chão pedregoso, mais claro no alto, com lajedos e cascalho de granito.
+  static #paintHills(context, size) {
+    const scale = size / WORLD.width;
+    context.save();
+    HILLS.forEach((hill, index) => {
+      const x = hill.x * scale, y = hill.y * scale, r = hill.radius * scale;
+      const glow = context.createRadialGradient(x, y, r * .1, x, y, r);
+      glow.addColorStop(0, 'rgba(198, 184, 158, .55)');
+      glow.addColorStop(.6, 'rgba(176, 154, 122, .35)');
+      glow.addColorStop(1, 'rgba(176, 154, 122, 0)');
+      context.fillStyle = glow;
+      context.fillRect(x - r, y - r, r * 2, r * 2);
+      for (let i = 0; i < 90; i++) {
+        const seed = index * 503 + i * 3;
+        const angle = pseudoRandom(seed) * Math.PI * 2;
+        const distance = Math.sqrt(pseudoRandom(seed + 1)) * r * .85;
+        const w = (1.5 + pseudoRandom(seed + 2) * (i < 8 ? 9 : 2.5)) * scale;
+        context.globalAlpha = .35 + pseudoRandom(seed + 3) * .3;
+        context.fillStyle = pseudoRandom(seed + 4) > .5 ? hex(PALETTE.rockLight) : hex(PALETTE.rock);
+        context.fillRect(x + Math.cos(angle) * distance - w / 2, y + Math.sin(angle) * distance - w * .3, w, w * .6);
+      }
+      context.globalAlpha = 1;
+    });
+    context.restore();
+  }
+
+  // A praça de terra batida no meio, onde a vila fica.
   static #paintClearing(context, size) {
     context.save();
     context.filter = `blur(${6 * size / 1024}px)`;
@@ -188,7 +233,7 @@ export class GroundPainter {
     for (let step = 0; step <= 60; step++) {
       const angle = step / 60 * Math.PI * 2;
       const wobble = 1 + Math.sin(angle * 3 + .7) * .13 + Math.sin(angle * 5 + 2.1) * .07;
-      const radius = size * .29 * wobble;
+      const radius = size * .17 * wobble;
       const px = size / 2 + Math.cos(angle) * radius;
       const py = size / 2 + Math.sin(angle) * radius * .94;
       if (step) context.lineTo(px, py); else context.moveTo(px, py);
@@ -198,24 +243,89 @@ export class GroundPainter {
     context.restore();
   }
 
-  // Lajotas soltas saindo do centro, como os caminhos da referência.
-  static #paintTiles(context, size) {
-    context.fillStyle = hex(PALETTE.tile);
-    for (let arm = 0; arm < 5; arm++) {
-      const angle = arm / 5 * Math.PI * 2 + .4;
-      for (let stone = 2; stone < 15; stone++) {
-        const distance = stone * size * .019;
-        const drift = Math.sin(stone * 1.7 + arm) * size * .012;
-        context.save();
-        context.translate(
-          size / 2 + Math.cos(angle) * distance - Math.sin(angle) * drift,
-          size / 2 + Math.sin(angle) * distance + Math.cos(angle) * drift
-        );
-        context.rotate(angle + Math.sin(stone) * .2);
-        const half = 8 * size / 1024;
-        context.fillRect(-half, -half, half * 2, half * 2);
-        context.restore();
+  // As quatro estradas de terra, da beirada até a praça, seguindo a trilha sinuosa de
+  // Roads.js. Chão batido, não faixa pintada: a trilha é desenhada numa camada à
+  // parte, com a largura de cada trecho; depois o próprio chão "come" pedaços dela
+  // (falhas onde o capim e a terra solta voltaram) e a beira fica gasta e irregular;
+  // só então ela é assentada no chão, meio transparente e desfocada. Por cima, as
+  // marcas de roda e de pé, fracas e interrompidas, e umas pedrinhas no leito.
+  static #paintRoads(context, size) {
+    const scale = size / WORLD.width;
+    const layer = document.createElement('canvas');
+    layer.width = layer.height = size;
+    const ink = layer.getContext('2d');
+    ink.lineCap = 'round';
+    ink.lineJoin = 'round';
+    ink.strokeStyle = hex(PALETTE.road);
+    ROADS.forEach(road => {
+      const points = roadPath(road);
+      for (let i = 1; i < points.length; i++) {
+        const a = points[i - 1], b = points[i];
+        ink.lineWidth = (a.width + b.width) / 2 * scale;
+        ink.beginPath();
+        ink.moveTo(a.x * scale, a.y * scale);
+        ink.lineTo(b.x * scale, b.y * scale);
+        ink.stroke();
       }
-    }
+    });
+    // Falhas e beira gasta: manchas macias apagando a trilha aqui e ali.
+    ink.globalCompositeOperation = 'destination-out';
+    ROADS.forEach((road, index) => {
+      const points = roadPath(road);
+      for (let i = 0; i < points.length * 3; i++) {
+        const seed = index * 911 + i * 7;
+        const point = points[Math.floor(pseudoRandom(seed) * points.length)];
+        const side = (pseudoRandom(seed + 1) - .5) * point.width * 1.1;
+        const x = (point.x - point.dy * side) * scale, y = (point.y + point.dx * side) * scale;
+        const radius = (2 + pseudoRandom(seed + 2) * 6) * scale;
+        const blot = ink.createRadialGradient(x, y, 0, x, y, radius);
+        const strength = .25 + pseudoRandom(seed + 3) * .55;
+        blot.addColorStop(0, `rgba(0, 0, 0, ${strength})`);
+        blot.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ink.fillStyle = blot;
+        ink.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      }
+    });
+    context.save();
+    context.filter = `blur(${2.2 * scale}px)`;
+    context.globalAlpha = .62;
+    context.drawImage(layer, 0, 0);
+    context.restore();
+
+    // Marcas de roda de carro de boi e trilho de pé: duas linhas finas, fracas, que
+    // somem e voltam.
+    context.save();
+    context.lineCap = 'round';
+    context.strokeStyle = hex(PALETTE.roadRut);
+    context.lineWidth = 1.4 * scale;
+    ROADS.forEach((road, index) => {
+      const points = roadPath(road);
+      for (const rut of [-4.5, 4.5]) {
+        for (let i = 1; i < points.length; i++) {
+          const seed = index * 131 + i * 3 + rut;
+          if (pseudoRandom(seed) < .35 || points[i].plaza) continue;
+          const a = points[i - 1], b = points[i];
+          context.globalAlpha = .12 + pseudoRandom(seed + 1) * .16;
+          context.beginPath();
+          context.moveTo((a.x - a.dy * rut) * scale, (a.y + a.dx * rut) * scale);
+          context.lineTo((b.x - b.dy * rut) * scale, (b.y + b.dx * rut) * scale);
+          context.stroke();
+        }
+      }
+    });
+    // Pedrinhas soltas no leito.
+    context.fillStyle = hex(PALETTE.tile);
+    ROADS.forEach((road, index) => {
+      const points = roadPath(road).filter(point => !point.plaza);
+      for (let i = 0; i < 50; i++) {
+        const seed = index * 97 + i * 5;
+        const point = points[Math.floor(pseudoRandom(seed) * points.length)];
+        const side = (pseudoRandom(seed + 1) - .5) * (point.width - 4);
+        const r = (.6 + pseudoRandom(seed + 2) * 1) * scale;
+        context.globalAlpha = .35 + pseudoRandom(seed + 3) * .3;
+        context.fillRect((point.x - point.dy * side) * scale - r, (point.y + point.dx * side) * scale - r * .7, r * 2, r * 1.4);
+      }
+    });
+    context.restore();
   }
 }

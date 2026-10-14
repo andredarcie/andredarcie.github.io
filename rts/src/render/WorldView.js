@@ -14,9 +14,9 @@ import { CampfireRenderer } from './CampfireRenderer.js';
 import { BloodRenderer } from './BloodRenderer.js';
 import { TreeRenderer } from './TreeRenderer.js';
 import { LogRenderer } from './LogRenderer.js';
-import { FlagModel } from './FlagModel.js';
-import { HutModel } from './HutModel.js';
+import { SertaoBuildingModel } from './SertaoBuildingModel.js';
 import { HutRenderer } from './HutRenderer.js';
+import { TowerRenderer } from './TowerRenderer.js';
 import { GrassRenderer } from './GrassRenderer.js';
 import { OcclusionFader } from './OcclusionFader.js';
 
@@ -67,13 +67,15 @@ export class WorldView {
     const treeLayer = new THREE.Group();
     const logLayer = new THREE.Group();
     const hutLayer = new THREE.Group();
-    scene.add(treeLayer, logLayer, hutLayer);
+    const towerLayer = new THREE.Group();
+    scene.add(treeLayer, logLayer, hutLayer, towerLayer);
     this.trees = new TreeRenderer(treeLayer, props, space);
     this.logs = new LogRenderer(logLayer, space);
-    this.huts = new HutRenderer(hutLayer, new HutModel(new FlagModel()), space);
+    this.huts = new HutRenderer(hutLayer, new SertaoBuildingModel(), space);
+    this.towers = new TowerRenderer(towerLayer, space);
     this.occlusion = new OcclusionFader(this.camera, {
       targets: this.organisms,
-      occluders: [this.trees, this.scenery, this.huts]
+      occluders: [this.trees, this.scenery, this.huts, this.towers]
     });
   }
 

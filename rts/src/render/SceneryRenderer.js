@@ -1,5 +1,6 @@
 import { pseudoRandom } from '../core/math.js';
 import { PropFactory } from './PropFactory.js';
+import { hillHeight } from '../world/Hills.js';
 
 // Enfeites fixos: pedras, cactos e arbustos. Recebe a lista pronta
 // de quem conhece os biomas e só decide como cada espécie é feita de blocos.
@@ -29,7 +30,7 @@ export class SceneryRenderer {
       const prop = this.#props.build(item.kind, item.seed);
       if (!prop) continue;
       const place = this.#space.toScene(item.x, item.y);
-      prop.position.set(place.x, 0, place.z);
+      prop.position.set(place.x, hillHeight(item.x, item.y), place.z);
       prop.rotation.y = pseudoRandom(item.seed + 21) * Math.PI * 2;
       this.#layer.add(prop);
       const size = prop.scale.x;

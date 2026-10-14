@@ -8,6 +8,8 @@ export class Corpse {
     this.stage = organism.stage;
     this.color = organism.color;
     this.outfit = organism.outfit;
+    this.trousers = organism.trousers ?? null;
+    this.look = organism.look ?? null;
     this.name = organism.name;
     this.heading = organism.heading;
     this.direction = Math.random() < .5 ? -1 : 1;

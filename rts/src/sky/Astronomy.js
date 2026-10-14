@@ -7,20 +7,21 @@ import { smoothstep } from '../core/math.js';
 
 // O relógio do céu não é o da simulação: ele anda 1× de dia e 3× de noite (ver
 // rate), então a noite, que é quase só sono, passa depressa. Em tempo do céu um
-// dia dura 144 s; de dia uma hora leva 6 s, de noite 2 s. Com isso um dia inteiro
-// dá uns 100 s de simulação, e todo bicho atravessa algumas noites na vida.
-export const DAY_LENGTH = 144;
+// dia dura 360 s; de dia uma hora leva 15 s, de noite 5 s. Com isso um dia inteiro
+// dá uns 250 s de simulação (pouco mais de 2 min reais em 1×): umas quatro ondas
+// por dia, e a cena passa a maior parte do tempo no sol do sertão.
+export const DAY_LENGTH = 360;
 export const NIGHT_SPEEDUP = 3;
 // Ano curto para as estações aparecerem numa sessão: o dia encurta no inverno e
 // o sol do meio-dia sobe e desce, como acontece de fato fora do equador.
 export const YEAR_LENGTH = 16;
-// Trópico de Capricórnio, perto de São Paulo. No hemisfério sul o sol do meio-dia
-// fica ao norte, e a lua crescente aparece iluminada do lado esquerdo.
-const LATITUDE = -23.4 * Math.PI / 180;
+// Canudos (Belo Monte), sertão da Bahia: 9°58' S. Perto do equador o sol do meio-dia
+// passa quase a pino, ao norte, e a lua crescente aparece iluminada do lado esquerdo.
+const LATITUDE = -9.97 * Math.PI / 180;
 const OBLIQUITY = 23.44 * Math.PI / 180;
 const LUNAR_MONTH = 10;
-// A ilha abre de manhã cedo, na primavera, com lua perto de cheia.
-const START_HOUR = 6.2;
+// A partida abre no meio da manhã, já com o sol alto do sertão.
+const START_HOUR = 8;
 const START_YEAR = .5;
 const START_MOON = .42;
 const DEG = 180 / Math.PI;

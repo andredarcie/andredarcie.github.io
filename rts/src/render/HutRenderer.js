@@ -1,62 +1,52 @@
 import * as THREE from 'three';
 import { hutSize } from '../settlement/HutDimensions.js';
-import { WINDOW_DARK } from './HutModel.js';
+import { WINDOW_DARK } from './SertaoBuildingModel.js';
+import { hillHeight } from '../world/Hills.js';
 
-const WINDOW_LIT = new THREE.Color(0xffc56a);
-// A cabana pronta tem sempre 6 fiadas, alta o bastante para o boneco caber de pé;
-// quantas toras ela custa é regra da simulação, então cada tora ergue a fração
-// correspondente das fiadas.
-const HUT_TOTAL_COURSES = 6;
-// Altura da cabana com telhado e chaminé, para saber quem ela tapa.
-const HUT_HEIGHT = 30;
+// Luz de candeeiro de azeite, amarelada, nas janelas quando escurece.
+const WINDOW_LIT = new THREE.Color(0xffb85a);
+// Altura das construções com telhado, para saber quem elas tapam.
+const HOUSE_HEIGHT = 16;
+const CHURCH_HEIGHT = 40;
 
-// As cabanas na cena: refeitas só quando mudam de forma, com a bandeira balançando
-// e as janelas acendendo quando tem gente dentro no escuro.
+// As casas e a igreja na cena: refeitas só quando mudam de forma (a obra avança um
+// pedaço, fica pronta), com as janelas acendendo quando escurece.
 export class HutRenderer {
   #layer;
   #model;
   #space;
   #views = new Map();
 
-  constructor(layer, hutModel, space) {
+  constructor(layer, model, space) {
     this.#layer = layer;
-    this.#model = hutModel;
+    this.#model = model;
     this.#space = space;
   }
 
-  sync(huts, logsNeeded, { elapsed = 0, animate = true, daylight = 1 } = {}) {
+  sync(huts, { daylight = 1 } = {}) {
     const seen = new Set();
     const dark = 1 - daylight;
     for (const hut of huts) {
       seen.add(hut);
       const size = hutSize(hut.capacity);
-      const flagColor = hut.built && typeof hut.owner === 'string' && hut.owner.startsWith('#')
-        ? hut.owner : null;
-      // Só refaz quando muda o que dá forma à cabana: tora nova, conclusão, tamanho
-      // (a tribo cresceu) ou dono (a bandeira troca de cor).
-      const stage = `${hut.logs}-${hut.built}-${size.width}-${flagColor}`;
+      // A obra é refeita a cada décimo de andamento, não a cada quadro.
+      const progress = Math.floor(hut.progress * 10) / 10;
+      const stage = `${hut.kind}-${hut.built}-${progress}-${size.width}`;
       let view = this.#views.get(hut);
       if (!view || view.stage !== stage) {
         if (view) {
           this.#layer.remove(view.group);
           this.#model.dispose(view.group);
         }
-        const courses = Math.min(HUT_TOTAL_COURSES,
-          Math.round(hut.logs / Math.max(1, logsNeeded) * HUT_TOTAL_COURSES));
-        const parts = this.#model.build(courses, hut.built, HUT_TOTAL_COURSES, size, flagColor);
+        const parts = this.#model.build(hut.kind, progress, hut.built, size);
         const place = this.#space.toScene(hut.x, hut.y);
-        parts.group.position.set(place.x, 0, place.z);
+        parts.group.position.set(place.x, hillHeight(hut.x, hut.y), place.z);
         parts.group.rotation.y = -hut.angle;
         this.#layer.add(parts.group);
-        view = { ...parts, stage };
+        view = { ...parts, stage, height: hut.kind === 'hall' || hut.kind === 'igrejanova' ? CHURCH_HEIGHT : HOUSE_HEIGHT };
         this.#views.set(hut, view);
       }
-      if (view.flag) this.#model.flags.wave(view.flag, elapsed, animate);
-      if (view.windows) {
-        // Janela acesa só com gente dentro e só quando escurece.
-        const glow = hut.inside > 0 ? Math.min(1, dark * 1.4) : 0;
-        view.windows.color.copy(WINDOW_DARK).lerp(WINDOW_LIT, glow);
-      }
+      if (view.windows) view.windows.copy(WINDOW_DARK).lerp(WINDOW_LIT, Math.min(1, dark * 1.4));
     }
     for (const [hut, view] of this.#views) {
       if (seen.has(hut)) continue;
@@ -66,7 +56,7 @@ export class HutRenderer {
     }
   }
 
-  // Cabanas que podem tapar um bicho atrás delas (OcclusionFader).
+  // Construções que podem tapar alguém atrás delas (OcclusionFader).
   occluders() {
     const list = [];
     for (const [hut, view] of this.#views) {
@@ -75,7 +65,7 @@ export class HutRenderer {
         object: view.group,
         x: view.group.position.x, z: view.group.position.z,
         radius: Math.max(size.width, size.depth) * .55,
-        height: HUT_HEIGHT
+        height: view.height
       });
     }
     return list;

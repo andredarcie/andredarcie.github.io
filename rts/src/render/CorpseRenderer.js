@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { addVerticalShade } from './Shading.js';
+import { hillHeight } from '../world/Hills.js';
 
 // Esqueleto de blocos montado nas mesmas medidas do boneco (pés em y = 0, frente em
 // +z), para ficar exatamente dentro do corpo e aparecer no lugar certo quando a
@@ -114,7 +115,7 @@ export class CorpseRenderer {
       const f = Math.min(1, corpse.time / fall);
       const bounce = f >= 1 ? 0 : Math.sin(Math.max(0, f - .8) / .2 * Math.PI) * .06;
       const tip = (f * f - bounce) * Math.PI / 2;
-      view.position.set(place.x, 2.2 * f * f, place.z);
+      view.position.set(place.x, 2.2 * f * f + hillHeight(corpse.x, corpse.y), place.z);
       view.rotation.set(0, Math.PI / 2 - corpse.heading, 0);
       view.rotateZ(corpse.direction * tip);
       view.scale.setScalar(corpse.size / lifeSize);
@@ -123,7 +124,7 @@ export class CorpseRenderer {
         const away = corpse.heading + Math.PI + corpse.direction * .6;
         const reach = 11 * corpse.size / lifeSize * Math.min(1, corpse.time / fall);
         const loose = this.#space.toScene(corpse.x + Math.cos(away) * reach, corpse.y + Math.sin(away) * reach);
-        data.looseHead.position.set(loose.x, 2.5 * corpse.size / lifeSize, loose.z);
+        data.looseHead.position.set(loose.x, 2.5 * corpse.size / lifeSize + hillHeight(corpse.x, corpse.y), loose.z);
         data.looseHead.scale.setScalar(corpse.size / lifeSize);
       }
 
@@ -132,6 +133,7 @@ export class CorpseRenderer {
       const rot = Math.min(1, corpse.age / decay);
       rotColor(data.bodyMaterial.color, data.skinBase, rot);
       rotColor(data.outfitMaterial.color, data.clothBase, rot * .8);
+      rotColor(data.trousersMaterial.color, data.trousersBase, rot * .8);
       rotColor(data.hairMaterial.color, data.hairBase, rot);
       const fleshOpacity = rot < .5 ? 1 : Math.max(0, 1 - (rot - .5) / .42);
       for (const material of data.flesh) material.opacity = fleshOpacity;
@@ -139,6 +141,7 @@ export class CorpseRenderer {
       // O olho usa material compartilhado e opaco: some antes, quando a carne já
       // está translúcida, em vez de ficar boiando no ar.
       for (const eye of data.eyes) eye.visible = fleshOpacity > .6 && !corpse.beheaded;
+      for (const part of data.armor) part.visible = fleshOpacity > .6;
       // As feridas e o corte do pescoço somem junto com a carne.
       data.woundMarks.forEach((mark, i) => { mark.visible = fleshOpacity > .6 && i < corpse.wounds; });
       data.stump.visible = corpse.beheaded && fleshOpacity > .6;
@@ -158,7 +161,7 @@ export class CorpseRenderer {
       this.#layer.remove(view);
       const data = view.userData;
       if (data.looseHead) this.#layer.remove(data.looseHead);
-      for (const material of [data.bodyMaterial, data.outfitMaterial, data.hairMaterial,
+      for (const material of [data.bodyMaterial, data.outfitMaterial, data.trousersMaterial, data.hairMaterial,
         data.boneMaterial, data.socketMaterial]) material.dispose();
       this.#views.delete(corpse);
     }
@@ -167,7 +170,11 @@ export class CorpseRenderer {
   #createView(corpse) {
     const characters = this.#characters;
     const view = characters.create(corpse.sex === 'female');
-    characters.dress(view, corpse.color, corpse.outfit);
+    characters.dress(view, corpse.color, corpse.outfit, corpse.trousers);
+    characters.equip(view, corpse.look);
+    // O canhão fica para trás no lugar: não tomba junto com quem o empurrava.
+    view.userData.gear.cannon.visible = false;
+    view.userData.gear.cart.visible = false;
     // Pose neutra uma vez só: um corpo caído não anda, então nada a recalcular.
     // Olhos fechados de vez.
     characters.pose(view, { gait: 0, pace: 0, lean: 0, bellyScale: 1, animate: false, eyes: 0 });
@@ -177,10 +184,11 @@ export class CorpseRenderer {
     data.body.traverse(node => {
       if (node.isMesh && node.material === characters.hairMaterial) node.material = data.hairMaterial;
     });
-    data.flesh = [data.bodyMaterial, data.outfitMaterial, data.hairMaterial];
+    data.flesh = [data.bodyMaterial, data.outfitMaterial, data.trousersMaterial, data.hairMaterial];
     for (const material of data.flesh) material.transparent = true;
     data.skinBase = new THREE.Color(corpse.color);
     data.clothBase = new THREE.Color(corpse.outfit || corpse.color);
+    data.trousersBase = new THREE.Color(corpse.trousers || corpse.outfit || corpse.color);
     data.hairBase = characters.hairMaterial.color.clone();
     data.boneMaterial = new THREE.MeshLambertMaterial({ color: 0xe9e1c8, transparent: true });
     data.socketMaterial = new THREE.MeshLambertMaterial({ color: 0x2a2218, transparent: true });
@@ -191,6 +199,10 @@ export class CorpseRenderer {
     data.looseHead = null;
     if (corpse.beheaded) {
       characters.behead(view);
+    }
+    // Armadura é de material compartilhado e opaco: some junto com o olho.
+    data.armor = characters.gearParts(view);
+    if (corpse.beheaded) {
       data.looseHead = this.#looseHead(corpse, data);
       this.#layer.add(data.looseHead);
     }

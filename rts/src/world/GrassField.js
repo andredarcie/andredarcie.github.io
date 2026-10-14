@@ -3,6 +3,7 @@ import {
   GRASS_MIN_COUNT, GRASS_MAX_COUNT, GRASS_AREA_PER_PATCH, GRASS_REGROW_MIN, GRASS_REGROW_SPREAD
 } from '../config/environment.js';
 import { FoodPatch } from '../entities/FoodPatch.js';
+import { hillHeight } from './Hills.js';
 
 // O capim da ilha: brota espalhado, filtrado pelo bioma, e renasce em outro lugar
 // alguns segundos depois de cada moita comida.
@@ -33,6 +34,7 @@ export class GrassField {
       const x = 26 + Math.random() * Math.max(0, WORLD.width - 52);
       const y = 26 + Math.random() * Math.max(0, WORLD.height - 52);
       if (!this.#occupancy.isFree(x, y, FOOTPRINT.food)) continue;
+      if (hillHeight(x, y) > 0) continue;
       // O bioma decide; nas últimas tentativas qualquer lugar livre serve.
       if (attempt < 36 && Math.random() > this.#biomes.habitatWeight(this.#biomes.biomeAt(x, y), 'food')) continue;
       return new FoodPatch({

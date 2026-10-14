@@ -1,7 +1,7 @@
 import { LIFE_SIZE, WALK_SPEED } from '../config/organisms.js';
 import { BIRTH_ANIMATION_DURATION } from '../config/reproduction.js';
 import { DEATH_FALL, DECAY_DAYS, CORPSE_DAYS } from '../config/death.js';
-import { CHOP_SWING, HUT_LOGS } from '../config/settlement.js';
+import { CHOP_SWING } from '../config/settlement.js';
 
 // Um quadro na tela: passa o estado do mundo para a cena 3D, desenha, depois a
 // sobreposição 2D por cima.
@@ -37,8 +37,9 @@ export class FrameRenderer {
     view.campfires.sync(state.campfires, { elapsed, animate, daylight: sky.daylight });
     view.trees.sync(state.trees, { elapsed, animate, wind });
     view.logs.sync(state.logs);
-    view.huts.sync(huts, HUT_LOGS, { elapsed, animate, daylight: sky.daylight });
-    view.food.sync(state.grass, { elapsed, wind });
+    view.huts.sync(huts, { daylight: sky.daylight });
+    view.towers.sync(state.towers, { elapsed, animate });
+    view.food.sync(state.grass);
     view.grass.sync({ ponds: state.ponds, huts, elapsed, wind });
     view.terrain.syncPonds(state.ponds);
     view.ponds.sync(state.ponds, {

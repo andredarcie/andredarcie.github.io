@@ -10,15 +10,16 @@ export const GRASS_MAX_COUNT = 240;
 // os fundadores envelhecem. Bem antes, com uma a cada 40.000, o bicho com fome
 // ficava em média a 210 da moita mais próxima, o dobro do alcance da visão, e
 // morria procurando com capim sobrando no mapa.
-export const GRASS_AREA_PER_PATCH = 5600;
+// Canudos: roça é rara na caatinga seca (comida sobrava no teste de equilíbrio).
+export const GRASS_AREA_PER_PATCH = 11000;
 // Moita comida renasce em 4 a 10 s (era 8 a 20). Com o capim devagar e a população
 // crescendo, ele repunha menos do que se comia e a fome voltava.
 export const GRASS_REGROW_MIN = 25;
 export const GRASS_REGROW_SPREAD = 30;
 
-// Eram 5 no mundo de 900 e 3 nos menores (com 2 uma poça seca já deixa metade do
-// mapa sem água). No de 820, com 100 bichos bebendo, 10.
-export const POND_COUNT = 10;
+// Canudos foi atacada na grande seca de 1896–97: só sobram umas cacimbas e poças no
+// leito do Vaza-Barris (BiomeMap.habitatWeight puxa a água para lá).
+export const POND_COUNT = 4;
 export const RAIN_START_RATIO = .3;
 export const RAIN_CRISIS_THIRST = 30;
 export const RAIN_CRISIS_SHARE = .25;
@@ -29,5 +30,5 @@ export const RAIN_FILL_TIME = 3.4;
 // Intervalo entre o surgimento de poças novas durante a chuva.
 export const RAIN_POND_INTERVAL = .9;
 export const RAIN_DURATION = 14;
-// Chuva sorteada: em média uma a cada tantos segundos de simulação.
-export const RAIN_MEAN_INTERVAL = 420;
+// Chuva sorteada: em média uma a cada tantos segundos de simulação. Na seca, rara.
+export const RAIN_MEAN_INTERVAL = 2400;

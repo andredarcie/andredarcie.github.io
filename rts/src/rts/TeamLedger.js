@@ -1,6 +1,7 @@
 import { TEAMS, MAX_POPULATION } from '../config/rts.js';
 
-// O caixa e o censo de cada time: comida, madeira, população e teto.
+// O caixa e o censo: comida, madeira, população e teto da vila. Os invasores não
+// têm economia, só existem na conta para a cor e a armadura.
 export class TeamLedger {
   #state;
 
@@ -8,19 +9,15 @@ export class TeamLedger {
     this.#state = state;
   }
 
-  reset({ food, wood, aiBonus }) {
+  reset({ food, wood }) {
     this.#state.teams = {
-      player: { ...TEAMS.player, food, wood, bonus: 1 },
-      enemy: { ...TEAMS.enemy, food, wood, bonus: aiBonus }
+      player: { ...TEAMS.player, food, wood, rifles: 0 },
+      enemy: { ...TEAMS.enemy, food: 0, wood: 0, rifles: 0 }
     };
   }
 
   team(id) {
     return this.#state.teams[id];
-  }
-
-  other(id) {
-    return id === 'player' ? 'enemy' : 'player';
   }
 
   units(teamId) {
@@ -29,6 +26,10 @@ export class TeamLedger {
 
   buildings(teamId) {
     return this.#state.buildings.filter(b => b.team === teamId);
+  }
+
+  hall() {
+    return this.#state.buildings.find(b => b.kind === 'hall') ?? null;
   }
 
   // Quem existe mais quem está na fila de treino: a vaga é reservada ao pagar.
@@ -46,36 +47,38 @@ export class TeamLedger {
   }
 
   canAfford(teamId, cost) {
-    const team = this.team(teamId);
-    return team.food >= (cost.food || 0) && team.wood >= (cost.wood || 0);
+    return this.shortage(teamId, cost) === null;
   }
 
-  // Falta de quê, para o aviso: 'food', 'wood' ou null.
+  // Falta de quê, para o aviso: 'food', 'wood', 'rifles' (os fuzis tomados da tropa)
+  // ou null.
   shortage(teamId, cost) {
     const team = this.team(teamId);
-    if (team.food < (cost.food || 0)) return 'food';
-    if (team.wood < (cost.wood || 0)) return 'wood';
+    for (const resource of ['food', 'wood', 'rifles']) {
+      if ((team[resource] ?? 0) < (cost[resource] || 0)) return resource;
+    }
     return null;
   }
 
   spend(teamId, cost) {
     if (!this.canAfford(teamId, cost)) return false;
     const team = this.team(teamId);
-    team.food -= cost.food || 0;
-    team.wood -= cost.wood || 0;
+    for (const resource of ['food', 'wood', 'rifles']) team[resource] -= cost[resource] || 0;
     return true;
   }
 
   refund(teamId, cost) {
     const team = this.team(teamId);
-    team.food += cost.food || 0;
-    team.wood += cost.wood || 0;
+    for (const resource of ['food', 'wood', 'rifles']) team[resource] += cost[resource] || 0;
   }
 
-  // Entrega da viagem; a IA difícil rende mais por viagem, a fácil menos.
+  // O aviso de falta, em português.
+  static lack(missing) {
+    return { food: 'Falta comida', wood: 'Falta madeira', rifles: 'Faltam fuzis tomados da tropa' }[missing] ?? '';
+  }
+
   deposit(teamId, resource, amount) {
-    const team = this.team(teamId);
-    team[resource] += Math.round(amount * team.bonus);
+    this.team(teamId)[resource] += Math.round(amount);
   }
 
   nearestDropOff(teamId, x, y) {

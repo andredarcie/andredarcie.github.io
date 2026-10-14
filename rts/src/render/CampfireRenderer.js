@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
+import { hillHeight } from '../world/Hills.js';
 
 const FIRE_LIGHT_POOL = 4;
 const STONE_SHAPE = new THREE.BoxGeometry(3.2, 2.2, 2.8);
@@ -45,7 +46,7 @@ export class CampfireRenderer {
         this.#views.set(fire, view);
       }
       const place = this.#space.toScene(fire.x, fire.y);
-      view.position.set(place.x, 0, place.z);
+      view.position.set(place.x, hillHeight(fire.x, fire.y), place.z);
       const { flames, embers, glow } = view.userData;
       const flame = fire.flame;
       // Tremor: duas senoides de frequência sem múltiplo comum não se repetem à vista.
@@ -69,7 +70,7 @@ export class CampfireRenderer {
 
       const light = this.#lights[index];
       if (light) {
-        light.position.set(place.x, 12, place.z);
+        light.position.set(place.x, 12 + hillHeight(fire.x, fire.y), place.z);
         // De dia o fogo quase não faz diferença na claridade; de noite ilumina a roda.
         light.intensity = 520 * flame * flicker * (.25 + .75 * dark);
       }

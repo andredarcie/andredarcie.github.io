@@ -20,20 +20,22 @@ const LIGHT_DISTANCE = 1600;
 
 // Quadros-chave pela altura do sol, em graus. Entre eles a cor é interpolada; abaixo
 // do primeiro e acima do último, fica parada. Os valores de -18° são noite fechada
-// (fim do crepúsculo astronômico), 0° é o disco tocando o horizonte.
+// (fim do crepúsculo astronômico), 0° é o disco tocando o horizonte. A luz de baixo
+// (hemiGround) é a do chão de terra ocre rebatendo; à noite o ambiente fica mais
+// claro do que seria de verdade, para dar para jogar quando a onda vem no escuro.
 const SKY_KEYS = [
   { at: -18, top: 0x070b18, horizon: 0x111a30,
-    hemiSky: 0x5868a8, hemiGround: 0x1c2436, hemi: .5 },
+    hemiSky: 0x8a96c8, hemiGround: 0x4a4e66, hemi: .85 },
   { at: -9, top: 0x141c3c, horizon: 0x33385e,
-    hemiSky: 0x6670aa, hemiGround: 0x262a3c, hemi: .52 },
+    hemiSky: 0x929cc8, hemiGround: 0x54546a, hemi: .85 },
   { at: -3, top: 0x33427a, horizon: 0xc27a6c,
-    hemiSky: 0x9a86b0, hemiGround: 0x3c3444, hemi: .54 },
+    hemiSky: 0xb09ab8, hemiGround: 0x5e5058, hemi: .7 },
   { at: 1, top: 0x6f8ec0, horizon: 0xf2a070,
     hemiSky: 0xf0b8a0, hemiGround: 0x847468, hemi: .56 },
   { at: 8, top: 0xa9d2d4, horizon: 0xf4d6a8,
-    hemiSky: 0xfff0dc, hemiGround: 0xc4ceb0, hemi: .6 },
-  { at: 25, top: 0xc9ecdb, horizon: PALETTE.sky,
-    hemiSky: 0xffffff, hemiGround: 0xcfe4c6, hemi: LIGHT_AMBIENT }
+    hemiSky: 0xfff0dc, hemiGround: 0xd2c2a2, hemi: .6 },
+  { at: 25, top: 0xb9d8e6, horizon: PALETTE.sky,
+    hemiSky: 0xffffff, hemiGround: 0xe2d2b2, hemi: LIGHT_AMBIENT }
 ];
 // O sol avermelha perto do horizonte porque atravessa mais ar: o azul se espalha no
 // caminho e sobra o vermelho. Acima de ~35° a luz já é a branca-quente do dia.

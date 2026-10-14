@@ -49,7 +49,7 @@ export class OrganismRenderer {
         view = this.#createView(o);
         this.#views.set(o.id, view);
       }
-      this.#characters.dress(view.body, o.color, o.outfit);
+      this.#characters.dress(view.body, o.color, o.outfit, o.trousers);
       const place = this.#space.toScene(o.x, o.y);
 
       // Recém-nascido cresce até o tamanho, em vez de aparecer pronto do nada.
@@ -92,6 +92,7 @@ export class OrganismRenderer {
         torch: o.torch,
         // Soldado anda com a arma na mão; trabalhador só a pega para brigar.
         weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : null,
+        pushing: Boolean(o.look?.cannon || o.look?.bigCannon),
         guard: Boolean(o.foe) && o.speed < 6,
         strike: o.strike > 0 && animate ? o.strike / o.strikeSwing : 0,
         strikeKind: o.strikeKind,
@@ -104,6 +105,16 @@ export class OrganismRenderer {
 
       // Dentro da cabana o bicho some de vista.
       view.body.visible = !o.inHut;
+      // Jagunço de tocaia fica meio apagado: o jogador vê onde ele está; a tropa, não.
+      if (view.hidden !== Boolean(o.hidden)) {
+        view.hidden = Boolean(o.hidden);
+        const data = view.body.userData;
+        for (const material of [data.bodyMaterial, data.outfitMaterial, data.trousersMaterial]) {
+          material.transparent = view.hidden;
+          material.opacity = view.hidden ? .45 : 1;
+          material.needsUpdate = true;
+        }
+      }
       // Pisa no chão de verdade: na margem ou numa tigela seca, desce junto com ela.
       view.body.position.set(place.x, groundHeight(o.x, o.y, ponds), place.z);
       view.body.scale.setScalar(scale);
@@ -131,6 +142,7 @@ export class OrganismRenderer {
       view.cone.material.dispose();
       view.body.userData.bodyMaterial.dispose();
       view.body.userData.outfitMaterial.dispose();
+      view.body.userData.trousersMaterial.dispose();
       this.#dropBaby(view);
       this.#views.delete(id);
     }
@@ -223,6 +235,7 @@ export class OrganismRenderer {
 
   #createView(o) {
     const body = this.#characters.create(o.sex === 'female');
+    this.#characters.equip(body, o.look);
     // Mancha no pé, no grupo de fora: acompanha posição e tamanho, mas não o gingado
     // nem o deitar do corpo.
     body.add(createContactShadow(CONTACT_RADIUS));

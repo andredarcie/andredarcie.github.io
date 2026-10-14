@@ -1,6 +1,7 @@
 import { WORLD, POND_CLEARANCE } from '../config/world.js';
 import { POND_COUNT } from '../config/environment.js';
 import { Pond } from '../entities/Pond.js';
+import { hillHeight } from './Hills.js';
 
 // Tentativas de achar chão livre para um lago antes de desistir desta vez.
 const PLACEMENT_ATTEMPTS = 60;
@@ -28,6 +29,9 @@ export class PondSystem {
       const x = margin + Math.random() * Math.max(0, WORLD.width - margin * 2);
       const y = margin + Math.random() * Math.max(0, WORLD.height - margin * 2);
       if (!this.#occupancy.isFree(x, y, radius + POND_CLEARANCE)) continue;
+      // Cacimba é no baixo, nunca no morro.
+      if (hillHeight(x, y) > 0 || hillHeight(x + radius, y) > 0 || hillHeight(x - radius, y) > 0 ||
+        hillHeight(x, y + radius) > 0 || hillHeight(x, y - radius) > 0) continue;
       // Bioma seco recusa mais vezes; nas últimas tentativas qualquer lugar livre serve.
       const picky = attempt < PLACEMENT_ATTEMPTS * .7;
       if (picky && Math.random() > this.#biomes.habitatWeight(this.#biomes.biomeAt(x, y), 'water')) continue;
