@@ -5,6 +5,7 @@ Original prompt: Crie um site web simples que é uma arena 2d de pequens formas 
 - Auditoria de cobertura ampliou o retorno de áudio para todos os botões e para ordens de mover, atacar, colher, construir, parar, treinar e trocar; cada uma usa uma inflexão curta diferente, enquanto a ação concreta mantém seu efeito próprio.
 - Eventos de ambientação e desfecho também receberam cobertura: começo de chuva, comboio, debandada, queda de construção e fim de partida.
 - A síntese de som foi elevada: panorama estéreo variável, afinação não repetitiva, reverberação procedural curta e efeitos em camadas (ataque, corpo e cauda); sino e tiros ganharam harmônicos e transientes mais naturais.
+- Boas práticas do Web Audio aplicadas após pesquisa: contexto com latência interativa, volume mestre com rampa para não estalar ao alternar, ruído reutilizado em buffer compartilhado, suspensão na aba oculta e controle de som anunciado como switch para tecnologia assistiva.
 
 - Criada arena vanilla com canvas, 12 organismos geométricos e movimento livre com colisão nas bordas.
 - Adicionado clique para semear novos organismos, leitura ao vivo, famílias visuais e layout responsivo.

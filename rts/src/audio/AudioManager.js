@@ -2,6 +2,8 @@
 // arquivos externos. O contexto só nasce depois de um gesto do jogador, como os
 // navegadores exigem; até lá os eventos simplesmente não fazem barulho.
 const STORAGE_KEY = 'canudos-som';
+const MASTER_VOLUME = .3;
+const NOISE_BUFFER_SECONDS = 4;
 
 export class AudioManager {
   #events;
@@ -9,6 +11,7 @@ export class AudioManager {
   #context = null;
   #master = null;
   #reverb = null;
+  #noiseBuffer = null;
   #last = new Map();
 
   constructor({ events, root }) {
@@ -19,12 +22,13 @@ export class AudioManager {
     this.#bindInterface(root);
     document.addEventListener('pointerdown', () => this.#wake(), { once: true, capture: true });
     document.addEventListener('keydown', () => this.#wake(), { once: true, capture: true });
+    document.addEventListener('visibilitychange', () => this.#handleVisibility());
   }
 
   #bindControl(root) {
     const button = root.querySelector('#sound-toggle');
     const update = () => {
-      button.setAttribute('aria-pressed', String(this.#enabled));
+      button.setAttribute('aria-checked', String(this.#enabled));
       button.setAttribute('aria-label', this.#enabled ? 'Desligar efeitos sonoros' : 'Ligar efeitos sonoros');
       button.title = this.#enabled ? 'Efeitos sonoros ligados' : 'Efeitos sonoros desligados';
       button.textContent = this.#enabled ? '♪' : '×';
@@ -33,6 +37,7 @@ export class AudioManager {
       this.#enabled = !this.#enabled;
       try { localStorage.setItem(STORAGE_KEY, String(this.#enabled)); } catch { /* armazenamento opcional */ }
       if (this.#enabled) this.#wake();
+      this.#setMasterVolume();
       update();
     });
     update();
@@ -78,7 +83,8 @@ export class AudioManager {
     const Context = window.AudioContext || window.webkitAudioContext;
     if (!Context) return;
     try {
-      this.#context = new Context();
+      try { this.#context = new Context({ latencyHint: 'interactive' }); }
+      catch { this.#context = new Context(); }
       const compressor = this.#context.createDynamicsCompressor();
       compressor.threshold.value = -22;
       compressor.knee.value = 20;
@@ -86,9 +92,10 @@ export class AudioManager {
       compressor.attack.value = .003;
       compressor.release.value = .18;
       this.#master = this.#context.createGain();
-      this.#master.gain.value = .3;
+      this.#master.gain.value = MASTER_VOLUME;
       this.#reverb = this.#context.createConvolver();
       this.#reverb.buffer = this.#impulse();
+      this.#noiseBuffer = this.#makeNoiseBuffer();
       const wet = this.#context.createGain();
       wet.gain.value = .13;
       this.#master.connect(compressor).connect(this.#context.destination);
@@ -103,6 +110,22 @@ export class AudioManager {
     if (now - (this.#last.get(key) ?? -Infinity) < gap) return false;
     this.#last.set(key, now);
     return true;
+  }
+
+  #handleVisibility() {
+    if (!this.#context) return;
+    if (document.hidden) {
+      this.#context.suspend().catch(() => {});
+      return;
+    }
+    if (this.#enabled) this.#context.resume().catch(() => {});
+  }
+
+  #setMasterVolume() {
+    if (!this.#context || !this.#master) return;
+    const now = this.#context.currentTime;
+    this.#master.gain.cancelScheduledValues(now);
+    this.#master.gain.setTargetAtTime(this.#enabled ? MASTER_VOLUME : .0001, now, .012);
   }
 
   #tone({ frequency, endFrequency = frequency, duration = .12, type = 'sine', gain = .15, when = 0 }) {
@@ -124,11 +147,7 @@ export class AudioManager {
   }
 
   #noise({ duration = .08, gain = .1, cutoff = 1000, highpass = 0, resonance = 0, when = 0 }) {
-    if (!this.#context || !this.#master) return;
-    const sampleRate = this.#context.sampleRate;
-    const buffer = this.#context.createBuffer(1, Math.ceil(sampleRate * duration), sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) ** 1.7;
+    if (!this.#context || !this.#master || !this.#noiseBuffer) return;
     const now = this.#context.currentTime + when;
     const source = this.#context.createBufferSource();
     const filter = this.#context.createBiquadFilter();
@@ -138,7 +157,7 @@ export class AudioManager {
     filter.Q.value = resonance;
     envelope.gain.setValueAtTime(gain, now);
     envelope.gain.exponentialRampToValueAtTime(.0001, now + duration);
-    source.buffer = buffer;
+    source.buffer = this.#noiseBuffer;
     source.connect(filter);
     if (highpass) {
       const cut = this.#context.createBiquadFilter();
@@ -147,7 +166,8 @@ export class AudioManager {
       filter.connect(cut).connect(envelope);
     } else filter.connect(envelope);
     this.#route(envelope, this.#variation(.55), duration > .2 ? .17 : .05);
-    source.start(now);
+    const offset = Math.random() * Math.max(0, this.#noiseBuffer.duration - duration);
+    source.start(now, offset, duration);
   }
 
   #route(node, pan, reverb) {
@@ -173,6 +193,14 @@ export class AudioManager {
         data[i] = (Math.random() * 2 - 1) * decay;
       }
     }
+    return buffer;
+  }
+
+  #makeNoiseBuffer() {
+    const length = Math.ceil(this.#context.sampleRate * NOISE_BUFFER_SECONDS);
+    const buffer = this.#context.createBuffer(1, length, this.#context.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
     return buffer;
   }
 
