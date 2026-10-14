@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#1b2420" />
+  <title>Tiny Tribes — mini RTS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css?v=1" />
+  <!-- Cache-busting centralizado: cada módulo local aponta para a URL com ?v=N. Os .js
+       importam SEM query string. A cada alteração em qualquer .js, trocar TODOS os
+       ?v=N daqui pelo número novo e atualizar o BUILD N para o mesmo número.
+       Módulo novo em src/ ganha entrada aqui. -->
+  <script type="importmap">
+  { "imports": {
+    "three": "./lib/three.module.min.js",
+    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=1",
+    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=1",
+    "./src/app/Viewport.js": "./src/app/Viewport.js?v=1",
+    "./src/config/combat.js": "./src/config/combat.js?v=1",
+    "./src/config/death.js": "./src/config/death.js?v=1",
+    "./src/config/environment.js": "./src/config/environment.js?v=1",
+    "./src/config/flame.js": "./src/config/flame.js?v=1",
+    "./src/config/organisms.js": "./src/config/organisms.js?v=1",
+    "./src/config/reproduction.js": "./src/config/reproduction.js?v=1",
+    "./src/config/rts.js": "./src/config/rts.js?v=1",
+    "./src/config/settlement.js": "./src/config/settlement.js?v=1",
+    "./src/config/social.js": "./src/config/social.js?v=1",
+    "./src/config/ui.js": "./src/config/ui.js?v=1",
+    "./src/config/world.js": "./src/config/world.js?v=1",
+    "./src/core/EventBus.js": "./src/core/EventBus.js?v=1",
+    "./src/core/geometry.js": "./src/core/geometry.js?v=1",
+    "./src/core/math.js": "./src/core/math.js?v=1",
+    "./src/entities/Building.js": "./src/entities/Building.js?v=1",
+    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=1",
+    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=1",
+    "./src/entities/Log.js": "./src/entities/Log.js?v=1",
+    "./src/entities/Pond.js": "./src/entities/Pond.js?v=1",
+    "./src/entities/Tree.js": "./src/entities/Tree.js?v=1",
+    "./src/entities/Unit.js": "./src/entities/Unit.js?v=1",
+    "./src/input/CameraController.js": "./src/input/CameraController.js?v=1",
+    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=1",
+    "./src/main.js": "./src/main.js?v=1",
+    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=1",
+    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=1",
+    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=1",
+    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=1",
+    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=1",
+    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=1",
+    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=1",
+    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=1",
+    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=1",
+    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=1",
+    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=1",
+    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=1",
+    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=1",
+    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=1",
+    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=1",
+    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=1",
+    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=1",
+    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=1",
+    "./src/render/FlagModel.js": "./src/render/FlagModel.js?v=1",
+    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=1",
+    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=1",
+    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=1",
+    "./src/render/HutModel.js": "./src/render/HutModel.js?v=1",
+    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=1",
+    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=1",
+    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=1",
+    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=1",
+    "./src/render/Palette.js": "./src/render/Palette.js?v=1",
+    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=1",
+    "./src/render/PondShape.js": "./src/render/PondShape.js?v=1",
+    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=1",
+    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=1",
+    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=1",
+    "./src/render/Shading.js": "./src/render/Shading.js?v=1",
+    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=1",
+    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=1",
+    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=1",
+    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=1",
+    "./src/render/WorldView.js": "./src/render/WorldView.js?v=1",
+    "./src/rts/AiPlayer.js": "./src/rts/AiPlayer.js?v=1",
+    "./src/rts/Commands.js": "./src/rts/Commands.js?v=1",
+    "./src/rts/Selection.js": "./src/rts/Selection.js?v=1",
+    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=1",
+    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=1",
+    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=1",
+    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=1",
+    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=1",
+    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=1",
+    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=1",
+    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=1",
+    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=1",
+    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=1",
+    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=1",
+    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=1",
+    "./src/ui/Theme.js": "./src/ui/Theme.js?v=1",
+    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=1",
+    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=1",
+    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=1",
+    "./src/world/GrassField.js": "./src/world/GrassField.js?v=1",
+    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=1",
+    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=1",
+    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=1",
+    "./src/world/Weather.js": "./src/world/Weather.js?v=1",
+    "./src/world/WorldState.js": "./src/world/WorldState.js?v=1"
+  } }
+  </script>
+  <style>
+    :root {
+      --hud-bg: rgb(22 28 26 / .86);
+      --hud-bg-strong: rgb(16 21 19 / .95);
+      --hud-line: rgb(255 255 255 / .14);
+      --hud-ink: #f4f1e6;
+      --hud-muted: #b8b4a4;
+      --hud-gold: #ffd36b;
+      --hud-blue: #5fb4ff;
+      --hud-red: #ff6a55;
+      --hud-radius: 12px;
+      --panel-height: 132px;
+      --gutter: max(8px, env(safe-area-inset-left));
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
+    body {
+      background: #1b2420; color: var(--hud-ink); font-family: var(--font-body); font-size: 14px;
+      -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button { font-family: inherit; color: inherit; }
+    .arena-wrap { position: fixed; inset: 0; background: var(--color-field); }
+    canvas { display: block; }
+    #arena { width: 100%; height: 100dvh; touch-action: none; cursor: pointer; }
+    #arena-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .arena-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 60%, rgb(12 16 24 / .25) 100%); }
+    .webgl-missing { position: fixed; inset: auto 16px 16px 16px; z-index: 50; margin: 0; padding: 12px; border-radius: var(--hud-radius); background: var(--hud-bg-strong); }
+
+    /* ---- Barra de cima: recursos, população e pausa ---- */
+    .topbar {
+      position: fixed; z-index: 10; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; gap: 6px;
+      padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) 6px max(8px, env(safe-area-inset-left));
+      background: linear-gradient(to bottom, var(--hud-bg-strong), var(--hud-bg));
+      border-bottom: 1px solid var(--hud-line);
+    }
+    .res { display: inline-flex; align-items: center; gap: 5px; min-width: 0; padding: 5px 9px; border-radius: 999px; background: rgb(255 255 255 / .07); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .res b { font-size: 15px; }
+    .res .res-icon { font-size: 15px; line-height: 1; }
+    .res[data-full="true"] { background: rgb(255 90 70 / .28); color: #ffd5cf; }
+    .brand { margin-left: auto; font-family: var(--font-display); font-weight: 900; font-size: 18px; letter-spacing: .02em; text-transform: uppercase; color: var(--hud-gold); white-space: nowrap; }
+    .icon-button { flex: none; width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border: 1px solid var(--hud-line); border-radius: 10px; background: rgb(255 255 255 / .08); font-size: 16px; font-weight: 800; cursor: pointer; }
+    .icon-button:active { transform: scale(.94); }
+    @media (max-width: 420px) { .brand { display: none; } .res { padding: 5px 7px; } .topbar { gap: 4px; } #pause-button { margin-left: auto; } }
+
+    /* ---- Mapinha e zoom ---- */
+    #minimap {
+      position: fixed; z-index: 9; left: var(--gutter); top: calc(max(6px, env(safe-area-inset-top)) + 56px);
+      width: 132px; height: 76px; border: 1px solid var(--hud-line); border-radius: 10px;
+      background: rgb(16 21 19 / .72); touch-action: none; cursor: crosshair;
+    }
+    .zoom-controls { position: fixed; z-index: 9; right: max(8px, env(safe-area-inset-right)); top: calc(max(6px, env(safe-area-inset-top)) + 56px); display: grid; gap: 6px; }
+    .zoom-controls .icon-button { background: var(--hud-bg); }
+
+    /* ---- Painel de comando ---- */
+    .command-panel {
+      position: fixed; z-index: 10; left: 0; right: 0; bottom: 0;
+      height: calc(var(--panel-height) + env(safe-area-inset-bottom));
+      display: grid; grid-template-rows: auto 1fr; gap: 6px;
+      padding: 8px max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+      background: linear-gradient(to top, var(--hud-bg-strong), var(--hud-bg));
+      border-top: 1px solid var(--hud-line);
+    }
+    .sel-info { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 10px; min-height: 34px; }
+    .sel-title { font-family: var(--font-display); font-size: 19px; font-weight: 900; line-height: 1; letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sel-detail { grid-column: 1; color: var(--hud-muted); font-size: 12px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sel-side { grid-row: 1 / span 2; grid-column: 2; display: grid; justify-items: end; gap: 4px; }
+    .sel-life { width: 92px; height: 7px; border-radius: 4px; background: rgb(0 0 0 / .5); overflow: hidden; }
+    .sel-life span { display: block; height: 100%; background: #6bd46b; transform-origin: left; }
+    .sel-life span[data-low="true"] { background: #ff4b3a; }
+    .sel-queue { display: flex; gap: 2px; font-size: 13px; }
+    .actions { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; touch-action: pan-x; }
+    .actions::-webkit-scrollbar { display: none; }
+    .action {
+      flex: 1 0 64px; max-width: 108px; min-height: 64px; display: grid; justify-items: center; align-content: center; gap: 1px;
+      padding: 4px 4px; border: 1px solid rgb(255 255 255 / .2); border-radius: 12px;
+      background: linear-gradient(to bottom, rgb(255 255 255 / .14), rgb(255 255 255 / .05));
+      cursor: pointer; transition: transform 80ms ease-out;
+    }
+    .action:active { transform: scale(.94); background: rgb(255 211 107 / .25); }
+    .action[aria-disabled="true"] { opacity: .42; }
+    .action-icon { font-size: 22px; line-height: 1; }
+    .action-label { font-size: 11px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
+    .action-sub { font-size: 10px; color: var(--hud-muted); line-height: 1.1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    @media (hover: hover) and (pointer: fine) { .action:hover { border-color: var(--hud-gold); } }
+
+    /* ---- Avisos e laço ---- */
+    .toast {
+      position: fixed; z-index: 11; left: 50%; bottom: calc(var(--panel-height) + env(safe-area-inset-bottom) + 10px);
+      transform: translateX(-50%); max-width: calc(100% - 24px); margin: 0; padding: 8px 14px;
+      border-radius: 999px; background: var(--hud-bg-strong); border: 1px solid var(--hud-line);
+      font-size: 13px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      animation: toast-in 180ms ease-out;
+    }
+    .toast[data-tone="warn"] { border-color: var(--hud-gold); color: var(--hud-gold); }
+    .toast[data-tone="alert"] { border-color: var(--hud-red); background: rgb(90 20 14 / .95); cursor: pointer; }
+    .toast[hidden] { display: none; }
+    @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    .box-select { position: fixed; z-index: 8; pointer-events: none; border: 1.5px solid var(--hud-blue); background: rgb(95 180 255 / .14); border-radius: 3px; }
+    .box-select[hidden] { display: none; }
+
+    /* ---- Telas de menu ---- */
+    dialog {
+      width: min(420px, calc(100% - 24px)); max-height: calc(100dvh - 24px); margin: auto; overflow: auto;
+      padding: 22px 20px 18px; border: 1px solid var(--hud-line); border-radius: 18px;
+      background: #1e2723; color: var(--hud-ink); box-shadow: 0 20px 60px rgb(0 0 0 / .55);
+    }
+    dialog::backdrop { background: rgb(8 12 10 / .55); backdrop-filter: blur(2px); }
+    .kicker { margin: 0; color: var(--hud-gold); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    dialog h1, dialog h2 { margin: 4px 0 10px; font-family: var(--font-display); font-size: 44px; font-weight: 900; line-height: .9; text-transform: uppercase; letter-spacing: .01em; }
+    dialog p { margin: 0 0 12px; color: var(--hud-muted); font-size: 14px; line-height: 1.45; }
+    .how { margin: 0 0 16px; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 13px; line-height: 1.35; }
+    .how li { display: grid; grid-template-columns: 26px 1fr; gap: 6px; align-items: start; }
+    .how li span:first-child { text-align: center; font-size: 16px; }
+    .how b { color: var(--hud-ink); }
+    .field-label { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--hud-muted); }
+    .levels, .speeds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+    .levels button, .speeds button { min-height: 42px; border: 1px solid var(--hud-line); border-radius: 10px; background: rgb(255 255 255 / .06); font-weight: 700; cursor: pointer; }
+    .levels button[aria-pressed="true"], .speeds button[aria-pressed="true"] { border-color: var(--hud-gold); background: rgb(255 211 107 / .18); color: var(--hud-gold); }
+    .primary { width: 100%; min-height: 52px; border: 0; border-radius: 12px; background: var(--hud-gold); color: #1b1b12; font-family: var(--font-display); font-size: 24px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
+    .primary:active { transform: scale(.98); }
+    .secondary { width: 100%; min-height: 44px; margin-top: 8px; border: 1px solid var(--hud-line); border-radius: 12px; background: transparent; font-weight: 700; cursor: pointer; }
+    #result-dialog[data-victory="true"] h2 { color: var(--hud-gold); }
+    #result-dialog[data-victory="false"] h2 { color: var(--hud-red); }
+    .build-badge { display: block; margin-top: 12px; color: #7d7a6e; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-align: center; }
+    button:focus-visible { outline: 2px solid var(--hud-gold); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
+  </style>
+</head>
+<body>
+  <section class="arena-wrap" aria-label="Battlefield">
+    <canvas id="arena" aria-label="Isometric island with two tribes"></canvas>
+    <canvas id="arena-overlay" aria-hidden="true"></canvas>
+  </section>
+
+  <header id="topbar" class="topbar">
+    <span class="res" title="Food"><span class="res-icon">🍖</span><b id="res-food">0</b></span>
+    <span class="res" title="Wood"><span class="res-icon">🪵</span><b id="res-wood">0</b></span>
+    <span id="res-pop-box" class="res" title="Population"><span class="res-icon">👥</span><b id="res-pop">0/0</b></span>
+    <span class="brand">Tiny Tribes</span>
+    <button id="pause-button" class="icon-button" type="button" aria-label="Pause">❚❚</button>
+  </header>
+
+  <canvas id="minimap" aria-label="Minimap: tap to move the camera"></canvas>
+  <div class="zoom-controls" role="group" aria-label="Camera: pinch or wheel to zoom, drag to pan">
+    <button id="view-in" class="icon-button" type="button" aria-label="Zoom in">+</button>
+    <button id="view-out" class="icon-button" type="button" aria-label="Zoom out">−</button>
+    <button id="view-reset" class="icon-button" type="button" aria-label="Show the whole island">⤢</button>
+  </div>
+
+  <section id="command-panel" class="command-panel" aria-label="Commands">
+    <div class="sel-info">
+      <span id="sel-title" class="sel-title">Your tribe</span>
+      <div class="sel-side">
+        <div id="sel-life" class="sel-life" hidden><span id="sel-life-fill"></span></div>
+        <div id="sel-queue" class="sel-queue"></div>
+      </div>
+      <span id="sel-detail" class="sel-detail"></span>
+    </div>
+    <div id="actions" class="actions"></div>
+  </section>
+
+  <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
+  <div id="box-select" class="box-select" hidden></div>
+
+  <dialog id="start-dialog" aria-labelledby="start-title">
+    <p class="kicker">A pocket RTS</p>
+    <h1 id="start-title">Tiny Tribes</h1>
+    <p>Grow your Blue Tribe, raise an army and burn down every Red Tribe building.</p>
+    <ul class="how">
+      <li><span>👆</span><span><b>Tap</b> a unit to select it. <b>Double-tap</b> selects all of that kind on screen.</span></li>
+      <li><span>✊</span><span><b>Hold, then drag</b> to lasso a group.</span></li>
+      <li><span>🌳</span><span>With workers selected, tap a <b>tree</b> or <b>berry bush</b> to gather, or the ground to walk.</span></li>
+      <li><span>⚔️</span><span>With troops selected, tap an <b>enemy</b> to attack, or the ground to advance.</span></li>
+      <li><span>🛖</span><span>Tap a <b>building</b> to train units there. Build Houses for more population.</span></li>
+      <li><span>🤏</span><span><b>Drag</b> to move the camera, <b>pinch</b> to zoom, tap the <b>minimap</b> to jump.</span></li>
+    </ul>
+    <p class="field-label">Enemy</p>
+    <div id="start-levels" class="levels"></div>
+    <button id="start-play" class="primary" type="button">Play</button>
+    <small class="build-badge">BUILD 1</small>
+  </dialog>
+
+  <dialog id="pause-dialog" aria-labelledby="pause-title">
+    <p class="kicker">Paused</p>
+    <h2 id="pause-title">Take a breath</h2>
+    <p class="field-label">Game speed</p>
+    <div id="speed-options" class="speeds">
+      <button type="button" data-speed="1">1×</button>
+      <button type="button" data-speed="1.5">1.5×</button>
+      <button type="button" data-speed="2">2×</button>
+    </div>
+    <button id="pause-resume" class="primary" type="button">Resume</button>
+    <button id="pause-restart" class="secondary" type="button">Restart match</button>
+    <small class="build-badge">BUILD 1</small>
+  </dialog>
+
+  <dialog id="result-dialog" aria-labelledby="result-title">
+    <p id="result-kicker" class="kicker"></p>
+    <h2 id="result-title"></h2>
+    <p id="result-text"></p>
+    <p class="field-label">Next enemy</p>
+    <div id="result-levels" class="levels"></div>
+    <button id="result-again" class="primary" type="button">Play again</button>
+  </dialog>
+
+  <!-- Todo o JavaScript mora em src/; a raiz de composição é src/main.js. -->
+  <script type="module">import './src/main.js';</script>
+</body>
+</html>
