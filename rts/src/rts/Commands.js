@@ -31,6 +31,7 @@ export class Commands {
       this.#reset(u);
       u.order = { type: attack ? 'attackMove' : 'move', x: slots[i].x, y: slots[i].y };
     });
+    this.#events.emit('command', { kind: attack ? 'attack' : 'move' });
   }
 
   attack(units, target) {
@@ -38,6 +39,7 @@ export class Commands {
       this.#reset(u);
       u.order = { type: 'attack', target };
     }
+    this.#events.emit('command', { kind: 'attack' });
   }
 
   // Só trabalhador colhe; soldado mandado para uma árvore ou moita só anda até lá.
@@ -49,6 +51,7 @@ export class Commands {
       u.order = Commands.#gatherOrder(resource);
     }
     if (others.length) this.move(others, resource.x, resource.y);
+    if (workers.length) this.#events.emit('command', { kind: 'gather' });
   }
 
   build(units, building) {
@@ -58,6 +61,7 @@ export class Commands {
       this.#reset(u);
       u.order = { type: 'build', building, resume: previous };
     }
+    this.#events.emit('command', { kind: 'build' });
   }
 
   stop(units) {
@@ -66,6 +70,7 @@ export class Commands {
       u.order = null;
       u.post = { x: u.x, y: u.y };
     }
+    this.#events.emit('command', { kind: 'stop' });
   }
 
   train(building, type) {
@@ -81,6 +86,7 @@ export class Commands {
     if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
     this.#ledger.spend(teamId, stats.cost);
     building.queue.push({ type, time: 0 });
+    this.#events.emit('command', { kind: 'train' });
     return { ok: true };
   }
 
@@ -136,6 +142,7 @@ export class Commands {
     if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
     this.#ledger.spend(teamId, cost);
     this.#ledger.deposit(teamId, to, TRADE.get);
+    this.#events.emit('command', { kind: 'trade' });
     return { ok: true };
   }
 

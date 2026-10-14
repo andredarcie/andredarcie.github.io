@@ -95,7 +95,7 @@ const biomes = new BiomeMap();
 const occupancy = new SpaceOccupancy(state);
 const grassField = new GrassField(state, biomes, occupancy);
 const ponds = new PondSystem(state, biomes, occupancy);
-const weather = new Weather(state, ponds);
+const weather = new Weather(state, ponds, events);
 const forest = new ForestSystem(state);
 const blood = new BloodSystem(state, events);
 const locomotion = new Locomotion(state);
@@ -330,16 +330,33 @@ if (params.get('play') === '1') menu.start();
 
 // Só em localhost: alça para inspecionar e adiantar a partida no console (revisão).
 if (['localhost', '127.0.0.1'].includes(location.hostname)) {
-  window.__canudos = { state, simulation, view, waves, ledger, commands, selection, hud, units, factory, events, skyClock };
+  window.__canudos = { state, simulation, view, waves, ledger, commands, selection, hud, units, factory, events, skyClock, audio };
 }
 
 window.addEventListener('resize', remeasure);
 
-new GameLoop(dt => {
+function updateFrame(dt) {
   cameraController.update(dt);
   view.camera.update(dt);
   if (running) simulation.advance(dt);
   hud.update(dt);
   minimap.update(dt);
   frameRenderer.render();
-}).start();
+}
+
+// Alças determinísticas para revisão local e testes de interface: o resumo fica
+// no que alguém vê e comanda, sem vazar o estado interno inteiro da simulação.
+window.advanceTime = milliseconds => {
+  const steps = Math.max(1, Math.ceil(milliseconds / (1000 / 60)));
+  for (let i = 0; i < steps; i++) updateFrame(milliseconds / steps / 1000);
+};
+window.render_game_to_text = () => JSON.stringify({
+  running,
+  wave: state.wave ? { number: state.wave.number, phase: state.wave.phase, enemies: state.wave.enemies?.length ?? 0 } : null,
+  resources: ledger.team('player'),
+  selected: selection.units.map(unit => ({ type: unit.type, x: Math.round(unit.x), y: Math.round(unit.y) })),
+  units: state.organisms.filter(unit => unit.life > 0).map(unit => ({ team: unit.team, type: unit.type, x: Math.round(unit.x), y: Math.round(unit.y), life: Math.round(unit.life) })),
+  buildings: state.buildings.map(building => ({ team: building.team, kind: building.kind, built: building.built, life: Math.round(building.life) }))
+});
+
+new GameLoop(updateFrame).start();

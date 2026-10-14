@@ -7,10 +7,12 @@ import {
 export class Weather {
   #state;
   #ponds;
+  #events;
 
-  constructor(state, ponds) {
+  constructor(state, ponds, events) {
     this.#state = state;
     this.#ponds = ponds;
+    this.#events = events;
   }
 
   get raining() {
@@ -46,6 +48,7 @@ export class Weather {
     if (Math.random() < dt / RAIN_MEAN_INTERVAL) {
       state.rain = { time: 0, nextPond: .5 };
       state.rainEvents++;
+      this.#events.emit('rainStart');
     }
   }
 }

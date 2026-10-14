@@ -1,6 +1,9 @@
 Original prompt: Crie um site web simples que é uma arena 2d de pequens formas de vida que andam nela feitos de forma geometricas. ELes andam livremente
 
 - Adicionada uma camada de efeitos sonoros procedurais por Web Audio: tiros, golpes, machado, colheita, construções, unidades treinadas, ondas, alarme, sino, mortes e vitórias. O áudio nasce somente após gesto do jogador e pode ser ligado/desligado pelo botão musical da barra superior; a preferência fica guardada no navegador.
+- Acrescentadas as alças locais `advanceTime` e `render_game_to_text` para testes determinísticos do RTS. Checagem de sintaxe passou; captura Playwright mostrou a HUD com o controle de som e não trouxe erros do jogo, embora o render WebGL headless tenha excedido o tempo do cliente antes de gravar o artefato final.
+- Auditoria de cobertura ampliou o retorno de áudio para todos os botões e para ordens de mover, atacar, colher, construir, parar, treinar e trocar; cada uma usa uma inflexão curta diferente, enquanto a ação concreta mantém seu efeito próprio.
+- Eventos de ambientação e desfecho também receberam cobertura: começo de chuva, comboio, debandada, queda de construção e fim de partida.
 
 - Criada arena vanilla com canvas, 12 organismos geométricos e movimento livre com colisão nas bordas.
 - Adicionado clique para semear novos organismos, leitura ao vivo, famílias visuais e layout responsivo.

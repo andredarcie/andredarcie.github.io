@@ -15,6 +15,7 @@ export class AudioManager {
     this.#enabled = this.#readPreference();
     this.#bindEvents();
     this.#bindControl(root);
+    this.#bindInterface(root);
     document.addEventListener('pointerdown', () => this.#wake(), { once: true, capture: true });
     document.addEventListener('keydown', () => this.#wake(), { once: true, capture: true });
   }
@@ -30,10 +31,7 @@ export class AudioManager {
     button.addEventListener('click', () => {
       this.#enabled = !this.#enabled;
       try { localStorage.setItem(STORAGE_KEY, String(this.#enabled)); } catch { /* armazenamento opcional */ }
-      if (this.#enabled) {
-        this.#wake();
-        this.#ui();
-      }
+      if (this.#enabled) this.#wake();
       update();
     });
     update();
@@ -54,6 +52,20 @@ export class AudioManager {
     on('gather', () => this.#gather());
     on('strike', ({ weapon, cannon }) => this.#strike(weapon, cannon));
     on('towerShot', ({ scatter }) => this.#strike('bullet', scatter));
+    on('command', ({ kind }) => this.#command(kind));
+    on('destroyed', () => this.#collapse());
+    on('gameOver', () => this.#gameOver());
+    on('convoy', () => this.#convoy());
+    on('convoyTaken', () => this.#clear());
+    on('convoyEscaped', () => this.#alarm());
+    on('debandada', () => this.#rout());
+    on('rainStart', () => this.#rain());
+  }
+
+  #bindInterface(root) {
+    root.addEventListener('click', event => {
+      if (event.target instanceof Element && event.target.closest('button')) this.#ui();
+    });
   }
 
   #readPreference() {
@@ -123,6 +135,20 @@ export class AudioManager {
   }
 
   #ui() { if (this.#ready('ui', .02)) this.#tone({ frequency: 680, endFrequency: 920, duration: .07, type: 'triangle', gain: .06 }); }
+  #command(kind) {
+    if (!this.#ready(`command-${kind}`, .07)) return;
+    const sounds = {
+      move: { frequency: 300, endFrequency: 370 },
+      attack: { frequency: 230, endFrequency: 150 },
+      gather: { frequency: 460, endFrequency: 560 },
+      build: { frequency: 180, endFrequency: 130 },
+      stop: { frequency: 360, endFrequency: 270 },
+      train: { frequency: 520, endFrequency: 640 },
+      trade: { frequency: 620, endFrequency: 760 }
+    };
+    const sound = sounds[kind] ?? sounds.move;
+    this.#tone({ ...sound, duration: .09, type: 'triangle', gain: .055 });
+  }
   #place() { if (this.#ready('place')) { this.#noise({ duration: .07, gain: .11, cutoff: 620 }); this.#tone({ frequency: 150, endFrequency: 95, duration: .11, type: 'triangle', gain: .09 }); } }
   #built() { if (this.#ready('built')) { [392, 494, 587].forEach((frequency, i) => this.#tone({ frequency, duration: .23, type: 'triangle', gain: .08, when: i * .09 })); } }
   #upgrade() { if (this.#ready('upgrade')) { [523, 659, 784].forEach((frequency, i) => this.#tone({ frequency, duration: .18, type: 'sine', gain: .07, when: i * .075 })); } }
@@ -144,4 +170,9 @@ export class AudioManager {
     this.#noise({ duration: .045, gain: .07, cutoff: weapon === 'axe' ? 700 : 1250 });
     this.#tone({ frequency: weapon === 'spear' ? 280 : 180, endFrequency: 95, duration: .075, type: 'triangle', gain: .055 });
   }
+  #collapse() { if (this.#ready('collapse', .5)) { this.#noise({ duration: .32, gain: .14, cutoff: 480 }); this.#tone({ frequency: 90, endFrequency: 35, duration: .4, type: 'sawtooth', gain: .08 }); } }
+  #gameOver() { if (this.#ready('game-over')) [196, 147, 98].forEach((frequency, i) => this.#tone({ frequency, endFrequency: frequency * .92, duration: .5, type: 'triangle', gain: .08, when: i * .22 })); }
+  #convoy() { if (this.#ready('convoy', 1)) { this.#tone({ frequency: 392, duration: .16, type: 'square', gain: .04 }); this.#tone({ frequency: 523, duration: .25, type: 'square', gain: .04, when: .18 }); } }
+  #rout() { if (this.#ready('rout', .7)) { this.#noise({ duration: .16, gain: .08, cutoff: 900 }); this.#tone({ frequency: 340, endFrequency: 180, duration: .22, type: 'sawtooth', gain: .055 }); } }
+  #rain() { if (this.#ready('rain', 3)) this.#noise({ duration: 3.8, gain: .025, cutoff: 1500 }); }
 }
