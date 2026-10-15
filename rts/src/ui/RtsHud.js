@@ -2,7 +2,6 @@ import {
   UNIT_TYPES, BUILDING_TYPES, BUILD_ORDER, ALERT_COOLDOWN, TOWER_UPGRADES, TOWER_UPGRADE_ORDER, EXPEDITIONS,
   TRADE, THIRST
 } from '../config/rts.js';
-import { SERTOES, DISPATCHES } from '../config/sertoes.js';
 import { BASE_SIMULATION_SPEED } from '../config/world.js';
 import { TowerSystem } from '../rts/TowerSystem.js';
 import { icon } from './Icons.js';
@@ -12,8 +11,6 @@ const TOAST_SECONDS = 2.6;
 // Quanto tempo (s reais) o letreiro grande da onda fica no meio da tela.
 const BANNER_SECONDS = 2.8;
 // Quanto tempo um despacho (trecho de Os Sertões) fica na tela, e quantos esperam.
-const DISPATCH_SECONDS = 11;
-const DISPATCH_QUEUE = 2;
 
 // A interface do jogo por cima da cena: recursos e população no topo, a onda (o
 // relógio até a próxima ou quantos soldados faltam) logo abaixo, o letreiro grande
@@ -37,9 +34,6 @@ export class RtsHud {
   #idleCursor = 0;
   #waves;
   #bannerTimer = 0;
-  #dispatchTimer = 0;
-  #dispatchQueue = [];
-  #dispatchCursor = 0;
   #heroCursor = 0;
 
   constructor({ root, state, selection, commands, ledger, camera, events, waves }) {
@@ -53,7 +47,6 @@ export class RtsHud {
     const $ = selector => root.querySelector(selector);
     this.#els = {
       food: $('#res-food'), wood: $('#res-wood'), rifles: $('#res-rifles'), pop: $('#res-pop'), popBox: $('#res-pop-box'),
-      dispatch: $('#dispatch'), dispatchText: $('#dispatch-text'), dispatchSource: $('#dispatch-source'),
       title: $('#sel-title'), detail: $('#sel-detail'), life: $('#sel-life'), lifeFill: $('#sel-life-fill'),
       actions: $('#actions'), queue: $('#sel-queue'), toast: $('#toast'), panel: $('#command-panel'),
       waveStatus: $('#wave-status'), waveLabel: $('#wave-label'), waveCall: $('#wave-call'),
@@ -72,7 +65,6 @@ export class RtsHud {
       }
       this.#act(button.dataset.action, button.dataset.arg);
     });
-    this.#els.dispatch.addEventListener('click', () => this.#nextDispatch());
     this.#els.toast.addEventListener('click', () => {
       if (this.#toastTarget) this.focus(this.#toastTarget.x, this.#toastTarget.y);
     });
@@ -98,14 +90,11 @@ export class RtsHud {
         this.toast(`${organism.stats.label} morreu`, 'alert', { x: organism.x, y: organism.y });
       }
     });
-    // ---- O que vem de Os Sertões ----
     events.on('debandada', ({ x, y, fled, rifles }) => {
       this.toast(`Oficial abatido: ${fled} soldados em debandada${rifles ? `, ${rifles} fuzis largados` : ''}`, 'info', { x, y });
-      this.#dispatch('arsenal');
     });
     events.on('convoy', ({ road }) => {
       this.toast(`O comboio de Monte Santo vem pela estrada de ${road.label}. Tome-o!`, 'alert', road.mouth);
-      this.#dispatch('comboio');
     });
     events.on('convoyTaken', () => this.toast('Comboio tomado! A próxima onda vem desfalcada'));
     events.on('convoyEscaped', () => this.toast('O comboio escapou: a próxima onda vem reforçada', 'warn'));
@@ -114,19 +103,15 @@ export class RtsHud {
       if (hero) {
         const stats = UNIT_TYPES[hero];
         this.toast(`${stats.label} chega a Belo Monte${count ? ` com ${count} romeiro${count > 1 ? 's' : ''}` : ''}`, 'info', road.mouth);
-        this.#dispatch(stats.quote, `${stats.label} — ${stats.role}`);
       } else if (people) {
         this.toast(people, 'info', road.mouth);
-        if (!this.#seen('romeiros')) this.#dispatch('romeiros');
       }
     });
     events.on('vespers', ({ x, y }) => {
       this.toast('O sino chama para a reza: a pregação do Conselheiro alcança mais longe', 'info', { x, y });
-      if (!this.#seen('sino')) this.#dispatch('sino');
     });
     events.on('thirst', () => {
       this.toast('A tropa está com sede: longe d\'água, os soldados enfraquecem');
-      this.#dispatch('sede');
     });
     events.on('waveStart', ({ number, roads, count, guns, officers, matadeira, cerco }) => {
       const names = roads.map(road => road.label);
@@ -139,62 +124,11 @@ export class RtsHud {
       this.#showBanner(`${expedition.name} · ${expedition.leader}`, `Onda ${number}`,
         `${count} soldados ${roads.length > 1 ? 'pelas estradas' : 'pela estrada'} de ${from}` +
         (list ? `, com ${list}` : '') + (cerco ? '. A tropa fecha o cerco pela caatinga' : ''), 'danger');
-      if (matadeira) this.#dispatch('matadeira');
-      else if (number === 1) this.#dispatch('profecia');
-      else if (this.night && !this.#seen('noite')) this.#dispatch('noite');
       navigator.vibrate?.([60, 40, 60]);
     });
     events.on('waveCleared', ({ number, bonus }) => {
       this.#showBanner('A tropa recua', `Onda ${number} rechaçada`, `Ficou para trás: ${RtsHud.#costText(bonus, '+')}`, 'calm', true);
-      // Entre uma onda e outra, um trecho de Os Sertões, na ordem e de novo.
-      this.#dispatch(DISPATCHES[this.#dispatchCursor++ % DISPATCHES.length]);
     });
-  }
-
-  // É noite agora? (a HUD só lê; quem decide é o céu)
-  get night() {
-    return this.#state.organisms.length > 0 && this.#nightProbe?.() === true;
-  }
-
-  // Quem pode dizer se é noite (main liga o relógio do céu aqui).
-  #nightProbe = null;
-  setNightProbe(probe) {
-    this.#nightProbe = probe;
-  }
-
-  // ---- Despachos: trechos de Os Sertões ----
-
-  #seenKeys = new Set();
-  #seen(key) {
-    const seen = this.#seenKeys.has(key);
-    this.#seenKeys.add(key);
-    return seen;
-  }
-
-  // Põe um trecho na fila (`note`: uma linha nossa por cima, como o papel do chefe).
-  #dispatch(key, note = '') {
-    const quote = SERTOES[key];
-    if (!quote) return;
-    this.#seenKeys.add(key);
-    if (this.#dispatchQueue.length >= DISPATCH_QUEUE) this.#dispatchQueue.shift();
-    this.#dispatchQueue.push({ quote, note });
-    if (this.#dispatchTimer <= 0) this.#nextDispatch();
-  }
-
-  #nextDispatch() {
-    const els = this.#els;
-    const item = this.#dispatchQueue.shift();
-    if (!item) {
-      els.dispatch.hidden = true;
-      this.#dispatchTimer = 0;
-      return;
-    }
-    els.dispatchText.textContent = item.quote.text;
-    els.dispatchSource.textContent = (item.note ? `${item.note} · ` : '') + `Euclides da Cunha, Os Sertões (${item.quote.part})`;
-    els.dispatch.hidden = true;
-    void els.dispatch.offsetWidth;
-    els.dispatch.hidden = false;
-    this.#dispatchTimer = DISPATCH_SECONDS + Math.min(8, item.quote.text.length / 40);
   }
 
   // `subHtml`: a linha de baixo já vem montada com ícones (marcação de Icons.js).
@@ -258,10 +192,6 @@ export class RtsHud {
     if (this.#toastTimer > 0) {
       this.#toastTimer -= realDt;
       if (this.#toastTimer <= 0) this.#els.toast.hidden = true;
-    }
-    if (this.#dispatchTimer > 0) {
-      this.#dispatchTimer -= realDt;
-      if (this.#dispatchTimer <= 0) this.#nextDispatch();
     }
     if (this.#bannerTimer > 0) {
       this.#bannerTimer -= realDt;

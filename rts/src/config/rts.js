@@ -134,31 +134,31 @@ export const UNIT_TYPES = Object.freeze({
   abade: {
     label: 'João Abade', plural: 'João Abade', icon: 'jagunco', hp: 260, damage: 16, weapon: 'machete', reach: 13,
     interval: 1.1, swing: .9, speed: 1.2, size: 10.8, sight: 130, vsBuilding: 1, look: 'abade', hero: true,
-    aura: { radius: 95, damage: 1.2, heal: 0 }, quote: 'abade',
+    aura: { radius: 95, damage: 1.2, heal: 0 },
     role: 'O "chefe do povo": os jagunços perto dele lutam com mais força'
   },
   pajeu: {
     label: 'Pajeú', plural: 'Pajeú', icon: 'eye', hp: 190, damage: 18, weapon: 'rifle', reach: 88,
     interval: 1.8, swing: .7, speed: 1.3, size: 10.6, sight: 140, vsBuilding: .6, look: 'pajeu', hero: true,
-    ranged: true, accuracy: .85, ambusher: true, quote: 'pajeu',
+    ranged: true, accuracy: .85, ambusher: true,
     role: 'Mestre da tocaia: parado, some em qualquer lugar e o primeiro tiro vale por três'
   },
   quadrado: {
     label: 'Manuel Quadrado', plural: 'Manuel Quadrado', icon: 'repair', hp: 120, damage: 0, weapon: null, reach: 0,
     interval: 1, swing: 1, speed: 1, size: 10, sight: 0, vsBuilding: 0, look: 'quadrado', hero: true, passive: true,
-    aura: { radius: 80, damage: 1, heal: 3.5 }, quote: 'quadrado',
+    aura: { radius: 80, damage: 1, heal: 3.5 },
     role: 'O curandeiro: quem está perto dele sara depressa'
   },
   vilanova: {
     label: 'Antônio Vilanova', plural: 'Antônio Vilanova', icon: 'trade', hp: 120, damage: 0, weapon: null, reach: 0,
     interval: 1, swing: 1, speed: 1, size: 10.2, sight: 0, vsBuilding: 0, look: 'vilanova', hero: true, passive: true,
-    trader: true, quote: 'vilanova',
+    trader: true,
     role: 'O negociante: tudo o que entra rende mais, e dá para trocar comida por madeira'
   },
   macambira: {
     label: 'Filho de Macambira', plural: 'Filho de Macambira', icon: 'pike', hp: 160, damage: 14, weapon: 'club', reach: 13,
     interval: 1.1, swing: .9, speed: 1.35, size: 10, sight: 120, vsBuilding: 1, look: 'macambira', hero: true,
-    antiCannon: 5, quote: 'matadeira',
+    antiCannon: 5,
     role: '"Pai! quero escangalhar a matadeira!" — arrebenta canhão com a alavanca'
   },
   private: {

@@ -1,21 +1,96 @@
-// Paisagem sonora procedural: efeitos curtos, com textura, que não dependem de
-// arquivos externos. O contexto só nasce depois de um gesto do jogador, como os
-// navegadores exigem; até lá os eventos simplesmente não fazem barulho.
+// Paisagem sonora procedural, sem arquivos externos. Os sons são sintetizados em
+// DSP próprio (SoundRecipes) logo que o contexto nasce, aos poucos e fora do
+// caminho do quadro, e ficam guardados como buffers; o jogo só os toca, com
+// posição na tela, distância e eco do sertão. O contexto só nasce depois de um
+// gesto do jogador, como os navegadores exigem; até lá os eventos ficam mudos.
+import { RECIPES } from './SoundRecipes.js';
+import { random, outdoorImpulse } from './Dsp.js';
+
 const STORAGE_KEY = 'canudos-som';
-const MASTER_VOLUME = .3;
-const NOISE_BUFFER_SECONDS = 4;
+const MASTER_VOLUME = .8;
+const REVERB_RETURN = .55;
+
+// Mixagem: `level` iguala a sonoridade (os buffers saem todos com o mesmo pico),
+// `reverb` é o envio para o eco do campo, `pitch` a variação de afinação por
+// toque, `gap` o intervalo mínimo entre dois iguais, `group`/`voices` o teto de
+// vozes simultâneas e `reach` quanto a distância da câmera pesa (0 = sempre perto).
+const SOUNDS = {
+  ui: { level: .22, reverb: .02, pitch: .03, gap: .03, group: 'ui', reach: 0 },
+  'command-move': { level: .3, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'command-stop': { level: .32, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'command-attack': { level: .22, reverb: .06, pitch: .03, gap: .07, group: 'ui', reach: 0 },
+  'command-gather': { level: .3, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'command-build': { level: .28, reverb: .05, pitch: .04, gap: .07, group: 'ui', reach: 0 },
+  'command-train': { level: .26, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'command-trade': { level: .2, reverb: .05, pitch: .03, gap: .07, group: 'ui', reach: 0 },
+
+  'shot-musket': { level: .4, reverb: .3, pitch: .06, gap: .035, group: 'gun' },
+  'shot-blunderbuss': { level: .38, reverb: .32, pitch: .05, gap: .035, group: 'gun' },
+  'shot-rifle': { level: .36, reverb: .32, pitch: .05, gap: .035, group: 'gun' },
+  'shot-cannon': { level: .6, reverb: .35, pitch: .04, gap: .25, group: 'cannon' },
+  'shot-matadeira': { level: .75, reverb: .4, pitch: .03, gap: .25, group: 'cannon' },
+  'shell-burst': { level: .45, reverb: .3, pitch: .06, gap: .2, group: 'cannon' },
+
+  'strike-club': { level: .42, reverb: .1, pitch: .07, gap: .04, group: 'melee' },
+  'strike-machete': { level: .5, reverb: .1, pitch: .06, gap: .04, group: 'melee' },
+  'strike-spear': { level: .45, reverb: .1, pitch: .07, gap: .04, group: 'melee' },
+  'strike-bayonet': { level: .45, reverb: .1, pitch: .06, gap: .04, group: 'melee' },
+  'strike-saber': { level: .45, reverb: .12, pitch: .05, gap: .04, group: 'melee' },
+
+  'death-player': { level: .46, reverb: .12, pitch: .06, gap: .08, group: 'death' },
+  'death-enemy': { level: .44, reverb: .12, pitch: .06, gap: .08, group: 'death' },
+
+  chop: { level: .4, reverb: .16, pitch: .04, gap: .07, group: 'work' },
+  'tree-crack': { level: .42, reverb: .2, pitch: .05, gap: .3, group: 'tree' },
+  'tree-land': { level: .55, reverb: .22, pitch: .05, gap: .3, group: 'tree' },
+  gather: { level: .32, reverb: .06, pitch: .06, gap: .12, group: 'work' },
+  place: { level: .4, reverb: .1, pitch: .04, gap: .08, group: 'event', reach: .5 },
+  built: { level: .45, reverb: .14, gap: .3, group: 'event', reach: .3 },
+  upgrade: { level: .4, reverb: .16, gap: .3, group: 'event', reach: 0 },
+  trained: { level: .32, reverb: .12, pitch: .01, gap: .15, group: 'event', reach: .4 },
+  'wave-start': { level: .24, reverb: .22, gap: 1, group: 'call', reach: 0 },
+  'wave-clear': { level: .5, reverb: .14, gap: 1, group: 'call', reach: 0 },
+  alarm: { level: .32, reverb: .18, gap: 2.4, group: 'call', reach: .25 },
+  vespers: { level: .36, reverb: .25, gap: 4, group: 'call', reach: .2 },
+  convoy: { level: .42, reverb: .2, gap: 1, group: 'call', reach: 0 },
+  rout: { level: .3, reverb: .22, gap: 1, group: 'call', reach: .35 },
+  collapse: { level: .42, reverb: .22, pitch: .05, gap: .4, group: 'event', reach: .5 },
+  'game-over': { level: .45, reverb: .25, gap: 2, group: 'call', reach: 0 },
+  rain: { level: .26, reverb: .08, gap: 4, group: 'weather', reach: 0 }
+};
+
+// Teto de vozes por grupo: num tiroteio, a décima espingarda não acrescenta nada
+// além de lama no som.
+const VOICES = { tree: 4, ui: 3, gun: 9, cannon: 4, melee: 6, death: 4, work: 4, event: 4, call: 3, weather: 1 };
+
+// Ordem de preparo: o que toca logo nos primeiros segundos vem primeiro.
+const WARM_ORDER = [
+  'ui', 'command-move', 'command-gather', 'command-attack', 'command-build', 'command-train', 'command-stop', 'command-trade',
+  'place', 'chop', 'tree-crack', 'tree-land', 'gather', 'built', 'trained', 'wave-start', 'shot-musket', 'shot-rifle', 'strike-club', 'strike-machete',
+  'strike-spear', 'strike-bayonet', 'death-player', 'death-enemy', 'shot-blunderbuss', 'alarm', 'wave-clear', 'upgrade',
+  'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'vespers', 'shot-matadeira', 'rain', 'game-over'
+];
+
+const MELEE = new Set(['club', 'machete', 'spear', 'bayonet', 'saber']);
 
 export class AudioManager {
   #events;
   #enabled;
+  #camera = null;
   #context = null;
+  #bus = null;
   #master = null;
   #reverb = null;
-  #noiseBuffer = null;
+  #bank = new Map();
+  #warmQueue = [];
+  #lastVariant = new Map();
   #last = new Map();
+  #voices = new Map();
+  #recentShots = [];
 
-  constructor({ events, root }) {
+  constructor({ events, root, camera = null }) {
     this.#events = events;
+    this.#camera = camera;
     this.#enabled = this.#readPreference();
     this.#bindEvents();
     this.#bindControl(root);
@@ -45,32 +120,47 @@ export class AudioManager {
 
   #bindEvents() {
     const on = (type, handler) => this.#events.on(type, handler);
-    on('placed', () => this.#place());
-    on('built', () => this.#built());
-    on('upgraded', () => this.#upgrade());
-    on('trained', () => this.#trained());
-    on('waveStart', () => this.#wave());
-    on('waveCleared', () => this.#clear());
-    on('underAttack', () => this.#alarm());
-    on('vespers', () => this.#bell());
-    on('death', ({ organism }) => this.#death(organism.team));
-    on('chop', () => this.#chop());
-    on('gather', () => this.#gather());
-    on('strike', ({ weapon, cannon }) => this.#strike(weapon, cannon));
-    on('towerShot', ({ scatter }) => this.#strike('bullet', scatter));
-    on('command', ({ kind }) => this.#command(kind));
-    on('destroyed', () => this.#collapse());
-    on('gameOver', () => this.#gameOver());
-    on('convoy', () => this.#convoy());
-    on('convoyTaken', () => this.#clear());
-    on('convoyEscaped', () => this.#alarm());
-    on('debandada', () => this.#rout());
-    on('rainStart', () => this.#rain());
+    const at = thing => thing ? { x: thing.x, y: thing.y } : {};
+    on('placed', ({ building }) => this.#play('place', at(building)));
+    on('built', ({ building }) => this.#play('built', at(building)));
+    on('upgraded', () => this.#play('upgrade'));
+    on('trained', ({ building }) => this.#play('trained', at(building)));
+    on('waveStart', () => this.#play('wave-start'));
+    on('waveCleared', () => this.#play('wave-clear'));
+    on('convoyTaken', () => this.#play('wave-clear'));
+    on('underAttack', place => this.#play('alarm', at(place)));
+    on('convoyEscaped', () => this.#play('alarm'));
+    on('vespers', place => this.#play('vespers', at(place)));
+    on('death', ({ organism }) => this.#play(organism.team === 'enemy' ? 'death-enemy' : 'death-player', at(organism)));
+    on('chop', place => this.#play('chop', at(place)));
+    on('treeFall', place => this.#play('tree-crack', at(place)));
+    on('treeLand', place => this.#play('tree-land', at(place)));
+    on('gather', place => this.#play('gather', at(place)));
+    on('strike', strike => this.#strike(strike));
+    on('towerShot', ({ scatter, x, y }) => this.#play(scatter ? 'shot-blunderbuss' : 'shot-musket', { x, y }));
+    on('command', ({ kind }) => this.#play(`command-${kind}`));
+    on('destroyed', ({ building }) => this.#play('collapse', at(building)));
+    on('gameOver', () => this.#play('game-over'));
+    on('convoy', () => this.#play('convoy'));
+    on('debandada', place => this.#play('rout', at(place)));
+    on('rainStart', () => this.#play('rain'));
+  }
+
+  #strike({ weapon, x, y, tx, ty }) {
+    if (weapon === 'cannon' || weapon === 'matadeira') {
+      this.#play(`shot-${weapon}`, { x, y });
+      // A granada chega depois do estampido, no lugar onde cai.
+      if (tx !== undefined) this.#play('shell-burst', { x: tx, y: ty, delay: .32, gap: false });
+      return;
+    }
+    if (weapon === 'rifle') this.#play('shot-rifle', { x, y });
+    else if (weapon === 'blunderbuss') this.#play('shot-musket', { x, y });
+    else this.#play(`strike-${MELEE.has(weapon) ? weapon : 'club'}`, { x, y });
   }
 
   #bindInterface(root) {
     root.addEventListener('click', event => {
-      if (event.target instanceof Element && event.target.closest('button')) this.#ui();
+      if (event.target instanceof Element && event.target.closest('button')) this.#play('ui');
     });
   }
 
@@ -78,6 +168,11 @@ export class AudioManager {
     try { return localStorage.getItem(STORAGE_KEY) !== 'false'; } catch { return true; }
   }
 
+  // ---- Grafo ----
+
+  // Fonte → [abafador de distância] → ganho → pan → barramento → cola (compressor
+  // suave) → limitador → volume → saída. O eco volta para a cola, assim tiroteio
+  // com reverb também passa pelo limitador e nada estoura.
   #wake() {
     if (!this.#enabled || this.#context) return;
     const Context = window.AudioContext || window.webkitAudioContext;
@@ -85,31 +180,161 @@ export class AudioManager {
     try {
       try { this.#context = new Context({ latencyHint: 'interactive' }); }
       catch { this.#context = new Context(); }
-      const compressor = this.#context.createDynamicsCompressor();
-      compressor.threshold.value = -22;
-      compressor.knee.value = 20;
-      compressor.ratio.value = 8;
-      compressor.attack.value = .003;
-      compressor.release.value = .18;
-      this.#master = this.#context.createGain();
+      const context = this.#context;
+      const glue = context.createDynamicsCompressor();
+      glue.threshold.value = -18;
+      glue.knee.value = 10;
+      glue.ratio.value = 3;
+      glue.attack.value = .008;
+      glue.release.value = .22;
+      const limiter = context.createDynamicsCompressor();
+      limiter.threshold.value = -3;
+      limiter.knee.value = 0;
+      limiter.ratio.value = 20;
+      limiter.attack.value = .001;
+      limiter.release.value = .09;
+      this.#bus = context.createGain();
+      this.#master = context.createGain();
       this.#master.gain.value = MASTER_VOLUME;
-      this.#reverb = this.#context.createConvolver();
-      this.#reverb.buffer = this.#impulse();
-      this.#noiseBuffer = this.#makeNoiseBuffer();
-      const wet = this.#context.createGain();
-      wet.gain.value = .13;
-      this.#master.connect(compressor).connect(this.#context.destination);
-      this.#reverb.connect(wet).connect(this.#master);
+      this.#bus.connect(glue).connect(limiter).connect(this.#master).connect(context.destination);
+      const impulse = outdoorImpulse(context.sampleRate);
+      this.#reverb = context.createConvolver();
+      this.#reverb.buffer = this.#toBuffer(impulse);
+      const back = context.createGain();
+      back.gain.value = REVERB_RETURN;
+      this.#reverb.connect(back).connect(glue);
+      this.#warmQueue = WARM_ORDER.flatMap(name => Array.from({ length: RECIPES[name].variants }, (_, index) => [name, index]));
+      this.#warmNext();
     } catch { this.#context = null; }
   }
 
-  #ready(key, gap = .05) {
-    if (!this.#enabled || !this.#context || !this.#master) return false;
-    if (this.#context.state === 'suspended') this.#context.resume().catch(() => {});
-    const now = this.#context.currentTime;
-    if (now - (this.#last.get(key) ?? -Infinity) < gap) return false;
-    this.#last.set(key, now);
-    return true;
+  // Prepara uma variação por vez, quando o navegador está ocioso: o conjunto
+  // inteiro leva pouco mais de um segundo de cálculo, que assim não trava quadro.
+  #warmNext() {
+    const step = () => {
+      const started = performance.now();
+      while (this.#warmQueue.length && performance.now() - started < 8) {
+        const [name, index] = this.#warmQueue.shift();
+        this.#variant(name, index);
+      }
+      if (this.#warmQueue.length) this.#warmNext();
+    };
+    if (window.requestIdleCallback) window.requestIdleCallback(step, { timeout: 400 });
+    else setTimeout(step, 16);
+  }
+
+  #variant(name, index) {
+    let list = this.#bank.get(name);
+    if (!list) this.#bank.set(name, list = []);
+    if (!list[index]) {
+      const recipe = RECIPES[name];
+      const seed = 9973 * (index + 1) + [...name].reduce((sum, char) => sum * 31 + char.charCodeAt(0) | 0, 7);
+      list[index] = this.#toBuffer(recipe.make(this.#context.sampleRate, random(seed)), .9);
+    }
+    return list[index];
+  }
+
+  // Sorteia uma variação já pronta, sem repetir a última; se nenhuma estiver pronta
+  // ainda, prepara a primeira na hora.
+  #pick(name) {
+    const ready = (this.#bank.get(name) ?? []).map((buffer, index) => buffer ? index : -1).filter(index => index >= 0);
+    if (!ready.length) return this.#variant(name, 0);
+    const last = this.#lastVariant.get(name);
+    const options = ready.length > 1 ? ready.filter(index => index !== last) : ready;
+    const index = options[Math.floor(Math.random() * options.length)];
+    this.#lastVariant.set(name, index);
+    return this.#bank.get(name)[index];
+  }
+
+  #toBuffer(sound, peakTarget = 0) {
+    const channels = sound.l ? [sound.l, sound.r] : [sound];
+    let peak = 0;
+    if (peakTarget) for (const data of channels) for (let i = 0; i < data.length; i++) peak = Math.max(peak, Math.abs(data[i]));
+    const scale = peak > 0 ? peakTarget / peak : 1;
+    const buffer = this.#context.createBuffer(channels.length, channels[0].length, this.#context.sampleRate);
+    channels.forEach((data, channel) => {
+      if (scale !== 1) for (let i = 0; i < data.length; i++) data[i] *= scale;
+      buffer.copyToChannel(data, channel);
+    });
+    return buffer;
+  }
+
+  // ---- Tocar ----
+
+  #play(name, { x, y, delay = 0, gap = true } = {}) {
+    const spec = SOUNDS[name];
+    if (!spec || !this.#enabled || !this.#context || !this.#bus) return;
+    const context = this.#context;
+    if (context.state === 'suspended') context.resume().catch(() => {});
+    const now = context.currentTime;
+    if (gap && now - (this.#last.get(name) ?? -Infinity) < spec.gap) return;
+    const group = spec.group;
+    if ((this.#voices.get(group) ?? 0) >= VOICES[group]) return;
+    this.#last.set(name, now);
+
+    const place = this.#locate(x, y, spec.reach ?? 1);
+    if (place.gain < .02) return;
+    let level = spec.level * place.gain;
+    if (group === 'gun') level *= this.#crowd(now);
+
+    try {
+      const source = context.createBufferSource();
+      source.buffer = this.#pick(name);
+      source.playbackRate.value = 1 + (Math.random() * 2 - 1) * (spec.pitch ?? 0);
+      let tail = source;
+      if (place.cutoff) {
+        const air = context.createBiquadFilter();
+        air.type = 'lowpass';
+        air.frequency.value = place.cutoff;
+        air.Q.value = .5;
+        tail = tail.connect(air);
+      }
+      const gain = context.createGain();
+      gain.gain.value = level;
+      tail = tail.connect(gain);
+      const panner = context.createStereoPanner?.();
+      if (panner) {
+        panner.pan.value = place.pan;
+        tail.connect(panner).connect(this.#bus);
+      } else tail.connect(this.#bus);
+      // Longe soa mais molhado: chega menos som direto e o mesmo tanto de eco.
+      const send = context.createGain();
+      send.gain.value = Math.min(1, spec.reverb * place.wet / Math.max(.25, place.gain));
+      gain.connect(send).connect(this.#reverb);
+      this.#voices.set(group, (this.#voices.get(group) ?? 0) + 1);
+      source.onended = () => {
+        this.#voices.set(group, Math.max(0, (this.#voices.get(group) ?? 1) - 1));
+        source.disconnect();
+        send.disconnect();
+      };
+      source.start(now + delay);
+    } catch { /* som é enfeite: falha aqui não pode derrubar o jogo */ }
+  }
+
+  // Tiroteio: cada disparo novo entra um pouco mais baixo enquanto muitos soam
+  // juntos, para a fuzilaria somar volume sem virar parede.
+  #crowd(now) {
+    this.#recentShots = this.#recentShots.filter(time => now - time < .7);
+    this.#recentShots.push(now);
+    return 1 / Math.sqrt(Math.max(1, this.#recentShots.length / 2));
+  }
+
+  // Onde o som está em relação ao que se vê: lado da tela vira pan; fora da tela,
+  // quanto mais longe, mais baixo, mais abafado (o ar come o agudo) e mais eco.
+  #locate(x, y, reach) {
+    const camera = this.#camera;
+    if (x === undefined || y === undefined || !camera || !reach) return { pan: 0, gain: 1, cutoff: 0, wet: 1 };
+    const point = camera.project(x, y);
+    const nx = point.x / camera.viewWidth - .5;
+    const ny = point.y / camera.viewHeight - .5;
+    const outside = Math.hypot(Math.max(0, Math.abs(nx) - .5), Math.max(0, Math.abs(ny) - .5)) * 2;
+    const distance = outside * reach;
+    return {
+      pan: Math.max(-.8, Math.min(.8, nx * 1.5)),
+      gain: 1 / (1 + distance * 2.4),
+      cutoff: distance > .02 ? Math.max(650, 18000 / (1 + distance * 7)) : 0,
+      wet: 1 + distance * 1.5
+    };
   }
 
   #handleVisibility() {
@@ -127,131 +352,4 @@ export class AudioManager {
     this.#master.gain.cancelScheduledValues(now);
     this.#master.gain.setTargetAtTime(this.#enabled ? MASTER_VOLUME : .0001, now, .012);
   }
-
-  #tone({ frequency, endFrequency = frequency, duration = .12, type = 'sine', gain = .15, when = 0 }) {
-    if (!this.#context || !this.#master) return;
-    const now = this.#context.currentTime + when;
-    const oscillator = this.#context.createOscillator();
-    const envelope = this.#context.createGain();
-    oscillator.type = type;
-    oscillator.detune.value = this.#variation(9);
-    oscillator.frequency.setValueAtTime(frequency, now);
-    oscillator.frequency.exponentialRampToValueAtTime(Math.max(1, endFrequency), now + duration);
-    envelope.gain.setValueAtTime(.0001, now);
-    envelope.gain.exponentialRampToValueAtTime(gain, now + Math.min(.015, duration * .2));
-    envelope.gain.exponentialRampToValueAtTime(.0001, now + duration);
-    oscillator.connect(envelope);
-    this.#route(envelope, this.#variation(.45), duration > .2 ? .2 : .08);
-    oscillator.start(now);
-    oscillator.stop(now + duration + .03);
-  }
-
-  #noise({ duration = .08, gain = .1, cutoff = 1000, highpass = 0, resonance = 0, when = 0 }) {
-    if (!this.#context || !this.#master || !this.#noiseBuffer) return;
-    const now = this.#context.currentTime + when;
-    const source = this.#context.createBufferSource();
-    const filter = this.#context.createBiquadFilter();
-    const envelope = this.#context.createGain();
-    filter.type = 'lowpass';
-    filter.frequency.value = cutoff;
-    filter.Q.value = resonance;
-    envelope.gain.setValueAtTime(gain, now);
-    envelope.gain.exponentialRampToValueAtTime(.0001, now + duration);
-    source.buffer = this.#noiseBuffer;
-    source.connect(filter);
-    if (highpass) {
-      const cut = this.#context.createBiquadFilter();
-      cut.type = 'highpass';
-      cut.frequency.value = highpass;
-      filter.connect(cut).connect(envelope);
-    } else filter.connect(envelope);
-    this.#route(envelope, this.#variation(.55), duration > .2 ? .17 : .05);
-    const offset = Math.random() * Math.max(0, this.#noiseBuffer.duration - duration);
-    source.start(now, offset, duration);
-  }
-
-  #route(node, pan, reverb) {
-    const panner = this.#context.createStereoPanner?.();
-    if (panner) {
-      panner.pan.value = pan;
-      node.connect(panner).connect(this.#master);
-    } else node.connect(this.#master);
-    if (reverb && this.#reverb) {
-      const send = this.#context.createGain();
-      send.gain.value = reverb;
-      node.connect(send).connect(this.#reverb);
-    }
-  }
-
-  #impulse() {
-    const length = Math.ceil(this.#context.sampleRate * 1.15);
-    const buffer = this.#context.createBuffer(2, length, this.#context.sampleRate);
-    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
-      const data = buffer.getChannelData(channel);
-      for (let i = 0; i < length; i++) {
-        const decay = (1 - i / length) ** 2.7;
-        data[i] = (Math.random() * 2 - 1) * decay;
-      }
-    }
-    return buffer;
-  }
-
-  #makeNoiseBuffer() {
-    const length = Math.ceil(this.#context.sampleRate * NOISE_BUFFER_SECONDS);
-    const buffer = this.#context.createBuffer(1, length, this.#context.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
-    return buffer;
-  }
-
-  #variation(amount) { return (Math.random() * 2 - 1) * amount; }
-
-  #chime(frequency, gain = .07) {
-    this.#tone({ frequency, endFrequency: frequency * .995, duration: 1.7, type: 'sine', gain });
-    this.#tone({ frequency: frequency * 2.71, endFrequency: frequency * 2.68, duration: .8, type: 'sine', gain: gain * .22 });
-    this.#tone({ frequency: frequency * 4.12, endFrequency: frequency * 4.04, duration: .42, type: 'sine', gain: gain * .1 });
-  }
-
-  #ui() { if (this.#ready('ui', .02)) this.#tone({ frequency: 680, endFrequency: 920, duration: .07, type: 'triangle', gain: .06 }); }
-  #command(kind) {
-    if (!this.#ready(`command-${kind}`, .07)) return;
-    const sounds = {
-      move: { frequency: 300, endFrequency: 370 },
-      attack: { frequency: 230, endFrequency: 150 },
-      gather: { frequency: 460, endFrequency: 560 },
-      build: { frequency: 180, endFrequency: 130 },
-      stop: { frequency: 360, endFrequency: 270 },
-      train: { frequency: 520, endFrequency: 640 },
-      trade: { frequency: 620, endFrequency: 760 }
-    };
-    const sound = sounds[kind] ?? sounds.move;
-    this.#tone({ ...sound, duration: .09, type: 'triangle', gain: .055 });
-  }
-  #place() { if (this.#ready('place')) { this.#noise({ duration: .08, gain: .12, cutoff: 720, highpass: 90 }); this.#tone({ frequency: 130, endFrequency: 75, duration: .15, type: 'triangle', gain: .08 }); } }
-  #built() { if (this.#ready('built')) { [294, 392, 494].forEach((frequency, i) => this.#tone({ frequency, duration: .3, type: 'triangle', gain: .065, when: i * .1 })); this.#noise({ duration: .16, gain: .045, cutoff: 1100, when: .02 }); } }
-  #upgrade() { if (this.#ready('upgrade')) [523, 659, 784].forEach((frequency, i) => this.#chime(frequency, .042 + i * .006)); }
-  #trained() { if (this.#ready('trained', .15)) { this.#tone({ frequency: 290, endFrequency: 410, duration: .12, type: 'triangle', gain: .08 }); this.#tone({ frequency: 580, duration: .08, type: 'sine', gain: .04, when: .07 }); } }
-  #wave() { if (this.#ready('wave', 1)) { this.#tone({ frequency: 155, endFrequency: 98, duration: .32, type: 'sawtooth', gain: .09 }); this.#tone({ frequency: 233, endFrequency: 155, duration: .35, type: 'triangle', gain: .06, when: .12 }); } }
-  #clear() { if (this.#ready('clear')) [392, 494, 659, 784].forEach((frequency, i) => this.#tone({ frequency, duration: .22, type: 'triangle', gain: .07, when: i * .08 })); }
-  #alarm() { if (this.#ready('alarm', 1.2)) { this.#tone({ frequency: 310, endFrequency: 240, duration: .18, type: 'square', gain: .045 }); this.#tone({ frequency: 310, endFrequency: 240, duration: .18, type: 'square', gain: .045, when: .24 }); } }
-  #bell() { if (this.#ready('bell', 2)) this.#chime(698, .08); }
-  #death(team) { if (this.#ready(`death-${team}`, .16)) { this.#tone({ frequency: team === 'enemy' ? 150 : 115, endFrequency: 58, duration: .28, type: 'triangle', gain: .08 }); this.#noise({ duration: .1, gain: .045, cutoff: 340 }); } }
-  #chop() { if (this.#ready('chop', .11)) { this.#noise({ duration: .035, gain: .11, cutoff: 1450, highpass: 180, resonance: 1.2 }); this.#tone({ frequency: 150, endFrequency: 72, duration: .095, type: 'triangle', gain: .075 }); } }
-  #gather() { if (this.#ready('gather', .16)) { this.#noise({ duration: .045, gain: .045, cutoff: 1800 }); this.#tone({ frequency: 420, endFrequency: 510, duration: .08, type: 'sine', gain: .035 }); } }
-  #strike(weapon, cannon) {
-    if (!this.#ready(cannon ? 'cannon' : weapon === 'bullet' ? 'shot' : 'strike', cannon ? .35 : .09)) return;
-    if (weapon === 'bullet') {
-      this.#noise({ duration: cannon ? .06 : .025, gain: cannon ? .2 : .13, cutoff: cannon ? 3400 : 5200, highpass: cannon ? 180 : 900, resonance: 1.5 });
-      this.#noise({ duration: cannon ? .38 : .12, gain: cannon ? .14 : .06, cutoff: cannon ? 420 : 760, highpass: 45 });
-      this.#tone({ frequency: cannon ? 82 : 175, endFrequency: cannon ? 30 : 65, duration: cannon ? .45 : .13, type: 'sawtooth', gain: cannon ? .12 : .035 });
-      return;
-    }
-    this.#noise({ duration: .045, gain: .085, cutoff: weapon === 'axe' ? 850 : 1600, highpass: 120, resonance: .8 });
-    this.#tone({ frequency: weapon === 'spear' ? 280 : 170, endFrequency: 70, duration: .1, type: 'triangle', gain: .06 });
-  }
-  #collapse() { if (this.#ready('collapse', .5)) { this.#noise({ duration: .32, gain: .14, cutoff: 480 }); this.#tone({ frequency: 90, endFrequency: 35, duration: .4, type: 'sawtooth', gain: .08 }); } }
-  #gameOver() { if (this.#ready('game-over')) [196, 147, 98].forEach((frequency, i) => this.#tone({ frequency, endFrequency: frequency * .92, duration: .5, type: 'triangle', gain: .08, when: i * .22 })); }
-  #convoy() { if (this.#ready('convoy', 1)) { this.#tone({ frequency: 392, duration: .16, type: 'square', gain: .04 }); this.#tone({ frequency: 523, duration: .25, type: 'square', gain: .04, when: .18 }); } }
-  #rout() { if (this.#ready('rout', .7)) { this.#noise({ duration: .16, gain: .08, cutoff: 900 }); this.#tone({ frequency: 340, endFrequency: 180, duration: .22, type: 'sawtooth', gain: .055 }); } }
-  #rain() { if (this.#ready('rain', 3)) this.#noise({ duration: 3.8, gain: .032, cutoff: 2400, highpass: 380, resonance: .5 }); }
 }

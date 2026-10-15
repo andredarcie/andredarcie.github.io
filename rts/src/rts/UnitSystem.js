@@ -21,6 +21,11 @@ const MARCH = WALK_SPEED * 1.25;
 const SCAN_INTERVAL = .3;
 // Distância mínima entre duas unidades paradas.
 const PERSONAL_SPACE = 9;
+// Desvio de construção: folga além do raio, até onde se olha à frente e quanto
+// tempo o lado escolhido vale depois que o caminho abre.
+const DETOUR_MARGIN = 6;
+const DETOUR_LOOKAHEAD = 60;
+const DETOUR_MEMORY = .6;
 // Golpe a até esta distância de uma construção conta como ataque à base.
 const HOME_RADIUS = 260;
 
@@ -412,6 +417,19 @@ export class UnitSystem {
 
   // Vai até o ponto e freia para parar a `arrival` dele. Devolve true ao chegar.
   #steer(u, x, y, arrival, dt) {
+    // Ponto dentro de construção é inalcançável (a parede devolve a unidade para a
+    // beira): o destino passa a ser a beira, do lado de quem chega. O centro exato
+    // fica de fora: é a própria construção como alvo (atacar, erguer, entregar),
+    // e esses já chegam com `arrival` contando o raio.
+    for (const b of this.#state.buildings) {
+      const limit = b.radius + 2;
+      const gap = Math.hypot(x - b.x, y - b.y);
+      if (gap >= limit || gap < .5) continue;
+      const side = Math.atan2(y - b.y, x - b.x);
+      x = b.x + Math.cos(side) * limit;
+      y = b.y + Math.sin(side) * limit;
+      arrival = Math.max(arrival, 4);
+    }
     const distance = Math.hypot(x - u.x, y - u.y);
     if (distance <= arrival + .5) {
       this.#locomotion.move(u, dt, { direction: u.heading, desiredSpeed: 0 });
@@ -419,10 +437,51 @@ export class UnitSystem {
     }
     const top = MARCH * u.pace * this.#paceFactor(u) * (u.carrying ? .85 : 1);
     this.#locomotion.move(u, dt, {
-      direction: Math.atan2(y - u.y, x - u.x),
+      direction: this.#detour(u, x, y, distance, dt),
       desiredSpeed: Math.min(top, Math.sqrt(2 * BRAKING * Math.max(0, distance - arrival)) + 6)
     });
     return false;
+  }
+
+  // Rumo até (x, y) contornando construção. Sem isto a unidade mirava reto no
+  // destino, batia na parede, era posta de volta na beira e seguia "correndo"
+  // contra ela para sempre. A que estiver na frente e mais perto é contornada
+  // pela tangente da borda, sempre pelo mesmo lado enquanto houver bloqueio:
+  // assim um grupo de casas coladas é rodeado como um muro só, sem ziguezague.
+  #detour(u, x, y, distance, dt) {
+    const straight = Math.atan2(y - u.y, x - u.x);
+    let blocker = null, nearest = Infinity;
+    for (const b of this.#state.buildings) {
+      const clearance = b.radius + DETOUR_MARGIN;
+      // O próprio destino (obra, sede, alvo de ataque) não é obstáculo.
+      if (Math.hypot(x - b.x, y - b.y) < clearance + 4) continue;
+      const dx = b.x - u.x, dy = b.y - u.y;
+      const gap = Math.hypot(dx, dy) - clearance;
+      if (gap > DETOUR_LOOKAHEAD || gap > distance || gap >= nearest) continue;
+      // Na frente: o centro dela fica a menos de `clearance` da reta até o destino.
+      const along = dx * Math.cos(straight) + dy * Math.sin(straight);
+      const across = -dx * Math.sin(straight) + dy * Math.cos(straight);
+      if (along <= 0 || Math.abs(across) >= clearance) continue;
+      blocker = b;
+      nearest = gap;
+    }
+    u.detourTimer = Math.max(0, (u.detourTimer ?? 0) - dt);
+    if (!blocker) {
+      if (!u.detourTimer) u.detourSide = 0;
+      return straight;
+    }
+    const dx = blocker.x - u.x, dy = blocker.y - u.y;
+    const centre = Math.atan2(dy, dx);
+    if (!u.detourSide) {
+      // Lado mais curto: aquele para onde o destino já pende em relação ao centro.
+      u.detourSide = Math.sin(straight - centre) >= 0 ? 1 : -1;
+    }
+    u.detourTimer = DETOUR_MEMORY;
+    const clearance = blocker.radius + DETOUR_MARGIN;
+    const reach = Math.hypot(dx, dy);
+    // Longe: mira na tangente. Encostado: anda rente à parede, um pouco para fora.
+    const spread = reach > clearance ? Math.asin(clearance / reach) : Math.PI / 2 + .25;
+    return centre + u.detourSide * spread;
   }
 
   // ---- Briga ----
@@ -479,7 +538,8 @@ export class UnitSystem {
         tx: target.x + (hit ? 0 : (Math.random() - .5) * 18), ty: target.y + (hit ? 0 : (Math.random() - .5) * 18),
         tz: isBuilding ? 10 : 8, cannon: Boolean(u.stats.cannon), time: 0, life: u.stats.cannon ? 1.6 : 1.1
       });
-      this.#events.emit('strike', { weapon: 'bullet', cannon: Boolean(u.stats.cannon) });
+      const gun = u.stats.cannon ? (u.stats.churchHunter ? 'matadeira' : 'cannon') : u.weapon;
+      this.#events.emit('strike', { weapon: gun, cannon: Boolean(u.stats.cannon), x: u.x, y: u.y, tx: target.x, ty: target.y });
       if (u.stats.cannon) {
         this.#state.sparks.push({ x: target.x, y: target.y, time: 0, life: .7, radius: 22, kind: 'blast' });
       }
@@ -488,7 +548,7 @@ export class UnitSystem {
         return;
       }
     }
-    else this.#events.emit('strike', { weapon: u.weapon, cannon: false });
+    else this.#events.emit('strike', { weapon: u.weapon, cannon: false, x: u.x, y: u.y });
     if (isBuilding) this.#hitBuilding(u, target);
     else this.#hitUnit(u, target);
   }
@@ -646,6 +706,7 @@ export class UnitSystem {
       if (tree.health <= 0) {
         // Cai para longe de quem deu o último golpe.
         tree.fall = { angle: .04, speed: 0, dir: u.heading, phase: 'falling', timer: 0, landed: false };
+        this.#events.emit('treeFall', { x: tree.x, y: tree.y });
         for (const other of this.#state.organisms) if (other.chop?.tree === tree) other.chop = null;
         order.tree = tree;
         return;

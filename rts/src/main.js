@@ -88,7 +88,7 @@ try {
 const params = new URLSearchParams(location.search);
 let level = DIFFICULTY[params.get('level')] ? params.get('level') : 'normal';
 const events = new EventBus();
-const audio = new AudioManager({ events, root });
+const audio = new AudioManager({ events, root, camera: view.camera });
 const state = new WorldState();
 const skyClock = new SkyClock(new Astronomy());
 const biomes = new BiomeMap();
@@ -96,7 +96,7 @@ const occupancy = new SpaceOccupancy(state);
 const grassField = new GrassField(state, biomes, occupancy);
 const ponds = new PondSystem(state, biomes, occupancy);
 const weather = new Weather(state, ponds, events);
-const forest = new ForestSystem(state);
+const forest = new ForestSystem(state, events);
 const blood = new BloodSystem(state, events);
 const locomotion = new Locomotion(state);
 const ledger = new TeamLedger(state);
@@ -118,7 +118,6 @@ const simulation = new Simulation({
 
 // ---- Interface ----
 const hud = new RtsHud({ root, state, selection, commands, ledger, camera: view.camera, events, waves });
-hud.setNightProbe(() => units.night);
 const overlay = new OverlayRenderer({
   canvas: overlayCanvas,
   cameraRig: view.camera,

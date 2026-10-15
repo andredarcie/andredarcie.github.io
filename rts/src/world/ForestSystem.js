@@ -9,9 +9,11 @@ import { Log } from '../entities/Log.js';
 // (lascas e poeira), que só existem para serem desenhados.
 export class ForestSystem {
   #state;
+  #events;
 
-  constructor(state) {
+  constructor(state, events = null) {
     this.#state = state;
+    this.#events = events;
   }
 
   update({ dt, days }) {
@@ -28,6 +30,9 @@ export class ForestSystem {
             if (!fall.landed) {
               fall.landed = true;
               state.fallDust.push({ x: tree.x, y: tree.y, dir: fall.dir, time: 0 });
+              // A copa bate a uma altura de árvore de distância do pé, na direção da queda.
+              const reach = 26 * tree.growth;
+              this.#events?.emit('treeLand', { x: tree.x + Math.cos(fall.dir) * reach, y: tree.y + Math.sin(fall.dir) * reach });
             }
             // Quica um pouco na copa e assenta.
             if (fall.speed > .35) fall.speed = -fall.speed * .18;

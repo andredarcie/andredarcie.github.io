@@ -52,6 +52,7 @@ export const SCENERY_KINDS = Object.freeze({
 
 // Passo máximo da simulação: o tempo de cada quadro é fatiado nisso.
 export const MAX_SIMULATION_STEP = .025;
-// Ritmo base do jogo: o "1×" do slider já roda a simulação no dobro do tempo real.
-// O slider multiplica em cima disto.
-export const BASE_SIMULATION_SPEED = 2;
+// Ritmo base do jogo: o "1×" do slider roda a simulação a 0,84× do tempo real. Já foi
+// 2× e depois 1,2×, mas tudo acontecia rápido demais (gente correndo, ondas
+// emendando). O slider multiplica em cima disto.
+export const BASE_SIMULATION_SPEED = .84;

@@ -80,7 +80,7 @@ export class TowerSystem {
     });
     // Fumaça da pólvora negra na boca da arma.
     this.#state.shots.push({ x: tower.x, y: tower.y, z, tx: tower.x, ty: tower.y, tz: z, puffOnly: true, time: 0, life: 1 });
-    this.#events.emit('towerShot', { scatter: stats.scatter });
+    this.#events.emit('towerShot', { scatter: stats.scatter, x: tower.x, y: tower.y });
   }
 
   // Bala até o peito do alvo; se ele morreu no caminho, ela se perde onde ele estava.
