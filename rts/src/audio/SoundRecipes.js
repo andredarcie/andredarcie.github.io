@@ -688,6 +688,17 @@ export const RECIPES = {
   'death-enemy': { variants: 4, make: (sr, rand) => bodyFall(sr, rand, true) },
 
   chop: { variants: 6, make: chop },
+  // Maço de pau batendo em esteio e caibro na obra: madeira em madeira, sem o aço.
+  hammer: {
+    variants: 4,
+    make: (sr, rand) => {
+      const out = empty(sr, .5);
+      woodHit(sr, rand, out, 0, between(rand, 190, 250), 1, .9);
+      modes(out, sr, 0, [{ f: between(rand, 700, 900), a: .3, d: .02 }, { f: between(rand, 1500, 1800), a: .12, d: .012 }], { rand });
+      echo(out, sr, between(rand, .14, .2), .1, 1500);
+      return fade(out, sr, 0, .08);
+    }
+  },
   'tree-crack': { variants: 2, make: treeCrack },
   'tree-land': { variants: 2, make: treeLand },
   gather: { variants: 4, make: gather },

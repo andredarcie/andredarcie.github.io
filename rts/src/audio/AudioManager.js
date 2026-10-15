@@ -40,6 +40,7 @@ const SOUNDS = {
   'death-player': { level: .46, reverb: .12, pitch: .06, gap: .08, group: 'death' },
   'death-enemy': { level: .44, reverb: .12, pitch: .06, gap: .08, group: 'death' },
 
+  hammer: { level: .3, reverb: .12, pitch: .06, gap: .06, group: 'work' },
   chop: { level: .4, reverb: .16, pitch: .04, gap: .07, group: 'work' },
   'tree-crack': { level: .42, reverb: .2, pitch: .05, gap: .3, group: 'tree' },
   'tree-land': { level: .55, reverb: .22, pitch: .05, gap: .3, group: 'tree' },
@@ -66,7 +67,7 @@ const VOICES = { tree: 4, ui: 3, gun: 9, cannon: 4, melee: 6, death: 4, work: 4,
 // Ordem de preparo: o que toca logo nos primeiros segundos vem primeiro.
 const WARM_ORDER = [
   'ui', 'command-move', 'command-gather', 'command-attack', 'command-build', 'command-train', 'command-stop', 'command-trade',
-  'place', 'chop', 'tree-crack', 'tree-land', 'gather', 'built', 'trained', 'wave-start', 'shot-musket', 'shot-rifle', 'strike-club', 'strike-machete',
+  'place', 'chop', 'hammer', 'tree-crack', 'tree-land', 'gather', 'built', 'trained', 'wave-start', 'shot-musket', 'shot-rifle', 'strike-club', 'strike-machete',
   'strike-spear', 'strike-bayonet', 'death-player', 'death-enemy', 'shot-blunderbuss', 'alarm', 'wave-clear', 'upgrade',
   'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'vespers', 'shot-matadeira', 'rain', 'game-over'
 ];
@@ -133,6 +134,7 @@ export class AudioManager {
     on('vespers', place => this.#play('vespers', at(place)));
     on('death', ({ organism }) => this.#play(organism.team === 'enemy' ? 'death-enemy' : 'death-player', at(organism)));
     on('chop', place => this.#play('chop', at(place)));
+    on('hammer', place => this.#play('hammer', at(place)));
     on('treeFall', place => this.#play('tree-crack', at(place)));
     on('treeLand', place => this.#play('tree-land', at(place)));
     on('gather', place => this.#play('gather', at(place)));

@@ -58,7 +58,6 @@ export class OrganismRenderer {
       const scale = o.size / lifeSize * (animate ? .45 + .55 * birth : 1);
       const labor = OrganismRenderer.#laborState(o, motion, animate, elapsed);
 
-      const feeding = o.eating > 0 || o.drinking > 0;
       // Deitar e levantar levam uns quadros, em vez de o bicho cair duro no chão.
       // Deita também a mãe no parto, e o recém-nascido fica um instante deitado no
       // chão, onde saiu, antes de se levantar.
@@ -73,8 +72,8 @@ export class OrganismRenderer {
         // daria uma passada de 18 unidades, longa demais para a perna alcançar.
         gait: o.gait * 2,
         pace: Math.min(1.4, o.speed / walkSpeed),
-        // Comendo e bebendo o bicho se inclina para a frente, sobre o recurso.
-        lean: feeding ? .38 : 0,
+        // Bebendo o bicho se inclina para a frente, sobre a água (colher tem pose própria).
+        lean: o.drinking > 0 ? .38 : 0,
         // O tronco alarga só um pouco; quem cresce de verdade é a barriga (pregnancy).
         bellyScale: o.pregnancy
           ? 1 + Math.min(1, o.pregnancy.elapsed / o.pregnancy.duration) * .07 : 1,
@@ -84,7 +83,18 @@ export class OrganismRenderer {
         // Fase do golpe em 0..1, vinda do mesmo relógio que decide o impacto na
         // simulação: o machado encosta no tronco no quadro em que a árvore treme.
         chop: o.chop ? (animate ? o.chop.timer / chopSwing : .68) : null,
+        // Golpe sem árvore é obra ou conserto: maço em vez de machado.
+        building: Boolean(o.chop && !o.chop.tree),
         carrying: o.carrying,
+        carryFood: o.carryFood > 0,
+        // Colhendo na roça (a mesma contagem que a simulação usa para a colheita).
+        gathering: o.eating > 0 && !o.chop && !o.carrying,
+        // Tocaia, debandada e a pregação do Conselheiro.
+        crouch: Boolean(o.hidden),
+        panic: o.flee > 0,
+        preach: o.type === 'conselheiro',
+        // Cada um no seu ritmo: respiração, peso e olhar fora de compasso.
+        seed: o.id * 1.37,
         crying: o.crying,
         // Chama Primordial erguida na mão esquerda. Na briga: arma na mão, guarda
         // alta, o golpe da arma (fração que falta, 1 → 0), o recuo de quem apanha e

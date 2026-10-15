@@ -822,7 +822,10 @@ export class UnitSystem {
     }
     u.halt();
     u.heading = Math.atan2(site.y - u.y, site.x - u.x);
+    const before = u.chop.timer;
     u.chop.timer = (u.chop.timer + dt) % CHOP_SWING;
+    // A batida do maço cai no mesmo instante da animação.
+    if (before < CHOP_IMPACT && u.chop.timer >= CHOP_IMPACT) this.#events.emit('hammer', { x: site.x, y: site.y });
     if (repairing) {
       site.life = Math.min(site.maxLife, site.life + site.maxLife * dt / (site.stats.build * 1.5));
       return;
