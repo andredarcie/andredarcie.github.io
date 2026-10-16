@@ -43,10 +43,8 @@ Alguns projetos desenvolvidos por curiosidade ou vontade de explorar ideias:
 ### Experiências Interativas
 
 - **[Tiny RPG Studio](https://github.com/andredarcie/tiny-rpg-studio)**: Game engine de RPG que roda no navegador, permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.
-- **[AI Platformer Trainer](./ai-platformer-trainer/)**: App web interativo que usa NEAT para evoluir redes neurais ao longo de gerações, ajustando conexões, pesos e estrutura para treinar uma IA a jogar um mini platformer.
 - **[Evo Sim](https://github.com/andredarcie/evo-sim)**: Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações e competindo pela sobrevivência.
 - **[Tiny Computer](./tiny-computer/)**: Pequeno computador virtual no navegador com visual retrô, editor de código e componentes para explorar conceitos básicos de CPU, memória e lógica.
-- **[Tiny Voxel](./tiny-voxel/)**: Editor voxel minimalista no navegador com estética pixel-art para montar cenários e experimentar construções em 3D.
 - **[Tiny Evolution](https://github.com/andredarcie/tiny-evolution)**: Simulador da vida no planeta Terra, do seu início até os dias de hoje.
 
 ### Jogos

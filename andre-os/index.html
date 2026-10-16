@@ -1180,30 +1180,7 @@ body {
     <span class="icon-label">Tiny RPG Studio</span>
   </div>
 
-  <div class="desktop-icon" style="left:100px;top:102px" ondblclick="openProject('ai-platformer')" onclick="selectIcon(event,this)" title="AI Platformer Trainer">
-    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="10" r="7" fill="#1a1a2e" stroke="#7070ff"/>
-      <circle cx="11" cy="8" r="1.2" fill="#00d4ff"/>
-      <circle cx="16" cy="6" r="1.2" fill="#00d4ff"/>
-      <circle cx="21" cy="8" r="1.2" fill="#00d4ff"/>
-      <circle cx="21" cy="13" r="1.2" fill="#ff7070"/>
-      <circle cx="16" cy="15" r="1.2" fill="#ff7070"/>
-      <circle cx="11" cy="13" r="1.2" fill="#ff7070"/>
-      <line x1="11" y1="8" x2="16" y2="6" stroke="#7070ff" stroke-width="0.7"/>
-      <line x1="16" y1="6" x2="21" y2="8" stroke="#7070ff" stroke-width="0.7"/>
-      <line x1="11" y1="8" x2="11" y2="13" stroke="#7070ff" stroke-width="0.7"/>
-      <line x1="21" y1="8" x2="21" y2="13" stroke="#7070ff" stroke-width="0.7"/>
-      <line x1="11" y1="13" x2="16" y2="15" stroke="#ff7070" stroke-width="0.7"/>
-      <line x1="21" y1="13" x2="16" y2="15" stroke="#ff7070" stroke-width="0.7"/>
-      <rect x="3" y="22" width="26" height="8" rx="1" fill="#2a2a3e" stroke="#5050a0"/>
-      <rect x="5" y="24" width="4" height="4" rx="1" fill="#404090"/>
-      <rect x="7" y="26" width="8" height="3" rx="1" fill="#50d050"/>
-      <circle cx="25" cy="26" r="2.5" fill="#e03020"/>
-    </svg>
-    <span class="icon-label">AI Platformer</span>
-  </div>
-
-  <div class="desktop-icon" style="left:100px;top:192px" ondblclick="openProject('evo-sim')" onclick="selectIcon(event,this)" title="Evo Sim">
+  <div class="desktop-icon" style="left:100px;top:102px" ondblclick="openProject('evo-sim')" onclick="selectIcon(event,this)" title="Evo Sim">
     <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <circle cx="16" cy="16" r="13" fill="#0a2010" stroke="#20a040"/>
       <circle cx="11" cy="13" r="3" fill="#40c860" stroke="#20a040"/>
@@ -1217,7 +1194,7 @@ body {
     <span class="icon-label">Evo Sim</span>
   </div>
 
-  <div class="desktop-icon" style="left:100px;top:282px" ondblclick="openProject('tiny-computer')" onclick="selectIcon(event,this)" title="Tiny Computer">
+  <div class="desktop-icon" style="left:100px;top:192px" ondblclick="openProject('tiny-computer')" onclick="selectIcon(event,this)" title="Tiny Computer">
     <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <rect x="3" y="3" width="26" height="26" rx="2" fill="#1a1a1a" stroke="#555"/>
       <rect x="5" y="5" width="22" height="15" fill="#0a0a0a" stroke="#333"/>
@@ -1232,20 +1209,7 @@ body {
     <span class="icon-label">Tiny Computer</span>
   </div>
 
-  <div class="desktop-icon" style="left:100px;top:372px" ondblclick="openProject('tiny-voxel')" onclick="selectIcon(event,this)" title="Tiny Voxel">
-    <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="16,4 28,10 28,22 16,28 4,22 4,10" fill="none" stroke="#60a0e0" stroke-width="1"/>
-      <polygon points="16,4 28,10 16,16 4,10" fill="#3060b0"/>
-      <polygon points="4,10 16,16 16,28 4,22" fill="#1a3878"/>
-      <polygon points="28,10 16,16 16,28 28,22" fill="#2050a0"/>
-      <line x1="16" y1="4" x2="16" y2="16" stroke="#80c0ff" stroke-width="0.8"/>
-      <line x1="4" y1="10" x2="16" y2="16" stroke="#80c0ff" stroke-width="0.8"/>
-      <line x1="28" y1="10" x2="16" y2="16" stroke="#80c0ff" stroke-width="0.8"/>
-    </svg>
-    <span class="icon-label">Tiny Voxel</span>
-  </div>
-
-  <div class="desktop-icon" style="left:100px;top:462px" ondblclick="openProject('tiny-evolution')" onclick="selectIcon(event,this)" title="Tiny Evolution">
+  <div class="desktop-icon" style="left:100px;top:282px" ondblclick="openProject('tiny-evolution')" onclick="selectIcon(event,this)" title="Tiny Evolution">
     <svg class="icon-img" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <circle cx="16" cy="16" r="13" fill="#1a4fa0" stroke="#3070d0"/>
       <ellipse cx="16" cy="16" rx="5" ry="13" fill="#1a8040" opacity="0.6"/>
@@ -2755,10 +2719,8 @@ document.addEventListener('keydown', e => {
 // ===== PROJECTS DATA =====
 const PROJECTS = {
   'tiny-rpg':        { title: 'Tiny RPG Studio',        url: 'https://andredarcie.github.io/tiny-rpg-studio/',  category: 'Experiência Interativa', fallback: false },
-  'ai-platformer':   { title: 'AI Platformer Trainer',  url: 'https://andredarcie.github.io/ai-platformer-trainer/', category: 'Experiência Interativa', fallback: false },
   'evo-sim':         { title: 'Evo Sim',                url: 'https://andredarcie.github.io/evo-sim/',          category: 'Experiência Interativa', fallback: false },
   'tiny-computer':   { title: 'Tiny Computer',          url: 'https://andredarcie.github.io/tiny-computer/',   category: 'Experiência Interativa', fallback: false },
-  'tiny-voxel':      { title: 'Tiny Voxel',             url: 'https://andredarcie.github.io/tiny-voxel/',      category: 'Experiência Interativa', fallback: false },
   'tiny-evolution':  { title: 'Tiny Evolution',         url: 'https://andredarcie.github.io/tiny-evolution/',  category: 'Experiência Interativa', fallback: false },
   'get-out':         { title: 'Get Out',                url: 'https://andredarcie.github.io/get-out',          category: 'Jogo',                  fallback: false },
   'zero-the-hero':   { title: 'Zero The Hero',          url: 'https://andredarcie.github.io/zero-the-hero-game/', category: 'Jogo',                  fallback: false },
@@ -2789,10 +2751,8 @@ const PROJECTS = {
 
 const PROJ_DESCRIPTIONS = {
   'tiny-rpg':         'Game engine de RPG que roda no navegador. Permite pintar tiles, montar salas e criar micro-histórias compartilháveis como uma única URL.',
-  'ai-platformer':    'App web interativo que usa NEAT para evoluir redes neurais ao longo de gerações, treinando uma IA a jogar um mini platformer.',
   'evo-sim':          'Simulação de seleção natural em tempo real no navegador, onde criaturas evoluem buscando comida, reproduzindo-se com mutações.',
   'tiny-computer':    'Pequeno computador virtual no navegador com visual retrô, editor de código e componentes para explorar conceitos básicos de CPU e memória.',
-  'tiny-voxel':       'Editor voxel minimalista no navegador com estética pixel-art para montar cenários e experimentar construções em 3D.',
   'tiny-evolution':   'Simulador da vida no planeta Terra, do seu início até os dias de hoje.',
   'get-out':          'Jogo de texto de terror psicológico e sobrevivência em que o jogador gerencia a sanidade mental de uma família durante eventos sobrenaturais.',
   'zero-the-hero':    'Jogo feito na engine Godot, inspirado em Zelda, com mecânica em que o personagem só pode carregar um item por vez.',
