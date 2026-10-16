@@ -521,12 +521,12 @@
       </div>
       <p class="games-note">Making small games is a hobby of mine.</p>
       <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
-        <span class="arrow">▸</span><span class="label">Show my games (17)</span>
+        <span class="arrow">▸</span><span class="label">Show my games (14)</span>
       </button>
 
       <div id="games-panel" hidden>
         <div class="filters" role="group" aria-label="Filter games by category">
-          <span class="flabel"><b id="games-count">17</b> games · filter</span>
+          <span class="flabel"><b id="games-count">14</b> games · filter</span>
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
           <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
           <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
@@ -587,21 +587,6 @@
             <div class="card-title">Tiny Creatures</div>
             <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
             <span class="card-tag">Sim</span>
-          </a>
-          <a class="card" href="tiny-life/" data-cat="sim">
-            <div class="card-title">Tiny Life</div>
-            <div class="card-desc">An ant colony as tiny dots: pheromone trails appear, food runs out, the nest grows.</div>
-            <span class="card-tag">Sim</span>
-          </a>
-          <a class="card" href="asc-rpg/" data-cat="adventure">
-            <div class="card-title">ASCII Dungeon</div>
-            <div class="card-desc">Turn-based ASCII roguelike rendered in 2.5D: five floors and a final boss.</div>
-            <span class="card-tag">Adventure</span>
-          </a>
-          <a class="card" href="tiny-catan/" data-cat="strategy">
-            <div class="card-title">Tiny Catan</div>
-            <div class="card-desc">A compact take on the settle-and-trade board game, playable in the browser.</div>
-            <span class="card-tag">Strategy</span>
           </a>
           <a class="card" href="house/" data-cat="sim">
             <div class="card-title">House Walkthrough</div>
@@ -728,7 +713,7 @@
         var willOpen = panel.hasAttribute('hidden');
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        label.textContent = willOpen ? 'Hide games' : 'Show my games (17)';
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (14)';
       });
 
       var revealP = document.getElementById('reveal-proto');
