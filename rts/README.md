@@ -23,6 +23,8 @@ Todo texto que o jogador vê é em inglês; comentários e nomes internos ficam 
 
 Os módulos ES (`import`) não rodam em `file://`. Sirva a pasta com um servidor estático (`npx serve .`, `python -m http.server`) e abra pelo `http://`. `?level=easy|normal|hard&play=1` começa direto.
 
+**Visor de modelos (só em localhost):** a tecla **M** abre `src/dev/ModelViewer.js`, com cada unidade, prédio e a trincheira e todas as animações numa linha do tempo (tocar, pausar, quadro a quadro, parar num instante exato, girar a câmera). Por script: `__visor.list()`, `__visor.show({ model: 'unit:rifleman', anim: 'cycle', phase: .6, playing: false })`, `__visor.snapshot()` (PNG). As armas de fogo seguem o rig de `CharacterModel` (`#aimRig`/`#poseReload`: a arma no referencial do corpo e os braços por cinemática inversa de dois ossos até o punho e o guarda-mão).
+
 ## Estrutura
 
 | Pasta | Função |

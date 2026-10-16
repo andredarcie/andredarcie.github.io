@@ -330,6 +330,8 @@ if (params.get('play') === '1') menu.start();
 // Só em localhost: alça para inspecionar e adiantar a partida no console (revisão).
 if (['localhost', '127.0.0.1'].includes(location.hostname)) {
   window.__canudos = { state, simulation, view, waves, ledger, commands, selection, hud, units, factory, events, skyClock, audio };
+  // Visor de modelos e animações (tecla M; alça window.__visor), só aqui.
+  import('./dev/ModelViewer.js').then(m => m.installModelViewer()).catch(error => console.error('[visor]', error));
 }
 
 window.addEventListener('resize', remeasure);
