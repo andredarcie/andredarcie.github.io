@@ -1,15 +1,44 @@
 import * as THREE from 'three';
 import { DARK, DARK2, NAVY, LIGHT, FLOOR, BLUE, GLOW, LAMP } from './config.js';
 import { objectName, linesOf } from './story.js';
+import { night } from './state.js';
 import { termMat, termTex, drawIdle } from './terminal.js';
 
 /* ===================== conteúdo da cena atual ===================== */
-// reatribuídos a cada freshScene(); quem importa lê sempre a cena viva
+// reatribuídos a cada freshScene() e a cada usarMundo(); quem importa lê sempre a cena viva
 export let scene = null;
-export let walks = [], blocks = [], anims = [], inters = [];
+export let walks = [], blocks = [], anims = [], inters = [], triggers = [];
+// ponte para o main.js (preenchida por ele): cenas e peças que precisam trocar de cena sozinhas
+//   travel(cena, entrada, rel) → troca sem fade (porta do elevador fechada)
+//   player() → { px, pz, yaw }
+export const game = { travel: null, player: null };
+
+/* ===================== mundos: várias cenas montadas ao mesmo tempo ===================== */
+// Uma cena montada é um "mundo": a cena do three.js e tudo o que o kit junta para ela. A atual e as
+// vizinhas (pré-montadas em segundo plano) existem ao mesmo tempo; usarMundo(w) aponta o kit para
+// uma delas. Montar uma cena nova não desfaz a anterior: quem descarta é o main.js (descartarMundo).
+//   saidas: ligações físicas com outras cenas ({ para: [cena, entrada], portal?, ... }, ver saida())
+//   chegada(rel) → spawn: como a peça-ponte por onde se chega põe o jogador (elevador, vagão)
+//   aoAtivar: o que só pode acontecer quando o mundo vira o atual (som do trem chegando...)
+//   ativo: é o mundo atual (as peças-ponte só mandam no jogador quando o mundo delas é o atual)
+export let mundo = null;
+export function usarMundo(w) {
+  mundo = w;
+  scene = w.scene;
+  walks = w.walks; blocks = w.blocks; anims = w.anims; inters = w.inters; triggers = w.triggers;
+  luzes.ceu = w.luzes.ceu; luzes.sol = w.luzes.sol;
+}
+export function descartarMundo(w) { disposeScene(w.scene); }
+export function saida(s) { mundo.saidas.push(s); return s; }
+export function chegada(fn) { mundo.chegada = fn; }
+export function aoAtivar(fn) { mundo.aoAtivar.push(fn); }
 
 // libera da GPU tudo o que a cena antiga criou (cada box tem geometria e material próprios)
 function disposeScene(old) {
+  // o que é de todas as cenas (o corpo do jogador) sai antes, inteiro
+  const keep = [];
+  old.traverse(o => { if (o.userData.persist) keep.push(o); });
+  for (const o of keep) o.parent.remove(o);
   old.traverse(o => {
     if (o.isInstancedMesh) o.dispose();
     if (o.geometry) o.geometry.dispose();
@@ -22,18 +51,45 @@ function disposeScene(old) {
   });
 }
 
+// (a tela do terminal volta ao ocioso quando o mundo é ativado, não aqui: uma vizinha montada em
+// segundo plano não pode apagar o terminal em que o jogador está digitando)
 export function freshScene(fogNear = 9, fogFar = 34) {
-  if (scene) disposeScene(scene);
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(DARK);
-  scene.fog = new THREE.Fog(DARK, fogNear, fogFar);
-  walks = []; blocks = []; anims = []; inters = [];
-  scene.add(new THREE.HemisphereLight(0xc9d5d7, 0x3a4f63, 1.05));
-  const d = new THREE.DirectionalLight(0xe9f1f1, .5);
-  d.position.set(3, 7, 2);
-  scene.add(d);
-  drawIdle();
-  return scene;
+  const sc = new THREE.Scene();
+  sc.background = new THREE.Color(DARK);
+  sc.fog = new THREE.Fog(DARK, fogNear, fogFar);
+  // de noite a luz do céu some: sobram as lâmpadas de cada cena
+  const ceu = new THREE.HemisphereLight(0xc9d5d7, 0x3a4f63, night ? .5 : 1.05);
+  sc.add(ceu);
+  const sol = new THREE.DirectionalLight(0xe9f1f1, night ? .12 : .5);
+  sol.position.set(3, 7, 2);
+  sc.add(sol);
+  usarMundo({
+    scene: sc, walks: [], blocks: [], anims: [], inters: [], triggers: [], luzes: { ceu, sol },
+    saidas: [], chegada: null, aoAtivar: [], ativo: false,
+  });
+  return sc;
+}
+export { drawIdle };
+// as duas luzes de toda cena (o anoitecer do escritório as baixa aos poucos)
+export const luzes = { ceu: null, sol: null };
+// troca sem fade (elevador, vestíbulo, vagão): a peça-ponte tem giros diferentes nas duas cenas e a
+// luz direcional bateria em outras paredes dela (a cabine "acenderia" de um lado). Gira o sol da cena
+// nova pela diferença: dentro da peça a luz fica exatamente como estava
+export function alinharSol(delta) {
+  const p = luzes.sol.position, c = Math.cos(delta), s = Math.sin(delta);
+  p.set(p.x * c + p.z * s, p.y, -p.x * s + p.z * c);
+}
+// toda cena com o mesmo número de luzes pontuais (as que faltam, apagadas): o three.js reaproveita
+// os shaders já compilados e a troca de cena não engasga compilando tudo de novo
+export const N_LUZES = 11;
+export function completarLuzes() {
+  let n = 0;
+  scene.traverse(o => { if (o.isPointLight) n++; });
+  for (; n < N_LUZES; n++) {
+    const l = new THREE.PointLight(0x000000, 0, 1);
+    l.position.set(0, -500, 0);
+    scene.add(l);
+  }
 }
 
 /* ===================== helpers de construção ===================== */
@@ -100,8 +156,10 @@ export function at(x, y, z, ry = 0, s = 1) {
 }
 
 /* ===================== interação ===================== */
-// opções: lines (diálogo), terminal (+ seat/look), go (troca de cena),
-// sequence (roda uma sequência do roteiro ao terminar), cb (função ao terminar)
+// opções: lines (diálogo), terminal (+ seat/look), go (troca de cena; entry = por onde se chega nela),
+// sequence (roda uma sequência do roteiro ao terminar), cb (função ao terminar),
+// act (ação de corpo inteiro, ver main.js), look ({x,y,z}: a câmera mira o ponto antes, cutscene),
+// reach (alcance da mira, padrão 2.8), whileRiding (só dá para usar de dentro do veículo)
 export function tag(o, name, opts) { o.userData.inter = { name, ...opts }; inters.push(o); }
 export function tagDialog(o, objectKey, scriptKey, opts = {}) {
   tag(o, objectName(objectKey), { lines: linesOf(scriptKey), ...opts });
@@ -109,14 +167,18 @@ export function tagDialog(o, objectKey, scriptKey, opts = {}) {
 export function tagTerminal(o, objectKey, scriptKey, opts = {}) {
   tag(o, objectName(objectKey), { terminal: linesOf(scriptKey), ...opts });
 }
-export function tagGo(o, objectKey, sceneName) {
-  tag(o, objectName(objectKey), { go: sceneName });
+export function tagGo(o, objectKey, sceneName, entry) {
+  tag(o, objectName(objectKey), { go: sceneName, entry });
 }
-export function walkOf(x1, z1, x2, z2) { walks.push({ x1, z1, x2, z2 }); }
-export function blockOf(x1, z1, x2, z2) { blocks.push({ x1, z1, x2, z2 }); }
+// gatilho sem E: a interação dispara sozinha (uma vez) quando test(x, z, yaw) do jogador vira verdadeiro
+export function triggerOf(test, opts) { triggers.push({ test, inter: opts, fired: false }); }
+export function walkOf(x1, z1, x2, z2) { const w = { x1, z1, x2, z2 }; walks.push(w); return w; }
+export function blockOf(x1, z1, x2, z2) { const b = { x1, z1, x2, z2 }; blocks.push(b); return b; }
+export function unblock(b) { const i = blocks.indexOf(b); if (i >= 0) blocks.splice(i, 1); }
 
 /* ===================== peças reaproveitadas ===================== */
-export function room(W, D, H, hole, holeW) {
+// portas: { s: {a0, a1, h}, e: {a0, a1, h} } abre vão nas paredes sul (ao longo de x) e leste (ao longo de z)
+export function room(W, D, H, hole, holeW, portas = {}) {
   box(W + .4, .2, D + .4, FLOOR, 0, -.1, 0);
   box(W + .4, .2, D + .4, DARK2, 0, H + .1, 0);
   const zN = -D / 2 - .09;
@@ -130,22 +192,25 @@ export function room(W, D, H, hole, holeW) {
     box(hole.x1 - hole.x0, hole.y0, .18, LIGHT, (hole.x0 + hole.x1) / 2, hole.y0 / 2, zN);
     box(hole.x1 - hole.x0, H - hole.y1, .18, LIGHT, (hole.x0 + hole.x1) / 2, (hole.y1 + H) / 2, zN);
   }
-  box(W + .4, H, .18, LIGHT, 0, H / 2, D / 2 + .09);
-  const xW = -W / 2 - .09;
-  if (!holeW) {
-    box(.18, H, D + .4, LIGHT, xW, H / 2, 0);
-  } else {
-    // parede oeste em 3 segmentos, deixando o vão da porta do banheiro
-    const Z0 = -D / 2 - .2, Z1 = D / 2 + .2;
-    box(.18, H, holeW.z0 - Z0, LIGHT, xW, H / 2, (Z0 + holeW.z0) / 2);
-    box(.18, H, Z1 - holeW.z1, LIGHT, xW, H / 2, (holeW.z1 + Z1) / 2);
-    box(.18, H - holeW.h, holeW.z1 - holeW.z0, LIGHT, xW, (holeW.h + H) / 2, (holeW.z0 + holeW.z1) / 2);
-  }
-  box(.18, H, D + .4, LIGHT, W / 2 + .09, H / 2, 0);
+  // paredes sul, oeste e leste: inteiras ou com o vão de uma porta ({a0, a1, h}: de onde a onde
+  // ao longo da parede e a altura); o rodapé também se interrompe no vão (inteiro, virava um degrau)
+  const parede = (eixoX, fixo, len, vao, rodape) => {
+    const A0 = -len / 2 - .2, A1 = len / 2 + .2;
+    const seg = (a, b, h, y) => eixoX ? box(b - a, h, .18, LIGHT, (a + b) / 2, y, fixo) : box(.18, h, b - a, LIGHT, fixo, y, (a + b) / 2);
+    const rod = (a, b) => eixoX ? box(b - a, .12, .06, DARK2, (a + b) / 2, .06, rodape) : box(.06, .12, b - a, DARK2, rodape, .06, (a + b) / 2);
+    if (!vao) { seg(A0, A1, H, H / 2); rod(-len / 2, len / 2); return; }
+    seg(A0, vao.a0, H, H / 2);
+    seg(vao.a1, A1, H, H / 2);
+    seg(vao.a0, vao.a1, H - vao.h, (vao.h + H) / 2);
+    rod(-len / 2, vao.a0); rod(vao.a1, len / 2);
+  };
+  const vW = holeW && { a0: holeW.z0, a1: holeW.z1, h: holeW.h };
+  parede(true, D / 2 + .09, W, portas.s, D / 2 - .03);
+  parede(false, -W / 2 - .09, D, vW, -W / 2 + .03);
+  parede(false, W / 2 + .09, D, portas.e, W / 2 - .03);
+  box(W, .12, .06, DARK2, 0, .06, -D / 2 + .03);                 // rodapé norte
   for (const s of [-1, 1]) {
-    box(W, .12, .06, DARK2, 0, .06, s * (D / 2 - .03));
     box(W, .1, .06, DARK2, 0, H - .05, s * (D / 2 - .03));
-    box(.06, .12, D, DARK2, s * (W / 2 - .03), .06, 0);
     box(.06, .1, D, DARK2, s * (W / 2 - .03), H - .05, 0);
   }
 }

@@ -5,6 +5,8 @@ export const IS_LOCAL = ['localhost', '127.0.0.1', '::1', ''].includes(location.
 export const keys = {};
 addEventListener('keydown', e => { keys[e.code] = true; });
 addEventListener('keyup', e => { keys[e.code] = false; });
+// janela perdeu o foco com uma tecla apertada: o keyup nunca chega, então solta tudo
+addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
 export const joyL = { x: 0, y: 0 }; // esquerdo: move o personagem
 export const joyR = { x: 0, y: 0 }; // direito: gira a câmera

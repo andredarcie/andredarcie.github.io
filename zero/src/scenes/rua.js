@@ -1,22 +1,26 @@
 import * as THREE from 'three';
 import { DARK, DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
-import { day } from '../state.js';
+import { day, night } from '../state.js';
 import { sceneCaption } from '../story.js';
 import { camera } from '../renderer.js';
 import { thunder, whaleCall } from '../audio.js';
-import { scene, freshScene, box, lite, grp, blob, pointLight, windowGrid, anim, tagDialog, tagGo, walkOf, blockOf, person } from '../kit.js';
+import { scene, freshScene, box, lite, grp, blob, pointLight, windowGrid, anim, tagDialog, tagGo, walkOf, blockOf, person, instanciar, at } from '../kit.js';
+import { frota, pedestre, letreiro, quarteiraoLonge, PINTURAS, mix } from '../cidade.js';
+import { vestibulo } from '../vestibulo.js';
 
 // traçado do chão (compartilhado pela altura do jogador e pelos respingos da chuva)
 const noAsfalto = (x, z) => Math.abs(x) <= 3.5 || (z > -12 && z < -4) || (z > 16 && z < 24);
 const naEscada = (x, z) => x > 5.85 && z > 27.3;
 
 /* ===================== CENA: A RUA (dois quarteirões até o metro) ===================== */
-export function buildRua() {
+export function buildRua(nav = {}) {
   freshScene();
-  const streetBg = new THREE.Color(0x263848);
-  const streetFog = new THREE.Color(0x2b3d4c);
-  const streetStormFog = new THREE.Color(0x233342);
-  const streetFlash = new THREE.Color(0x354a5c);
+  // de noite (voltando do trabalho) o mesmo céu, bem mais fundo
+  const nk = night ? .55 : 1;
+  const streetBg = new THREE.Color(0x263848).multiplyScalar(nk);
+  const streetFog = new THREE.Color(0x2b3d4c).multiplyScalar(nk);
+  const streetStormFog = new THREE.Color(0x233342).multiplyScalar(nk);
+  const streetFlash = new THREE.Color(0x354a5c).multiplyScalar(nk);
   scene.background.copy(streetBg);
   scene.fog = new THREE.Fog(streetFog, 10, 68);
 
@@ -66,15 +70,19 @@ export function buildRua() {
   const elevFn = (x, z) => {
     if (naEscada(x, z)) {         // descendo pro metro
       if (z > 32.7) return -3;
-      return -(z - 27.3) / 5.4 * 3;
+      return .125 - (z - 27.3) / .45 * .25; // passa pelo meio de cada degrau, não meio degrau abaixo
     }
+    if (day === 5 && x > 9 && z > 17 && z < 23) return .12; // calçada em frente à loja
     return noAsfalto(x, z) ? .02 : .12;     // guia da calçada
   };
 
   // prédios colados na calçada, com vitrines e portas no térreo
-  const wSlots = [], eSlots = [], sSlots = [];
+  const wSlots = [], eSlots = [], sSlots = [], farSlots = [];
   const hs = [22, 30, 18, 34, 26, 20];
   let hi = 0;
+  const LOJAS = ['PADARIA', 'FARMÁCIA', 'LANCHES', 'LAVANDERIA', 'ÓTICA', 'CHAVEIRO', 'BAR', 'SAPATARIA'];
+  let li = 0, num = 112;
+  const arCond = [];                               // aparelhos de ar-condicionado sob algumas janelas
   // entrada no térreo: emoldurada e recuada, para ler como porta/vitrine e não buraco
   // (xf = face do prédio na rua; nf aponta da parede para a rua)
   function entrada(side, zc, porta) {
@@ -86,24 +94,51 @@ export function buildRua() {
       box(.22, .2, 2.0, LIGHT2, xf + nf * .13, 2.46, zc);         // padieira
       box(.4, .16, 1.9, LIGHT2, xf + nf * .15, .12, zc);          // soleira/degrau
       lite(.05, .08, 1.5, BLUE, xf + nf * .17, 2.33, zc);         // luz sobre a porta
+      const n = letreiro(String(num += 36), .34, .16, GLOW, DARK); // número do prédio
+      n.position.set(xf + nf * .03, 2.64, zc + 1.0);
+      n.rotation.y = nf * Math.PI / 2;
     } else {
-      lite(.05, 1.4, 2.5, NAVY, xf + nf * .07, 1.05, zc);         // vidro aceso, recuado
+      // vitrine de loja: de dia acesa; de noite, porta de aço baixada
+      if (!night) lite(.05, 1.4, 2.5, NAVY, xf + nf * .07, 1.05, zc); // vidro aceso, recuado
+      else {
+        box(.06, 1.5, 2.6, mix(DARK2, LIGHT2, .3), xf + nf * .07, 1.05, zc);
+        for (let gy = .4; gy < 1.75; gy += .16) box(.02, .02, 2.6, DARK2, xf + nf * .1, gy, zc); // gomos da porta de aço
+      }
       box(.2, .16, 2.9, LIGHT2, xf + nf * .12, 1.86, zc);         // verga
       box(.2, .18, 2.9, LIGHT2, xf + nf * .12, .2, zc);           // base
       box(.2, 1.75, .16, LIGHT2, xf + nf * .12, 1.02, zc - 1.42); // montante esquerdo
       box(.2, 1.75, .16, LIGHT2, xf + nf * .12, 1.02, zc + 1.42); // montante direito
-      box(.2, 1.75, .13, LIGHT2, xf + nf * .12, 1.02, zc);        // montante central
+      if (!night) box(.2, 1.75, .13, LIGHT2, xf + nf * .12, 1.02, zc); // montante central
+      // toldo listrado, caído para a rua, e o nome da loja por cima
+      const tg = grp(xf + nf * .45, 2.07, zc);
+      tg.rotation.z = -.28 * nf;
+      for (let k = 0; k < 6; k++) box(.9, .04, .5, k % 2 ? LIGHT : mix(NAVY, LIGHT, .25), 0, 0, -1.25 + k * .5, tg);
+      box(.03, .2, 3.0, mix(NAVY, LIGHT, .25), .45, -.1, 0, tg);           // babado na ponta
+      box(.06, .44, 2.3, DARK2, xf + nf * .03, 2.45, zc);
+      const nome = letreiro(LOJAS[li++ % LOJAS.length], 2.1, .36, night ? GLOW : mix(GLOW, LIGHT, .3), DARK2);
+      nome.position.set(xf + nf * .065, 2.45, zc);
+      nome.rotation.y = nf * Math.PI / 2;
     }
   }
   function predio(side, z0, z1, h, semTerreo) {
     const d = z1 - z0, zc = (z0 + z1) / 2;
     box(6, h, d - .3, DARK2, side * 11.2, h / 2, zc);
+    box(6.2, .35, d - .2, DARK, side * 11.2, h + .17, zc);       // platibanda no topo
     const fx = side * 8.14;
+    let ai = hi * 7;
     for (let wy = 3.1; wy < h - 1.0; wy += 1.5)   // janelas só nos andares de cima
-      for (let wz = z0 + .9; wz < z1 - .7; wz += 1.15)
+      for (let wz = z0 + .9; wz < z1 - .7; wz += 1.15) {
         (side < 0 ? wSlots : eSlots).push({ x: fx, y: wy, z: wz });
+        if (wy < 16 && (ai++ * 37) % 100 < 11) arCond.push(at(side * 8.02, wy - .58, wz, side < 0 ? Math.PI / 2 : -Math.PI / 2));
+      }
     if (!semTerreo) entrada(side, zc, hi % 2 === 0);
     if (hi % 3 === 0) box(.06, 2.8 + (hi % 2), .06, DARK2, side * 10, h + 1.4, zc); // antena
+    if (hi % 2 === 1) {                                            // caixa d'água sobre pilaretes
+      const cx = side * 12.2;
+      for (const [px, pz] of [[-.8, -.8], [.8, -.8], [-.8, .8], [.8, .8]]) box(.12, 1.0, .12, DARK, cx + px, h + .85, zc + pz);
+      box(2.0, 1.3, 2.0, LIGHT2, cx, h + 2.0, zc);
+      box(2.1, .1, 2.1, DARK2, cx, h + 2.7, zc);
+    }
     hi++;
   }
   for (const [z0, z1] of [[-32, -22], [-22, -12], [-4, 6], [6, 16], [24, 38]]) {
@@ -111,20 +146,23 @@ export function buildRua() {
     predio(1, z0, z1, hs[(hi + 2) % 6], z0 === 24); // no quarteirão C a escada toma o térreo
   }
 
-  // seu prédio fecha a rua no sul (a rua morre num T)
-  box(28, 34, 6, DARK2, 0, 16.6, -36);
+  // seu prédio fecha a rua no sul (a rua morre num T); fundo de 20 m: cabem a recepção de 12 m,
+  // o poço do elevador atrás dela e, lá em cima, o corredor do 23º que corre para os fundos
+  box(28, 34, 20, DARK2, 0, 16.6, -43);
   box(6, 34, 1.4, DARK2, -11.2, 17, -32.3); // sela os cantos com os vizinhos
   box(6, 34, 1.4, DARK2, 11.2, 17, -32.3);
   for (let wy = 3; wy < 30; wy += 1.5)
     for (let wx = -12.5; wx < 12.6; wx += 1.1) sSlots.push({ x: wx, y: wy, z: -32.94 });
-  const ap = grp(-5.75, .12, -32.9);
-  box(1.5, 2.5, .18, LIGHT2, 0, 1.25, 0, ap);
-  box(1.14, 2.3, .14, DARK2, 0, 1.15, .05, ap);
-  box(.07, .07, .07, BLUE, -.4, 1.12, .12, ap);
-  box(2.0, .3, .9, DARK2, 0, 2.72, .3, ap); // marquise
+  // a porta do prédio é um vestíbulo de vidro: o mesmo cômodo está atrás da porta da recepção,
+  // e a cena troca lá dentro, com a porta de trás fechada (sem tela escura)
+  box(2.0, .3, .9, DARK2, -5.75, 3.0, -32.6);                      // marquise
+  const vestPredio = vestibulo({
+    x: -5.75, y: .12, z: -34, yaw: 0, lado: 'Q', outro: ['recepcao', 'rua'], estilo: 'vidro', alcance: 2.3,
+    arrive: nav.entry === 'predio' ? (nav.rel || true) : null,
+  });
 
   // limite da cidade: horizonte escuro, tratado como massa de ar distante
-  const matHor = new THREE.MeshBasicMaterial({ color: 0x223545, fog: true });
+  const matHor = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x223545).multiplyScalar(nk), fog: true });
   function horizonte(w, x, z, ry) {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, 50), matHor);
     m.position.set(x, 24, z);
@@ -137,8 +175,116 @@ export function buildRua() {
   horizonte(22, -30, 20, Math.PI / 2);
   horizonte(22, 30, 20, -Math.PI / 2);
 
+  // a cidade continua pelas transversais: quarteirões ao longe, atrás dos bloqueios
+  quarteiraoLonge(-8, 14.2, 29.8, farSlots, [28, 40, 22, 34, 46]);
+  quarteiraoLonge(20, 14.2, 29.8, farSlots, [36, 24, 42, 30, 26]);
+
   windowGrid(wSlots.concat(eSlots), new THREE.BoxGeometry(.12, .75, .5));
-  windowGrid(sSlots, new THREE.BoxGeometry(.5, .75, .12));
+  windowGrid(sSlots.concat(farSlots), new THREE.BoxGeometry(.5, .75, .12));
+  // aparelhos de ar-condicionado (um molde, instanciado)
+  const acMolde = new THREE.Group();
+  box(.55, .3, .36, LIGHT2, 0, 0, 0, acMolde);
+  box(.45, .2, .02, DARK2, 0, 0, .185, acMolde);
+  instanciar(acMolde, arCond);
+
+  // ===== o trânsito =====
+  // carros estacionados nas duas guias (mão inglesa não: aqui se anda pela direita), um ônibus no ponto
+  const parados = [];
+  for (const z of [-27, -21.5, -16.5, 13.5, 28, 33.4]) parados.push({ x: -2.5, z, ry: 0 });
+  for (const z of [-29, -20, -14.6, 1.5, 7, 12.5, 27, 32.2]) parados.push({ x: 2.5, z, ry: Math.PI });
+  if (night) parados.splice(2, 1);                                   // de noite sobra vaga
+  parados.forEach((c, i) => { c.cor = PINTURAS[(i * 5) % PINTURAS.length]; blockOf(c.x - .85, c.z - 2.1, c.x + .85, c.z + 2.1); });
+  // engarrafamento nas transversais, além dos bloqueios: "o trânsito hoje está parado"
+  const fila = [];
+  for (const zc of [-8, 20]) for (const sx of [-1, 1]) {
+    if (day === 5 && sx === 1 && zc === 20) continue;                // a esquina da loja
+    for (const lane of [-1, 1]) for (let k = 0; k < 4; k++) {
+      const dirX = lane * sx > 0 ? sx : -sx;                         // pela direita: cada faixa num sentido
+      fila.push({ x: sx * (10.4 + k * 5.6), z: zc + lane * 1.7, ry: dirX > 0 ? Math.PI / 2 : -Math.PI / 2, dirX,
+        cor: PINTURAS[(k * 3 + (lane > 0 ? 1 : 4) + (zc > 0 ? 2 : 0)) % PINTURAS.length] });
+    }
+  }
+  frota(parados);
+  const fl = frota(fila);
+  // a fila que se afasta anda meio metro de vez em quando; a que vem para cá está presa no bloqueio
+  let filaT0 = null;
+  anim(t => {
+    if (filaT0 === null) filaT0 = t;
+    const u = t - filaT0, passo = Math.min(4, Math.floor(u / 13)), e = Math.min(1, (u % 13) / 1.6);
+    const avanco = (passo + (passo < 4 ? e * e * (3 - 2 * e) : 0)) * .55;
+    fila.forEach((c, i) => fl.set(i, c.x + (c.dirX * c.x > 0 ? c.dirX * avanco : 0), c.z, c.ry));
+  });
+  if (!night) {
+    const bus = grp(-2.35, 0, 4.2);
+    box(2.4, 2.4, 10.4, LIGHT2, 0, 1.55, 0, bus);
+    box(2.44, .8, 9.6, NAVY, 0, 2.05, -.1, bus);                     // janelas
+    box(2.44, .3, 10.44, mix(NAVY, LIGHT, .25), 0, .55, 0, bus);     // faixa da empresa
+    box(2.3, .1, 10.2, DARK2, 0, 2.8, 0, bus);
+    lite(1.6, .3, .04, GLOW, 0, 2.5, 5.22, bus);                     // letreiro de destino
+    for (const sz of [-3.6, 3.4]) for (const sx of [-1, 1]) {
+      const r = new THREE.Mesh(new THREE.CylinderGeometry(.48, .48, .3, 8), new THREE.MeshLambertMaterial({ color: DARK, flatShading: true }));
+      r.rotation.z = Math.PI / 2; r.position.set(sx * 1.1, .48, sz); bus.add(r);
+    }
+    blockOf(-3.6, -1.05, -1.1, 9.45);
+  }
+
+  // pedestres indo e vindo nas calçadas (de guarda-chuva quando chove); de noite quase ninguém
+  const chove = day < 5;
+  const rotas = [
+    { x: -6.4, z0: -28, z1: -13.5 }, { x: 6.2, z0: -31, z1: -13.2, vel: .9, fase: .4 },
+    { x: -4.7, z0: -3, z1: 14, fase: .7 }, { x: 6.2, z0: -3, z1: 15, vel: 1.25, fase: .2 },
+    { x: -6.2, z0: 25, z1: 36, fase: .5 },
+  ];
+  for (const r of night ? [rotas[1], rotas[3]] : rotas) pedestre({ ...r, chuva: chove });
+
+  // ===== mobiliário urbano =====
+  // banca de jornal (fechada de noite)
+  const banca = grp(-4.75, .12, -19);
+  box(1.4, 2.1, 2.2, LIGHT2, 0, 1.05, 0, banca);
+  box(1.7, .12, 2.5, DARK2, 0, 2.18, 0, banca);
+  if (!night) for (let k = 0; k < 6; k++)
+    lite(.03, .32, .28, [GLOW, NAVY, LIGHT, mix(NAVY, LIGHT, .4)][k % 4], -.71, .75 + (k % 2) * .42, -.7 + Math.floor(k / 2) * .7, banca);
+  else box(.04, 1.6, 2.0, mix(DARK2, LIGHT2, .3), -.71, 1.0, 0, banca);
+  blockOf(-5.5, -20.15, -4.0, -17.85);
+  // orelhão
+  const ore = grp(4.6, .12, 10.8);
+  box(.1, 1.3, .1, DARK2, 0, .65, 0, ore);
+  box(.62, .72, .5, LIGHT2, 0, 1.7, -.05, ore);
+  box(.2, .3, .08, DARK, 0, 1.55, .2, ore);
+  blockOf(4.3, 10.5, 4.9, 11.1);
+  // árvores em canteiros na calçada leste (vivas: azuis)
+  for (const tz of [3.2, 6.3]) {
+    box(.9, .14, .9, DARK2, 4.5, .19, tz);
+    box(.16, 2.6, .16, DARK2, 4.5, 1.4, tz);
+    blob(.85, .7, .85, BLUE, 4.5, 3.1, tz);
+    blob(.6, .5, .6, BLUE, 4.25, 3.55, tz + .2);
+    blockOf(4.1, tz - .4, 4.9, tz + .4);
+  }
+  // sacos de lixo ao lado da lixeira, tampas de bueiro, poças (só com chuva)
+  blob(.3, .26, .3, DARK, 4.62, .36, -17.5);
+  blob(.26, .22, .26, DARK, 4.5, .34, -18.5);
+  for (const [mx, mz] of [[.9, -20], [-1.2, 6], [1.4, 30], [-.6, -9]]) {
+    const tampa = new THREE.Mesh(new THREE.CylinderGeometry(.34, .34, .02, 10), new THREE.MeshLambertMaterial({ color: mix(DARK2, DARK, .5) }));
+    tampa.position.set(mx, .03, mz); scene.add(tampa);
+  }
+  if (chove) for (const [px, pz, sx, sz] of [[-3.0, -25, 1.0, .5], [3.1, -10, .8, 1.3], [-2.9, 10.5, .6, 1.1], [.4, 24, 1.3, .7], [3.0, 35, .9, .6]])
+    blob(sx, .006, sz, mix(DARK2, NAVY, .35), px, .031, pz);
+  // fios atravessando a rua de prédio a prédio, com barriga
+  for (const [fz, fy] of [[-24, 8.6], [-1, 9.2], [11, 8.4], [31, 9.0]]) {
+    const pts = [[-8.2, fy], [-4, fy - .45], [0, fy - .6], [4, fy - .45], [8.2, fy]];
+    for (let k = 0; k < pts.length - 1; k++) {
+      const [ax, ay] = pts[k], [bx, by] = pts[k + 1];
+      const f = box(Math.hypot(bx - ax, by - ay), .025, .025, DARK, (ax + bx) / 2, (ay + by) / 2, fz);
+      f.rotation.z = Math.atan2(by - ay, bx - ax);
+    }
+  }
+  // placas com o nome das ruas, nas esquinas
+  // (presas no poste do semáforo, abaixo das lâmpadas, de frente para quem sobe a rua)
+  for (const [tz, txt] of [[-13, 'R. DA ROTINA'], [15, 'R. DA ROTINA']]) {
+    const pl = letreiro(txt, 1.0, .22, GLOW, mix(NAVY, BLUE, .35));
+    pl.position.set(-4.1 + .55, 2.6, tz - .06);
+    pl.rotation.y = Math.PI;
+  }
 
   // postes na guia (metade com luz de verdade)
   let pi = 0;
@@ -152,16 +298,30 @@ export function buildRua() {
   }
 
   // semáforos das travessias
+  // o semáforo funciona: "pare" (de cima) e "siga" (de baixo) se revezam; sem vermelho/verde na
+  // paleta, quem diz o estado é a posição da lâmpada acesa
+  const sinais = [];
   function semaforo(x, z, ry) {
     const g = grp(x, 0, z);
     g.rotation.y = ry;
     box(.1, 3.1, .1, DARK2, 0, 1.55, 0, g);
     box(.3, .8, .22, DARK2, 0, 3.3, 0, g);
-    lite(.14, .14, .04, GLOW, 0, 3.52, .12, g); // parado no "pare"
+    box(.34, .05, .14, DARK2, 0, 3.55, .16, g);                    // pala sobre cada lâmpada
+    box(.34, .05, .14, DARK2, 0, 3.33, .16, g);
+    box(.34, .05, .14, DARK2, 0, 3.11, .16, g);
+    const pare = lite(.14, .14, .04, GLOW, 0, 3.52, .12, g);
     box(.14, .14, .04, DARK, 0, 3.3, .12, g);
-    box(.14, .14, .04, DARK, 0, 3.08, .12, g);
+    const siga = lite(.14, .14, .04, DARK, 0, 3.08, .12, g);
+    sinais.push({ pare, siga });
     blockOf(x - .18, z - .18, x + .18, z + .18);
   }
+  anim(t => {
+    const fechado = (t % 14) < 8;
+    for (const s of sinais) {
+      s.pare.material.color.setHex(fechado ? GLOW : DARK);
+      s.siga.material.color.setHex(fechado ? DARK : GLOW);
+    }
+  });
   semaforo(-4.1, -13, 0); semaforo(4.1, -3, Math.PI);
   semaforo(-4.1, 15, 0); semaforo(4.1, 25, Math.PI);
 
@@ -181,19 +341,20 @@ export function buildRua() {
     bloqueio(sx * 8.1, zc - 1.9, Math.PI / 2);  // bocas das transversais
     bloqueio(sx * 8.1, zc + 1.9, Math.PI / 2);
   }
+  let vestLoja = null;
   if (day === 5) {
     // dia 5: uma esquina que vira para uma loja do tamanho de uma casa
     slab(7, .18, 6, matCal, 12.5, .03, 20);         // calçada em frente à loja
     walkOf(3.5, 17.2, 12.2, 22.8);                   // pode virar a esquina e andar até a porta
     box(7, 5.2, 6.4, DARK2, 16, 2.6, 20);            // corpo da loja
     box(7.4, .4, 6.8, DARK2, 16, 5.3, 20);           // beiral do telhado
-    lite(.05, 1.7, 2.0, NAVY, 12.52, 1.5, 18.2);     // vitrine acesa
-    lite(.05, 1.7, 2.0, NAVY, 12.52, 1.5, 21.8);     // vitrine acesa
-    const loja = grp(12.5, 0, 20);
-    box(.16, 2.5, 1.8, LIGHT2, 0, 1.25, 0, loja);    // moldura da porta
-    box(.1, 2.2, 1.3, DARK, .05, 1.1, 0, loja);      // folha
-    lite(.04, 1.9, 1.1, GLOW, .1, 1.15, 0, loja);    // luz vazando de dentro
-    tagGo(loja, 'storeDoor', 'loja');
+    lite(.05, 1.7, 1.6, NAVY, 12.47, 1.5, 17.9);     // vitrine acesa
+    lite(.05, 1.7, 1.6, NAVY, 12.47, 1.5, 22.1);     // vitrine acesa
+    // a porta da loja: vestíbulo de vidro (a troca para dentro da loja acontece nele, sem tela escura)
+    vestLoja = vestibulo({
+      x: 13.5, y: .12, z: 20, yaw: -Math.PI / 2, lado: 'Q', outro: ['loja', 'rua'], estilo: 'vidro',
+      arrive: nav.entry === 'loja' ? (nav.rel || true) : null,
+    });
     const ls = grp(12.4, 3.9, 20); ls.rotation.y = -Math.PI / 2; // letreiro da loja
     box(3.4, .9, .14, DARK2, 0, 0, 0, ls);
     lite(3.0, .62, .05, BLUE, 0, 0, -.08, ls);
@@ -229,7 +390,7 @@ export function buildRua() {
   box(2.2, .2, 2.6, FLOOR, 7, -3.1, 34.1);   // patamar lá embaixo
   box(.16, 4, 8.6, DARK2, 5.82, -1.3, 31.5); // paredes laterais da trincheira
   box(.16, 4, 8.6, DARK2, 8.18, -1.3, 31.5);
-  box(2.5, 3.6, .14, DARK2, 7, -1.4, 35.55); // parede do fundo
+  box(2.5, .7, .14, DARK2, 7, .05, 35.49);   // parede do fundo, acima do vestíbulo da estação
   // acabamento no topo das paredes, com fita de luz azul guiando escada abaixo
   for (const wx of [5.82, 8.18]) {
     box(.28, .18, 8.6, LIGHT2, wx, .77, 31.5);
@@ -268,17 +429,23 @@ export function buildRua() {
   pointLight(.6, 8, 7, -2.4, 34, 0x9fccef); // a estação lá embaixo
   pointLight(.5, 6, 7, 3.0, 24.2, 0xbfe0ff);
 
-  // a porta lá embaixo, agora clara e acesa
-  const em = grp(7, -3, 35.42);
-  em.rotation.y = Math.PI;
-  box(2.3, 2.6, .18, LIGHT2, 0, 1.3, 0, em);
-  box(.92, 2.34, .1, DARK, -.52, 1.16, .07, em);
-  box(.92, 2.34, .1, DARK, .52, 1.16, .07, em);
-  lite(.05, 2.0, .04, GLOW, 0, 1.2, .1, em);       // fresta de luz entre as portas
-  lite(1.5, .34, .08, BLUE, 0, 2.72, -.02, em);    // letreiro sobre a porta
+  // a porta lá embaixo: o vestíbulo que leva ao patamar da estação (o mesmo cômodo está lá)
+  let vestMetro = null;
   if (day < 5) {
-    tagGo(em, 'metroEntrance', 'plataforma');
+    vestMetro = vestibulo({
+      x: 7, y: -3, z: 36.42, yaw: Math.PI, lado: 'Q', outro: ['plataforma', 'rua'], estilo: 'metro',
+      arrive: nav.entry === 'metro' ? (nav.rel || true) : null,
+    });
+    lite(1.5, .3, .04, BLUE, 7, -.55, 35.32);        // letreiro sobre a porta
   } else {
+    const em = grp(7, -3, 35.42);                     // dia 5: a porta lá embaixo, fechada
+    em.rotation.y = Math.PI;
+    box(2.3, 2.6, .18, LIGHT2, 0, 1.3, 0, em);
+    box(.92, 2.34, .1, DARK, -.52, 1.16, .07, em);
+    box(.92, 2.34, .1, DARK, .52, 1.16, .07, em);
+    box(2.5, 3.0, .14, DARK2, 7, -1.5, 35.6);
+  }
+  if (day >= 5) {
     // dia 5: metro fechado — grade no alto da escada
     const grade = grp(7, 0, 27.25);
     for (let gx = -1.0; gx <= 1.01; gx += .29) box(.06, 2.25, .06, DARK2, gx, 1.15, 0, grade);
@@ -289,13 +456,16 @@ export function buildRua() {
     blockOf(5.9, 26.9, 8.1, 27.6);                 // trava a descida
   }
 
-  baleia();
-  if (day < 5) chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash }); // no dia 5 o tempo abriu
+  if (!night) baleia();
+  // dentro dos vestíbulos não chove (a chuva cai em volta da câmera, sem saber de teto)
+  const coberto = (x, z) => (x > -6.95 && x < -4.55 && z < -33 && z > -35.1) || (x > 5.8 && x < 8.2 && z > 35.4 && z < 37.6);
+  if (day < 5) chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash },
+    (x, z) => (coberto(x, z) ? -9 : chaoRua(x, z)), coberto); // no dia 5 o tempo abriu
 
-  return {
-    spawn: { x: -5.75, z: -30.6, yaw: Math.PI }, caption: sceneCaption('rua'), auto: null,
-    elevFn,
-  };
+  // saindo do prédio (padrão), subindo do metrô ou saindo da loja: vindo pelo vestíbulo de cada um
+  const spawn = (vestMetro && vestMetro.spawn) || vestPredio.spawn || (vestLoja && vestLoja.spawn)
+    || (nav.entry === 'metro' ? { x: 7, z: 34.2, yaw: 0 } : { x: -5.75, z: -30.6, yaw: Math.PI });
+  return { spawn, caption: sceneCaption('rua'), auto: null, elevFn };
 }
 
 /* ===================== a baleia: gigante, flutuando como se estivesse no mar ===================== */
@@ -345,7 +515,10 @@ function baleia() {
 }
 
 /* ===================== chuva: gotas, respingos, chão molhado e relâmpagos ===================== */
-function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash }) {
+// chao(x, z): altura onde o respingo abre (abaixo de -5 = não respinga ali, ex.: escada coberta)
+const chaoRua = (x, z) => (naEscada(x, z) ? -9 : noAsfalto(x, z) ? .035 : .135);
+// coberto(x, z): a câmera está sob um teto (vestíbulo): ali a chuva some
+export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash }, chao = chaoRua, coberto = () => false) {
   const NRAIN = 1600, RS = 26, RH = 20;
   const dropGeo = new THREE.BoxGeometry(.02, 1, .02);
   dropGeo.rotateZ(.09); dropGeo.rotateX(.07); // inclinação do vento nos dois eixos
@@ -407,7 +580,9 @@ function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog
         RH - ((d.y + d.v * e) % RH),
         pz + (((d.z - pz) % RS) + RS) % RS - RS / 2
       );
-      rSc.set(1, d.len, 1);
+      // sob um teto (vestíbulo) a gota some; de dentro dele se vê a rua chovendo pela porta aberta
+      if (coberto(rP.x, rP.z)) rSc.set(0, 0, 0);
+      else rSc.set(1, d.len, 1);
       rm4.compose(rP, rQ, rSc);
       rain.setMatrixAt(i, rm4);
     }
@@ -422,7 +597,7 @@ function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog
         sd.z = pz + (Math.random() - .5) * 22;
       }
       const k = a >= 0 && a <= 1 ? a : 0;
-      rP.set(sd.x, naEscada(sd.x, sd.z) ? -9 : noAsfalto(sd.x, sd.z) ? .035 : .135, sd.z);
+      rP.set(sd.x, chao(sd.x, sd.z), sd.z);
       rSc.setScalar(k * .34);
       rm4.compose(rP, rQ, rSc);
       spl.setMatrixAt(i, rm4);

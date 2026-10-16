@@ -1,23 +1,43 @@
 /* ===================== dev: seletor de cenas (só em localhost, tecla I) ===================== */
 // cenas agrupadas por dia (cada aba = a rota daquele dia, na ordem da história)
 const DEBUG_TABS = [
+  // [rótulo, cena, dia, noite?, entrada?]
   { label: 'Dia 1', scenes: [
     ['Quarto (acordar)', 'quarto', 1],
     ['Corredor', 'corredor', 1],
     ['Recepção', 'recepcao', 1],
     ['Rua (chuva)', 'rua', 1],
-    ['Plataforma (trem chega)', 'plataforma', 1],
-    ['Metrô', 'metro', 1],
+    ['Estação Central (trem chega)', 'plataforma', 1, false, 'rua'],
+    ['Metrô (ida)', 'metro', 1],
+    ['Estação Viaduto (desembarque)', 'plataforma2', 1, false, 'trem'],
+    ['Rua do viaduto', 'rua2', 1],
+    ['Recepção do trabalho', 'recepcao2', 1, false, 'rua'],
     ['Trabalho', 'empresa', 1],
+  ] },
+  { label: 'Dia 1 · noite', scenes: [
+    ['Trabalho (fim do expediente)', 'empresa', 1, true, 'mesa'],
+    ['Recepção do trabalho', 'recepcao2', 1, true, 'elevador'],
+    ['Rua do viaduto', 'rua2', 1, true, 'recepcao'],
+    ['Estação Viaduto (trem chega)', 'plataforma2', 1, true, 'rua'],
+    ['Metrô (volta)', 'metro', 1, true],
+    ['Estação Central (desembarque)', 'plataforma', 1, true, 'trem'],
+    ['Rua', 'rua', 1, true, 'metro'],
+    ['Recepção', 'recepcao', 1, true, 'rua'],
+    ['Corredor', 'corredor', 1, true, 'elevador'],
+    ['Quarto (dormir)', 'quarto', 1, true, 'corredor'],
   ] },
   { label: 'Dia 2', scenes: [
     ['Quarto', 'quarto', 2],
     ['Corredor', 'corredor', 2],
     ['Recepção', 'recepcao', 2],
     ['Rua (chuva)', 'rua', 2],
-    ['Plataforma (trem chega)', 'plataforma', 2],
-    ['Metrô', 'metro', 2],
+    ['Estação Central (trem chega)', 'plataforma', 2, false, 'rua'],
+    ['Metrô (moradores)', 'metro', 2],
+    ['Estação Viaduto', 'plataforma2', 2, false, 'trem'],
+    ['Rua do viaduto', 'rua2', 2],
     ['Trabalho', 'empresa', 2],
+    ['Trabalho (noite)', 'empresa', 2, true, 'mesa'],
+    ['Quarto (noite, dormir)', 'quarto', 2, true, 'corredor'],
   ] },
   { label: 'Dia 3', scenes: [
     ['Quarto (Bitsy)', 'quarto', 3],
@@ -60,13 +80,13 @@ function buildDebugMenu() {
   function showTab(i) {
     debugTab = i;
     grid.replaceChildren();
-    DEBUG_TABS[i].scenes.forEach(([label, sceneName, d], idx) => {
+    DEBUG_TABS[i].scenes.forEach(([label, sceneName, d, noite, entry], idx) => {
       const b = document.createElement('button');
       b.textContent = (idx + 1) + '.  ' + label;
       b.style.cssText = 'font-family:inherit;font-size:20px;color:#dde8e9;background:#2e4358;border:2px solid #3a5066;padding:9px 13px;cursor:pointer;text-align:left';
       b.addEventListener('mouseenter', () => { b.style.borderColor = '#3aa2ea'; });
       b.addEventListener('mouseleave', () => { b.style.borderColor = '#3a5066'; });
-      b.addEventListener('click', () => { closeDebug(); onJump(sceneName, d); });
+      b.addEventListener('click', () => { closeDebug(); onJump(sceneName, d, noite, entry); });
       grid.appendChild(b);
     });
     tabBtns.forEach((tb, j) => {

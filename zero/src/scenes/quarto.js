@@ -1,16 +1,19 @@
 import * as THREE from 'three';
 import { DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
-import { day } from '../state.js';
-import { objectName, speakerName, linesOf, roomCaption, roomAuto } from '../story.js';
+import { day, night } from '../state.js';
+import { objectName, speakerName, linesOf, roomCaption, roomAuto, sceneCaption } from '../story.js';
 import { termMat } from '../terminal.js';
+import { vestibulo } from '../vestibulo.js';
 import { say } from '../dialog.js';
 import { freshScene, box, lite, grp, pointLight, tag, tagDialog, tagTerminal, tagGo, walkOf, blockOf, room, cidade } from '../kit.js';
 
 /* ===================== CENA: O QUARTO ===================== */
-export function buildQuarto() {
+const DOOR_X = -3.2;   // porta na parede sul (a da janela é a norte)
+export function buildQuarto(nav = {}) {
   freshScene(9, 42);
   const W = 9, D = 4.6, H = 2.8;
-  room(W, D, H, { x0: .34, x1: 1.46, y0: 1.32, y1: 2.18 }, { z0: -1.8, z1: -.7, h: 2.05 });
+  room(W, D, H, { x0: .34, x1: 1.46, y0: 1.32, y1: 2.18 }, { z0: -1.8, z1: -.7, h: 2.05 },
+    { s: { a0: DOOR_X - .55, a1: DOOR_X + .55, h: 2.2 } });          // vão da porta do hall na parede sul
   cidade();
   walkOf(-4.2, -2.0, 4.2, 2.0);
 
@@ -96,7 +99,7 @@ export function buildQuarto() {
     box(.4, .04, .16, DARK2, 0, .83, .16, pc);
   }
   const sentado1 = { seat: { x: -1.2, y: 1.15, z: -1.0 }, look: { x: -1.2, y: 1.42, z: -1.99 } };
-  if (day === 1) tagTerminal(pc, 'computer', 'pcQuarto1', { ...sentado1 });
+  if (day === 1 && !night) tagTerminal(pc, 'computer', 'pcQuarto1', { ...sentado1 });
   if (day === 3) tagTerminal(pc, 'computer', 'pcQuarto3', { ...sentado1, sequence: 'finishDay3' });
   if (day === 4) tagTerminal(pc, 'computer', 'pcQuarto4', { ...sentado1, cb: () => say(speakerName('thought'), linesOf('semViews')) });
   blockOf(-1.9, -2.3, -.5, -1.4);
@@ -126,14 +129,16 @@ export function buildQuarto() {
   }
   if (day === 1) tagDialog(qs, 'photo', 'fotografia');
 
-  // porta de saída
-  const door = grp(3.75, 0, -2.18);
-  box(1.14, 2.3, .1, LIGHT2, 0, 1.15, 0, door);
-  box(.96, 2.16, .09, DARK2, 0, 1.08, .03, door);
-  box(.07, .07, .07, BLUE, -.36, 1.08, .07, door);
-  if (day < 3 || day === 5) tagGo(door, 'door', 'corredor');
-  else if (day === 4) tag(door, objectName('door'), { sequence: 'finishDay4' }); // dia 4: sair pela porta pula pro dia 5
-  // (dia 3 termina no PC ao criar o jogo)
+  // porta de saída, na parede oposta à janela (a janela dá para a rua, a porta para o corredor que
+  // corre para os fundos do prédio): dá no hall de entrada, o mesmo cômodo que fica atrás da porta do
+  // fim do corredor; a troca de cena acontece no hall, sem tela escura.
+  // Não abre de noite (só falta deitar), nem no dia 3 (termina no PC); no dia 4 sair pula pro dia 5
+  const hall = vestibulo({
+    x: DOOR_X, y: 0, z: D / 2 + 1, yaw: 0, lado: 'P', outro: ['corredor', 'quarto'], estilo: 'hall',
+    bloqueada: night || day === 3 || day === 4,
+    interTrancada: day === 4 && !night ? { name: objectName('door'), sequence: 'finishDay4' } : null,
+    arrive: nav.entry === 'corredor' ? (nav.rel || true) : null,
+  });
 
   // cama com cobertor azul
   const cama = grp(1.7, 0, 1.72);
@@ -142,6 +147,7 @@ export function buildQuarto() {
   box(1.25, .18, 1.02, BLUE, -.4, .42, 0, cama);
   box(.5, .14, .6, 0xc7d4d5, .72, .51, 0, cama);
   blockOf(.5, 1.1, 2.85, 2.3);
+  if (night) tag(cama, objectName('bed'), { sequence: 'sleep' }); // de volta do trabalho: deitar e virar o dia
 
   // tapete e luminária
   box(1.9, .05, 1.25, DARK2, 0, .025, .6);
@@ -150,6 +156,9 @@ export function buildQuarto() {
   lite(.14, .07, .14, GLOW, 0, H - .66, 0);
   pointLight(.55, 9, 0, 2, 0);
 
+  // voltando pelo corredor: no hall, onde estava quando a troca aconteceu
+  if (nav.entry === 'corredor')
+    return { spawn: hall.spawn, caption: night ? sceneCaption('quartoNoite') : roomCaption(), auto: null };
   // deitado na cama (cabeça no travesseiro, olhando o teto); o giro leva daqui até em pé
   const wake = { x: 2.0, y: .6, z: 1.72, yaw: .55, pitch: 1.2 };
   return { spawn: { x: 0, z: 1.1, yaw: 0 }, caption: roomCaption(), auto: roomAuto(), wake };

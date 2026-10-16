@@ -1,9 +1,11 @@
 import { DARK2, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
 import { sceneCaption } from '../story.js';
 import { freshScene, box, lite, grp, pointLight, tagGo, walkOf } from '../kit.js';
+import { elevador, CABINE } from '../elevator.js';
+import { vestibulo } from '../vestibulo.js';
 
 /* ===================== CENA: O CORREDOR DO PRÉDIO ===================== */
-export function buildCorredor() {
+export function buildCorredor(nav = {}) {
   freshScene(7, 26);
   const L = 12, Wz = 2.4, H = 2.6;
 
@@ -14,8 +16,9 @@ export function buildCorredor() {
     box(L, .12, .06, DARK2, 0, .06, s * (Wz / 2 - .03));
     box(L, .1, .06, DARK2, 0, H - .05, s * (Wz / 2 - .03));
   }
-  box(.16, H, Wz + .4, LIGHT, -L / 2 - .08, H / 2, 0);
-  box(.16, H, Wz + .4, LIGHT, L / 2 + .08, H / 2, 0);
+  // parede do apartamento (oeste) com o vão do hall de entrada; a do elevador (leste) ele monta
+  for (const k of [-1, 1]) box(.16, H, .85, LIGHT, -L / 2 - .08, H / 2, k * .975);
+  box(.16, H - 2.2, 1.1, LIGHT, -L / 2 - .08, (H + 2.2) / 2, 0);
   walkOf(-L / 2 + .45, -Wz / 2 + .42, L / 2 - .45, Wz / 2 - .42);
 
   // tapete corrido
@@ -37,23 +40,21 @@ export function buildCorredor() {
   }
   for (const x of [-3.6, -1.2, 1.2, 3.6]) { portaViz(x, 1); portaViz(x, -1); }
 
-  // a porta do seu apartamento, atrás de você (cenário)
-  const ap = grp(-L / 2 + .02, 0, 0);
-  ap.rotation.y = Math.PI / 2;
-  box(1.14, 2.3, .1, LIGHT2, 0, 1.15, 0, ap);
-  box(.96, 2.16, .09, DARK2, 0, 1.08, .03, ap);
-  box(.07, .07, .07, BLUE, -.36, 1.08, .07, ap);
+  // a porta do seu apartamento, no fim do corredor: dá no hall de entrada, o mesmo cômodo que fica
+  // atrás da porta sul do quarto (a troca de cena acontece no hall, sem tela escura)
+  lite(.03, .12, .18, GLOW, -L / 2 + .1, 2.42, 0);                  // o seu número, igual ao dos vizinhos
+  const hall = vestibulo({
+    x: -L / 2 - 1, y: 0, z: 0, yaw: Math.PI / 2, lado: 'Q', outro: ['quarto', 'corredor'], estilo: 'hall',
+    arrive: nav.entry === 'quarto' ? (nav.rel || true) : null,
+  });
 
-  // o elevador que desce até a recepção
-  const out = grp(L / 2 - .02, 0, 0);
-  out.rotation.y = -Math.PI / 2;
-  box(1.3, 2.4, .12, LIGHT2, 0, 1.2, 0, out);
-  box(.55, 2.25, .1, DARK2, -.29, 1.12, .05, out);
-  box(.55, 2.25, .1, DARK2, .29, 1.12, .05, out);
-  lite(.8, .14, .06, BLUE, 0, 2.51, .06, out); // indicador do andar
-  box(.12, .3, .08, LIGHT2, .82, 1.15, .05, out);
-  lite(.05, .05, .04, BLUE, .82, 1.22, .1, out); // botão de chamada
-  tagGo(out, 'elevator', 'recepcao');
+  // o elevador, na outra ponta: desce do 23º até a recepção
+  const elev = elevador({
+    x: L / 2, z: 0, yaw: -Math.PI / 2, wall: { w: Wz + .4, H },
+    here: 23, there: 'T', to: ['recepcao', 'elevador'],
+    arrive: nav.entry === 'elevador' ? (nav.rel || CABINE) : null,
+  });
 
-  return { spawn: { x: -5, z: 0, yaw: -Math.PI / 2 }, caption: sceneCaption('corredor'), auto: null };
+  const spawn = elev.spawn || hall.spawn || { x: -5, z: 0, yaw: -Math.PI / 2 }; // saindo do apartamento
+  return { spawn, caption: sceneCaption('corredor'), auto: null };
 }

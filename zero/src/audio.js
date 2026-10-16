@@ -5,7 +5,11 @@ import { day } from './state.js';
 let AC = null, aMaster, aMusic, aSfx, aAmb, aVerb, nbuf, railB;
 let musicNext = null;
 
-function audioOn() { return AC && AC.state === 'running'; }
+// mudo: cenas vizinhas montadas ou animadas em segundo plano não fazem barulho (o trem de uma estação
+// que você ainda nem viu não pode chegar no seu ouvido)
+let mudo = false;
+export function silenciar(on) { mudo = !!on; }
+function audioOn() { return AC && AC.state === 'running' && !mudo; }
 const theme = () => MUSIC[day] || MUSIC[1];
 
 export function resumeAudio() { if (AC) AC.resume(); }
@@ -74,7 +78,7 @@ export function initAudio() {
 
 /* --- trilha generativa: notas esparsas + colchão grave por dia --- */
 function pluck(freq, vol, when) {
-  if (!AC) return;
+  if (!AC || mudo) return;
   const t = AC.currentTime + (when || 0);
   const o = AC.createOscillator(); o.type = 'sine'; o.frequency.value = freq;
   const h = AC.createOscillator(); h.type = 'sine'; h.frequency.value = freq * 2;
@@ -154,8 +158,11 @@ export function whaleCall(hi) { // canto da baleia sobre a cidade
 
 /* --- ambiente contínuo por cena --- */
 let ambG = null, ambSrcs = [];
+// cenas gêmeas soam como a original (a outra estação, a rua do trabalho, a recepção do trabalho)
+const AMB_ALIAS = { plataforma2: 'plataforma', rua2: 'rua', recepcao2: 'recepcao' };
 export function setAmb(name) {
   if (!AC) return;
+  name = AMB_ALIAS[name] || name;
   if (ambG) {
     const g = ambG, ss = ambSrcs;
     g.gain.setTargetAtTime(0, AC.currentTime, .5);
@@ -260,6 +267,21 @@ export function sfxStep() {
   s.connect(f); f.connect(g); g.connect(aSfx);
   s.start(t, Math.random() * 1.5); s.stop(t + .1);
 }
+export function sfxPaddle() { // remo entrando na água: chuá grave, ataque lento
+  if (!audioOn()) return;
+  const t = AC.currentTime;
+  const s = AC.createBufferSource(); s.buffer = nbuf;
+  s.playbackRate.value = .6 + Math.random() * .2;
+  const f = AC.createBiquadFilter(); f.type = 'lowpass';
+  f.frequency.setValueAtTime(380 + Math.random() * 120, t);
+  f.frequency.exponentialRampToValueAtTime(180, t + .5);
+  const g = AC.createGain();
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(.07, t + .08);
+  g.gain.exponentialRampToValueAtTime(.001, t + .55);
+  s.connect(f); f.connect(g); g.connect(aSfx);
+  s.start(t, Math.random() * 1.2); s.stop(t + .6);
+}
 export function sfxBlip(open) {
   if (!audioOn()) return;
   const t = AC.currentTime;
@@ -309,6 +331,41 @@ export function sfxWhoosh() { // sopro grave nas trocas de cena
   s.connect(f); f.connect(g); g.connect(aSfx);
   s.start(t); s.stop(t + 1.2);
 }
+export function sfxDoorSlide() { // porta automática correndo no trilho: sopro curto e abafado
+  if (!audioOn()) return;
+  const t = AC.currentTime;
+  const s = AC.createBufferSource(); s.buffer = nbuf;
+  const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2;
+  f.frequency.setValueAtTime(420, t);
+  f.frequency.linearRampToValueAtTime(260, t + .8);
+  const g = AC.createGain();
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(.045, t + .2);
+  g.gain.linearRampToValueAtTime(0, t + .9);
+  s.connect(f); f.connect(g); g.connect(aSfx);
+  s.start(t, Math.random()); s.stop(t + 1);
+}
+export function sfxDing() { // campainha do elevador: uma nota suave, sem agudo
+  const m = theme();
+  pluck(m.root * 3, .55, 0);
+}
+export function sfxElevator(dur) { // motor do elevador: zumbido grave que sobe e assenta
+  if (!audioOn()) return;
+  const t = AC.currentTime;
+  const o = AC.createOscillator(); o.type = 'triangle';
+  o.frequency.setValueAtTime(70, t);
+  o.frequency.linearRampToValueAtTime(92, t + dur * .4);
+  o.frequency.linearRampToValueAtTime(78, t + dur);
+  const s = AC.createBufferSource(); s.buffer = nbuf; s.loop = true;
+  const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 200;
+  const g = AC.createGain();
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(.05, t + .5);
+  g.gain.setValueAtTime(.05, t + dur - .4);
+  g.gain.linearRampToValueAtTime(0, t + dur);
+  o.connect(g); s.connect(f); f.connect(g); g.connect(aSfx);
+  o.start(t); s.start(t); o.stop(t + dur + .05); s.stop(t + dur + .05);
+}
 export function thunder() { // trovão distante rolando entre os prédios
   if (!audioOn()) return;
   const t = AC.currentTime;
@@ -351,6 +408,23 @@ export function trainArrive(delay, dur) { // ronco crescente + guincho de freio,
   bg.gain.linearRampToValueAtTime(0, t0 + dur + .1);
   br.connect(bf); bf.connect(bg); bg.connect(aSfx);
   br.start(t0 + dur * .55); br.stop(t0 + dur + .2);
+}
+export function trainDepart(delay, dur) { // o trem arrancando: ronco que cresce e se afasta no túnel
+  if (!audioOn()) return;
+  const t0 = AC.currentTime + delay;
+  const s = AC.createBufferSource(); s.buffer = nbuf; s.loop = true;
+  const f = AC.createBiquadFilter(); f.type = 'lowpass';
+  f.frequency.setValueAtTime(150, t0);
+  f.frequency.linearRampToValueAtTime(480, t0 + dur * .6);
+  f.frequency.linearRampToValueAtTime(220, t0 + dur);
+  const g = AC.createGain();
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(.11, t0 + dur * .4);
+  g.gain.linearRampToValueAtTime(0, t0 + dur);
+  s.playbackRate.setValueAtTime(.5, t0);
+  s.playbackRate.linearRampToValueAtTime(1.25, t0 + dur);
+  s.connect(f); f.connect(g); g.connect(aSfx);
+  s.start(t0); s.stop(t0 + dur + .1);
 }
 export function trainStopSfx() { // chiado do freio pneumático + toque das portas abrindo
   if (!audioOn()) return;

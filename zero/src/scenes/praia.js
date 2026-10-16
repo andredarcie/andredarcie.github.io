@@ -1,8 +1,12 @@
 import * as THREE from 'three';
 import { DARK, DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
-import { sceneCaption } from '../story.js';
+import { sceneCaption, objectName, speakerName, linesOf } from '../story.js';
 import { camera } from '../renderer.js';
-import { scene, freshScene, box, lite, grp, blob, anim, instanciar, at, walkOf, blockOf } from '../kit.js';
+import { say } from '../dialog.js';
+import { IS_LOCAL } from '../input.js';
+import { sfxPaddle, sfxStep, sfxSit } from '../audio.js';
+import { pose, applyPose, placeBody, cameraFromHead, makeAction, fadeNearCamera, SOLE } from '../body.js';
+import { scene, inters, freshScene, box, lite, grp, blob, anim, instanciar, at, tag, triggerOf, walkOf, blockOf } from '../kit.js';
 
 /* ===================== CENA: A PRAIA (o fim da fuga) ===================== */
 // Lições que custaram caro (não desfazer):
@@ -39,15 +43,40 @@ function sandH(x, z) {
   const dune = smooth((u - 16) / 22);
   return u * .028 + dune * (1.3 + .55 * Math.sin(x * .13 + z * .05) + .35 * Math.sin(x * .29 - z * .12));
 }
+
+// a ilha do farol: elipse com um platô de capim e costão de pedra caindo no mar
+const IX = -36, IZ = -49, IRX = 13, IRZ = 8, ITOP = 3.2;
+function ilhaQ(x, z) {                          // 0 no centro, 1 na borda d'água (contorno irregular)
+  const dx = (x - IX) / IRX, dz = (z - IZ) / IRZ, a = Math.atan2(dz, dx);
+  return Math.hypot(dx, dz) * (1 + .05 * Math.sin(a * 3 + 1) + .03 * Math.sin(a * 7));
+}
+function ilhaH(x, z) {
+  const q = ilhaQ(x, z);
+  if (q < .68) return ITOP + .12 * Math.sin(x * .6 + z * .4) * (1 - q / .68);
+  return ITOP + (-4 - ITOP) * smooth((q - .68) / .4);
+}
+// chão de quem anda: areia da praia, ou platô e trapiche na ilha
+const PIER_Z0 = IZ + 3.8, PIER_Z1 = IZ + 10.2, PIER_Y = ITOP + .1;
+const LAD_Z = PIER_Z1 + .08;                    // plano da escada, na ponta do trapiche (de frente para +z)
+const rungY = j => PIER_Y - .35 - .38 * (11 - j); // degrau j: 0 = o de baixo (perto da água), 11 = o do topo
+function chaoH(x, z) {
+  if (z > -30) return sandH(x, z);
+  if (Math.abs(x - IX) < .75 && z > PIER_Z0) return PIER_Y;
+  return ilhaH(x, z);
+}
 // Altura da onda pela distância d da arrebentação. As cristas andam PARA A PRAIA
 // (d diminui com o tempo: +t nos termos em d); antes iam mar adentro.
 // A MESMA fórmula existe em GLSL (WAVE_GLSL): o shader desenha o mar e o JS faz
-// boiar o barco, a espuma das pedras e o espirro. Mudou uma, mude a outra.
-const SHARP = 1.8;                               // >1: crista pontuda e cava larga, como ondulação de verdade
+// boiar o barco, a canoa, a espuma das pedras e o espirro. Mudou uma, mude a outra.
+const SHARP = 1.8;
+// abrigo do trapiche: a ilha quebra o mar e a água em volta da escada fica mansa
+// (sem isso a canoa subia e descia 3 m ao lado da escada)
+const CALM_X = IX, CALM_Z = PIER_Z1 + 1.2;
+const calmAt = (x, z) => .12 + .88 * smooth((Math.hypot(x - CALM_X, z - CALM_Z) - 4) / 16);                               // >1: crista pontuda e cava larga, como ondulação de verdade
 const swell = ph => Math.pow(Math.sin(ph) * .5 + .5, SHARP) * 2 - 1;
 function waveAt(x, d, t) {
   const shoal = Math.max(.3, 2.2 - d * .045);   // a onda encorpa ao perder fundo
-  const edge = clamp01(d / 7);                  // ...e morre nos últimos metros, já quebrada
+  const edge = clamp01(d / 7) * calmAt(x, shoreZ(x) - d); // ...morre nos últimos metros, já quebrada, e no abrigo
   return edge * (
     swell(d * .17 + t * 1.5) * .62 * shoal +
     swell(d * .06 + t * .85 + x * .055) * .80 +      // cristas tortas, não paralelas
@@ -61,7 +90,10 @@ float shoreZ(float x) { return -20.0 + 1.4 * sin(x * 0.06 + 0.5) + 0.5 * sin(x *
 float swell(float ph) { return pow(sin(ph) * 0.5 + 0.5, ${SHARP.toFixed(2)}) * 2.0 - 1.0; }
 float waveH(float x, float d, float t) {
   float shoal = max(0.3, 2.2 - d * 0.045);
-  float edge = clamp(d / 7.0, 0.0, 1.0);
+  float zz = shoreZ(x) - d;
+  float r = length(vec2(x - ${CALM_X.toFixed(2)}, zz - (${CALM_Z.toFixed(2)})));
+  float k = clamp((r - 4.0) / 16.0, 0.0, 1.0);
+  float edge = clamp(d / 7.0, 0.0, 1.0) * (0.12 + 0.88 * k * k * (3.0 - 2.0 * k));
   return edge * (
     swell(d * 0.17 + t * 1.5) * 0.62 * shoal +
     swell(d * 0.06 + t * 0.85 + x * 0.055) * 0.80 +
@@ -189,6 +221,19 @@ function softTexture() {
 }
 
 
+/* ---------- a água não entra na canoa ---------- */
+// O casco fica meio afundado: o mar (uma superfície só) cortaria o fundo dela por dentro.
+// Uma tampa invisível na boca da canoa marca o stencil antes de tudo; mar e espuma só pintam
+// onde a marca não está. Tudo que está dentro da canoa (forro, bancos, pernas) aparece seco.
+const STENCIL_CANOA = 1;
+function foraDaCanoa(mat) {
+  mat.stencilWrite = true;                      // o three só liga o teste de stencil com isso
+  mat.stencilRef = STENCIL_CANOA;
+  mat.stencilFunc = THREE.NotEqualStencilFunc;
+  mat.stencilFail = mat.stencilZFail = mat.stencilZPass = THREE.KeepStencilOp;
+  return mat;
+}
+
 /* ---------- fita: faixa sólida ao longo de x, redesenhada a cada quadro (espuma, areia molhada) ---------- */
 function fita(nx, color, opacity, order) {
   const geo = new THREE.BufferGeometry();
@@ -197,7 +242,7 @@ function fita(nx, color, opacity, order) {
   for (let i = 0; i < nx; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
   geo.setIndex(idx);
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
+  const mat = foraDaCanoa(new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide }));
   const m = new THREE.Mesh(geo, mat);
   m.frustumCulled = false;
   m.renderOrder = order;
@@ -277,10 +322,10 @@ export function buildPraia() {
     uFoam: { value: new THREE.Color(GLOW) },
     uSun: { value: new THREE.Color(SUNC) },
   });
-  const sea = new THREE.Mesh(seaGeo, new THREE.ShaderMaterial({
+  const sea = new THREE.Mesh(seaGeo, foraDaCanoa(new THREE.ShaderMaterial({
     uniforms: seaU, vertexShader: SEA_VS, fragmentShader: SEA_FS, fog: true,
     extensions: { derivatives: true },             // normal da faceta (WebGL1); no WebGL2 já vem
-  }));
+  })));
   sea.position.y = SEA_Y;                        // começa 1.5 m por baixo da areia: sem fresta na beira
   sea.frustumCulled = false;                     // a GPU mexe nos vértices: a caixa da malha não vale
   scene.add(sea);
@@ -390,26 +435,119 @@ export function buildPraia() {
     nuvensG.rotation.y = Math.sin(t * .01) * .06; // deriva lenta
   });
 
-  // ── ao longe: um promontório com farol, uma ilha, um veleiro ─────────────
+  // ── a ilha do farol (destino da canoa), uma ilhota ao longe, um veleiro ──
   const LEAF = mix(BLUE, NAVY, .3), LEAF2 = mix(BLUE, NAVY, .55);
-  const prom = grp(-44, 0, -47);
-  blob(14, 5, 7, DARK2, 0, -.5, 0, prom);
-  blob(8, 7.5, 5.5, DARK2, -7, .5, -2, prom);
-  blob(9, 2.4, 4.6, LEAF2, -5, 5.4, -1.5, prom);  // mata no alto
-  blob(6, 1.8, 3.5, LEAF2, 4, 3.4, -1, prom);
-  const farol = grp(11, 2.2, .5, prom);
-  for (let i = 0; i < 4; i++) {                   // torre listrada
-    const seg = new THREE.Mesh(new THREE.CylinderGeometry(.42 - i * .04, .46 - i * .04, .8, 10),
-      new THREE.MeshLambertMaterial({ color: i % 2 ? DARK2 : GLOW }));
-    seg.position.y = .4 + i * .8;
+  const ilhaGeo = new THREE.PlaneGeometry(2 * IRX + 8, 2 * IRZ + 8, 48, 32);
+  ilhaGeo.rotateX(-Math.PI / 2);
+  ilhaGeo.translate(IX, 0, IZ);
+  const iPos = ilhaGeo.attributes.position, iCol = [];
+  const cCapim = mix(BLUE, LIGHT2, .55), cPedra = mix(DARK2, NAVY, .3);
+  for (let i = 0; i < iPos.count; i++) {
+    const x = iPos.getX(i), z = iPos.getZ(i), q = ilhaQ(x, z);
+    iPos.setY(i, ilhaH(x, z));
+    cc.copy(cCapim).lerp(new THREE.Color(LEAF2), .5 + .5 * Math.sin(x * .9 + z * 1.3)); // capim em manchas
+    cc.lerp(new THREE.Color(cPedra), smooth((q - .6) / .14));                           // pedra na borda do platô
+    cc.multiplyScalar(.97 + rnd() * .06);
+    iCol.push(cc.r, cc.g, cc.b);
+  }
+  ilhaGeo.setAttribute('color', new THREE.Float32BufferAttribute(iCol, 3));
+  ilhaGeo.computeVertexNormals();
+  scene.add(new THREE.Mesh(ilhaGeo, new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true })));
+  // andável: o platô (duas faixas cruzadas, dentro da borda) e o trapiche
+  walkOf(IX - 7.5, IZ - 2.2, IX + 7.5, IZ + 2.2);
+  walkOf(IX - 4.5, IZ - 4.5, IX + 4.5, IZ + 4.5);
+  walkOf(IX - .5, IZ + 3.6, IX + .5, PIER_Z1 - .3);
+
+  // pedras grandes no costão, meio dentro d'água (o lado do trapiche fica livre)
+  for (const a of [0, .65, 2.35, 2.95, 3.55, 4.2, 4.85, 5.55]) {
+    const x = IX + Math.cos(a) * IRX * .98, z = IZ + Math.sin(a) * IRZ * .98, s = .8 + rnd() * .7;
+    blob(1.7 * s, 1.3 * s, 1.4 * s, DARK2, x, -.2, z);
+    blob(1.0 * s, .8 * s, .9 * s, cPedra, x + .9 * s, .3 * s, z - .5 * s);
+  }
+  // moitas no platô (vivas: azuis)
+  for (const [mx, mz, s] of [[6.2, -2.2, 1], [3.6, -4.2, .8], [-7.6, .6, 1.1], [7.4, 1.4, .7], [-6.2, -3.3, .9], [-1.2, -4.6, .7]]) {
+    const x = IX + mx, z = IZ + mz, y = ilhaH(x, z);
+    blob(.9 * s, .55 * s, .8 * s, LEAF2, x, y + .25 * s, z);
+    blob(.6 * s, .45 * s, .55 * s, LEAF, x + .5 * s, y + .4 * s, z + .2 * s);
+    blockOf(x - .9 * s, z - .8 * s, x + .9 * s, z + .8 * s);
+  }
+
+  // o trapiche: deck de tábuas sobre estacas, escada descendo até a água
+  const MAD = mix(FLOOR, LIGHT2, .5), MAD2 = mix(FLOOR, DARK2, .35);
+  for (let z = PIER_Z0 + .2; z < PIER_Z1; z += .4) box(1.4, .08, .36, MAD, IX, PIER_Y - .04, z);
+  for (const s of [-1, 1]) box(.1, .18, PIER_Z1 - PIER_Z0, MAD2, IX + s * .6, PIER_Y - .17, (PIER_Z0 + PIER_Z1) / 2);
+  for (const z of [IZ + 5.2, IZ + 7.4, PIER_Z1 - .1]) for (const s of [-1, 1]) {
+    const top = z > PIER_Z1 - .5 ? PIER_Y + .45 : PIER_Y - .05;  // as da ponta sobem: cabeços de amarrar
+    box(.14, top + 4, .14, MAD2, IX + s * .62, (top - 4) / 2, z);
+  }
+  // escada: 12 degraus da água até o deck; os montantes passam do deck como corrimão (a mão
+  // precisa de onde se apoiar para subir no fim) e dobram para dentro do trapiche
+  const escada = grp(0, 0, 0);
+  const RAIL_TOP = PIER_Y + .95;
+  // (montantes a ±.3 e o pescoço abrindo para ±.45: quem sobe passa pelo vão sem raspar os braços)
+  for (const s of [-1, 1]) {
+    box(.05, RAIL_TOP + 1.6, .05, MAD2, IX + s * .3, (RAIL_TOP - 1.6) / 2, LAD_Z, escada);
+    const pg = box(.05, .05, .45, MAD2, IX + s * .375, RAIL_TOP, LAD_Z - .2, escada); // pescoço de ganso, abrindo
+    pg.rotation.y = Math.atan2(s * .15, -.4);
+    box(.05, .9, .05, MAD2, IX + s * .45, RAIL_TOP - .45, LAD_Z - .4, escada);   // desce até o deck
+  }
+  for (let j = 0; j < 12; j++) box(.6, .04, .05, MAD, IX, rungY(j), LAD_Z, escada);
+  const alvoEscada = new THREE.Mesh(new THREE.BoxGeometry(.9, RAIL_TOP + 1.7, .5), new THREE.MeshBasicMaterial());
+  alvoEscada.visible = false;                     // caixa invisível só para a mira pegar a escada inteira
+  alvoEscada.position.set(IX, (RAIL_TOP - 1.7) / 2, LAD_Z + .12);
+  escada.add(alvoEscada);
+
+  // o farol, em escala de gente: torre listrada, galeria, lanterna e cúpula
+  const LX = IX - 4, LZ = IZ - 2.5;
+  const farol = grp(LX, ITOP, LZ);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.45, .7, 14), new THREE.MeshLambertMaterial({ color: DARK2, flatShading: true }));
+  base.position.y = .05;
+  farol.add(base);
+  for (let i = 0; i < 6; i++) {                   // torre listrada
+    const r0 = 1.15 - i * .06;
+    const seg = new THREE.Mesh(new THREE.CylinderGeometry(r0 - .06, r0, 1.4, 12),
+      new THREE.MeshLambertMaterial({ color: i % 2 ? DARK2 : GLOW, flatShading: true }));
+    seg.position.y = .7 + i * 1.4;
     farol.add(seg);
   }
-  box(.5, .36, .5, DARK2, 0, 3.42, 0, farol);
-  const lamp = lite(.32, .26, .32, GLOW, 0, 3.42, 0, farol);
-  const lampHalo = new THREE.Mesh(new THREE.SphereGeometry(1.1, 12, 8),
+  box(.84, 1.66, .1, DARK2, 0, 1.23, 1.1, farol); // porta virada para o trapiche
+  box(.7, 1.55, .1, DARK, 0, 1.18, 1.13, farol);
+  for (const [wy, wr] of [[3.6, 1.02], [6.3, .9]]) lite(.28, .42, .06, NAVY, 0, wy, wr, farol);
+  const gal = new THREE.Mesh(new THREE.CylinderGeometry(1.32, 1.32, .14, 14), new THREE.MeshLambertMaterial({ color: DARK2, flatShading: true }));
+  gal.position.y = 8.47;
+  farol.add(gal);
+  for (let k = 0; k < 12; k++) {                  // guarda-corpo da galeria
+    const a = k / 12 * Math.PI * 2;
+    box(.04, .5, .04, DARK2, Math.cos(a) * 1.24, 8.79, Math.sin(a) * 1.24, farol);
+  }
+  const corrimao = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.25, .05, 14, 1, true), new THREE.MeshLambertMaterial({ color: DARK2, side: THREE.DoubleSide }));
+  corrimao.position.y = 9.04;
+  farol.add(corrimao);
+  const lamp = new THREE.Mesh(new THREE.CylinderGeometry(.62, .62, 1.0, 10), new THREE.MeshBasicMaterial({ color: GLOW }));
+  lamp.position.y = 9.04;
+  farol.add(lamp);
+  for (let k = 0; k < 5; k++) {                   // montantes da lanterna
+    const a = k / 5 * Math.PI * 2;
+    box(.05, 1.0, .05, DARK2, Math.cos(a) * .63, 9.04, Math.sin(a) * .63, farol);
+  }
+  const cupula = new THREE.Mesh(new THREE.ConeGeometry(.9, .75, 10), new THREE.MeshLambertMaterial({ color: DARK2, flatShading: true }));
+  cupula.position.y = 9.92;
+  farol.add(cupula);
+  blob(.12, .12, .12, DARK2, 0, 10.36, 0, farol);
+  box(.03, .5, .03, DARK2, 0, 10.6, 0, farol);
+  const lampHalo = new THREE.Mesh(new THREE.SphereGeometry(2.4, 12, 8),
     new THREE.MeshBasicMaterial({ color: SUNC, transparent: true, opacity: .35, blending: THREE.AdditiveBlending, depthWrite: false }));
-  lampHalo.position.y = 3.42;
+  lampHalo.position.y = 9.04;
   farol.add(lampHalo);
+  blockOf(LX - 1.5, LZ - 1.5, LX + 1.5, LZ + 1.5);
+
+  // perto do farol e olhando para ele: a câmera sobe até a lanterna e ele pensa (fim do jogo)
+  triggerOf((x, z, yaw) => {
+    const dx = LX - x, dz = LZ - z;
+    if (Math.hypot(dx, dz) > 9.5) return false;
+    const d = Math.atan2(-dx, -dz) - yaw;
+    return Math.abs(Math.atan2(Math.sin(d), Math.cos(d))) < .5;
+  }, { look: { x: LX, y: ITOP + 9.04, z: LZ }, sequence: 'finishGame' });
   anim(t => {                                     // o facho girando: pisca devagar
     const k = Math.pow(Math.max(0, Math.sin(t * 1.1)), 12);
     lampHalo.material.opacity = .08 + k * .5;
@@ -418,7 +556,7 @@ export function buildPraia() {
   blob(9, 1.6, 3, DARK2, 46, -.6, -58);           // ilha baixa à direita, quase sumindo
   blob(4, 1.4, 2, LEAF2, 47, .6, -58);
 
-  const barco = grp(-30, 0, -46);
+  const barco = grp(-30, 0, -64);              // passa atrás da ilha do farol
   box(1.7, .3, .5, LIGHT, 0, .15, 0, barco);      // casco
   box(1.5, .06, .44, DARK2, 0, .33, 0, barco);    // convés
   box(.04, 2.3, .04, DARK2, .1, 1.45, 0, barco);  // mastro
@@ -432,8 +570,8 @@ export function buildPraia() {
   vela([.06, .45, 0, .06, 2.1, 0, -.7, .45, 0], LIGHT);        // giba
   anim(t => {
     const x = ((t * .45 + 40) % 140 + 140) % 140 - 70;
-    const d = shoreZ(x) + 46;
-    barco.position.set(x, SEA_Y + waveAt(x, d, t) * .55, -46);
+    const d = shoreZ(x) + 64;
+    barco.position.set(x, SEA_Y + waveAt(x, d, t) * .55, -64);
     barco.rotation.z = Math.sin(t * .9) * .06;
     barco.rotation.x = Math.sin(t * .7 + 1) * .04;
   });
@@ -781,6 +919,442 @@ export function buildPraia() {
     }
   });
 
+  // ── a canoa ──────────────────────────────────────────────────────────────
+  // Na beira, proa para o mar. E: ele vai até ela, apoia as mãos na borda e entra. Andar = remar
+  // para onde se olha (a remada escolhe o lado sozinha, como quem rema de verdade). Perto da escada
+  // do trapiche, mirar nela e apertar E: ele encosta a canoa, larga o remo, vira e sobe degrau a degrau.
+  const CL = 1.85, CW = .42, CD = .3;            // meio-comprimento, meia-boca, pontal
+  const rimX = z => CW * (1 - .3 * Math.abs(z) / CL) * Math.sqrt(Math.max(0, 1 - (z / CL) ** 2)); // meia-boca em z
+  const rimY = z => .9 * CD * (Math.abs(z) / CL) ** 4;                                           // a borda sobe nas pontas
+  const floorY = z => -CD * .9 * Math.sqrt(Math.max(0, 1 - (z / CL) ** 2)) + .02;               // o fundo, por dentro
+  const NS = 14;
+  const cascoGeo = new THREE.SphereGeometry(1, NS, 5, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2); // meia esfera: a cuia
+  const kP = cascoGeo.attributes.position;
+  for (let i = 0; i < kP.count; i++) {
+    const k = Math.abs(kP.getZ(i));
+    kP.setX(i, kP.getX(i) * (1 - .3 * k));       // pontas afinadas
+    kP.setY(i, kP.getY(i) + .9 * k ** 4);         // proa e popa levantadas
+  }
+  cascoGeo.computeVertexNormals();
+  const canoa = grp(0, 0, 0);
+  canoa.rotation.order = 'YXZ';
+  const casco = new THREE.Mesh(cascoGeo, new THREE.MeshLambertMaterial({ color: MAD2, flatShading: true, side: THREE.DoubleSide }));
+  casco.scale.set(CW, CD, CL);
+  canoa.add(casco);
+  const forro = new THREE.Mesh(cascoGeo, new THREE.MeshLambertMaterial({ color: MAD, flatShading: true, side: THREE.BackSide }));
+  forro.scale.set(CW * .93, CD * .9, CL * .96);   // por dentro, madeira mais clara
+  canoa.add(forro);
+  // a boca da canoa vira uma tampa invisível que marca o stencil: o mar não pinta ali dentro
+  const tampaPos = [0, 0, 0];
+  for (let i = 0; i <= NS; i++) tampaPos.push(kP.getX(i), kP.getY(i), kP.getZ(i)); // a 1ª fileira da cuia é a borda
+  const tampaGeo = new THREE.BufferGeometry();
+  tampaGeo.setAttribute('position', new THREE.Float32BufferAttribute(tampaPos, 3));
+  const tIdx = [];
+  for (let i = 1; i <= NS; i++) tIdx.push(0, i, i + 1);
+  tampaGeo.setIndex(tIdx);
+  const tampa = new THREE.Mesh(tampaGeo, new THREE.MeshBasicMaterial({
+    colorWrite: false, depthWrite: false, side: THREE.DoubleSide,
+    stencilWrite: true, stencilRef: STENCIL_CANOA, stencilFunc: THREE.AlwaysStencilFunc, stencilZPass: THREE.ReplaceStencilOp,
+  }));
+  tampa.scale.set(CW, CD, CL);
+  tampa.renderOrder = -.5;                        // antes do mar
+  canoa.add(tampa);
+  for (const z of [-.75, 1.0])                    // bancos, da largura do casco naquele ponto
+    box(2 * rimX(z) * .97, .04, .2, MAD2, 0, -.12, z, canoa); // baixos: sentado, o quadril fica abaixo da borda
+
+  // remo de pá única: origem no punho, o cabo desce por -y até a pá
+  const BLADE = 1.17;                             // do punho ao centro da pá
+  const remo = grp(0, 0, 0, canoa);
+  box(.12, .04, .04, MAD, 0, 0, 0, remo);         // punho em T
+  box(.035, .97, .035, MAD, 0, -.5, 0, remo);     // cabo
+  box(.08, .1, .03, MAD2, 0, -.97, 0, remo);      // garganta
+  box(.17, .44, .022, MAD2, 0, -BLADE, 0, remo);  // pá
+  remo.traverse(o => { if (o.isMesh) fadeNearCamera(o.material); }); // nunca visto por dentro, nem colado no olho
+
+  // Estados do remo no espaço da canoa: G = punho, D = rumo do punho para a pá, F = normal da
+  // face da pá, a = [onde a mão esquerda, a direita] seguram no cabo (m a partir do punho).
+  const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
+  const estado = () => ({ G: V3(0, 0, 0), D: V3(1, 0, 0), F: V3(0, 1, 0), a: [0, 0] });
+  const NO_FUNDO = { G: V3(-.6, .05, .55), D: V3(1, 0, 0), F: V3(0, 1, 0), a: [.3, .75] };   // deitado sobre as bordas
+  const NO_COLO = { G: V3(-.55, .36, .72), D: V3(1, 0, 0), F: V3(0, 1, 0), a: [.33, .77] };  // atravessado no colo
+  // A remada, lado +x (o lado -x espelha x). T = mão de cima no punho, B = para onde a pá aponta.
+  // Entrada lá na frente, puxa até o quadril, sai, volta pelo ar com a pá deitada (feathering).
+  // A câmera sentada fica perto de (0, .7, .82): todo T fica a 30 cm ou mais dela — a mão de cima
+  // vai à frente e ao lado do rosto, nunca na frente do olho (zona de conforto da cabeça).
+  const RM = {
+    catchT: V3(.2, .54, .44), catchB: V3(.5, -.47, .45),   // mão de cima na altura do queixo, não dos olhos
+    exitT: V3(.26, .44, .92), exitB: V3(.55, -.41, 1.32),
+    outT: V3(.28, .5, .62), outB: V3(.62, .1, 1.3),
+    fwdT: V3(.24, .56, .46), fwdB: V3(.66, .3, .5),
+    bOutT: V3(.24, .52, .5), bOutB: V3(.6, .1, .45),   // ré: entra atrás, empurra para a frente
+    bFwdT: V3(.26, .46, .86), bFwdB: V3(.66, .3, 1.25),
+  };
+  const tA = V3(0, 0, 0), tB = V3(0, 0, 0);
+  // u: 0–.45 pá na água · .45–.55 sai · .55–1 volta pelo ar; s0 → s1: troca de lado durante a volta
+  function remada(u, s0, s1, back, out) {
+    let T0, T1, B0, B1, k, fe;
+    const r = RM;
+    if (u < .45) { k = u / .45; fe = 0; [T0, T1, B0, B1] = back ? [r.exitT, r.catchT, r.exitB, r.catchB] : [r.catchT, r.exitT, r.catchB, r.exitB]; }
+    else if (u < .55) { k = (u - .45) / .1; fe = k; [T0, T1, B0, B1] = back ? [r.catchT, r.bOutT, r.catchB, r.bOutB] : [r.exitT, r.outT, r.exitB, r.outB]; }
+    else if (u < .85) { k = (u - .55) / .3; fe = 1; [T0, T1, B0, B1] = back ? [r.bOutT, r.bFwdT, r.bOutB, r.bFwdB] : [r.outT, r.fwdT, r.outB, r.fwdB]; }
+    else { k = (u - .85) / .15; fe = 1 - k; [T0, T1, B0, B1] = back ? [r.bFwdT, r.exitT, r.bFwdB, r.exitB] : [r.fwdT, r.catchT, r.fwdB, r.catchB]; }
+    const e = smooth(k);
+    tA.lerpVectors(T0, T1, e);
+    tB.lerpVectors(B0, B1, e);
+    const ks = u < .55 ? 0 : smooth((u - .55) / .45);
+    const s = s0 + (s1 - s0) * ks;
+    tA.x *= s; tB.x *= s;
+    if (s0 !== s1) {                              // trocando de lado: a pá passa alta por cima da canoa
+      const lift = Math.sin(Math.PI * ks);
+      tB.y += .5 * lift; tA.y += .1 * lift;
+    }
+    out.G.copy(tA);
+    out.D.subVectors(tB, tA).normalize();
+    out.F.set(0, fe, 1 - fe);                     // na água a face empurra para trás; no ar, deitada
+    out.a[0] = .3 * (1 - s); out.a[1] = .3 * (1 + s); // a mão do lado da pá vai embaixo, a outra no punho
+    return s;
+  }
+  function mistura(a, b, k, out) {
+    out.G.lerpVectors(a.G, b.G, k);
+    out.D.lerpVectors(a.D, b.D, k);
+    if (out.D.lengthSq() < 1e-6) out.D.copy(b.D); else out.D.normalize();
+    out.F.lerpVectors(a.F, b.F, k);
+    out.a[0] = a.a[0] + (b.a[0] - a.a[0]) * k;
+    out.a[1] = a.a[1] + (b.a[1] - a.a[1]) * k;
+  }
+  const NEG_Y = V3(0, -1, 0), fc = V3(0, 0, 0), fp = V3(0, 0, 0), cr = V3(0, 0, 0);
+  const q1 = new THREE.Quaternion(), qT = new THREE.Quaternion();
+  function poeRemo(P) {
+    remo.position.copy(P.G);
+    q1.setFromUnitVectors(NEG_Y, P.D);
+    fc.set(0, 0, 1).applyQuaternion(q1);          // para onde a face aponta só alinhando o cabo
+    fp.copy(P.F).addScaledVector(P.D, -P.F.dot(P.D));
+    if (fp.lengthSq() < 1e-6) { remo.quaternion.copy(q1); return; }
+    fp.normalize();
+    qT.setFromAxisAngle(P.D, Math.atan2(cr.crossVectors(fc, fp).dot(P.D), fc.dot(fp))); // gira o cabo até a face certa
+    remo.quaternion.multiplyQuaternions(qT, q1);
+  }
+  // zona de conforto: se algum ponto do remo (do punho à ponta da pá) passa a menos de CONFORTO
+  // da câmera, o remo inteiro é empurrado para fora — e as mãos, que vêm dele, vão junto
+  const CONFORTO = .3, camL = V3(0, 0, 0), pq = V3(0, 0, 0);
+  function afastaDoRosto(R) {
+    canoa.worldToLocal(camL.copy(camera.position));
+    const k = Math.min(Math.max(pq.subVectors(camL, R.G).dot(R.D), 0), BLADE + .22);
+    pq.copy(R.G).addScaledVector(R.D, k);
+    const d = pq.distanceTo(camL);
+    if (d >= CONFORTO) return;
+    if (d < 1e-4) pq.set(0, -.6, -.8); else pq.sub(camL).divideScalar(d); // para baixo e à frente, se colado
+    R.G.addScaledVector(pq, CONFORTO - d);
+  }
+  const P = estado(), PS = estado(), PC = estado();
+  const remoMao = i => P.G.clone().addScaledVector(P.D, P.a[i]);
+  remada(.55, 1, 1, false, PS);
+
+  // ondinhas onde a pá entra na água
+  const ondaGeo = new THREE.RingGeometry(.82, 1, 24);
+  ondaGeo.rotateX(-Math.PI / 2);
+  const ondas = [];
+  for (let i = 0; i < 6; i++) {
+    const m = new THREE.Mesh(ondaGeo, foraDaCanoa(new THREE.MeshBasicMaterial({ color: GLOW, transparent: true, opacity: 0, depthWrite: false })));
+    m.renderOrder = 3;
+    m.visible = false;
+    scene.add(m);
+    ondas.push({ m, age: 9 });
+  }
+  let nOnda = 0;
+
+  const cv = {
+    x: -1, z: -19.05, h: 0, v: 0, t: 0,
+    rock: 0, rockV: 0,                            // balanço de quem mexe o peso lá dentro (mola)
+    inp: null, riding: false, scripted: false, auto: 0, // auto ≠ 0: rema sozinha daquele lado (estacionando)
+    stroking: false, u: .55, s0: 1, s1: 1, sNow: 1, back: false, nLado: 0,
+    goal: 0, torque: .12, jfix: true,
+    pl: 0, deck: 1,                               // remo: 0 no colo … 1 remando; deck 1 = deitado na canoa
+  };
+  const SEAT = V3(0, -.25, 1.0);                  // raiz do corpo sentado: no fundo, sob o banco de trás
+  const UP = V3(0, 1, 0);
+  const agua = (x, z, t) => SEA_Y + waveAt(x, shoreZ(x) - z, t);
+  const casco0 = (x, z, t) => Math.max(sandH(x, z) + CD, agua(x, z, t) + .15);
+  const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+  function aguaLivre(x, z) {
+    if (x < -68 || x > 68 || z < -92) return false;
+    if (z > shoreZ(x) + .25) return false;                                // não sobe na areia
+    if (x > -31 && x < -18.5 && z > -29 && z < -17.5) return false;       // costão
+    if (ilhaQ(x, z) < 1.2) return false;                                  // pedras da ilha
+    if (Math.abs(x - IX) < .9 && z > PIER_Z0 && z < LAD_Z + .3) return false; // trapiche e escada
+    if (((x - 46) / 10.5) ** 2 + ((z + 58) / 4.5) ** 2 < 1) return false; // ilhota
+    return true;
+  }
+  // assenta a canoa na água (ou na areia): altura e inclinação pelas 4 pontas, mais o balanço do peso
+  function poseCanoa(t) {
+    const s = Math.sin(cv.h), c = Math.cos(cv.h);
+    const h = (lx, lz) => casco0(cv.x + lx * c + lz * s, cv.z - lx * s + lz * c, t);
+    const hb = h(0, -CL * .9), hs = h(0, CL * .9), hl = h(-CW, 0), hr = h(CW, 0);
+    canoa.position.set(cv.x, (hb + hs + hl + hr) / 4, cv.z);
+    canoa.rotation.set(Math.atan2(hb - hs, CL * 1.8), cv.h, Math.atan2(hr - hl, CW * 2) * .5 + cv.rock);
+    canoa.updateMatrixWorld(true);
+  }
+  // de que lado remar: A/D mandam; senão a proa vai para onde se olha; reto, troca a cada 4 remadas
+  function lado(inp) {
+    if (Math.abs(inp.st) > .15) return inp.st < 0 ? 1 : -1;               // remar à direita vira a proa à esquerda
+    const d = angDiff(inp.yaw, cv.h);
+    if (Math.abs(d) > .2) return d > 0 ? 1 : -1;
+    return cv.nLado >= 4 ? -cv.s1 : cv.s1;
+  }
+
+  // um passo da canoa por quadro (idempotente em t: câmera, ações e anim chamam à vontade)
+  let cuT = -1;
+  const wB = V3(0, 0, 0);
+  function atualizaCanoa(t) {
+    if (t === cuT) return;
+    const dt = cuT < 0 ? 0 : Math.min(t - cuT, .05);
+    cuT = t; cv.t = t;
+    const inp = cv.inp; cv.inp = null;
+    const quer = cv.auto ? true : !!inp && (Math.abs(inp.f) > .15 || Math.abs(inp.st) > .15);
+    cv.rockV += (-26 * cv.rock - 3 * cv.rockV) * dt;
+    cv.rock += cv.rockV * dt;
+
+    // ── remada ──
+    let pegou = false;
+    if (quer && !cv.stroking) {                   // começa: o remo sai do colo direto para a volta pelo ar
+      cv.stroking = true; cv.u = .55; cv.nLado = 0;
+      cv.back = !cv.auto && inp.f < -.15;
+      cv.s0 = cv.s1 = cv.auto ? Math.sign(cv.auto) : cv.back ? cv.s1 : lado(inp);
+      if (inp) cv.goal = inp.yaw;
+    }
+    if (cv.stroking) {
+      const u0 = cv.u;
+      cv.u += dt / 1.5;
+      if (u0 < .55 && cv.u >= .55) {              // a pá saiu da água: decide a próxima remada
+        if (!quer) { cv.stroking = false; cv.u = .55; }
+        else {
+          cv.back = !cv.auto && inp.f < -.15;
+          const s = cv.auto ? Math.sign(cv.auto) : cv.back ? (cv.nLado >= 4 ? -cv.s1 : cv.s1) : lado(inp);
+          cv.nLado = s === cv.s1 ? cv.nLado + 1 : 0;
+          cv.s1 = s;
+          const vira = !cv.auto && !cv.back && (Math.abs(inp.st) > .15 || Math.abs(angDiff(inp.yaw, cv.h)) > .2);
+          cv.torque = vira ? .55 : .12;
+          cv.jfix = !vira && !cv.back && !cv.auto; // reto: o "J" no fim da remada segura a proa no rumo
+          if (inp) cv.goal = inp.yaw;
+        }
+      }
+      if (cv.u >= 1) { cv.u -= 1; cv.s0 = cv.s1; pegou = true; } // a pá entra na água lá na frente
+    }
+    cv.pl += ((cv.stroking ? 1 : 0) - cv.pl) * Math.min(1, dt * 4);
+
+    // ── física: só a pá dentro d'água empurra; a água freia ──
+    if (!cv.scripted) {
+      const shape = cv.stroking && cv.pl > .6 && cv.u < .45 ? Math.sin(Math.PI * cv.u / .45) : 0;
+      const sg = cv.back ? -1 : 1;
+      cv.v += (cv.back ? 2 : 3.2) * shape * sg * dt;
+      cv.h += cv.s0 * cv.torque * shape * sg * dt; // remar de um lado gira a proa para o outro
+      if (cv.jfix) cv.h += angDiff(cv.goal, cv.h) * .9 * shape * dt;
+      cv.v -= cv.v * .55 * dt;
+      const s = Math.sin(cv.h), c = Math.cos(cv.h);
+      const nx = cv.x - s * cv.v * dt, nz = cv.z - c * cv.v * dt;
+      const ponta = cv.v >= 0 ? -CL : CL;          // a ponta que vai na frente
+      if (aguaLivre(nx, nz) && aguaLivre(nx + s * ponta, nz + c * ponta)) { cv.x = nx; cv.z = nz; }
+      else cv.v *= .2;                             // bateu: perde o embalo
+    }
+
+    // ── remo ──
+    cv.sNow = remada(cv.u, cv.s0, cv.s1, cv.back, PS);
+    mistura(NO_COLO, PS, cv.pl, PC);
+    mistura(PC, NO_FUNDO, cv.deck, P);
+    afastaDoRosto(P);
+    poeRemo(P);
+
+    // ── o corpo sentado, remando (durante as ações quem manda nele é a ação) ──
+    if (cv.riding) {
+      placeBody(canoa, SEAT.x, SEAT.y, SEAT.z, 0);
+      const bz = PS.G.z + PS.D.z * BLADE;          // pá lá na frente: tronco inclinado e girado para ela
+      const lc = cv.pl * clamp01((1.32 - bz) / .87);
+      pose.hip.set(0, .25, .03);
+      pose.lean = .08 + .12 * lc;                 // pouco: o ombro não sobe na câmera
+      pose.twist = cv.pl * cv.sNow * (.35 * lc - .08);
+      for (let i = 0; i < 2; i++) {
+        pose.hands[i].copy(remoMao(i)).sub(SEAT);
+        pose.feet[i].set(i ? .13 : -.13, SOLE, -.75);      // pernas esticadas para a frente (joelho baixo)
+      }
+      pose.knee.set(0, .8, -1);
+      applyPose();
+    }
+    poseCanoa(t);
+
+    // ── ondinhas e o chuá da pá entrando ──
+    if (pegou && cv.pl > .5) {
+      canoa.localToWorld(wB.copy(P.G).addScaledVector(P.D, BLADE));
+      const o = ondas[nOnda]; nOnda = (nOnda + 1) % ondas.length;
+      o.age = 0; o.m.position.copy(wB); o.m.visible = true;
+      sfxPaddle();
+    }
+    for (const o of ondas) {
+      if (!o.m.visible) continue;
+      o.age += dt;
+      if (o.age > 1.4) { o.m.visible = false; continue; }
+      o.m.scale.setScalar(.12 + o.age * .55);
+      o.m.material.opacity = .4 * (1 - o.age / 1.4);
+      o.m.position.y = agua(o.m.position.x, o.m.position.z, t) + .03;
+    }
+  }
+  anim(atualizaCanoa);
+
+  const canoaRide = {
+    move(dt, f, st, yaw) { cv.inp = { f, st, yaw }; },
+    camera(t, yaw, out) {
+      atualizaCanoa(t);
+      cameraFromHead(out, yaw);
+      return { pitch: canoa.rotation.x * .5, roll: canoa.rotation.z * .6 };
+    },
+  };
+
+  // ── ações de corpo inteiro ──
+  const naCanoa = v => canoa.localToWorld(v);
+  const daCanoa = w => canoa.worldToLocal(w.clone());
+  const areiaLocal = (lx, lz) => { const w = naCanoa(V3(lx, 0, lz)); return daCanoa(V3(w.x, sandH(w.x, w.z), w.z)).y; };
+  const umaVez = fn => { let feito = false; return k => { if (!feito && k > .92) { feito = true; fn(); } }; };
+  const pisa = () => umaVez(sfxStep);
+  const balanca = r => () => { cv.rockV += r; };  // + levanta o lado +x da canoa
+
+  // embarcar: vai até o lado da canoa, agacha com as mãos na borda, um pé, o outro, vira, senta, pega o remo
+  function embarcar(ctx) {
+    atualizaCanoa(cv.t);
+    const pl = daCanoa(V3(ctx.px, 0, ctx.pz));
+    const sg = pl.x > .3 ? 1 : -1;               // +1: ele vem pela direita (+x) da canoa
+    const yawLado = sg > 0 ? Math.PI / 2 : -Math.PI / 2; // de frente para a canoa
+    const rz = sg < 0 ? 1 : -1;                   // a mão direita fica para este lado em z
+    const zM = [1.0 - .28 * rz, 1.0 + .28 * rz];   // mãos esquerda e direita, ao redor do banco
+    const perto = z => V3(sg * (rimX(z) + .01), rimY(z) + .05, z);
+    const longe = z => V3(-sg * (rimX(z) + .01), rimY(z) + .05, z);
+    const chao = z => floorY(z) + SOLE;
+    const dist = Math.hypot(pl.x - sg * .9, pl.z - 1.0);
+    const passos = [
+      { dur: Math.min(2.6, Math.max(.7, dist / 1.4)), walk: true, root: V3(sg * .9, areiaLocal(sg * .9, 1.0), 1.0),
+        yaw: yawLado, pitch: -.45, look: 0 },
+      // agacha e apoia as duas mãos na borda de perto
+      // (um passo longe da borda e olhando bem para baixo: as mãos apoiadas aparecem na 1ª pessoa)
+      { dur: .75, hipY: .62, lean: .7, pitch: -1.0, hands: [perto(zM[0]), perto(zM[1])], arc: { hands: [.12, .12] }, knee: V3(0, .1, -1) },
+      // o peso nas mãos; o pé direito passa por cima da borda e pisa no fundo
+      { dur: .9, root: V3(sg * .5, areiaLocal(sg * .5, 1.0), 1.0), hipY: .78, lean: .5,
+        feet: [null, V3(sg * .06, chao(1.0 + .17 * rz), 1.0 + .17 * rz)], arc: { feet: [0, .45] },
+        on: balanca(-sg * .5), at: pisa() },
+      // o outro pé entra; a mão de trás vai para a borda do outro lado
+      { dur: .85, root: V3(sg * .03, floorY(1.0), 1.0), hipY: .6, lean: .35, pitch: -.6,
+        feet: [V3(-sg * .05, chao(1.0 - .17 * rz), 1.0 - .17 * rz), null], hands: [longe(zM[0]), null],
+        arc: { feet: [.45, 0], hands: [.15, 0] }, on: balanca(-sg * .4), at: pisa() },
+      // gira para a proa e senta no banco, as mãos descendo para as bordas ao lado do quadril
+      { dur: 1.2, root: SEAT.clone(), yaw: 0, hipY: .25, hipZ: .03, lean: .1, pitch: -.3,
+        feet: [V3(-.13, SEAT.y + SOLE, .25), V3(.13, SEAT.y + SOLE, .25)],
+        hands: [V3(-(rimX(1.1) + .01), rimY(1.1) + .04, 1.1), V3(rimX(1.1) + .01, rimY(1.1) + .04, 1.1)],
+        knee: V3(0, .8, -1), on: balanca(sg * .3), at: umaVez(sfxSit) },
+      // pega o remo deitado no fundo...
+      { dur: .55, lean: .35, pitch: -.65, hands: [() => remoMao(0), () => remoMao(1)] },
+      // ...e traz para o colo
+      { dur: .75, lean: .1, pitch: -.1, hands: [() => remoMao(0), () => remoMao(1)], at: k => { cv.deck = 1 - smooth(k); } },
+    ];
+    const a = makeAction(canoa, passos, { pitch: ctx.pitch, look: 0 });
+    return {
+      update(dt, t) { atualizaCanoa(t); return a.update(dt, t); },
+      camera: cam => a.camera(cam),
+      result() {
+        cv.riding = true; cv.deck = 0;
+        const k = inters.indexOf(canoa);
+        if (k >= 0) inters.splice(k, 1);           // já está nela
+        return { ride: canoaRide, then: () => say(speakerName('thought'), linesOf('canoa')) };
+      },
+    };
+  }
+
+  // subir: encosta a canoa atravessada na escada, larga o remo, vira, levanta e sobe mão-pé-mão-pé
+  const railPt = (i, y) => V3(IX + (i ? .3 : -.3), y, LAD_Z + .03);
+  const maoDegrau = (i, j) => j >= 12 ? railPt(i, j === 12 ? PIER_Y + .05 : PIER_Y + .43)  // acima do deck: corrimão
+    : V3(IX + (i ? .15 : -.15), rungY(j) + .02, LAD_Z + .02);
+  const peDegrau = (i, j) => V3(IX + (i ? .12 : -.12), rungY(j) + .02 + SOLE, LAD_Z + .14);
+  function subir(ctx) {
+    atualizaCanoa(cv.t);
+    cv.riding = false; cv.scripted = true; cv.v = 0;
+    // atravessada na frente da escada, com o banco de trás alinhado a ela
+    const hp = Math.abs(angDiff(Math.PI / 2, cv.h)) < Math.PI / 2 ? Math.PI / 2 : -Math.PI / 2;
+    const sL = hp > 0 ? 1 : -1;                    // o lado da canoa (x local) virado para a escada
+    const ini = { x: cv.x, z: cv.z, h: cv.h };
+    const alvo = { x: IX - Math.sin(hp) * SEAT.z, z: LAD_Z + .43, h: hp };
+    const y0 = canoa.position.y;
+    const yawEsc = -sL * Math.PI / 2;              // de frente para a escada, no espaço da canoa
+    const giro = v => v.applyAxisAngle(UP, yawEsc);
+    const peSentado = i => SEAT.clone().add(giro(V3(i ? .13 : -.13, SOLE, -.18))); // virado de lado: pés junto à borda, dentro
+    const emPe = V3(sL * .02, floorY(SEAT.z), SEAT.z);
+    const peEmPe = i => emPe.clone().add(giro(V3(i ? .17 : -.17, SOLE, -.03))); // fora do banco (z ±.1)
+    const corrimao = (i, y) => () => daCanoa(railPt(i, y));
+    const remando = [() => remoMao(0), () => remoMao(1)];
+    const passosA = [
+      // encosta: umas remadas do lado da escada e deixa a canoa deslizar até parar
+      // (a câmera vai ficando rente à cabeça, camF .05: de frente para a escada, senão encosta nos degraus)
+      { dur: 2.0, root: SEAT.clone(), yaw: 0, hipY: .25, hipZ: .03, lean: .1, pitch: .2, look: angDiff(0, hp), camF: .05,
+        hands: remando, feet: [V3(-.13, SEAT.y + SOLE, .25), V3(.13, SEAT.y + SOLE, .25)], knee: V3(0, .8, -1),
+        at: k => {
+          const e = smooth(k);
+          cv.x = ini.x + (alvo.x - ini.x) * e;
+          cv.z = ini.z + (alvo.z - ini.z) * e;
+          cv.h = ini.h + angDiff(alvo.h, ini.h) * e;
+          cv.auto = k < .55 ? sL : 0;
+          if (k > .97) cv.rockV += -sL * .02;       // o encostar
+        } },
+      // deita o remo no fundo da canoa
+      { dur: .8, pitch: -.35, hands: remando, on: () => { cv.auto = 0; cv.stroking = false; }, at: k => { cv.deck = smooth(k); } },
+      // vira para a escada e segura nos montantes
+      { dur: 1.3, yaw: yawEsc, look: 0, pitch: .15, lean: .18, feet: [peSentado(0), peSentado(1)],
+        hands: [corrimao(0, y0 + .75), corrimao(1, y0 + .75)], arc: { hands: [.12, .12] }, at: umaVez(sfxSit) },
+      // fica de pé dentro da canoa, as mãos subindo pelos montantes
+      { dur: 1.1, root: emPe, hipY: .88, hipZ: .04, lean: .14, pitch: .08, knee: V3(0, .1, -1),
+        feet: [peEmPe(0), peEmPe(1)], hands: [corrimao(0, y0 + 1.3), corrimao(1, y0 + 1.3)], on: balanca(-sL * .5) },
+    ];
+    let B = null;
+    const noBarco = i => () => naCanoa(peEmPe(i));
+    const raiz = () => { const f = B.state.feet; return V3(IX, Math.min(f[0].y, f[1].y) - SOLE, LAD_Z + .31); };
+    const mao = (i, j) => ({ dur: .45, root: raiz, hands: i ? [null, maoDegrau(1, j)] : [maoDegrau(0, j), null],
+      arc: { hands: i ? [0, .06] : [.06, 0] }, away: .12, look: i ? -.1 : .1, at: pisa() });
+    const pe = (i, j, extra) => ({ dur: .55, root: raiz, feet: i ? [null, peDegrau(1, j)] : [peDegrau(0, j), null],
+      arc: { feet: i ? [0, .1] : [.1, 0] }, away: .14, look: 0, at: pisa(), ...extra });
+    const passosB = [
+      // as mãos trocam os montantes pelos degraus, os pés ainda na canoa
+      { dur: .45, root: raiz, hands: [maoDegrau(0, 6), null], feet: [noBarco(0), noBarco(1)], arc: { hands: [.08, 0] }, away: .1, pitch: .1, look: .1, at: pisa() }, // olha os degraus, não o deck lá em cima
+      { dur: .45, root: raiz, hands: [null, maoDegrau(1, 7)], feet: [noBarco(0), noBarco(1)], arc: { hands: [0, .08] }, away: .1, look: -.1, at: pisa() },
+      pe(0, 4, { feet: [peDegrau(0, 4), noBarco(1)], on: balanca(sL * .6) }),   // deixa a canoa: ela balança
+      pe(1, 5), mao(0, 8), pe(0, 6), mao(1, 9), pe(1, 7), mao(0, 10), pe(0, 8), mao(1, 11), pe(1, 9),
+      mao(0, 12), pe(0, 10), mao(1, 13), pe(1, 11),
+      // no topo: o pé esquerdo sobe para o deck e o corpo passa por cima, empurrando nos corrimãos
+      { dur: .85, root: V3(IX, rungY(11) + .02, LAD_Z + .05), hipY: .6, lean: .4, pitch: -.25, look: 0,
+        feet: [V3(IX - .12, PIER_Y + SOLE, LAD_Z - .4), null], arc: { feet: [.18, 0] }, away: .05, at: pisa() },
+      // o outro pé vem, ele se endireita e solta as mãos
+      { dur: .9, root: V3(IX, PIER_Y, LAD_Z - .5), hipY: .95, lean: .1, pitch: -.1,
+        feet: [null, V3(IX + .12, PIER_Y + SOLE, LAD_Z - .66)],
+        hands: [V3(IX - .29, PIER_Y + .84, LAD_Z - .48), V3(IX + .29, PIER_Y + .84, LAD_Z - .48)],
+        arc: { feet: [0, .2], hands: [.1, .1] }, at: pisa() },
+      // um passinho para a frente, parado em pé no trapiche
+      { dur: .7, root: V3(IX, PIER_Y, PIER_Z1 - .5), hipY: .95, lean: .04, pitch: 0, camF: .17,   // .17: mesma câmera da caminhada (raiz BACK atrás), sem pulo ao terminar
+        feet: [V3(IX - .11, PIER_Y + SOLE, PIER_Z1 - .56), V3(IX + .11, PIER_Y + SOLE, PIER_Z1 - .56)],
+        hands: [V3(IX - .29, PIER_Y + .84, PIER_Z1 - .48), V3(IX + .29, PIER_Y + .84, PIER_Z1 - .48)], at: pisa() },
+    ];
+    const A = makeAction(canoa, passosA, { pitch: ctx.pitch, look: angDiff(ctx.yaw, cv.h) });
+    let cur = A;
+    return {
+      update(dt, t) {
+        atualizaCanoa(t);
+        if (cur.update(dt, t)) return true;
+        if (cur !== A) return false;
+        B = cur = makeAction(scene, passosB, { pitch: A.state.pitch, look: A.state.look, camF: A.state.camF }); // sai da canoa para a escada
+        return cur.update(dt, t);
+      },
+      camera: cam => cur.camera(cam),
+      result: () => ({ walk: { x: IX, z: PIER_Z1 - .7 } }),  // a câmera termina aqui (raiz BACK atrás)
+    };
+  }
+
+  if (IS_LOCAL) window.__praia = { cv, canoa, IX, LAD_Z, P, remo }; // dev: o script de captura posiciona a canoa
+  tag(canoa, objectName('canoe'), { act: embarcar });
+  tag(escada, objectName('ladder'), { act: subir, whileRiding: true, reach: 3.6 });
+  blockOf(-1.45, -21, -.55, -17.1);
+
   // ── pegadas: quem anda deixa rastro na areia, que some devagar ───────────
   const NF = 60;
   const footGeo = new THREE.CircleGeometry(1, 12);
@@ -799,7 +1373,8 @@ export function buildPraia() {
     const p = camera.position;
     if (lastFoot === null) lastFoot = new THREE.Vector2(p.x, p.z);
     const dx = p.x - lastFoot.x, dz = p.z - lastFoot.y, dist = Math.hypot(dx, dz);
-    if (dist > .62 && dist < 3) {                // passo dado (salto grande = teleporte, ignora)
+    if (p.z < shoreZ(p.x)) lastFoot.set(p.x, p.z);  // fora da areia (canoa, ilha): sem rastro
+    else if (dist > .62 && dist < 3) {           // passo dado (salto grande = teleporte, ignora)
       const nx = -dz / dist, nz = dx / dist;     // perpendicular: pé esquerdo, pé direito
       const fx3 = p.x + nx * .11 * footSide, fz = p.z + nz * .11 * footSide;
       const f = feet[nextFoot]; nextFoot = (nextFoot + 1) % NF;
@@ -820,6 +1395,6 @@ export function buildPraia() {
 
   return {
     spawn: { x: 0, z: -15.5, yaw: 0 }, caption: sceneCaption('praia'), auto: null,
-    elevFn: sandH,            // a areia sobe para as dunas
+    elevFn: chaoH,            // a areia sobe para as dunas; na ilha, platô e trapiche
   };
 }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /* ===================== renderer + câmera ===================== */
-export const renderer = new THREE.WebGLRenderer({ antialias: true });
+export const renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true }); // stencil: a água não entra na canoa
 document.body.prepend(renderer.domElement);
 
 export const camera = new THREE.PerspectiveCamera(72, innerWidth / innerHeight, .05, 80);

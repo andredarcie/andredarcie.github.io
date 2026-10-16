@@ -513,6 +513,7 @@ export function buildAviao() {
   return {
     spawn: { x: PLAYER.x, z: PLAYER.z - .06, yaw: .75 }, caption: sceneCaption('aviao'), auto: null,
     seated: true,          // preso na poltrona: só olha, não anda
+    bodySeat: { yaw: 0, hipY: .56, back: .06 }, // o corpo de frente para a poltrona da frente, no assento (.5)
     elevFn: () => -.45,    // altura dos olhos de quem está sentado (1.15)
     sway: true,            // a turbulência leve do voo
   };

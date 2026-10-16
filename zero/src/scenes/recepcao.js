@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import { DARK2, NAVY, LIGHT2, BLUE, GLOW } from '../config.js';
 import { sceneCaption } from '../story.js';
 import { freshScene, box, lite, grp, blob, pointLight, tagGo, walkOf, blockOf, room, person } from '../kit.js';
+import { elevador, CABINE } from '../elevator.js';
+import { vestibulo } from '../vestibulo.js';
 
 /* ===================== CENA: A RECEPÇÃO DO PRÉDIO ===================== */
-export function buildRecepcao() {
+export function buildRecepcao(nav = {}) {
   freshScene(8, 30);
   const W = 12, D = 5.4, H = 3;
-  room(W, D, H);
+  // vão do elevador na parede oeste e o da porta da rua na leste
+  room(W, D, H, null, { z0: -.5, z1: .5, h: 2.1 }, { e: { a0: -.55, a1: .55, h: 2.2 } });
   walkOf(-5.4, -2.2, 5.4, 2.2);
 
   // luzes do saguão
@@ -19,13 +22,12 @@ export function buildRecepcao() {
   // tapete da entrada
   box(2.2, .04, 3.6, DARK2, 4.2, .02, 0);
 
-  // o elevador de onde você desceu (parede oeste)
-  const ev = grp(-5.9, 0, 0);
-  ev.rotation.y = Math.PI / 2;
-  box(1.8, 2.5, .14, LIGHT2, 0, 1.25, 0, ev);
-  box(.78, 2.3, .1, DARK2, -.41, 1.15, .06, ev);
-  box(.78, 2.3, .1, DARK2, .41, 1.15, .06, ev);
-  lite(.5, .12, .05, BLUE, 0, 2.62, .09, ev);
+  // o elevador (parede oeste): o mesmo poço do corredor do 23º, de frente para a porta da rua
+  const elev = elevador({
+    x: -W / 2, z: 0, yaw: Math.PI / 2,
+    here: 'T', there: 23, to: ['corredor', 'elevador'],
+    arrive: nav.entry === 'elevador' ? (nav.rel || CABINE) : null,
+  });
 
   // balcão da recepção com o porteiro
   const bal = grp(0, 0, -1.55);
@@ -57,20 +59,13 @@ export function buildRecepcao() {
   blob(.42, .5, .42, BLUE, -2.6, .95, 2.05);
   blockOf(-2.95, 1.7, -2.25, 2.4);
 
-  // a porta de vidro para a rua (dá pra ver a chuva do lado de fora)
-  const pv = grp(5.9, 0, 0);
-  pv.rotation.y = -Math.PI / 2;
-  box(2.6, 2.6, .14, LIGHT2, 0, 1.3, 0, pv);
-  for (const s of [-1, 1]) {
-    const vd = new THREE.Mesh(
-      new THREE.BoxGeometry(1.02, 2.3, .05),
-      new THREE.MeshBasicMaterial({ color: NAVY, transparent: true, opacity: .6 })
-    );
-    vd.position.set(s * .56, 1.22, .05);
-    pv.add(vd);
-    box(.06, .5, .07, BLUE, s * .18, 1.15, .1, pv); // puxadores
-  }
-  tagGo(pv, 'streetDoor', 'rua');
+  // a saída para a rua: um vestíbulo de vidro (o mesmo cômodo está atrás da porta do prédio na rua);
+  // a cena troca lá dentro, com a porta de trás fechada, sem tela escura
+  const vest = vestibulo({
+    x: W / 2 + 1, y: 0, z: 0, yaw: Math.PI / 2, lado: 'P', outro: ['rua', 'predio'], estilo: 'vidro',
+    arrive: nav.entry === 'rua' ? (nav.rel || true) : null,
+  });
 
-  return { spawn: { x: -4.9, z: 0, yaw: -Math.PI / 2 }, caption: sceneCaption('recepcao'), auto: null };
+  const spawn = elev.spawn || vest.spawn || { x: -4.9, z: 0, yaw: -Math.PI / 2 };
+  return { spawn, caption: sceneCaption('recepcao'), auto: null };
 }

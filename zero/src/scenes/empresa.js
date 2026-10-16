@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import { DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW, ASSETS } from '../config.js';
-import { day } from '../state.js';
-import { sceneCaption } from '../story.js';
+import { day, night } from '../state.js';
+import { sceneCaption, speakerName, linesOf } from '../story.js';
 import { termMat } from '../terminal.js';
-import { freshScene, box, lite, grp, pointLight, tagDialog, tagTerminal, walkOf, blockOf, person, cat, quadro } from '../kit.js';
+import { freshScene, box, lite, grp, pointLight, anim, luzes, unblock, tagDialog, tagTerminal, walkOf, blockOf, person, cat, quadro } from '../kit.js';
+import { say } from '../dialog.js';
+import { elevador, CABINE } from '../elevator.js';
 
 /* ===================== CENA: O TRABALHO ===================== */
-export function buildEmpresa() {
+export function buildEmpresa(nav = {}) {
   freshScene(10, 40);
   const H = 3;
 
@@ -14,7 +16,7 @@ export function buildEmpresa() {
   box(15.6, .2, 4.4, FLOOR, -.5, -.1, 2);
   box(3.4, .2, 8.6, DARK2, 5.5, H + .1, -3.9);
   box(15.6, .2, 4.4, DARK2, -.5, H + .1, 2);
-  box(3.4, H, .18, LIGHT, 5.5, H / 2, -8.09);
+  // (a parede norte do corredor, a do elevador, é montada por ele com o vão da porta)
   box(.18, H, 12.6, LIGHT, 7.09, H / 2, -2.05);
   box(.18, H, 8.2, LIGHT, 3.91, H / 2, -4.05);
   box(12.2, H, .18, LIGHT, -2.05, H / 2, -.09);
@@ -23,15 +25,19 @@ export function buildEmpresa() {
   walkOf(4.3, -7.55, 6.7, 1.0);
   walkOf(-7.6, .4, 6.7, 3.65);
 
+  // de noite o escritório fica na meia-luz das luzes de segurança
+  const lampadas = [];
   for (const [lx, lz] of [[5.5, -5], [5.5, -1], [0, 2], [-5, 2], [4, 2]]) {
-    pointLight(.35, 11, lx, 2.6, lz);
+    lampadas.push(pointLight(night ? .16 : .35, 11, lx, 2.6, lz));
   }
+  const gente = [];                                  // quem vai embora no fim do expediente
 
-  // porta da rua (cenário, atrás de você)
-  const ed = grp(5.5, 0, -7.96);
-  box(1.2, 2.3, .1, LIGHT2, 0, 1.15, 0, ed);
-  box(1.0, 2.16, .09, DARK2, 0, 1.08, .04, ed);
-  box(.07, .07, .06, BLUE, .38, 1.05, .09, ed);
+  // o elevador no fim do corredor (12º andar): desce até a recepção, sob o viaduto
+  const elev = elevador({
+    x: 5.5, z: -8.0, yaw: 0, wall: { w: 3.4, H },
+    here: 12, there: 'T', to: ['recepcao2', 'elevador'],
+    arrive: nav.entry === 'elevador' ? (nav.rel || CABINE) : null,
+  });
 
   // relógio de ponto (cenário)
   const pt = grp(6.96, 1.45, -6.3);
@@ -39,13 +45,15 @@ export function buildEmpresa() {
   lite(.03, .07, .07, GLOW, -.06, .1, -.12, pt);
   lite(.03, .07, .07, GLOW, -.06, .1, .12, pt);
 
-  // o chefe: escuro, maior, bloqueando o corredor
-  const chefe = person(false, DARK2);
-  chefe.position.set(5.9, 0, -1.2);
-  chefe.rotation.y = Math.PI;
-  chefe.scale.setScalar(1.34);
-  tagDialog(chefe, 'boss', day === 1 ? 'chefe1a' : 'chefe2a');
-  blockOf(5.55, -1.55, 6.25, -.85);
+  // o chefe: escuro, maior, bloqueando o corredor (de noite já foi embora)
+  if (!night) {
+    const chefe = person(false, DARK2);
+    chefe.position.set(5.9, 0, -1.2);
+    chefe.rotation.y = Math.PI;
+    chefe.scale.setScalar(1.34);
+    tagDialog(chefe, 'boss', day === 1 ? 'chefe1a' : 'chefe2a');
+    gente.push({ o: chefe, b: blockOf(5.55, -1.55, 6.25, -.85), tag: chefe });
+  }
 
   // copa: balcão, cafeteira, micro-ondas (cenário)
   const copa = grp(-5.5, 0, .55);
@@ -89,17 +97,22 @@ export function buildEmpresa() {
   box(.4, .04, .15, DARK2, 0, .81, .18, mesaC);
   box(.5, .07, .5, DARK2, 0, .5, .85, mesaC);
   box(.5, .55, .07, DARK2, 0, .85, 1.12, mesaC);
-  const col = person(true, BLUE, mesaC);
-  col.position.set(0, .04, .85);
-  col.rotation.y = Math.PI;
-  if (day === 1) tagDialog(mesaC, 'coworker', 'colega1');
+  if (!night) {
+    const col = person(true, BLUE, mesaC);
+    col.position.set(0, .04, .85);
+    col.rotation.y = Math.PI;
+    if (day === 1) tagDialog(mesaC, 'coworker', 'colega1');
+    gente.push({ o: col, tag: mesaC });
+  }
   blockOf(-2.5, 1.2, -.5, 2.95);
 
   // funcionário parado (cenário)
-  const func = person(false);
-  func.position.set(2.3, 0, 2.45);
-  func.rotation.y = -.7;
-  blockOf(2.0, 2.15, 2.6, 2.75);
+  if (!night) {
+    const func = person(false);
+    func.position.set(2.3, 0, 2.45);
+    func.rotation.y = -.7;
+    gente.push({ o: func, b: blockOf(2.0, 2.15, 2.6, 2.75) });
+  }
 
   // gato do escritório (cenário)
   cat(3.6, 3.45, 2.6);
@@ -131,16 +144,41 @@ export function buildEmpresa() {
   box(.5, .07, .5, DARK2, .85, .5, 0, minha);
   box(.07, .55, .5, DARK2, 1.13, .85, 0, minha);
   box(.3, .42, .22, BLUE, .3, .21, 1.05, minha);
-  const sentado2 = { seat: { x: -6.5, y: 1.15, z: 2.6 }, look: { x: -7.52, y: 1.42, z: 2.6 } };
-  if (day === 1) tagTerminal(minha, 'computer', 'pcTrabalho1', {
-    ...sentado2,
-    sequence: 'finishDay1Work',
-  });
-  if (day === 2) tagTerminal(minha, 'computer', 'pcTrabalho2', {
-    ...sentado2,
-    sequence: 'finishDay2Work',
-  });
+  // o fim do expediente acontece aqui mesmo, ainda sentado: as falas, e a noite chegando enquanto
+  // você olha a tela (as pessoas vão embora pelas suas costas). Levanta já de noite, sem trocar de cena
+  const sentado2 = {
+    seat: { x: -6.5, y: 1.15, z: 2.6 }, look: { x: -7.52, y: 1.42, z: 2.6 },
+    cb: () => say(speakerName('thought'), linesOf('voltarCasa')),
+  };
+  if (day === 1 && !night) tagTerminal(minha, 'computer', 'pcTrabalho1', { ...sentado2, sentado: 'finishDay1Work' });
+  if (day === 2 && !night) tagTerminal(minha, 'computer', 'pcTrabalho2', { ...sentado2, sentado: 'finishDay2Work' });
   blockOf(-7.75, 1.7, -6.4, 3.5);
 
-  return { spawn: { x: 5.5, z: -7.1, yaw: Math.PI }, caption: sceneCaption('empresa'), auto: null };
+  // anoitecer (chamado pela sequência): em 4 s o céu do escritório some e as lâmpadas baixam
+  function anoitecer(done) {
+    for (const p of gente) {
+      p.o.visible = false;
+      if (p.b) unblock(p.b);
+      if (p.tag) p.tag.userData.inter = null;
+    }
+    minha.userData.inter = null;                     // o trabalho do dia acabou
+    const c0 = luzes.ceu.intensity, s0 = luzes.sol.intensity, DUR = 4;
+    let t0 = null, fim = false;
+    anim(t => {
+      if (fim) return;
+      if (t0 === null) t0 = t;
+      const k = Math.min(1, (t - t0) / DUR), e = k * k * (3 - 2 * k);
+      luzes.ceu.intensity = c0 + (.5 - c0) * e;
+      luzes.sol.intensity = s0 + (.12 - s0) * e;
+      for (const l of lampadas) l.intensity = .35 + (.16 - .35) * e;
+      if (k >= 1) { fim = true; done(); }
+    });
+  }
+
+  // de noite, levantando da mesa depois do expediente: de frente para o caminho do elevador
+  if (nav.entry === 'mesa')
+    return { spawn: { x: -5.9, z: 2.6, yaw: -Math.PI / 2 }, caption: sceneCaption('empresaNoite'),
+      auto: { name: speakerName('thought'), lines: linesOf('voltarCasa') } };
+  const spawn = elev.spawn || { x: 5.5, z: -7.1, yaw: Math.PI };
+  return { spawn, caption: sceneCaption('empresa'), auto: null, anoitecer };
 }

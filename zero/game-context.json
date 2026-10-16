@@ -9,7 +9,7 @@
         "before": "ZERO TO ",
         "highlight": "ONE"
       },
-      "subtitle": "Inferno · Purgatorio · Paraiso",
+      "subtitle": "Inferno · Purgatório · Paraíso",
       "keysDesktop": "WASD mover · mouse olhar · E interagir",
       "start": "CLIQUE PARA COMEÇAR"
     },
@@ -57,7 +57,7 @@
       "door": "Porta",
       "elevator": "Elevador",
       "streetDoor": "Porta da rua",
-      "metroEntrance": "Entrada do metro",
+      "metroEntrance": "Entrada do metrô",
       "subwayDoor": "Porta do vagão",
       "boss": "Chefe",
       "coworker": "Colega",
@@ -65,7 +65,16 @@
       "otherHomeless": "Outro morador de rua",
       "storeDoor": "Loja",
       "storeClerk": "Atendente",
-      "exitSeat": "Sair"
+      "exitSeat": "Sair",
+      "canoe": "Canoa",
+      "ladder": "Subir a escada",
+      "bed": "Deitar e dormir",
+      "callElevator": "Chamar o elevador",
+      "elevatorDown": "Descer",
+      "elevatorUp": "Subir",
+      "buildingDoor": "Porta do prédio",
+      "stationExit": "Saída para a rua",
+      "officeDoor": "Porta sob o viaduto"
     },
     "speakers": {
       "thought": "Pensamento",
@@ -77,23 +86,23 @@
   "days": {
     "1": {
       "name": "Inferno",
-      "roomCaption": "INICIO - INFERNO",
+      "roomCaption": "INÍCIO - INFERNO",
       "roomAuto": {
         "speaker": "",
         "script": "acorde"
       }
     },
     "2": {
-      "name": "Purgatorio",
-      "roomCaption": "MEIO - PURGATORIO",
+      "name": "Purgatório",
+      "roomCaption": "MEIO - PURGATÓRIO",
       "roomAuto": {
         "speaker": "thought",
         "script": "sonho2"
       }
     },
     "3": {
-      "name": "Paraiso",
-      "roomCaption": "FIM - PARAISO",
+      "name": "Paraíso",
+      "roomCaption": "FIM - PARAÍSO",
       "roomAuto": {
         "speaker": "thought",
         "script": "pensamento3"
@@ -127,10 +136,25 @@
       "caption": "A RUA"
     },
     "plataforma": {
-      "caption": "PLATAFORMA"
+      "caption": "ESTAÇÃO CENTRAL"
+    },
+    "plataforma2": {
+      "caption": "ESTAÇÃO VIADUTO"
+    },
+    "rua2": {
+      "caption": "SOB O VIADUTO"
+    },
+    "recepcao2": {
+      "caption": "RECEPÇÃO DO TRABALHO"
+    },
+    "empresaNoite": {
+      "caption": "FIM DO EXPEDIENTE"
+    },
+    "quartoNoite": {
+      "caption": "DE VOLTA"
     },
     "metro": {
-      "caption": "METRO"
+      "caption": "METRÔ"
     },
     "empresa": {
       "caption": "TRABALHO"
@@ -178,6 +202,12 @@
     "finishGame": [
       {
         "say": {
+          "speaker": "thought",
+          "script": "farol"
+        }
+      },
+      {
+        "say": {
           "speaker": "final",
           "script": "final"
         }
@@ -200,10 +230,7 @@
         }
       },
       {
-        "setDay": 2
-      },
-      {
-        "go": "quarto"
+        "anoitecer": true
       }
     ],
     "finishDay2Work": [
@@ -214,7 +241,12 @@
         }
       },
       {
-        "setDay": 3
+        "anoitecer": true
+      }
+    ],
+    "sleep": [
+      {
+        "nextDay": true
       },
       {
         "go": "quarto"
@@ -243,18 +275,18 @@
     ],
     "janela": [
       "Janela do meu apartamento",
-      "Consigo ver mil outras janelas de outros predios, exatamente como a minha",
+      "Consigo ver mil outras janelas de outros prédios, exatamente como a minha",
       "Mas não consigo ver daqui o sol",
-      "O transito hoje esta parado, logo pela manhã",
-      "Deve ser algum operario que morreu na contramão, atrapalhando o tráfego"
+      "O trânsito hoje está parado, logo pela manhã",
+      "Deve ser algum operário que morreu na contramão, atrapalhando o tráfego"
     ],
     "fotografia": [
       "São meus pais e eu quando criança",
-      "Sinto falta da minha familia e dos meus amigos de infancia"
+      "Sinto falta da minha família e dos meus amigos de infância"
     ],
     "pcQuarto1": [
       "Iniciando...",
-      "0 Mensagens de 352 amigos"
+      "0 mensagens de 352 amigos"
     ],
     "guardaRoupa": [
       "Esses são os meus livros",
@@ -265,29 +297,29 @@
       "Esses livros parecem descrever tão bem a minha vida"
     ],
     "metro1": [
-      "Vivo a muito tempo nessa rotina monotona",
+      "Vivo há muito tempo nessa rotina monótona",
       "De certa forma eu acabei me acostumando"
     ],
     "chefe1a": [
-      "Você chegou atrasado hoje Zero, na proxima é rua!"
+      "Você chegou atrasado hoje, Zero. Na próxima é rua!"
     ],
     "colega1": [
-      "Eae Zero!",
-      "Tenho uma noticia muito boa",
-      "Acho que mes que vem consigo sair desse buraco"
+      "E aí, Zero!",
+      "Tenho uma notícia muito boa",
+      "Acho que mês que vem consigo sair desse buraco"
     ],
     "pcTrabalho1": [
       "Iniciando...",
       "15 tarefas atrasadas",
-      "Primeira tarefa: Cadastro de empresa está com bugs",
+      "Primeira tarefa: cadastro de empresa está com bugs",
       "Parece que é um problema de Javascript",
       "-consertando-",
       "git commit -m 'fix cadastro de empresas'",
-      "Segunda tarefa: Erro ao adicionar funcionario",
-      "É só colocar uma verificação se a empresa existe já cadastrada",
+      "Segunda tarefa: erro ao adicionar funcionário",
+      "É só verificar se a empresa já está cadastrada",
       "-consertando-",
-      "git commit -m 'Fix adicinar funcionario'",
-      "Acabou meu tempo, é isso por hoje"
+      "git commit -m 'fix adicionar funcionario'",
+      "Acabou meu tempo. É isso por hoje"
     ],
     "pensamento1": [
       "Sinto que passo a maior parte do meu dia aqui"
@@ -296,10 +328,10 @@
       "Espero que você vire a noite para cobrir esses atrasos"
     ],
     "sonho2": [
-      "Tive um sonho horrivel, que eu era um inseto gigante",
-      "Mal saia do quarto, não era mais capaz de trabalhar",
-      "Me tornei um inutil ao olhar de todos a minha volta",
-      "Sentiam nojo de mim, desprezado, por fim morri de solidão"
+      "Tive um sonho horrível: eu era um inseto gigante",
+      "Mal saía do quarto, não era mais capaz de trabalhar",
+      "Me tornei um inútil aos olhos de todos à minha volta",
+      "Sentiam nojo de mim. Desprezado, por fim morri de solidão"
     ],
     "morador2a": [
       "Não tenho casa, nem trabalho, mas pelo menos sou livre"
@@ -311,11 +343,11 @@
       "Atrasado novamente? Você já foi melhor"
     ],
     "pcTrabalho2": [
-      "Mensagem automatica: Parabens Zero, você completou 10 anos de empresa",
+      "Mensagem automática: Parabéns, Zero, você completou 10 anos de empresa",
       "10 anos? Eu era jovem, e a vida era longa e cheia de possibilidades",
       "Correndo e correndo para alcançar o sol",
-      "Cada dia com menos folego",
-      "Em um exercicio sem fim, auto-destrutivo ou inutil, correndo em uma labirinto sem esperança"
+      "Cada dia com menos fôlego",
+      "Em um exercício sem fim, autodestrutivo ou inútil, correndo em um labirinto sem esperança"
     ],
     "chefe2b": [
       "Estou fora, nunca mais quero voltar aqui"
@@ -323,20 +355,31 @@
     "pensamento3": [
       "Eu preciso escapar da realidade, cair diretamente na toca do coelho",
       "Eu sinto uma necessidade de me expressar, de me conectar",
-      "Isso é a forma ultima de me expressar",
-      "A música, teatro, dança, pintura, escultura, arquitetura, literatura, cinema, fotografia e historia em quadrinhos são a forma final de expressão dos sentimentos humanos",
-      "Em meio a tantas artes, a combinação de todas elas, faz a decima arte, os video games"
+      "Essa é a forma última de me expressar",
+      "A música, teatro, dança, pintura, escultura, arquitetura, literatura, cinema, fotografia e história em quadrinhos são a forma final de expressão dos sentimentos humanos",
+      "Em meio a tantas artes, a combinação de todas elas faz a décima arte: os videogames"
     ],
     "pcQuarto3": [
-      "Eu vou criar um game é isso, um game em Bitsy",
-      "Para contar minha historia, minha vida",
+      "Eu vou criar um game, é isso! Um game em Bitsy",
+      "Para contar minha história, minha vida",
       "Vai se chamar Zero To One"
     ],
     "final": [
       "Zero finalmente se tornou Um"
     ],
+    "canoa": [
+      "Aquele farol lá longe... Quero ver de perto"
+    ],
+    "farol": [
+      "Agora que estou aqui, vendo esse farol, percebo que nunca foi sobre o farol",
+      "Talvez não precise ser uma grande coisa, um grande significado",
+      "Eu coloquei todo o sentido naquele jogo, em lançar aquele jogo",
+      "Busquei sentido em outras coisas também. Busquei grandes sentidos",
+      "No fim, essa pergunta existencial tão difícil não tem resposta",
+      "Nem tudo precisa de definição. Talvez eu só tenha que viver um dia de cada vez, pelas pequenas coisas"
+    ],
     "acorde4": [
-      "Sera que alguem jogou meu jogo ontem?"
+      "Será que alguém jogou meu jogo ontem?"
     ],
     "acorde5": [
       "Preciso sair daqui, respirar outro ar"
@@ -352,12 +395,15 @@
       "Eu achava que a ideia era boa, que muitas pessoas poderiam acessar, mas não foi isso"
     ],
     "atendente": [
-      "Uma passagem de aviao, por favor",
-      "So de ida?",
-      "So de ida"
+      "Uma passagem de avião, por favor",
+      "Só de ida?",
+      "Só de ida"
     ],
     "metroClosed": [
-      "O metro esta fechado hoje"
+      "O metrô está fechado hoje"
+    ],
+    "voltarCasa": [
+      "Já anoiteceu. Agora é fazer todo o caminho de volta para casa"
     ]
   }
 }
