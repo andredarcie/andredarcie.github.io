@@ -3,6 +3,7 @@ import { easeInOut } from '../core/math.js';
 import { PALETTE } from './Palette.js';
 import { WOOD_MATERIALS, LOG_RADIUS } from './WoodMaterials.js';
 import { addVerticalShade } from './Shading.js';
+import { weaponModel, BOLT_Y, BOLT_X } from './WeaponModels.js';
 
 const HIP_HEIGHT = 5.4;
 const SHOULDER_HEIGHT = 11.2;
@@ -82,45 +83,22 @@ const SACK_TIE_SHAPE = new THREE.BoxGeometry(2.2, .5, 1.6);
 const SACK_TIE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x7a5a36 });
 // Machado: cabo de madeira saindo da mão e cabeça de ferro de lado, com o fio
 // virado para o sentido do golpe. Geometria deslocada para a origem cair na mão.
-const AXE_HANDLE_SHAPE = new THREE.BoxGeometry(.7, 9.5, .7).translate(0, -3.4, 0);
-const AXE_HEAD_SHAPE = new THREE.BoxGeometry(3.4, 2.2, .6).translate(-1.3, -7.6, 0);
 const AXE_HANDLE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xa0784a });
-const AXE_HEAD_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x9aa2a8 });
 // Maço de pau para a obra: cabo curto e cabeça grossa de madeira.
 const MALLET_HANDLE_SHAPE = new THREE.BoxGeometry(.6, 6, .6).translate(0, -2.2, 0);
 const MALLET_HEAD_SHAPE = addVerticalShade(new THREE.BoxGeometry(1.8, 1.8, 3.2).translate(0, -5.3, 0), .8, 1.05);
 const MALLET_HEAD_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x7a5534, vertexColors: true });
 // Armas de briga, na mão direita como o machado: porrete de madeira com a ponta
 // grossa e lança comprida com ponta de pedra lascada (a mão segura no primeiro terço).
-const CLUB_SHAPE = new THREE.BoxGeometry(1.1, 6.5, 1.1).translate(0, -3, 0);
-const CLUB_KNOB_SHAPE = new THREE.BoxGeometry(2.2, 2.8, 2.2).translate(0, -6.6, 0);
-const CLUB_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6b4a2c });
-const SPEAR_SHAFT_SHAPE = new THREE.BoxGeometry(.5, 21, .5).translate(0, -6.5, 0);
-const SPEAR_TIP_SHAPE = new THREE.BoxGeometry(1.2, 2.6, .5).translate(0, -18.2, 0);
-const SPEAR_TIP_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x55555e });
 // Ferida aberta: talho vermelho-escuro por cima do corpo (e da roupa).
 const WOUND_SHAPE = new THREE.BoxGeometry(1.7, 1.1, .3);
 const WOUND_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x7a0a10 });
 // Toco do pescoço de quem perdeu a cabeça.
 const STUMP_SHAPE = new THREE.BoxGeometry(2.6, .9, 2.6);
 const STUMP_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x8e1016 });
-// Armas de fogo e de corte, na mão direita, com a origem na mão. O fuzil
-// (Mannlicher da tropa) tem a coronha voltada para o ombro e o cano para a frente;
-// o da carga de baioneta leva a lâmina na ponta; o bacamarte do jagunço é curto e de
-// boca larga. Facão do sertanejo e sabre do oficial: lâmina saindo do punho.
-const STOCK_SHAPE = new THREE.BoxGeometry(.9, 7.5, 1.2).translate(0, .6, 0);
-const BARREL_SHAPE = new THREE.BoxGeometry(.5, 8.5, .5).translate(0, -6.6, 0);
-const BAYONET_SHAPE = new THREE.BoxGeometry(.25, 4.2, .6).translate(0, -12.9, 0);
-const SHORT_BARREL_SHAPE = new THREE.BoxGeometry(.7, 5.6, .7).translate(0, -5.2, 0);
-const MUZZLE_SHAPE = new THREE.BoxGeometry(1.4, 1.2, 1.4).translate(0, -8.4, 0);
-const GRIP_SHAPE = new THREE.BoxGeometry(.7, 2, .9);
-const MACHETE_SHAPE = new THREE.BoxGeometry(.35, 6.8, 1.4).translate(0, -4.4, 0);
-const SABER_GUARD_SHAPE = new THREE.BoxGeometry(.5, .4, 1.9).translate(0, -1.1, 0);
-const SABER_SHAPE = new THREE.BoxGeometry(.25, 9.5, .6).translate(0, -6, 0);
-const GUNSTOCK_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6a4428 });
-const GUNMETAL_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x3a3c40 });
+// As armas (fuzil Mannlicher, bacamarte de pederneira, facão, sabre, chuço, porrete,
+// machado) moram em WeaponModels.js; aqui só o latão das peças da recarga.
 const BRASS_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x9a7a3c });
-const BLADE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xb9bec2 });
 // Quais armas se empunham como fuzil (na horizontal, mirando) e quais como lâmina.
 const LONG_ARMS = new Set(['rifle', 'bayonet', 'blunderbuss', 'spear']);
 // A recarga, peça por peça. No fuzil de ferrolho (Mannlicher/Comblain da tropa): a
@@ -131,10 +109,6 @@ const LONG_ARMS = new Set(['rifle', 'bayonet', 'blunderbuss', 'spear']);
 //
 // No referencial da arma: o cano para -y (a origem é o punho da coronha, onde a mão
 // direita segura), a coronha para +y e o "em cima" da arma para +z.
-const BOLT_Y = -.9;                        // o ferrolho fechado (ao longo do cano)
-const BOLT_SHAPE = new THREE.BoxGeometry(1, .38, .38).translate(.45, 0, 0);
-const BOLT_KNOB_SHAPE = new THREE.BoxGeometry(.55, .55, .55).translate(1.05, 0, 0);
-const BOLT_X = .45;                        // o ferrolho sai do lado direito da caixa
 // Onde as mãos pegam na arma (referencial da arma).
 const GRIP_POINT = [0, 0, -.5];            // o punho da coronha (a mão direita, por baixo da linha)
 const FOREND = { rifle: [0, -4.2, -.5], blunderbuss: [0, -3.6, -.55] };   // o guarda-mão (a esquerda)
@@ -348,27 +322,27 @@ export class CharacterModel {
       forearmRight.add(holder);
       return holder;
     };
-    // Machado só à vista enquanto corta; maço só na obra.
-    const axe = held([[AXE_HANDLE_SHAPE, AXE_HANDLE_MATERIAL], [AXE_HEAD_SHAPE, AXE_HEAD_MATERIAL]]);
-    const mallet = held([[MALLET_HANDLE_SHAPE, AXE_HANDLE_MATERIAL], [MALLET_HEAD_SHAPE, MALLET_HEAD_MATERIAL]]);
-    const club = held([[CLUB_SHAPE, CLUB_MATERIAL], [CLUB_KNOB_SHAPE, CLUB_MATERIAL]]);
-    const spear = held([[SPEAR_SHAFT_SHAPE, AXE_HANDLE_MATERIAL], [SPEAR_TIP_SHAPE, SPEAR_TIP_MATERIAL]]);
-    const arms = {
-      club, spear,
-      rifle: held([[STOCK_SHAPE, GUNSTOCK_MATERIAL], [BARREL_SHAPE, GUNMETAL_MATERIAL]]),
-      bayonet: held([[STOCK_SHAPE, GUNSTOCK_MATERIAL], [BARREL_SHAPE, GUNMETAL_MATERIAL],
-        [BAYONET_SHAPE, BLADE_MATERIAL]]),
-      blunderbuss: held([[STOCK_SHAPE, GUNSTOCK_MATERIAL], [SHORT_BARREL_SHAPE, BRASS_MATERIAL],
-        [MUZZLE_SHAPE, BRASS_MATERIAL]]),
-      machete: held([[GRIP_SHAPE, GUNSTOCK_MATERIAL], [MACHETE_SHAPE, BLADE_MATERIAL]]),
-      saber: held([[GRIP_SHAPE, GUNMETAL_MATERIAL], [SABER_GUARD_SHAPE, BRASS_MATERIAL],
-        [SABER_SHAPE, BLADE_MATERIAL]])
+    // Machado só à vista enquanto corta; maço só na obra. As armas (WeaponModels) são
+    // réplicas peça por peça das de verdade, com a origem no punho, como as antigas.
+    const model = kind => {
+      const built = weaponModel(kind);
+      built.group.position.y = HAND_OFFSET;
+      built.group.visible = false;
+      forearmRight.add(built.group);
+      return built;
     };
+    const axe = model('axe').group;
+    const mallet = held([[MALLET_HANDLE_SHAPE, AXE_HANDLE_MATERIAL], [MALLET_HEAD_SHAPE, MALLET_HEAD_MATERIAL]]);
+    const rifle = model('rifle'), blunderbuss = model('blunderbuss');
+    const arms = {
+      club: model('club').group, spear: model('spear').group,
+      rifle: rifle.group, bayonet: model('bayonet').group, blunderbuss: blunderbuss.group,
+      machete: model('machete').group, saber: model('saber').group
+    };
+    const { club, spear } = arms;
     // O ferrolho do fuzil (alavanca e bolota, do lado direito) e a cápsula que ele cospe.
-    const bolt = new THREE.Group();
-    bolt.position.set(BOLT_X - .45, BOLT_Y, .25);
-    for (const shape of [BOLT_SHAPE, BOLT_KNOB_SHAPE]) bolt.add(new THREE.Mesh(shape, GUNMETAL_MATERIAL));
-    arms.rifle.add(bolt);
+    const bolt = rifle.bolt;
+    const storedRod = blunderbuss.ramrod;             // a vareta no lugar dela, embaixo do cano
     const casing = new THREE.Mesh(CASE_SHAPE, BRASS_MATERIAL);
     casing.visible = false;
     arms.rifle.add(casing);
@@ -387,7 +361,7 @@ export class CharacterModel {
       horn: prop(HORN_SHAPE, HORN_MATERIAL),
       wad: prop(WAD_SHAPE, WAD_MATERIAL),
       ramrod: prop(RAMROD_SHAPE, RAMROD_MATERIAL),
-      bolt, casing
+      bolt, casing, storedRod
     };
     // Feridas em lugares fixos, aparecendo uma a uma: peito, barriga, braço, coxa e
     // rosto; a do braço, a da perna e a do rosto presas à peça, para mexer junto.
@@ -769,6 +743,7 @@ export class CharacterModel {
     const props = data.reloadProps;
     props.bolt.position.y = BOLT_Y;
     props.casing.visible = props.clip.visible = props.horn.visible = props.wad.visible = props.ramrod.visible = false;
+    props.storedRod.visible = true;
     if (reload >= 0 && !(strike > 0) && rest < .5 && (weapon === 'rifle' || weapon === 'blunderbuss')) {
       CharacterModel.#poseReload(view, weapon, reload, reloadMag);
       plant = 1;
@@ -1133,6 +1108,7 @@ export class CharacterModel {
     P.horn.quaternion.copy(forearmQ).multiply(_q1.setFromUnitVectors(UP, _e.copy(_gd).negate()));
     P.wad.visible = r > .4 && r < .49;
     P.ramrod.visible = r > .5 && r < .83;
+    P.storedRod.visible = !P.ramrod.visible;
     if (r > .53 && r < .81) P.ramrod.quaternion.copy(forearmQ).multiply(_q2.setFromUnitVectors(DOWN, _e.copy(_gd).negate()));
     else P.ramrod.quaternion.identity();
     body.rotation.y = yaw;

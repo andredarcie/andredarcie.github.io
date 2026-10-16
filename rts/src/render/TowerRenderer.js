@@ -6,6 +6,7 @@ import { createContactShadow } from './ContactShadow.js';
 import { CENTER, SKIN_TONES, CLOTH, TOWER } from '../config/rts.js';
 import { easeInOut } from '../core/math.js';
 import { hillHeight } from '../world/Hills.js';
+import { weaponModel, BOLT_Y as WEAPON_BOLT_Y } from './WeaponModels.js';
 
 // Medidas da trincheira. RING é o raio do muro de pedra; por fora dele o aterro desce
 // até BERM_OUT; por dentro, a banqueta de tiro (onde os atiradores se ajoelham) sobe
@@ -25,10 +26,8 @@ const GAP = .72;
 const rnd = seed => pseudoRandom(seed);
 // Uma curva suave entre a e b (0 antes, 1 depois): as etapas do ciclo do tiro.
 const span = (t, a, b) => easeInOut(Math.max(0, Math.min(1, (t - a) / (b - a))));
-// A alavanca do ferrolho (no fuzil) e a vareta de socar (no bacamarte), no referencial
-// da arma: cano para +z.
-const BOLT = new THREE.BoxGeometry(.9, .35, .35).translate(-.4, 0, 0);
-const BOLT_Z = .7;
+// A vareta de socar do bacamarte, quando sai na mão (cano para +z). A arma em si,
+// com o ferrolho, vem de WeaponModels.
 const RAMROD = new THREE.BoxGeometry(.18, .18, 7).translate(0, 0, 3.5);
 
 /* ---------- geometrias compartilhadas por todas as trincheiras ---------- */
@@ -138,10 +137,6 @@ const BODY = {
   strap: new THREE.BoxGeometry(.9, 8.2, .35),
   belt: new THREE.BoxGeometry(5.9, .9, 3.5),
   // O fuzil em pé no referencial dele: coronha para trás (+z menos), cano para a frente.
-  stock: new THREE.BoxGeometry(.9, 1.3, 4.6).translate(0, -.3, -1.4),
-  barrel: new THREE.BoxGeometry(.5, .5, 8.5).translate(0, 0, 4.4),
-  bell: new THREE.CylinderGeometry(.85, .55, 1.4, 8).rotateX(Math.PI / 2).translate(0, 0, 6.6),
-  shortBarrel: new THREE.BoxGeometry(.7, .7, 5.6).translate(0, 0, 3)
 };
 const materials = new Map();
 function material(color, shaded = true) {
@@ -170,8 +165,6 @@ const GOURD_MATERIAL = material(0xb08a4a);
 const GOURD_PLAIN = material(0xb08a4a, false);
 const STRAW = material(PALETTE.dryGrass, false);
 const BRASS = material(0x9a7a3c, false);
-const GUNSTOCK = material(0x6a4428, false);
-const GUNMETAL = material(0x3a3c40, false);
 const LEATHER = material(new THREE.Color(CLOTH.leather).getHex());
 const EYE = material(0x26201a, false);
 const HAIR = material(PALETTE.hair);
@@ -488,18 +481,18 @@ export class TowerRenderer {
     const gun = new THREE.Group();
     gun.position.set(gunX, gunY, 1.2);
     torso.add(gun);
-    part(BODY.stock, GUNSTOCK, 0, 0, 0, gun);
-    let bolt = null, ramrod = null;
+    // a mesma arma das unidades (WeaponModels), deitada: o cano dela (-y) vira +z
+    const weapon = weaponModel(blunderbuss ? 'blunderbuss' : 'rifle');
+    weapon.group.rotation.x = -Math.PI / 2;
+    weapon.group.position.z = .6;
+    gun.add(weapon.group);
+    const bolt = weapon.bolt, storedRod = weapon.ramrod;
+    let ramrod = null;
     if (blunderbuss) {
-      part(BODY.shortBarrel, GUNMETAL, 0, .1, 0, gun);
-      part(BODY.bell, BRASS, 0, .1, 0, gun);
       ramrod = part(RAMROD, ROD, 0, 0, 0, gun);            // socando pela boca, na recarga
       ramrod.visible = false;
-    } else {
-      part(BODY.barrel, GUNMETAL, 0, .1, 0, gun);
-      bolt = part(BOLT, GUNMETAL, -.7, .25, BOLT_Z, gun);  // a alavanca do ferrolho, do lado esquerdo
     }
-    shooter.userData = { torso, head, gun, bolt, ramrod, blunderbuss, ...limbs };
+    shooter.userData = { torso, head, gun, bolt, ramrod, storedRod, blunderbuss, ...limbs };
     TowerRenderer.#cycle(shooter.userData, 1);
     frame.add(shooter);
     return shooter;
@@ -510,7 +503,7 @@ export class TowerRenderer {
   // ferrolho, abre (a cápsula salta), fecha e volta ao guarda-mão. Bacamarte: a arma
   // sobe de boca para o alto e a vareta soca duas vezes antes de voltar à mira.
   static #cycle(u, s) {
-    const { torso, head, gun, bolt, ramrod, left, right, blunderbuss } = u;
+    const { torso, head, gun, bolt, ramrod, storedRod, left, right, blunderbuss } = u;
     const kick = s < .2 ? Math.min(1, s / .02) * Math.exp(-s * (blunderbuss ? 16 : 24)) : 0;
     // a mira: os dois braços fechando na arma, à direita do peito
     let rUp = -1.15, rFore = -.35, lUp = -1.35, lFore = -.15, lZ = .55;
@@ -521,13 +514,15 @@ export class TowerRenderer {
       rUp = -1.15 + .55 * up; rFore = -.35 - .5 * up;
       lean = .16 - .12 * up;
       ramrod.visible = s > .26 && s < .78;
+      storedRod.visible = !ramrod.visible;
       const stroke = s > .3 && s < .74 ? Math.max(0, Math.sin((s - .3) / .44 * Math.PI * 4 - Math.PI / 2)) : 0;
       ramrod.position.z = 7.6 - 3.4 * stroke;               // entra e sai pela boca
       lUp = -1.35 - 1.05 * up + .3 * stroke; lFore = -.15 - .2 * up; lZ = .55 + .15 * up;
     } else {
       const toBolt = span(s, .14, .26) * (1 - span(s, .66, .8));
       const open = span(s, .28, .38) * (1 - span(s, .46, .56));
-      bolt.position.z = BOLT_Z - 1.1 * open;
+      bolt.position.y = WEAPON_BOLT_Y + 1.1 * open;           // corre para trás, para a coronha
+      bolt.rotation.y = -1.1 * span(s, .26, .3) * (1 - span(s, .54, .58));   // a alavanca sobe antes
       lUp = -1.35 + .3 * toBolt; lFore = -.15 - .9 * toBolt - .25 * open; lZ = .55 - .1 * toBolt;
       gunPitch = -.16 + .12 * toBolt;                      // cano um pouco para baixo enquanto mexe na culatra
     }

@@ -3,6 +3,7 @@ import { CharacterModel } from '../render/CharacterModel.js';
 import { SertaoBuildingModel } from '../render/SertaoBuildingModel.js';
 import { TowerRenderer } from '../render/TowerRenderer.js';
 import { PropFactory } from '../render/PropFactory.js';
+import { weaponModel } from '../render/WeaponModels.js';
 import { WOOD_MATERIALS, LOG_RADIUS } from '../render/WoodMaterials.js';
 import { PALETTE } from '../render/Palette.js';
 import { hutSize } from '../settlement/HutDimensions.js';
@@ -146,7 +147,11 @@ const ANIMS = [
 ].map(a => ({ ...a, chars: a.tower ? [] : a.chars.filter(has) }));
 
 /* ---------- o catálogo de modelos ---------- */
-const CATEGORIAS = [['personagens', 'Personagens'], ['cenario', 'Itens de cenário'], ['construcoes', 'Construções']];
+const CATEGORIAS = [['personagens', 'Personagens'], ['armas', 'Armas'], ['cenario', 'Itens de cenário'], ['construcoes', 'Construções']];
+const WEAPONS = [['rifle', 'Fuzil Mannlicher M1888', 'Ferrolho de puxar reto, pente de 5'], ['bayonet', 'Mannlicher com baioneta', 'Baioneta-faca M1888'],
+  ['blunderbuss', 'Bacamarte de pederneira', 'Cano de latão, boca de sino'], ['machete', 'Facão sertanejo', 'Cabo de chifre'],
+  ['saber', 'Sabre de oficial', 'Guarda de latão com arco'], ['spear', 'Chuço', 'Ponta de ferro em folha'],
+  ['club', 'Porrete', 'Pau nodoso'], ['axe', 'Machado', 'Cunha de ferro']];
 const PROPS = [['umbuzeiro', 'Umbuzeiro'], ['catingueira', 'Catingueira'], ['mandacaru', 'Mandacaru'], ['xiquexique', 'Xique-xique'],
   ['macambira', 'Macambira'], ['garrancho', 'Garrancho'], ['rock', 'Pedra']];
 
@@ -163,6 +168,7 @@ export function installModelViewer() {
     MODELS.push({ id: `unit:${id}`, cat: 'personagens', label: stats.label, unitType: id,
       info: `${stats.hp} de vida · ${stats.damage ? `${stats.damage} de dano` : 'não briga'}${stats.weapon ? ` · ${ARMAS[stats.weapon] ?? stats.weapon}` : stats.cannon ? ' · canhão' : ''}` });
   }
+  for (const [kind, label, info] of WEAPONS) MODELS.push({ id: `weapon:${kind}`, cat: 'armas', label, weapon: kind, info });
   for (const [kind, label] of PROPS) MODELS.push({ id: `prop:${kind}`, cat: 'cenario', label, prop: kind, info: 'Caatinga' });
   MODELS.push({ id: 'prop:roca', cat: 'cenario', label: 'Roça (mandioca e feijão)', prop: 'roca', info: 'Comida' });
   MODELS.push({ id: 'prop:tora', cat: 'cenario', label: 'Tora no chão', prop: 'tora', info: 'Madeira' });
@@ -184,6 +190,14 @@ export function installModelViewer() {
       view.scale.setScalar(unit.size / 10);
       view.traverse(o => { if (o.isMesh) o.castShadow = true; });
       return { object: view, unit, view };
+    }
+    if (model.weapon) {
+      // deitada, com o cano para a frente e o "em cima" da arma para cima
+      const built = weaponModel(model.weapon);
+      built.group.rotation.x = -Math.PI / 2;
+      built.group.position.y = 2;
+      const g = new THREE.Group(); g.add(built.group);
+      return { object: g };
     }
     if (model.prop === 'tora') {
       const mesh = new THREE.Mesh(logShape, WOOD_MATERIALS);
