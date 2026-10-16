@@ -131,6 +131,7 @@ function makeRayCrater(center, r, seed) {
 // Raios, distâncias entre planetas e a órbita da Lua ficam todos na proporção real.
 const KM = 80 / 6371;
 const km = v => v * KM;
+const rkm = km;                              // raios dos corpos: mesma escala das distâncias
 const AU = km(149597870.7);                  // ≈ 1.878.500
 // [a, ȧ, e, ė, I, İ, L, L̇, ϖ, ϖ̇, Ω, Ω̇] — graus e UA, taxas por século juliano
 const ELEMENTS = {
