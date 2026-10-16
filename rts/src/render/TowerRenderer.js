@@ -3,7 +3,8 @@ import { pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
 import { addVerticalShade, shadedBox } from './Shading.js';
 import { createContactShadow } from './ContactShadow.js';
-import { CENTER, SKIN_TONES, CLOTH } from '../config/rts.js';
+import { CENTER, SKIN_TONES, CLOTH, TOWER } from '../config/rts.js';
+import { easeInOut } from '../core/math.js';
 import { hillHeight } from '../world/Hills.js';
 
 // Medidas da trincheira. RING é o raio do muro de pedra; por fora dele o aterro desce
@@ -22,6 +23,13 @@ const JIRAU_RISE = 9;
 const GAP = .72;
 
 const rnd = seed => pseudoRandom(seed);
+// Uma curva suave entre a e b (0 antes, 1 depois): as etapas do ciclo do tiro.
+const span = (t, a, b) => easeInOut(Math.max(0, Math.min(1, (t - a) / (b - a))));
+// A alavanca do ferrolho (no fuzil) e a vareta de socar (no bacamarte), no referencial
+// da arma: cano para +z.
+const BOLT = new THREE.BoxGeometry(.9, .35, .35).translate(-.4, 0, 0);
+const BOLT_Z = .7;
+const RAMROD = new THREE.BoxGeometry(.18, .18, 7).translate(0, 0, 3.5);
 
 /* ---------- geometrias compartilhadas por todas as trincheiras ---------- */
 
@@ -168,6 +176,7 @@ const LEATHER = material(new THREE.Color(CLOTH.leather).getHex());
 const EYE = material(0x26201a, false);
 const HAIR = material(PALETTE.hair);
 const STRAP_MATERIAL = material(0x5a3e26, false);
+const ROD = material(0x5a4632, false);
 
 // Trincheira do arraial: um aterro de terra socada em anel, com a encosta de fora
 // coberta de pedra solta e galho seco, e por cima um muro baixo de pedra seca coroado
@@ -201,8 +210,16 @@ export class TowerRenderer {
         this.#views.set(tower, view);
       }
       view.frame.scale.y = tower.built ? 1 : .15 + .85 * tower.progress;
-      // Os atiradores viram juntos para o alvo.
-      for (const shooter of view.shooters) shooter.rotation.y = Math.PI / 2 - tower.aim;
+      // Os atiradores viram juntos para o alvo e passam pelo ciclo do tiro: o primeiro
+      // no compasso da trincheira (o tiro sai quando o cooldown recomeça); os outros
+      // desencontrados, como numa fuzilaria. Sem alvo, ficam na mira, parados.
+      const interval = (tower.stats && tower.stats.interval) || TOWER.interval;
+      const firing = tower.cooldown > 0;
+      const base = firing ? 1 - tower.cooldown / interval : 1;
+      view.shooters.forEach((shooter, i) => {
+        shooter.rotation.y = Math.PI / 2 - tower.aim;
+        TowerRenderer.#cycle(shooter.userData, firing && i > 0 ? (base + i * .37) % 1 : base);
+      });
     }
     for (const [tower, view] of this.#views) {
       if (seen.has(tower)) continue;
@@ -461,24 +478,66 @@ export class TowerRenderer {
     part(BODY.crown, LEATHER, 0, 6.5, 0, head);
     // Braços para a frente segurando a arma; a coronha no ombro direito.
     const gunY = 5.3, gunX = 1.6;
+    const limbs = {};
     for (const side of [-1, 1]) {
       const upper = part(BODY.upperArm, shirt, side * 3.7, 5.4, 0, torso);
-      upper.rotation.x = side > 0 ? -1.15 : -1.35;
-      upper.rotation.z = side > 0 ? -.35 : .55;            // os dois fecham para a arma, à direita do peito
       const fore = part(BODY.forearm, shirt, 0, -2.8, 0, upper);
-      fore.rotation.x = side > 0 ? -.35 : -.15;
       part(BODY.hand, skin, 0, 0, 0, fore);
+      limbs[side > 0 ? 'right' : 'left'] = { upper, fore };
     }
     const gun = new THREE.Group();
     gun.position.set(gunX, gunY, 1.2);
-    gun.rotation.x = -.16;                                 // nivela o cano (o tronco está inclinado)
     torso.add(gun);
     part(BODY.stock, GUNSTOCK, 0, 0, 0, gun);
+    let bolt = null, ramrod = null;
     if (blunderbuss) {
       part(BODY.shortBarrel, GUNMETAL, 0, .1, 0, gun);
       part(BODY.bell, BRASS, 0, .1, 0, gun);
-    } else part(BODY.barrel, GUNMETAL, 0, .1, 0, gun);
+      ramrod = part(RAMROD, ROD, 0, 0, 0, gun);            // socando pela boca, na recarga
+      ramrod.visible = false;
+    } else {
+      part(BODY.barrel, GUNMETAL, 0, .1, 0, gun);
+      bolt = part(BOLT, GUNMETAL, -.7, .25, BOLT_Z, gun);  // a alavanca do ferrolho, do lado esquerdo
+    }
+    shooter.userData = { torso, head, gun, bolt, ramrod, blunderbuss, ...limbs };
+    TowerRenderer.#cycle(shooter.userData, 1);
     frame.add(shooter);
     return shooter;
+  }
+
+  // Um ciclo de tiro do atirador ajoelhado, com `s` de 0 (acabou de atirar) a 1 (na
+  // mira, pronto). O coice é seco e decai (0–12%). Fuzil: a mão esquerda vai ao
+  // ferrolho, abre (a cápsula salta), fecha e volta ao guarda-mão. Bacamarte: a arma
+  // sobe de boca para o alto e a vareta soca duas vezes antes de voltar à mira.
+  static #cycle(u, s) {
+    const { torso, head, gun, bolt, ramrod, left, right, blunderbuss } = u;
+    const kick = s < .2 ? Math.min(1, s / .02) * Math.exp(-s * (blunderbuss ? 16 : 24)) : 0;
+    // a mira: os dois braços fechando na arma, à direita do peito
+    let rUp = -1.15, rFore = -.35, lUp = -1.35, lFore = -.15, lZ = .55;
+    let gunPitch = -.16, lean = .16;
+    if (blunderbuss) {
+      const up = span(s, .12, .24) * (1 - span(s, .8, .94));
+      gunPitch = -.16 - 1.25 * up;                         // de boca para cima
+      rUp = -1.15 + .55 * up; rFore = -.35 - .5 * up;
+      lean = .16 - .12 * up;
+      ramrod.visible = s > .26 && s < .78;
+      const stroke = s > .3 && s < .74 ? Math.max(0, Math.sin((s - .3) / .44 * Math.PI * 4 - Math.PI / 2)) : 0;
+      ramrod.position.z = 7.6 - 3.4 * stroke;               // entra e sai pela boca
+      lUp = -1.35 - 1.05 * up + .3 * stroke; lFore = -.15 - .2 * up; lZ = .55 + .15 * up;
+    } else {
+      const toBolt = span(s, .14, .26) * (1 - span(s, .66, .8));
+      const open = span(s, .28, .38) * (1 - span(s, .46, .56));
+      bolt.position.z = BOLT_Z - 1.1 * open;
+      lUp = -1.35 + .3 * toBolt; lFore = -.15 - .9 * toBolt - .25 * open; lZ = .55 - .1 * toBolt;
+      gunPitch = -.16 + .12 * toBolt;                      // cano um pouco para baixo enquanto mexe na culatra
+    }
+    torso.rotation.x = lean - .16 * kick;
+    head.rotation.x = -.2 + .1 * kick;
+    gun.rotation.x = gunPitch - (blunderbuss ? .4 : .26) * kick;
+    gun.position.z = 1.2 - .5 * kick;
+    right.upper.rotation.set(rUp - .2 * kick, 0, -.35);
+    right.fore.rotation.x = rFore;
+    left.upper.rotation.set(lUp - .18 * kick, 0, lZ);
+    left.fore.rotation.x = lFore;
   }
 }

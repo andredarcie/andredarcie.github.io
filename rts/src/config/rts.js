@@ -120,8 +120,9 @@ export const UNIT_TYPES = Object.freeze({
     cost: { food: 40, wood: 45 }, time: 12, from: 'camp'
   },
   rifleman: {
-    label: 'Atirador', plural: 'Atiradores', icon: 'rifle', hp: 75, damage: 12, weapon: 'blunderbuss', reach: 78,
-    interval: 2.2, swing: .7, speed: 1.1, size: 10.2, sight: 110, vsBuilding: .5, look: 'jaguncoRifle',
+    // (o bacamarte carrega pela boca: o ciclo é mais longo e o tiro, mais forte)
+    label: 'Atirador', plural: 'Atiradores', icon: 'rifle', hp: 75, damage: 16, weapon: 'blunderbuss', reach: 78,
+    interval: 3, swing: .7, speed: 1.1, size: 10.2, sight: 110, vsBuilding: .5, look: 'jaguncoRifle',
     ranged: true, accuracy: .7, cost: { food: 70, wood: 50 }, time: 14, from: 'camp'
   },
   conselheiro: {

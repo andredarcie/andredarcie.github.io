@@ -19,6 +19,9 @@ import { hillAt } from '../world/Hills.js';
 const MARCH = WALK_SPEED * 1.25;
 // Intervalo entre as varreduras de inimigo por perto de cada soldado.
 const SCAN_INTERVAL = .3;
+// O pente do fuzil de ferrolho: balas por pente e o tempo a mais da recarga dele.
+const CLIP_ROUNDS = 5;
+const CLIP_RELOAD = 1.6;
 // Distância mínima entre duas unidades paradas.
 const PERSONAL_SPACE = 9;
 // Desvio de construção: folga além do raio, até onde se olha à frente e quanto
@@ -513,6 +516,11 @@ export class UnitSystem {
     u.strikeTarget = target;
     u.strikeLanded = false;
     u.strikeTimer = u.stats.interval;
+    // Fuzil de ferrolho: o pente (de Mannlicher) tem 5 balas; depois do quinto tiro a
+    // recarga é a do pente, mais demorada.
+    u.reloadMag = u.stats.ranged && u.weapon === 'rifle' && (u.shots + 1) % CLIP_ROUNDS === 0;
+    if (u.reloadMag) u.strikeTimer += CLIP_RELOAD;
+    u.strikeSpan = u.strikeTimer;
   }
 
   #landSwing(u) {
@@ -531,6 +539,7 @@ export class UnitSystem {
     u.still = 0;
     if (u.stats.ranged) {
       // Tiro: fumaça na boca da arma e o risco até o alvo; nem todo tiro acerta.
+      u.shots++;
       const hit = isBuilding || Math.random() < this.#accuracy(u, target);
       this.#state.shots.push({
         x: u.x + Math.cos(u.heading) * (u.stats.cannon ? 14 : 9), y: u.y + Math.sin(u.heading) * (u.stats.cannon ? 14 : 9),

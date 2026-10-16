@@ -80,6 +80,11 @@ export class Unit {
     this.strikeTarget = null;
     this.strikeLanded = true;
     this.strikeTimer = 0;
+    // Recarga de quem atira: o tempo do ciclo inteiro (golpe + recarga), os tiros dados
+    // e se esta recarga é a do pente (fuzil de ferrolho, a cada CLIP tiros).
+    this.strikeSpan = 1;
+    this.shots = 0;
+    this.reloadMag = false;
     this.hurt = 0;
     this.wounds = 0;
     this.bleed = 0;

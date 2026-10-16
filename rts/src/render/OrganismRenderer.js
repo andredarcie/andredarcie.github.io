@@ -106,6 +106,9 @@ export class OrganismRenderer {
         guard: Boolean(o.foe) && o.speed < 6,
         strike: o.strike > 0 && animate ? o.strike / o.strikeSwing : 0,
         strikeKind: o.strikeKind,
+        // Entre um tiro e outro, quanto da recarga já foi (0 → 1); -1 fora dela.
+        reload: OrganismRenderer.#reloadPhase(o, animate),
+        reloadMag: Boolean(o.reloadMag),
         hurt: animate ? o.hurt / HURT_FLASH : 0,
         wounds: Math.ceil(o.wounds),
         eyes: OrganismRenderer.#eyeOpening(o, view.rest, animate, elapsed, labor),
@@ -230,6 +233,16 @@ export class OrganismRenderer {
     view.baby.userData.bodyMaterial.dispose();
     view.baby.userData.outfitMaterial.dispose();
     view.baby = null;
+  }
+
+  // A recarga de quem atira: o tempo depois do golpe (o tiro) até o próximo poder sair
+  // (strikeTimer conta de strikeSpan a 0; o golpe toma os primeiros strikeSwing).
+  static #reloadPhase(o, animate) {
+    if (!animate || o.strike > 0 || !(o.strikeTimer > 0)) return -1;
+    if (o.strikeKind !== 'rifle' && o.strikeKind !== 'blunderbuss') return -1;
+    const span = (o.strikeSpan ?? 0) - (o.strikeSwing ?? 0);
+    if (span <= .05) return -1;
+    return Math.max(0, Math.min(1, 1 - o.strikeTimer / span));
   }
 
   // Quanto o olho está aberto, de 0 a 1: fecha junto com o deitar, aperta no choro e,

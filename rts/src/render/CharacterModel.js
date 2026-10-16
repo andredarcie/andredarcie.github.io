@@ -123,6 +123,26 @@ const BRASS_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x9a7a3c });
 const BLADE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xb9bec2 });
 // Quais armas se empunham como fuzil (na horizontal, mirando) e quais como lâmina.
 const LONG_ARMS = new Set(['rifle', 'bayonet', 'blunderbuss', 'spear']);
+// A recarga, peça por peça. No fuzil de ferrolho (Mannlicher/Comblain da tropa): a
+// alavanca do ferrolho, do lado esquerdo da caixa da culatra, que corre para trás e
+// volta; a cápsula vazia que salta; e o pente de 5 balas que a mão traz da cartucheira.
+// No bacamarte de carregar pela boca: o polvarinho, a bucha e a vareta de socar.
+// As manobras ficam com a mão esquerda: a direita não larga a coronha (a arma está
+// presa nela), e na escala do jogo isso não se nota.
+const BOLT_Y = -1.5;                       // a alavanca do ferrolho fechado (ao longo do cano)
+const BOLT_SHAPE = new THREE.BoxGeometry(1, .38, .38).translate(-.45, 0, 0);
+const BOLT_KNOB_SHAPE = new THREE.BoxGeometry(.55, .55, .55).translate(-1.05, 0, 0);
+const CASE_SHAPE = new THREE.BoxGeometry(.32, .7, .32);
+const CLIP_SHAPE = new THREE.BoxGeometry(.8, 1.5, .45).translate(0, -.4, 0);
+const RAMROD_SHAPE = new THREE.BoxGeometry(.2, 8.5, .2).translate(0, -3.6, 0);
+const HORN_SHAPE = new THREE.ConeGeometry(.6, 2.6, 7).translate(0, -1.1, 0);
+const WAD_SHAPE = new THREE.BoxGeometry(.6, .6, .6);
+const HORN_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xd8c8a2 });
+const WAD_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xcdb88a });
+const RAMROD_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x5a4632 });
+// Cada quanto do ciclo: sobe uma curva suave entre a e b (0 antes, 1 depois).
+const span = (t, a, b) => easeInOut(Math.max(0, Math.min(1, (t - a) / (b - a))));
+const mixTo = (from, to, k) => from + (to - from) * k;
 // Mão na ponta do antebraço (que é manga), da cor da pele.
 const HAND_SHAPE = addVerticalShade(new THREE.BoxGeometry(1.9, 1.5, 2.2).translate(0, -3.3, 0), .85, 1.05);
 
@@ -312,6 +332,31 @@ export class CharacterModel {
       saber: held([[GRIP_SHAPE, GUNMETAL_MATERIAL], [SABER_GUARD_SHAPE, BRASS_MATERIAL],
         [SABER_SHAPE, BLADE_MATERIAL]])
     };
+    // O ferrolho do fuzil (alavanca e bolota) e a cápsula que ele cospe.
+    const bolt = new THREE.Group();
+    bolt.position.set(-.5, BOLT_Y, 0);
+    for (const shape of [BOLT_SHAPE, BOLT_KNOB_SHAPE]) bolt.add(new THREE.Mesh(shape, GUNMETAL_MATERIAL));
+    arms.rifle.add(bolt);
+    const casing = new THREE.Mesh(CASE_SHAPE, BRASS_MATERIAL);
+    casing.visible = false;
+    arms.rifle.add(casing);
+    // Na mão esquerda: o pente, o polvarinho, a bucha e a vareta, cada um na sua hora.
+    const leftHand = new THREE.Group();
+    leftHand.position.y = HAND_OFFSET - .6;
+    forearmLeft.add(leftHand);
+    const prop = (shape, material) => {
+      const mesh = new THREE.Mesh(shape, material);
+      mesh.visible = false;
+      leftHand.add(mesh);
+      return mesh;
+    };
+    const reloadProps = {
+      clip: prop(CLIP_SHAPE, BRASS_MATERIAL),
+      horn: prop(HORN_SHAPE, HORN_MATERIAL),
+      wad: prop(WAD_SHAPE, WAD_MATERIAL),
+      ramrod: prop(RAMROD_SHAPE, RAMROD_MATERIAL),
+      bolt, casing
+    };
     // Feridas em lugares fixos, aparecendo uma a uma: peito, barriga, braço, coxa e
     // rosto; a do braço, a da perna e a do rosto presas à peça, para mexer junto.
     const wound = (parent, x, y, z, turn = 0) => {
@@ -347,7 +392,8 @@ export class CharacterModel {
       legLeft: left.thigh, legRight: right.thigh, shinLeft: left.shin, shinRight: right.shin,
       footLeft: left.foot, footRight: right.foot,
       armLeft, armRight, forearmLeft, forearmRight,
-      axe, mallet, shoulderLog, sack, eyes, club, spear, arms, wounds, headParts, stump, gear: gear.parts
+      axe, mallet, shoulderLog, sack, eyes, club, spear, arms, wounds, headParts, stump, gear: gear.parts,
+      reloadProps
     };
     return group;
   }
@@ -682,6 +728,16 @@ export class CharacterModel {
       plant = 1;
     }
     if (strike > 0) { CharacterModel.#poseStrike(view, strikeKind, 1 - strike); plant = 1; }
+    // Entre um tiro e outro: a recarga (ferrolho e pente no fuzil; pólvora, bucha e
+    // vareta no bacamarte). As peças da mão esquerda só aparecem na hora delas.
+    const { reload = -1, reloadMag = false } = motion;
+    const props = data.reloadProps;
+    props.bolt.position.y = BOLT_Y;
+    props.casing.visible = props.clip.visible = props.horn.visible = props.wad.visible = props.ramrod.visible = false;
+    if (reload >= 0 && !(strike > 0) && rest < .5 && (weapon === 'rifle' || weapon === 'blunderbuss')) {
+      CharacterModel.#poseReload(view, weapon, reload, reloadMag);
+      plant = 1;
+    }
     // Debandada: corre de braços para o alto, sem olhar para trás.
     if (panic && stride > .2 && !(strike > 0)) CharacterModel.#posePanic(view, gait);
     // O Conselheiro parado prega: braço direito erguido e a mão falando, o bordão
@@ -858,21 +914,29 @@ export class CharacterModel {
     // O canhão dispara sozinho: a guarnição continua agarrada à carreta.
     if (kind === 'cannon') return;
     if (kind === 'rifle' || kind === 'blunderbuss') {
-      // Tiro: coronha no ombro, rosto encostado nela, cotovelos fechados; o coice
-      // joga o ombro para trás e o cano sobe um pouco; depois volta à mira.
-      const kick = Math.max(0, 1 - Math.abs(p - .58) / .14);
-      armRight.rotation.x = -1.05 - .25 * kick;
-      forearmRight.rotation.x = -.45;
+      // Tiro, como se faz: da arma baixa até a coronha no ombro e o rosto encostado
+      // nela (0–42%); a respiração presa, quase imóvel, apontando (42–58%); o disparo
+      // (58%, o mesmo instante da simulação): o coice é seco — sobe de uma vez e decai
+      // devagar —, joga o ombro e o tronco para trás e o cano sobe; depois a mira volta.
+      // O bacamarte escoiceia bem mais.
+      const heavy = kind === 'blunderbuss';
+      const raise = span(p, 0, .42);
+      const since = p - .58;
+      const kick = since > 0 ? Math.min(1, since / .025) * Math.exp(-since * (heavy ? 8 : 12)) : 0;
+      const hold = p > .42 && p < .58 ? Math.sin(p * 90) * .005 : 0;   // o tremor de quem segura o ar
+      armRight.rotation.x = mixTo(-.75, -1.05, raise) - (heavy ? .42 : .28) * kick + hold;
+      forearmRight.rotation.x = mixTo(-.65, -.45, raise);
       armRight.rotation.z = .1;
-      armLeft.rotation.x = -1.15 - .25 * kick;
-      forearmLeft.rotation.x = -.33;
+      armLeft.rotation.x = mixTo(-.85, -1.15, raise) - (heavy ? .4 : .26) * kick + hold;
+      forearmLeft.rotation.x = mixTo(-.6, -.33, raise);
       armLeft.rotation.z = -.42;
-      body.rotation.x -= .14 * kick;
-      body.rotation.y = .12;
-      neck.rotation.set(.1, -.1, .14);
+      body.rotation.x -= (heavy ? .24 : .15) * kick;
+      body.rotation.y = .12 * raise;
+      // o rosto desce até a coronha para a pontaria; no coice a cabeça vai junto
+      neck.rotation.set(mixTo(0, .12, raise) - .14 * kick, -.1 * raise, .16 * raise);
       legLeft.rotation.x = -.35;
       shinLeft.rotation.x = .35;
-      legRight.rotation.x = .2;
+      legRight.rotation.x = .2 + .06 * kick;
       shinRight.rotation.x = .12;
       return;
     }
@@ -916,6 +980,102 @@ export class CharacterModel {
       legLeft.rotation.x = -.3 * sweep * (1 - back);
       shinLeft.rotation.x = .3 * sweep * (1 - back);
     }
+  }
+
+  // A recarga depois do tiro, com `r` de 0 a 1 ao longo do tempo até o próximo.
+  // Fuzil de ferrolho: a arma sai do ombro para o peito, o cano um pouco para baixo; a
+  // mão esquerda vai à alavanca, abre o ferrolho (a cápsula vazia salta), fecha, e a
+  // mão volta ao guarda-mão enquanto a arma sobe de novo. A cada 5 tiros (`mag`), com
+  // o ferrolho aberto, a mão desce à cartucheira, traz o pente e o empurra por cima na
+  // culatra antes de fechar.
+  // Bacamarte de carregar pela boca: a arma fica em pé, de boca para cima; a mão
+  // esquerda despeja a pólvora do polvarinho, põe a bucha, tira a vareta de baixo do
+  // cano, soca duas vezes, guarda a vareta, escorva e a arma volta à mira.
+  static #poseReload(view, weapon, r, mag) {
+    const { body, neck, legLeft, legRight, shinLeft, shinRight, armLeft, armRight, forearmLeft, forearmRight,
+      arms, reloadProps: P } = view.userData;
+    const gun = arms[weapon];
+    gun.position.y = HAND_OFFSET;
+    armRight.rotation.y = 0;
+    legLeft.rotation.x = -.3;
+    shinLeft.rotation.x = .3;
+    legRight.rotation.x = .15;
+    shinRight.rotation.x = .12;
+    // Onde a mão esquerda vai (ombro x, cotovelo, ombro z): no guarda-mão (a mira), na
+    // culatra, na cartucheira, na boca da arma em pé, embaixo do cano e no alto (socando).
+    const F = [-1.15, -.33, -.42], B = [-.95, -1.05, .35], Q = [-.25, -.95, .15];
+    const M = [-2.0, -.5, .55], U = [-1.2, -.9, .5], H = [-2.7, -.15, .5];
+    const keys = weapon === 'rifle'
+      ? (mag
+        ? [[0, F], [.08, F], [.18, B], [.3, B], [.42, Q], [.47, Q], [.6, B], [.82, B], [.92, F], [1, F]]
+        : [[0, F], [.1, F], [.22, B], [.74, B], [.86, F], [1, F]])
+      : [[0, F], [.08, F], [.16, M], [.32, M], [.38, Q], [.42, Q], [.47, M], [.5, U], [.55, H], [.78, H],
+        [.82, U], [.86, B], [.92, B], [1, F]];
+    const left = CharacterModel.#keyPose(keys, r);
+    armLeft.rotation.set(left[0], 0, left[2]);
+    forearmLeft.rotation.x = left[1];
+
+    if (weapon === 'rifle') {
+      const down = span(r, 0, .12) * (1 - span(r, .86, 1));
+      armRight.rotation.set(mixTo(-1.05, -.72, down), 0, .1);
+      forearmRight.rotation.x = mixTo(-.45, -.78, down);
+      gun.rotation.x = 0;
+      body.rotation.y = .12 * (1 - down);
+      neck.rotation.set(.12 + .26 * down, -.1 * (1 - down), .16 * (1 - down));   // olha a culatra
+      // o ferrolho: abre e fecha; a mão que puxa dobra mais o cotovelo
+      const [o0, o1, c0, c1] = mag ? [.2, .28, .72, .8] : [.24, .36, .52, .64];
+      const open = span(r, o0, o1) * (1 - span(r, c0, c1));
+      P.bolt.position.y = BOLT_Y + 1.15 * open;
+      forearmLeft.rotation.x -= .22 * open;
+      // a cápsula vazia salta para cima e para a esquerda, girando
+      const c = (r - o0) / .2;
+      if (c > 0 && c < 1) {
+        P.casing.visible = true;
+        P.casing.position.set(-.8 - 2.6 * c, BOLT_Y + .3, .5 + 3.2 * c - 4.6 * c * c);
+        P.casing.rotation.set(c * 9, 0, c * 6);
+      }
+      if (mag) {
+        // o pente na mão da cartucheira até a culatra; empurrado para dentro, some
+        P.clip.visible = r > .44 && r < .66;
+        if (r > .6 && r < .68) forearmLeft.rotation.x += .3 * Math.sin((r - .6) / .08 * Math.PI);
+      }
+      return;
+    }
+    // Bacamarte em pé, de boca para cima, na mão direita
+    const up = span(r, 0, .12) * (1 - span(r, .88, .98));
+    armRight.rotation.set(mixTo(-1.05, -.35, up), 0, mixTo(.1, .05, up));
+    forearmRight.rotation.x = mixTo(-.45, -1, up);
+    // a arma acompanha o antebraço na mira e fica de pé quando ergue (soma dos giros)
+    gun.rotation.x = up * (-Math.PI - (armRight.rotation.x + forearmRight.rotation.x));
+    body.rotation.y = .12 * (1 - up);
+    neck.rotation.set(mixTo(.12, -.06, up), -.1 * (1 - up), .16 * (1 - up));
+    // o polvarinho despejando na boca da arma
+    P.horn.visible = r > .1 && r < .34;
+    P.horn.rotation.set(Math.PI * .75, 0, Math.sin(r * 40) * .15);
+    // a bucha, da cartucheira para a boca
+    P.wad.visible = r > .38 && r < .48;
+    // a vareta: tirada de baixo do cano, socando de cima (virada para baixo), guardada
+    P.ramrod.visible = r > .49 && r < .83;
+    P.ramrod.rotation.x = r > .53 && r < .8 ? Math.PI : 0;
+    if (r > .56 && r < .76) {
+      const stroke = Math.max(0, Math.sin((r - .56) / .2 * Math.PI * 4 - Math.PI / 2));   // duas socadas
+      armLeft.rotation.x += .32 * stroke;
+      forearmLeft.rotation.x -= .12 * stroke;
+    }
+    // escorvando: o polegar no cão, um tico de giro da mão
+    if (r > .86 && r < .92) forearmLeft.rotation.x -= .15 * Math.sin((r - .86) / .06 * Math.PI);
+  }
+
+  // Interpolação por quadros-chave: [[tempo, [a, b, c]], ...], suave entre um e outro.
+  static #keyPose(keys, r) {
+    for (let i = 0; i < keys.length - 1; i++) {
+      const [ta, a] = keys[i], [tb, b] = keys[i + 1];
+      if (r <= tb) {
+        const k = easeInOut(Math.max(0, Math.min(1, (r - ta) / Math.max(1e-6, tb - ta))));
+        return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+      }
+    }
+    return keys[keys.length - 1][1];
   }
 
   // Cabeça arrancada: some do corpo e fica só o toco do pescoço.
