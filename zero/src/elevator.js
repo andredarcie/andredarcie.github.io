@@ -7,9 +7,10 @@ import { sfxDoorSlide, sfxDing, sfxElevator } from './audio.js';
 
 /* ===================== elevador: a mesma cabine nas duas pontas do poço ===================== */
 // A viagem não tem corte: aperta o botão lá dentro, as portas fecham, a cabine anda; com as portas
-// ainda fechadas a cena troca (game.travel) por outra que tem a MESMA cabine, montada pela mesma
-// função. A viagem termina do lado de lá, a campainha toca e as portas abrem no outro andar.
-// O jogador guarda a posição e o giro dentro da cabine (rel), então nada pula na troca.
+// ainda fechadas o jogador passa (game.travel) para a cabine do outro andar — no mundo (mapa.js) ela
+// fica no mesmo poço, ANDAR metros por andar acima ou abaixo. A viagem termina do lado de lá, a
+// campainha toca e as portas abrem no outro andar. O jogador guarda a posição e o giro dentro da
+// cabine (rel), então nada pula na troca.
 //
 // Coordenadas locais: origem no chão, no centro do vão, na face da parede do patamar;
 // +z sai da cabine para o patamar; a cabine fica atrás da parede (z negativo).
@@ -133,11 +134,12 @@ export function elevador({ x, z, yaw, wall, here, there, to, arrive }) {
   const dentro = () => { const [lx, lz] = onde(); return Math.abs(lx) < CW && lz < CZ0 - .25 && lz > CZ1; };
   const naFrente = () => { const [lx, lz] = onde(); return Math.abs(lx) < 2.5 && lz > .05; };
   let st = arrive ? 'arriving' : 'closed', tS = null, d = 0, k = arrive ? K_SWAP : 0;
-  const origem = num(arrive ? there : here), destino = num(arrive ? here : there);
+  let origem = num(arrive ? there : here), destino = num(arrive ? here : there);
   function abrir() { if (st !== 'closed' || !naFrente()) return; st = 'opening'; tS = null; sfxDoorSlide(); }
   function partir() {
     if ((st !== 'open' && st !== 'closed') || !dentro()) return;
     st = 'closing'; tS = null; sfxDoorSlide();
+    origem = num(here); destino = num(there);
   }
 
   anim(t => {
@@ -154,11 +156,11 @@ export function elevador({ x, z, yaw, wall, here, there, to, arrive }) {
       k = Math.min(K_SWAP, e / (T_GO + T_ARRIVE));
       shake = e < .7 ? -Math.sin(e / .7 * Math.PI) * .025 : 0;          // o tranco da partida
       if (e >= T_GO) {
-        st = 'gone';
+        // a cabine deste andar fica de portas fechadas, pronta para ser chamada de novo
+        st = 'closed'; tS = t; d = 0; k = 0;
         const p = game.player(), [lx, lz] = L(p.px, p.pz);
-        // troca depois deste quadro: o laço de anims ainda está rodando as da cena atual
+        // troca depois deste quadro: o laço de anims ainda está rodando as do lugar atual
         queueMicrotask(() => game.travel(to[0], to[1], { x: lx, z: lz, yaw: p.yaw - yaw, fy: yaw }));
-        return;
       }
     } else if (st === 'arriving') {
       k = Math.min(1, K_SWAP + e / (T_GO + T_ARRIVE));
@@ -170,7 +172,6 @@ export function elevador({ x, z, yaw, wall, here, there, to, arrive }) {
         if (game.arrived) game.arrived();
       }
     }
-    if (st === 'gone') return;
     if ((st === 'riding' || st === 'arriving') && dentro())
       camera.position.y += shake + Math.sin(t * 31) * .0025 + Math.sin(t * 17.3) * .0015; // o poço vibrando
 
@@ -185,17 +186,18 @@ export function elevador({ x, z, yaw, wall, here, there, to, arrive }) {
     painel.userData.inter = (st === 'open' || st === 'closed') && dentro() ? interPainel : null;
   });
 
-  // a outra ponta do poço (o main.js a deixa montada em segundo plano: a troca não engasga)
+  // a outra ponta do poço
   saida({ para: to, mundo: null, pronto: false });
 
-  if (!arrive) return { spawn: null };
-  // chegando de viagem: a posição na cabine só se sabe na hora da troca (a cena pode ter sido montada antes)
-  const poe = rel => {
-    if (rel.fy !== undefined) alinharSol(yaw - rel.fy);             // a cabine iluminada igual ao que era
+  // chegando de viagem do outro andar: a cabine daqui termina a viagem (portas fechadas, depois abrem)
+  // e o jogador fica no mesmo ponto da cabine em que estava
+  chegada(rel => {
+    st = 'arriving'; tS = null; d = 0; k = K_SWAP;
+    origem = num(there); destino = num(here);
     const [sx, sz] = W(rel.x, rel.z);
     return { x: sx, z: sz, yaw: rel.yaw + yaw };
-  };
-  chegada(poe);
+  });
+  if (!arrive) return { spawn: null };
   const [sx, sz] = W(arrive.x, arrive.z);
   return { spawn: { x: sx, z: sz, yaw: arrive.yaw + yaw } };
 }

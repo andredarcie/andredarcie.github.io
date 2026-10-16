@@ -3,12 +3,11 @@ import { DARK, DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from './config.js
 import { box, lite, grp, anim, walkOf, tag, game, scene, mundo, saida } from './kit.js';
 import { sfxDoorSlide } from './audio.js';
 
-/* ===================== vestíbulo: a passagem entre duas cenas (sem tela escura e sem espera) ===================== */
-// Um cômodo pequeno de duas portas que existe IGUAL nas duas cenas (montado por esta função).
-// A cena do outro lado já está montada em segundo plano (o main.js cuida disso) e aparece de verdade
-// pela porta de lá: o main.js a desenha através do vão (portal). As duas portas abrem sozinhas quando
-// você chega perto e fecham quando você se afasta; passou do meio do cômodo, a cena troca por baixo
-// dos panos — aqui dentro as duas são idênticas e cada uma mostra a outra pela porta, então nada muda.
+/* ===================== vestíbulo: a passagem entre dois lugares ===================== */
+// Um cômodo pequeno de duas portas que existe IGUAL nos dois lugares (montado por esta função). No
+// mundo (mapa.js) as duas cópias ocupam o mesmo lugar: o mundo.js desenha só uma delas e liga as
+// portas das duas (a mesma `ponte`). As portas abrem sozinhas quando você chega perto e fecham
+// quando você se afasta; pela porta de lá se passa andando para o outro lugar.
 //
 // Coordenadas locais: chão no centro; a porta do lado P em z = -1, a do lado Q em z = +1.
 // lado: de qual lado está a cena atual ('P' ou 'Q'); outro: [cena, entrada] da cena do outro lado.
@@ -33,8 +32,9 @@ const ESTILOS = {
 // bloqueada: a porta deste lado só abre para quem vem de dentro do vestíbulo (o quarto no dia 3 e de noite);
 //   interTrancada: o que o E faz nela trancada, de fora ({ name, ...opções de tag }, ex.: pular o dia 4)
 // alcance: até onde o chão do vão avança para fora (emenda no chão andável da cena)
+// abre: as duas portas só abrem enquanto devolver true (o portão de embarque, antes da passagem)
 // devolve { spawn }
-export function vestibulo({ x, y = 0, z, yaw, lado, outro, estilo = 'vidro', arrive = null, bloqueada = false, interTrancada = null, alcance = .9 }) {
+export function vestibulo({ x, y = 0, z, yaw, lado, outro, estilo = 'vidro', arrive = null, bloqueada = false, interTrancada = null, alcance = .9, abre = () => true }) {
   const st = ESTILOS[estilo];
   const c = Math.cos(yaw), s = Math.sin(yaw);
   const W = (lx, lz) => [x + lx * c + lz * s, z - lx * s + lz * c];
@@ -51,10 +51,9 @@ export function vestibulo({ x, y = 0, z, yaw, lado, outro, estilo = 'vidro', arr
   box(VW * 2 + .32, .1, VD * 2 + .32, DARK2, 0, VH + .05, 0, g);        // teto
   for (const k of [-1, 1]) box(.16, VH, VD * 2, st.parede, k * (VW + .08), VH / 2, 0, g); // laterais
   lite(.5, .03, .5, GLOW, 0, VH - .015, 0, g);                          // luminária
-  const [plx, plz] = W(0, 0);
   const luz = new THREE.PointLight(0xeaf2f2, .45, 4.5);
-  luz.position.set(plx, y + 2.3, plz);
-  scene.add(luz);
+  luz.position.set(0, 2.3, 0);                                          // no grupo: some junto com a cópia escondida
+  g.add(luz);
   // detalhes de cada estilo (iguais nos dois lados, senão a troca aparece)
   if (estilo === 'hall') {
     box(.04, .06, .5, DARK2, -VW + .02, 1.6, 0, g);                     // cabideiro
@@ -129,19 +128,21 @@ export function vestibulo({ x, y = 0, z, yaw, lado, outro, estilo = 'vidro', arr
     alvoPorta.userData.inter = null;
   }
 
-  // ---------- a ligação com a cena do outro lado (o main.js monta a vizinha e desenha o portal) ----------
+  // ---------- a ligação com o lugar do outro lado (o mundo.js junta as duas cópias) ----------
   const eu = mundo;
   const sai = saida({
     para: outro, chegada: !!arrive, mundo: null, pronto: false, urgente: false,
-    portal: { x, y, z, yaw, zd, ponte, aberta: () => ponte.est[nomeDele] },
+    portal: { x, y, z, yaw, zd, ponte, grupo: g, aberta: () => ponte.est[nomeDele] },
   });
 
-  // ---------- portas automáticas e a troca ----------
-  let tl = null, pediu = false;
+  // ---------- portas automáticas ----------
+  let tl = null;
   anim(t => {
     const dt = tl === null ? 0 : Math.min(.05, t - tl);
     tl = t;
-    if (!eu.ativo) return;   // a cópia vista pelo portal: quem mexe nas portas é o cômodo da cena atual
+    // o chão do vão segue a porta deste lado nas duas cópias (quem a mexe é a cópia do lugar atual)
+    setVao(ponte.est[lado] > .6);
+    if (!eu.ativo) return;
     const p = game.player(), [lx, lz] = L(p.px, p.pz);
     const dentro = Math.abs(lx) < VW && Math.abs(lz) < VD - .05;
     const pertoDe = zp => Math.abs(lx) < VW + .6 && Math.abs(lz - zp) < PERTO;
@@ -155,22 +156,16 @@ export function vestibulo({ x, y = 0, z, yaw, lado, outro, estilo = 'vidro', arr
       ponte.est[nome] = k;
     };
     // a deste lado: trancada, só abre para quem vem de dentro (dá para chegar em casa de noite, não para sair)
-    mexe(lado, (pertoDe(zs) && (!bloqueada || dentro)) || (ponte.est[lado] > 0 && noVao));
-    // a de lá: só com a cena do outro lado já montada (é ela que aparece pelo vão)
-    mexe(nomeDele, pertoDe(zd) && sai.pronto);
+    const pode = abre();
+    mexe(lado, (pode && pertoDe(zs) && (!bloqueada || dentro)) || (ponte.est[lado] > 0 && noVao));
+    // a de lá: só com o lugar do outro lado no mundo (sem ele, o vão daria no vazio)
+    const foraDeLa = (lz - zd) * -sz;
+    const noVaoDeLa = Math.abs(lx) < DW + .35 && foraDeLa > -.6 && foraDeLa < 1.4;
+    mexe(nomeDele, (pode && pertoDe(zd) && sai.pronto) || (ponte.est[nomeDele] > 0 && noVaoDeLa));
     setVao(ponte.est[lado] > .6);
     ponte.desenha();
     if (ponte.par) ponte.par.desenha();
     if (alvoPorta) alvoPorta.userData.inter = bloqueada && !dentro && pertoDe(zs) && ponte.est[lado] === 0 ? interTrancada : null;
-    // passou do meio do cômodo rumo à porta de lá: a cena troca (aqui dentro as duas são iguais)
-    if (dentro && lz * sz < -.15) {
-      if (!sai.pronto) sai.urgente = true;   // ainda montando (raro): o main.js monta já
-      else if (!pediu) {
-        pediu = true;
-        // troca depois deste quadro: o laço de anims ainda está rodando as da cena atual
-        queueMicrotask(() => { pediu = false; if (eu.ativo && game.atravessar) game.atravessar(sai); });
-      }
-    }
   });
 
   if (!arrive) return { spawn: null };

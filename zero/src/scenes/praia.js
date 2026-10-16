@@ -7,6 +7,8 @@ import { IS_LOCAL } from '../input.js';
 import { sfxPaddle, sfxStep, sfxSit } from '../audio.js';
 import { pose, applyPose, placeBody, cameraFromHead, makeAction, fadeNearCamera, SOLE } from '../body.js';
 import { scene, inters, freshScene, box, lite, grp, blob, anim, instanciar, at, tag, triggerOf, walkOf, blockOf } from '../kit.js';
+import { transformada } from '../mapa.js';
+import { PARADA_PRAIA } from './aviao.js';
 
 /* ===================== CENA: A PRAIA (o fim da fuga) ===================== */
 // Lições que custaram caro (não desfazer):
@@ -254,6 +256,7 @@ function fita(nx, color, opacity, order) {
 }
 
 export function buildPraia() {
+  let chaoAndar = chaoH;                        // (a pista de pouso, lá atrás das dunas, completa esta função)
   freshScene(24, 78);                           // a névoa fecha exatamente no fim da câmera: horizonte sem emenda
   scene.fog.color.copy(HOR);
   scene.background = HOR.clone();
@@ -745,6 +748,63 @@ export function buildPraia() {
   const ropeM = new THREE.Group();
   box(.02, .02, 1, mix(LIGHT, FLOOR, .3), 0, 0, 0, ropeM);
   instanciar(ropeM, ropeMats);
+
+  // ── atrás das dunas: a pista de pouso, onde o avião (aviao.js) para com a porta na escada ──
+  // A passarela continua dunas acima até a escada. Tudo a partir de onde o avião para no mundo.
+  const Ti = transformada('praia').clone().invert();
+  const daqui = (x, y, z) => new THREE.Vector3(x, y, z).applyMatrix4(Ti);
+  const portaAv = daqui(PARADA_PRAIA.x - 2.45, PARADA_PRAIA.y, PARADA_PRAIA.z - 6.45);
+  const PG = PARADA_PRAIA.y - 2.6;                                   // o chão da pista (o avião fica 2.6 m acima)
+  const PXe = portaAv.x, ST1 = portaAv.z + .1, ST0 = ST1 - 4.5;      // a escada: do pé (ST0) até a porta (ST1)
+  // o terreno: das dunas (em z = 60 a areia acaba) até plano, na altura da pista
+  const terGeo = new THREE.PlaneGeometry(470, 140, 94, 28);
+  terGeo.rotateX(-Math.PI / 2);
+  terGeo.translate(-80, 0, 130);
+  const tP = terGeo.attributes.position;
+  for (let i = 0; i < tP.count; i++) {
+    const x = tP.getX(i), z = tP.getZ(i);
+    tP.setY(i, sandH(x, z) + (PG - sandH(x, z)) * smooth((z - 60) / 12));
+  }
+  terGeo.computeVertexNormals();
+  scene.add(new THREE.Mesh(terGeo, new THREE.MeshLambertMaterial({ color: mix(LIGHT2, LIGHT, .42), flatShading: true })));
+  const pa = daqui(PARADA_PRAIA.x, 0, -6170), pb = daqui(PARADA_PRAIA.x, 0, -6570);
+  const PLX0 = Math.min(pa.x, pb.x), PLX1 = Math.max(pa.x, pb.x), PZc = (pa.z + pb.z) / 2;
+  const ASF = mix(DARK2, NAVY, .25);
+  box(PLX1 - PLX0, .1, 30, ASF, (PLX0 + PLX1) / 2, PG - .03, PZc);  // a pista
+  for (let x = PLX0 + 10; x < PLX1 - 5; x += 16) lite(8, .02, .5, GLOW, x, PG + .03, PZc);   // eixo tracejado
+  const luzP = new THREE.Group();
+  lite(.3, .25, .3, mix(GLOW, SUNC, .3), 0, .15, 0, luzP);
+  const luzesP = [];
+  for (let x = PLX0; x <= PLX1; x += 30) for (const s of [-1, 1]) luzesP.push(at(x, PG, PZc + s * 15.6));
+  instanciar(luzP, luzesP);
+  // a escada (caminhão de escada, como a do aeroporto)
+  const NSe = 12, SDe = (ST1 - ST0) / NSe;
+  for (let i = 0; i < NSe; i++) box(1.3, .1, SDe + .02, mix(FLOOR, LIGHT2, .5), PXe, PG + (i + 1) * (PARADA_PRAIA.y - PG) / NSe - .05, ST0 + SDe * (i + .5));
+  box(1.3, .1, .6, mix(FLOOR, LIGHT2, .5), PXe, PARADA_PRAIA.y - .05, ST1 + .2);
+  const corrE = Math.hypot(ST1 - ST0, PARADA_PRAIA.y - PG);
+  for (const s of [-1, 1]) {
+    const c = box(.05, .05, corrE, LIGHT, PXe + s * .62, (PG + PARADA_PRAIA.y) / 2 + .95, (ST0 + ST1) / 2);
+    c.rotation.x = -Math.atan2(PARADA_PRAIA.y - PG, ST1 - ST0);
+  }
+  box(2.0, 1.2, 4.6, mix(LIGHT2, DARK2, .3), PXe, PG + .8, (ST0 + ST1) / 2);
+  // a passarela segue das dunas até o pé da escada
+  const deckExt = z => (z < 58 ? deck(z) : deck(58) + (PG + .14 - deck(58)) * smooth((z - 58) / 8));
+  const extMats = [];
+  for (let z = 45; z < ST0; z += .3) {
+    const slope = Math.atan2(deckExt(z + .15) - deckExt(z - .15), .3);
+    pQ2.setFromEuler(eX.set(-slope, (rnd() - .5) * .03, 0));
+    extMats.push(new THREE.Matrix4().compose(pV.set(WX, deckExt(z), z), pQ2, one));
+  }
+  instanciar(plankM, extMats);
+  walkOf(WX - .9, 44, WX + .9, ST0 + .3);                            // a passarela nova
+  walkOf(PXe - .55, ST0 - .3, PXe + .55, ST1 + .45);                 // a escada, até a porta do avião
+  // o chão de quem anda: a escada, a passarela, o resto como antes
+  chaoAndar = (x, z) => {
+    if (Math.abs(x - PXe) < .7 && z >= ST0 && z <= ST1 + .5) return PG + (PARADA_PRAIA.y - PG) * Math.min(1, Math.max(0, (z - ST0) / (ST1 - ST0)));
+    if (Math.abs(x - WX) < 1 && z > 44.5 && z < ST0 + .4) return deckExt(Math.min(z, ST0)) - .12;
+    if (z > 60) return PG;
+    return chaoH(x, z);
+  };
 
   // ── o canto dele: guarda-sol, espreguiçadeira, toalha, chinelos, um livro ──
   const GX = -7.4, GZ = -15.6, gy = sandH(GX, GZ);
@@ -1373,7 +1433,7 @@ export function buildPraia() {
     const p = camera.position;
     if (lastFoot === null) lastFoot = new THREE.Vector2(p.x, p.z);
     const dx = p.x - lastFoot.x, dz = p.z - lastFoot.y, dist = Math.hypot(dx, dz);
-    if (p.z < shoreZ(p.x)) lastFoot.set(p.x, p.z);  // fora da areia (canoa, ilha): sem rastro
+    if (p.z < shoreZ(p.x) || p.z > 45) lastFoot.set(p.x, p.z);  // fora da areia (canoa, ilha, passarela, pista): sem rastro
     else if (dist > .62 && dist < 3) {           // passo dado (salto grande = teleporte, ignora)
       const nx = -dz / dist, nz = dx / dist;     // perpendicular: pé esquerdo, pé direito
       const fx3 = p.x + nx * .11 * footSide, fz = p.z + nz * .11 * footSide;
@@ -1395,6 +1455,6 @@ export function buildPraia() {
 
   return {
     spawn: { x: 0, z: -15.5, yaw: 0 }, caption: sceneCaption('praia'), auto: null,
-    elevFn: chaoH,            // a areia sobe para as dunas; na ilha, platô e trapiche
+    elevFn: (x, z) => chaoAndar(x, z), // a areia sobe para as dunas; na ilha, platô e trapiche; lá atrás, a pista
   };
 }

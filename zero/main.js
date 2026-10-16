@@ -3,22 +3,28 @@ import { SEQUENCES } from './src/config.js';
 import { day, night, setDay, setNight } from './src/state.js';
 import { renderer, camera } from './src/renderer.js';
 import { dotEl, promptEl, prName, tbEl, capEl, fadeEl, titleEl, pauseEl, endEl, btnE, stickL, stickR, configureStaticUI } from './src/ui.js';
-import { initAudio, resumeAudio, suspendAudio, updateMusic, setPad, setAmb, chime, endChord, sfxStep, sfxType, sfxSit, sfxWhoosh, silenciar } from './src/audio.js';
+import { initAudio, resumeAudio, suspendAudio, updateMusic, setPad, setAmb, chime, endChord, sfxStep, sfxType, sfxSit, sfxWhoosh } from './src/audio.js';
 import { drawTerm } from './src/terminal.js';
 import { say, nextPage, closeText, textOpen } from './src/dialog.js';
 import { speakerName, linesOf } from './src/story.js';
-import { scene, walks, blocks, anims, inters, triggers, game, completarLuzes, mundo, usarMundo, descartarMundo, drawIdle } from './src/kit.js';
-import { VEST } from './src/vestibulo.js';
-import { builders } from './src/scenes/index.js';
+import { scene, inters, triggers, game, drawIdle } from './src/kit.js';
+import * as mundo from './src/mundo.js';
+import { reiniciarTrem } from './src/scenes/trem.js';
+import { reiniciarAviao } from './src/scenes/aviao.js';
 import { IS_MOBILE, IS_LOCAL, joyL, joyR, moveAxes, bindStick, resetSticks } from './src/input.js';
 import { installDebugMenu } from './src/debug.js';
 import { body, BACK, STRIDE, poseStand, poseSit, applyPose, placeBody, headLocal } from './src/body.js';
 
 /* ===================== estado ===================== */
+// px, pz, yaw: o jogador nas coordenadas do lugar em que está (atual). O jogo é um mundo só
+// (src/mundo.js, src/mapa.js): andando, ele passa de um lugar para o vizinho e as coordenadas
+// são levadas junto.
 let px = 0, pz = 0, yaw = 0, pitch = 0;
-let sway = false;    // vagão balançando a câmera
-let elevFn = null;   // altura do chão por cena (calçada, escada...)
-let seated = false;  // preso numa poltrona (avião): só olha, não anda
+let atual = null;    // o lugar em que o jogador está (ver mundo.js)
+let curDef = null;   // a definição dele (o que o builder devolveu)
+let sway = false;    // vagão/avião balançando a câmera
+let elevFn = null;   // altura do chão no lugar (calçada, escada...)
+let seated = false;  // preso numa poltrona (avião em voo): só olha, não anda
 let seatBody = null; // corpo sentado nessa poltrona: { yaw, hipY, back }
 let started = false, ended = false, transit = false;
 let target = null;   // objeto interativo sob a mira
@@ -36,6 +42,10 @@ let ride = null;
 let action = null;
 let walkAmt = 0;     // 0 parado … 1 andando (para as pernas do corpo)
 let walkPh = 0, lastPX = 0, lastPZ = 0; // fase da passada: anda com a distância percorrida (o pé não patina)
+let cands = [];      // os lugares que valem para a colisão neste quadro (mundo.candidatos)
+
+// valor da definição que pode ser fixo ou função (o avião senta e levanta, o trem anda e para)
+const val = v => (typeof v === 'function' ? v() : v);
 
 // câmera roteirizada: enquanto houver uma, o jogador não anda nem mira
 const cutscene = () => !!(term || camAnim || poseHold || action);
@@ -128,6 +138,22 @@ function focusOn(p, cb) {
   };
 }
 
+// sentar numa poltrona / levantar dela: a câmera vai até a pose e o jogador fica lá
+// pose = { x, y, z, yaw, pitch?, dur? }; cb roda quando chega (a cena muda o seu estado: sentado ou não)
+function startPose(pose, cb) {
+  sfxSit();
+  camAnim = {
+    t: 0, dur: pose.dur || 1.1,
+    from: { x: px, y: eyeY(px, pz), z: pz, yaw, pitch },
+    to: { x: pose.x, y: pose.y, z: pose.z, yaw: pose.yaw, pitch: pose.pitch || 0 },
+    then: () => {
+      px = pose.x; pz = pose.z; yaw = pose.yaw; pitch = pose.pitch || 0;
+      lastPX = px; lastPZ = pz;
+      if (cb) cb();
+    },
+  };
+}
+
 /* ===================== sequências do roteiro (game-context.json) ===================== */
 function runSequence(key, done) {
   const steps = SEQUENCES[key] || [];
@@ -141,7 +167,7 @@ function runSequence(key, done) {
     if (Object.prototype.hasOwnProperty.call(step, 'setDay')) setDay(step.setDay);
     if (step.nextDay) setDay(day + 1);          // dormir: o dia seguinte começa
     if (step.night) setNight(true);             // fim do expediente: a volta é de noite
-    if (step.anoitecer) {                       // a noite chega na própria cena, sem trocar de mapa
+    if (step.anoitecer) {                       // a noite chega no próprio lugar; o resto do mundo se remonta escuro
       setNight(true);
       if (curDef && curDef.anoitecer) curDef.anoitecer(() => run(i + 1));
       else run(i + 1);
@@ -153,234 +179,122 @@ function runSequence(key, done) {
   run(0);
 }
 
-/* ===================== colisão ===================== */
+/* ===================== colisão (o lugar atual e os vizinhos no mesmo nível) ===================== */
 const R = .3;
-function inWalk(x, z) {
+const SAMPLES = [[R, 0], [-R, 0], [0, R], [0, -R], [.21, .21], [-.21, .21], [.21, -.21], [-.21, -.21]];
+function emWalks(walks, x, z) {
   for (const w of walks) if (x >= w.x1 && x <= w.x2 && z >= w.z1 && z <= w.z2) return true;
+  return false;
+}
+function inWalk(x, z) {
+  for (const c of cands) {
+    const [lx, lz] = mundo.levar(c.M, x, z);
+    if (emWalks(c.L.w.walks, lx, lz)) return true;
+  }
+  return false;
+}
+function bloqueado(x, z, r) {
+  for (const c of cands) {
+    const [lx, lz] = mundo.levar(c.M, x, z);
+    for (const b of c.L.w.blocks)
+      if (lx > b.x1 - r && lx < b.x2 + r && lz > b.z1 - r && lz < b.z2 + r) return true;
+  }
   return false;
 }
 // o quanto a posição está "boa": pontos em volta em chão andável, menos o quanto entra num obstáculo
 // (sair de dentro de um obstáculo melhora aos poucos, a cada passo)
 function foraDoChao(x, z) {                  // distância até o chão andável mais próximo (0 = em cima dele)
   let d = Infinity;
-  for (const w of walks) {
-    const ax = Math.max(w.x1 - x, 0, x - w.x2), az = Math.max(w.z1 - z, 0, z - w.z2);
-    d = Math.min(d, Math.hypot(ax, az));
+  for (const c of cands) {
+    const [lx, lz] = mundo.levar(c.M, x, z);
+    for (const w of c.L.w.walks) {
+      const ax = Math.max(w.x1 - lx, 0, lx - w.x2), az = Math.max(w.z1 - lz, 0, lz - w.z2);
+      d = Math.min(d, Math.hypot(ax, az));
+    }
   }
   return d;
 }
 function folga(x, z) {
   let n = 0;
-  for (const [dx, dz] of [[R, 0], [-R, 0], [0, R], [0, -R], [.21, .21], [-.21, .21], [.21, -.21], [-.21, -.21]])
-    n -= foraDoChao(x + dx, z + dz);
-  for (const b of blocks) {
-    const ex = Math.min(x - (b.x1 - R), (b.x2 + R) - x), ez = Math.min(z - (b.z1 - R), (b.z2 + R) - z);
-    if (ex > 0 && ez > 0) n -= 10 * Math.min(ex, ez);
+  for (const [dx, dz] of SAMPLES) n -= foraDoChao(x + dx, z + dz);
+  for (const c of cands) {
+    const [lx, lz] = mundo.levar(c.M, x, z);
+    for (const b of c.L.w.blocks) {
+      const ex = Math.min(lx - (b.x1 - R), (b.x2 + R) - lx), ez = Math.min(lz - (b.z1 - R), (b.z2 + R) - lz);
+      if (ex > 0 && ez > 0) n -= 10 * Math.min(ex, ez);
+    }
   }
   return n;
 }
 function free(x, z) {
-  for (const [dx, dz] of [[R, 0], [-R, 0], [0, R], [0, -R], [.21, .21], [-.21, .21], [.21, -.21], [-.21, -.21]])
-    if (!inWalk(x + dx, z + dz)) return false;
-  for (const b of blocks)
-    if (x > b.x1 - R && x < b.x2 + R && z > b.z1 - R && z < b.z2 + R) return false;
-  return true;
+  for (const [dx, dz] of SAMPLES) if (!inWalk(x + dx, z + dz)) return false;
+  return !bloqueado(x, z, R);
+}
+// saiu do chão do lugar atual e está no de um vizinho: passa a ser dele
+function verificarLugar() {
+  if (!atual || emWalks(atual.w.walks, px, pz)) return;
+  for (const c of cands) {
+    if (c.L === atual) continue;
+    const [lx, lz] = mundo.levar(c.M, px, pz);
+    if (!emWalks(c.L.w.walks, lx, lz)) continue;
+    trocar(c.L, { x: lx, z: lz, yaw: yaw + mundo.giroDe(c.M) }, 'andando');
+    return;
+  }
 }
 
-/* ===================== fluxo de cenas ===================== */
+/* ===================== o lugar atual ===================== */
 function showCaption(txt) {
+  if (!txt) return;
   chime();
   capEl.textContent = txt;
   capEl.style.opacity = 1;
   clearTimeout(capTimer);
   capTimer = setTimeout(() => { capEl.style.opacity = 0; }, 2800);
 }
-/* ===================== mundos: a cena atual e as vizinhas, já montadas ===================== */
-// O trajeto parece um mundo só: as cenas ligadas à atual (vestíbulo, elevador, vagão) ficam montadas
-// em segundo plano, uma por vez, logo depois que você chega. Pelo vestíbulo a vizinha aparece de
-// verdade pela porta aberta (portal, ver renderPortais) e a troca acontece no meio do cômodo, sem
-// parar; no elevador e no vagão a troca é com as portas fechadas, e a cena de lá já está pronta.
-// Uma cena montada depende do dia e da noite (carimbo): mudou, a vizinha é remontada. A cena de onde
-// você acabou de sair continua sendo a vizinha (é ela que se vê pela porta de trás) e é remontada do
-// zero quando a porta fecha — voltar lá é como entrar de novo, igual era antes.
-let atual = null;
-const carimbo = () => day + '|' + night;
 
-// monta a cena num mundo novo sem tirar o kit do mundo atual
-function montar(name, entry, fundo) {
-  if (fundo) silenciar(true);         // vizinha montada em segundo plano não faz barulho
-  let def;
-  try {
-    def = builders[name]({ entry, rel: null });
-    completarLuzes();                 // mesmo nº de luzes em toda cena: os shaders se reaproveitam
-  } catch (e) {
-    if (atual) usarMundo(atual);      // a montagem quebrou no meio: o kit volta para a cena atual
-    throw e;
-  } finally {
-    if (fundo) silenciar(false);
-  }
-  const w = mundo;
-  Object.assign(w, { def, nome: name, entrada: entry, carimbo: carimbo(), usado: false, aquecido: false, marcado: false });
-  if (atual) usarMundo(atual);
-  return w;
-}
-
-// materiais de um mundo visto pelo portal: só pintam onde a porta marcou o stencil
-function portalMats(w, on) {
-  if (w.marcado === on) return;
-  w.marcado = on;
-  // o corpo do jogador é de todas as cenas: sai antes (placeBody o põe de volta na cena atual)
-  if (on && body.parent === w.scene) w.scene.remove(body);
-  w.scene.traverse(o => {
-    const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
-    for (const m of ms) {
-      m.stencilWrite = on;
-      if (on) {
-        m.stencilFunc = THREE.EqualStencilFunc; m.stencilRef = 1;
-        m.stencilFail = m.stencilZFail = m.stencilZPass = THREE.KeepStencilOp;
-      }
-    }
-  });
-}
-
-// compila os shaders (com e sem o plano de corte do portal) e sobe as malhas para a GPU agora, com o
-// stencil zerado (nada aparece): a primeira vez que o mundo for visto ou virar o atual não engasga
-const planoAquece = new THREE.Plane(new THREE.Vector3(0, 1, 0), 1e6);
-function aquecer(w) {
-  const era = w.marcado;
-  portalMats(w, true);
-  const soltos = [];
-  w.scene.traverse(o => { if (o.frustumCulled) { o.frustumCulled = false; soltos.push(o); } });
-  const bg = w.scene.background;
-  w.scene.background = null;
-  renderer.autoClear = false;
-  renderer.clearStencil();
-  renderer.clippingPlanes = [planoAquece];
-  renderer.render(w.scene, camera);
-  renderer.clippingPlanes = [];
-  renderer.render(w.scene, camera);
-  renderer.autoClear = true;
-  w.scene.background = bg;
-  for (const o of soltos) o.frustumCulled = true;
-  portalMats(w, era);
-  w.aquecido = true;
-}
-
-// liga a saída sc (vestíbulo do mundo C) à sv (o mesmo vestíbulo no mundo V): o mesmo cômodo nas
-// duas cenas, então dá para levar qualquer ponto de uma para a outra pelo referencial dele
-function ligar(sc, C, sv, V) {
-  const a = sc.portal, b = sv.portal;
-  const FA = new THREE.Matrix4().makeRotationY(a.yaw).setPosition(a.x, a.y, a.z);
-  const FB = new THREE.Matrix4().makeRotationY(b.yaw).setPosition(b.x, b.y, b.z);
-  for (const [s, de, para, outro, P] of [[sc, FA, FB, V, a], [sv, FB, FA, C, b]]) {
-    s.M = para.clone().multiply(de.clone().invert());          // mundo de s → mundo do outro lado
-    s.dyaw = (P === a ? b.yaw - a.yaw : a.yaw - b.yaw);
-    s.mundo = outro; s.pronto = true; s.urgente = false;
-    // a porta de lá: o vão (marca no stencil, no mundo de s) e o plano que corta o que, do outro
-    // lado, estiver aquém dela (o próprio vestíbulo de lá, o que houver atrás dele)
-    const sg = Math.sign(P.zd), zq = sg * (VEST.VD + .1);
-    s.quadro = de.clone().multiply(new THREE.Matrix4().makeTranslation(0, VEST.VH / 2, zq))
-      .multiply(new THREE.Matrix4().makeScale(VEST.VW * 2 + .6, VEST.VH + .4, 1));
-    const n = new THREE.Vector3(0, 0, sg).transformDirection(para);
-    s.plano = new THREE.Plane().setFromNormalAndCoplanarPoint(n, new THREE.Vector3(0, 0, zq).applyMatrix4(para));
-  }
-  sc.par = sv; sv.par = sc;
-  // as portas das duas cópias andam juntas (quem manda é a do mundo atual)
-  b.ponte.est = a.ponte.est;
-  a.ponte.par = b.ponte; b.ponte.par = a.ponte;
-}
-
-function construirVizinho(s) {
-  if (s.mundo) descartarMundo(s.mundo);
-  s.mundo = null; s.pronto = false; s.urgente = false;
-  const V = montar(s.para[0], s.para[1], true);
-  if (s.portal) {
-    // o mesmo vestíbulo do lado de lá (o da entrada por onde se chega, se a cena tiver mais de um)
-    const volta = x => x.portal && x.para[0] === atual.nome;
-    const sv = V.saidas.find(x => volta(x) && x.chegada) || V.saidas.find(volta);
-    if (!sv) { descartarMundo(V); s.semPar = true; return; }
-    ligar(s, atual, sv, V);
-    // o sol da vizinha girado como o cômodo: pela porta, a luz é a mesma dos dois lados
-    const d = s.dyaw, c = Math.cos(d), sn = Math.sin(d), p = atual.luzes.sol.position;
-    V.luzes.sol.position.set(p.x * c + p.z * sn, p.y, -p.x * sn + p.z * c);
-  } else {
-    s.mundo = V; s.pronto = true;
-  }
-  portalMats(V, true);
-  aquecer(V);
-}
-
-// uma obra por vez, espaçadas: o jogador não sente as montagens
-let proxObra = 0;
-function cuidarVizinhos(t) {
-  if (!atual || !started || ended || transit) return;
-  const urgente = atual.saidas.find(s => s.urgente && !s.pronto);
-  if (urgente) { construirVizinho(urgente); proxObra = t + .4; return; }  // chegou na porta antes dela
-  if (proxObra < 0) { proxObra = t + .5; return; }            // acabou de trocar: um respiro antes
-  if (t < proxObra) return;
-  const c = carimbo();
-  const obra = s => { proxObra = t + .4; construirVizinho(s); };   // (se quebrar, não tenta a cada quadro)
-  // 1) as que faltam; 2) o mundo atual pronto para ser visto pela porta; 3) as velhas (já usadas,
-  // ou de outro dia/hora), só com a porta delas fechada
-  const falta = atual.saidas.find(s => !s.semPar && !s.mundo);
-  if (falta) return obra(falta);
-  if (!atual.aquecido) { aquecer(atual); proxObra = t + .4; return; }
-  const velha = atual.saidas.find(s => !s.semPar && (s.mundo.carimbo !== c || s.mundo.usado)
-    && !(s.portal && s.portal.aberta() > 0));
-  if (velha) obra(velha);
-}
-
-function descartarTudo() {
-  if (!atual) return;
-  for (const s of atual.saidas) if (s.mundo) { descartarMundo(s.mundo); s.mundo = null; s.pronto = false; }
-  atual.ativo = false;
-  descartarMundo(atual);
-  atual = null;
-}
-
-// as cenas são fisicamente ligadas: cada uma nasce do lado certo da porta por onde se entrou.
-// entry = de onde se chega (a cena escolhe o spawn por ela; sem entry, o spawn padrão)
-let pendingCap = null, curDef = null;
-function build(name, entry = null) {
-  descartarTudo();
-  const w = montar(name, entry, false);
-  entrar(w, w.def.spawn, false);
-}
-// o mundo w vira o atual, com o jogador em spawn.
-// seamless = troca sem fade nem legenda (portas fechadas); a legenda sai quando elas abrem (game.arrived)
-function entrar(w, spawn, seamless) {
+// passa o jogador para o lugar L, em spawn (coordenadas de L).
+// modo: 'andando' (atravessou a pé: legenda na hora) · 'viagem' (elevador: a legenda sai quando as
+// portas abrem, game.arrived) · 'inicio' (fade, seletor: legenda e fala automática)
+let pendingCap = null, ultimaLegenda = null;
+function trocar(L, spawn, modo) {
   setGlow(target, false);
-  target = null; // o alvo antigo pertence à cena que ficou para trás
-  if (atual && atual !== w) atual.ativo = false;
-  atual = w;
-  w.ativo = true; w.usado = true;
-  usarMundo(w);
-  portalMats(w, false);
-  drawIdle();                         // a tela do terminal volta ao ocioso
-  for (const f of w.aoAtivar.splice(0)) f();
-  proxObra = -1;                      // as vizinhas desta começam a ser montadas daqui a pouco
-  const def = w.def;
-  curDef = def;
-  sway = !!def.sway;
-  seated = !!def.seated;
-  elevFn = def.elevFn || null;
-  setAmb(w.nome);
-  setPad(day);
-  seatBody = def.bodySeat || null;
-  poseHold = null;
-  ride = null;
-  action = null;
+  target = null;                      // o alvo antigo pertence ao lugar que ficou para trás
+  const mudou = L !== atual;
+  atual = L;
+  mundo.ativar(L);
+  game.lugar = L;
+  curDef = L.def;
+  elevFn = curDef.elevFn || null;
+  sway = !!val(curDef.sway);
+  seated = !!val(curDef.seated);
+  seatBody = val(curDef.bodySeat) || null;
   px = spawn.x; pz = spawn.z; yaw = spawn.yaw;
   lastPX = px; lastPZ = pz;           // a troca não vira passada
-  if (seamless) pendingCap = def.caption;
-  else { pitch = 0; pendingCap = null; showCaption(def.caption); }
+  if (mudou) { setAmb(L.nome); setPad(day); drawIdle(); }
+  if (modo === 'inicio') {
+    poseHold = null; ride = null; action = null;
+    pitch = 0;
+    ultimaLegenda = L.nome;
+    pendingCap = null;
+    showCaption(curDef.caption);
+  } else if (mudou && L.nome !== ultimaLegenda) {
+    ultimaLegenda = L.nome;
+    if (modo === 'viagem') pendingCap = curDef.caption;
+    else showCaption(curDef.caption);
+  }
+  // fala automática do lugar: uma vez por montagem (outro dia, outra hora: de novo)
   clearTimeout(autoTimer);
-  if (def.wake) { startWake(def); return; }
-  if (def.auto) autoTimer = setTimeout(() => {
-    // se o jogador já abriu outra fala ou entrou numa cutscene nesse 1 s, não atropela
-    if (!ended && !transit && !textOpen && !cutscene()) say(def.auto.name, def.auto.lines);
-  }, 1100);
+  if (curDef.wake && modo === 'inicio') { L.autoFeito = true; startWake(curDef); return; }
+  if (curDef.auto && !L.autoFeito) {
+    L.autoFeito = true;
+    const auto = curDef.auto;
+    autoTimer = setTimeout(() => {
+      // se o jogador já abriu outra fala ou entrou numa cutscene nesse 1 s, não atropela
+      if (!ended && !transit && !textOpen && !cutscene()) say(auto.name, auto.lines);
+    }, 1100);
+  }
 }
+game.lugarAtual = () => (atual ? atual.nome : null);
 
 /* ===================== acordar: mensagem no escuro, olhos abrindo, levantar ===================== */
 // pálpebras: overlay próprio (z abaixo da caixa de texto) e sem a transição lenta do #fade
@@ -427,43 +341,30 @@ function startWake(def) {
     say(def.auto.name, def.auto.lines, () => { tbEl.style.zIndex = ''; wakeUp(); });
   } else wakeUp();
 }
-// elevador e vagão: a cena troca com as portas fechadas, sem fade. A de lá normalmente já está
-// montada (é uma saída do mundo atual); rel = onde o jogador está na cabine, que ela reproduz
+
+// elevador: com as portas fechadas o jogador passa para a cabine do outro andar (o mesmo poço, no
+// mundo); rel = onde ele está na cabine, que a de lá reproduz
 function travel(name, entry, rel) {
   if (ended) return;
-  const s = atual.saidas.find(x => !x.portal && x.para[0] === name && x.para[1] === entry);
-  let w = s && s.mundo && s.mundo.carimbo === carimbo() && !s.mundo.usado ? s.mundo : null;
-  for (const x of atual.saidas) if (x.mundo && x.mundo !== w) descartarMundo(x.mundo);
-  for (const x of atual.saidas) { x.mundo = null; x.pronto = false; }
-  if (!w) w = montar(name, entry, false);
-  const velho = atual;
-  velho.ativo = false;
-  atual = null;
-  descartarMundo(velho);
-  usarMundo(w);
-  const spawn = rel && w.chegada ? w.chegada(rel) : w.def.spawn;
-  entrar(w, spawn, true);
+  const L = mundo.lugar(name);
+  if (!L) return;
+  const spawn = rel && L.w.chegada ? L.w.chegada(rel) : L.def.spawn;
+  if (spawn) trocar(L, spawn, 'viagem');
 }
 game.travel = travel;
-
-// vestíbulo: passou do meio do cômodo. A cena do outro lado vira a atual, com o jogador no mesmo
-// ponto do cômodo; a que ficou para trás passa a ser a vizinha vista pela porta de trás
-const V3 = new THREE.Vector3();
-game.atravessar = sA => {
-  if (ended || !atual || !sA.pronto || transit) return;
-  const A = atual, B = sA.mundo, sB = sA.par;
-  V3.set(px, 0, pz).applyMatrix4(sA.M);
-  const spawn = { x: V3.x, z: V3.z, yaw: yaw + sA.dyaw };
-  // as outras vizinhas de A já não encostam em nada
-  for (const s of A.saidas) if (s !== sA && s.mundo) { descartarMundo(s.mundo); s.mundo = null; s.pronto = false; }
-  ligar(sB, B, sA, A);
-  portalMats(A, true);
-  entrar(B, spawn, true);
-  game.arrived();
-};
 game.player = () => ({ px, pz, yaw });
 game.arrived = () => { if (pendingCap) showCaption(pendingCap); pendingCap = null; };
 
+// monta o mundo para o dia/hora de agora e põe o jogador no lugar `name` (seletor: entry muda o spawn)
+function comecarEm(name, entry) {
+  reiniciarTrem();
+  reiniciarAviao();
+  mundo.construirTudo(entry ? { [name]: entry } : {});
+  const L = mundo.lugar(name) || mundo.lugar('quarto');
+  trocar(L, L.def.spawn || { x: 0, z: 0, yaw: 0 }, 'inicio');
+}
+
+// corte de tempo (dormir, o fim): tela escura, o mundo é remontado
 function go(name, entry = null) {
   transit = true;
   closeText();
@@ -479,7 +380,7 @@ function go(name, entry = null) {
       fadeEl.classList.remove('on');
       return;
     }
-    build(name, entry);
+    comecarEm(name, entry);
     fadeEl.classList.remove('on');
     setTimeout(() => { transit = false; }, 450);
   }, 750);
@@ -496,6 +397,7 @@ function useInter(it) {
   // `look` do terminal é para onde a câmera sentada mira (a tela), não a cutscene de olhar antes
   if (it.look && !it.terminal) { focusOn(it.look, () => useInter({ ...it, look: null })); return; }
   if (it.act) startAction(it.act);
+  else if (it.pose) startPose(it.pose, done);
   else if (it.terminal) startTerm(it, done);
   else if (it.lines) say(it.name, it.lines, it.go ? () => go(it.go, it.entry) : done);
   else if (it.go) go(it.go, it.entry);
@@ -515,8 +417,9 @@ function setGlow(root, on) {
 function updateTarget() {
   let tgt = null;
   dotEl.classList.toggle('hidden', cutscene());
-  if (started && !ended && !transit && !cutscene()) {
-    ray.setFromCamera(V0, camera);
+  if (started && !ended && !transit && !cutscene() && atual) {
+    mundo.posicionarCamera(atual);                // a mira sai da câmera de verdade, no mundo
+    ray.setFromCamera(V0, mundo.camMundo);
     const hits = ray.intersectObjects(inters, true);
     if (hits.length) {
       let o = hits[0].object;
@@ -571,7 +474,7 @@ document.addEventListener('mousemove', e => {
   pitch = Math.max(-1.45, Math.min(1.45, pitch - e.movementY * .0023));
 });
 
-// dev: pula direto para qualquer cena/dia (tecla I, só em localhost)
+// dev: pula direto para qualquer lugar/dia (tecla I, só em localhost)
 function debugJump(sceneName, d, noite, entry) {
   term = null; camAnim = null; poseHold = null; ride = null; action = null; // limpa cutscenes em andamento
   closeText();
@@ -593,7 +496,10 @@ function beginGame() {
   if (!started) {
     started = true;
     titleEl.classList.add('hidden');
-    build('quarto');
+    // o mundo do primeiro dia já foi montado atrás da tela de título (ver o fim do loop)
+    const L = mundoPronto && mundo.lugar('quarto');
+    if (L) trocar(L, L.def.spawn, 'inicio');
+    else comecarEm('quarto');
   }
   pauseEl.classList.add('hidden');
 }
@@ -713,7 +619,7 @@ function updateBody(t, dt, moving) {
     // a raiz fica BACK atrás da câmera: olhando para baixo, o peito não esconde os pés
     placeBody(scene, px + Math.sin(yaw) * BACK, elevFn ? elevFn(px, pz) : 0, pz + Math.cos(yaw) * BACK, yaw);
     const d = Math.hypot(px - fx, pz - fz);
-    if (d < 1) walkPh += d * Math.PI / STRIDE;      // salto grande = troca de cena, não passada
+    if (d < 1) walkPh += d * Math.PI / STRIDE;      // salto grande = troca de lugar, não passada
     poseStand(walkPh, walkAmt, t);
   }
   applyPose();
@@ -727,13 +633,20 @@ function tick(now) {
   frame(t, dt);
 }
 function frame(t, dt) {
-  if (!scene) { renderer.clear(); return; }
+  if (!atual) { renderer.clear(); return; }
+  // o que muda sozinho na definição do lugar (o avião decola, o trem anda)
+  sway = !!val(curDef.sway);
+  seated = !!val(curDef.seated);
+  seatBody = val(curDef.bodySeat) || null;
+
+  cands = mundo.candidatos(atual, px, pz);
   const canMove = started && !ended && !transit && !cutscene() && (document.pointerLockElement || IS_MOBILE || dbg.forceMove);
   const moving = canMove && movePlayer(dt);
   if (moving) {
     bobT += dt * 8.5;
     const ph = Math.floor(bobT / Math.PI); // um passo a cada meio ciclo do balanço
     if (ph !== stepPh) { stepPh = ph; sfxStep(); }
+    verificarLugar();
   }
   // gatilhos sem E (ex.: chegar perto do farol olhando para ele)
   if (started && !ended && !transit && !ride && !cutscene() && !textOpen)
@@ -745,107 +658,29 @@ function frame(t, dt) {
   updateTerm(t, dt);
   if (started && !ended) updateMusic(t);
 
-  cuidarVizinhos(t);
-  for (const a of anims) a(t);
-  animarVizinhos(t);
+  if (started && !ended && !transit) mundo.cuidar(t, atual, px, pz);
+  mundo.animar(t, atual, { px, pz, yaw });
   updateTarget();
   renderView();
 }
-
-/* ===================== portais: a cena vizinha vista pela porta aberta do vestíbulo ===================== */
-// Para cada porta de vestíbulo aberta: (1) o vão da porta marca o stencil onde ele aparece de fato
-// (o que estiver na frente dele, nesta cena, tampa); (2) ali o fundo vira o céu da vizinha e a
-// profundidade é zerada; (3) a vizinha é desenhada com a câmera levada para o referencial dela, só
-// onde o stencil marcou e só além do vão (plano de corte). As duas cópias do cômodo são iguais e as
-// portas andam juntas: não há emenda.
-const portalAberto = s => s.portal && s.pronto && s.mundo && s.portal.aberta() > 0;
-const marcaMat = new THREE.MeshBasicMaterial({
-  colorWrite: false, depthWrite: false, side: THREE.DoubleSide,
-  stencilWrite: true, stencilRef: 1, stencilFunc: THREE.AlwaysStencilFunc, stencilZPass: THREE.ReplaceStencilOp,
-});
-const marca = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), marcaMat);
-marca.matrixAutoUpdate = false;
-marca.frustumCulled = false;
-const marcaCena = new THREE.Scene();
-marcaCena.add(marca);
-const fundoMat = new THREE.ShaderMaterial({
-  uniforms: { cor: { value: new THREE.Color() } },
-  vertexShader: 'void main() { gl_Position = vec4(position.xy * 2.0, 1.0, 1.0); }',
-  fragmentShader: 'uniform vec3 cor; void main() { gl_FragColor = vec4(cor, 1.0); }',
-  depthFunc: THREE.AlwaysDepth, depthWrite: true,
-  stencilWrite: true, stencilRef: 1, stencilFunc: THREE.EqualStencilFunc,
-});
-const fundo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), fundoMat);
-fundo.frustumCulled = false;
-const fundoCena = new THREE.Scene();
-fundoCena.add(fundo);
-const camPortal = new THREE.PerspectiveCamera();
-camPortal.matrixAutoUpdate = false;
-
-function renderPortais() {
-  if (!atual) return;
-  let usou = false;
-  for (const s of atual.saidas) {
-    if (!portalAberto(s)) continue;
-    const V = s.mundo;
-    if (!usou) { renderer.autoClear = false; usou = true; }
-    renderer.clearStencil();
-    marca.matrix.copy(s.quadro);
-    marca.matrixWorldNeedsUpdate = true;
-    renderer.render(marcaCena, camera);
-    fundoMat.uniforms.cor.value.copy(V.scene.background).convertLinearToSRGB();
-    renderer.render(fundoCena, camera);
-    camPortal.matrix.multiplyMatrices(s.M, camera.matrixWorld);
-    camPortal.matrixWorldNeedsUpdate = true;
-    camPortal.projectionMatrix.copy(camera.projectionMatrix);
-    camPortal.projectionMatrixInverse.copy(camera.projectionMatrixInverse);
-    renderer.clippingPlanes = [s.plano];
-    const bg = V.scene.background;
-    V.scene.background = null;
-    renderer.render(V.scene, camPortal);
-    V.scene.background = bg;
-    renderer.clippingPlanes = [];
-  }
-  if (usou) renderer.autoClear = true;
-}
-
-// a vizinha vista pela porta segue viva (chuva, carros, gente): roda as animações dela com o kit
-// apontado para ela, o jogador e a câmera levados para o referencial dela e o som desligado
-function animarVizinhos(t) {
-  if (!atual) return;
-  for (const s of atual.saidas) {
-    if (!portalAberto(s)) continue;
-    const V = s.mundo;
-    V3.set(px, 0, pz).applyMatrix4(s.M);
-    const eu = { px: V3.x, pz: V3.z, yaw: yaw + s.dyaw };
-    const salvo = { player: game.player, travel: game.travel, arrived: game.arrived, atravessar: game.atravessar };
-    const cam = camera.position.clone();
-    game.player = () => eu;
-    game.travel = () => {};
-    game.arrived = null;
-    game.atravessar = null;
-    camera.position.applyMatrix4(s.M);
-    usarMundo(V);
-    silenciar(true);
-    try {
-      for (const a of V.anims) a(t);
-    } finally {
-      silenciar(false);
-      usarMundo(atual);
-      camera.position.copy(cam);
-      Object.assign(game, salvo);
-    }
-  }
-}
 requestAnimationFrame(tick);
+// o mundo do primeiro dia já fica montado atrás da tela de título (a montagem leva um instante)
+let mundoPronto = false;
+setTimeout(() => {
+  if (started) return;
+  reiniciarTrem();
+  reiniciarAviao();
+  mundo.construirTudo();
+  mundoPronto = true;
+}, 60);
 
 /* ===================== dev: ganchos para captura automática (só localhost) ===================== */
-// window.__zero dirige o jogo de fora (Playwright): relógio manual, pular de cena, interagir e
+// window.__zero dirige o jogo de fora (Playwright): relógio manual, pular de lugar, interagir e
 // câmeras de inspeção (3ª pessoa, de cima, de lado, de frente) que miram o corpo do jogador.
 const dbg = { manual: false, t: 1000, view: 'fp', forceMove: false };
 let dbgCam = null, dbgHead = null, dbgEye = null;
 function renderView() {
-  if (dbg.view === 'fp' || (!body.parent && dbg.view !== 'free')) { renderer.render(scene, camera); renderPortais(); return; }
+  if (dbg.view === 'fp' || (!body.parent && dbg.view !== 'free')) { mundo.desenhar(atual); return; }
   if (!dbgCam) {
     dbgCam = new THREE.PerspectiveCamera(45, 1, .02, 200);
     const m = new THREE.MeshLambertMaterial({ color: 0x3aa2ea });
@@ -853,23 +688,22 @@ function renderView() {
     dbgEye = new THREE.Mesh(new THREE.ConeGeometry(.035, .12, 8), new THREE.MeshBasicMaterial({ color: 0xff3355 }));
     dbgEye.geometry.rotateX(-Math.PI / 2);                                        // ponta para -z: o olhar
   }
-  const wq = body.getWorldQuaternion(new THREE.Quaternion());
-  const c = body.localToWorld(new THREE.Vector3(0, .9, 0));
-  const off = { third: [.8, 1.3, 2.4], side: [2.6, .2, 0], top: [0, 4.2, .01], front: [0, .3, -2.4], close: [1.0, .5, -1.1] }[dbg.view];
   dbgCam.aspect = innerWidth / innerHeight;
   dbgCam.updateProjectionMatrix();
   if (dbg.view === 'free') {
-    // câmera livre: posição e alvo dados pelo script (revisar a cena, não o corpo)
-    dbgCam.aspect = innerWidth / innerHeight;
-    dbgCam.updateProjectionMatrix();
+    // câmera livre: posição e alvo dados pelo script, no referencial do lugar atual
     dbgCam.position.set(...dbg.free[0]);
     dbgCam.up.set(0, 1, 0);
     dbgCam.lookAt(...dbg.free[1]);
-    renderer.render(scene, dbgCam);
+    mundo.desenhar(atual, dbgCam);
     return;
   }
+  // (o corpo está na cena do lugar atual: as contas abaixo são nas coordenadas dele)
+  const wq = body.quaternion.clone();
+  const c = body.position.clone().add(new THREE.Vector3(0, .9, 0));
+  const off = { third: [.8, 1.3, 2.4], side: [2.6, .2, 0], top: [0, 4.2, .01], front: [0, .3, -2.4], close: [1.0, .5, -1.1] }[dbg.view];
   if (dbg.view === 'top') {
-    // de cima, orientada pelo mundo (norte = -z no alto da tela): não gira junto com o corpo
+    // de cima, orientada pelo lugar (norte = -z no alto da tela): não gira junto com o corpo
     dbgCam.position.set(c.x, c.y + 4.2, c.z);
     dbgCam.up.set(0, 0, -1);
   } else {
@@ -882,7 +716,7 @@ function renderView() {
   dbgEye.position.copy(camera.position);
   dbgEye.quaternion.copy(camera.quaternion);
   scene.add(dbgEye);
-  renderer.render(scene, dbgCam);
+  mundo.desenhar(atual, dbgCam);
   body.remove(dbgHead);
   scene.remove(dbgEye);
 }
@@ -894,7 +728,7 @@ if (IS_LOCAL) window.__zero = {
     if (d != null) setDay(d);
     setNight(!!noite);
     started = true; transit = false;
-    build(name, entry || null);
+    comecarEm(name, entry || null);
     clearTimeout(autoTimer);
   },
   manual(on) { dbg.manual = on; },
@@ -911,5 +745,6 @@ if (IS_LOCAL) window.__zero = {
     useInter(o.userData.inter);
     return true;
   },
-  state: () => ({ px, pz, yaw, pitch, action: !!action, ride: !!ride, text: textOpen, cam: camera.position.toArray() }),
+  lugar: () => (atual ? atual.nome : null),
+  state: () => ({ px, pz, yaw, pitch, action: !!action, ride: !!ride, text: textOpen, cam: camera.position.toArray(), lugar: atual && atual.nome }),
 };

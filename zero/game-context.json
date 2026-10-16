@@ -66,6 +66,7 @@
       "storeDoor": "Loja",
       "storeClerk": "Atendente",
       "exitSeat": "Sair",
+      "planeSeat": "Sentar na janela",
       "canoe": "Canoa",
       "ladder": "Subir a escada",
       "bed": "Deitar e dormir",
@@ -167,6 +168,12 @@
     },
     "praia": {
       "caption": "A PRAIA"
+    },
+    "bairro": {
+      "caption": "AV. DO VIADUTO"
+    },
+    "aeroporto": {
+      "caption": "EMBARQUE"
     }
   },
   "audio": {
@@ -398,6 +405,9 @@
       "Uma passagem de avião, por favor",
       "Só de ida?",
       "Só de ida"
+    ],
+    "embarque": [
+      "O embarque é pelo portão aí nos fundos. Boa viagem"
     ],
     "metroClosed": [
       "O metrô está fechado hoje"

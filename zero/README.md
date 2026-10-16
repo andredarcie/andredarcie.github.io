@@ -127,11 +127,12 @@ Tudo sai destas cores (`src/config.js`). São as três cores do Bitsy, com varia
 
 ## Código
 
-- `main.js` — fluxo de cenas, interação, entrada, câmera e loop.
-- `src/` — `config` (conteúdo e paleta), `state` (`day`), `renderer`, `ui`, `audio`,
-  `terminal`, `dialog`, `story`, `kit` (peças de construção e instancing), `input`, `debug`.
-- `src/scenes/` — uma cena por arquivo; cada builder monta a cena e devolve
-  `{ spawn, caption, auto, wake?, sway?, seated?, elevFn? }`.
+- `main.js` — o jogador (lugar atual, colisão, troca de lugar), interação, entrada, câmera e loop.
+- `src/` — `config` (conteúdo e paleta), `state` (`day`, `night`, `passagem`), `renderer`, `ui`,
+  `audio`, `terminal`, `dialog`, `story`, `kit` (peças de construção e instancing), `input`, `debug`,
+  `mapa` (onde cada lugar fica) e `mundo` (todos os lugares juntos).
+- `src/scenes/` — um lugar por arquivo; cada builder monta o lugar e devolve
+  `{ spawn, caption, auto, wake?, sway?, seated?, bodySeat?, elevFn? }` (os três do meio podem ser funções).
 - Corpo do jogador: `src/body.js` — caixas azuis sem cabeça, braços e pernas por IK de dois
   ossos (diz-se onde ficam mãos e pés). Em pé/andando e sentado (avião, `bodySeat`) quem posiciona
   é o `main.js`; na canoa e nas ações, a cena. `makeAction(frame, passos)` anima o corpo inteiro
@@ -148,44 +149,47 @@ Tudo sai destas cores (`src/config.js`). São as três cores do Bitsy, com varia
   `look: {x,y,z}` vira a câmera para o ponto antes (cutscene). Contratos descritos em `main.js`.
 - A água não entra na canoa: uma tampa invisível na boca marca o stencil e o mar/espuma usam
   `foraDaCanoa` (só pintam fora da marca). Perto da escada o mar é manso (`calmAt`, igual em JS e GLSL).
-- Cenas fisicamente ligadas (dias 1 e 2): quarto ⇄ corredor ⇄ elevador ⇄ recepção ⇄ rua ⇄ estação
-  CENTRAL ⇄ metrô ⇄ estação VIADUTO ⇄ rua do viaduto ⇄ portinha ⇄ recepção do trabalho ⇄ elevador
-  ⇄ escritório. Cada builder recebe `nav = { entry, rel }` e nasce do lado certo da porta por onde
-  se entrou (`tagGo(o, chave, cena, entrada)`). Depois do PC o dia vira noite (`night` em `state`;
-  as cenas se montam escuras e esvaziam) e a volta é a pé até a cama, que vira o dia (`sleep`).
-- **Mundo contínuo: sem tela escura e sem espera entre cenas ligadas.** Cada cena montada é um
-  *mundo* (`kit.js`: `freshScene` cria, `usarMundo` aponta o kit, `descartarMundo` libera). As cenas
-  ligadas à atual (as `saida`s que as peças-ponte registram) são montadas em segundo plano, uma por
-  vez, logo depois que você chega, e aquecidas na GPU (`aquecer`: shaders e malhas com o stencil
-  zerado). Vizinha montada em segundo plano fica muda (`silenciar`), e o que só pode acontecer com
-  você lá vai em `aoAtivar` (o som do trem chegando). Mudou dia/noite, ou a vizinha é a cena de onde
-  você acabou de sair: ela é remontada assim que a porta dela fecha.
-  Toda ligação física tem uma peça-ponte montada pela MESMA função nas duas cenas:
-  `vestibulo` (`src/vestibulo.js`: cômodo de duas portas automáticas). A cena do outro lado aparece de
-  verdade pela porta aberta (portal em `main.js`: o vão marca o stencil, a vizinha é desenhada ali com a
-  câmera levada para o referencial dela e um plano de corte no vão; as animações dela rodam com o
-  jogador e a câmera mapeados). Passou do meio do cômodo, `game.atravessar` troca de mundo; a cena que
-  ficou para trás vira a vizinha vista pela porta de trás. As duas cópias do cômodo compartilham o
-  estado das portas (`ponte`) e o sol da vizinha é girado como o cômodo. Fica nas portas do
-  quarto/corredor, recepção/rua, rua/estação (fim da
-  escada), rua do viaduto/recepção do trabalho e rua/loja. Elevador e vagão trocam com as portas
-  fechadas (`game.travel`, levando a posição na peça; `chegada(rel)` da cena de lá põe o jogador e gira
-  o sol por `fy`), usando a cena já pré-montada; `vagao` (`src/vagao.js`: o trem da
-  plataforma carrega o interior real do vagão; embarcou, as portas fecham, troca; chega de portas
-  fechadas e elas abrem na plataforma); o elevador. O fim do expediente não troca de cena: ainda
-  sentado no PC, a sequência `sentado` roda as falas e o passo `anoitecer` (a cena baixa as luzes e as
-  pessoas somem pelas costas). Fade só nos cortes de tempo/lugar: dormir, avião, praia.
-- Todas as cenas têm `N_LUZES` luzes pontuais (`completarLuzes` completa com apagadas): o three.js
-  reaproveita os shaders e a troca não engasga compilando. Cena nova com mais luzes: subir o número.
-- Elevador (`src/elevator.js`): a mesma cabine nas duas pontas do poço. Com as portas fechadas a
-  cena troca sem fade (`game.travel`), levando a posição do jogador na cabine; a viagem termina do
-  lado de lá. Paredes com o vão: `wall: {w, H}` ou `room(..., holeW)`.
+- **Um mundo só, aberto (build 71).** Todos os lugares ficam montados ao mesmo tempo, cada um no seu
+  lugar do mapa, e se anda de um para o outro sem corte (o fade sobrou só para dormir e para o fim).
+  - `src/mapa.js` diz onde cada lugar fica: a rua de casa é a origem e cada lugar se prende ao vizinho
+    pela peça que os dois já montam igual — o vestíbulo (`a`: a peça no vizinho, `b`: neste) ou o poço
+    do elevador (`ANDAR` m por andar: o corredor do 23º fica 69 m acima da recepção). O builder de cada
+    cena continua nas próprias coordenadas; `noMundo(lugar, ref)` leva um referencial para o mundo.
+  - `src/mundo.js` monta todos (`construirTudo`) como filhos de uma cena só (`raiz`), com a matriz
+    do mapa. O jogador anda nas coordenadas do lugar em que está (`atual`, no `main.js`); o chão
+    andável e os obstáculos dos vizinhos no mesmo nível valem juntos (`candidatos`) e, saindo do chão
+    do atual para o de um vizinho, ele passa a ser desse (`verificarLugar`). As animações de cada
+    lugar rodam com o jogador e a câmera levados para as coordenadas dele. Um céu e um sol para o
+    mundo (os de cada `freshScene` ficam apagados); das lâmpadas, acendem as 12 mais perto da câmera
+    (número fixo: os shaders não recompilam). Desenha só os lugares perto (`margem` do mapa); a névoa e
+    o fundo são os do lugar atual e o fim da câmera acompanha a névoa. Mudou dia/hora: os lugares
+    "velhos" se remontam um por vez, o mais perto primeiro (nunca o atual).
+  - O vestíbulo existe nos dois lugares e as duas cópias coincidem: aparece só a do lugar atual, e as
+    portas das duas são o mesmo estado (`ponte`). Elevador: com as portas fechadas o jogador passa para
+    a cabine do outro andar (`game.travel` + `chegada(rel)`), que termina a viagem.
+  - Prédios vistos de fora são `casca` (`kit.js`): caixa oca de planos virados para fora, com furos nas
+    portas. De dentro ela some, então o interior que está lá dentro de verdade (a recepção, o quarto em
+    balanço no alto da torre, o escritório no 12º andar) aparece quando você está nele.
+  - Trajeto: quarto ⇄ corredor ⇄ elevador ⇄ recepção ⇄ rua ⇄ estação CENTRAL ⇄ trem pelo túnel
+    (`linha.js`, 360 m) ⇄ estação VIADUTO ⇄ rua do viaduto ⇄ portinha ⇄ recepção do trabalho ⇄
+    elevador ⇄ escritório. A pé: a rua de casa sobe até a Av. do Viaduto (`bairro.js`), que leva à
+    rua do trabalho. `cidadeLonge.js` são os quarteirões que não se visitam.
+  - O trem (`trem.js`) é um veículo: vem até a estação em que você está, abre, espera; embarcou, fecha
+    e corre até a outra. O avião (`aviao.js`) também: dia 5, os fundos da loja (`passagem` em `state`)
+    dão no aeroporto (`aeroporto.js`); senta na janela e ele taxia, decola sobre a cidade, atravessa as
+    nuvens (névoa por altura), cruza por cima delas e pousa na pista atrás da praia, parando com a porta
+    na escada que leva à passarela das dunas. O estado dos dois fica fora do builder (`reiniciarTrem`,
+    `reiniciarAviao` a cada dia).
+  - Depois do PC o dia vira noite (`night` em `state`): o resto do mundo se remonta escuro e a volta é
+    a pé até a cama, que vira o dia (`sleep`). O fim do expediente não troca de lugar: ainda sentado no
+    PC, a sequência `sentado` roda as falas e o passo `anoitecer`.
+- Elevador (`src/elevator.js`): paredes com o vão: `wall: {w, H}` ou `room(..., holeW)`.
 - Vida das ruas (`src/cidade.js`): `frota` (carros instanciados; a cor de cada um tinge a lataria
   branca do molde), `pedestre` (vai e volta, para diante do jogador, guarda-chuva com chuva; tem
   corpo sólido), `letreiro` (texto em canvas para lojas e placas) e `quarteiraoLonge` (a cidade
   continuando pelas transversais).
-- As duas estações são a mesma planta (`ESTACOES` em `plataforma.js`) com outra cara; a linha corre
-  para -x de manhã e para +x de noite. Entrada `trem` = desceu do vagão (o trem vai embora).
+- As duas estações são a mesma planta (`ESTACOES` em `plataforma.js`) com outra cara; o painel
+  mostra o que o trem está fazendo (`painelDoTrem`).
 - Final: praia → canoa → ilha do farol → pensamento ao olhar o farol → `finishGame` → "UM.".
 - `game-context.json` — todo o texto, as sequências do roteiro e a trilha por dia.
 - **Cache-busting:** o import map do `index.html` mapeia cada módulo para `?v=N`. A cada

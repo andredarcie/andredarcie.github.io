@@ -159,7 +159,7 @@ export function whaleCall(hi) { // canto da baleia sobre a cidade
 /* --- ambiente contínuo por cena --- */
 let ambG = null, ambSrcs = [];
 // cenas gêmeas soam como a original (a outra estação, a rua do trabalho, a recepção do trabalho)
-const AMB_ALIAS = { plataforma2: 'plataforma', rua2: 'rua', recepcao2: 'recepcao' };
+const AMB_ALIAS = { plataforma2: 'plataforma', rua2: 'rua', recepcao2: 'recepcao', bairro: 'rua', trem: 'metro', linha: 'plataforma' };
 export function setAmb(name) {
   if (!AC) return;
   name = AMB_ALIAS[name] || name;
@@ -243,6 +243,12 @@ export function setAmb(name) {
     noise(.09, 'lowpass', 180);                  // motor
     noise(.02, 'highpass', 4200);                // chiado do ar pressurizado
     hum(.01, 90);
+  } else if (name === 'aeroporto') {
+    noise(.04, 'lowpass', 260);                  // a cidade lá atrás, abafada
+    const w = noise(.03, 'bandpass', 520, .7);   // vento aberto no pátio
+    lfo(w.f.frequency, 180, .04);
+    lfo(w.g.gain, .015, .07);
+    hum(.006, 90);                               // um motor de avião ao longe, em marcha lenta
   } else if (name === 'praia') {
     const wv = noise(.09, 'lowpass', 480); lfo(wv.g.gain, .05, .12);   // ondas indo e voltando
     const wv2 = noise(.035, 'bandpass', 1800, .7); lfo(wv2.g.gain, .02, .17);

@@ -4,13 +4,24 @@ import { day, night } from '../state.js';
 import { sceneCaption } from '../story.js';
 import { camera } from '../renderer.js';
 import { thunder, whaleCall } from '../audio.js';
-import { scene, freshScene, box, lite, grp, blob, pointLight, windowGrid, anim, tagDialog, tagGo, walkOf, blockOf, person, instanciar, at } from '../kit.js';
+import { scene, freshScene, box, lite, grp, blob, pointLight, windowGrid, anim, tagDialog, tagGo, walkOf, blockOf, person, instanciar, at, casca } from '../kit.js';
 import { frota, pedestre, letreiro, quarteiraoLonge, PINTURAS, mix } from '../cidade.js';
-import { vestibulo } from '../vestibulo.js';
+import { vestibulo, VEST } from '../vestibulo.js';
+import { noMundo } from '../mapa.js';
+
+// os cantos de uma caixa dada nas coordenadas de outro lugar, levados para a rua (que é o mundo):
+// { x0, x1, z0, z1, y } com a caixa do mundo que contém os quatro cantos
+function caixaDe(nome, x0, x1, z0, z1) {
+  const ps = [[x0, z0], [x1, z0], [x0, z1], [x1, z1]].map(([x, z]) => noMundo(nome, { x, z }));
+  return {
+    x0: Math.min(...ps.map(p => p.x)), x1: Math.max(...ps.map(p => p.x)),
+    z0: Math.min(...ps.map(p => p.z)), z1: Math.max(...ps.map(p => p.z)), y: ps[0].y,
+  };
+}
 
 // traçado do chão (compartilhado pela altura do jogador e pelos respingos da chuva)
 const noAsfalto = (x, z) => Math.abs(x) <= 3.5 || (z > -12 && z < -4) || (z > 16 && z < 24);
-const naEscada = (x, z) => x > 5.85 && z > 27.3;
+const naEscada = (x, z) => x > 5.85 && x < 8.15 && z > 27.3 && z < 37.5;   // a escada, o patamar e o vestíbulo lá embaixo
 
 /* ===================== CENA: A RUA (dois quarteirões até o metro) ===================== */
 export function buildRua(nav = {}) {
@@ -147,12 +158,35 @@ export function buildRua(nav = {}) {
   }
 
   // seu prédio fecha a rua no sul (a rua morre num T); fundo de 20 m: cabem a recepção de 12 m,
-  // o poço do elevador atrás dela e, lá em cima, o corredor do 23º que corre para os fundos
-  box(28, 34, 20, DARK2, 0, 16.6, -43);
+  // o poço do elevador atrás dela e, lá em cima, o corredor do 23º que corre para os fundos.
+  // A torre é oca (casca: vista só de fora), então a recepção, o corredor e o quarto, que estão de
+  // verdade lá dentro (mapa.js), aparecem quando você está neles. O quarto avança em balanço sobre a
+  // rua: a janela dele dá para cá.
+  const TH = 76;                                                   // altura da torre (o 23º andar fica a ~69 m)
+  const qc = caixaDe('quarto', -7.25, 4.75, -2.62, 2.62);          // o quarto (com o banheiro), na rua
+  const BAL = { x0: Math.max(-14.4, qc.x0 - .3), x1: qc.x1 + .3, y0: qc.y - .9, y1: qc.y + 3.9, z1: qc.z1 + .3 };
+  // o vão da porta de vidro: a parede de ponta do vestíbulo (com a porta) fica no lugar da fachada
+  const PORTA = [-5.75 - VEST.VW - .16, -5.75 + VEST.VW + .16, 0, .12 + VEST.VH + .1];
+  casca({ x0: -14, x1: 14, y0: 0, y1: TH, z0: -53, z1: -33 }, DARK2, {
+    furos: { z1: [PORTA, [BAL.x0, BAL.x1, BAL.y0, BAL.y1]] },
+  });
+  // o balanço: cinco faces (a de trás é a própria torre, aberta ali)
+  casca({ x0: BAL.x0, x1: BAL.x1, y0: BAL.y0, y1: BAL.y1, z0: -33, z1: BAL.z1 }, DARK2, { faces: ['x0', 'x1', 'z1', 'y0', 'y1'] });
+  box(28.4, .5, 20.4, DARK, 0, TH + .25, -43);                     // platibanda no topo
   box(6, 34, 1.4, DARK2, -11.2, 17, -32.3); // sela os cantos com os vizinhos
   box(6, 34, 1.4, DARK2, 11.2, 17, -32.3);
-  for (let wy = 3; wy < 30; wy += 1.5)
-    for (let wx = -12.5; wx < 12.6; wx += 1.1) sSlots.push({ x: wx, y: wy, z: -32.94 });
+  for (let wy = 3; wy < TH - 3; wy += 1.5)
+    for (let wx = -12.5; wx < 12.6; wx += 1.1) {
+      if (wx > BAL.x0 - .4 && wx < BAL.x1 + .4 && wy > BAL.y0 - .6 && wy < BAL.y1 + .6) continue;
+      sSlots.push({ x: wx, y: wy, z: -32.94 });
+    }
+  // a janela do quarto, de fora (de dentro ela some: é um plano virado para a rua)
+  const jq = noMundo('quarto', { x: .9, y: 1.75, z: -2.39 });
+  const janQ = new THREE.Mesh(new THREE.PlaneGeometry(1.14, .86), new THREE.MeshBasicMaterial({ color: mix(NAVY, GLOW, night ? .55 : .3) }));
+  janQ.position.set(jq.x, jq.y, BAL.z1 + .02);
+  scene.add(janQ);
+  for (let wx = BAL.x0 + .9; wx < BAL.x1 - .6; wx += 1.1)
+    if (Math.abs(wx - jq.x) > 1.2) sSlots.push({ x: wx, y: BAL.y0 + 2.6, z: BAL.z1 + .06 });
   // a porta do prédio é um vestíbulo de vidro: o mesmo cômodo está atrás da porta da recepção,
   // e a cena troca lá dentro, com a porta de trás fechada (sem tela escura)
   box(2.0, .3, .9, DARK2, -5.75, 3.0, -32.6);                      // marquise
@@ -169,11 +203,9 @@ export function buildRua(nav = {}) {
     m.rotation.y = ry;
     scene.add(m);
   }
-  horizonte(80, 0, 60, Math.PI);        // fim da rua ao norte
-  horizonte(22, -30, -8, Math.PI / 2);  // fim das transversais
-  horizonte(22, 30, -8, -Math.PI / 2);
+  // (a rua segue para o norte até a avenida, bairro.js; a leste das transversais fica o aeroporto)
+  horizonte(22, -30, -8, Math.PI / 2);  // fim das transversais a oeste
   horizonte(22, -30, 20, Math.PI / 2);
-  horizonte(22, 30, 20, -Math.PI / 2);
 
   // a cidade continua pelas transversais: quarteirões ao longe, atrás dos bloqueios
   quarteiraoLonge(-8, 14.2, 29.8, farSlots, [28, 40, 22, 34, 46]);
@@ -346,8 +378,16 @@ export function buildRua(nav = {}) {
     // dia 5: uma esquina que vira para uma loja do tamanho de uma casa
     slab(7, .18, 6, matCal, 12.5, .03, 20);         // calçada em frente à loja
     walkOf(3.5, 17.2, 12.2, 22.8);                   // pode virar a esquina e andar até a porta
-    box(7, 5.2, 6.4, DARK2, 16, 2.6, 20);            // corpo da loja
-    box(7.4, .4, 6.8, DARK2, 16, 5.3, 20);           // beiral do telhado
+    // o corpo da loja: casca em volta do salão (que está lá dentro de verdade), com o vão da porta da
+    // rua e, nos fundos, o do portão de embarque (aeroporto.js)
+    const lc = caixaDe('loja', -4.2, 4.2, -3.7, 3.7);
+    const gate = noMundo('loja', { x: -2.6, z: -3.5 });
+    const LX1 = lc.x1 + .05, LZ0 = Math.min(16.8, lc.z0 - .2), LZ1 = Math.max(23.2, lc.z1 + .2);
+    const vv = VEST.VW + .16;
+    casca({ x0: 12.5, x1: LX1, y0: 0, y1: 5.32, z0: LZ0, z1: LZ1 }, DARK2, {
+      furos: { x0: [[20 - vv, 20 + vv, 0, .12 + VEST.VH + .1]], x1: [[gate.z - vv, gate.z + vv, 0, .12 + VEST.VH + .1]] },
+    });
+    box(LX1 - 12.5 + .4, .4, LZ1 - LZ0 + .4, DARK2, (12.5 + LX1) / 2, 5.5, (LZ0 + LZ1) / 2); // beiral do telhado
     lite(.05, 1.7, 1.6, NAVY, 12.47, 1.5, 17.9);     // vitrine acesa
     lite(.05, 1.7, 1.6, NAVY, 12.47, 1.5, 22.1);     // vitrine acesa
     // a porta da loja: vestíbulo de vidro (a troca para dentro da loja acontece nele, sem tela escura)
@@ -360,8 +400,6 @@ export function buildRua(nav = {}) {
     lite(3.0, .62, .05, BLUE, 0, 0, -.08, ls);
     pointLight(.5, 13, 10, 3.4, 20);
   }
-  for (const bx of [-6.6, -4.2, -1.8, .6, 3.0, 5.4])
-    bloqueio(bx, 36.8, 0);                      // a rua morre depois do metro
 
   // ponto de ônibus com alguém esperando na chuva
   const abrigo = grp(-6.4, 0, 4);
@@ -457,8 +495,11 @@ export function buildRua(nav = {}) {
   }
 
   if (!night) baleia();
-  // dentro dos vestíbulos não chove (a chuva cai em volta da câmera, sem saber de teto)
-  const coberto = (x, z) => (x > -6.95 && x < -4.55 && z < -33 && z > -35.1) || (x > 5.8 && x < 8.2 && z > 35.4 && z < 37.6);
+  // dentro dos vestíbulos não chove (a chuva cai em volta da câmera, sem saber de teto); nem dentro dos
+  // prédios, nem além do fim desta rua (a avenida tem a chuva dela, bairro.js)
+  const ceuAberto = (x, z) => z < 37 && ((Math.abs(x) <= 8.2 && z > -32.9)
+    || (Math.abs(x) <= 30 && ((z > -12 && z < -4) || (z > 16 && z < 24))));
+  const coberto = (x, z) => !ceuAberto(x, z) || (x > -6.95 && x < -4.55 && z < -33 && z > -35.1) || (x > 5.8 && x < 8.2 && z > 35.4 && z < 37.6);
   if (day < 5) chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash },
     (x, z) => (coberto(x, z) ? -9 : chaoRua(x, z)), coberto); // no dia 5 o tempo abriu
 
@@ -593,10 +634,10 @@ export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetS
       const sd = sdat[i], a = (t - sd.t0) / SLIFE;
       if (a > 1 && i < alive) {
         sd.t0 = t + Math.random() * .35;
-        sd.x = (Math.random() - .5) * 15.8; // só na rua: dentro dos prédios não molha
+        sd.x = px + (Math.random() - .5) * 15.8; // em volta de quem olha; dentro dos prédios não molha (coberto)
         sd.z = pz + (Math.random() - .5) * 22;
       }
-      const k = a >= 0 && a <= 1 ? a : 0;
+      const k = a >= 0 && a <= 1 && !coberto(sd.x, sd.z) ? a : 0;
       rP.set(sd.x, chao(sd.x, sd.z), sd.z);
       rSc.setScalar(k * .34);
       rm4.compose(rP, rQ, rSc);

@@ -5,16 +5,16 @@ import { objectName, speakerName, linesOf, roomCaption, roomAuto, sceneCaption }
 import { termMat } from '../terminal.js';
 import { vestibulo } from '../vestibulo.js';
 import { say } from '../dialog.js';
-import { freshScene, box, lite, grp, pointLight, tag, tagDialog, tagTerminal, tagGo, walkOf, blockOf, room, cidade } from '../kit.js';
+import { freshScene, box, lite, grp, pointLight, tag, tagDialog, tagTerminal, walkOf, blockOf, room } from '../kit.js';
 
 /* ===================== CENA: O QUARTO ===================== */
 const DOOR_X = -3.2;   // porta na parede sul (a da janela é a norte)
 export function buildQuarto(nav = {}) {
-  freshScene(9, 42);
+  // a janela dá para a cidade de verdade, 69 m abaixo (mapa.js): a névoa deixa ver até a avenida
+  freshScene(12, 150);
   const W = 9, D = 4.6, H = 2.8;
   room(W, D, H, { x0: .34, x1: 1.46, y0: 1.32, y1: 2.18 }, { z0: -1.8, z1: -.7, h: 2.05 },
     { s: { a0: DOOR_X - .55, a1: DOOR_X + .55, h: 2.2 } });          // vão da porta do hall na parede sul
-  cidade();
   walkOf(-4.2, -2.0, 4.2, 2.0);
 
   // banheiro: anexo atrás do vão na parede oeste
@@ -156,9 +156,9 @@ export function buildQuarto(nav = {}) {
   lite(.14, .07, .14, GLOW, 0, H - .66, 0);
   pointLight(.55, 9, 0, 2, 0);
 
-  // voltando pelo corredor: no hall, onde estava quando a troca aconteceu
-  if (nav.entry === 'corredor')
-    return { spawn: hall.spawn, caption: night ? sceneCaption('quartoNoite') : roomCaption(), auto: null };
+  // voltando pelo corredor (de noite o quarto é montado já para a volta: sem acordar, sem fala)
+  if (nav.entry === 'corredor' || night)
+    return { spawn: hall.spawn || { x: DOOR_X, z: 1.4, yaw: Math.PI }, caption: night ? sceneCaption('quartoNoite') : roomCaption(), auto: null };
   // deitado na cama (cabeça no travesseiro, olhando o teto); o giro leva daqui até em pé
   const wake = { x: 2.0, y: .6, z: 1.72, yaw: .55, pitch: 1.2 };
   return { spawn: { x: 0, z: 1.1, yaw: 0 }, caption: roomCaption(), auto: roomAuto(), wake };

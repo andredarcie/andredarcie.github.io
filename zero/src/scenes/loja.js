@@ -1,13 +1,18 @@
 import { DARK2, NAVY, LIGHT, LIGHT2, BLUE, GLOW } from '../config.js';
+import { passagem, setPassagem } from '../state.js';
 import { objectName, linesOf, sceneCaption } from '../story.js';
+import { say } from '../dialog.js';
 import { freshScene, box, lite, grp, pointLight, tag, walkOf, blockOf, room, person } from '../kit.js';
 import { vestibulo } from '../vestibulo.js';
 
 /* ===================== CENA: A LOJA (compra a passagem) ===================== */
+// Nos fundos fica o portão de embarque: um vestíbulo de vidro que dá no aeroporto (aeroporto.js) e
+// só abre depois de comprada a passagem.
+const PORTAO_X = -2.6;   // o portão, na parede do fundo (à esquerda do balcão)
 export function buildLoja(nav = {}) {
   freshScene(10, 34);
   const W = 8, D = 7, H = 3.2;
-  room(W, D, H, null, null, { s: { a0: -.55, a1: .55, h: 2.2 } });   // vão da porta da rua na parede sul
+  room(W, D, H, { x0: PORTAO_X - .58, x1: PORTAO_X + .58, y0: 0, y1: 2.24 }, null, { s: { a0: -.55, a1: .55, h: 2.2 } });   // vão da porta da rua na parede sul; o do portão, na do fundo
   walkOf(-3.4, -2.8, 3.4, 2.8);
 
   for (const lx of [-2.5, 2.5]) for (const lz of [-1.5, 1.5]) {
@@ -15,7 +20,7 @@ export function buildLoja(nav = {}) {
     pointLight(.3, 10, lx, 2.6, lz);
   }
 
-  // balcão de atendimento ao fundo, com o atendente
+  // balcão de atendimento ao fundo, com o atendente: vende a passagem e aponta o portão
   const bal = grp(0, 0, -2.2);
   box(3.4, 1.05, .7, LIGHT2, 0, .525, 0, bal);
   box(3.5, .08, .8, DARK2, 0, 1.09, 0, bal);
@@ -23,7 +28,10 @@ export function buildLoja(nav = {}) {
   box(.5, .5, .45, DARK2, 0, .25, -.7, bal);    // banqueta
   const clerk = person(true, BLUE, bal);
   clerk.position.set(0, .04, -.7);
-  tag(bal, objectName('storeClerk'), { lines: linesOf('atendente'), go: 'aviao' });
+  tag(bal, objectName('storeClerk'), {
+    lines: linesOf('atendente'),
+    cb: () => { setPassagem(true); say(objectName('storeClerk'), linesOf('embarque')); },
+  });
   blockOf(-1.9, -2.7, 1.9, -1.5);
 
   // cartaz de passagens atrás (na parede do fundo)
@@ -48,10 +56,16 @@ export function buildLoja(nav = {}) {
   }
 
   // a porta da rua (parede de trás): o vestíbulo de vidro, o mesmo cômodo que está atrás da porta
-  // da loja na esquina; a troca acontece lá dentro, sem tela escura
+  // da loja na esquina
   const vest = vestibulo({
     x: 0, y: 0, z: D / 2 + 1, yaw: 0, lado: 'P', outro: ['rua', 'loja'], estilo: 'vidro',
     arrive: nav.entry === 'rua' ? (nav.rel || true) : null,
+  });
+  // o portão de embarque (parede do fundo): o mesmo vestíbulo que começa a passarela do aeroporto
+  lite(.9, .16, .03, BLUE, PORTAO_X, 2.42, -D / 2 + .05);                 // "EMBARQUE", aceso
+  vestibulo({
+    x: PORTAO_X, y: 0, z: -D / 2 - 1, yaw: Math.PI, lado: 'P', outro: ['aeroporto', 'loja'], estilo: 'vidro',
+    abre: () => passagem,
   });
 
   return { spawn: vest.spawn || { x: 0, z: 2.2, yaw: 0 }, caption: sceneCaption('loja'), auto: null };

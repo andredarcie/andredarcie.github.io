@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 import { DARK, DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
 import { sceneCaption } from '../story.js';
-import { trainArrive, trainStopSfx, trainDepart, sfxDoorSlide } from '../audio.js';
 import { night } from '../state.js';
-import { scene, freshScene, box, lite, grp, pointLight, anim, walkOf, blockOf, person, game, alinharSol, mundo, saida as saidaDaCena, chegada, aoAtivar } from '../kit.js';
+import { scene, freshScene, box, lite, grp, pointLight, anim, walkOf, blockOf, person } from '../kit.js';
 import { vestibulo } from '../vestibulo.js';
-import { vagao, VAGAO } from '../vagao.js';
+import { painelDoTrem } from './trem.js';
 
 // cor nova só como mistura da paleta (README)
 const mix = (a, b, k) => new THREE.Color(a).lerp(new THREE.Color(b), k).getHex();
@@ -49,9 +48,10 @@ const ESTACOES = {
 export const buildPlataforma = nav => buildEstacao(nav, ESTACOES.plataforma, 'plataforma');
 export const buildPlataforma2 = nav => buildEstacao(nav, ESTACOES.plataforma2, 'plataforma2');
 
-/* ===================== CENA: A PLATAFORMA (o metrô chega e para) ===================== */
-// entry 'trem': desceu do vagão (o trem está parado, fecha as portas e vai embora);
-// qualquer outra: chegou pela escada da rua e espera o trem
+/* ===================== CENA: A PLATAFORMA ===================== */
+// O trem é um lugar à parte (trem.js), que corre de verdade pelo túnel (linha.js) de uma estação à
+// outra; aqui ficam a plataforma, a escada da rua e o painel, que mostra o que o trem está fazendo.
+// entry 'rua': chegou pela escada da rua (seletor de cenas)
 function buildEstacao(nav = {}, cfg, sceneName) {
   freshScene(6, 27);   // túnel escuro: o trem emerge da névoa
 
@@ -208,8 +208,16 @@ function buildEstacao(nav = {}, cfg, sceneName) {
     indTex.needsUpdate = true;
   }
   letreiro('PRÓXIMO TREM', false);
+  anim(t => {
+    const st = painelDoTrem(sceneName);
+    if (st === 'chegando') letreiro('CHEGANDO', Math.floor(t * 2.5) % 2 === 0);
+    else if (st === 'embarque') letreiro('EMBARQUE', true);
+    else letreiro('PRÓXIMO TREM', false);
+  });
 
   // ---------- bocas de túnel com anéis recuando na escuridão ----------
+  // o lado que segue para a outra estação não tem fundo: o túnel continua (linha.js)
+  const ladoDaLinha = sceneName === 'plataforma' ? -1 : 1;
   for (const s of [-1, 1]) {
     // parede-portal com um vão do tamanho do trem
     box(.4, 5.6, 4.2, LIGHT, s * 14.6, 2.4, 2.0);        // parede da ponta (lado plataforma)
@@ -222,7 +230,7 @@ function buildEstacao(nav = {}, cfg, sceneName) {
     box(L, 4.6, .2, DARK2, cx, .9, .15);                  // parede do lado da plataforma
     box(L, .2, 3.2, DARK2, cx, 3.2, -1.35);               // teto
     box(L, .5, 3.2, DARK2, cx, -1.17, -1.35);             // chão (um tico abaixo do balastro da estação)
-    box(.2, 4.6, 3.2, DARK, s * 30, .9, -1.35);           // o fundo, onde o trem some
+    if (s !== ladoDaLinha) box(.2, 4.6, 3.2, DARK, s * 30, .9, -1.35);   // o fundo (do lado de lá o túnel segue)
     for (const rz of [-.85, -1.75]) box(14, .1, .12, LIGHT2, s * 23, -.79, rz);       // trilhos seguem
     box(14, .12, .16, NAVY, s * 23, -.64, -2.25);                                       // terceiro trilho
     for (let sx = 16.2; sx < 29.5; sx += .78) box(.28, .1, 1.55, DARK, s * sx, -.86, -1.3); // dormentes
@@ -296,148 +304,7 @@ function buildEstacao(nav = {}, cfg, sceneName) {
   box(.03, .16, .02, DARK2, 0, .06, -.09, rel);
   box(.12, .03, .02, DARK2, .05, 0, -.09, rel);
 
-  // ===== o trem: casca oca por fora, o vagão de verdade por dentro (o mesmo da cena do metrô) =====
-  // Quem embarca entra no vagão ainda na plataforma; as portas fecham e só então a cena troca.
-  // Quem chega vem do metrô já dentro dele, de portas fechadas; elas abrem aqui.
-  const LEN = 30, TZ = -1.41, HW = VAGAO.Wz / 2 + .16, PZ = HW + .02, Y0 = .03, YT = 2.5;
-  const doorsX = [-12, -8, -4, 0, 4, 8, 12];
-  const train = grp(0, 0, TZ);
-  const lado = (a, b, z) => box(b - a, YT - Y0, .04, LIGHT2, (a + b) / 2, (Y0 + YT) / 2, z, train);
-  lado(-LEN / 2, -VAGAO.DW, PZ); lado(VAGAO.DW, LEN / 2, PZ);             // lado da plataforma, com o vão
-  box(VAGAO.DW * 2, YT - 2.05, .04, LIGHT2, 0, (2.05 + YT) / 2, PZ, train);
-  lado(-LEN / 2, LEN / 2, -PZ);                                            // lado do túnel
-  box(LEN - .4, .4, HW * 2, DARK2, 0, 2.7, 0, train);                      // teto, por cima do forro do vagão
-  box(LEN, .3, HW * 2, DARK2, 0, -.36, 0, train);                          // chassi, por baixo do piso
-  for (let ax = -9; ax <= 9; ax += 4.5) box(1.2, .2, 1.0, DARK, ax, 2.99, 0, train); // ar-condicionado
-  // faixas por fora dos dois lados, interrompidas nas portas
-  function faixa(h, c, y) {
-    for (const zs of [1, -1]) {
-      let x0 = -LEN / 2;
-      for (const [a, b] of [...doorsX.map(dx => [dx - .9, dx + .9]), [LEN / 2, LEN / 2]]) {
-        if (a > x0) box(a - x0, h, .02, c, (x0 + a) / 2, y, zs * (PZ + .03), train);
-        x0 = b;
-      }
-    }
-  }
-  faixa(.34, BLUE, 1.98);                                  // faixa azul superior
-  faixa(.32, DARK2, .2);                                   // saia inferior
-  faixa(.12, DARK2, 1.18);                                 // friso entre janelas
-  for (let wx = -13.5; wx <= 13.5; wx += 1.5) {            // banda de janelas com moldura
-    if (doorsX.some(dx => Math.abs(wx - dx) < 1.1)) continue;
-    box(1.15, .82, .02, DARK2, wx, 1.56, PZ + .03, train);
-    box(1.0, .68, .02, NAVY, wx, 1.56, PZ + .045, train);
-  }
-  for (const dx of doorsX) {                                // portas fechadas (decorativas) e o batente da porta de verdade
-    if (dx !== 0) {
-      box(1.55, 2.05, .02, DARK2, dx, 1.05, PZ + .03, train);
-      for (const k of [-1, 1]) box(.7, 1.9, .02, NAVY, dx + k * .38, 1.05, PZ + .045, train);
-      box(.05, 2.05, .03, BLUE, dx, 1.05, PZ + .055, train);
-    } else {
-      for (const k of [-1, 1]) box(.08, 2.1, .05, DARK2, k * (VAGAO.DW + .04), 1.05, PZ + .03, train);
-      box(VAGAO.DW * 2 + .16, .08, .05, DARK2, 0, 2.09, PZ + .03, train);
-    }
-  }
-  for (const s of [-1, 1]) {                                // cabines: para-brisa, faróis, destino
-    box(.7, 2.5, HW * 2 + .06, LIGHT2, s * (LEN / 2 - .15), 1.25, 0, train);
-    box(.12, .8, 1.5, NAVY, s * (LEN / 2 + .16), 1.75, 0, train);
-    lite(.14, .2, .1, GLOW, s * (LEN / 2 + .18), .55, .6, train);
-    lite(.14, .2, .1, GLOW, s * (LEN / 2 + .18), .55, -.6, train);
-    lite(.9, .22, .05, BLUE, s * (LEN / 2 - .15), 2.28, HW + .04, train);
-  }
-  // o vagão por dentro: girado de modo que a porta dele fique no x=0 do trem, virada para a plataforma
-  const carro = grp(VAGAO.DX, 0, 0, train);
-  carro.rotation.y = Math.PI;
-  const vg = vagao(carro, { W: (x, z) => [VAGAO.DX - x, TZ - z], nome: cfg.nome });
-  vg.parada(cfg.parede);                                   // as janelas do lado da porta mostram a plataforma
-
-  // sentido do trem: CENTRAL → VIADUTO corre para -x, a volta para +x (não depende da hora)
-  const chegouDeTrem = nav.entry === 'trem';
-  const praViaduto = (sceneName === 'plataforma') === !chegouDeTrem;
-  const SENTIDO = praViaduto ? -1 : 1;
-  const V3 = new THREE.Vector3();
-  const noCarro = () => {                                  // o jogador no referencial do vagão
-    const p = game.player();
-    train.updateMatrixWorld(true);
-    carro.worldToLocal(V3.set(p.px, 1, p.pz));
-    return [V3.x, V3.z, p];
-  };
-
-  // portas: abrindo → abertas → fechando → (com você dentro: metrô; sem você: o trem vai embora)
-  let fase = chegouDeTrem ? 'parado' : 'chegando', k = 0, tf = null, t0 = null, tl = null, conta = 0;
-  if (chegouDeTrem) { letreiro('DESEMBARQUE', true); vg.letreiro(cfg.nome); }
-  else aoAtivar(() => trainArrive(1.2, 4.6));             // som sincronizado com a chegada (quando você está aqui)
-  saidaDaCena({ para: ['metro', sceneName], mundo: null, pronto: false });   // embarcou: o metrô já está montado
-  const eu = mundo;
-  const DELAY = 1.2, DUR = 4.6, X0 = -SENTIDO * 34, SAI = 6;
-  train.position.x = chegouDeTrem ? 0 : X0;
-  anim(t => {
-    if (t0 === null) {
-      if (!eu.ativo) return;   // vista do alto da escada pelo portal: o trem só parte do túnel quando você chega
-      t0 = t; tl = t;
-    }
-    const e = t - t0, dt = Math.min(.05, t - tl);
-    tl = t;
-    if (fase === 'chegando') {                             // vem do túnel desacelerando
-      const u = e - DELAY;
-      if (u <= 0) return;
-      letreiro('CHEGANDO', Math.floor(t * 2.5) % 2 === 0);
-      if (u >= DUR) { train.position.x = 0; fase = 'parado'; tf = t; return; }
-      const q = u / DUR;
-      train.position.x = X0 * (1 - (1 - Math.pow(1 - q, 3)));
-      return;
-    }
-    if (fase === 'parado') {                               // um respiro e as portas abrem
-      if (tf === null) tf = t;
-      if (t - tf > (chegouDeTrem ? .5 : .2)) {
-        fase = 'abrindo'; trainStopSfx(); sfxDoorSlide();
-        letreiro(chegouDeTrem ? 'DESEMBARQUE' : 'EMBARQUE', true);
-        if (game.arrived) game.arrived();
-      }
-      return;
-    }
-    if (fase === 'partindo') {                             // arranca devagar e some no túnel
-      const q = Math.min(1, (t - tf) / SAI);
-      train.position.x = SENTIDO * 44 * q * q;
-      train.visible = q < 1;
-      return;
-    }
-    const [lx, lz, p] = noCarro();
-    const dentro = vg.dentro(lx, lz), noVao = vg.noVao(lx, lz);
-    if (fase === 'abrindo') { k = Math.min(1, k + dt / .9); if (k >= 1) { fase = 'aberto'; conta = 0; } }
-    else if (fase === 'aberto') {
-      // embarque: lá dentro (passou da porta) por um instante, fecha; desembarque: fecha quando você desceu
-      const fecha = chegouDeTrem ? !dentro && !noVao : dentro && !noVao;
-      conta = fecha ? conta + dt : 0;
-      if (conta > (chegouDeTrem ? 2.5 : 1.0)) { fase = 'fechando'; sfxDoorSlide(); }
-    } else if (fase === 'fechando') {
-      if (noVao) { fase = 'abrindo'; sfxDoorSlide(); }     // alguém no vão: a porta volta, como as de verdade
-      else {
-        k = Math.max(0, k - dt / 1.0);
-        if (k <= 0) {
-          if (dentro) {                                    // ficou lá dentro: segue viagem
-            fase = 'foi';
-            queueMicrotask(() => game.travel('metro', sceneName, { x: lx, z: lz, yaw: p.yaw - Math.PI, fy: Math.PI }));
-          } else {
-            fase = 'partindo'; tf = t;
-            trainDepart(0, SAI);
-            letreiro('PRÓXIMO TREM', false);
-          }
-        }
-      }
-    }
-    vg.portas(k);
-  });
-
-  // chegou de trem: no mesmo ponto do vagão em que estava; desceu a escada da rua: no patamar
-  let spawn;
-  if (chegouDeTrem) {
-    // no mesmo ponto do vagão em que estava (só se sabe na hora da troca)
-    const poe = rel => {
-      if (rel.fy !== undefined) alinharSol(Math.PI - rel.fy);
-      return { x: VAGAO.DX - rel.x, z: TZ - rel.z, yaw: rel.yaw + Math.PI };
-    };
-    chegada(poe);
-    spawn = poe({ x: VAGAO.DX, z: -.3, yaw: 0 });
-  } else spawn = nav.entry === 'rua' ? (saidaVest.spawn || { x: EX, z: 9.4, yaw: 0 }) : { x: -1.2, z: 2.7, yaw: 0 };
+  // desceu a escada da rua: no patamar; sem entrada: esperando o trem na plataforma
+  const spawn = nav.entry === 'rua' ? (saidaVest.spawn || { x: EX, z: 9.4, yaw: 0 }) : { x: -1.2, z: 2.7, yaw: 0 };
   return { spawn, caption: sceneCaption(sceneName), auto: null, elevFn };
 }

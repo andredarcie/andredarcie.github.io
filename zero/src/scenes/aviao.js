@@ -1,9 +1,42 @@
 import * as THREE from 'three';
 import { DARK, DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
-import { sceneCaption } from '../story.js';
-import { scene, freshScene, box, lite, grp, blob, pointLight, anim, instanciar, at, tagGo, person } from '../kit.js';
+import { sceneCaption, objectName } from '../story.js';
+import { scene, freshScene, box, lite, grp, blob, pointLight, anim, instanciar, at, tag, walkOf, game, person } from '../kit.js';
+import { veiculos } from '../mapa.js';
+import { standAviao, caminhoTaxi, PISTA } from './aeroporto.js';
 
-/* ===================== CENA: O AVIÃO (sentado na janela, só olha; sai pela poltrona do lado) ===================== */
+/* ===================== o voo: o avião é um veículo de verdade no mundo ===================== */
+// Parado no pátio do aeroporto (aeroporto.js), com a porta no topo da escada. Você entra, senta na
+// janela e ele taxia até a cabeceira, corre a pista e decola para o sul sobre a cidade; atravessa a
+// camada de nuvens (a névoa fecha), cruza por cima delas (o céu e o tapete de nuvens desta cena),
+// desce do outro lado e pousa na pista atrás da praia (praia.js), parando com a porta na escada de lá.
+// Tudo numa linha reta para o sul (x = PISTA.x) depois do taxiamento. O estado fica fora do builder.
+const ALT = 440;                         // altura de cruzeiro (o piso da cabine)
+const Z_DESCE = -4400;                   // começa a descer aqui
+// onde para na praia: a porta (6.45 m à frente do centro) dá na escada no fim da passarela de lá
+export const PARADA_PRAIA = { x: 150, y: 6.2, z: -6496.55 };
+const Z_TOQUE = -6150;                   // para onde mira a descida (arredonda antes e toca uns 150 m depois)
+const FASES_VOO = ['corrida', 'subida', 'cruzeiro', 'descida', 'flare', 'freio'];
+const AV = { fase: 'parado', sentado: false, s: 0, v: 0, x: 0, y: 0, z: 0, yaw: 0, pitch: 0, tf: 0, freio: 0 };
+export function reiniciarAviao() {
+  const s = standAviao();
+  Object.assign(AV, { fase: 'parado', sentado: false, s: 0, v: 0, x: s.x, y: s.y, z: s.z, yaw: 0, pitch: 0, tf: 0, freio: 0 });
+  moverAviao();
+}
+function moverAviao() {
+  veiculos.aviao = new THREE.Matrix4()
+    .makeRotationFromEuler(new THREE.Euler(AV.pitch, AV.yaw, 0, 'YXZ'))
+    .setPosition(AV.x, AV.y, AV.z);
+}
+const chegou = () => AV.fase === 'chegou';
+const voando = () => FASES_VOO.includes(AV.fase) || AV.fase === 'taxi';
+// do pátio até a praia, 0..1 (para o mapa de voo)
+function progresso() {
+  const s = standAviao();
+  return Math.max(0, Math.min(1, (s.z - AV.z) / (s.z - PARADA_PRAIA.z)));
+}
+
+/* ===================== CENA: O AVIÃO (por dentro: a cabine; por fora: a fuselagem, as asas) ===================== */
 // Corte da cabine (x, y), corredor em x=0, frente do avião em -z:
 //   chão y=0 · parede baixa até y=.55 · painel das janelas inclinado para dentro
 //   · bagageiros curvos · teto em arco a ~2.3. Duas poltronas de cada lado.
@@ -281,20 +314,38 @@ export function buildAviao() {
   const telaMapa = new THREE.Mesh(new THREE.PlaneGeometry(.2, .12), mapa.mat);
   telaMapa.position.set(0, .6, .093);                                // à frente da tela instanciada (sem z-fighting)
   frenteBack.add(telaMapa);
-  let mapT0 = null, mapLast = 0;
-  anim(t => {                                                        // o aviãozinho avança devagar na rota
-    if (mapT0 === null) mapT0 = t;
+  let mapLast = 0;
+  anim(t => {                                                        // o aviãozinho avança na rota com o voo
     if (t - mapLast < .5) return;
     mapLast = t;
-    mapa.draw(.4 + Math.min(.5, (t - mapT0) * .002));
+    mapa.draw(progresso());
   });
 
-  // a poltrona vazia do lado, com a manta dobrada: interagir aqui é levantar e sair
+  // a poltrona vazia do lado, com a manta dobrada: chegando, interagir aqui é levantar e sair
   const exitG = grp(EXIT.x, 0, EXIT.z);
   poltrona(exitG);
   box(.34, .07, .26, BLUE, 0, .535, -.05, exitG);                    // manta dobrada no assento
   box(.36, .02, .1, GLOW, 0, .575, -.1, exitG);                      // travesseirinho
-  tagGo(exitG, 'exitSeat', 'praia');
+  const interSair = {
+    name: objectName('exitSeat'),
+    pose: { x: 0, y: 1.6, z: 0, yaw: 0, dur: 1.1 },                  // em pé no corredor, de frente para a porta
+    cb: () => { AV.sentado = false; },
+  };
+  tag(exitG, interSair.name, interSair);
+  // a sua poltrona (a da janela): sentar é o começo do voo
+  const alvoSentar = new THREE.Mesh(new THREE.BoxGeometry(.5, 1.1, .55), new THREE.MeshBasicMaterial({ visible: false }));
+  alvoSentar.position.set(PLAYER.x, .6, PLAYER.z);
+  scene.add(alvoSentar);
+  const interSentar = {
+    name: objectName('planeSeat'),
+    pose: { x: PLAYER.x, y: 1.15, z: PLAYER.z - .06, yaw: .75, dur: 1.2 },
+    cb: () => { AV.sentado = true; AV.fase = 'espera'; AV.tf = 0; },
+  };
+  tag(alvoSentar, interSentar.name, interSentar);
+  anim(() => {
+    alvoSentar.userData.inter = AV.fase === 'parado' && !AV.sentado ? interSentar : null;
+    exitG.userData.inter = chegou() && AV.sentado ? interSair : null;
+  });
 
   // ── passageiros ──────────────────────────────────────────────────────────
   // poucos especiais (com vida própria) e o resto instanciado; topos de cabeça acima dos encostos
@@ -360,12 +411,23 @@ export function buildAviao() {
   box(.7, .025, .025, DARK2, 0, 1.99, -5.97);                        // varão da cortina
   for (let i = 0; i < 6; i++)                                        // cortina franzida, entreaberta
     box(.1, 1.94, .02, NAVY, -.28 + i * .085, 1.0, -5.975 + (i % 2) * .022);
-  // a galley lá atrás, clara (só se vê pela fresta da cortina)
+  // a galley lá atrás, clara; à esquerda dela, a porta de embarque (por onde se entra e se sai)
   box(.7, .1, .9, FLOOR, 0, -.05, -6.45);
-  for (const s of [-1, 1]) box(.05, 2.2, .9, LIGHT2, s * .37, 1.1, -6.45);
+  box(.05, 2.2, .9, LIGHT2, .37, 1.1, -6.45);
   box(.7, .05, .9, LIGHT2, 0, 2.2, -6.45);
   lite(.7, 2.2, .05, GLOW, 0, 1.1, -6.92);
   pointLight(.3, 3, 0, 1.8, -6.4);
+  const PX0 = -2.3;                                                  // o vão da porta, no casco
+  box(-.33 - PX0, .1, .9, FLOOR, (PX0 - .33) / 2, -.05, -6.45);      // piso do corredorzinho da porta
+  box(-.33 - PX0, .05, 1.0, LIGHT2, (PX0 - .33) / 2, 2.2, -6.45);    // teto
+  box(-.33 - PX0, 2.2, .05, LIGHT2, (PX0 - .33) / 2, 1.1, -6.93);    // parede da frente
+  box(-1.6 - PX0, 2.3, .08, LIGHT2, (PX0 - 1.6) / 2, 1.15, -6.04);   // fecha até a divisória
+  for (const z of [-6.92, -5.98]) box(.06, 2.0, .06, DARK2, PX0 + .05, 1.0, z); // batentes da porta
+  box(.06, .06, 1.0, DARK2, PX0 + .05, 2.0, -6.45);
+  lite(.03, .06, .4, BLUE, PX0 + .1, 2.08, -6.45);                   // "EXIT" sobre a porta
+  walkOf(-.3, -5.9, .3, 5.8);                                        // o corredor
+  walkOf(-.34, -6.88, .34, -5.88);                                   // a galley
+  walkOf(PX0 - .15, -6.85, -.3, -6.15);                              // até a porta (a escada emenda lá fora)
 
   // ── divisória do fundo: banheiros ────────────────────────────────────────
   box(3.2, 2.3, .08, LIGHT2, 0, 1.15, 6.04);
@@ -388,6 +450,7 @@ export function buildAviao() {
   att.scale.setScalar(1.1);                                          // cabe no corredor
   att.position.set(0, 0, -.62);
   anim(t => {
+    trolley.visible = AV.fase === 'cruzeiro';                        // em terra o corredor é de quem embarca
     const u = (t % 48) / 48, sm = k => k * k * (3 - 2 * k);
     const k = u < .4 ? sm(u / .4) : u < .5 ? 1 : u < .9 ? 1 - sm((u - .5) / .4) : 0; // vai, serve, volta, some
     trolley.position.z = -5.3 + 3.4 * k;
@@ -509,12 +572,200 @@ export function buildAviao() {
   scene.add(cone);
   box(.12, .34, 1.9, LIGHT2, EX, EY + .55, EZ + .5);                 // pilone
 
-  // olhando de lado para a janela já ao sentar: o céu é a primeira coisa que se vê
-  return {
-    spawn: { x: PLAYER.x, z: PLAYER.z - .06, yaw: .75 }, caption: sceneCaption('aviao'), auto: null,
-    seated: true,          // preso na poltrona: só olha, não anda
-    bodySeat: { yaw: 0, hipY: .56, back: .06 }, // o corpo de frente para a poltrona da frente, no assento (.5)
-    elevFn: () => -.45,    // altura dos olhos de quem está sentado (1.15)
-    sway: true,            // a turbulência leve do voo
+  // ── por fora: a fuselagem, a outra asa, a cauda, o trem de pouso ─────────
+  fuselagem(PX0);
+  // a asa direita e o motor dela: a esquerda espelhada
+  solido([
+    [-RX, -.42, -3.3], [-RX, -.3, .9], [-TX, 1.06, 4.9], [-TX, 1.03, 3.7],
+    [-RX, 0, -3.3], [-RX, -.2, .9], [-TX, 1.1, 4.9], [-TX, 1.15, 3.7],
+  ], LIGHT);
+  solido([
+    [-TX - .05, 1.06, 3.8], [-TX - .05, 1.06, 4.9], [-TX + .45, 2.15, 5.15], [-TX + .45, 2.15, 4.65],
+    [-TX + .03, 1.06, 3.8], [-TX + .03, 1.06, 4.9], [-TX + .53, 2.15, 5.15], [-TX + .53, 2.15, 4.65],
+  ], BLUE);
+  const nac2 = nac.clone(); nac2.position.x = -EX; scene.add(nac2);
+  const lip2 = lip.clone(); lip2.position.x = -EX; scene.add(lip2);
+  const fan2 = fan.clone(); fan2.position.x = -EX; scene.add(fan2);
+  const cone2 = cone.clone(); cone2.position.x = -EX; scene.add(cone2);
+  box(.12, .34, 1.9, LIGHT2, -EX, EY + .55, EZ + .5);
+  // a deriva (com a cor da companhia) e os estabilizadores
+  solido([
+    [-.14, 2.6, 12.8], [-.14, 2.9, 17.8], [-.1, 8.2, 18.6], [-.1, 8.2, 16.4],
+    [.14, 2.6, 12.8], [.14, 2.9, 17.8], [.1, 8.2, 18.6], [.1, 8.2, 16.4],
+  ], LIGHT);
+  solido([
+    [-.16, 6.4, 16.5], [-.16, 6.4, 18.3], [-.12, 8.0, 18.6], [-.12, 8.0, 16.9],
+    [.16, 6.4, 16.5], [.16, 6.4, 18.3], [.12, 8.0, 18.6], [.12, 8.0, 16.9],
+  ], BLUE);
+  for (const s of [-1, 1]) solido([
+    [s * .5, 2.2, 15.2], [s * .5, 2.2, 17.6], [s * 5.4, 2.5, 18.4], [s * 5.4, 2.5, 17.3],
+    [s * .5, 2.42, 15.2], [s * .5, 2.42, 17.6], [s * 5.4, 2.62, 18.4], [s * 5.4, 2.62, 17.3],
+  ], LIGHT);
+  // trem de pouso: aparece perto do chão (o piso da cabine fica 2.6 m acima dele)
+  const trem = grp(0, 0, 0);
+  const roda = (x, z) => {
+    box(.18, 1.2, .18, DARK2, x, -1.7, z, trem);
+    for (const dz of [-.3, .3]) {
+      const r = new THREE.Mesh(new THREE.CylinderGeometry(.45, .45, .3, 10), new THREE.MeshLambertMaterial({ color: DARK, flatShading: true }));
+      r.rotation.z = Math.PI / 2; r.position.set(x, -2.15, z + dz); trem.add(r);
+    }
   };
+  roda(0, -9.4); roda(-2.7, 1.4); roda(2.7, 1.4);
+
+  // ── o voo ────────────────────────────────────────────────────────────────
+  const CIDADE = new THREE.Color(0x2b3d4c), PRAIA = new THREE.Color(GLOW).lerp(new THREE.Color(LIGHT), .22);
+  const NUVEM = new THREE.Color(HORIZON);
+  const taxi = caminhoTaxi(), LTAXI = taxi.getLength(), chaoPraia = PARADA_PRAIA.y;
+  const P = new THREE.Vector3(), Tg = new THREE.Vector3();
+  const aproxima = (a, b, k) => a + (b - a) * Math.min(1, k);
+  // névoa, céu e sol de acordo com a altura e o lado do voo (cidade embaixo / nuvens / céu de cima / praia)
+  function ambiente() {
+    const y = AV.y, praiaLado = AV.z < -3000;
+    const chao = praiaLado ? chaoPraia : 2.6;
+    const baixo = praiaLado
+      ? { cor: PRAIA, near: 24, far: 78 + Math.min(520, (y - chao) * 2.4) }
+      : { cor: CIDADE, near: 10, far: 160 + Math.min(440, (y - chao) * 2.4) };
+    const nuvem = { cor: NUVEM, near: 0, far: 14 }, cima = { cor: NUVEM, near: 30, far: 78 };
+    let a = baixo, b = baixo, k = 0;
+    if (y > 170 && y < 220) { b = nuvem; k = (y - 170) / 50; }
+    else if (y >= 220 && y < 300) { a = b = nuvem; }
+    else if (y >= 300 && y < 340) { a = nuvem; b = cima; k = (y - 300) / 40; }
+    else if (y >= 340) { a = b = cima; }
+    scene.fog.color.copy(a.cor).lerp(b.cor, k);
+    scene.fog.near = a.near + (b.near - a.near) * k;
+    scene.fog.far = a.far + (b.far - a.far) * k;
+    scene.background.copy(scene.fog.color);
+    ceu.visible = y >= 320;
+    sunLight.intensity = y >= 320 ? .6 : praiaLado ? .5 : 0;
+    trem.visible = y - chao < 80;
+  }
+  let tl = null;
+  anim(t => {
+    const dt = tl === null ? 0 : Math.min(.05, t - tl);
+    tl = t;
+    AV.tf += dt;
+    if (AV.fase === 'espera') {                                       // sentou: um respiro e ele sai
+      if (AV.tf > 2.5) { AV.fase = 'taxi'; AV.s = 0; AV.v = 0; }
+    } else if (AV.fase === 'taxi') {                                  // do pátio até a cabeceira
+      AV.v = aproxima(AV.v, 9, dt * .25);
+      AV.s = Math.min(LTAXI, AV.s + AV.v * dt);
+      const u = AV.s / LTAXI;
+      taxi.getPointAt(u, P); taxi.getTangentAt(u, Tg);
+      AV.x = P.x; AV.z = P.z; AV.yaw = Math.atan2(-Tg.x, -Tg.z);
+      if (AV.s >= LTAXI) { AV.fase = 'corrida'; AV.x = PISTA.x; AV.yaw = 0; }
+    } else if (AV.fase === 'corrida') {                               // corre a pista
+      AV.v += 2.2 * dt;
+      AV.z -= AV.v * dt;
+      AV.yaw = aproxima(AV.yaw, 0, dt * 2);
+      if (AV.v >= 48) AV.fase = 'subida';
+    } else if (AV.fase === 'subida') {                                // sobe, atravessa as nuvens
+      AV.pitch = aproxima(AV.pitch, .17, dt * .6);
+      AV.v = Math.min(110, AV.v + 1.6 * dt);
+      AV.y += AV.v * Math.sin(AV.pitch) * dt;
+      AV.z -= AV.v * Math.cos(AV.pitch) * dt;
+      if (AV.y >= ALT) { AV.y = ALT; AV.fase = 'cruzeiro'; }
+    } else if (AV.fase === 'cruzeiro') {                              // por cima das nuvens
+      AV.pitch = aproxima(AV.pitch, 0, dt * .5);
+      AV.v = aproxima(AV.v, 150, dt * .2);
+      AV.z -= AV.v * dt;
+      if (AV.z <= Z_DESCE) AV.fase = 'descida';
+    } else if (AV.fase === 'descida') {                               // desce mirando a pista da praia
+      const alvo = -Math.atan2(AV.y - chaoPraia, Math.max(1, AV.z - Z_TOQUE));
+      AV.pitch = aproxima(AV.pitch, Math.max(-.26, alvo), dt * .8);
+      AV.v = aproxima(AV.v, 72, dt * .25);
+      AV.y += AV.v * Math.sin(AV.pitch) * dt;
+      AV.z -= AV.v * Math.cos(AV.pitch) * dt;
+      if (AV.y - chaoPraia < 14) AV.fase = 'flare';
+    } else if (AV.fase === 'flare') {                                 // arredonda e toca
+      AV.pitch = aproxima(AV.pitch, .04, dt * 1.5);
+      AV.v = aproxima(AV.v, 60, dt * .5);
+      AV.y = Math.max(chaoPraia, AV.y - Math.max(1.6, (AV.y - chaoPraia) * .55) * dt);
+      AV.z -= AV.v * dt;
+      if (AV.y <= chaoPraia + .01) {
+        AV.y = chaoPraia; AV.fase = 'freio';
+        AV.freio = AV.v * AV.v / (2 * Math.max(20, AV.z - PARADA_PRAIA.z));
+      }
+    } else if (AV.fase === 'freio') {                                 // freia até a escada da praia
+      AV.pitch = aproxima(AV.pitch, 0, dt * 2);
+      AV.v = Math.max(0, AV.v - AV.freio * dt);
+      AV.z -= AV.v * dt;
+      if (AV.v <= .2 || AV.z <= PARADA_PRAIA.z) {
+        Object.assign(AV, { z: PARADA_PRAIA.z, x: PARADA_PRAIA.x, y: PARADA_PRAIA.y, v: 0, pitch: 0, fase: 'chegou' });
+        if (game.arrived) game.arrived();
+      }
+    }
+    ambiente();
+    moverAviao();
+  });
+
+  // seletor de cenas: em pé no corredor
+  return {
+    spawn: { x: 0, z: -1.2, yaw: 0 }, caption: sceneCaption('aviao'), auto: null,
+    seated: () => AV.sentado,                                         // na poltrona: só olha, não anda
+    bodySeat: () => (AV.sentado ? { yaw: 0, hipY: .56, back: .06 } : null), // de frente para a poltrona da frente, no assento (.5)
+    elevFn: () => (AV.sentado ? -.45 : 0),                            // olhos de quem está sentado (1.15)
+    sway: () => voando(),                                             // a turbulência leve do voo
+  };
+}
+
+/* ---------- a fuselagem: um tubo facetado em volta da cabine, com o vão da porta ---------- */
+// Cada face aponta para fora: de dentro da cabine ela some (vê-se pelas janelas o que há lá fora).
+function fuselagem(PX0) {
+  const N = 22;
+  // anéis ao longo do avião (frente em -z): z, raio, altura do centro
+  const aneis = [
+    [-13.2, .3, .65], [-12, 1.2, .72], [-10.3, 1.95, .84], [-8.8, 2.3, .9], [-6.95, 2.3, .9], [-5.95, 2.3, .9],
+    [12, 2.3, .9], [14.5, 1.75, 1.35], [17, 1.05, 2.0], [18.8, .45, 2.5],
+  ];
+  const pos = [], nor = [];
+  const ponto = (a, i) => { const ang = i / N * Math.PI * 2; return [Math.sin(ang) * a[1], a[2] + Math.cos(ang) * a[1], a[0]]; };
+  const quad = (P, cx, cy) => {
+    const ux = P[1][0] - P[0][0], uy = P[1][1] - P[0][1], uz = P[1][2] - P[0][2];
+    const vx = P[2][0] - P[0][0], vy = P[2][1] - P[0][1], vz = P[2][2] - P[0][2];
+    let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    const mx = (P[0][0] + P[2][0]) / 2 - cx, my = (P[0][1] + P[2][1]) / 2 - cy;
+    const ord = nx * mx + ny * my >= 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2];
+    const l = Math.hypot(nx, ny, nz) || 1;
+    if (ord[1] === 2) { nx = -nx; ny = -ny; nz = -nz; }
+    for (const k of ord) { pos.push(...P[k]); nor.push(nx / l, ny / l, nz / l); }
+  };
+  for (let a = 0; a < aneis.length - 1; a++) {
+    const A = aneis[a], B = aneis[a + 1];
+    for (let i = 0; i < N; i++) {
+      const P = [ponto(A, i), ponto(A, i + 1), ponto(B, i + 1), ponto(B, i)];
+      // o vão da porta: no trecho dela, as faces do lado esquerdo na altura de uma pessoa
+      const mx = (P[0][0] + P[2][0]) / 2, my = (P[0][1] + P[2][1]) / 2;
+      if (A[0] === -6.95 && mx < -1 && my > -.1 && my < 2.05) continue;
+      quad(P, 0, (A[2] + B[2]) / 2);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  const casco = new THREE.MeshLambertMaterial({ color: LIGHT, flatShading: true });
+  scene.add(new THREE.Mesh(geo, casco));
+  // as pontas: o bico e o fim da cauda fechados
+  const bico = new THREE.Mesh(new THREE.ConeGeometry(.3, .45, N), casco);
+  bico.rotation.x = -Math.PI / 2; bico.position.set(0, .65, -13.42);
+  scene.add(bico);
+  const cauda = new THREE.Mesh(new THREE.CircleGeometry(.45, N), casco);
+  cauda.position.set(0, 2.5, 18.8);
+  scene.add(cauda);
+  // por fora: a fileira de janelas, a faixa da companhia e o contorno da porta (planos virados para fora)
+  const jan = new THREE.Group();
+  const jp = new THREE.Mesh(new THREE.PlaneGeometry(.26, .34), new THREE.MeshBasicMaterial({ color: NAVY }));
+  jp.rotation.y = Math.PI / 2;
+  jan.add(jp);
+  const lados = [];
+  const RJ = Math.sqrt(2.3 * 2.3 - .62 * .62) + .02;                // o casco na altura das janelas (1.52)
+  for (const z of ROWS) for (const s of [-1, 1]) lados.push(at(s * RJ, 1.52, z, s > 0 ? 0 : Math.PI));
+  instanciar(jan, lados);
+  for (const s of [-1, 1]) {                                        // a faixa passa por cima da porta
+    const f = new THREE.Mesh(new THREE.PlaneGeometry(20, .14), new THREE.MeshBasicMaterial({ color: BLUE }));
+    f.rotation.y = s * Math.PI / 2;
+    f.position.set(s * (Math.sqrt(2.3 * 2.3 - 1.38 * 1.38) + .03), 2.28, 1.5);
+    scene.add(f);
+  }
+  for (const z of [-6.95, -5.95]) box(.05, 2.1, .08, DARK2, PX0 - .02, .98, z);
+  box(.05, .08, 1.08, DARK2, PX0 - .02, 2.03, -6.45);
 }

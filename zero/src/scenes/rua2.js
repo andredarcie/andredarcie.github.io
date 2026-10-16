@@ -2,18 +2,32 @@ import * as THREE from 'three';
 import { DARK, DARK2, NAVY, LIGHT, LIGHT2, FLOOR, BLUE, GLOW } from '../config.js';
 import { day, night } from '../state.js';
 import { sceneCaption } from '../story.js';
-import { scene, freshScene, box, lite, grp, pointLight, windowGrid, anim, tagGo, walkOf, blockOf, person } from '../kit.js';
+import { scene, freshScene, box, lite, grp, pointLight, windowGrid, anim, tagGo, walkOf, blockOf, person, casca } from '../kit.js';
 import { chuva } from './rua.js';
-import { vestibulo } from '../vestibulo.js';
+import { vestibulo, VEST } from '../vestibulo.js';
 import { frota, pedestre, letreiro, PINTURAS, mix } from '../cidade.js';
+import { noMundo, transformada } from '../mapa.js';
 const CONCRETO = mix(LIGHT2, DARK2, .45);
+
+// uma caixa dada nas coordenadas de outro lugar, trazida para as desta rua: { x0, x1, z0, z1, y }
+function caixaDe(nome, x0, x1, z0, z1) {
+  const Ti = transformada('rua2').clone().invert();
+  const ps = [[x0, z0], [x1, z0], [x0, z1], [x1, z1]].map(([x, z]) => {
+    const p = noMundo(nome, { x, z });
+    return new THREE.Vector3(p.x, p.y, p.z).applyMatrix4(Ti);
+  });
+  return {
+    x0: Math.min(...ps.map(p => p.x)), x1: Math.max(...ps.map(p => p.x)),
+    z0: Math.min(...ps.map(p => p.z)), z1: Math.max(...ps.map(p => p.z)), y: ps[0].y,
+  };
+}
 
 // traçado: rua N-S (|x| <= 3.5), calçadas até |x| = 8.2; a saída do metrô sobe na calçada leste
 // (trincheira em x 5.82..8.18, do patamar em z 10.4 até a calçada em z 2.6) olhando para o norte (-z),
 // e logo à frente o viaduto cruza por cima da rua (tabuleiro em z -24.5..-17.5)
 const VZ0 = -24.5, VZ1 = -17.5, VZ = (VZ0 + VZ1) / 2;
 const noAsfalto = (x, z) => Math.abs(x) <= 3.5;
-const naEscada = (x, z) => x > 5.85 && x < 8.15 && z > 2.6;
+const naEscada = (x, z) => x > 5.85 && x < 8.15 && z > 2.6 && z < 12.5;   // a escada, o patamar e o vestíbulo lá embaixo
 const sobViaduto = z => z > VZ0 && z < VZ1;
 
 /* ===================== CENA: A RUA DO TRABALHO (saída do metrô, viaduto, a portinha) ===================== */
@@ -42,7 +56,8 @@ export function buildRua2(nav = {}) {
   for (let z = -52; z < 34; z += 3) if (!sobViaduto(z)) slab(.14, .02, 1.2, matFx, 0, .035, z); // faixa central
 
   walkOf(-7.8, -40, 7.8, 2.7);     // rua e calçadas até a boca do metrô
-  walkOf(-7.8, 2.6, 5.8, 20);      // calçada que segue ao lado da escada
+  walkOf(-7.8, 2.6, 5.8, 33.4);    // calçada que segue ao lado da escada, até a avenida (bairro.js)
+  walkOf(5.7, 12.6, 7.8, 33.4);    // e a calçada leste depois da escada (passado o vestíbulo, que fica embaixo)
   walkOf(5.9, 2.4, 8.1, 10.25);    // a escada e o patamar
   const elevFn = (x, z) => {
     if (naEscada(x, z)) {
@@ -69,7 +84,7 @@ export function buildRua2(nav = {}) {
     nome.rotation.y = -side * Math.PI / 2;
   }
   const LOJAS = ['CAFÉ', 'COPIADORA', 'RESTAURANTE', 'PAPELARIA', 'LOTÉRICA', 'SALGADOS', 'RELOJOARIA'];
-  for (const [z0, z1] of [[-50, -38], [-38, -26], [-16, -4], [-4, 10], [10, 24], [24, 36]]) {
+  for (const [z0, z1] of [[-50, -38], [-38, -26], [-16, -4], [-4, 10], [10, 24], [24, 32.4]]) {
     predio(-1, z0, z1);
     predio(1, z0, z1);
   }
@@ -87,9 +102,27 @@ export function buildRua2(nav = {}) {
     box(1.1, VY, 1.1, CONCRETO, px, VY / 2, pz);                    // pilares na guia
     blockOf(px - .55, pz - .55, px + .55, pz + .55);
   }
-  // encontros do viaduto no alinhamento dos prédios (preenchem o vão entre os quarteirões -26..-16):
+  // encontro do viaduto no alinhamento dos prédios a oeste (preenche o vão entre os quarteirões -26..-16):
   // embaixo do viaduto a cidade vira concreto
-  for (const side of [-1, 1]) box(6, VY, 10, CONCRETO, side * 11.2, VY / 2, VZ);
+  box(6, VY, 10, CONCRETO, -11.2, VY / 2, VZ);
+  // a leste, o prédio da empresa: oco (casca), em volta da recepção do térreo e do escritório do 12º
+  // andar, que estão lá dentro de verdade (mapa.js). O escritório avança em balanço sobre a calçada.
+  const rc = caixaDe('recepcao2', -4.4, 6.1, -2.6, 2.6);
+  const ec = caixaDe('empresa', -8.4, 7.4, -10, 4.4);
+  const BX1 = Math.max(14.2, rc.x1 + .3), BZ0 = Math.min(VZ0 - 1.5, rc.z0 - .3), BZ1 = Math.max(VZ1 + 1.5, rc.z1 + .3);
+  const vv = VEST.VW + .16, DZp = VZ + 1.2;
+  casca({ x0: 8.2, x1: BX1, y0: 0, y1: VY, z0: BZ0, z1: BZ1 }, CONCRETO, {
+    furos: { x0: [[DZp - vv, DZp + vv, 0, .12 + VEST.VH + .1]] },         // a portinha
+  });
+  const TOPO = { x0: Math.min(8.2, ec.x0 - .3), x1: Math.max(BX1, ec.x1 + .3), z0: Math.min(BZ0, ec.z0 - .3), z1: Math.max(BZ1, ec.z1 + .3), y0: ec.y - 1, y1: ec.y + 4 };
+  casca({ x0: 8.2, x1: BX1, y0: VY + 1.1, y1: TOPO.y0, z0: BZ0, z1: BZ1 }, DARK2, { faces: ['x0', 'x1', 'z0', 'z1'] });
+  casca(TOPO, DARK2, { faces: ['x0', 'x1', 'z0', 'z1', 'y0', 'y1'] });
+  box(TOPO.x1 - TOPO.x0 + .3, .4, TOPO.z1 - TOPO.z0 + .3, DARK, (TOPO.x0 + TOPO.x1) / 2, TOPO.y1 + .2, (TOPO.z0 + TOPO.z1) / 2);
+  const tSlots = [];
+  for (let wy = VY + 2.4; wy < TOPO.y0 - .8; wy += 1.5)
+    for (let wz = BZ0 + .9; wz < BZ1 - .7; wz += 1.15) tSlots.push({ x: 8.14, y: wy, z: wz });
+  for (let wz = TOPO.z0 + .9; wz < TOPO.z1 - .7; wz += 1.15) tSlots.push({ x: TOPO.x0 - .06, y: TOPO.y0 + 2.2, z: wz });
+  windowGrid(tSlots, new THREE.BoxGeometry(.12, .75, .5));
   // postes de luz no guarda-corpo, lá em cima
   for (let lx = -30; lx <= 30; lx += 10) {
     box(.1, 1.6, .1, DARK2, lx, VY + 2.6, VZ1 - .1);
@@ -166,14 +199,14 @@ export function buildRua2(nav = {}) {
     box(.5, .34, .08, DARK2, -.7, .92, 0, g);
     box(.5, .34, .08, DARK2, .7, .92, 0, g);
   }
-  for (const bx of [-6.6, -4.2, -1.8, .6, 3.0, 5.4]) { bloqueio(bx, -40.6); bloqueio(bx, 20.4); }
+  for (const bx of [-6.6, -4.2, -1.8, .6, 3.0, 5.4]) bloqueio(bx, -40.6);   // ao norte a rua segue até a avenida
 
   if (day < 5) chuva({ matRua, matCal, cRua: new THREE.Color(DARK2), cCal: new THREE.Color(FLOOR),
     streetBg, streetFog, streetStormFog: new THREE.Color(0x233342).multiplyScalar(nk),
     streetFlash: new THREE.Color(0x354a5c).multiplyScalar(nk) },
   (x, z) => (naEscada(x, z) || sobViaduto(z) ? -9 : noAsfalto(x, z) ? .035 : .135),
-  // dentro dos vestíbulos (a portinha e o da estação) não chove
-  (x, z) => (x > 8.2 && x < 10.4 && Math.abs(z - DZ) < 1.2) || (x > 5.8 && x < 8.2 && z > 10.4 && z < 12.6));
+  // dentro dos vestíbulos (a portinha e o da estação) não chove, nem fora desta rua (a avenida tem a dela)
+  (x, z) => !(Math.abs(x) <= 8.2 && z > -41 && z < 33) || (x > 8.2 && x < 10.4 && Math.abs(z - DZ) < 1.2) || (x > 5.8 && x < 8.2 && z > 10.4 && z < 12.6));
 
   // subindo do metrô ou saindo da portinha: vindo pelo vestíbulo de cada um
   const spawn = vestMetro.spawn || vestPorta.spawn || { x: 7, z: 9.2, yaw: 0 };

@@ -26,7 +26,6 @@ export function usarMundo(w) {
   mundo = w;
   scene = w.scene;
   walks = w.walks; blocks = w.blocks; anims = w.anims; inters = w.inters; triggers = w.triggers;
-  luzes.ceu = w.luzes.ceu; luzes.sol = w.luzes.sol;
 }
 export function descartarMundo(w) { disposeScene(w.scene); }
 export function saida(s) { mundo.saidas.push(s); return s; }
@@ -70,15 +69,10 @@ export function freshScene(fogNear = 9, fogFar = 34) {
   return sc;
 }
 export { drawIdle };
-// as duas luzes de toda cena (o anoitecer do escritório as baixa aos poucos)
+// o céu e o sol do mundo (um só para todos os lugares, ver mundo.js); o anoitecer do escritório os baixa
 export const luzes = { ceu: null, sol: null };
-// troca sem fade (elevador, vestíbulo, vagão): a peça-ponte tem giros diferentes nas duas cenas e a
-// luz direcional bateria em outras paredes dela (a cabine "acenderia" de um lado). Gira o sol da cena
-// nova pela diferença: dentro da peça a luz fica exatamente como estava
-export function alinharSol(delta) {
-  const p = luzes.sol.position, c = Math.cos(delta), s = Math.sin(delta);
-  p.set(p.x * c + p.z * s, p.y, -p.x * s + p.z * c);
-}
+// (era para a peça-ponte trocar de cena sem a luz pular; num mundo só o sol já é o mesmo dos dois lados)
+export function alinharSol() {}
 // toda cena com o mesmo número de luzes pontuais (as que faltam, apagadas): o three.js reaproveita
 // os shaders já compilados e a troca de cena não engasga compilando tudo de novo
 export const N_LUZES = 11;
@@ -275,6 +269,51 @@ export function quadro(file, w, h, x, y, z, roty) { // quadro emoldurado com ima
   m.position.z = .035;
   g.add(m);
   return g;
+}
+
+/* ===================== casca: o prédio visto de fora ===================== */
+// Caixa oca em que cada face é um plano virado para fora: de dentro ela não aparece, então o
+// interior de um lugar que fica lá dentro (a recepção, o quarto no alto da torre) continua visível,
+// e de fora ela esconde tudo. Os vãos de porta são furos nas faces.
+// c = { x0, x1, y0, y1, z0, z1 } · faces: quais existem ('x0','x1','z0','z1','y0','y1')
+// furos: { face: [[a0, a1, b0, b1], ...] } (a = ao longo da face: z nas faces x, x nas faces z; b = y)
+export function casca(c, cor, { faces = ['x0', 'x1', 'z0', 'z1', 'y1'], furos = {}, parent } = {}) {
+  const pos = [], nor = [];
+  const quad = (P, n) => {                          // P: 4 cantos em volta; vira o triângulo para fora
+    const ux = P[1][0] - P[0][0], uy = P[1][1] - P[0][1], uz = P[1][2] - P[0][2];
+    const vx = P[2][0] - P[0][0], vy = P[2][1] - P[0][1], vz = P[2][2] - P[0][2];
+    const cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx;
+    const ord = cx * n[0] + cy * n[1] + cz * n[2] >= 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2];
+    for (const i of ord) { pos.push(...P[i]); nor.push(...n); }
+  };
+  const faceDe = {
+    x0: { n: [-1, 0, 0], A: [c.z0, c.z1], B: [c.y0, c.y1], P: (a, b) => [c.x0, b, a] },
+    x1: { n: [1, 0, 0], A: [c.z0, c.z1], B: [c.y0, c.y1], P: (a, b) => [c.x1, b, a] },
+    z0: { n: [0, 0, -1], A: [c.x0, c.x1], B: [c.y0, c.y1], P: (a, b) => [a, b, c.z0] },
+    z1: { n: [0, 0, 1], A: [c.x0, c.x1], B: [c.y0, c.y1], P: (a, b) => [a, b, c.z1] },
+    y0: { n: [0, -1, 0], A: [c.x0, c.x1], B: [c.z0, c.z1], P: (a, b) => [a, c.y0, b] },
+    y1: { n: [0, 1, 0], A: [c.x0, c.x1], B: [c.z0, c.z1], P: (a, b) => [a, c.y1, b] },
+  };
+  for (const nome of faces) {
+    const f = faceDe[nome], hs = furos[nome] || [];
+    // a face cortada numa grade pelas bordas dos furos; fica cada célula que não cai num furo
+    const corte = (lim, i0, i1) => [...new Set([lim[0], lim[1], ...hs.flatMap(h => [h[i0], h[i1]])
+      .map(v => Math.min(lim[1], Math.max(lim[0], v)))])].sort((p, q) => p - q);
+    const as = corte(f.A, 0, 1), bs = corte(f.B, 2, 3);
+    for (let i = 0; i < as.length - 1; i++) for (let j = 0; j < bs.length - 1; j++) {
+      const a0 = as[i], a1 = as[i + 1], b0 = bs[j], b1 = bs[j + 1];
+      if (a1 - a0 < 1e-4 || b1 - b0 < 1e-4) continue;
+      const am = (a0 + a1) / 2, bm = (b0 + b1) / 2;
+      if (hs.some(h => am > h[0] && am < h[1] && bm > h[2] && bm < h[3])) continue;
+      quad([f.P(a0, b0), f.P(a1, b0), f.P(a1, b1), f.P(a0, b1)], f.n);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color: cor }));
+  (parent || scene).add(m);
+  return m;
 }
 
 /* ===================== a cidade lá fora ===================== */
