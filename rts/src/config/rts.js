@@ -121,7 +121,7 @@ export const UNIT_TYPES = Object.freeze({
   },
   rifleman: {
     // (o bacamarte carrega pela boca: o ciclo é mais longo e o tiro, mais forte)
-    label: 'Atirador', plural: 'Atiradores', icon: 'rifle', hp: 75, damage: 16, weapon: 'blunderbuss', reach: 78,
+    label: 'Atirador', plural: 'Atiradores', icon: 'blunderbuss', hp: 75, damage: 16, weapon: 'blunderbuss', reach: 78,
     interval: 3, swing: .7, speed: 1.1, size: 10.2, sight: 110, vsBuilding: .5, look: 'jaguncoRifle',
     ranged: true, accuracy: .7, cost: { food: 70, wood: 50 }, time: 14, from: 'camp'
   },
@@ -157,35 +157,35 @@ export const UNIT_TYPES = Object.freeze({
     role: 'O negociante: tudo o que entra rende mais, e dá para trocar comida por madeira'
   },
   macambira: {
-    label: 'Filho de Macambira', plural: 'Filho de Macambira', icon: 'pike', hp: 160, damage: 14, weapon: 'club', reach: 13,
+    label: 'Filho de Macambira', plural: 'Filho de Macambira', icon: 'club', hp: 160, damage: 14, weapon: 'club', reach: 13,
     interval: 1.1, swing: .9, speed: 1.35, size: 10, sight: 120, vsBuilding: 1, look: 'macambira', hero: true,
     antiCannon: 5,
     role: '"Pai! quero escangalhar a matadeira!" — arrebenta canhão com a alavanca'
   },
   private: {
-    label: 'Soldado de linha', plural: 'Soldados de linha', icon: 'rifle', hp: 45, damage: 7, weapon: 'rifle', reach: 70,
+    label: 'Soldado de linha', plural: 'Soldados de linha', icon: 'soldier', hp: 45, damage: 7, weapon: 'rifle', reach: 70,
     interval: 2.4, swing: .7, speed: .6, size: 10, sight: 90, vsBuilding: .5, look: 'soldier',
     ranged: true, accuracy: .6, bounty: { food: 6, wood: 4 }, rifleDrop: .3
   },
   bayonet: {
-    label: 'Soldado de baioneta', plural: 'Soldados de baioneta', icon: 'pike', hp: 55, damage: 10, weapon: 'bayonet', reach: 24,
+    label: 'Soldado de baioneta', plural: 'Soldados de baioneta', icon: 'bayonet', hp: 55, damage: 10, weapon: 'bayonet', reach: 24,
     interval: 1.35, swing: .85, speed: .78, size: 10, sight: 90, vsBuilding: .8, look: 'soldier',
     bounty: { food: 8, wood: 6 }
   },
   gunner: {
-    label: 'Canhão Krupp', plural: 'Canhões Krupp', icon: 'scatter', hp: 120, damage: 34, weapon: null, reach: 130,
+    label: 'Canhão Krupp', plural: 'Canhões Krupp', icon: 'cannon', hp: 120, damage: 34, weapon: null, reach: 130,
     interval: 5, swing: .8, speed: .4, size: 10.4, sight: 140, vsBuilding: 2, look: 'soldier', cannon: true,
     ranged: true, siege: true, accuracy: .8, bounty: { food: 18, wood: 18 }
   },
   officer: {
-    label: 'Oficial', plural: 'Oficiais', icon: 'fighters', hp: 420, damage: 22, weapon: 'saber', reach: 14,
+    label: 'Oficial', plural: 'Oficiais', icon: 'saber', hp: 420, damage: 22, weapon: 'saber', reach: 14,
     interval: 1.3, swing: .9, speed: .55, size: 11, sight: 100, vsBuilding: 1.5, look: 'officer',
     bounty: { food: 60, wood: 60, rifles: 4 }, commander: true
   },
   // O Whitworth 32 (Euclides grafa "Withworth"), a "matadeira": canhão de sítio que
   // bombardeava as igrejas.
   matadeira: {
-    label: 'Matadeira (Whitworth 32)', plural: 'Matadeiras', icon: 'scatter', hp: 900, damage: 90, weapon: null,
+    label: 'Matadeira (Whitworth 32)', plural: 'Matadeiras', icon: 'siege', hp: 900, damage: 90, weapon: null,
     reach: 240, interval: 9, swing: .8, speed: .22, size: 11, sight: 250, vsBuilding: 2, look: 'matadeira',
     cannon: true, ranged: true, siege: true, churchHunter: true, accuracy: .9,
     bounty: { food: 100, wood: 100, rifles: 10 }
