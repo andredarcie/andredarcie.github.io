@@ -7,8 +7,8 @@
   <title>Canudos — a defesa de Belo Monte</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css?v=34" />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css?v=35" />
   <!-- Cache-busting centralizado: cada módulo local aponta para a URL com ?v=N. Os .js
        importam SEM query string. A cada alteração em qualquer .js, trocar TODOS os
        ?v=N daqui pelo número novo e atualizar o BUILD N para o mesmo número.
@@ -16,123 +16,152 @@
   <script type="importmap">
   { "imports": {
     "three": "./lib/three.module.min.js",
-    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=34",
-    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=34",
-    "./src/app/Viewport.js": "./src/app/Viewport.js?v=34",
-    "./src/audio/AudioManager.js": "./src/audio/AudioManager.js?v=34",
-    "./src/audio/Dsp.js": "./src/audio/Dsp.js?v=34",
-    "./src/audio/SoundRecipes.js": "./src/audio/SoundRecipes.js?v=34",
-    "./src/config/combat.js": "./src/config/combat.js?v=34",
-    "./src/config/death.js": "./src/config/death.js?v=34",
-    "./src/config/environment.js": "./src/config/environment.js?v=34",
-    "./src/config/flame.js": "./src/config/flame.js?v=34",
-    "./src/config/organisms.js": "./src/config/organisms.js?v=34",
-    "./src/config/reproduction.js": "./src/config/reproduction.js?v=34",
-    "./src/config/rts.js": "./src/config/rts.js?v=34",
-    "./src/config/sertoes.js": "./src/config/sertoes.js?v=34",
-    "./src/config/settlement.js": "./src/config/settlement.js?v=34",
-    "./src/config/social.js": "./src/config/social.js?v=34",
-    "./src/config/ui.js": "./src/config/ui.js?v=34",
-    "./src/config/world.js": "./src/config/world.js?v=34",
-    "./src/core/EventBus.js": "./src/core/EventBus.js?v=34",
-    "./src/core/geometry.js": "./src/core/geometry.js?v=34",
-    "./src/core/math.js": "./src/core/math.js?v=34",
-    "./src/entities/Building.js": "./src/entities/Building.js?v=34",
-    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=34",
-    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=34",
-    "./src/entities/Log.js": "./src/entities/Log.js?v=34",
-    "./src/entities/Pond.js": "./src/entities/Pond.js?v=34",
-    "./src/entities/Tree.js": "./src/entities/Tree.js?v=34",
-    "./src/entities/Unit.js": "./src/entities/Unit.js?v=34",
-    "./src/input/CameraController.js": "./src/input/CameraController.js?v=34",
-    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=34",
-    "./src/main.js": "./src/main.js?v=34",
-    "./src/dev/ModelViewer.js": "./src/dev/ModelViewer.js?v=34",
-    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=34",
-    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=34",
-    "./src/overlay/layers/EffectsLayer.js": "./src/overlay/layers/EffectsLayer.js?v=34",
-    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=34",
-    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=34",
-    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=34",
-    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=34",
-    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=34",
-    "./src/overlay/layers/RoadWarningLayer.js": "./src/overlay/layers/RoadWarningLayer.js?v=34",
-    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=34",
-    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=34",
-    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=34",
-    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=34",
-    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=34",
-    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=34",
-    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=34",
-    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=34",
-    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=34",
-    "./src/render/WeaponModels.js": "./src/render/WeaponModels.js?v=34",
-    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=34",
-    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=34",
-    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=34",
-    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=34",
-    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=34",
-    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=34",
-    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=34",
-    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=34",
-    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=34",
-    "./src/render/Palette.js": "./src/render/Palette.js?v=34",
-    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=34",
-    "./src/render/PondShape.js": "./src/render/PondShape.js?v=34",
-    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=34",
-    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=34",
-    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=34",
-    "./src/render/SertaoBuildingModel.js": "./src/render/SertaoBuildingModel.js?v=34",
-    "./src/render/Shading.js": "./src/render/Shading.js?v=34",
-    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=34",
-    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=34",
-    "./src/render/TowerRenderer.js": "./src/render/TowerRenderer.js?v=34",
-    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=34",
-    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=34",
-    "./src/render/WorldView.js": "./src/render/WorldView.js?v=34",
-    "./src/rts/Commands.js": "./src/rts/Commands.js?v=34",
-    "./src/rts/Selection.js": "./src/rts/Selection.js?v=34",
-    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=34",
-    "./src/rts/TowerSystem.js": "./src/rts/TowerSystem.js?v=34",
-    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=34",
-    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=34",
-    "./src/rts/Vespers.js": "./src/rts/Vespers.js?v=34",
-    "./src/rts/WaveDirector.js": "./src/rts/WaveDirector.js?v=34",
-    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=34",
-    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=34",
-    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=34",
-    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=34",
-    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=34",
-    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=34",
-    "./src/ui/Icons.js": "./src/ui/Icons.js?v=34",
-    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=34",
-    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=34",
-    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=34",
-    "./src/ui/Theme.js": "./src/ui/Theme.js?v=34",
-    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=34",
-    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=34",
-    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=34",
-    "./src/world/Hills.js": "./src/world/Hills.js?v=34",
-    "./src/world/GrassField.js": "./src/world/GrassField.js?v=34",
-    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=34",
-    "./src/world/Roads.js": "./src/world/Roads.js?v=34",
-    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=34",
-    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=34",
-    "./src/world/Weather.js": "./src/world/Weather.js?v=34",
-    "./src/world/WorldState.js": "./src/world/WorldState.js?v=34"
+    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=35",
+    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=35",
+    "./src/app/Viewport.js": "./src/app/Viewport.js?v=35",
+    "./src/audio/AudioManager.js": "./src/audio/AudioManager.js?v=35",
+    "./src/audio/Dsp.js": "./src/audio/Dsp.js?v=35",
+    "./src/audio/SoundRecipes.js": "./src/audio/SoundRecipes.js?v=35",
+    "./src/config/combat.js": "./src/config/combat.js?v=35",
+    "./src/config/death.js": "./src/config/death.js?v=35",
+    "./src/config/environment.js": "./src/config/environment.js?v=35",
+    "./src/config/flame.js": "./src/config/flame.js?v=35",
+    "./src/config/organisms.js": "./src/config/organisms.js?v=35",
+    "./src/config/reproduction.js": "./src/config/reproduction.js?v=35",
+    "./src/config/rts.js": "./src/config/rts.js?v=35",
+    "./src/config/sertoes.js": "./src/config/sertoes.js?v=35",
+    "./src/config/settlement.js": "./src/config/settlement.js?v=35",
+    "./src/config/social.js": "./src/config/social.js?v=35",
+    "./src/config/ui.js": "./src/config/ui.js?v=35",
+    "./src/config/world.js": "./src/config/world.js?v=35",
+    "./src/core/EventBus.js": "./src/core/EventBus.js?v=35",
+    "./src/core/geometry.js": "./src/core/geometry.js?v=35",
+    "./src/core/math.js": "./src/core/math.js?v=35",
+    "./src/entities/Building.js": "./src/entities/Building.js?v=35",
+    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=35",
+    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=35",
+    "./src/entities/Log.js": "./src/entities/Log.js?v=35",
+    "./src/entities/Pond.js": "./src/entities/Pond.js?v=35",
+    "./src/entities/Tree.js": "./src/entities/Tree.js?v=35",
+    "./src/entities/Unit.js": "./src/entities/Unit.js?v=35",
+    "./src/input/CameraController.js": "./src/input/CameraController.js?v=35",
+    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=35",
+    "./src/main.js": "./src/main.js?v=35",
+    "./src/dev/ModelViewer.js": "./src/dev/ModelViewer.js?v=35",
+    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=35",
+    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=35",
+    "./src/overlay/layers/EffectsLayer.js": "./src/overlay/layers/EffectsLayer.js?v=35",
+    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=35",
+    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=35",
+    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=35",
+    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=35",
+    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=35",
+    "./src/overlay/layers/RoadWarningLayer.js": "./src/overlay/layers/RoadWarningLayer.js?v=35",
+    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=35",
+    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=35",
+    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=35",
+    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=35",
+    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=35",
+    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=35",
+    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=35",
+    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=35",
+    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=35",
+    "./src/render/WeaponModels.js": "./src/render/WeaponModels.js?v=35",
+    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=35",
+    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=35",
+    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=35",
+    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=35",
+    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=35",
+    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=35",
+    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=35",
+    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=35",
+    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=35",
+    "./src/render/Palette.js": "./src/render/Palette.js?v=35",
+    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=35",
+    "./src/render/PondShape.js": "./src/render/PondShape.js?v=35",
+    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=35",
+    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=35",
+    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=35",
+    "./src/render/SertaoBuildingModel.js": "./src/render/SertaoBuildingModel.js?v=35",
+    "./src/render/Shading.js": "./src/render/Shading.js?v=35",
+    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=35",
+    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=35",
+    "./src/render/TowerRenderer.js": "./src/render/TowerRenderer.js?v=35",
+    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=35",
+    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=35",
+    "./src/render/WorldView.js": "./src/render/WorldView.js?v=35",
+    "./src/rts/Commands.js": "./src/rts/Commands.js?v=35",
+    "./src/rts/Selection.js": "./src/rts/Selection.js?v=35",
+    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=35",
+    "./src/rts/TowerSystem.js": "./src/rts/TowerSystem.js?v=35",
+    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=35",
+    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=35",
+    "./src/rts/Vespers.js": "./src/rts/Vespers.js?v=35",
+    "./src/rts/WaveDirector.js": "./src/rts/WaveDirector.js?v=35",
+    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=35",
+    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=35",
+    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=35",
+    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=35",
+    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=35",
+    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=35",
+    "./src/ui/Icons.js": "./src/ui/Icons.js?v=35",
+    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=35",
+    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=35",
+    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=35",
+    "./src/ui/Theme.js": "./src/ui/Theme.js?v=35",
+    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=35",
+    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=35",
+    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=35",
+    "./src/world/Hills.js": "./src/world/Hills.js?v=35",
+    "./src/world/GrassField.js": "./src/world/GrassField.js?v=35",
+    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=35",
+    "./src/world/Roads.js": "./src/world/Roads.js?v=35",
+    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=35",
+    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=35",
+    "./src/world/Weather.js": "./src/world/Weather.js?v=35",
+    "./src/world/WorldState.js": "./src/world/WorldState.js?v=35"
   } }
   </script>
   <style>
+    /* Hallmark · redesign (HUD) · genre: editorial · theme: custom
+     * vibe: "couro curtido, sol a pino, despacho telegráfico de 1897"
+     * HUD: couro escuro oklch(22% 0.025 55) · acento: sol oklch(80% 0.14 80) · perigo: urucum oklch(56% 0.17 30)
+     * telas de menu: papel de despacho oklch(93% 0.025 85) com tinta oklch(24% 0.03 55)
+     * fontes: Big Shoulders Display (tipo de madeira dos cartazes) + IBM Plex Sans + Newsreader (só nas citações)
+     * eixos: paper-band dark (HUD) / light (menus) · display-condensed · accent warm
+     * pre-emit critique: P5 H4 E4 S5 R5 V4
+     */
     :root {
-      --hud-bg: rgb(38 27 19 / .86);
-      --hud-bg-strong: rgb(28 20 14 / .95);
-      --hud-line: rgb(255 255 255 / .14);
-      --hud-ink: #f4f1e6;
-      --hud-muted: #b8b4a4;
-      --hud-gold: #ffd36b;
-      --hud-blue: #5fb4ff;
-      --hud-red: #ff6a55;
-      --hud-radius: 12px;
+      /* couro da HUD (sobre o mapa: opaco, para ler em qualquer chão) */
+      --hud-leather: oklch(22% 0.025 55);
+      --hud-leather-2: oklch(28% 0.03 56);
+      --hud-leather-3: oklch(34% 0.036 60);
+      --hud-seam: oklch(42% 0.04 65);
+      --hud-shadow: oklch(14% 0.02 50);
+      --hud-ink: oklch(94% 0.018 85);
+      --hud-dust: oklch(76% 0.03 75);
+      --hud-sun: oklch(80% 0.14 80);
+      --hud-sun-ink: oklch(22% 0.04 60);
+      --hud-sun-wash: oklch(80% 0.14 80 / .16);
+      --hud-blood: oklch(56% 0.17 30);
+      --hud-blood-deep: oklch(30% 0.09 30);
+      --hud-blood-light: oklch(86% 0.06 35);
+      --hud-life: oklch(70% 0.15 140);
+      --hud-select: oklch(70% 0.12 240);
+      --hud-select-wash: oklch(70% 0.12 240 / .14);
+      /* papel das telas de menu */
+      --paper: oklch(93% 0.025 85);
+      --paper-2: oklch(88% 0.032 82);
+      --paper-rule: oklch(62% 0.04 70);
+      --paper-ink: oklch(24% 0.03 55);
+      --paper-muted: oklch(40% 0.03 60);
+      --paper-blood: oklch(45% 0.16 30);
+      --backdrop: oklch(16% 0.02 50 / .62);
+      --arena: oklch(93% 0.012 140);
+      --vignette: oklch(18% 0.02 250 / .25);
+      --font-quote: "Newsreader", "Iowan Old Style", serif;
+      --hud-r: 4px;
+      --hud-r-panel: 6px;
       /* Altura aproximada do painel de comando, só para o aviso flutuar acima dele. */
       --panel-height: 66px;
       --top: max(6px, env(safe-area-inset-top));
@@ -140,23 +169,32 @@
       --gutter: max(8px, env(safe-area-inset-left));
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
+    html, body { margin: 0; height: 100%; overflow: clip; overscroll-behavior: none; }
     body {
-      background: #2a1f17; color: var(--hud-ink); font-family: var(--font-body); font-size: 14px;
+      background: var(--hud-leather); color: var(--hud-ink); font-family: var(--font-body); font-size: 14px;
       -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
       -webkit-tap-highlight-color: transparent;
     }
     button { font-family: inherit; color: inherit; }
-    .arena-wrap { position: fixed; inset: 0; background: #e9efe6; }
+    button:focus-visible { outline: 2px solid var(--hud-sun); outline-offset: 2px; }
+    .arena-wrap { position: fixed; inset: 0; background: var(--arena); }
     canvas { display: block; }
     #arena { width: 100%; height: 100dvh; touch-action: none; cursor: pointer; }
     #arena-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-    .arena-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 60%, rgb(12 16 24 / .25) 100%); }
-    .webgl-missing { position: fixed; inset: auto 16px 16px 16px; z-index: 50; margin: 0; padding: 12px; border-radius: var(--hud-radius); background: var(--hud-bg-strong); }
+    .arena-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 60%, var(--vignette) 100%); }
+    .webgl-missing { position: fixed; inset: auto 16px 16px 16px; z-index: 50; margin: 0; padding: 12px; border: 1px solid var(--hud-seam); border-radius: var(--hud-r-panel); background: var(--hud-leather); }
+
+    /* ---- Peças de couro: a base de tudo o que flutua sobre o mapa ----
+       Superfície chapada, costura fina (hairline) e um vinco escuro embaixo, como
+       couro dobrado — sem brilho, sem vidro. */
+    .res, .icon-button, .wave-status, .command-panel, .toast, #minimap {
+      border: 1px solid var(--hud-seam); background: var(--hud-leather);
+      box-shadow: 0 2px 0 var(--hud-shadow);
+    }
 
     /* ---- Barra de cima: recursos, população e pausa ----
-       Sem faixa de fundo: só as pílulas, flutuando sobre o mapa. A barra em si é
-       transparente aos toques; quem recebe o toque é cada pílula. */
+       Sem faixa de fundo: só as etiquetas, flutuando sobre o mapa. A barra em si é
+       transparente aos toques; quem recebe o toque é cada etiqueta. */
     .topbar {
       position: fixed; z-index: 10; top: 0; left: 0; right: 0;
       display: flex; align-items: center; gap: 4px; pointer-events: none;
@@ -164,22 +202,27 @@
     }
     .topbar > * { pointer-events: auto; }
     .res {
-      display: inline-flex; align-items: center; gap: 4px; min-width: 0; height: var(--chip); padding: 0 8px;
-      border: 1px solid var(--hud-line); border-radius: 999px; background: var(--hud-bg-strong);
-      font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 5px; min-width: 0; height: var(--chip); padding: 0 9px 0 7px;
+      border-radius: var(--hud-r); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
     }
     .res b { font-size: 13px; }
-    .res[data-full="true"] { background: rgb(110 28 20 / .95); color: #ffd5cf; }
-    .icon-button { flex: none; width: var(--chip); height: var(--chip); display: grid; place-items: center; padding: 0; border: 1px solid var(--hud-line); border-radius: 9px; background: var(--hud-bg-strong); font-size: 15px; font-weight: 800; cursor: pointer; }
-    .icon-button:active { transform: scale(.94); }
+    .res[data-full="true"] { border-color: var(--hud-blood); background: var(--hud-blood-deep); color: var(--hud-blood-light); }
+    .res[data-full="true"] .res-icon { color: var(--hud-blood-light); }
+    .icon-button {
+      flex: none; width: var(--chip); height: var(--chip); display: grid; place-items: center; padding: 0;
+      border-radius: var(--hud-r); font-size: 15px; font-weight: 800; cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+    }
+    .icon-button:active { transform: translateY(1px); box-shadow: none; }
+    .icon-button:disabled { opacity: .45; cursor: default; }
+    .icon-button[aria-checked="false"] { color: var(--hud-dust); }
     #sound-toggle { margin-left: auto; }
     @media (max-width: 420px) { .res { padding: 0 6px; gap: 3px; } .res b { font-size: 12px; } }
 
     /* ---- Mapinha e zoom ---- */
     #minimap {
       position: fixed; z-index: 9; left: var(--gutter); top: calc(var(--top) + var(--chip) + 6px);
-      width: 120px; height: 70px; border: 1px solid var(--hud-line); border-radius: 9px;
-      background: rgb(28 20 14 / .72); touch-action: none; cursor: crosshair;
+      width: 120px; height: 70px; border-radius: var(--hud-r-panel); touch-action: none; cursor: crosshair;
     }
     .zoom-controls { position: fixed; z-index: 9; right: max(8px, env(safe-area-inset-right)); top: calc(var(--top) + var(--chip) + 6px); display: grid; gap: 4px; }
     /* No toque a pinça já aproxima e afasta: fica só o "mapa inteiro". */
@@ -191,38 +234,46 @@
        mapinha e o zoom. Celular: ao lado do mapinha. */
     .wave-status {
       position: fixed; z-index: 9; left: 50%; top: var(--top); transform: translateX(-50%);
-      display: flex; align-items: center; gap: 6px; height: var(--chip); max-width: calc(100% - 640px); min-width: 0;
-      padding: 0 3px 0 10px; border: 1px solid var(--hud-line); border-radius: 999px;
-      background: var(--hud-bg-strong); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px; height: var(--chip); max-width: calc(100% - 640px); min-width: 0;
+      padding: 0 3px 0 10px; border-radius: var(--hud-r);
+      font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
     }
     .wave-status[hidden] { display: none; }
-    .wave-status[data-phase="active"] { border-color: var(--hud-red); color: #ffd5cf; background: rgb(70 16 12 / .92); padding-right: 10px; }
+    .wave-status[data-phase="active"] { border-color: var(--hud-blood); color: var(--hud-blood-light); background: var(--hud-blood-deep); padding-right: 10px; }
     #wave-label { overflow: hidden; text-overflow: ellipsis; }
-    .wave-call { flex: none; min-height: 24px; padding: 0 9px; border: 0; border-radius: 999px; background: var(--hud-gold); color: #1b1b12; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .wave-call {
+      flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 9px;
+      border: 0; border-radius: 3px; background: var(--hud-sun); color: var(--hud-sun-ink);
+      font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap;
+      transition: transform var(--dur-micro) var(--ease-out);
+    }
     .wave-call[hidden] { display: none; }
-    .wave-call:active { transform: scale(.95); }
+    .wave-call:active { transform: translateY(1px); }
+    .wave-call .ic { width: 14px; height: 14px; }
     @media (max-width: 899px) { .wave-status { top: calc(var(--top) + var(--chip) + 6px); max-width: calc(100% - 2 * (var(--gutter) + 128px)); } }
     @media (max-width: 600px) {
       .wave-status { left: calc(var(--gutter) + 106px); transform: none; max-width: calc(100% - 2 * var(--gutter) - 106px - var(--chip) - 8px); font-size: 11px; }
     }
+    /* O letreiro é um cartaz de tipo de madeira: letra condensada, sombra de
+       impressão deslocada (sem halo), entra subindo e sai apagando, sem quique. */
     .wave-banner {
       position: fixed; z-index: 12; left: 50%; top: 34%; transform: translate(-50%, -50%);
-      display: grid; justify-items: center; gap: 2px; pointer-events: none; text-align: center;
-      text-shadow: 0 3px 0 rgb(0 0 0 / .45), 0 0 24px rgb(0 0 0 / .5);
-      animation: banner-in 2.8s ease-out both;
+      display: grid; justify-items: center; gap: 4px; pointer-events: none; text-align: center;
+      text-shadow: 3px 3px 0 var(--hud-shadow);
+      animation: banner-in 2.8s var(--ease-out) both;
     }
     .wave-banner[hidden] { display: none; }
-    .wave-banner-kicker { font-size: 13px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--hud-gold); }
-    .wave-banner strong { font-family: var(--font-display); font-size: clamp(56px, 16vw, 104px); font-weight: 900; line-height: .9; text-transform: uppercase; letter-spacing: .02em; white-space: nowrap; }
-    .wave-banner[data-tone="danger"] strong { color: #ff7a62; }
-    .wave-banner[data-tone="calm"] strong { color: var(--hud-gold); font-size: clamp(40px, 11vw, 72px); }
-    .wave-banner span:last-child { font-size: 15px; font-weight: 700; color: var(--hud-ink); }
+    .wave-banner-kicker { font-size: 15px; font-weight: 700; color: var(--hud-ink); }
+    .wave-banner strong { font-family: var(--font-display); font-size: clamp(56px, 16vw, 104px); font-weight: 900; line-height: .9; text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; color: var(--hud-ink); }
+    .wave-banner[data-tone="danger"] strong { color: var(--hud-blood-light); }
+    .wave-banner[data-tone="calm"] strong { color: var(--hud-sun); font-size: clamp(40px, 11vw, 72px); }
+    .wave-banner span:last-child { font-size: 15px; font-weight: 600; color: var(--hud-ink); }
+    #wave-banner-sub .ic { width: 16px; height: 16px; }
     @keyframes banner-in {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
-      10% { opacity: 1; transform: translate(-50%, -50%) scale(.96); }
-      16% { transform: translate(-50%, -50%) scale(1); }
-      82% { opacity: 1; }
-      100% { opacity: 0; transform: translate(-50%, -58%); }
+      0% { opacity: 0; transform: translate(-50%, calc(-50% + 14px)); }
+      9% { opacity: 1; transform: translate(-50%, -50%); }
+      82% { opacity: 1; transform: translate(-50%, -50%); }
+      100% { opacity: 0; transform: translate(-50%, calc(-50% - 10px)); }
     }
 
     /* ---- Painel de comando ----
@@ -233,106 +284,146 @@
       position: fixed; z-index: 10; left: 50%; bottom: max(6px, env(safe-area-inset-bottom)); transform: translateX(-50%);
       width: max-content; max-width: calc(100% - 2 * var(--gutter));
       display: grid; grid-template-columns: minmax(110px, 190px) minmax(0, auto); align-items: center; gap: 4px 10px;
-      padding: 6px; border: 1px solid var(--hud-line); border-radius: 14px; background: var(--hud-bg-strong);
+      padding: 6px; border-radius: var(--hud-r-panel);
     }
-    .sel-info { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 6px; padding-left: 4px; min-width: 0; }
-    .sel-title { font-family: var(--font-display); font-size: 15px; font-weight: 900; line-height: 1.05; letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .sel-detail { grid-column: 1 / -1; color: var(--hud-muted); font-size: 11px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sel-info { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 3px 6px; padding: 0 6px 0 4px; min-width: 0; border-right: 1px solid var(--hud-seam); }
+    .sel-title { font-family: var(--font-display); font-size: 17px; font-weight: 800; line-height: 1; letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sel-detail { grid-column: 1 / -1; color: var(--hud-dust); font-size: 11px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .sel-side { grid-row: 1; grid-column: 2; display: flex; align-items: center; gap: 4px; }
-    .sel-life { width: 56px; height: 6px; border-radius: 4px; background: rgb(0 0 0 / .5); overflow: hidden; }
-    .sel-life span { display: block; height: 100%; background: #6bd46b; transform-origin: left; }
-    .sel-life span[data-low="true"] { background: #ff4b3a; }
+    .sel-life { width: 56px; height: 6px; border: 1px solid var(--hud-seam); border-radius: 1px; background: var(--hud-shadow); overflow: hidden; }
+    .sel-life span { display: block; height: 100%; background: var(--hud-life); transform-origin: left; }
+    .sel-life span[data-low="true"] { background: var(--hud-blood); }
     .sel-queue { display: flex; gap: 1px; font-size: 12px; }
-    .actions { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; touch-action: pan-x; }
+    .sel-queue .ic { width: 14px; height: 14px; color: var(--hud-sun); }
+    .actions { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; touch-action: pan-x; }
     .actions::-webkit-scrollbar { display: none; }
     .action {
-      flex: 0 0 auto; min-width: 62px; max-width: 96px; min-height: 50px; display: grid; justify-items: center; align-content: center; gap: 1px;
-      padding: 3px 2px; border: 1px solid rgb(255 255 255 / .2); border-radius: 10px;
-      background: linear-gradient(to bottom, rgb(255 255 255 / .14), rgb(255 255 255 / .05));
-      cursor: pointer; transition: transform 80ms ease-out;
+      flex: 0 0 auto; min-width: 62px; max-width: 96px; min-height: 50px; display: grid; justify-items: center; align-content: center; gap: 2px;
+      padding: 4px 3px 3px; border: 1px solid var(--hud-seam); border-radius: var(--hud-r);
+      background: var(--hud-leather-2); box-shadow: inset 0 -2px 0 var(--hud-shadow);
+      cursor: pointer; transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
     }
-    .action:active { transform: scale(.94); background: rgb(255 211 107 / .25); }
-    .action[aria-disabled="true"] { opacity: .42; }
-    .action-icon { display: grid; place-items: center; height: 20px; color: var(--hud-gold); }
-    .ic { width: 1.25em; height: 1.25em; flex: none; vertical-align: -.25em; }
-    .action-icon .ic { width: 20px; height: 20px; }
-    .res .res-icon { display: grid; color: var(--hud-gold); }
-    .res .res-icon .ic { width: 15px; height: 15px; }
-    .icon-button .ic { width: 16px; height: 16px; }
-    .cost { display: inline-flex; align-items: center; gap: 1px; }
-    .cost .ic { width: 12px; height: 12px; }
-    .sel-queue .ic { width: 14px; height: 14px; color: var(--hud-gold); }
-    .how li span:first-child .ic { width: 18px; height: 18px; color: var(--hud-gold); }
-    .wave-call { display: inline-flex; align-items: center; gap: 4px; }
-    .wave-call .ic { width: 14px; height: 14px; }
-    #wave-banner-sub .ic { width: 16px; height: 16px; }
+    .action:active { transform: translateY(1px); box-shadow: none; background: var(--hud-leather-3); }
+    .action[aria-disabled="true"] { opacity: .45; }
+    .action[aria-disabled="true"]:active { transform: none; background: var(--hud-leather-2); }
+    .action[aria-disabled="true"] .action-icon { color: var(--hud-dust); }
+    .action-icon { display: grid; place-items: center; height: 20px; color: var(--hud-sun); }
     .action-label { font-size: 11px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
-    .action-sub { font-size: 10px; color: var(--hud-muted); line-height: 1.1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .action-sub { font-size: 10px; color: var(--hud-dust); line-height: 1.1; white-space: nowrap; font-variant-numeric: tabular-nums; }
     .action-label, .action-sub { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-    @media (hover: hover) and (pointer: fine) { .action:hover { border-color: var(--hud-gold); } }
+    @media (hover: hover) and (pointer: fine) {
+      .action:hover, .icon-button:hover { background: var(--hud-leather-3); border-color: var(--hud-sun); }
+      .action[aria-disabled="true"]:hover { background: var(--hud-leather-2); border-color: var(--hud-seam); }
+    }
     @media (max-width: 600px) {
       :root { --panel-height: 82px; }
       .command-panel {
         left: 0; right: 0; bottom: 0; transform: none; width: auto; max-width: none;
-        grid-template-columns: minmax(0, 1fr); gap: 4px; border-width: 1px 0 0; border-radius: 14px 14px 0 0;
+        grid-template-columns: minmax(0, 1fr); gap: 4px; border-width: 1px 0 0; border-radius: 0; box-shadow: none;
         padding: 5px max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
       }
       /* Seleção numa linha só: nome, detalhe e vida lado a lado. */
-      .sel-info { grid-template-columns: minmax(0, max-content) minmax(0, 1fr) auto; gap: 8px; }
+      .sel-info { grid-template-columns: minmax(0, max-content) minmax(0, 1fr) auto; gap: 8px; border-right: 0; padding-right: 2px; }
       .sel-title { max-width: 55vw; }
       .sel-detail { grid-column: 2; grid-row: 1; }
       .sel-side { grid-column: 3; }
       .action { flex: 1 0 60px; max-width: 92px; }
     }
 
+    /* ---- Ícones ---- */
+    .ic { width: 1.25em; height: 1.25em; flex: none; vertical-align: -.25em; }
+    .action-icon .ic { width: 20px; height: 20px; }
+    .res .res-icon { display: grid; color: var(--hud-sun); }
+    .res .res-icon .ic { width: 15px; height: 15px; }
+    .icon-button .ic { width: 16px; height: 16px; }
+    .cost { display: inline-flex; align-items: center; gap: 1px; }
+    .cost .ic { width: 12px; height: 12px; }
+    @media (max-width: 600px) { .res .res-icon .ic { width: 14px; height: 14px; } }
+
     /* ---- Avisos e laço ---- */
     .toast {
       position: fixed; z-index: 11; left: 50%; bottom: calc(var(--panel-height) + env(safe-area-inset-bottom) + 8px);
       transform: translateX(-50%); max-width: calc(100% - 24px); margin: 0; padding: 6px 12px;
-      border-radius: 999px; background: var(--hud-bg-strong); border: 1px solid var(--hud-line);
+      border-radius: var(--hud-r);
       font-size: 13px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      animation: toast-in 180ms ease-out;
+      animation: toast-in var(--dur-short) var(--ease-out);
     }
-    .toast[data-tone="warn"] { border-color: var(--hud-gold); color: var(--hud-gold); }
-    .toast[data-tone="alert"] { border-color: var(--hud-red); background: rgb(90 20 14 / .95); cursor: pointer; }
+    .toast[data-tone="warn"] { border-color: var(--hud-sun); color: var(--hud-sun); }
+    .toast[data-tone="alert"] { border-color: var(--hud-blood); background: var(--hud-blood-deep); color: var(--hud-blood-light); cursor: pointer; }
     .toast[hidden] { display: none; }
     @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
-    .box-select { position: fixed; z-index: 8; pointer-events: none; border: 1.5px solid var(--hud-blue); background: rgb(95 180 255 / .14); border-radius: 3px; }
+    .box-select { position: fixed; z-index: 8; pointer-events: none; border: 1.5px solid var(--hud-select); background: var(--hud-select-wash); border-radius: 2px; }
     .box-select[hidden] { display: none; }
 
-    /* ---- Telas de menu ---- */
+    /* ---- Telas de menu: papel de despacho ----
+       Folha clara com tinta escura, título em tipo de madeira, filete duplo de
+       formulário telegráfico sob o título. A HUD é couro; o menu é papel. */
     dialog {
-      width: min(420px, calc(100% - 24px)); max-height: calc(100dvh - 24px); margin: auto; overflow: auto;
-      padding: 22px 20px 18px; border: 1px solid var(--hud-line); border-radius: 18px;
-      background: #2e2219; color: var(--hud-ink); box-shadow: 0 20px 60px rgb(0 0 0 / .55);
+      width: min(440px, calc(100% - 24px)); max-height: calc(100dvh - 24px); margin: auto; overflow: auto;
+      padding: 22px 22px 18px; border: 1px solid var(--paper-rule); border-radius: 2px;
+      background: var(--paper); color: var(--paper-ink); box-shadow: 6px 6px 0 var(--hud-shadow);
     }
-    dialog::backdrop { background: rgb(14 9 6 / .55); backdrop-filter: blur(2px); }
-    .kicker { margin: 0; color: var(--hud-gold); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-    dialog h1, dialog h2 { margin: 4px 0 10px; font-family: var(--font-display); font-size: 44px; font-weight: 900; line-height: .9; text-transform: uppercase; letter-spacing: .01em; }
-    dialog p { margin: 0 0 12px; color: var(--hud-muted); font-size: 14px; line-height: 1.45; }
-    .how { margin: 0 0 16px; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 13px; line-height: 1.35; }
+    dialog::backdrop { background: var(--backdrop); }
+    dialog button:focus-visible { outline-color: var(--paper-ink); }
+    /* a linha de data do despacho (lugar · ano), não uma "eyebrow" de seção */
+    .kicker { margin: 0; color: var(--paper-muted); font-family: var(--font-quote); font-style: italic; font-size: 15px; }
+    .kicker:empty { display: none; }
+    dialog h1, dialog h2 {
+      margin: 2px 0 14px; padding-bottom: 8px; font-family: var(--font-display); font-size: 52px; font-weight: 900; font-style: normal;
+      line-height: .88; text-transform: uppercase; letter-spacing: .005em; color: var(--paper-ink);
+      border-bottom: 3px double var(--paper-ink);
+    }
+    dialog p { margin: 0 0 12px; color: var(--paper-muted); font-size: 14px; line-height: 1.5; }
+    .how { margin: 0 0 18px; padding: 12px 0 0; list-style: none; display: grid; gap: 8px; font-size: 13px; line-height: 1.4; color: var(--paper-muted); border-top: 1px solid var(--paper-rule); }
     .how li { display: grid; grid-template-columns: 26px 1fr; gap: 6px; align-items: start; }
     .how li span:first-child { text-align: center; font-size: 16px; }
-    .how b { color: var(--hud-ink); }
-    .field-label { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--hud-muted); }
-    .levels, .speeds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
-    .levels button, .speeds button { min-height: 42px; border: 1px solid var(--hud-line); border-radius: 10px; background: rgb(255 255 255 / .06); font-weight: 700; cursor: pointer; }
-    .levels button[aria-pressed="true"], .speeds button[aria-pressed="true"] { border-color: var(--hud-gold); background: rgb(255 211 107 / .18); color: var(--hud-gold); }
-    .primary { width: 100%; min-height: 52px; border: 0; border-radius: 12px; background: var(--hud-gold); color: #1b1b12; font-family: var(--font-display); font-size: 24px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
-    .primary:active { transform: scale(.98); }
-    .secondary { width: 100%; min-height: 44px; margin-top: 8px; border: 1px solid var(--hud-line); border-radius: 12px; background: transparent; font-weight: 700; cursor: pointer; }
-    #result-dialog[data-victory="true"] h2 { color: var(--hud-gold); }
-    #result-dialog[data-victory="false"] h2 { color: var(--hud-red); }
-    /* ---- Trechos de Os Sertões: só nas telas de início e de fim ---- */
-    .epigraph { margin: 0 0 14px; padding: 0 0 0 12px; border-left: 3px solid var(--hud-gold); }
-    .epigraph blockquote { margin: 0 0 4px; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 15px; line-height: 1.4; color: var(--hud-ink); }
-    .epigraph figcaption { font-size: 11px; color: var(--hud-muted); letter-spacing: .02em; }
-    .epigraph-end blockquote { font-size: 14px; }
-    @media (max-width: 600px) { .res .res-icon .ic { width: 14px; height: 14px; } }
-    .start-record { margin: 0 0 12px; padding: 8px 12px; border-radius: 10px; background: rgb(255 211 107 / .12); color: var(--hud-gold) !important; font-weight: 700; font-size: 13px !important; }
-    .build-badge { display: block; margin-top: 12px; color: #7d7a6e; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-align: center; }
-    button:focus-visible { outline: 2px solid var(--hud-gold); outline-offset: 2px; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
+    .how li span:first-child .ic { width: 18px; height: 18px; color: var(--paper-ink); }
+    .how b { color: var(--paper-ink); }
+    .field-label { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--paper-ink); }
+    .levels, .speeds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 16px; }
+    .levels button, .speeds button {
+      min-height: 42px; border: 1px solid var(--paper-rule); border-radius: 2px; background: transparent; color: var(--paper-ink);
+      font-weight: 700; cursor: pointer; white-space: nowrap;
+      transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+    }
+    .levels button:active, .speeds button:active { background: var(--paper-2); }
+    .levels button[aria-pressed="true"], .speeds button[aria-pressed="true"] { border-color: var(--paper-ink); background: var(--paper-ink); color: var(--paper); }
+    .levels button:disabled, .speeds button:disabled { opacity: .45; cursor: default; }
+    .primary {
+      width: 100%; min-height: 52px; border: 0; border-radius: 2px; background: var(--paper-ink); color: var(--paper);
+      font-family: var(--font-display); font-size: 26px; font-weight: 900; letter-spacing: .03em; text-transform: uppercase; cursor: pointer;
+      box-shadow: 0 3px 0 var(--hud-sun);
+      transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .primary:active { transform: translateY(3px); box-shadow: 0 0 0 var(--hud-sun); }
+    .primary:disabled { opacity: .5; cursor: default; }
+    .secondary {
+      width: 100%; min-height: 44px; margin-top: 10px; border: 1px solid var(--paper-rule); border-radius: 2px;
+      background: transparent; color: var(--paper-ink); font-weight: 700; cursor: pointer;
+      transition: background-color var(--dur-short) var(--ease-out);
+    }
+    .secondary:active { background: var(--paper-2); }
+    @media (hover: hover) and (pointer: fine) {
+      .levels button:hover, .speeds button:hover, .secondary:hover { border-color: var(--paper-ink); background: var(--paper-2); }
+      .levels button[aria-pressed="true"]:hover, .speeds button[aria-pressed="true"]:hover { background: var(--paper-ink); }
+      .primary:hover { transform: translateY(-1.5px); box-shadow: 0 4.5px 0 var(--hud-sun); }
+    }
+    #result-dialog[data-victory="true"] h2 { color: var(--paper-ink); }
+    #result-dialog[data-victory="false"] h2 { color: var(--paper-blood); border-bottom-color: var(--paper-blood); }
+    /* ---- Trechos de Os Sertões: só nas telas de início e de fim ----
+       Recorte de jornal: filete fino em cima e embaixo, o trecho em itálico de livro. */
+    .epigraph { margin: 0 0 14px; padding: 10px 0; border-top: 1px solid var(--paper-rule); border-bottom: 1px solid var(--paper-rule); }
+    .epigraph blockquote { margin: 0 0 6px; font-family: var(--font-quote); font-style: italic; font-size: 17px; line-height: 1.4; color: var(--paper-ink); }
+    .epigraph figcaption { font-size: 11px; color: var(--paper-muted); }
+    .epigraph-end blockquote { font-size: 16px; }
+    .start-record { margin: 0 0 12px; padding: 8px 10px; border: 1px dashed var(--paper-ink); border-radius: 2px; color: var(--paper-ink); font-weight: 700; font-size: 13px; }
+    .build-badge { display: block; margin-top: 12px; color: var(--paper-muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-align: center; }
+    @media (max-width: 380px) { dialog h1, dialog h2 { font-size: 44px; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+      .wave-banner { animation: banner-fade 2.8s linear both !important; }
+      @keyframes banner-fade { 0%, 100% { opacity: 0; } 4%, 90% { opacity: 1; } }
+    }
   </style>
 </head>
 <body>
@@ -401,11 +492,10 @@
     <p class="field-label">Dificuldade</p>
     <div id="start-levels" class="levels"></div>
     <button id="start-play" class="primary" type="button" autofocus>Jogar</button>
-    <small class="build-badge">BUILD 34</small>
+    <small class="build-badge">BUILD 35</small>
   </dialog>
 
   <dialog id="pause-dialog" aria-labelledby="pause-title">
-    <p class="kicker">Pausa</p>
     <h2 id="pause-title">Respire</h2>
     <p class="field-label">Velocidade do jogo</p>
     <div id="speed-options" class="speeds">
@@ -415,7 +505,7 @@
     </div>
     <button id="pause-resume" class="primary" type="button">Continuar</button>
     <button id="pause-restart" class="secondary" type="button">Recomeçar a partida</button>
-    <small class="build-badge">BUILD 34</small>
+    <small class="build-badge">BUILD 35</small>
   </dialog>
 
   <dialog id="result-dialog" aria-labelledby="result-title">

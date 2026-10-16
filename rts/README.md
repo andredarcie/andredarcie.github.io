@@ -29,7 +29,7 @@ Os módulos ES (`import`) não rodam em `file://`. Sirva a pasta com um servidor
 
 | Pasta | Função |
 | --- | --- |
-| `index.html` | Marcação, estilos da HUD e o import map (cache-busting `?v=N` + `BUILD N`). |
+| `index.html` | Marcação, estilos da HUD e o import map (cache-busting `?v=N` + `BUILD N`). A HUD segue a Hallmark (carimbo no topo do `<style>`): couro escuro sobre o mapa, papel de despacho nos menus, toda cor por token `--hud-*`/`--paper-*`. |
 | `src/main.js` | Raiz de composição: monta mundo, bases, regras, interface e o laço. |
 | `src/config/rts.js` | Times, unidades, construções, economia e níveis da IA. |
 | `src/rts/` | Regras do jogo: caixa dos times (`TeamLedger`), ordens (`Commands`), comportamento das unidades (`UnitSystem`), IA (`AiPlayer`), seleção. |
