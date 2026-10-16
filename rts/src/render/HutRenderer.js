@@ -7,7 +7,7 @@ import { hillHeight } from '../world/Hills.js';
 const WINDOW_LIT = new THREE.Color(0xffb85a);
 // Altura das construções com telhado, para saber quem elas tapam.
 const HOUSE_HEIGHT = 16;
-const CHURCH_HEIGHT = 40;
+const CHURCH_HEIGHT = 48;
 
 // As casas e a igreja na cena: refeitas só quando mudam de forma (a obra avança um
 // pedaço, fica pronta), com as janelas acendendo quando escurece.
