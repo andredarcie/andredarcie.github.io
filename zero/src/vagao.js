@@ -147,7 +147,8 @@ export function vagao(g, { W, nome }) {
     return walkOf(Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[0], b[0]), Math.max(a[1], b[1]));
   };
   rect(-7.5, -.7, 7.5, .7);
-  const vao = rect(DX - DW, -(Wz / 2 - .4), DX + DW, -(Wz / 2 + 1.1));
+  // (o vão entra no corredor: com uma fresta entre os dois, o jogador parava na porta)
+  const vao = rect(DX - DW, -(Wz / 2 - .9), DX + DW, -(Wz / 2 + 1.1));
   const vaoAberto = { ...vao };
 
   let v = 0, parado = true, corParada = null, tl = null, kPorta = 0;
