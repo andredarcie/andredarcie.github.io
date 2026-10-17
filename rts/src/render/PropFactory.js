@@ -10,6 +10,30 @@ const PLANT_MATERIAL = new THREE.MeshLambertMaterial({ vertexColors: true });
 // planta ser fundida numa malha só.
 const ASSEMBLY = new THREE.MeshBasicMaterial();
 
+// Pés de mandioca colhíveis em cada roça: um por viagem de colheita
+// (BUSH_STOCK / FOOD_PER_TRIP).
+export const ROCA_PLANTS = 6;
+
+// Lâmina de folha (folíolo de mandioca, folha de milho, pendão): losango comprido e
+// fino, de duas faces, com a nervura do meio um pouco erguida para pegar luz dos
+// dois lados da dobra. Comprimento no eixo y (como os galhos de #limb) e largura no
+// z, para a lâmina deitar quando o galho deita. São 4 triângulos — um bloco tem 12 —,
+// o que deixa a roça cheia de folha sem pesar no celular.
+function bladeShape(length, width, waist = .4) {
+  const w = width / 2, fold = width * .14;
+  const base = [0, 0, 0], tip = [0, length, 0];
+  const left = [-fold, length * waist, -w], right = [-fold, length * waist, w];
+  const faces = [base, right, tip, base, tip, left, base, tip, right, base, left, tip];
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(faces.flat()), 3));
+  geometry.computeVertexNormals();
+  // Mais escura no pé da folha, clara na ponta, como os blocos (Shading).
+  const shade = new Float32Array(faces.length * 3);
+  faces.forEach((vertex, i) => shade.fill(.8 + .26 * (vertex[1] / length), i * 3, i * 3 + 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(shade, 3));
+  return geometry;
+}
+
 // A caatinga de blocos: catingueira, umbuzeiro, mandacaru, xique-xique, macambira,
 // garrancho seco, pedras de granito e as roças. Cada planta é montada de blocos (com
 // o degradê de sombra de Shading e um tom levemente sorteado por bloco, para a mata
@@ -277,27 +301,150 @@ export class PropFactory {
 
   // ---- Comida ----
 
-  // Roça de sertanejo: canteiro de terra revolvida com leiras, fileiras de pé de
-  // mandioca (haste e copinha de folha em estrela) e feijão rasteiro entre elas.
+  // Roça de sertanejo — "as raras roças de milho ou mandioca" de Os Sertões. Sem
+  // canteiro: cada pé nasce direto da terra, na sua cova (um montinho de terra
+  // revolvida), espalhados como roça aberta à enxada e não em grade. A mandioca é o
+  // que se colhe: hastes finas e nodosas, cinza-pardas, com a copa de folhas em mão
+  // aberta (folíolos compridos em leque, de pecíolo avermelhado). O milho fica na
+  // beira, mais alto, de folha comprida arqueada, com o pendão no alto e a espiga na
+  // palha no meio da haste.
+  // O milho vem primeiro na malha fundida e os pés de mandioca depois, um atrás do
+  // outro: `userData.ends[k]` é onde a malha termina com k pés de mandioca, e a roça
+  // mostra só os que ainda não foram colhidos (FoodRenderer, drawRange).
   roca(seed) {
-    const plot = new THREE.Group();
     const rand = i => pseudoRandom(seed + i * 1.93);
-    plot.add(this.#block(shadedBox(13, .5, 13, .8, 1), PALETTE.soilTop, 0, .25, 0, false));
-    for (let row = -1; row <= 1; row++) {
-      plot.add(this.#block(shadedBox(12, .5, 1.6, .8, 1.05), PALETTE.soilDeep, row * 3.8, .6, 0, false));
-      for (let col = -1; col <= 1; col++) {
-        const x = row * 3.8, z = col * 3.8 + (rand(row * 3 + col + 5) - .5);
-        const tall = 2.8 + rand(row * 5 + col + 9) * 1.8;
-        plot.add(this.#block(shadedBox(.5, tall, .5, .7, 1), PALETTE.barkDark, x, .8 + tall / 2, z));
-        for (let k = 0; k < 2; k++) {
-          const leaf = this.#block(shadedBox(3, .5, .9, .8, 1.15), PALETTE.umbuLeafLight, x, .8 + tall + .2, z);
-          leaf.rotation.y = k * Math.PI / 2 + .4;
-          plot.add(leaf);
-        }
-        plot.add(this.#block(shadedBox(1.6, .8, 1.6, .75, 1.1), PALETTE.leafMid, x + 1.7, 1.2, z + 1.4));
-      }
+    const plot = new THREE.Group();
+    const corn = new THREE.Group();
+    plot.add(corn);
+    const stalks = 2 + Math.floor(rand(1) * 2);
+    for (let i = 0; i < stalks; i++) {
+      const angle = rand(2 + i) * Math.PI * 2;
+      const r = 6.5 + rand(6 + i) * 1.5;
+      corn.add(this.#corn(Math.cos(angle) * r, Math.sin(angle) * r, j => rand(40 + i * 17 + j)));
     }
-    return PropFactory.#merge(plot);
+    // Mandioca num disco, em espiral de ângulo áureo com sorteio: cheio sem fileira.
+    const cassavas = [];
+    for (let i = 0; i < ROCA_PLANTS; i++) {
+      const angle = i * 2.4 + rand(10 + i) * .8;
+      const r = 1.4 + Math.sqrt((i + .5) / ROCA_PLANTS) * 4.6 + (rand(20 + i) - .5) * 1.2;
+      const plant = this.#cassava(Math.cos(angle) * r, Math.sin(angle) * r, j => rand(100 + i * 31 + j));
+      cassavas.push(plant);
+      plot.add(plant);
+    }
+    const ends = [PropFactory.#vertices(corn)];
+    for (const plant of cassavas) ends.push(ends.at(-1) + PropFactory.#vertices(plant));
+    const prop = PropFactory.#merge(plot);
+    prop.userData.ends = ends;
+    return prop;
+  }
+
+  // Cova: dois montinhos de terra revolvida, girados e de tamanho sorteado, um sobre
+  // o outro — lê como chão cavado, não como base de maquete.
+  #mound(parent, rand, size) {
+    for (let k = 0; k < 2; k++) {
+      const width = size * (1 - k * .35) * (.85 + rand(1 + k) * .3);
+      const mound = this.#block(shadedBox(width, .5 - k * .12, width * (.65 + rand(3 + k) * .3), .72, 1.04),
+        k ? PALETTE.tilled : PALETTE.tilledDark, (rand(5 + k) - .5) * .5, .12 + k * .22, (rand(7 + k) - .5) * .5);
+      mound.rotation.y = rand(9 + k) * Math.PI;
+      parent.add(mound);
+    }
+  }
+
+  // Pé de mandioca: duas ou três hastes abrindo da cova, com nós, e no alto de cada
+  // uma a copa de folhas palmadas; uma folha mais baixa e menor no meio da haste.
+  #cassava(x, z, rand) {
+    const plant = new THREE.Group();
+    plant.position.set(x, 0, z);
+    plant.rotation.y = rand(0) * Math.PI * 2;
+    this.#mound(plant, rand, 2.6);
+    const stems = 2 + Math.floor(rand(11) * 1.6);
+    for (let s = 0; s < stems; s++) {
+      const height = 4.4 + rand(12 + s) * 2.4;
+      const angle = s / stems * Math.PI * 2 + rand(14 + s);
+      const stem = this.#limb(plant, 0, .35, 0, angle, .1 + rand(16 + s) * .16, height, .32, PALETTE.cassavaStem);
+      stem.add(this.#block(shadedBox(.44, .2, .44, .8, 1), PALETTE.cassavaNode, 0, height * .45, 0, false));
+      this.#palmate(stem, height, rand(20 + s) * Math.PI * 2, 1, j => rand(30 + s * 13 + j));
+      this.#palmate(stem, height - .2, rand(24 + s) * Math.PI * 2 + 2.5, .9, j => rand(60 + s * 13 + j));
+      this.#palmate(stem, height * .62, rand(28 + s) * Math.PI * 2, .7, j => rand(90 + s * 13 + j));
+    }
+    return plant;
+  }
+
+  // Folha de mandioca: o pecíolo avermelhado sai da haste para fora e para cima, e
+  // na ponta dele abrem-se em leque cinco a sete folíolos compridos e estreitos,
+  // os do meio maiores, todos caindo um pouco nas pontas.
+  #palmate(stem, y, heading, scale, rand) {
+    const leaf = new THREE.Group();
+    leaf.position.set(0, y, 0);
+    leaf.rotation.y = heading;
+    stem.add(leaf);
+    const petiole = 1.5 * scale;
+    const lean = .95;
+    this.#limb(leaf, 0, 0, 0, 0, lean, petiole, .13, PALETTE.cassavaPetiole);
+    const tipX = Math.sin(lean) * petiole, tipY = Math.cos(lean) * petiole;
+    const lobes = 5 + Math.floor(rand(1) * 3);
+    for (let i = 0; i < lobes; i++) {
+      const side = i / (lobes - 1) - .5;
+      const length = 2.3 * scale * (1 - Math.abs(side) * .45) * (.9 + rand(2 + i) * .2);
+      const color = i % 2 ? PALETTE.cassavaLeaf : PALETTE.cassavaLeafLight;
+      this.#blade(leaf, tipX, tipY, 0, side * 2.6, 1.45 + Math.abs(side) * .5 + rand(10 + i) * .15, length, .55 * scale, color);
+    }
+  }
+
+  // Pé de milho na beira da roça: haste alta e um pouco torta, folhas compridas
+  // alternadas que sobem e arqueiam (as de baixo já secando), o pendão cor de palha
+  // no alto e a espiga na palha, com o cabelo, no meio da haste.
+  #corn(x, z, rand) {
+    const plant = new THREE.Group();
+    plant.position.set(x, 0, z);
+    plant.rotation.y = rand(0) * Math.PI * 2;
+    this.#mound(plant, rand, 2);
+    const height = 9 + rand(1) * 3;
+    const stalk = this.#limb(plant, 0, .3, 0, rand(2) * Math.PI * 2, .04 + rand(3) * .06, height, .42, PALETTE.cornStalk);
+    for (let n = 1; n <= 2; n++) {
+      stalk.add(this.#block(shadedBox(.52, .22, .52, .8, 1), PALETTE.cornLeafDry, 0, height * n / 3, 0, false));
+    }
+    const leaves = 7;
+    for (let i = 0; i < leaves; i++) {
+      const at = height * (.12 + .7 * i / leaves);
+      const holder = new THREE.Group();
+      holder.position.set(0, at, 0);
+      holder.rotation.y = i * Math.PI + (rand(10 + i) - .5) * .7;
+      stalk.add(holder);
+      const dry = i < 2;
+      const length = 3.2 - i * .15;
+      // Folha em dois trechos: sobe rente à haste e depois arqueia para fora e para baixo.
+      const base = this.#blade(holder, 0, 0, 0, 0, .55, length * .45, .62, dry ? PALETTE.cornLeafDry : PALETTE.cornLeaf);
+      this.#blade(base, 0, length * .45, 0, 0, 1.05 + rand(20 + i) * .35, length * .6, .5, dry || i % 3 === 2 ? PALETTE.cornLeafDry : PALETTE.cornLeaf);
+    }
+    for (let t = 0; t < 5; t++) {
+      this.#blade(stalk, 0, height, 0, t * 1.26 + rand(30 + t), .25 + rand(35 + t) * .4, 1.6, .16, PALETTE.cornTassel);
+    }
+    const ear = this.#limb(stalk, 0, height * .52, 0, rand(40) * Math.PI * 2, .38, 2.2, .7, PALETTE.cornHusk);
+    ear.add(this.#block(shadedBox(.3, .5, .3, .9, 1.05), PALETTE.cornSilk, 0, 2.5, 0, false));
+    return plant;
+  }
+
+  // Uma lâmina de folha (bladeShape) nascendo em (x, y, z) do pai, apontando para
+  // `angle` no chão e inclinada `tilt` a partir da vertical, como #limb. Devolve o
+  // grupo: (0, comprimento, 0) é a ponta, para emendar outra lâmina.
+  #blade(parent, x, y, z, angle, tilt, length, width, color) {
+    const blade = new THREE.Group();
+    blade.position.set(x, y, z);
+    blade.rotation.set(0, -angle, -tilt, 'YXZ');
+    blade.add(this.#block(bladeShape(length, width), color, 0, 0, 0));
+    parent.add(blade);
+    return blade;
+  }
+
+  // Quantos vértices um pedaço da planta ocupa depois de fundido (#merge desfaz os
+  // índices: cada triângulo vira três vértices).
+  static #vertices(group) {
+    let count = 0;
+    group.traverse(node => {
+      if (node.isMesh) count += node.geometry.index ? node.geometry.index.count : node.geometry.attributes.position.count;
+    });
+    return count;
   }
 
   // ---- Montagem ----

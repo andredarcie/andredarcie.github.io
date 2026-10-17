@@ -87,7 +87,8 @@ export class OrganismRenderer {
         building: Boolean(o.chop && !o.chop.tree),
         carrying: o.carrying,
         carryFood: o.carryFood > 0,
-        // Colhendo na roça (a mesma contagem que a simulação usa para a colheita).
+        // Colhendo na roça, ajoelhado e cortando a mandioca (a mesma contagem que a
+        // simulação usa para a colheita).
         gathering: o.eating > 0 && !o.chop && !o.carrying,
         // Tocaia, debandada e o Conselheiro rezando por um ferido.
         crouch: Boolean(o.hidden),
@@ -101,7 +102,8 @@ export class OrganismRenderer {
         // as feridas abertas.
         torch: o.torch,
         // Soldado anda com a arma na mão; trabalhador só a pega para brigar.
-        weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : null,
+        // Na roça, o facão de cortar a mandioca.
+        weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : o.eating > 0 && !o.chop && !o.carrying ? 'machete' : null,
         pushing: Boolean(o.look?.cannon || o.look?.bigCannon),
         guard: Boolean(o.foe) && o.speed < 6,
         strike: o.strike > 0 && animate ? o.strike / o.strikeSwing : 0,

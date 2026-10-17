@@ -454,9 +454,18 @@ function treeLand(sr, rand) {
   return { l: channels[0], r: channels[1] };
 }
 
-// Mão na moita: folhas raspando em grãos e um graveto que estala.
+// Pé de mandioca colhido: o facão corta a haste verde (chiado do gume e um "toc"
+// de pau verde, abafado), as folhas raspam enquanto a planta sai e a terra solta
+// cai das raízes arrancadas.
 function gather(sr, rand) {
   const out = empty(sr, .55);
+  slice(sr, rand, out, 0, .35);
+  mix(out, knock(sr, rand, .3, { touch: .0003, base: between(rand, 600, 900), q: 8, count: 7, tilt: .7 }), 0, .6);
+  for (let k = 0; k < 14; k++) {
+    const at = between(rand, .18, .45);
+    const clod = burst(sr, rand, .02, { type: 'bandpass', frequency: between(rand, 300, 1200), q: 1, envelope: hit(.0005, .006) });
+    mix(out, clod, at * sr, between(rand, .05, .16));
+  }
   const grains = Math.floor(between(rand, 9, 15));
   for (let k = 0; k < grains; k++) {
     const length = between(rand, .02, .06);
@@ -464,10 +473,9 @@ function gather(sr, rand) {
       color: 'pink', type: 'bandpass', frequency: between(rand, 2500, 5500), q: between(rand, .8, 1.6),
       envelope: t => Math.sin(Math.PI * Math.min(1, t / length))
     });
-    mix(out, leaf, between(rand, 0, .32) * sr, between(rand, .25, .8));
+    mix(out, leaf, between(rand, 0, .32) * sr, between(rand, .1, .35));
   }
-  snap(sr, rand, out, between(rand, .08, .2), .5, 1300, 1900);
-  filter(out, 'highpass', sr, 300, .7);
+  filter(out, 'highpass', sr, 150, .7);
   return fade(out, sr, .003, .08);
 }
 

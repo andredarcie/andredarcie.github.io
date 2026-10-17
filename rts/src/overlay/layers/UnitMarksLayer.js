@@ -3,7 +3,7 @@ import { UNIT_TYPES } from '../../config/rts.js';
 import { hutSize } from '../../settlement/HutDimensions.js';
 
 // Em pixels de tela, por cima de cada coisa: barra de vida de quem está ferido ou
-// selecionado, a carga na mão (frutinha), o recado curto da unidade ("no trees
+// selecionado, o recado curto da unidade ("no trees
 // nearby"), e nas construções a vida, o andamento da obra e o do treino.
 export class UnitMarksLayer {
   #state;
@@ -26,7 +26,6 @@ export class UnitMarksLayer {
     for (const u of this.#state.organisms) {
       const isSelected = selected.has(u) || this.#selection.enemy === u;
       const head = project(u.x, u.y, (CHARACTER_HEIGHT + 3) * u.size / LIFE_SIZE);
-      if (u.carryFood) this.#berry(ctx, head.x + barWidth * .45, head.y + 4);
       if (isSelected || u.life < u.maxLife - .5) {
         this.#bar(ctx, head.x - barWidth / 2, head.y - 4, barWidth, 3, u.life / u.maxLife,
           this.#state.teams[u.team].ring);
@@ -84,16 +83,4 @@ export class UnitMarksLayer {
     this.#label(ctx, message, head.x, head.y - 8);
   }
 
-  // Frutinha vermelha com folha: a comida que o trabalhador leva para casa.
-  #berry(ctx, x, y) {
-    ctx.fillStyle = '#d23a5a';
-    ctx.strokeStyle = 'rgba(10, 14, 18, .8)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(x, y, 2.6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = '#4caf50';
-    ctx.fillRect(x - .5, y - 4.5, 2, 2);
-  }
 }

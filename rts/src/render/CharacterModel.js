@@ -76,11 +76,19 @@ const EYE_DEPTH = 2.55;
 const SANDAL_COLOR = '#5a3e26';
 const BOOT_COLOR = '#211b17';
 const CARRIED_LOG_SHAPE = new THREE.CylinderGeometry(LOG_RADIUS, LOG_RADIUS, 11, 8).rotateX(Math.PI / 2);
-// Saco de farinha/feijão colhido, levado nos braços até a sede.
-const SACK_SHAPE = addVerticalShade(new THREE.BoxGeometry(4.2, 3.4, 3), .78, 1.08);
-const SACK_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xcdb88a, vertexColors: true });
-const SACK_TIE_SHAPE = new THREE.BoxGeometry(2.2, .5, 1.6);
-const SACK_TIE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x7a5a36 });
+// Feixe de mandioca colhida, abraçado na frente até a igreja: raízes compridas de
+// casca parda (grossas num lado, afinando no outro), o miolo branco à mostra no
+// corte, o pé da rama cortada e um resto de folha, amarrados com embira.
+const ROOT_SHAPE = addVerticalShade(new THREE.CylinderGeometry(.2, .58, 5.8, 7).rotateZ(Math.PI / 2), .8, 1.08);
+const ROOT_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x7a5232, vertexColors: true });
+const ROOT_CUT_SHAPE = new THREE.CylinderGeometry(.5, .5, .14, 7).rotateZ(Math.PI / 2);
+const ROOT_CUT_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xeee3c8 });
+const RAMA_SHAPE = new THREE.BoxGeometry(.26, 2.6, .26).translate(0, 1.3, 0);
+const RAMA_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x8b7a66 });
+const RAMA_LEAF_SHAPE = new THREE.BoxGeometry(.5, 1.7, .1).translate(0, .85, 0);
+const RAMA_LEAF_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x55743a });
+const TIE_SHAPE = new THREE.BoxGeometry(.3, 1.9, 1.9);
+const TIE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x9a7a4a });
 // Machado: cabo de madeira saindo da mão e cabeça de ferro de lado, com o fio
 // virado para o sentido do golpe. Geometria deslocada para a origem cair na mão.
 const AXE_HANDLE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xa0784a });
@@ -383,13 +391,24 @@ export class CharacterModel {
     // Tora no ombro direito, deitada para a frente, como se carrega de verdade.
     const shoulderLog = build(CARRIED_LOG_SHAPE, WOOD_MATERIALS, 3.3, 12.6, 0);
     shoulderLog.visible = false;
-    // Saco da colheita, abraçado na frente da barriga.
-    const sack = new THREE.Group();
-    sack.position.set(0, 8, 3.4);
-    build(SACK_SHAPE, SACK_MATERIAL, 0, 0, 0, sack);
-    build(SACK_TIE_SHAPE, SACK_TIE_MATERIAL, 0, 1.8, 0, sack).castShadow = false;
-    sack.visible = false;
-    body.add(sack);
+    // A mandioca colhida, abraçada na frente da barriga: quatro raízes de lado, as
+    // pontas grossas (com o corte branco) para a direita, de onde sai a rama.
+    const cassava = new THREE.Group();
+    cassava.position.set(0, 8, 3.4);
+    [[0, .45, .1, .06], [.15, -.5, -.08, -.1], [-.7, .1, .12, .04], [.75, 0, -.1, -.05]].forEach(([y, z, yaw, roll]) => {
+      const root = build(ROOT_SHAPE, ROOT_MATERIAL, 0, y, z, cassava);
+      root.rotation.set(0, yaw, roll);
+      build(ROOT_CUT_SHAPE, ROOT_CUT_MATERIAL, 2.95, 0, 0, root).castShadow = false;
+    });
+    for (const [z, lean] of [[.25, -.35], [-.25, -.65]]) {
+      const rama = build(RAMA_SHAPE, RAMA_MATERIAL, 3, .2, z, cassava);
+      rama.rotation.z = lean;
+      const leaf = build(RAMA_LEAF_SHAPE, RAMA_LEAF_MATERIAL, 0, 2.5, 0, rama);
+      leaf.rotation.set(.5, 0, .9);
+    }
+    build(TIE_SHAPE, TIE_MATERIAL, 1.2, 0, 0, cassava).castShadow = false;
+    cassava.visible = false;
+    body.add(cassava);
     const gear = CharacterModel.#buildLook(group, body, neck, forearmLeft, [left, right]);
     gear.parts.feet = [left.foot, right.foot];
     headParts.push(...gear.head);
@@ -398,7 +417,7 @@ export class CharacterModel {
       legLeft: left.thigh, legRight: right.thigh, shinLeft: left.shin, shinRight: right.shin,
       footLeft: left.foot, footRight: right.foot,
       armLeft, armRight, forearmLeft, forearmRight,
-      axe, mallet, shoulderLog, sack, eyes, club, spear, arms, wounds, headParts, stump, gear: gear.parts,
+      axe, mallet, shoulderLog, cassava, eyes, club, spear, arms, wounds, headParts, stump, gear: gear.parts,
       reloadProps
     };
     return group;
@@ -660,12 +679,12 @@ export class CharacterModel {
     if (idle) CharacterModel.#poseIdle(view, elapsed, seed);
 
     if (crying) CharacterModel.#poseCrying(view, animate, elapsed);
-    const { axe, mallet, shoulderLog, sack } = data;
+    const { axe, mallet, shoulderLog, cassava } = data;
     const hammering = chop !== null && building;
     axe.visible = chop !== null && !building;
     mallet.visible = hammering;
     shoulderLog.visible = carrying && chop === null;
-    sack.visible = carryFood && !carrying && chop === null;
+    cassava.visible = carryFood && !carrying && chop === null;
     if (hammering) { CharacterModel.#poseHammer(view, chop); plant = 1; }
     else if (chop !== null) { CharacterModel.#poseChopping(view, chop); plant = 1; }
     else if (gathering) { CharacterModel.#poseGather(view, animate ? elapsed : 0, seed); plant = 1; }
@@ -674,8 +693,8 @@ export class CharacterModel {
       armRight.rotation.x = -2.8;
       armRight.rotation.z = -.15;
       forearmRight.rotation.x = -.35;
-    } else if (sack.visible) {
-      // Saco abraçado na frente: braços para baixo e para a frente, cotovelos
+    } else if (cassava.visible) {
+      // Feixe abraçado na frente: braços para baixo e para a frente, cotovelos
       // fechados em volta dele, e o tronco um pouco para trás contra o peso.
       for (const [upper, fore, side] of [[armLeft, forearmLeft, -1], [armRight, forearmRight, 1]]) {
         upper.rotation.x = -.55 + (upper === armLeft ? -swing : swing) * .12;
@@ -801,24 +820,26 @@ export class CharacterModel {
     neck.rotation.x += Math.sin(elapsed * .23 + seed) * .06;
   }
 
-  // Colhendo na roça: agachado de cócoras, tronco sobre a planta, as duas mãos
-  // alternando — uma estica e arranca, a outra recolhe para junto do corpo — e a
-  // vista baixa no que está colhendo.
+  // Colhendo mandioca: ajoelhado (joelho direito no chão, o pé esquerdo plantado à
+  // frente), o tronco curvado sobre o pé de mandioca, a mão esquerda segurando a
+  // haste rente à terra e a direita cortando com o facão — sobe devagar e desce de
+  // uma vez, em golpes curtos e baixos —, a vista no corte.
   static #poseGather(view, elapsed, seed) {
     const { body, neck, legLeft, legRight, shinLeft, shinRight, armLeft, armRight, forearmLeft, forearmRight } = view.userData;
-    legLeft.rotation.set(-1.05, 0, -.12);
-    legRight.rotation.set(-1.05, 0, .12);
-    shinLeft.rotation.x = 1.8;
-    shinRight.rotation.x = 1.75;
-    body.rotation.x = .32;
+    legLeft.rotation.set(-1.45, 0, -.08);
+    shinLeft.rotation.x = 1.45;
+    legRight.rotation.set(-.1, 0, .1);
+    shinRight.rotation.x = 1.5;
+    body.rotation.x = .42;
     body.rotation.z = 0;
-    neck.rotation.set(.38, 0, 0);
-    const p = elapsed * 3.1 + seed;
-    for (const [upper, fore, side, phase] of [[armLeft, forearmLeft, -1, p], [armRight, forearmRight, 1, p + Math.PI]]) {
-      const reach = Math.max(0, Math.sin(phase));
-      upper.rotation.set(-1.05 - .45 * reach, 0, -side * .12);
-      fore.rotation.x = -.95 + .75 * reach;
-    }
+    neck.rotation.set(.35, 0, 0);
+    armLeft.rotation.set(-1.15, 0, .25);
+    forearmLeft.rotation.x = -.35;
+    const t = (elapsed * 1.6 + seed) % 1;
+    const lift = t < .72 ? t / .72 : 1 - (t - .72) / .28;
+    const raise = lift * lift * (3 - 2 * lift);
+    armRight.rotation.set(-.9 - 1.1 * raise, 0, -.35 + .15 * raise);
+    forearmRight.rotation.x = -.6 - .5 * raise;
   }
 
   // Na obra: pernas abertas e meio dobradas, a mão esquerda firmando a peça e a
