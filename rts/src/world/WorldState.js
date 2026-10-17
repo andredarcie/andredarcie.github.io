@@ -34,8 +34,6 @@ export class WorldState {
     this.floaters = [];
     // A onda (WaveDirector): número, fase ('calm' | 'active'), relógio e a próxima.
     this.wave = null;
-    // A reza do fim da tarde: segundos que ainda faltam (0 fora dela).
-    this.vespers = 0;
     // Coisas que só acontecem uma vez por partida (o primeiro aviso de sede...).
     this.flags = {};
     this.rain = null;

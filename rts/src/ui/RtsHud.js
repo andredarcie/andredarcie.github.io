@@ -107,9 +107,6 @@ export class RtsHud {
         this.toast(people, 'info', road.mouth);
       }
     });
-    events.on('vespers', ({ x, y }) => {
-      this.toast('O sino chama para a reza: a pregação do Conselheiro alcança mais longe', 'info', { x, y });
-    });
     events.on('thirst', () => {
       this.toast('A tropa está com sede: longe d\'água, os soldados enfraquecem');
     });
@@ -289,7 +286,7 @@ export class RtsHud {
     list.push({ action: 'army', icon: 'fighters', label: 'Jagunços', sub: `${army} na luta`, disabled: !army });
     list.push({ action: 'all-workers', icon: 'sertanejo', label: 'Sertanejos', sub: 'todos' });
     const preacher = this.#preacher();
-    list.push({ action: 'preacher', icon: 'cross', label: 'Conselheiro', sub: preacher ? 'pregando' : 'morto', disabled: !preacher });
+    list.push({ action: 'preacher', icon: 'cross', label: 'Conselheiro', sub: preacher ? 'reza e cura' : 'morto', disabled: !preacher });
     const heroes = this.#heroes();
     if (heroes.length) list.push({ action: 'heroes', icon: 'jagunco', label: 'Chefes', sub: `${heroes.length} no arraial` });
     list.push({ action: 'base', icon: 'church', label: 'Igreja', sub: 'câmera' });
@@ -393,7 +390,6 @@ export class RtsHud {
     els.queue.replaceChildren();
     if (s.placing) {
       title = BUILDING_TYPES[s.placing].label;
-      detail = 'Toque num lugar livre do mapa (fora da estrada)';
     } else if (s.building) {
       const b = s.building;
       title = b.stats.label;
@@ -463,7 +459,8 @@ export class RtsHud {
       case 'attack': return 'Atacando';
       case 'attackMove': return 'Avançando';
       case 'move': return 'Andando';
-      default: return u.stats.passive ? 'Pregando — quem está perto luta com mais força e se recupera'
+      default: return u.stats.blessing ? (u.praying > 0 ? 'Rezando pelos feridos' : 'Reza por quem chega ferido perto dele, e a pessoa sara')
+        : u.stats.passive ? 'De prontidão'
         : u.type === 'worker' ? 'À toa — toque numa árvore ou numa roça' : 'De guarda';
     }
   }
@@ -489,7 +486,6 @@ export class RtsHud {
       case 'place':
         s.startPlacing(arg);
         s.hover = null;
-        this.toast('Toque no mapa para marcar a obra');
         break;
       case 'cancel-place':
         s.stopPlacing();
@@ -572,6 +568,6 @@ export class RtsHud {
   }
 
   #preacher() {
-    return this.#state.organisms.find(u => u.team === 'player' && u.stats.aura) ?? null;
+    return this.#state.organisms.find(u => u.team === 'player' && u.type === 'conselheiro') ?? null;
   }
 }

@@ -89,10 +89,10 @@ export class OrganismRenderer {
         carryFood: o.carryFood > 0,
         // Colhendo na roça (a mesma contagem que a simulação usa para a colheita).
         gathering: o.eating > 0 && !o.chop && !o.carrying,
-        // Tocaia, debandada e a pregação do Conselheiro.
+        // Tocaia, debandada e o Conselheiro rezando por um ferido.
         crouch: Boolean(o.hidden),
         panic: o.flee > 0,
-        preach: o.type === 'conselheiro',
+        preach: o.praying > 0,
         // Cada um no seu ritmo: respiração, peso e olhar fora de compasso.
         seed: o.id * 1.37,
         crying: o.crying,

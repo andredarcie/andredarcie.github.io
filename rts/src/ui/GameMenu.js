@@ -42,19 +42,24 @@ export class GameMenu {
     }
     window.addEventListener('keydown', event => {
       if (event.code !== 'Escape' && event.code !== 'KeyP') return;
-      if (!this.#started || $('#result-dialog').open) return;
+      // Com o livro de história aberto o jogo já está parado, e o Esc fecha o livro.
+      if (!this.#started || $('#result-dialog').open || $('#story-dialog').open) return;
       if ($('#pause-dialog').open) this.#resume();
       else this.#pause();
     });
     // Celular bloqueado, aba trocada: a partida pausa sozinha, para ninguém voltar e
     // achar a igreja caída.
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.#started && !$('#result-dialog').open && !$('#pause-dialog').open) this.#pause();
+      if (document.hidden && this.#started && !$('#result-dialog').open && !$('#pause-dialog').open && !$('#story-dialog').open) this.#pause();
     });
     this.#markSpeed();
     this.#markLevels();
     $('#start-epigraph').textContent = SERTOES.forte.text;
-    $('#start-dialog').showModal();
+  }
+
+  // A abertura: chamada só depois do carregamento, para não abrir por cima dele.
+  open() {
+    this.#root.querySelector('#start-dialog').showModal();
   }
 
   start() {

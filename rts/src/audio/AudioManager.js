@@ -8,7 +8,7 @@ import { random, outdoorImpulse } from './Dsp.js';
 
 const STORAGE_KEY = 'canudos-som';
 const MASTER_VOLUME = .8;
-const REVERB_RETURN = .55;
+const REVERB_RETURN = .45;
 
 // Mixagem: `level` iguala a sonoridade (os buffers saem todos com o mesmo pico),
 // `reverb` é o envio para o eco do campo, `pitch` a variação de afinação por
@@ -24,12 +24,12 @@ const SOUNDS = {
   'command-train': { level: .26, reverb: .05, gap: .07, group: 'ui', reach: 0 },
   'command-trade': { level: .2, reverb: .05, pitch: .03, gap: .07, group: 'ui', reach: 0 },
 
-  'shot-musket': { level: .4, reverb: .3, pitch: .06, gap: .035, group: 'gun' },
-  'shot-blunderbuss': { level: .38, reverb: .32, pitch: .05, gap: .035, group: 'gun' },
-  'shot-rifle': { level: .36, reverb: .32, pitch: .05, gap: .035, group: 'gun' },
-  'shot-cannon': { level: .6, reverb: .35, pitch: .04, gap: .25, group: 'cannon' },
-  'shot-matadeira': { level: .75, reverb: .4, pitch: .03, gap: .25, group: 'cannon' },
-  'shell-burst': { level: .45, reverb: .3, pitch: .06, gap: .2, group: 'cannon' },
+  'shot-musket': { level: .4, reverb: .18, pitch: .06, gap: .035, group: 'gun' },
+  'shot-blunderbuss': { level: .38, reverb: .2, pitch: .05, gap: .035, group: 'gun' },
+  'shot-rifle': { level: .36, reverb: .2, pitch: .05, gap: .035, group: 'gun' },
+  'shot-cannon': { level: .6, reverb: .22, pitch: .04, gap: .25, group: 'cannon' },
+  'shot-matadeira': { level: .75, reverb: .25, pitch: .03, gap: .25, group: 'cannon' },
+  'shell-burst': { level: .45, reverb: .2, pitch: .06, gap: .2, group: 'cannon' },
 
   'strike-club': { level: .42, reverb: .1, pitch: .07, gap: .04, group: 'melee' },
   'strike-machete': { level: .5, reverb: .1, pitch: .06, gap: .04, group: 'melee' },
@@ -52,7 +52,6 @@ const SOUNDS = {
   'wave-start': { level: .24, reverb: .22, gap: 1, group: 'call', reach: 0 },
   'wave-clear': { level: .5, reverb: .14, gap: 1, group: 'call', reach: 0 },
   alarm: { level: .32, reverb: .18, gap: 2.4, group: 'call', reach: .25 },
-  vespers: { level: .36, reverb: .25, gap: 4, group: 'call', reach: .2 },
   convoy: { level: .42, reverb: .2, gap: 1, group: 'call', reach: 0 },
   rout: { level: .3, reverb: .22, gap: 1, group: 'call', reach: .35 },
   collapse: { level: .42, reverb: .22, pitch: .05, gap: .4, group: 'event', reach: .5 },
@@ -69,7 +68,7 @@ const WARM_ORDER = [
   'ui', 'command-move', 'command-gather', 'command-attack', 'command-build', 'command-train', 'command-stop', 'command-trade',
   'place', 'chop', 'hammer', 'tree-crack', 'tree-land', 'gather', 'built', 'trained', 'wave-start', 'shot-musket', 'shot-rifle', 'strike-club', 'strike-machete',
   'strike-spear', 'strike-bayonet', 'death-player', 'death-enemy', 'shot-blunderbuss', 'alarm', 'wave-clear', 'upgrade',
-  'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'vespers', 'shot-matadeira', 'rain', 'game-over'
+  'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'shot-matadeira', 'rain', 'game-over'
 ];
 
 const MELEE = new Set(['club', 'machete', 'spear', 'bayonet', 'saber']);
@@ -131,7 +130,6 @@ export class AudioManager {
     on('convoyTaken', () => this.#play('wave-clear'));
     on('underAttack', place => this.#play('alarm', at(place)));
     on('convoyEscaped', () => this.#play('alarm'));
-    on('vespers', place => this.#play('vespers', at(place)));
     on('death', ({ organism }) => this.#play(organism.team === 'enemy' ? 'death-enemy' : 'death-player', at(organism)));
     on('chop', place => this.#play('chop', at(place)));
     on('hammer', place => this.#play('hammer', at(place)));

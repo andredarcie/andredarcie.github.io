@@ -121,6 +121,8 @@ const ICONS = Object.freeze({
   undo: S('M8 4 4 8l4 4M4 8h10a5 5 0 0 1 0 10h-4'),
   retreat: S('M10 6 4 12l6 6M4 12h16'),
   pause: S('M8.5 5v14M15.5 5v14'),
+  // Livro aberto: o diário da história de Belo Monte.
+  book: T('M12 7c-2.6-1.7-5.2-2.1-8-1.5v13c2.8-.6 5.4-.2 8 1.5z') + S('M12 7c2.6-1.7 5.2-2.1 8-1.5v13c-2.8-.6-5.4-.2-8 1.5M12 7C9.4 5.3 6.8 4.9 4 5.5v13c2.8-.6 5.4-.2 8 1.5M12 7v13'),
   plus: S('M12 5v14M5 12h14'),
   minus: S('M5 12h14'),
   frame: S('M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5') + T('M9 9h6v6H9z'),

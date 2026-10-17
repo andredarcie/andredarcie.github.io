@@ -26,8 +26,8 @@ import { Commands } from './rts/Commands.js';
 import { UnitSystem } from './rts/UnitSystem.js';
 import { WaveDirector } from './rts/WaveDirector.js';
 import { TowerSystem } from './rts/TowerSystem.js';
-import { Vespers } from './rts/Vespers.js';
 import { Selection } from './rts/Selection.js';
+import { BuildGrid } from './rts/BuildGrid.js';
 import { Simulation } from './simulation/Simulation.js';
 import { WorldView } from './render/WorldView.js';
 import { GroundPainter } from './render/GroundPainter.js';
@@ -36,6 +36,7 @@ import { MotionPreference } from './ui/MotionPreference.js';
 import { OverlayRenderer } from './overlay/OverlayRenderer.js';
 import { SelectionLayer } from './overlay/layers/SelectionLayer.js';
 import { UnitMarksLayer } from './overlay/layers/UnitMarksLayer.js';
+import { BlessingLayer } from './overlay/layers/BlessingLayer.js';
 import { FallDustLayer } from './overlay/layers/FallDustLayer.js';
 import { WoodChipsLayer } from './overlay/layers/WoodChipsLayer.js';
 import { FightLayer } from './overlay/layers/FightLayer.js';
@@ -49,6 +50,7 @@ import { RtsHud } from './ui/RtsHud.js';
 import { paintIcons } from './ui/Icons.js';
 import { Minimap } from './ui/Minimap.js';
 import { GameMenu } from './ui/GameMenu.js';
+import { StoryBook } from './ui/StoryBook.js';
 import { HudObstacleTracker } from './ui/HudObstacleTracker.js';
 import { CameraController } from './input/CameraController.js';
 import { PlayerInput } from './input/PlayerInput.js';
@@ -64,6 +66,12 @@ const RECORD_KEY = 'canudos-melhor';
 // Zoom inicial: quantos pixels de tela por unidade do mundo (o boneco tem 16).
 const START_PIXELS_PER_UNIT = 1.7;
 
+// A tela de carregamento (src/boot/loading.js, script clássico) mede o download do
+// código; daqui em diante cada etapa pesada da montagem se anuncia a ela antes de
+// começar, e ela só abre o jogo quando a última termina. Sem ela (script bloqueado),
+// as chamadas viram nada.
+const loading = window.canudosLoading ?? { stage: async () => {}, finish: async () => {}, fail() {} };
+
 const root = document;
 // Os ícones fixos da página (data-icon) ganham o desenho antes de qualquer coisa.
 paintIcons(root);
@@ -71,6 +79,9 @@ const canvas = root.querySelector('#arena');
 const overlayCanvas = root.querySelector('#arena-overlay');
 const theme = new Theme();
 const motion = new MotionPreference();
+
+// Todo o código importado acima já chegou: começa a montagem.
+await loading.stage('view');
 
 // Sem WebGL não há cena: avisa em vez de deixar a página em branco.
 let view;
@@ -81,6 +92,7 @@ try {
   warning.className = 'webgl-missing';
   warning.textContent = 'Este jogo precisa de WebGL para desenhar o sertão, e o seu navegador não conseguiu ligá-lo. Tente outro navegador ou ative a aceleração de hardware.';
   document.body.append(warning);
+  loading.fail(warning.textContent);
   throw error;
 }
 
@@ -104,20 +116,21 @@ ledger.reset({ food: START_FOOD, wood: START_WOOD });
 const factory = new UnitFactory(state);
 const commands = new Commands({ state, ledger, occupancy, events });
 const units = new UnitSystem({ state, locomotion, grassField, forest, blood, events, ledger, factory, biomes, skyClock });
-const vespers = new Vespers({ state, skyClock, events });
 const waves = new WaveDirector({ state, units, ledger, events });
 waves.setDifficulty(level);
 const towers = new TowerSystem({ state, units, ledger, events });
 const selection = new Selection();
+const buildGrid = new BuildGrid(commands);
 // A onda solta os invasores e as torres atiram antes; as unidades cumprem depois,
 // no mesmo passo, e é nelas que quem morreu sai do mundo.
 const simulation = new Simulation({
   state, skyClock,
-  phases: [waves, vespers, towers, units, blood, grassField, forest, weather]
+  phases: [waves, towers, units, blood, grassField, forest, weather]
 });
 
 // ---- Interface ----
 const hud = new RtsHud({ root, state, selection, commands, ledger, camera: view.camera, events, waves });
+const story = new StoryBook({ root, events });
 const overlay = new OverlayRenderer({
   canvas: overlayCanvas,
   cameraRig: view.camera,
@@ -126,12 +139,13 @@ const overlay = new OverlayRenderer({
     new CloudShadowsLayer(state, skyClock, weather, motion),
     new PondRipplesLayer(state, weather, theme, motion),
     new RoadWarningLayer(state, motion),
-    new SelectionLayer(state, selection, commands),
+    new SelectionLayer(state, selection, buildGrid),
     new FallDustLayer(state)
   ],
   screenLayers: [
     new WoodChipsLayer(state, motion),
     new FirefliesLayer(state, skyClock, weather, motion),
+    new BlessingLayer(state, motion),
     new UnitMarksLayer(state, selection, theme),
     new FightLayer(state, theme),
     new EffectsLayer(state, theme),
@@ -139,7 +153,7 @@ const overlay = new OverlayRenderer({
   ]
 });
 const input = new PlayerInput({
-  canvas, view, state, selection, commands, hud, boxElement: root.querySelector('#box-select')
+  canvas, view, state, selection, commands, hud, grid: buildGrid, boxElement: root.querySelector('#box-select')
 });
 const cameraController = new CameraController({
   window, canvas, cameraRig: view.camera, box: input.box,
@@ -165,6 +179,7 @@ for (const id of ['view-in', 'view-out', 'view-reset']) {
 }
 
 // ---- O mundo de pé ----
+await loading.stage('world');
 // Nesta ordem, cada um conferindo o chão contra quem já nasceu (SpaceOccupancy):
 // a clareira da vila e as estradas, lagos, árvores e enfeites; depois a vila e, por
 // último, o capim. A clareira sai depois de plantar; as estradas ficam reservadas
@@ -189,6 +204,7 @@ for (const [index, hill] of HILLS.entries()) {
 foundVillage(TEAMS.player);
 state.reserved = roadSpots;
 grassField.seed();
+await loading.stage('ground');
 const painter = new GroundPainter(biomes);
 view.terrain.setGroundTexture(painter.paintGround());
 // Cada lateral do tabuleiro com a coluna u da textura apontando para o ponto certo da
@@ -200,6 +216,7 @@ view.terrain.setSideTextures({
   south: painter.paintSide(u => ({ x: WORLD.width * u, y: WORLD.height })),
   north: painter.paintSide(u => ({ x: WORLD.width * (1 - u), y: 0 }))
 });
+await loading.stage('plants');
 view.scenery.set(sceneryItems);
 view.grass.plant({
   toneAt: (x, y) => painter.toneAt(x, y),
@@ -218,9 +235,13 @@ function remeasure() {
   minimap.resize();
   frameRenderer.render();
 }
+// O primeiro quadro compila os shaders da cena inteira: é etapa de carga também.
+await loading.stage('frame');
 remeasure();
 requestAnimationFrame(remeasure);
-document.fonts?.ready.then(remeasure);
+await loading.stage('fonts');
+await document.fonts?.ready;
+remeasure();
 
 // Belo Monte no meio do mapa: a igreja de Santo Antônio pronta, com a porta virada
 // para a câmera (o vão entre as estradas de Jeremoabo e de Monte Santo), Antônio
@@ -297,6 +318,7 @@ const menu = new GameMenu({
     const hall = ledger.hall();
     hud.focus(hall.x, hall.y);
     hud.toast('Corte lenha e cave trincheiras na beira das estradas');
+    story.begin();
   },
   onPause: paused => { running = !paused; },
   onRestart: chosen => {
@@ -325,7 +347,6 @@ const recordLine = root.querySelector('#start-record');
 recordLine.hidden = !played.length;
 recordLine.textContent = 'Recorde: ' + played
   .map(([id, item]) => `${records[id]} ${records[id] === 1 ? 'onda' : 'ondas'} no ${item.label.toLowerCase()}`).join(' · ');
-if (params.get('play') === '1') menu.start();
 
 // Só em localhost: alça para inspecionar e adiantar a partida no console (revisão).
 if (['localhost', '127.0.0.1'].includes(location.hostname)) {
@@ -336,10 +357,23 @@ if (['localhost', '127.0.0.1'].includes(location.hostname)) {
 
 window.addEventListener('resize', remeasure);
 
+// Modo de obra: com uma obra na mão o mundo inteiro para na hora (inimigos, gente,
+// relógio do dia), o cenário fica cinza e só a grade tem cor. A câmera continua
+// livre para escolher o lugar. Marcada ou cancelada a obra, tudo volta a correr.
+let buildMode = false;
+
 function updateFrame(dt) {
   cameraController.update(dt);
   view.camera.update(dt);
-  if (running) simulation.advance(dt);
+  if (buildMode !== Boolean(selection.placing)) {
+    buildMode = Boolean(selection.placing);
+    document.body.classList.toggle('build-mode', buildMode);
+  }
+  // Com o livro de história aberto o mundo também espera, para ler com calma.
+  if (running && !buildMode && !story.isOpen) {
+    simulation.advance(dt);
+    story.update(dt);
+  }
   hud.update(dt);
   minimap.update(dt);
   frameRenderer.render();
@@ -360,4 +394,9 @@ window.render_game_to_text = () => JSON.stringify({
   buildings: state.buildings.map(building => ({ team: building.team, kind: building.kind, built: building.built, life: Math.round(building.life) }))
 });
 
+// Tudo pronto: a tela de carregamento sai e só então a abertura aparece (o menu é
+// um <dialog> modal, que ficaria por cima dela).
+await loading.finish();
+if (params.get('play') === '1') menu.start();
+else menu.open();
 new GameLoop(updateFrame).start();

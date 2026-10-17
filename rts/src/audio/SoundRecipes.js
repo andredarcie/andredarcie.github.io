@@ -3,28 +3,31 @@
 // sair idêntico ao anterior) e devolve mono (Float32Array) ou estéreo ({ l, r }).
 // A paleta segue o lugar e a época: pólvora negra e Mannlicher, canhão Krupp,
 // sino de igreja, corneta do Exército, viola caipira, madeira de caatinga.
+//
+// O que separa som de verdade de som "de videogame" (Farnell, Designing Sound):
+// - Nada de senoide descendo como soco grave: isso é bumbo eletrônico. Estampido
+//   é onda de pressão (Friedlander) mais gás turbulento — ruído, sem altura.
+// - Impacto é excitação × ressonância. O tempo de contato decide o brilho (aço em
+//   aço ~0,1 ms, pau em carne ~5 ms), o objeto decide os modos, e o agudo morre
+//   antes do grave (Q constante).
+// - Voz sintetizada com pregas vocais soa robótica: a morte é sopro e queda.
+// - Campo aberto é seco. A distância vem dos ecos discretos das encostas e do ar
+//   comendo o agudo, não de cauda longa de salão.
+// - Os detalhes miúdos é que convencem: a pederneira antes do tiro, o ferrolho do
+//   Mannlicher depois, a carreta do canhão recuando, o fuzil caindo com o soldado.
+//
+// Convenção: toda camada (burst, knock, whoosh, rumble...) sai com pico 1, então
+// o ganho em `mix` é a altura relativa entre camadas.
 import {
   between, samples, white, pink, brown, filter, sweep, shape, hit, mix, modes,
-  pluck, saturate, fade, echo, widen
+  pluck, saturate, fade, echo, widen, normalize, contact, resonate, solid, friedlander
 } from './Dsp.js';
 
 const TAU = Math.PI * 2;
 const empty = (sr, seconds) => new Float32Array(samples(sr, seconds));
+const peakTo = (data, target = 1) => { normalize(target, data); return data; };
 
 // ---------------------------------------------------------------- blocos comuns
-
-// Senoide com glissando exponencial de `from` a `to`: o soco grave de tiro, queda
-// e tambor.
-function thump(sr, seconds, from, to, glide, envelope) {
-  const out = empty(sr, seconds);
-  let phase = 0;
-  for (let i = 0; i < out.length; i++) {
-    const t = i / sr;
-    phase += TAU * (to + (from - to) * Math.exp(-t / glide)) / sr;
-    out[i] = Math.sin(phase) * envelope(t);
-  }
-  return out;
-}
 
 // Ruído com envelope e filtro numa tacada só.
 function burst(sr, rand, seconds, { color = 'white', type = 'lowpass', frequency = 2000, q = .7, envelope }) {
@@ -32,11 +35,18 @@ function burst(sr, rand, seconds, { color = 'white', type = 'lowpass', frequency
   const noise = color === 'pink' ? pink(n, rand) : color === 'brown' ? brown(n, rand) : white(n, rand);
   if (typeof frequency === 'function') sweep(noise, type, sr, frequency, q);
   else filter(noise, type, sr, frequency, q);
-  return envelope ? shape(noise, sr, envelope) : noise;
+  if (envelope) shape(noise, sr, envelope);
+  return peakTo(noise);
 }
 
-// Estalos soltos e curtos (pólvora queimando, lasca, terra caindo). A densidade
-// cai com o tempo porque `spread` empurra os sorteios para o começo.
+// Batida num corpo sólido: pulso de contato de duração `touch` nos modos do objeto.
+function knock(sr, rand, seconds, { touch, base, q, count = 8, ratios, tilt = .8, rough = .15 }) {
+  const excitation = contact(sr, rand, touch, rough);
+  return peakTo(resonate(excitation, sr, solid(rand, base, { count, ratios, q, tilt }), seconds));
+}
+
+// Estalos soltos e curtos (pólvora queimando, lasca, cascalho). A densidade cai com
+// o tempo porque `spread` empurra os sorteios para o começo.
 function crackle(target, sr, rand, { count, from = 0, span, gain, cutoff = 2500, spread = 2 }) {
   for (let k = 0; k < count; k++) {
     const at = from + span * Math.pow(rand(), spread);
@@ -46,206 +56,289 @@ function crackle(target, sr, rand, { count, from = 0, span, gain, cutoff = 2500,
   return target;
 }
 
-// Lufada de ar do golpe: ruído rosa num passa-banda que varre `from`→`to`, com
-// envelope em corcova (cresce e some), como lâmina cortando o ar.
+// Lufada de ar do golpe. O tom eólico (vórtices soltando da lâmina) sobe e desce
+// com a velocidade, e a velocidade cresce até perto do impacto e cai quando o
+// braço freia: altura e volume seguem a mesma curva, com pico a 3/4 do golpe.
 function whoosh(sr, rand, seconds, from, to, q = 1.4) {
   const noise = pink(samples(sr, seconds), rand);
-  sweep(noise, 'bandpass', sr, t => from * Math.pow(to / from, Math.min(1, t / seconds)), q);
-  return shape(noise, sr, t => Math.pow(Math.sin(Math.PI * Math.min(1, t / seconds)), 1.6));
+  const speed = t => {
+    const x = Math.min(1, t / seconds);
+    return x < .75 ? Math.sin(Math.PI / 2 * x / .75) : Math.cos(Math.PI / 2 * (x - .75) / .25);
+  };
+  sweep(noise, 'bandpass', sr, t => from * Math.pow(to / from, speed(t)), q);
+  return peakTo(shape(noise, sr, t => Math.pow(speed(t), 1.6)));
+}
+
+// Ronco irregular: ruído marrom abafado com o volume oscilando ao acaso, como o eco
+// que volta aos pedaços de encostas a distâncias diferentes.
+function rumble(sr, rand, seconds, { cutoff = 180, onset = .05, decay = 1, rate = 2048 }) {
+  const out = burst(sr, rand, seconds, { color: 'brown', frequency: cutoff, q: .5 });
+  let level = 0, goal = 0;
+  for (let i = 0; i < out.length; i++) {
+    const t = i / sr;
+    if (i % rate === 0) goal = between(rand, .15, 1);
+    level += (goal - level) * (3 / rate);
+    out[i] *= level * Math.min(1, t / onset) * Math.exp(-t / decay);
+  }
+  return peakTo(out);
+}
+
+// Eco do sertão: o som volta das encostas e paredes de taipa em cópias cada vez
+// mais tardias, baixas e abafadas. Cada cópia sai do som seco, não do já ecoado.
+function terrain(data, sr, rand, { first, count, gain, cutoff }) {
+  const dry = Float32Array.from(data);
+  let at = first;
+  for (let k = 0; k < count; k++) {
+    const copy = filter(Float32Array.from(dry), 'lowpass', sr, cutoff / (1 + k * .5), .6);
+    mix(data, copy, at * between(rand, .9, 1.1) * sr, gain * between(rand, .65, 1.05) / (1 + k * .8));
+    at += between(rand, .12, .32) * (1 + k * .4);
+  }
+  return data;
+}
+
+// Pé (descalço, alpercata, casco) batendo em terra seca. Passo em chão solto não é
+// um evento só: é o baque e, por cima, dezenas de microimpactos de pedrinha
+// batendo em pedrinha enquanto o peso assenta, mais o atrito do pé arrastando.
+function footstep(sr, rand, target, at, gain) {
+  mix(target, knock(sr, rand, .15, { touch: between(rand, .004, .007), base: between(rand, 110, 160), q: 2, count: 5, tilt: .6, rough: .5 }), at * sr, gain);
+  for (let k = 0; k < Math.floor(between(rand, 12, 20)); k++) {
+    const when = at + .003 + .06 * Math.pow(rand(), 1.3);
+    const grain = burst(sr, rand, .004, { type: 'bandpass', frequency: between(rand, 1200, 4000), q: 1.5, envelope: hit(.0001, .0007) });
+    mix(target, grain, when * sr, gain * between(rand, .08, .22));
+  }
+  mix(target, burst(sr, rand, .07, { color: 'pink', type: 'bandpass', frequency: between(rand, 1500, 2500), q: .7, envelope: t => Math.sin(Math.PI * Math.min(1, t / .07)) }), (at + .002) * sr, gain * .12);
+  return target;
+}
+
+// Galho ou graveto partindo: contato curtíssimo em pau fino e seco.
+function snap(sr, rand, target, at, gain, low = 500, high = 1300) {
+  mix(target, knock(sr, rand, .2, { touch: between(rand, .0001, .0003), base: between(rand, low, high), q: 25, count: 7, tilt: .6 }), at * sr, gain);
+  return crackle(target, sr, rand, { count: 4, from: at, span: .02, gain: gain * .5, cutoff: 2400 });
 }
 
 // ---------------------------------------------------------------- armas de fogo
 
-// Disparo em camadas: estalo (onda de choque), corpo (gás saindo pelo cano),
-// soco grave, ronco de cauda, fagulhas e eco das encostas.
+// Disparo em camadas: (estalo da bala), estampido de Friedlander com a reflexão do
+// chão logo atrás, gás turbulento saindo pelo cano, ronco que fica, fumaça chiando,
+// fagulhas e eco das encostas; no fim, abafado pela distância e saturado como em
+// gravação de tiro de verdade (o microfone sempre satura).
 function gunshot(sr, rand, p) {
   const out = empty(sr, p.seconds);
-  // Onda em N: pressão sobe de uma vez e desce em rampa — o "crack" seco.
-  const nwave = samples(sr, p.nwave);
-  for (let i = 0; i < nwave; i++) out[i] += (1 - 2 * i / nwave) * p.crack;
-  mix(out, burst(sr, rand, p.crackTau * 9, { type: 'highpass', frequency: p.crackHp, envelope: hit(.00005, p.crackTau) }), 0, p.crack * .8);
-  const bodyTo = p.bodyTo, bodyFrom = p.bodyFrom;
-  mix(out, burst(sr, rand, p.bodyTau * 10, {
-    frequency: t => bodyTo + (bodyFrom - bodyTo) * Math.exp(-t / (p.bodyTau * 1.4)), q: .9,
-    envelope: hit(.0003, p.bodyTau)
-  }), 0, p.body);
-  mix(out, saturate(thump(sr, p.thumpTau * 8, p.thumpFrom, p.thumpTo, .02, hit(.0015, p.thumpTau)), 2.2), 0, p.thump);
-  mix(out, burst(sr, rand, p.tailTau * 7, { color: 'brown', frequency: p.tailCut, q: .6, envelope: hit(.012, p.tailTau) }), 0, p.tail);
-  if (p.sparks) crackle(out, sr, rand, { count: p.sparks, from: .003, span: p.sparkSpan, gain: p.sparkGain, cutoff: 3200 });
-  filter(out, 'highpass', sr, 28, .7);
-  for (const [delay, gain, cutoff] of p.echoes) echo(out, sr, delay * between(rand, .85, 1.2), gain * between(rand, .7, 1.1), cutoff);
-  saturate(out, p.drive);
+  const at = Math.round((p.lead ?? 0) * sr);
+  if (p.crack) {
+    // Bala supersônica: onda em N de fração de milissegundo, que passa antes de o
+    // estampido da boca chegar.
+    const nwave = samples(sr, .0002);
+    for (let i = 0; i < nwave; i++) out[at + i] += (1 - 2 * i / nwave) * p.crack;
+  }
+  const start = at + Math.round((p.crack ? .0025 : 0) * sr);
+  const blast = friedlander(sr, p.T, { b: p.b });
+  mix(out, blast, start, 1);
+  // Reflexão do chão poucos milissegundos depois: o pente que dá cor de lugar.
+  mix(out, filter(Float32Array.from(blast), 'lowpass', sr, 3000, .7), start + p.ground * sr, .5);
+  mix(out, burst(sr, rand, p.gasTau * 8, {
+    frequency: t => p.gasTo + (p.gasFrom - p.gasTo) * Math.exp(-t / (p.gasTau * .8)), q: .6,
+    envelope: hit(.0002, p.gasTau)
+  }), start, p.gas);
+  mix(out, rumble(sr, rand, Math.min(p.seconds, p.tailTau * 5), { cutoff: p.tailCut, onset: .015, decay: p.tailTau }), start, p.tail);
+  if (p.smoke) mix(out, burst(sr, rand, .5, { color: 'pink', type: 'bandpass', frequency: 1800, q: .5, envelope: hit(.01, .12) }), start, p.smoke);
+  if (p.sparks) crackle(out, sr, rand, { count: p.sparks, from: (start / sr) + .003, span: p.sparkSpan, gain: .18, cutoff: 3200 });
+  // Paredes de taipa e casas do arraial: reflexões próximas entre 10 e 70 ms, o
+  // que gravação de tiro em lugar habitado sempre mostra antes do eco dos morros.
+  const near = Float32Array.from(out);
+  for (const [from, to, gain] of [[.009, .014, .32], [.019, .028, .22], [.05, .07, .14]]) {
+    mix(out, filter(Float32Array.from(near), 'lowpass', sr, 4000, .6), (at / sr + between(rand, from, to)) * sr, gain);
+  }
+  filter(out, 'highpass', sr, 30, .7);
+  terrain(out, sr, rand, p.echo);
+  filter(out, 'lowpass', sr, p.air, .7);
+  normalize(1, out);
+  return saturate(out, p.drive);
+}
+
+// Espingarda de pederneira e bacamarte dos sertanejos: pólvora negra, estampido
+// largo e gordo, muita fumaça e fagulha. Antes do tiro, o cão bate a pedra no aço
+// e a escorva chia na caçoleta — o "tchic-fsss-BUM" que ninguém confunde.
+function musket(sr, rand, heavy) {
+  const lead = between(rand, .04, .065);
+  const out = gunshot(sr, rand, {
+    seconds: heavy ? 1.8 : 1.5, lead, T: heavy ? .0034 : .0026, b: 1.3, ground: between(rand, .0025, .0045),
+    gas: heavy ? 1 : .85, gasFrom: between(rand, 5000, 7000), gasTo: heavy ? 260 : 380, gasTau: heavy ? .045 : .034,
+    tail: heavy ? .45 : .36, tailCut: 420, tailTau: heavy ? .38 : .3,
+    smoke: .14, sparks: heavy ? 20 : 10, sparkSpan: heavy ? .18 : .12,
+    echo: { first: between(rand, .16, .26), count: 3, gain: .32, cutoff: 1500 },
+    air: 9000, drive: heavy ? 2 : 1.8
+  });
+  mix(out, knock(sr, rand, .12, { touch: .00006, base: between(rand, 2200, 2800), q: 90, count: 6, tilt: .5 }), 0, .14);
+  mix(out, burst(sr, rand, lead, {
+    color: 'pink', type: 'bandpass', frequency: between(rand, 2500, 3500), q: .8,
+    envelope: t => Math.min(1, t / .006) * Math.min(1, (lead - t) / .01)
+  }), .004 * sr, .1);
+  return fade(out, sr, 0, .1);
+}
+
+// Fuzil Mannlicher do Exército: pólvora sem fumaça, estalo da bala na frente,
+// estampido curto e seco; o que fica é o eco nos morros. Depois, o soldado puxa e
+// empurra o ferrolho de ação reta: clac-clac.
+function rifle(sr, rand) {
+  const out = gunshot(sr, rand, {
+    seconds: 1.5, crack: .8, T: .0014, b: 1.8, ground: between(rand, .002, .0035),
+    gas: .7, gasFrom: between(rand, 8000, 10000), gasTo: 900, gasTau: .018,
+    tail: .3, tailCut: 650, tailTau: .24,
+    echo: { first: between(rand, .14, .22), count: 4, gain: .38, cutoff: 2200 },
+    air: 11000, drive: 2
+  });
+  const pull = between(rand, .55, .75);
+  for (const [dt, base, gain] of [[0, between(rand, 1700, 2100), .1], [between(rand, .1, .14), between(rand, 2100, 2500), .13]]) {
+    mix(out, burst(sr, rand, .02, { type: 'bandpass', frequency: 3500, q: .8, envelope: hit(.0005, .006) }), (pull + dt - .01) * sr, gain * .5);
+    mix(out, knock(sr, rand, .15, { touch: .00008, base, q: 60, count: 7, tilt: .45 }), (pull + dt) * sr, gain);
+  }
   return fade(out, sr, 0, .08);
 }
 
-// Bacamarte e espingarda de carregar pela boca: pólvora negra, soco mais gordo,
-// muita fagulha e fumaça (cauda longa).
-function musket(sr, rand, heavy) {
-  return gunshot(sr, rand, {
-    seconds: heavy ? 1.7 : 1.4, nwave: .0007, crack: .7, crackHp: 1800, crackTau: .0012,
-    body: 1, bodyFrom: between(rand, 4800, 6500), bodyTo: heavy ? 520 : 700, bodyTau: heavy ? .034 : .026,
-    thump: heavy ? 1 : .8, thumpFrom: between(rand, 120, 150), thumpTo: heavy ? 38 : 48, thumpTau: heavy ? .11 : .085,
-    tail: heavy ? .55 : .42, tailCut: 520, tailTau: heavy ? .36 : .28,
-    sparks: heavy ? 22 : 12, sparkSpan: heavy ? .2 : .14, sparkGain: .2,
-    echoes: [[between(rand, .2, .3), .2, 1400], [between(rand, .45, .62), .09, 900]], drive: 1.6
-  });
-}
-
-// Fuzil Mannlicher do Exército: pólvora sem fumaça, estalo agudo e estreito,
-// corpo curto; o que se ouve longe é o estampido batendo nos morros.
-function rifle(sr, rand) {
-  return gunshot(sr, rand, {
-    seconds: 1.3, nwave: .00045, crack: 1, crackHp: 2600, crackTau: .0008,
-    body: .75, bodyFrom: between(rand, 7500, 9500), bodyTo: 1300, bodyTau: .016,
-    thump: .55, thumpFrom: 170, thumpTo: between(rand, 62, 75), thumpTau: .055,
-    tail: .28, tailCut: 800, tailTau: .22,
-    sparks: 0, echoes: [[between(rand, .18, .26), .26, 2200], [between(rand, .4, .55), .12, 1200]], drive: 1.8
-  });
-}
-
-// Canhão Krupp e Matadeira: boca de fogo que se sente no peito. Estéreo, com o
-// ronco rolando pelos morros (cada canal com o seu).
+// Canhão Krupp e Matadeira: boca de fogo que se sente no peito. A carreta recua
+// batendo ferro e madeira e as rodas rolam na terra; o ronco rola pelos morros,
+// cada canal com o seu.
 function cannon(sr, rand, heavy) {
   const seconds = heavy ? 4.6 : 3.8;
   const core = gunshot(sr, rand, {
-    seconds, nwave: .0012, crack: .55, crackHp: 900, crackTau: .003,
-    body: 1, bodyFrom: 3200, bodyTo: heavy ? 150 : 200, bodyTau: heavy ? .14 : .11,
-    thump: 1.1, thumpFrom: 90, thumpTo: heavy ? 26 : 32, thumpTau: heavy ? .42 : .34,
-    tail: .7, tailCut: 260, tailTau: heavy ? 1.2 : .95,
-    sparks: 30, sparkSpan: .35, sparkGain: .12,
-    echoes: [[.55, .3, 700], [1.15, .18, 500], [1.9, .1, 380]], drive: 1.9
+    seconds, T: heavy ? .014 : .009, b: 1.2, ground: between(rand, .006, .01),
+    gas: 1, gasFrom: 3000, gasTo: heavy ? 90 : 120, gasTau: heavy ? .13 : .1,
+    tail: .6, tailCut: 220, tailTau: heavy ? 1.1 : .85, smoke: .1, sparks: 24, sparkSpan: .3,
+    echo: { first: between(rand, .45, .65), count: 4, gain: .4, cutoff: 700 },
+    air: 7000, drive: 2.2
   });
+  const recoil = between(rand, .06, .1);
+  mix(core, knock(sr, rand, .5, { touch: .0012, base: between(rand, 140, 180), q: 25, count: 8, tilt: .7 }), recoil * sr, .2);
+  mix(core, knock(sr, rand, .4, { touch: .0002, base: between(rand, 900, 1200), q: 50, count: 6, tilt: .6 }), (recoil + .01) * sr, .08);
+  mix(core, burst(sr, rand, .7, { color: 'brown', frequency: 500, q: .6, envelope: t => Math.min(1, t / .05) * Math.exp(-t / .2) }), (recoil + .02) * sr, .15);
   const { l, r } = widen(core, sr, .25);
   for (const channel of [l, r]) {
-    const roll = burst(sr, rand, seconds, { color: 'brown', frequency: 180, q: .5 });
-    // Rolar irregular: o eco chega aos pedaços, de encostas a distâncias diferentes.
-    let level = 0, goal = 0;
-    for (let i = 0; i < roll.length; i++) {
-      const t = i / sr;
-      if (i % 2048 === 0) goal = between(rand, .2, 1);
-      level += (goal - level) * .0008;
-      roll[i] *= level * Math.min(1, t / .08) * Math.exp(-t / (heavy ? 1.5 : 1.15));
-    }
-    mix(channel, roll, sr * .03, .55);
+    mix(channel, rumble(sr, rand, seconds, { cutoff: 170, onset: .08, decay: heavy ? 1.5 : 1.15 }), sr * .03, .35);
     fade(channel, sr, 0, .4);
   }
   return { l, r };
 }
 
-// Granada caindo: estouro surdo de terra, sem estalo de cano, e chuva de torrão.
+// Granada caindo: estouro surdo de terra, sem estalo de cano, e a chuva de torrão
+// e cascalho voltando ao chão.
 function shellBurst(sr, rand) {
   const out = empty(sr, 2.6);
-  mix(out, burst(sr, rand, .9, { frequency: t => 140 + 2400 * Math.exp(-t / .07), q: .8, envelope: hit(.001, .09) }), 0, 1);
-  mix(out, saturate(thump(sr, 1.2, 110, 34, .03, hit(.003, .22)), 2.4), 0, 1);
-  mix(out, burst(sr, rand, 2.2, { color: 'brown', frequency: 220, q: .5, envelope: hit(.03, .7) }), 0, .5);
-  // Terra e pedra caindo de volta.
-  for (let k = 0; k < 70; k++) {
-    const at = .12 + 1.4 * Math.pow(rand(), 1.6);
-    const clod = burst(sr, rand, .02, { type: 'bandpass', frequency: between(rand, 700, 3000), q: 1.2, envelope: hit(.0003, .004) });
-    mix(out, clod, at * sr, between(rand, .03, .12) * Math.exp(-at * 1.4));
+  mix(out, friedlander(sr, between(rand, .012, .018), { b: 1.1 }), 0, 1);
+  mix(out, burst(sr, rand, .9, { frequency: t => 110 + 2600 * Math.exp(-t / .06), q: .6, envelope: hit(.0005, .1) }), 0, .9);
+  mix(out, rumble(sr, rand, 2.2, { cutoff: 200, onset: .02, decay: .6 }), 0, .45);
+  for (let k = 0; k < 90; k++) {
+    const at = .1 + 1.3 * Math.pow(rand(), 1.5);
+    const big = rand() < .3;
+    const clod = burst(sr, rand, big ? .04 : .015, {
+      type: 'bandpass', frequency: big ? between(rand, 250, 600) : between(rand, 900, 3200), q: 1,
+      envelope: hit(.0003, big ? .012 : .004)
+    });
+    mix(out, clod, at * sr, between(rand, .03, .12) * Math.exp(-at * 1.2));
   }
-  echo(out, sr, between(rand, .5, .7), .2, 600);
-  saturate(out, 1.7);
+  terrain(out, sr, rand, { first: between(rand, .45, .65), count: 3, gain: .3, cutoff: 650 });
+  filter(out, 'highpass', sr, 28, .7);
+  filter(out, 'lowpass', sr, 7500, .7);
+  normalize(1, out);
+  saturate(out, 2);
   return widen(fade(out, sr, 0, .3), sr, .3);
 }
 
 // ---------------------------------------------------------------- golpes
 
-// Pancada de madeira: soco grave + modos de pau, abafado pelo que recebe o golpe.
-function woodHit(sr, rand, target, at, base, gain = 1, damp = 1) {
-  const local = empty(sr, .4);
-  mix(local, thump(sr, .3, base * .7, base * .42, .015, hit(.001, .045 * damp)), 0, .9);
-  modes(local, sr, 0, [
-    { f: base * between(rand, .97, 1.03), a: .6, d: .05 * damp },
-    { f: base * between(rand, 2.2, 2.5), a: .35, d: .032 * damp },
-    { f: base * between(rand, 3.8, 4.4), a: .18, d: .02 * damp }
-  ], { rand });
-  mix(local, burst(sr, rand, .08, { frequency: 1400, envelope: hit(.0005, .012) }), 0, .45);
-  return mix(target, local, at * sr, gain);
-}
-
-// Lâmina batendo e cantando: modos inarmônicos de aço fino.
-function bladeRing(sr, rand, target, at, base, gain, sustain = 1) {
-  modes(target, sr, at, [
-    { f: base, a: .5, d: .09 * sustain },
-    { f: base * between(rand, 1.58, 1.66), a: .32, d: .07 * sustain },
-    { f: base * between(rand, 2.3, 2.45), a: .22, d: .05 * sustain },
-    { f: base * between(rand, 3.4, 3.6), a: .12, d: .035 * sustain }
-  ], { rand, gain });
-  mix(target, burst(sr, rand, .02, { type: 'highpass', frequency: 3000, envelope: hit(.0002, .003) }), at * sr, gain * .6);
+// Golpe em corpo de gente: surdo. A carne cede (contato longo), quase nada passa de
+// 1 kHz; por cima, o tapa da pele e do pano e o roçar da roupa logo depois.
+function fleshHit(sr, rand, target, at, gain = 1) {
+  mix(target, knock(sr, rand, .3, { touch: between(rand, .0035, .006), base: between(rand, 140, 190), q: 2.5, count: 6, tilt: .6, rough: .5 }), at * sr, gain);
+  mix(target, burst(sr, rand, .05, { type: 'bandpass', frequency: between(rand, 900, 1500), q: .8, envelope: hit(.0006, .007) }), at * sr, gain * .5);
+  mix(target, burst(sr, rand, .2, {
+    color: 'pink', type: 'bandpass', frequency: between(rand, 2200, 3200), q: .6,
+    envelope: t => Math.sin(Math.PI * Math.min(1, t / .2))
+  }), (at + .005) * sr, gain * .09);
   return target;
 }
 
+// Aço tocado: contato curtíssimo e Q alto, o anel fino da lâmina.
+function steel(sr, rand, target, at, base, gain, q = 300) {
+  return mix(target, knock(sr, rand, .6, { touch: .00006, base, q, count: 7, tilt: .45 }), at * sr, gain);
+}
+
+// Lâmina entrando: chiado agudo e curto do gume cortando pano e pele.
+function slice(sr, rand, target, at, gain) {
+  return mix(target, burst(sr, rand, .03, { type: 'bandpass', frequency: between(rand, 4000, 5500), q: 1, envelope: hit(.0003, .006) }), at * sr, gain);
+}
+
 function melee(sr, rand, weapon) {
-  const out = empty(sr, .7);
+  const out = empty(sr, .8);
   const swing = {
     club: [.13, 380, 1100, 1.1], machete: [.1, 1100, 3600, 1.8], spear: [.09, 420, 1300, 1.5],
-    bayonet: [.1, 600, 1700, 1.5], saber: [.17, 900, 4200, 2]
+    bayonet: [.1, 600, 1700, 1.5], saber: [.17, 900, 4200, 2.4]
   }[weapon] ?? [.13, 380, 1100, 1.1];
   const [length, from, to, q] = swing;
-  mix(out, whoosh(sr, rand, length * between(rand, .9, 1.15), from, to, q), 0, .55);
+  mix(out, whoosh(sr, rand, length * between(rand, .9, 1.15), from, to, q), 0, .35);
   const at = length * .85;
   if (weapon === 'machete') {
-    woodHit(sr, rand, out, at, between(rand, 150, 190), .7, .8);
-    bladeRing(sr, rand, out, at, between(rand, 2600, 3100), .22, .8);
-    mix(out, burst(sr, rand, .06, { type: 'bandpass', frequency: 2400, q: .8, envelope: hit(.0005, .01) }), at * sr, .5);
+    slice(sr, rand, out, at, .45);
+    steel(sr, rand, out, at, between(rand, 2400, 3000), .07, 250);
+    fleshHit(sr, rand, out, at + .002, .85);
   } else if (weapon === 'saber') {
-    woodHit(sr, rand, out, at, between(rand, 170, 210), .55, .7);
-    bladeRing(sr, rand, out, at, between(rand, 3000, 3400), .3, 2.2);
+    slice(sr, rand, out, at, .4);
+    steel(sr, rand, out, at, between(rand, 2800, 3400), .1, 600);
+    fleshHit(sr, rand, out, at + .002, .7);
   } else if (weapon === 'bayonet') {
-    woodHit(sr, rand, out, at, between(rand, 150, 180), .8, .9);
-    bladeRing(sr, rand, out, at - .004, between(rand, 1800, 2100), .18, .6);
+    fleshHit(sr, rand, out, at, 1);
+    // A coronha de madeira e a bandoleira do fuzil chacoalhando com o tranco.
+    mix(out, knock(sr, rand, .3, { touch: .0015, base: between(rand, 300, 380), q: 25, count: 7, tilt: .7 }), at * sr, .25);
+    steel(sr, rand, out, at + between(rand, .01, .04), between(rand, 2600, 3200), .06, 150);
   } else if (weapon === 'spear') {
-    woodHit(sr, rand, out, at, between(rand, 170, 220), .85, 1.1);
+    fleshHit(sr, rand, out, at, 1);
+    mix(out, knock(sr, rand, .3, { touch: .0015, base: between(rand, 260, 340), q: 22, count: 7, tilt: .7 }), at * sr, .3);
+    mix(out, burst(sr, rand, .04, { type: 'bandpass', frequency: 1800, q: .8, envelope: t => Math.sin(Math.PI * Math.min(1, t / .04)) }), (at + .004) * sr, .15);
   } else {
-    woodHit(sr, rand, out, at, between(rand, 120, 150), 1, 1.3);
+    fleshHit(sr, rand, out, at, 1);
+    // O porrete de pau-ferro também soa um instante.
+    mix(out, knock(sr, rand, .3, { touch: .0015, base: between(rand, 400, 600), q: 28, count: 7, tilt: .7 }), at * sr, .35);
   }
-  filter(out, 'highpass', sr, 50, .7);
+  filter(out, 'highpass', sr, 60, .7);
   return fade(out, sr, .002, .1);
 }
 
-// ---------------------------------------------------------------- vozes e corpos
+// ---------------------------------------------------------------- corpos
 
 const VOWELS = { a: [720, 1180, 2550], o: [520, 900, 2450], u: [360, 760, 2350], e: [520, 1650, 2500] };
 
-// Gemido curto: pulso glotal (Rosenberg) com tremor, passado por três formantes.
-// Baixo e breve de propósito — é a respiração que escapa na queda, não um grito.
-function groan(sr, rand, { seconds, from, to, vowel }) {
-  const n = samples(sr, seconds);
-  const source = new Float32Array(n);
-  let phase = 0, previous = 0, jitter = 0;
-  for (let i = 0; i < n; i++) {
-    const t = i / sr;
-    if (i % 64 === 0) jitter = (rand() - .5) * .04;
-    phase += (to + (from - to) * Math.exp(-t / (seconds * .5))) * (1 + jitter) / sr;
-    phase -= Math.floor(phase);
-    const g = phase < .4 ? .5 - .5 * Math.cos(Math.PI * phase / .4) : phase < .6 ? Math.cos(Math.PI * (phase - .4) / .4) : 0;
-    source[i] = (g - previous) * 8 + (rand() - .5) * .25 * g;
-    previous = g;
-  }
+// Ar escapando do peito no baque: ruído (sem pregas vocais) moldado pelos formantes
+// de uma vogal. Sopro convence; voz sintetizada vira robô.
+function exhale(sr, rand, seconds) {
+  const source = pink(samples(sr, seconds), rand);
+  const vowel = VOWELS[['a', 'o', 'u', 'e'][Math.floor(rand() * 4)]];
   const out = empty(sr, seconds);
-  VOWELS[vowel].forEach((f, k) => mix(out, filter(Float32Array.from(source), 'bandpass', sr, f * between(rand, .94, 1.06), 5 + k * 3), 0, [1, .55, .25][k]));
-  shape(out, sr, t => Math.min(1, t / .035) * Math.exp(-t / (seconds * .45)));
-  return out;
+  vowel.forEach((f, k) => mix(out, filter(Float32Array.from(source), 'bandpass', sr, f * between(rand, .94, 1.06), 4 + k * 2), 0, [1, .6, .3][k]));
+  shape(out, sr, t => Math.min(1, t / .03) * Math.exp(-t / (seconds * .35)));
+  return peakTo(out);
 }
 
-// Corpo caindo no chão batido: baque, poeira e (soldado) o equipamento chacoalhando.
+// Corpo caindo no chão batido: o sopro, os joelhos, depois o tronco; poeira e
+// cascalho. O soldado leva junto o fuzil (coronha e ferragem) e o cantil.
 function bodyFall(sr, rand, soldier) {
-  const out = empty(sr, 1.1);
-  const fallAt = between(rand, .16, .24);
-  mix(out, groan(sr, rand, {
-    seconds: between(rand, .28, .4), from: between(rand, 150, 190), to: between(rand, 85, 105),
-    vowel: ['a', 'o', 'u', 'e'][Math.floor(rand() * 4)]
-  }), 0, .22);
-  mix(out, thump(sr, .4, 95, 48, .02, hit(.002, .07)), fallAt * sr, .9);
-  mix(out, burst(sr, rand, .3, { frequency: 700, envelope: hit(.002, .05) }), fallAt * sr, .45);
-  mix(out, burst(sr, rand, .7, { color: 'pink', type: 'bandpass', frequency: 1300, q: .6, envelope: hit(.03, .16) }), (fallAt + .01) * sr, .12);
+  const out = empty(sr, 1.2);
+  const knees = between(rand, .14, .2);
+  const torso = knees + between(rand, .1, .16);
+  mix(out, exhale(sr, rand, between(rand, .22, .35)), 0, .25);
+  mix(out, burst(sr, rand, .25, {
+    color: 'pink', type: 'bandpass', frequency: 2500, q: .6,
+    envelope: t => Math.sin(Math.PI * Math.min(1, t / .25))
+  }), (knees - .06) * sr, .12);
+  mix(out, knock(sr, rand, .3, { touch: between(rand, .005, .007), base: between(rand, 120, 150), q: 1.8, count: 5, tilt: .6, rough: .5 }), knees * sr, .55);
+  mix(out, knock(sr, rand, .4, { touch: between(rand, .008, .011), base: between(rand, 90, 120), q: 1.6, count: 5, tilt: .6, rough: .5 }), torso * sr, 1);
+  mix(out, burst(sr, rand, .2, { type: 'bandpass', frequency: 1100, q: .7, envelope: hit(.001, .015) }), torso * sr, .3);
+  crackle(out, sr, rand, { count: 25, from: torso, span: .25, gain: .12, cutoff: 1800 });
+  mix(out, burst(sr, rand, .6, { color: 'pink', type: 'bandpass', frequency: 1200, q: .5, envelope: hit(.02, .15) }), torso * sr, .15);
   if (soldier) {
-    for (let k = 0; k < 4; k++) {
-      modes(out, sr, fallAt + between(rand, .005, .09), [
-        { f: between(rand, 1900, 2600), a: .12, d: .03 }, { f: between(rand, 3800, 4600), a: .06, d: .02 }
-      ], { rand });
-    }
+    const drop = torso + between(rand, .05, .15);
+    mix(out, knock(sr, rand, .3, { touch: .001, base: between(rand, 320, 400), q: 25, count: 8, tilt: .7 }), drop * sr, .35);
+    steel(sr, rand, out, drop + .003, between(rand, 1900, 2500), .12, 150);
+    mix(out, knock(sr, rand, .3, { touch: .0003, base: between(rand, 800, 1000), q: 60, count: 6, tilt: .6 }), (drop + between(rand, .03, .08)) * sr, .1);
   }
   filter(out, 'highpass', sr, 40, .7);
   return fade(out, sr, .002, .1);
@@ -253,42 +346,34 @@ function bodyFall(sr, rand, soldier) {
 
 // ---------------------------------------------------------------- madeira e trabalho
 
-// Machado entrando em tronco verde. O que faz soar como machado, e não como
-// pancada qualquer: o ataque é seco e brilhante (o gume corta antes do peso
-// chegar), o tronco responde com um "toc" oco e curto — madeira viva amortece
-// rápido —, o aço da cabeça vibra um instante, a fibra rasga em estalinhos e, às
-// vezes, uma lasca cai no chão. A mata devolve o golpe em eco.
+// Machado entrando em tronco verde. O gume corta antes de o peso chegar (estalo
+// seco e brilhante), o tronco responde com um "toc" de madeira viva, que amortece
+// rápido (Q baixo), o corpo da árvore dá o grave, a cabeça de aço vibra um
+// instante, a fibra rasga em estalinhos e às vezes uma lasca cai. A mata devolve.
 function chop(sr, rand) {
   const out = empty(sr, .9);
-  mix(out, burst(sr, rand, .006, { type: 'highpass', frequency: 2500, envelope: hit(.00003, .0007) }), 0, 1);
-  mix(out, burst(sr, rand, .06, { type: 'bandpass', frequency: between(rand, 1800, 2600), q: .9, envelope: hit(.0002, .007) }), 0, .9);
-  const knock = between(rand, 520, 780);
-  modes(out, sr, 0, [
-    { f: knock, a: .55, d: .022 }, { f: knock * between(rand, 1.5, 1.7), a: .3, d: .016 },
-    { f: knock * between(rand, 2.4, 2.7), a: .16, d: .011 }
-  ], { rand });
-  mix(out, thump(sr, .3, between(rand, 190, 230), between(rand, 110, 135), .01, hit(.0008, .04)), 0, .75);
-  modes(out, sr, .0005, [{ f: between(rand, 2900, 3400), a: .05, d: .05 }, { f: between(rand, 5200, 6000), a: .03, d: .03 }], { rand });
+  mix(out, burst(sr, rand, .008, { type: 'highpass', frequency: 3000, envelope: hit(.00003, .0009) }), 0, .55);
+  mix(out, knock(sr, rand, .5, { touch: .0004, base: between(rand, 380, 520), q: 9, count: 10, tilt: .7 }), 0, 1);
+  mix(out, knock(sr, rand, .5, { touch: .0015, base: between(rand, 110, 150), q: 4, count: 4, tilt: .9 }), 0, .6);
+  steel(sr, rand, out, 0, between(rand, 2600, 3200), .08, 140);
   crackle(out, sr, rand, { count: Math.floor(between(rand, 6, 12)), from: .002, span: .05, gain: .18, cutoff: 2800, spread: 1.5 });
-  if (rand() < .5) {
-    modes(out, sr, between(rand, .22, .4), [{ f: between(rand, 1400, 1900), a: .1, d: .01 }, { f: between(rand, 3000, 3600), a: .05, d: .006 }], { rand });
-  }
-  echo(out, sr, between(rand, .13, .2), .14, 1800);
-  echo(out, sr, between(rand, .32, .42), .06, 1200);
-  filter(out, 'highpass', sr, 80, .7);
+  if (rand() < .5) snap(sr, rand, out, between(rand, .22, .4), .15, 1200, 1700);
+  terrain(out, sr, rand, { first: between(rand, .13, .2), count: 2, gain: .2, cutoff: 1800 });
+  filter(out, 'highpass', sr, 70, .7);
   return fade(out, sr, 0, .12);
 }
 
-// Rangido de fibra cedendo: atrito de agarra-e-solta, uma série de estalinhos
-// cada vez mais juntos conforme o tronco se inclina, passados pelas ressonâncias
-// da madeira. Grave e irregular, como tronco grosso gemendo.
-function creak(sr, rand, seconds, from, to, gain) {
+// Rangido de fibra cedendo (stick-slip): atrito de agarra-e-solta, uma série de
+// estalinhos passados pelas ressonâncias da madeira. `jitter` baixo deixa o pulso
+// regular e o rangido quase afinado (eixo de carro de boi); alto, irregular
+// (tronco gemendo).
+function creak(sr, rand, seconds, from, to, { jitter = .5 } = {}) {
   const n = samples(sr, seconds);
   const pulses = new Float32Array(n);
   let phase = 0;
   for (let i = 0; i < n; i++) {
     const t = i / n;
-    phase += (from + (to - from) * t * t) * (1 + (rand() - .5) * .5) / sr;
+    phase += (from + (to - from) * t * t) * (1 + (rand() - .5) * jitter) / sr;
     if (phase >= 1) {
       phase -= 1;
       pulses[i] = (rand() < .5 ? -1 : 1) * between(rand, .3, 1);
@@ -300,56 +385,57 @@ function creak(sr, rand, seconds, from, to, gain) {
   mix(out, filter(pulses, 'bandpass', sr, between(rand, 2200, 2600), 5), 0, .25);
   // Cresce e falha: a fibra geme aos arrancos, não num som contínuo.
   let level = 0, goal = 0;
-  return shape(out, sr, t => {
+  shape(out, sr, t => {
     if (rand() < .0015) goal = between(rand, .25, 1);
     level += (goal - level) * .002;
-    return level * Math.min(1, t / .25) * Math.min(1, (seconds - t) / .2) * gain;
+    return level * Math.min(1, t / .25) * Math.min(1, (seconds - t) / .2);
   });
+  return peakTo(out);
 }
 
 // O tronco começa a tombar: estalo grande do último golpe abrindo a madeira,
-// rangido crescendo, galhos estalando cada vez mais e a copa ganhando
-// velocidade no ar. O baque fica para `treeLand`, tocado quando ela bate.
+// rangido crescendo, galhos estalando cada vez mais e a copa ganhando velocidade
+// no ar. O baque fica para `treeLand`, tocado quando ela bate.
 function treeCrack(sr, rand) {
   const seconds = 3.6;
   const channels = [];
   const shared = empty(sr, seconds);
-  mix(shared, burst(sr, rand, .1, { type: 'highpass', frequency: 900, envelope: hit(.0001, .006) }), 0, .9);
-  woodHit(sr, rand, shared, 0, between(rand, 150, 190), .8, 1.4);
+  mix(shared, burst(sr, rand, .05, { type: 'highpass', frequency: 1200, envelope: hit(.0001, .005) }), 0, .7);
+  mix(shared, knock(sr, rand, .8, { touch: .0004, base: between(rand, 160, 210), q: 9, count: 12, tilt: .7 }), 0, 1);
   crackle(shared, sr, rand, { count: 30, from: .005, span: .25, gain: .3, cutoff: 2200, spread: 2.2 });
-  mix(shared, creak(sr, rand, 2.9, between(rand, 18, 28), between(rand, 70, 110), 1), .2 * sr, .7);
+  mix(shared, creak(sr, rand, 2.9, between(rand, 18, 28), between(rand, 70, 110)), .2 * sr, .4);
   for (let c = 0; c < 2; c++) {
     const out = Float32Array.from(shared);
     // Estalos de fibra e galho: raros no começo, juntos no fim.
     crackle(out, sr, rand, { count: 45, from: .4, span: 2.8, gain: .14, cutoff: 1800, spread: .45 });
-    for (let k = 0; k < 4; k++) woodHit(sr, rand, out, between(rand, 1.2, 3), between(rand, 250, 420), between(rand, .08, .2), .8);
+    for (let k = 0; k < 4; k++) snap(sr, rand, out, between(rand, 1.2, 3), between(rand, .08, .2));
     // Copa cortando o ar: folhagem num passa-banda que sobe com a velocidade.
     mix(out, burst(sr, rand, seconds, {
       color: 'pink', type: 'bandpass', frequency: t => 700 + 2600 * Math.max(0, (t - 1.4) / 2), q: .7,
       envelope: t => Math.pow(Math.max(0, (t - 1.2) / 2.1), 2.2) * Math.min(1, (seconds - t) / .35)
-    }), 0, .5);
+    }), 0, .4);
     filter(out, 'highpass', sr, 50, .7);
     channels.push(fade(out, sr, 0, .3));
   }
   return { l: channels[0], r: channels[1] };
 }
 
-// A árvore bate no chão: baque surdo do tronco, a copa se arrebentando em galho
-// quebrado e folha, um quique menor e a folhagem assentando.
+// A árvore bate no chão: baque surdo do tronco (contato longuíssimo, a terra cede),
+// a copa se arrebentando em galho e folha, um quique menor e a folhagem assentando.
 function treeLand(sr, rand) {
   const seconds = 3;
   const shared = empty(sr, seconds);
-  mix(shared, saturate(thump(sr, 1, 85, 36, .025, hit(.002, .17)), 2.2), 0, 1);
-  mix(shared, burst(sr, rand, .5, { frequency: 900, envelope: hit(.001, .05) }), 0, .7);
-  mix(shared, burst(sr, rand, seconds, { color: 'brown', frequency: 160, q: .5, envelope: hit(.01, .4) }), 0, .45);
+  mix(shared, knock(sr, rand, .8, { touch: .01, base: between(rand, 70, 90), q: 1.6, count: 6, tilt: .5, rough: .5 }), 0, 1);
+  mix(shared, burst(sr, rand, .5, { color: 'brown', frequency: 350, q: .6, envelope: hit(.002, .1) }), 0, .7);
+  mix(shared, rumble(sr, rand, seconds, { cutoff: 160, onset: .01, decay: .4 }), 0, .4);
   const bounce = between(rand, .2, .3);
-  mix(shared, thump(sr, .6, 70, 40, .02, hit(.002, .09)), bounce * sr, .35);
+  mix(shared, knock(sr, rand, .5, { touch: .008, base: between(rand, 75, 95), q: 1.6, count: 5, tilt: .5, rough: .5 }), bounce * sr, .35);
   const channels = [];
   for (let c = 0; c < 2; c++) {
     const out = Float32Array.from(shared);
     crackle(out, sr, rand, { count: 70, from: .003, span: .6, gain: .22, cutoff: 1600, spread: 1.8 });
-    for (let k = 0; k < 7; k++) woodHit(sr, rand, out, between(rand, 0, .45), between(rand, 260, 600), between(rand, .1, .3), .7);
-    mix(out, burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: 2600, q: .5, envelope: hit(.004, .35) }), 0, .45);
+    for (let k = 0; k < 9; k++) snap(sr, rand, out, between(rand, 0, .5), between(rand, .1, .3), 300, 1200);
+    mix(out, burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: 2600, q: .5, envelope: hit(.004, .35) }), 0, .4);
     // Folhas e gravetos assentando.
     for (let k = 0; k < 22; k++) {
       const at = .3 + 1.6 * Math.pow(rand(), 1.4);
@@ -359,11 +445,12 @@ function treeLand(sr, rand) {
         envelope: t => Math.sin(Math.PI * Math.min(1, t / length))
       }), at * sr, between(rand, .04, .12) * Math.exp(-at));
     }
-    echo(out, sr, between(rand, .22, .3), .15, 900);
+    terrain(out, sr, rand, { first: between(rand, .22, .3), count: 2, gain: .2, cutoff: 900 });
     filter(out, 'highpass', sr, 30, .7);
-    saturate(out, 1.3);
-    channels.push(fade(out, sr, 0, .5));
+    channels.push(out);
   }
+  normalize(1, ...channels);
+  for (const out of channels) fade(saturate(out, 1.4), sr, 0, .5);
   return { l: channels[0], r: channels[1] };
 }
 
@@ -377,54 +464,68 @@ function gather(sr, rand) {
       color: 'pink', type: 'bandpass', frequency: between(rand, 2500, 5500), q: between(rand, .8, 1.6),
       envelope: t => Math.sin(Math.PI * Math.min(1, t / length))
     });
-    mix(out, leaf, between(rand, 0, .32) * sr, between(rand, .3, 1));
+    mix(out, leaf, between(rand, 0, .32) * sr, between(rand, .25, .8));
   }
-  modes(out, sr, between(rand, .08, .2), [{ f: between(rand, 1500, 2100), a: .35, d: .012 }, { f: between(rand, 3200, 3900), a: .2, d: .008 }], { rand });
+  snap(sr, rand, out, between(rand, .08, .2), .5, 1300, 1900);
   filter(out, 'highpass', sr, 300, .7);
   return fade(out, sr, .003, .08);
 }
 
-// Estacas assentadas no chão: baque de madeira e poeira.
+// Estaca entrando na terra: contato macio (a terra cede), modos de pau, o baque
+// surdo do chão e a poeira.
 function place(sr, rand) {
   const out = empty(sr, .7);
-  woodHit(sr, rand, out, 0, between(rand, 140, 170), 1, 1.5);
-  woodHit(sr, rand, out, between(rand, .06, .09), between(rand, 190, 230), .45, 1);
-  mix(out, burst(sr, rand, .6, { color: 'pink', type: 'bandpass', frequency: 900, q: .5, envelope: hit(.01, .12) }), 0, .22);
+  mix(out, knock(sr, rand, .5, { touch: between(rand, .0015, .0025), base: between(rand, 200, 280), q: 25, count: 8, tilt: .7 }), 0, 1);
+  mix(out, burst(sr, rand, .15, { color: 'brown', frequency: 400, q: .6, envelope: hit(.001, .03) }), 0, .6);
+  mix(out, knock(sr, rand, .4, { touch: .001, base: between(rand, 260, 340), q: 28, count: 8, tilt: .7 }), between(rand, .06, .09) * sr, .4);
+  mix(out, burst(sr, rand, .6, { color: 'pink', type: 'bandpass', frequency: 900, q: .5, envelope: hit(.01, .12) }), 0, .2);
+  crackle(out, sr, rand, { count: 10, from: .005, span: .15, gain: .1, cutoff: 1800 });
   return fade(out, sr, 0, .1);
 }
 
-// Martelo em prego e caibro.
-function hammer(sr, rand, target, at, gain = 1) {
-  modes(target, sr, at, [
-    { f: between(rand, 1050, 1250), a: .4, d: .03 }, { f: between(rand, 2400, 2800), a: .25, d: .02 },
-    { f: between(rand, 4100, 4600), a: .1, d: .012 }
-  ], { rand, gain });
-  return woodHit(sr, rand, target, at, between(rand, 230, 290), gain * .8, .8);
+// Maço de pau batendo em esteio e caibro: madeira em madeira, modos de viga.
+function mallet(sr, rand, target, at, gain = 1) {
+  mix(target, knock(sr, rand, .4, { touch: between(rand, .0005, .0009), base: between(rand, 240, 340), q: 32, count: 9, tilt: .75 }), at * sr, gain);
+  mix(target, burst(sr, rand, .01, { type: 'highpass', frequency: 2200, envelope: hit(.00005, .001) }), at * sr, gain * .3);
+  return target;
 }
 
-// Desmoronar de casa de taipa e madeira: um estalo grande, vigas caindo cada vez
-// mais juntas, ronco de terra e poeira assentando.
+// Martelo de ferro no prego: aço em aço e o caibro respondendo embaixo.
+function nail(sr, rand, target, at, gain = 1) {
+  steel(sr, rand, target, at, between(rand, 1300, 1700), gain * .45, 120);
+  return mallet(sr, rand, target, at, gain * .8);
+}
+
+// Desmoronar de casa de taipa e madeira: a viga mestra cede, vigas caindo cada vez
+// mais juntas, o barro da parede esfarelando em torrões, ronco de terra e poeira.
 function collapse(sr, rand) {
   const seconds = 3.2;
   const channels = [empty(sr, seconds), empty(sr, seconds)];
   const shared = empty(sr, seconds);
-  woodHit(sr, rand, shared, 0, 110, 1, 2);
-  mix(shared, burst(sr, rand, .25, { type: 'highpass', frequency: 1200, envelope: hit(.0003, .03) }), 0, .6);
-  mix(shared, burst(sr, rand, seconds, { color: 'brown', frequency: 200, q: .5, envelope: t => Math.min(1, t / .15) * Math.exp(-t / .9) }), 0, .7);
+  mix(shared, knock(sr, rand, 1, { touch: .002, base: between(rand, 90, 120), q: 18, count: 10, tilt: .7 }), 0, 1);
+  mix(shared, burst(sr, rand, .25, { type: 'highpass', frequency: 1200, envelope: hit(.0003, .03) }), 0, .5);
+  mix(shared, rumble(sr, rand, seconds, { cutoff: 220, onset: .1, decay: .9 }), 0, .6);
   let at = .18;
   while (at < 1.5) {
     const side = channels[rand() < .5 ? 0 : 1];
-    woodHit(sr, rand, side, at, between(rand, 120, 320), between(rand, .3, .8), between(rand, 1, 2));
+    mix(side, knock(sr, rand, .6, {
+      touch: between(rand, .0008, .003), base: between(rand, 120, 320), q: between(rand, 15, 30), count: 9, tilt: .7
+    }), at * sr, between(rand, .3, .75));
     crackle(side, sr, rand, { count: 6, from: at, span: .1, gain: .15, cutoff: 2600 });
     at += between(rand, .05, .22) * (1.3 - at / 1.6);
   }
   for (const channel of channels) {
     mix(channel, shared, 0, 1);
+    for (let k = 0; k < 60; k++) {
+      const when = .15 + 1.8 * Math.pow(rand(), 1.3);
+      const clod = burst(sr, rand, .03, { type: 'bandpass', frequency: between(rand, 300, 1400), q: 1, envelope: hit(.0005, .008) });
+      mix(channel, clod, when * sr, between(rand, .05, .2) * Math.exp(-when * .8));
+    }
     mix(channel, burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: 1800, q: .5, envelope: t => Math.min(1, t / .3) * Math.exp(-t / .8) }), .1 * sr, .12);
     crackle(channel, sr, rand, { count: 40, from: .4, span: 1.6, gain: .05, cutoff: 1800, spread: 1.3 });
-    saturate(channel, 1.4);
-    fade(channel, sr, 0, .4);
   }
+  normalize(1, ...channels);
+  for (const channel of channels) fade(saturate(channel, 1.4), sr, 0, .4);
   return { l: channels[0], r: channels[1] };
 }
 
@@ -483,52 +584,75 @@ function bell(sr, rand, target, at, prime, { gain = 1, decay = 1, bright = 1 } =
 
 // Corneta de metal: aditivo com brilho que acompanha a força do sopro — no ataque
 // o agudo explode (o "blat" do metal) e no sustento acalma; afinação entra de
-// baixo e ganha vibrato depois de firmar.
+// baixo e ganha vibrato depois de firmar. Harmônico nenhum fica parado: cada um
+// oscila um pouco e a afinação deriva, como no sopro de gente; parado, vira órgão.
 function bugle(sr, rand, seconds, notes) {
   const out = empty(sr, seconds);
   for (const { f, at, length, force = 1 } of notes) {
     const n = samples(sr, length + .09);
     const start = Math.round(at * sr);
     const phases = new Float64Array(16).map(() => rand() * TAU);
+    const shimmer = new Float64Array(16).fill(1), goal = new Float64Array(16).fill(1);
+    let drift = 0, wander = 0;
     for (let i = 0; i < n && start + i < out.length; i++) {
       const t = i / sr;
+      if (i % 512 === 0) {
+        for (let k = 0; k < 16; k++) goal[k] = 1 + (rand() - .5) * .3;
+        drift = drift * .85 + (rand() - .5) * .003;
+      }
+      wander += (drift - wander) * .002;
       const release = t > length ? Math.max(0, 1 - (t - length) / .09) : 1;
       const amp = Math.min(1, t / .03) * release * force;
       const brightness = (t < .05 ? .55 + .45 * Math.sin(Math.PI * t / .05) : .62) * release * force;
       const vibrato = t > .16 ? .0045 * Math.sin(TAU * 5.3 * t) * Math.min(1, (t - .16) / .15) : 0;
-      const pitch = f * (1 - .035 * Math.exp(-t / .018)) * (1 + vibrato);
+      const pitch = f * (1 - .035 * Math.exp(-t / .018)) * (1 + vibrato + wander);
       let sample = 0;
       for (let k = 1; k <= 16; k++) {
         const frequency = pitch * k;
         if (frequency > sr * .45) break;
+        shimmer[k - 1] += (goal[k - 1] - shimmer[k - 1]) * .004;
         phases[k - 1] += TAU * frequency / sr;
-        sample += Math.sin(phases[k - 1]) * Math.exp(-(k - 1) * (1.9 - 1.5 * brightness)) / Math.sqrt(k);
+        sample += Math.sin(phases[k - 1]) * shimmer[k - 1] * Math.exp(-(k - 1) * (1.9 - 1.5 * brightness)) / Math.sqrt(k);
       }
       out[start + i] += sample * amp;
     }
-    mix(out, burst(sr, rand, length, { color: 'pink', type: 'bandpass', frequency: f * 4, q: 2, envelope: hit(.02, length * .6) }), start, .04);
+    // Sopro: o ar passando pelo bocal, mais forte no ataque.
+    mix(out, burst(sr, rand, length, { color: 'pink', type: 'bandpass', frequency: f * 4, q: 2, envelope: hit(.02, length * .6) }), start, .08);
   }
   filter(out, 'highpass', sr, 160, .7);
   filter(out, 'peak', sr, 1250, 1, 4);
   return filter(out, 'lowpass', sr, 5200, .7);
 }
 
-// Toque de caixa clara: pele, aro e esteira.
+// Toque de caixa clara: pele (modos de membrana), esteira chiando e o aro.
 function snare(sr, rand, target, at, gain) {
   const local = empty(sr, .3);
-  modes(local, sr, 0, [{ f: between(rand, 180, 195), a: .6, d: .03 }, { f: 330, a: .3, d: .02 }], { rand });
+  mix(local, knock(sr, rand, .3, { touch: .0005, base: between(rand, 180, 200), q: 18, ratios: [1, 1.59, 2.14, 2.3, 2.65, 2.92], tilt: .6 }), 0, .55);
   mix(local, burst(sr, rand, .3, { type: 'bandpass', frequency: 3600, q: .6, envelope: hit(.0005, .055) }), 0, .9);
-  mix(local, burst(sr, rand, .3, { type: 'highpass', frequency: 2200, envelope: hit(.002, .09) }), 0, .4);
+  mix(local, burst(sr, rand, .3, { type: 'highpass', frequency: 2200, envelope: hit(.002, .09) }), 0, .3);
   return mix(target, local, at * sr, gain);
 }
 
-// Zabumba: pele grande e grave, batida de maço.
+// Senoide com glissando: a pele grande afrouxa depois da batida e a nota cai. Aqui
+// a queda é física (tensão da membrana), por isso só o zabumba a usa.
+function thump(sr, seconds, from, to, glide, envelope) {
+  const out = empty(sr, seconds);
+  let phase = 0;
+  for (let i = 0; i < out.length; i++) {
+    const t = i / sr;
+    phase += TAU * (to + (from - to) * Math.exp(-t / glide)) / sr;
+    out[i] = Math.sin(phase) * envelope(t);
+  }
+  return out;
+}
+
+// Zabumba: pele grande e grave, batida de maço de feltro.
 function zabumba(sr, rand, target, at, gain) {
   const base = between(rand, 78, 88);
   const local = empty(sr, .8);
-  mix(local, thump(sr, .7, base * 1.5, base, .012, hit(.001, .2)), 0, 1);
-  modes(local, sr, 0, [{ f: base * 1.59, a: .3, d: .1 }, { f: base * 2.14, a: .18, d: .07 }, { f: base * 2.65, a: .1, d: .05 }], { rand });
-  mix(local, burst(sr, rand, .03, { frequency: 2200, envelope: hit(.0003, .004) }), 0, .35);
+  mix(local, thump(sr, .7, base * 1.25, base, .02, hit(.001, .2)), 0, 1);
+  mix(local, knock(sr, rand, .8, { touch: .003, base, q: 25, ratios: [1.59, 2.14, 2.65, 2.92, 3.16], tilt: .7 }), 0, .45);
+  mix(local, burst(sr, rand, .03, { frequency: 2200, envelope: hit(.0003, .004) }), 0, .2);
   return mix(target, local, at * sr, gain);
 }
 
@@ -565,94 +689,90 @@ function rout(sr, rand) {
   const out = mix(empty(sr, seconds), horn, 0, .8);
   for (let k = 0; k < 28; k++) {
     const at = between(rand, .2, 2.1);
-    const step = burst(sr, rand, .06, { frequency: between(rand, 900, 1800), q: .8, envelope: hit(.002, .012) });
-    mix(out, step, at * sr, between(rand, .15, .35) * (1 - at / 2.6));
+    footstep(sr, rand, out, at, between(rand, .12, .3) * (1 - at / 2.6));
   }
   return widen(fade(out, sr, 0, .3), sr, .35);
 }
 
 function convoy(sr, rand) {
-  // Carro de boi de Monte Santo: roda de madeira gemendo e chocalho do boi.
+  // Carro de boi de Monte Santo: o eixo de madeira esfregando no cocão "canta"
+  // (stick-slip quase afinado, subindo com a volta da roda), a roda rola na terra,
+  // os bois pisam e o chocalho bate no balanço do passo.
   const seconds = 2.8;
   const out = empty(sr, seconds);
-  for (const [at, length] of [[0, .55], [.9, .7], [1.85, .6]]) {
-    const n = samples(sr, length);
-    const creak = new Float32Array(n);
-    const from = between(rand, 330, 420), to = from * between(rand, 1.15, 1.4);
-    let phase = 0;
-    for (let i = 0; i < n; i++) {
-      const t = i / n;
-      phase += (from + (to - from) * t) * (1 + (rand() - .5) * .08) / sr;
-      phase -= Math.floor(phase);
-      creak[i] = (phase * 2 - 1) * Math.pow(Math.sin(Math.PI * t), .7);
-    }
-    const wood = Float32Array.from(creak);
-    filter(creak, 'bandpass', sr, 950, 4);
-    filter(wood, 'bandpass', sr, 2200, 5);
-    mix(out, mix(creak, wood, 0, .6), at * sr, .4);
+  for (const [at, length] of [[0, .6], [.9, .75], [1.85, .65]]) {
+    const from = between(rand, 300, 380);
+    mix(out, creak(sr, rand, length, from, from * between(rand, 1.12, 1.3), { jitter: .06 }), at * sr, .45);
   }
-  // Chocalho: o badalo bate no balanço do passo, forte-fraco irregular.
+  mix(out, rumble(sr, rand, seconds, { cutoff: 300, onset: .3, decay: 4, rate: 1024 }), 0, .15);
+  for (let k = 0; k < 4; k++) footstep(sr, rand, out, .2 + k * between(rand, .55, .65), .25);
   for (let k = 0; k < 7; k++) {
     const at = .1 + k * between(rand, .33, .42);
     if (at > seconds - .4) break;
-    const base = between(rand, 540, 580);
-    modes(out, sr, at, [
-      { f: base, a: .3, d: .16 }, { f: base * 1.52, a: .22, d: .12 }, { f: base * 2.04, a: .15, d: .08 },
-      { f: base * 2.76, a: .1, d: .05 }, { f: base * 3.41, a: .06, d: .035 }
-    ], { rand, gain: k % 2 ? .55 : 1 });
+    mix(out, knock(sr, rand, .6, {
+      touch: .0002, base: between(rand, 540, 580), q: 110, ratios: [1, 1.52, 2.04, 2.76, 3.41], tilt: .5
+    }), at * sr, k % 2 ? .14 : .25);
   }
-  filter(out, 'highpass', sr, 120, .7);
+  filter(out, 'highpass', sr, 60, .7);
   return widen(fade(out, sr, .002, .3), sr, .3);
 }
 
 function rain(sr, rand) {
-  // Pancada de chuva no sertão: trovão distante, a chuva chegando, gotas.
-  const seconds = 6.5;
+  // Pancada de chuva no sertão: trovão longe, o chiado chegando em rajadas e os
+  // pingos batendo em folha e terra seca. Trovão de verdade dura 10–15 s, em
+  // estrondos a uns 2 s um do outro, com o grosso da energia entre 40 e 200 Hz.
+  const seconds = 11;
+  const density = t => Math.min(1, t / 1.8) * Math.min(1, (seconds - t) / 2);
+  const thunder = empty(sr, seconds);
+  let clap = .3;
+  for (let k = 0; k < 4 && clap < seconds - 3; k++) {
+    const roll = rumble(sr, rand, seconds - clap, { cutoff: between(rand, 110, 170), onset: between(rand, .08, .3), decay: between(rand, 1.4, 2.4), rate: 3000 });
+    mix(roll, burst(sr, rand, 1.2, { type: 'bandpass', frequency: between(rand, 350, 600), q: .6, envelope: t => Math.min(1, t / .12) * Math.exp(-t / .35) }), .05 * sr, k ? .15 : .3);
+    mix(thunder, roll, clap * sr, [1, .75, .55, .4][k]);
+    clap += between(rand, 1.6, 2.6);
+  }
+  normalize(1, thunder);
   const channels = [];
   for (let c = 0; c < 2; c++) {
     const out = empty(sr, seconds);
-    mix(out, burst(sr, rand, seconds, {
-      color: 'pink', type: 'bandpass', frequency: 3800, q: .35,
-      envelope: t => Math.min(1, t / 1.8) * Math.min(1, (seconds - t) / 1.6)
-    }), 0, .35);
-    for (let k = 0; k < 2600; k++) {
-      const at = seconds * Math.pow(rand(), .8);
-      const density = Math.min(1, at / 1.8) * Math.min(1, (seconds - at) / 1.6);
-      if (rand() > density) continue;
-      modes(out, sr, at, [{ f: between(rand, 1800, 6500), a: between(rand, .02, .09), d: between(rand, .0015, .004) }], { rand, attack: .0002 });
+    const hiss = burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: 3200, q: .4 });
+    let gust = .6, goal = .6;
+    for (let i = 0; i < hiss.length; i++) {
+      if (i % 4096 === 0) goal = between(rand, .45, 1);
+      gust += (goal - gust) * .0004;
+      hiss[i] *= gust * density(i / sr);
     }
-    channels.push(out);
-  }
-  const thunder = burst(sr, rand, seconds, { color: 'brown', frequency: 150, q: .5 });
-  let level = 0, goal = 0;
-  for (let i = 0; i < thunder.length; i++) {
-    const t = i / sr;
-    if (i % 3000 === 0) goal = rand() * rand();
-    level += (goal - level) * .0005;
-    thunder[i] *= level * Math.min(1, t / .5) * Math.exp(-t / 1.6);
-  }
-  for (const out of channels) {
-    mix(out, thunder, 0, 1.4);
+    mix(out, hiss, 0, .3);
+    mix(out, burst(sr, rand, seconds, { color: 'pink', frequency: 700, q: .5, envelope: density }), 0, .15);
+    for (let k = 0; k < 3000; k++) {
+      const at = seconds * rand();
+      if (rand() > density(at)) continue;
+      const length = between(rand, .003, .008);
+      const drop = burst(sr, rand, length, { type: 'bandpass', frequency: between(rand, 1500, 6000), q: 1.2, envelope: hit(.0001, .0015) });
+      mix(out, drop, at * sr, between(rand, .03, .12));
+    }
+    mix(out, thunder, 0, .8);
     filter(out, 'highpass', sr, 35, .7);
-    fade(out, sr, .05, .6);
+    channels.push(fade(out, sr, .05, .6));
   }
   return { l: channels[0], r: channels[1] };
 }
 
+// Clique de interface: um toque seco de madeira, curto.
 function uiClick(sr, rand) {
   const out = empty(sr, .12);
-  modes(out, sr, 0, [{ f: between(rand, 1500, 1700), a: .5, d: .014 }, { f: between(rand, 3600, 4000), a: .2, d: .008 }], { rand });
-  mix(out, burst(sr, rand, .01, { type: 'highpass', frequency: 3000, envelope: hit(.0001, .0006) }), 0, .3);
+  mix(out, knock(sr, rand, .12, { touch: .00012, base: between(rand, 1800, 2200), q: 30, count: 6, tilt: .7 }), 0, 1);
+  mix(out, burst(sr, rand, .01, { type: 'highpass', frequency: 3000, envelope: hit(.0001, .0006) }), 0, .2);
   return fade(out, sr, 0, .03);
 }
 
-// Moedas tilintando (Vilanova negociando).
+// Moedas tilintando (Vilanova negociando): disquinhos de metal, contato
+// curtíssimo e Q altíssimo, caindo uns sobre os outros.
 function coins(sr, rand) {
   const out = empty(sr, .6);
   for (let k = 0; k < 5; k++) {
     const at = .03 + k * between(rand, .035, .07);
-    const base = between(rand, 3200, 4400);
-    modes(out, sr, at, [{ f: base, a: .2, d: .08 }, { f: base * 1.43, a: .14, d: .06 }, { f: base * 2.05, a: .08, d: .04 }], { rand, gain: between(rand, .5, 1) });
+    mix(out, knock(sr, rand, .4, { touch: .00005, base: between(rand, 3200, 4400), q: 700, count: 6, tilt: .4 }), at * sr, between(rand, .5, 1));
   }
   return fade(out, sr, .001, .08);
 }
@@ -662,7 +782,7 @@ const COMMANDS = {
   stop: (sr, rand) => viola(sr, rand, .6, [[D3, 0, { damp: .85, decay: .3, octave: true }]]),
   attack: (sr, rand) => { const out = empty(sr, .8); zabumba(sr, rand, out, 0, 1); return fade(out, sr, 0, .1); },
   gather: (sr, rand) => mix(viola(sr, rand, .7, [[E4, .02, { damp: .6, decay: .5, gain: .7 }]]), gather(sr, rand), 0, .5),
-  build: (sr, rand) => { const out = empty(sr, .5); hammer(sr, rand, out, 0, 1); return fade(out, sr, 0, .08); },
+  build: (sr, rand) => { const out = empty(sr, .5); nail(sr, rand, out, 0, 1); return fade(out, sr, 0, .08); },
   train: (sr, rand) => viola(sr, rand, .8, [[D4, 0, { damp: .55, decay: .6 }], [A4, .035, { damp: .55, decay: .6, gain: .8 }]]),
   trade: coins
 };
@@ -688,14 +808,12 @@ export const RECIPES = {
   'death-enemy': { variants: 4, make: (sr, rand) => bodyFall(sr, rand, true) },
 
   chop: { variants: 6, make: chop },
-  // Maço de pau batendo em esteio e caibro na obra: madeira em madeira, sem o aço.
+  // Maço de pau batendo em esteio e caibro na obra, com a mata devolvendo.
   hammer: {
     variants: 4,
     make: (sr, rand) => {
-      const out = empty(sr, .5);
-      woodHit(sr, rand, out, 0, between(rand, 190, 250), 1, .9);
-      modes(out, sr, 0, [{ f: between(rand, 700, 900), a: .3, d: .02 }, { f: between(rand, 1500, 1800), a: .12, d: .012 }], { rand });
-      echo(out, sr, between(rand, .14, .2), .1, 1500);
+      const out = mallet(sr, rand, empty(sr, .5), 0, 1);
+      terrain(out, sr, rand, { first: between(rand, .14, .2), count: 1, gain: .12, cutoff: 1500 });
       return fade(out, sr, 0, .08);
     }
   },
@@ -707,9 +825,9 @@ export const RECIPES = {
     variants: 2,
     make: (sr, rand) => {
       const out = empty(sr, 2.6);
-      hammer(sr, rand, out, 0, .9);
-      hammer(sr, rand, out, .17, .8);
-      hammer(sr, rand, out, .3, 1);
+      nail(sr, rand, out, 0, .9);
+      nail(sr, rand, out, .17, .8);
+      nail(sr, rand, out, .3, 1);
       return mix(out, viola(sr, rand, 2.6, strum([D3, A3, D4, Fs4, A4], .55, .022)), 0, .8);
     }
   },
@@ -737,15 +855,6 @@ export const RECIPES = {
       const out = empty(sr, 2.6);
       for (let k = 0; k < 4; k++) bell(sr, rand, out, k * .28, between(rand, 518, 526), { gain: k % 2 ? .75 : 1, decay: .55, bright: 1.2 });
       return widen(fade(out, sr, 0, .3), sr, .25);
-    }
-  },
-  vespers: {
-    variants: 1,
-    make: (sr, rand) => {
-      // Ave-Maria: três badaladas do sino grande, sem pressa.
-      const out = empty(sr, 8);
-      for (let k = 0; k < 3; k++) bell(sr, rand, out, k * 1.9, 196, { gain: k === 2 ? 1 : .85, decay: 1.25, bright: .8 });
-      return widen(fade(out, sr, 0, 1), sr, .35);
     }
   },
   convoy: { variants: 2, make: convoy },

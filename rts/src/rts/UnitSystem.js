@@ -7,7 +7,7 @@ import { CORPSE_DAYS } from '../config/death.js';
 import {
   FOOD_PER_TRIP, FOOD_GATHER_TIME, WOOD_PER_LOG, RESOURCE_SEARCH_RANGE, LOG_PICKUP_RANGE,
   GUARD_LEASH, WORKER_RETALIATE, WOUND_HIT_CHANCE, UNIT_TYPES, ROAD_WIDTH, CENTER, PLAZA_RADIUS,
-  THICKET, TOCAIA, THIRST, NIGHT, DEBANDADA, CONVOY, VESPERS, TRADE, HILL_REACH
+  THICKET, TOCAIA, THIRST, NIGHT, DEBANDADA, CONVOY, TRADE, HILL_REACH, BLESSING_FADE
 } from '../config/rts.js';
 import { Corpse } from '../entities/Corpse.js';
 import { Log } from '../entities/Log.js';
@@ -37,13 +37,13 @@ const HOME_RADIUS = 260;
 // arma, queimar, treinar quem está na fila, e cuidar de quem morre e do que é
 // destruído. Soldado sem ordem vai atrás da construção mais perto do arraial. Quem
 // tem arma de fogo para à distância e atira; o canhão mira as casas; Antônio
-// Conselheiro não briga, mas quem está perto dele luta com mais ânimo.
+// Conselheiro não briga: reza pelos feridos que chegam perto dele.
 //
 // E o que vem de "Os Sertões": a caatinga atrasa a tropa e esconde o jagunço (que,
 // parado nela, fica de tocaia); a tropa longe d'água vai ficando com sede; de noite
 // ela erra mais; do alto do morro o tiro vai mais longe; oficial morto põe os
 // soldados em debandada, largando os fuzis; o comboio de Monte Santo chega com
-// escolta e volta; e na reza do fim da tarde a pregação do Conselheiro cresce.
+// escolta e volta.
 export class UnitSystem {
   #state;
   #locomotion;
@@ -131,8 +131,8 @@ export class UnitSystem {
     if (state.winner) {
       for (const u of state.organisms) this.#coolDown(u, dt);
     } else {
-      if (state.vespers > 0) state.vespers = Math.max(0, state.vespers - dt);
       this.#preach(dt);
+      this.#bless(dt);
       for (const u of state.organisms) this.#tick(u, dt);
       for (const b of state.buildings) {
         this.#trainTick(b, dt);
@@ -157,13 +157,11 @@ export class UnitSystem {
     state.floaters = state.floaters.filter(floater => floater.time < floater.life);
   }
 
-  // ---- A pregação ----
+  // ---- Comando e cura dos chefes ----
 
-  // Quem está ao alcance da voz do Conselheiro (ou do comando de João Abade, ou das
-  // mãos de Manuel Quadrado) fica `inspired`: `boost` é o maior ânimo que lhe chega e
-  // a cura soma. Na reza do fim da tarde a pregação alcança mais longe e anima mais.
+  // Quem está ao alcance do comando de João Abade ou das mãos de Manuel Quadrado
+  // fica `inspired`: `boost` é o maior ânimo que lhe chega e a cura soma.
   #preach(dt) {
-    const vespers = this.#state.vespers > 0;
     const holders = this.#state.organisms.filter(u => u.stats.aura && u.life > 0);
     for (const u of this.#state.organisms) {
       u.inspired = false;
@@ -172,14 +170,36 @@ export class UnitSystem {
       for (const holder of holders) {
         if (holder === u || holder.team !== u.team) continue;
         const aura = holder.stats.aura;
-        const praying = vespers && holder.type === 'conselheiro';
-        const radius = aura.radius * (praying ? VESPERS.radius : 1);
-        if (Math.hypot(u.x - holder.x, u.y - holder.y) > radius) continue;
-        u.boost = Math.max(u.boost, aura.damage * (praying ? VESPERS.damage / 1.25 : 1));
-        heal += aura.heal * (praying ? VESPERS.heal : 1);
+        if (Math.hypot(u.x - holder.x, u.y - holder.y) > aura.radius) continue;
+        u.boost = Math.max(u.boost, aura.damage);
+        heal += aura.heal;
       }
       if (u.boost > 1 || heal > 0) u.inspired = true;
       if (heal > 0) u.life = Math.min(u.maxLife, u.life + heal * dt);
+    }
+  }
+
+  // A oração de Antônio Conselheiro: cada ferido do lado dele, bem perto, sara até a
+  // vida encher, com a luz divina por cima (`blessed`, desenhada pela
+  // BlessingLayer). Enquanto há por quem rezar ele ergue o bordão (`praying`, lido
+  // pela pose) virado para o mais machucado. Quem está inteiro não recebe nada, e
+  // sem ferido por perto ele fica como qualquer um.
+  #bless(dt) {
+    const state = this.#state;
+    for (const u of state.organisms) u.blessed = Math.max(0, u.blessed - dt);
+    for (const holy of state.organisms) {
+      const blessing = holy.stats.blessing;
+      if (!blessing || holy.life <= 0) continue;
+      let worst = null;
+      for (const u of state.organisms) {
+        if (u === holy || u.team !== holy.team || u.life <= 0 || u.life >= u.maxLife) continue;
+        if (Math.hypot(u.x - holy.x, u.y - holy.y) > blessing.radius) continue;
+        u.life = Math.min(u.maxLife, u.life + blessing.heal * dt);
+        u.blessed = BLESSING_FADE;
+        if (!worst || u.life / u.maxLife < worst.life / worst.maxLife) worst = u;
+      }
+      holy.praying = worst ? BLESSING_FADE : Math.max(0, holy.praying - dt);
+      if (worst && holy.speed < 1) holy.heading = Math.atan2(worst.y - holy.y, worst.x - holy.x);
     }
   }
 

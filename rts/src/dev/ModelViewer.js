@@ -133,7 +133,7 @@ const ANIMS = [
     estados: [['Respirando', 0, 1]], motion: (m, u, p, e, len) => { m.elapsed = p * len; m.weapon = u.armed && u.weapon !== 'cannon' ? u.weapon : null; } },
   { id: 'tocaia', grupo: 'Estados', label: 'Tocaia (escondido no mato)', chars: ['rifleman', 'warrior', 'spearman', 'pajeu'], len: () => 3,
     estados: [['Agachado espiando', 0, 1]], motion: (m, u) => { m.crouch = true; m.weapon = u.weapon; } },
-  { id: 'pregacao', grupo: 'Estados', label: 'Pregação do Conselheiro', chars: ['conselheiro'], len: () => TAU / 1.1,
+  { id: 'pregacao', grupo: 'Estados', label: 'Oração do Conselheiro', chars: ['conselheiro'], len: () => TAU / 1.1,
     estados: [['Braço desce', 0, .5], ['Braço sobe', .5, 1]], motion: (m, u, p, e, len) => { m.preach = true; m.elapsed = p * len - 1.37 / 1.1 + Math.PI / 2 / 1.1; } },
   { id: 'dormir', grupo: 'Estados', label: 'Dormindo', chars: ALL_UNITS, len: () => 4.5,
     estados: [['Inspira', 0, .5], ['Expira', .5, 1]], motion: (m, u, p) => { m.rest = 1; m.breath = .5 - .5 * Math.cos(p * TAU); m.eyes = .1; } },

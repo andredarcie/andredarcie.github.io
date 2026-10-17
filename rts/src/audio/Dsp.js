@@ -155,10 +155,86 @@ export function modes(target, sr, at, list, { gain = 1, attack = .0006, rand = M
   return target;
 }
 
+// Pulso de contato: meia-senoide de área 1 durando o tempo em que os dois corpos
+// se tocam, com um fio de aspereza (superfície nunca é lisa). É ele que decide o
+// brilho do impacto: aço em aço dura ~0,1 ms e acorda modos agudos; pau em carne
+// dura ~5 ms e só passa o grave.
+export function contact(sr, rand, seconds, roughness = .15) {
+  const n = Math.max(2, Math.round(seconds * sr));
+  const out = new Float32Array(n);
+  let sum = 0;
+  for (let i = 0; i < n; i++) {
+    out[i] = Math.sin(Math.PI * (i + .5) / n) * (1 + roughness * (rand() * 2 - 1));
+    sum += out[i];
+  }
+  for (let i = 0; i < n; i++) out[i] /= sum;
+  return out;
+}
+
+// Modos de um corpo sólido: razões inarmônicas sorteadas (ou dadas), amplitude
+// caindo com a ordem e amortecimento por Q constante (d = Q / πf), que faz o
+// agudo morrer antes do grave, como em madeira e metal de verdade. Q baixo
+// (2–15) é carne, terra e madeira verde; alto (100–1000) é aço.
+export function solid(rand, base, { count = 8, ratios, q = 30, tilt = .8, spread = .03 } = {}) {
+  const list = [];
+  let ratio = 1;
+  for (let k = 0; k < count; k++) {
+    if (ratios) {
+      if (k >= ratios.length) break;
+      ratio = ratios[k];
+    } else if (k) ratio *= between(rand, 1.3, 1.85);
+    const f = base * ratio * (1 + (rand() * 2 - 1) * spread);
+    list.push({ f, a: between(rand, .55, 1) / Math.pow(k + 1, tilt), d: q / (Math.PI * f) });
+  }
+  return list;
+}
+
+// Banco de ressonadores de dois polos excitado por um sinal: modelo físico de
+// impacto (golpe → corpo que vibra). Ao contrário de somar senoides prontas, aqui
+// a própria excitação filtra quais modos acordam, então batida macia soa surda
+// sem precisar de regra à parte. Com excitação de área 1, cada modo sai com
+// amplitude ≈ `a`.
+export function resonate(excitation, sr, list, seconds) {
+  const n = samples(sr, seconds);
+  const out = new Float32Array(n);
+  for (const { f, a, d } of list) {
+    if (f >= sr * .45) continue;
+    const r = Math.exp(-1 / (d * sr));
+    const w = TAU * f / sr;
+    const a1 = 2 * r * Math.cos(w), a2 = r * r, g = a * Math.sin(w);
+    const end = Math.min(n, excitation.length + Math.ceil(d * 7 * sr));
+    let y1 = 0, y2 = 0;
+    for (let i = 0; i < end; i++) {
+      const y = g * (i < excitation.length ? excitation[i] : 0) + a1 * y1 - a2 * y2;
+      y2 = y1;
+      y1 = y;
+      out[i] += y;
+    }
+  }
+  return out;
+}
+
+// Onda de explosão de Friedlander: a pressão salta, cai cruzando o zero no fim da
+// fase positiva `T` e volta como sucção fraca. É o formato físico do estampido de
+// boca de fogo e de granada: sem altura definida, ao contrário da senoide
+// descendo, que soa a bumbo eletrônico. T curto (1 ms) = estalo de fuzil; longo
+// (15 ms) = canhão.
+export function friedlander(sr, T, { b = 1.5, rise = .00006, length = 7 } = {}) {
+  const n = samples(sr, T * length);
+  const out = new Float32Array(n);
+  const r = Math.max(1, rise * sr);
+  for (let i = 0; i < n; i++) {
+    const x = i / sr / T;
+    out[i] = (1 - x) * Math.exp(-b * x) * Math.min(1, (i + 1) / r);
+  }
+  return out;
+}
+
 // Corda dedilhada (Karplus-Strong estendido): ruído filtrado no atraso realimentado,
 // com afinação fracionária por all-pass. `bright` é a força da palheta, `damp` o
-// quanto a corda perde agudo por volta (abafado ↔ aberto).
-export function pluck(sr, frequency, seconds, rand, { bright = .55, damp = .5, decay = 1 } = {}) {
+// quanto a corda perde agudo por volta (abafado ↔ aberto), `position` o ponto da
+// corda onde o dedo pega (perto do cavalete = fino e nasal).
+export function pluck(sr, frequency, seconds, rand, { bright = .55, damp = .5, decay = 1, position = between(rand, .12, .22) } = {}) {
   const n = samples(sr, seconds);
   const out = new Float32Array(n);
   // Filtro da volta: média ponderada entre amostra atual e anterior. s = 0 não
@@ -178,6 +254,10 @@ export function pluck(sr, frequency, seconds, rand, { bright = .55, damp = .5, d
     lp += pick * ((rand() * 2 - 1) - lp);
     line[i] = lp;
   }
+  // Ponto de pinçada: o pente apaga os harmônicos com nó onde o dedo pegou, que é
+  // o que separa corda de verdade do "plim" genérico de Karplus-Strong.
+  const pickAt = Math.max(1, Math.round(line.length * position));
+  for (let i = line.length - 1; i >= pickAt; i--) line[i] -= line[i - pickAt];
   // Perda por volta ajustada para a nota durar `decay` segundos até -60 dB.
   const loopsPerSecond = frequency;
   const loss = Math.pow(.001, 1 / Math.max(1, decay * loopsPerSecond));
@@ -243,9 +323,10 @@ export function widen(mono, sr, amount = .35) {
 }
 
 // Resposta ao impulso de campo aberto: reflexões esparsas de chão, parede de taipa
-// e encosta nos primeiros 90 ms, depois cauda difusa que escurece com o tempo,
-// como o ar e o mato engolem o agudo. Canais com ruído próprio = estéreo largo.
-export function outdoorImpulse(sr, seconds = 1.8, seed = 7) {
+// e encosta nos primeiros 90 ms, depois cauda difusa curta e fraca que escurece
+// depressa. Campo aberto é seco: cauda longa aqui vira salão de igreja e denuncia
+// o som como falso; a distância vem dos ecos discretos de cada receita.
+export function outdoorImpulse(sr, seconds = 1.1, seed = 7) {
   const rand = random(seed);
   const n = samples(sr, seconds);
   const channels = [];
@@ -259,9 +340,9 @@ export function outdoorImpulse(sr, seconds = 1.8, seed = 7) {
     const lowpass = new Biquad('lowpass', sr, 9000, .5);
     for (let i = 0; i < n; i++) {
       const t = i / sr;
-      if ((i & 31) === 0) lowpass.set(9000 * Math.exp(-t * 2.6) + 500, .5);
+      if ((i & 31) === 0) lowpass.set(7000 * Math.exp(-t * 4.5) + 400, .5);
       const onset = Math.min(1, t / .025);
-      data[i] += lowpass.tick(tail[i]) * onset * Math.exp(-t * 3.4) * .5;
+      data[i] += lowpass.tick(tail[i]) * onset * Math.exp(-t * 7.5) * .3;
     }
     fade(data, sr, 0, .2);
     channels.push(data);

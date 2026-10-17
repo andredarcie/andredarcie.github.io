@@ -20,28 +20,42 @@ export class PlayerInput {
   #selection;
   #commands;
   #hud;
+  #grid;
   #cameraController;
   #lastTap = { unit: null, time: 0 };
   #boxElement;
   #boxStart = null;
   #boxEnd = null;
 
-  constructor({ canvas, view, state, selection, commands, hud, boxElement }) {
+  constructor({ canvas, view, state, selection, commands, hud, grid, boxElement }) {
     this.#canvas = canvas;
     this.#view = view;
     this.#state = state;
     this.#selection = selection;
     this.#commands = commands;
     this.#hud = hud;
+    this.#grid = grid;
     this.#boxElement = boxElement;
     canvas.addEventListener('click', event => {
       if (this.#cameraController?.consumeClickSuppression()) return;
       this.#tap(event.clientX, event.clientY);
     });
-    // Mouse sem botão apertado: a obra fantasma acompanha o cursor.
+    // Mouse sem botão apertado: a obra fantasma acompanha o cursor, e em casa
+    // vermelha o cursor avisa que ali não se clica.
     canvas.addEventListener('pointermove', event => {
-      if (event.pointerType !== 'mouse' || event.buttons || !this.#selection.placing) return;
-      this.#selection.hover = this.#view.pickGround(event.clientX, event.clientY);
+      if (event.pointerType !== 'mouse' || event.buttons) return;
+      if (!this.#selection.placing) {
+        canvas.style.cursor = '';
+        return;
+      }
+      const hover = this.#view.pickGround(event.clientX, event.clientY);
+      this.#selection.hover = hover;
+      const open = hover && this.#grid.isOpen(this.#grid.snap(hover.x, hover.y));
+      canvas.style.cursor = open ? 'copy' : 'not-allowed';
+    });
+    // Esc larga a obra e o jogo volta a correr.
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && this.#selection.placing) this.#selection.stopPlacing();
     });
   }
 
@@ -146,10 +160,14 @@ export class PlayerInput {
     this.#selection.setUnits(same);
   }
 
+  // No modo de obra só casa verde aceita o toque; na vermelha nada acontece, nem
+  // aviso: o erro não chega a existir. A obra assenta no centro da casa.
   #place(point) {
     const selection = this.#selection;
     const kind = selection.placing;
-    const result = this.#commands.place('player', kind, point.x, point.y);
+    const cell = this.#grid.snap(point.x, point.y);
+    if (!this.#grid.isOpen(cell)) return;
+    const result = this.#commands.place('player', kind, cell.x, cell.y);
     if (!result.ok) {
       this.#hud.toast(result.reason, 'warn');
       return;
@@ -157,7 +175,8 @@ export class PlayerInput {
     const workers = selection.units.filter(u => u.type === 'worker');
     if (workers.length) this.#commands.build(workers, result.building);
     selection.stopPlacing();
-    this.#ping(point.x, point.y, 'build');
+    this.#canvas.style.cursor = '';
+    this.#ping(cell.x, cell.y, 'build');
     this.#hud.toast(`${BUILDING_TYPES[kind].label}: obra marcada`);
   }
 

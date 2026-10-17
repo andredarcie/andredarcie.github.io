@@ -750,9 +750,9 @@ export class CharacterModel {
     }
     // Debandada: corre de braços para o alto, sem olhar para trás.
     if (panic && stride > .2 && !(strike > 0)) CharacterModel.#posePanic(view, gait);
-    // O Conselheiro parado prega: braço direito erguido e a mão falando, o bordão
-    // firme na esquerda, a cabeça acompanhando a fala.
-    if (preach && idle && !guard) CharacterModel.#posePreach(view, elapsed, seed);
+    // O Conselheiro parado reza por um ferido: o bordão erguido balançando sobre ele
+    // e a outra mão estendida.
+    if (preach && idle && !guard) CharacterModel.#posePray(view, elapsed, seed);
     if (hurt > 0 && rest < .5) {
       // Recuo: o tronco joga para trás e torce com o tranco, e a cabeça vai junto.
       body.rotation.x -= .38 * hurt;
@@ -871,16 +871,17 @@ export class CharacterModel {
     neck.rotation.x -= .15;
   }
 
-  // Pregação: o braço direito sobe e desce devagar com a mão aberta para o povo, o
-  // bordão firme na esquerda, a cabeça acompanhando as frases.
-  static #posePreach(view, elapsed, seed) {
+  // Oração sobre um ferido: o braço esquerdo ergue o bordão à frente e o balança
+  // devagar de um lado a outro, como quem benze; a mão direita fica estendida para
+  // a pessoa, palma aberta, e a cabeça baixa.
+  static #posePray(view, elapsed, seed) {
     const { neck, armLeft, armRight, forearmLeft, forearmRight } = view.userData;
-    const phrase = Math.sin(elapsed * 1.1 + seed);
-    armRight.rotation.set(-1.9 - .45 * phrase, 0, .3);
-    forearmRight.rotation.x = -.45 - .35 * Math.max(0, -phrase);
-    armLeft.rotation.set(-.3, 0, -.1);
-    forearmLeft.rotation.x = 0;
-    neck.rotation.x = -.12 + phrase * .08;
+    const sway = Math.sin(elapsed * 2.2 + seed);
+    armLeft.rotation.set(-1.25 - .15 * Math.abs(sway), 0, -.1 + .35 * sway);
+    forearmLeft.rotation.x = -.35;
+    armRight.rotation.set(-1.35, 0, .2);
+    forearmRight.rotation.x = -.2 - .1 * Math.sin(elapsed * 1.3 + seed);
+    neck.rotation.x = .22;
     neck.rotation.y *= .3;
   }
 

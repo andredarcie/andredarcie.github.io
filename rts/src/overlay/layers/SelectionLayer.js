@@ -1,59 +1,48 @@
-import { BUILDING_TYPES, TOWER, VESPERS } from '../../config/rts.js';
+import { BUILDING_TYPES, TOWER } from '../../config/rts.js';
 import { TowerSystem } from '../../rts/TowerSystem.js';
 
 const PING_COLORS = Object.freeze({
   move: '#7dff9a', attack: '#ff5a48', gather: '#ffe066', build: '#ffd08a', rally: '#9ad0ff'
 });
 
-// No chão (desenhado deitado, em unidades do mundo): o alcance da pregação do
-// Conselheiro, anel embaixo de quem está
+// No chão (desenhado deitado, em unidades do mundo): o alcance do comando de João
+// Abade e das mãos de Manuel Quadrado, anel embaixo de quem está
 // selecionado, contorno da construção escolhida e o ponto de encontro dela, o
 // alcance da torre escolhida, a obra fantasma que o jogador está posicionando (com o
-// alcance, se for torre) e a marca da última ordem.
+// alcance, se for torre) e a marca da última ordem. No modo de obra, por baixo de
+// tudo, a grade verde e vermelha de onde a obra pode assentar.
 export class SelectionLayer {
   #state;
   #selection;
-  #commands;
+  #grid;
 
-  constructor(state, selection, commands) {
+  constructor(state, selection, grid) {
     this.#state = state;
     this.#selection = selection;
-    this.#commands = commands;
+    this.#grid = grid;
   }
 
   draw({ ctx, elapsed }) {
     const state = this.#state;
     const s = this.#selection;
     ctx.save();
-    // O alcance da pregação do Conselheiro (dourado), do comando de João Abade
-    // (vermelho-terra) e das mãos de Manuel Quadrado (verde), sempre à vista, de leve.
-    // Na reza do fim da tarde o círculo do Conselheiro cresce e pulsa como o sino.
+    this.#grid.sync(s.placing);
+    if (s.placing) this.#grid.draw(ctx);
+    // O alcance do comando de João Abade (vermelho-terra) e das mãos de Manuel
+    // Quadrado (verde), sempre à vista, de leve.
     for (const u of state.organisms) {
       if (!u.stats.aura || u.team !== 'player') continue;
-      const tone = u.type === 'conselheiro' ? '255, 211, 107' : u.stats.aura.heal > u.stats.aura.damage ? '150, 220, 140' : '230, 140, 90';
-      const praying = u.type === 'conselheiro' && state.vespers > 0;
-      const radius = u.stats.aura.radius * (praying ? VESPERS.radius : 1);
-      ctx.fillStyle = `rgba(${tone}, ${praying ? .1 : .05})`;
-      ctx.strokeStyle = `rgba(${tone}, ${praying ? .7 : .4})`;
-      ctx.lineWidth = praying ? 1.8 : 1.2;
+      const tone = u.stats.aura.heal > u.stats.aura.damage ? '150, 220, 140' : '230, 140, 90';
+      ctx.fillStyle = `rgba(${tone}, .05)`;
+      ctx.strokeStyle = `rgba(${tone}, .4)`;
+      ctx.lineWidth = 1.2;
       ctx.setLineDash([3, 6]);
       ctx.lineDashOffset = elapsed * 3;
       ctx.beginPath();
-      ctx.arc(u.x, u.y, radius, 0, Math.PI * 2);
+      ctx.arc(u.x, u.y, u.stats.aura.radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
       ctx.setLineDash([]);
-      if (praying) {
-        // Ondas do sino saindo do Conselheiro.
-        for (let k = 0; k < 3; k++) {
-          const t = (elapsed * .5 + k / 3) % 1;
-          ctx.strokeStyle = `rgba(${tone}, ${(1 - t) * .5})`;
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(u.x, u.y, 12 + t * radius, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-      }
     }
     // Jagunço de tocaia: um anel verde tracejado bem fechado no pé.
     for (const u of state.organisms) {
@@ -112,8 +101,12 @@ export class SelectionLayer {
     ctx.fill();
   }
 
-  #ghost(ctx, kind, point) {
-    const ok = this.#commands.canPlace(kind, point.x, point.y);
+  // A obra fantasma assenta no centro da casa sob o cursor, verde ou vermelha como
+  // a própria casa.
+  #ghost(ctx, kind, hover) {
+    const point = this.#grid.snap(hover.x, hover.y);
+    if (!point) return;
+    const ok = this.#grid.isOpen(point);
     const radius = BUILDING_TYPES[kind].radius;
     if (kind === 'tower') this.#range(ctx, point.x, point.y, TOWER.range[0], 0);
     ctx.fillStyle = ok ? 'rgba(120, 255, 150, .28)' : 'rgba(255, 80, 70, .3)';

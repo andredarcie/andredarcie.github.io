@@ -31,10 +31,15 @@ export class Unit {
     this.power = power;
     // O traje (CharacterModel.equip): chapéu, saia, camisolão, correame, canhão...
     this.look = look;
-    // Sob a pregação de Antônio Conselheiro (ou o comando de João Abade): bate mais
-    // forte (`boost`) e se recupera.
+    // Sob o comando de João Abade ou as mãos de Manuel Quadrado: bate mais forte
+    // (`boost`) e se recupera.
     this.inspired = false;
     this.boost = 1;
+    // A oração do Conselheiro: `blessed` é a luz sobre quem ele está curando e
+    // `praying` o bordão erguido nele mesmo; os dois são segundos que somem devagar
+    // quando a cura acaba.
+    this.blessed = 0;
+    this.praying = 0;
     // Tocaia: parado na caatinga, some da vista do inimigo; `ambush` multiplica o
     // primeiro golpe de quem saiu dela.
     this.hidden = false;

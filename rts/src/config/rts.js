@@ -128,7 +128,7 @@ export const UNIT_TYPES = Object.freeze({
   conselheiro: {
     label: 'Antônio Conselheiro', plural: 'Antônio Conselheiro', icon: 'cross', hp: 240, damage: 0, weapon: null,
     reach: 0, interval: 1, swing: 1, speed: .8, size: 10.4, sight: 0, vsBuilding: 0, look: 'conselheiro',
-    passive: true, aura: { radius: 110, damage: 1.25, heal: 1.2 }
+    passive: true, blessing: { radius: 34, heal: 6 }
   },
   // Os chefes de Belo Monte (Os Sertões, O Homem e A Luta). Chegam ao arraial com os
   // romeiros, um por vez (HEROES); cada um é único e, morto, não volta.
@@ -303,11 +303,11 @@ export const CONVOY = Object.freeze({ every: 3, firstAfter: 2, escort: 2, reach:
 export const CERCO = Object.freeze({ from: 12, every: 4, share: .3 });
 // Matadeira: chega com a 4ª expedição, de oito em oito ondas.
 export const MATADEIRA = Object.freeze({ from: 8, every: 8 });
-// "Ao cair da tarde, a voz do sino apelidava os fiéis para a oração": na reza a
-// pregação do Conselheiro alcança mais longe e anima mais.
-export const VESPERS = Object.freeze({ time: 30, radius: 1.6, damage: 1.4, heal: 2 });
 // Troca do Vilanova e o rendimento a mais do que entra enquanto ele vive.
 export const TRADE = Object.freeze({ give: 100, get: 60, bonus: 1.2 });
+// Quanto a luz da oração do Conselheiro (e o bordão erguido) leva para sumir, em
+// segundos, depois que a pessoa sara ou sai de perto dele.
+export const BLESSING_FADE = .6;
 // Os morros em volta do arraial: em cima deles o tiro alcança mais longe.
 export const HILLS = Object.freeze([
   { id: 'favela', label: 'Morro da Favela', x: 575, y: 640, radius: 84, height: 26 },
