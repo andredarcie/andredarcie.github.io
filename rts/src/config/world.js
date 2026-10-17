@@ -6,13 +6,14 @@
 // acompanha a área, então a densidade fica a mesma.
 export const WORLD = Object.freeze({ width: 820, height: 820 });
 
+// Os biomas: o leito seco do Vaza-Barris contornando o arraial pelo leste e pelo sul,
+// a caatinga aberta e pelada em volta da vila e a fechada para fora, nas estradas.
+// Onde fica cada um: BiomeMap.
 export const BIOMES = Object.freeze([
-  { id: 'riverbed', label: 'Leito do Vaza-Barris', earthShare: 19, worldShare: .2 },
-  { id: 'thicket', label: 'Caatinga fechada', earthShare: 11.5, worldShare: .42 },
-  { id: 'scrub', label: 'Caatinga aberta', earthShare: 10.5, worldShare: .38 }
+  { id: 'riverbed', label: 'Leito do Vaza-Barris' },
+  { id: 'thicket', label: 'Caatinga fechada' },
+  { id: 'scrub', label: 'Caatinga aberta' }
 ]);
-export const RIVER_END = BIOMES[0].worldShare;
-export const THICKET_END = BIOMES[0].worldShare + BIOMES[1].worldShare;
 
 // 2048 para o chão continuar nítido de perto (zoom e telas de alta densidade).
 export const GROUND_TEXTURE_SIZE = 2048;
@@ -29,26 +30,38 @@ export const GROUND_DETAIL_STROKES = 2600;
 // outra: árvore dentro de árvore, capim ou pedra dentro de lago, lago em cima de
 // cabana. Um pouco menor que a copa, porque copa pode encostar em copa.
 export const FOOTPRINT = Object.freeze({
-  umbuzeiro: 11, catingueira: 6, mandacaru: 4, xiquexique: 4, rock: 5, macambira: 3, garrancho: 3,
+  umbuzeiro: 15, catingueira: 7, favela: 8, quixabeira: 8, juazeiro: 12,
+  mandacaru: 5, xiquexique: 4, rock: 5, lasca: 5, macambira: 3, garrancho: 3,
+  canudo: 3, cabecafrade: 2.5, palmatoria: 4,
   food: 6, campfire: 9
 });
+// Árvores (dão madeira, viram recurso da simulação); o resto é enfeite.
+export const TREE_KINDS = Object.freeze(['umbuzeiro', 'catingueira', 'favela', 'quixabeira', 'juazeiro']);
 // Folga mínima entre duas coisas vizinhas, além dos raios.
 export const FOOTPRINT_GAP = 2;
 // Margem de lama em volta de um lago, que também conta como chão dele: nada nasce
 // ali, e lago novo não nasce com a margem em cima de nada.
 export const POND_CLEARANCE = 8;
 
-// Vegetação por bioma, a da caatinga na seca. No areal do rio, pedra e lajedo,
-// xique-xique e um ou outro umbuzeiro; na caatinga fechada, catingueira e garrancho
-// emaranhados com mandacaru e macambira; na aberta, chão de pedra com mandacaru,
-// xique-xique e garrancho. Catingueira e umbuzeiro são árvores (dão madeira); o
-// resto é enfeite.
-export const SCENERY_DENSITY = Object.freeze({ riverbed: .35, thicket: .9, scrub: .65 });
+// Vegetação por bioma, a da caatinga na seca, pelas plantas que Os Sertões nomeia.
+// Na beira do rio, os canudos-de-pito ("vicejantes em grande cópia à beira do rio",
+// os que deram nome ao arraial), quixabeiras, juazeiros e algum umbuzeiro; na
+// caatinga fechada, catingueira ("sessenta por cento das caatingas"), favela e o
+// garrancho de jurema emaranhados com mandacaru, macambira e palmatória; na aberta,
+// em volta da vila, o chão quase nu de "acervos de bromélias" e "cactos esguios e
+// solitários": mandacaru, cabeça-de-frade, palmatória, xique-xique e pouca árvore.
+export const SCENERY_DENSITY = Object.freeze({ riverbed: .5, thicket: .9, scrub: .55 });
 export const SCENERY_KINDS = Object.freeze({
-  riverbed: [['rock', .3], ['xiquexique', .52], ['garrancho', .7], ['umbuzeiro', .82], ['macambira', 1]],
-  thicket: [['catingueira', .34], ['garrancho', .62], ['macambira', .76], ['mandacaru', .86], ['umbuzeiro', .92], ['rock', 1]],
-  scrub: [['garrancho', .3], ['mandacaru', .46], ['catingueira', .62], ['xiquexique', .78], ['rock', .9], ['macambira', 1]]
+  riverbed: [['rock', .12], ['canudo', .44], ['xiquexique', .52], ['quixabeira', .62], ['juazeiro', .7],
+    ['umbuzeiro', .77], ['garrancho', .9], ['macambira', 1]],
+  thicket: [['catingueira', .3], ['favela', .42], ['garrancho', .58], ['macambira', .68], ['mandacaru', .76],
+    ['umbuzeiro', .82], ['juazeiro', .86], ['palmatoria', .93], ['rock', 1]],
+  scrub: [['garrancho', .2], ['mandacaru', .36], ['cabecafrade', .5], ['palmatoria', .62], ['macambira', .74],
+    ['xiquexique', .82], ['catingueira', .88], ['favela', .93], ['rock', 1]]
 });
+// Perto do arraial (BiomeMap.openness) a pedra é a de lá: "lascas de talcoxisto".
+// O matacão redondo de granito fica para longe, como no caminho de Monte Santo.
+export const SCHIST_RADIUS = 330;
 
 // Passo máximo da simulação: o tempo de cada quadro é fatiado nisso.
 export const MAX_SIMULATION_STEP = .025;

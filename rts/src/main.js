@@ -1,8 +1,8 @@
 // Raiz de composição: o único lugar que conhece todas as peças. Cria cada uma, entrega
 // a cada classe só o que ela usa, põe o mundo, as estradas e a vila de pé e liga o laço.
-import { WORLD } from './config/world.js';
+import { WORLD, FOOTPRINT, SCHIST_RADIUS } from './config/world.js';
 import { CHOP_HITS } from './config/settlement.js';
-import { TEAMS, START_FOOD, START_WOOD, START_WORKERS, DIFFICULTY, HILLS } from './config/rts.js';
+import { TEAMS, START_FOOD, START_WOOD, START_RIFLES, START_WORKERS, DIFFICULTY, HILLS } from './config/rts.js';
 import { pseudoRandom } from './core/math.js';
 import { EventBus } from './core/EventBus.js';
 import { Astronomy } from './sky/Astronomy.js';
@@ -46,6 +46,7 @@ import { PondRipplesLayer } from './overlay/layers/PondRipplesLayer.js';
 import { FirefliesLayer } from './overlay/layers/FirefliesLayer.js';
 import { EffectsLayer } from './overlay/layers/EffectsLayer.js';
 import { RoadWarningLayer } from './overlay/layers/RoadWarningLayer.js';
+import { PickupLayer } from './overlay/layers/PickupLayer.js';
 import { RtsHud } from './ui/RtsHud.js';
 import { paintIcons } from './ui/Icons.js';
 import { Minimap } from './ui/Minimap.js';
@@ -112,7 +113,7 @@ const forest = new ForestSystem(state, events);
 const blood = new BloodSystem(state, events);
 const locomotion = new Locomotion(state);
 const ledger = new TeamLedger(state);
-ledger.reset({ food: START_FOOD, wood: START_WOOD });
+ledger.reset({ food: START_FOOD, wood: START_WOOD, rifles: START_RIFLES });
 const factory = new UnitFactory(state);
 const commands = new Commands({ state, ledger, occupancy, events });
 const units = new UnitSystem({ state, locomotion, grassField, forest, blood, events, ledger, factory, biomes, skyClock });
@@ -139,6 +140,7 @@ const overlay = new OverlayRenderer({
     new CloudShadowsLayer(state, skyClock, weather, motion),
     new PondRipplesLayer(state, weather, theme, motion),
     new RoadWarningLayer(state, motion),
+    new PickupLayer(state, motion),
     new SelectionLayer(state, selection, buildGrid),
     new FallDustLayer(state)
   ],
@@ -164,7 +166,7 @@ const cameraController = new CameraController({
 });
 input.attach(cameraController);
 const minimap = new Minimap({ canvas: root.querySelector('#minimap'), state, view, hud });
-const frameRenderer = new FrameRenderer({ state, skyClock, weather, motionPreference: motion, view, overlay });
+const frameRenderer = new FrameRenderer({ state, selection, grid: buildGrid, skyClock, weather, motionPreference: motion, view, overlay });
 const viewport = new Viewport(canvas, view, overlay);
 const hudObstacles = new HudObstacleTracker({
   canvas,
@@ -187,15 +189,19 @@ await loading.stage('world');
 const roadSpots = roadReservations();
 state.reserved.push({ x: TEAMS.player.base.x, y: TEAMS.player.base.y, radius: BASE_CLEARING }, ...roadSpots);
 ponds.restore();
+plantQuixabeiras();
 const sceneryItems = new SceneryPlanner(state, biomes, occupancy).plan();
-// Os morros são de pedra: matacões e lajedos na encosta, e mandacaru entre eles.
+// Os morros são de pedra: lascas de xisto (perto do arraial) ou matacões na encosta,
+// e mandacaru entre elas.
 for (const [index, hill] of HILLS.entries()) {
+  const schist = Math.hypot(hill.x - WORLD.width / 2, hill.y - WORLD.height / 2) < SCHIST_RADIUS;
   for (let i = 0; i < 26; i++) {
     const seed = index * 977 + i * 13 + 5;
     const angle = pseudoRandom(seed) * Math.PI * 2;
     const distance = Math.sqrt(pseudoRandom(seed + 1)) * hill.radius * .95;
     const x = hill.x + Math.cos(angle) * distance, y = hill.y + Math.sin(angle) * distance;
-    const kind = pseudoRandom(seed + 2) < .62 ? 'rock' : pseudoRandom(seed + 3) < .6 ? 'mandacaru' : 'xiquexique';
+    const kind = pseudoRandom(seed + 2) < .62 ? (schist ? 'lasca' : 'rock')
+      : pseudoRandom(seed + 3) < .6 ? 'mandacaru' : 'xiquexique';
     if (!occupancy.isFree(x, y, 7)) continue;
     const item = { x, y, seed, kind };
     state.scenery.push(item);
@@ -291,6 +297,25 @@ function foundVillage(team) {
   });
 }
 
+// "As ramagens virentes de seis pés de quixabeiras" do outro lado do rio, em frente
+// à praça, no pé do esporão da Favela, entre "pequenos renques de palmatórias
+// rutilantes" — o "jardim agreste" de Os Sertões, onde desceu a infantaria de
+// Moreira César (o "vale das quixabeiras").
+function plantQuixabeiras() {
+  const cx = 482, cy = 668;
+  plantCluster(cx, cy, 6, 26, (px, py, seed) => {
+    if (!occupancy.isFree(px, py, FOOTPRINT.quixabeira) || onRoad(px, py, 6)) return;
+    state.trees.push(new Tree({ id: state.trees.length + 1, x: px, y: py, kind: 'quixabeira', seed, health: CHOP_HITS }));
+  });
+  for (let i = 0; i < 7; i++) {
+    const seed = 4100 + i * 17;
+    const angle = pseudoRandom(seed) * Math.PI * 2;
+    const x = cx + Math.cos(angle) * (30 + pseudoRandom(seed + 1) * 14);
+    const y = cy + Math.sin(angle) * (22 + pseudoRandom(seed + 1) * 12);
+    if (occupancy.isFree(x, y, FOOTPRINT.palmatoria) && !onRoad(x, y, 6)) state.scenery.push({ x, y, seed, kind: 'palmatoria' });
+  }
+}
+
 // Até `count` coisas sorteadas num círculo; quem cai em lugar ocupado é pulado.
 function plantCluster(cx, cy, count, spread, plant) {
   let planted = 0;
@@ -368,6 +393,7 @@ function updateFrame(dt) {
   if (buildMode !== Boolean(selection.placing)) {
     buildMode = Boolean(selection.placing);
     document.body.classList.toggle('build-mode', buildMode);
+    events.emit('buildMode', { on: buildMode });
   }
   // Com o livro de história aberto o mundo também espera, para ler com calma.
   if (running && !buildMode && !story.isOpen) {
@@ -376,6 +402,7 @@ function updateFrame(dt) {
   }
   hud.update(dt);
   minimap.update(dt);
+  audio.update({ daylight: skyClock.current.daylight, rain: weather.strength() });
   frameRenderer.render();
 }
 

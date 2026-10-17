@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
-import { shadedBox } from './Shading.js';
+import { shadedBox, addVerticalShade } from './Shading.js';
 import { createContactShadow, isContactShadowShape } from './ContactShadow.js';
 
 // Um material só para toda a vegetação: a cor de cada bloco vai nos vértices.
@@ -34,8 +34,38 @@ function bladeShape(length, width, waist = .4) {
   return geometry;
 }
 
+// Tufo de folhagem: uma bola de faces (icosaedro) com cada vértice empurrado para
+// dentro ou para fora por um sorteio que depende só da posição — os vértices
+// repetidos das faces vizinhas andam juntos e a bola não racha —, achatada em
+// `squash`. Sai irregular como copa de verdade, sem a quina de caixa, e as faces
+// planas pegam a luz cada uma de um jeito, o que lê como folhagem.
+function leafBlob(radius, squash, detail, seed, rough = .32) {
+  const geometry = new THREE.IcosahedronGeometry(radius, detail);
+  const position = geometry.attributes.position;
+  for (let i = 0; i < position.count; i++) {
+    const x = position.getX(i), y = position.getY(i), z = position.getZ(i);
+    const key = Math.round(x * 97) * 1.37 + Math.round(y * 97) * 2.91 + Math.round(z * 97) * .53;
+    const push = 1 + (pseudoRandom(seed + key) - .5) * rough;
+    position.setXYZ(i, x * push, y * push * squash, z * push);
+  }
+  geometry.computeVertexNormals();
+  return addVerticalShade(geometry, .62, 1.12);
+}
+
+// Casca em placas, clara e escura (a da catingueira é cinza manchada de branco): cada
+// vértice com um tom sorteado em volta do degradê de sombra.
+function mottle(geometry, amount) {
+  const color = geometry.attributes.color;
+  for (let i = 0; i < color.count; i++) {
+    const k = 1 + (Math.random() - .5) * amount;
+    color.setXYZ(i, color.getX(i) * k, color.getY(i) * k, color.getZ(i) * k);
+  }
+  return geometry;
+}
+
 // A caatinga de blocos: catingueira, umbuzeiro, mandacaru, xique-xique, macambira,
-// garrancho seco, pedras de granito e as roças. Cada planta é montada de blocos (com
+// garrancho seco, pedras de granito e as roças. Galhos roliços (#limb) e as copas
+// das árvores em bolas irregulares (leafBlob). Cada planta é montada de blocos (com
 // o degradê de sombra de Shading e um tom levemente sorteado por bloco, para a mata
 // não sair chapada) e depois fundida numa malha só com cor por vértice: uma
 // chamada de desenho por planta, o que deixa encher o mapa sem pesar no celular.
@@ -48,7 +78,14 @@ export class PropFactory {
     xiquexique: seed => this.xiquexique(seed),
     macambira: seed => this.macambira(seed),
     garrancho: seed => this.garrancho(seed),
-    rock: seed => this.rock(seed)
+    rock: seed => this.rock(seed),
+    favela: seed => this.favela(seed),
+    quixabeira: seed => this.quixabeira(seed),
+    juazeiro: seed => this.juazeiro(seed),
+    canudo: seed => this.canudo(seed),
+    cabecafrade: seed => this.cabecafrade(seed),
+    palmatoria: seed => this.palmatoria(seed),
+    lasca: seed => this.lasca(seed)
   };
 
   // Geometria que não pode ser descartada junto com um enfeite.
@@ -69,15 +106,28 @@ export class PropFactory {
   build(kind, seed, { withShadow = true } = {}) {
     const builder = this.#builders[kind];
     if (!builder) return null;
-    const prop = PropFactory.#merge(builder(seed));
+    // Montada na medida de antes e ampliada aqui: gente tem 16 de altura (1 ≈ 10 cm),
+    // e as árvores da caatinga têm de 4 a 8 m. Não é a escala de verdade — a árvore
+    // cobriria a tela —, mas a árvore fica bem mais alta que um homem.
+    const holder = new THREE.Group();
+    const plant = builder(seed);
+    plant.scale.setScalar(PropFactory.#SCALE[kind] ?? 1);
+    holder.add(plant);
+    const prop = PropFactory.#merge(holder);
     if (withShadow) prop.add(createContactShadow(PropFactory.footprint(kind)));
     return prop;
   }
 
+  static #SCALE = Object.freeze({
+    umbuzeiro: 1.45, catingueira: 1.6, favela: 1.5, quixabeira: 1.5, juazeiro: 1.45,
+    mandacaru: 1.35, garrancho: 1.3
+  });
+
   // Raio da mancha de contato de cada espécie, em unidades.
   static footprint(kind) {
     return {
-      umbuzeiro: 13, catingueira: 9, mandacaru: 6, xiquexique: 6, rock: 7, macambira: 5, garrancho: 5
+      umbuzeiro: 19, catingueira: 11, favela: 11, quixabeira: 11, juazeiro: 15, mandacaru: 7,
+      xiquexique: 6, rock: 7, lasca: 7, macambira: 5, garrancho: 6, canudo: 4, cabecafrade: 3, palmatoria: 5
     }[kind] ?? 6;
   }
 
@@ -85,88 +135,213 @@ export class PropFactory {
   // está atrás (OcclusionFader).
   static height(kind) {
     return {
-      umbuzeiro: 18, catingueira: 24, mandacaru: 30, xiquexique: 8, rock: 7, macambira: 6, garrancho: 7
+      umbuzeiro: 27, catingueira: 36, favela: 28, quixabeira: 36, juazeiro: 30, mandacaru: 40,
+      xiquexique: 8, rock: 7, lasca: 4, macambira: 6, garrancho: 9, canudo: 10, cabecafrade: 4, palmatoria: 8
     }[kind] ?? 10;
   }
 
   // ---- Árvores (dão madeira) ----
 
-  // Catingueira na seca: tronco fino de casca clara, quase branca — é o que dá à
-  // caatinga o nome de "mata branca" —, abrindo em três ou quatro galhos tortos, cada
-  // um com galhinhos e uns tufos ralos de folha miúda, oliva e amarelada. Uma em
-  // cada quatro está quase pelada.
+  // Catingueira (Cenostigma pyramidale), das que Euclides diz fazerem "sessenta por
+  // cento das caatingas", como nas fotos dela: não tem um tronco só — dois a quatro
+  // fustes finos saem juntos do chão, quase de pé, de casca cinza-clara manchada (a
+  // "mata branca"). Lá em cima cada fuste se abre em forquilhas, e a copa é rala e
+  // desigual, de folha miúda oliva e amarelada. Na seca, uma em cada quatro está pelada.
   catingueira(seed) {
     const tree = new THREE.Group();
     const rand = i => pseudoRandom(seed + i * 7.31);
-    const trunkHeight = 6 + rand(1) * 4;
     const bark = rand(2) > .5 ? PALETTE.bark : PALETTE.barkLight;
-    const lean = (rand(3) - .5) * .2;
-    const trunk = this.#limb(tree, 0, 0, 0, rand(4) * 6.28, Math.abs(lean), trunkHeight, 1.8, bark);
     const bare = rand(5) < .25;
     const tones = [PALETTE.leafDark, PALETTE.leafMid, PALETTE.leafLight, PALETTE.leafDry];
-    const branches = 3 + Math.floor(rand(6) * 2);
-    for (let i = 0; i < branches; i++) {
-      const angle = i / branches * Math.PI * 2 + rand(10 + i) * .8;
-      const length = 6 + rand(20 + i) * 5;
-      const tilt = .45 + rand(30 + i) * .45;
-      const limb = this.#limb(trunk, 0, trunkHeight - .4, 0, angle, tilt, length, 1.1, bark);
-      const twigs = [limb];
-      for (let k = 0; k < 2; k++) {
-        twigs.push(this.#limb(limb, 0, length * (.55 + k * .25), 0, (k ? 1 : -1) * (.8 + rand(40 + i + k)),
-          .5 + rand(50 + i + k) * .3, length * .45, .6, bark));
-      }
-      if (bare) continue;
-      // Tufos de folha miúda nas pontas: três ou quatro plaquinhas desencontradas.
-      for (const [index, twig] of twigs.entries()) {
-        const tip = index ? length * .45 : length;
-        for (let k = 0; k < 3; k++) {
-          const size = 2.2 + rand(60 + i * 3 + index + k) * 2.2;
-          const pad = this.#block(shadedBox(size, size * .45, size * .9, .75, 1.1),
-            tones[Math.floor(rand(70 + i + index + k) * tones.length)],
-            (rand(80 + k + i) - .5) * 2.4, tip + (rand(90 + k) - .3) * 1.4, (rand(100 + k + index) - .5) * 2.4);
-          pad.rotation.z = tilt;
-          twig.add(pad);
-        }
+    let leaves = 0;
+    const leaf = (parent, x, y, z, radius) => {
+      parent.add(this.#block(leafBlob(radius, .75, 0, seed + leaves * 13, .45),
+        tones[Math.floor(rand(200 + leaves) * tones.length)], x, y, z));
+      leaves++;
+    };
+    // A touceira de raiz onde os fustes se juntam.
+    tree.add(this.#block(addVerticalShade(new THREE.CylinderGeometry(.9, 1.5, 1, 6), .6, 1), bark, 0, .4, 0));
+    const stems = 2 + Math.floor(rand(6) * 3);
+    for (let s = 0; s < stems; s++) {
+      const angle = s / stems * Math.PI * 2 + rand(10 + s) * .9;
+      const height = 10 + rand(20 + s) * 5 - s;
+      const stem = this.#limb(tree, Math.cos(angle) * .45, 0, Math.sin(angle) * .45, angle,
+        .1 + rand(30 + s) * .2, height, s ? .9 : 1.2, bark, .7);
+      const forks = 2 + Math.floor(rand(40 + s) * 2);
+      for (let f = 0; f < forks; f++) {
+        const k = s * 5 + f;
+        const length = 4 + rand(50 + k) * 3.5;
+        const fork = this.#limb(stem, 0, height - .3, 0, f / forks * Math.PI * 2 + rand(60 + k),
+          .35 + rand(70 + k) * .45, length, .55, bark);
+        const twig = this.#limb(fork, 0, length * .55, 0, (rand(80 + k) - .5) * 2.4,
+          .45 + rand(90 + k) * .3, length * .5, .32, bark);
+        if (bare) continue;
+        // Folhagem rala: um tufo na ponta de cada galho e às vezes outro no meio.
+        leaf(fork, 0, length + .3, 0, 1.9 + rand(100 + k) * 1);
+        leaf(twig, 0, length * .5, 0, 1.5 + rand(110 + k) * .9);
+        if (rand(120 + k) > .4) leaf(fork, (rand(130 + k) - .5) * 2, length * .6, (rand(140 + k) - .5) * 2, 1.4);
       }
     }
     return tree;
   }
 
-  // Umbuzeiro: tronco curto e grosso que logo se abre em galhos baixos quase deitados,
-  // e a copa larga em guarda-chuva, verde-escura, feita de tufos que se encostam —
+  // Umbuzeiro (Spondias tuberosa) como nas fotos do sertão baiano: tronco curtíssimo,
+  // grosso e escuro, de pé esparramado, que pouco acima do chão já se reparte em
+  // quatro ou cinco braços grossos e tortos, saindo quase deitados — "irradiantes em
+  // círculo, os galhos numerosos" (Os Sertões). Na ponta os braços voltam a subir e
+  // seguram a copa: uma cúpula baixa, muito mais larga que alta, de barra caída —
   // a única sombra verde da caatinga na seca —, com os umbus amarelando na barra.
   umbuzeiro(seed) {
     const tree = new THREE.Group();
     const rand = i => pseudoRandom(seed + i * 5.17);
-    const trunkHeight = 4 + rand(1) * 2;
-    const trunk = this.#block(shadedBox(3.4, trunkHeight, 3.4, .55, 1), PALETTE.barkDark, 0, trunkHeight / 2, 0);
-    tree.add(trunk);
-    for (let i = 0; i < 4; i++) {
-      this.#limb(tree, 0, trunkHeight - .8, 0, i / 4 * Math.PI * 2 + rand(i), 1.05, 7 + rand(10 + i) * 2, 1.4, PALETTE.barkDark);
+    const bark = PALETTE.barkDark;
+    const trunkHeight = 3.4 + rand(1) * 1.4;
+    tree.add(this.#block(mottle(addVerticalShade(new THREE.CylinderGeometry(1.7, 2.3, trunkHeight + .6, 7, 2), .55, 1), .3),
+      bark, 0, (trunkHeight + .6) / 2, 0));
+    tree.add(this.#block(addVerticalShade(new THREE.CylinderGeometry(2.1, 3, .9, 7), .5, .9), bark, 0, .45, 0));
+    const spread = 10 + rand(2) * 2.5;
+    const arms = 4 + Math.floor(rand(3) * 2);
+    for (let i = 0; i < arms; i++) {
+      const angle = i / arms * Math.PI * 2 + rand(10 + i) * .7;
+      const first = 3.8 + rand(20 + i) * 1.6;
+      const arm = this.#limb(tree, 0, trunkHeight - .3, 0, angle, .95 + rand(30 + i) * .3, first, 1.5, bark, .78);
+      // Cotovelo: o braço volta a subir para dentro da copa, um pouco de lado.
+      const second = 4 + rand(40 + i) * 2;
+      const rise = this.#limb(arm, 0, first, 0, Math.PI + (rand(50 + i) - .5) * .8, .45 + rand(60 + i) * .2, second, 1.15, bark, .6);
+      for (let k = 0; k < 2; k++) {
+        this.#limb(rise, 0, second * (.5 + k * .4), 0, (k ? 1 : -1) * (1 + rand(70 + i + k)), .7, 3, .45, bark);
+      }
     }
-    const spread = 8 + rand(2) * 2.5;
-    const crown = trunkHeight + 4;
+    // A cúpula: um tufo no alto do meio e dois anéis descendo para a barra, cada
+    // tufo uma bola irregular e achatada encostada nas vizinhas. O miolo de cima,
+    // mais exposto ao sol, sai no verde mais claro; a barra, no mais escuro.
     const tones = [PALETTE.umbuLeaf, PALETTE.umbuLeafDark, PALETTE.umbuLeafLight];
-    // Anel de baixo, largo, e um miolo mais alto: a cúpula achatada.
-    const clumps = [[0, 0, 3.6, 10]];
-    for (let i = 0; i < 7; i++) {
-      const angle = i / 7 * Math.PI * 2 + rand(20 + i) * .5;
-      clumps.push([Math.cos(angle) * spread * .75, Math.sin(angle) * spread * .75, 1.2 + rand(30 + i) * 1.2, 5 + rand(40 + i) * 2.5]);
+    const top = trunkHeight + 10;
+    const droop = 7;
+    // Miolo largo e escuro por dentro, que fecha os vãos entre os tufos: de longe a
+    // copa lê como uma massa só, e o fundo dela é a sombra da própria folhagem.
+    tree.add(this.#block(leafBlob(spread * .78, .38, 1, seed + 3, .25), tones[1], 0, top - droop * .45, 0));
+    let n = 0;
+    for (const [reach, count, size] of [[0, 1, 4.2], [.45, 5, 3.8], [.82, 9, 3.2]]) {
+      for (let i = 0; i < count; i++, n++) {
+        const angle = i / count * Math.PI * 2 + rand(80 + n) * .6 + reach * 2;
+        const r = spread * reach * (.9 + rand(90 + n) * .2);
+        const y = top - (r / spread) ** 2 * droop + (rand(100 + n) - .5) * 1.2;
+        const tone = reach === 0 ? tones[2] : reach > .8 ? tones[n % 2] : tones[n % 3];
+        const clump = this.#block(leafBlob(size * (.85 + rand(110 + n) * .3), .55, 1, seed + n * 17, .38),
+          tone, Math.cos(angle) * r, y, Math.sin(angle) * r);
+        clump.rotation.y = rand(120 + n) * 3;
+        tree.add(clump);
+      }
     }
-    for (let i = 0; i < 3; i++) {
-      const angle = i / 3 * Math.PI * 2 + 1 + rand(50 + i);
-      clumps.push([Math.cos(angle) * spread * .35, Math.sin(angle) * spread * .35, 3.2 + rand(60 + i) * 1.2, 5 + rand(70 + i) * 2]);
-    }
-    clumps.forEach(([x, z, rise, size], i) => {
-      const clump = this.#block(shadedBox(size, size * .42, size, .6, 1.12), tones[i % tones.length], x, crown + rise, z);
-      clump.rotation.y = rand(80 + i) * 1.5;
-      tree.add(clump);
-    });
     // Umbus amarelos pendurados na barra da copa.
+    const hem = top - .67 * droop - 2;
     for (let i = 0; i < 7; i++) {
-      const angle = rand(90 + i) * Math.PI * 2;
-      tree.add(this.#block(shadedBox(1.1, 1.1, 1.1, .85, 1.1), PALETTE.umbuFruit,
-        Math.cos(angle) * spread * .8, crown - 1, Math.sin(angle) * spread * .8, false));
+      const angle = rand(130 + i) * Math.PI * 2;
+      tree.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.62, 0), .85, 1.1), PALETTE.umbuFruit,
+        Math.cos(angle) * spread * .78, hem, Math.sin(angle) * spread * .78, false));
+    }
+    return tree;
+  }
+
+  // Favela (Cnidoscolus quercifolius), a que deu nome ao morro: arvoreta de tronco
+  // curto e liso, cinza-pardo, que abre em galhos tortos em zigue-zague, com a copa
+  // rala de folha recortada cinza-esverdeada, coberta de pelo que queima — "a mão,
+  // que a toca, toca uma chapa incandescente". Na seca muitas ficam só no galho; as
+  // que têm folha mostram umas florzinhas brancas.
+  favela(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 6.43);
+    const bark = PALETTE.favelaBark;
+    const trunkHeight = 5 + rand(1) * 2.5;
+    const trunk = this.#limb(tree, 0, 0, 0, rand(2) * 6.28, rand(3) * .15, trunkHeight, 1.7, bark, .7);
+    tree.add(this.#block(addVerticalShade(new THREE.CylinderGeometry(1, 1.5, 1, 6), .6, 1), bark, 0, .4, 0));
+    const bare = rand(4) < .35;
+    const tones = [PALETTE.favelaLeaf, PALETTE.favelaLeafLight, PALETTE.leafDry];
+    const branches = 3 + Math.floor(rand(5) * 2);
+    for (let i = 0; i < branches; i++) {
+      const length = 4 + rand(10 + i) * 2.5;
+      const limb = this.#limb(trunk, 0, trunkHeight - .3, 0, i / branches * Math.PI * 2 + rand(20 + i) * .8,
+        .7 + rand(30 + i) * .3, length, 1, bark, .7);
+      // O torto da favela: o galho dobra para o outro lado e depois volta.
+      const bend = this.#limb(limb, 0, length, 0, Math.PI + (rand(40 + i) - .5), .6 + rand(50 + i) * .3, 3.5 + rand(60 + i) * 2, .7, bark);
+      const tip = this.#limb(bend, 0, 3.5, 0, (rand(70 + i) - .5) * 1.6, .5, 2.5 + rand(80 + i) * 1.5, .4, bark);
+      if (bare) continue;
+      for (const [k, part] of [limb, tip].entries()) {
+        const radius = 1.8 + rand(90 + i * 2 + k) * 1.1;
+        part.add(this.#block(leafBlob(radius, .75, 0, seed + i * 7 + k, .5), tones[Math.floor(rand(100 + i * 2 + k) * 3)],
+          0, k ? 2.8 : length * .8, 0));
+      }
+      if (rand(110 + i) > .5) {
+        tip.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.45, 0), .9, 1.05), PALETTE.flower, .6, 3.6, .4, false));
+      }
+    }
+    return tree;
+  }
+
+  // Quixabeira (Sideroxylon obtusifolium): "uma árvore única, uma quixabeira alta,
+  // sobranceando a vegetação franzina". Tronco mais alto, escuro e áspero, galhos que
+  // sobem, e a copa fechada e comprida, verde-escura, de folhinhas miúdas — "de
+  // folhas pequeninas e frutos que lembram contas de ônix" — que segue verde na seca.
+  quixabeira(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 4.61);
+    const bark = PALETTE.barkDark;
+    const trunkHeight = 8 + rand(1) * 3;
+    const trunk = this.#limb(tree, 0, 0, 0, rand(2) * 6.28, rand(3) * .12, trunkHeight, 1.8, bark, .72);
+    tree.add(this.#block(addVerticalShade(new THREE.CylinderGeometry(1.1, 1.7, 1, 6), .55, 1), bark, 0, .4, 0));
+    const branches = 3 + Math.floor(rand(4) * 2);
+    for (let i = 0; i < branches; i++) {
+      this.#limb(trunk, 0, trunkHeight * (.7 + i * .08), 0, i / branches * Math.PI * 2 + rand(10 + i),
+        .35 + rand(20 + i) * .3, 5 + rand(30 + i) * 3, .9, bark);
+    }
+    // A copa: uma pilha de tufos num oval de pé, os de baixo mais escuros.
+    const tones = [PALETTE.quixabaLeafDark, PALETTE.quixabaLeaf];
+    const base = trunkHeight + 1;
+    const tall = 11 + rand(5) * 4;
+    tree.add(this.#block(leafBlob(5.2, 1.25, 1, seed + 1, .3), tones[0], 0, base + tall * .45, 0));
+    for (let i = 0; i < 9; i++) {
+      const level = i / 8;
+      const angle = i * 2.4 + rand(40 + i);
+      const reach = Math.sin(level * Math.PI) * 4.6 + 1;
+      tree.add(this.#block(leafBlob(2.8 + rand(50 + i) * 1.4, .85, 1, seed + 10 + i, .35), tones[level > .4 ? 1 : 0],
+        Math.cos(angle) * reach, base + level * tall, Math.sin(angle) * reach));
+    }
+    return tree;
+  }
+
+  // Juazeiro (Ziziphus joazeiro): sempre verde, "que raro perdem as folhas de um verde
+  // intenso [...] floridos sempre, salpintando o deserto com as flores cor de ouro, à
+  // maneira de oásis verdejantes". Dois ou três troncos curtos e a copa redonda e
+  // cheia, verde-vivo, descendo quase até o chão, com pontinhos amarelos de flor.
+  juazeiro(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 3.97);
+    const bark = PALETTE.bark;
+    const stems = 2 + Math.floor(rand(1) * 2);
+    for (let s = 0; s < stems; s++) {
+      this.#limb(tree, 0, 0, 0, s / stems * Math.PI * 2 + rand(10 + s), .2 + rand(20 + s) * .25, 6 + rand(30 + s) * 2, 1.3, bark, .7);
+    }
+    const tones = [PALETTE.juazeiroLeaf, PALETTE.juazeiroLeafLight, PALETTE.juazeiroLeafDark];
+    const spread = 8 + rand(2) * 2;
+    const middle = 11;
+    // Miolo escuro e redondo, e os tufos claros por cima e em volta: copa cheia.
+    tree.add(this.#block(leafBlob(spread * .9, .72, 1, seed + 2, .25), tones[2], 0, middle, 0));
+    let n = 0;
+    for (const [lift, reach, count, size] of [[.85, 0, 1, 4.4], [.45, .55, 5, 4], [-.05, .8, 7, 3.4]]) {
+      for (let i = 0; i < count; i++, n++) {
+        const angle = i / count * Math.PI * 2 + rand(40 + n) * .7 + lift;
+        const r = spread * reach;
+        tree.add(this.#block(leafBlob(size * (.85 + rand(50 + n) * .3), .7, 1, seed + 20 + n, .35),
+          tones[n % 2], Math.cos(angle) * r, middle + lift * spread * .75, Math.sin(angle) * r));
+      }
+    }
+    // Flor miúda amarela salpicada na copa.
+    for (let i = 0; i < 12; i++) {
+      const angle = rand(70 + i) * Math.PI * 2, up = rand(80 + i);
+      const r = spread * (.95 - up * .5);
+      tree.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.42, 0), .95, 1.05), PALETTE.juazeiroFlower,
+        Math.cos(angle) * r, middle + up * spread * .7 + 1, Math.sin(angle) * r, false));
     }
     return tree;
   }
@@ -265,6 +440,97 @@ export class PropFactory {
     return plant;
   }
 
+  // Canudo-de-pito: o arbusto que deu nome ao arraial — "heliotrópios arbustivos de
+  // caule oco, pintalgado de branco e flores em espiga", de que se faziam os "canudos
+  // de metro de extensão" dos cachimbos, "vicejantes em grande cópia à beira do rio".
+  // Touceira de varas retas e finas, pintalgadas, umas folhas compridas e a espiga
+  // clara de flor na ponta.
+  canudo(seed) {
+    const plant = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 2.37);
+    const stems = 5 + Math.floor(rand(1) * 4);
+    for (let i = 0; i < stems; i++) {
+      const angle = i / stems * Math.PI * 2 + rand(10 + i);
+      const height = 6 + rand(20 + i) * 5;
+      const stem = this.#limb(plant, Math.cos(angle) * .8, 0, Math.sin(angle) * .8, angle, .06 + rand(30 + i) * .18,
+        height, .4, PALETTE.canudoStem, .8);
+      // Pintas brancas no caule.
+      for (let k = 0; k < 3; k++) {
+        stem.add(this.#block(shadedBox(.46, .3, .46, .95, 1.05), PALETTE.flower, 0, height * (.25 + k * .22), 0, false));
+      }
+      // Folha larga e curta de heliotrópio, meio de pé, só na metade de baixo.
+      for (let k = 0; k < 2; k++) {
+        this.#blade(stem, 0, height * (.2 + k * .18), 0, k * Math.PI + rand(40 + i), .65, 1.5, 1, PALETTE.canudoLeaf);
+      }
+      // A espiga de flor: grossa e reta, na ponta da vara.
+      stem.add(this.#block(shadedBox(.55, 1.6, .55, .9, 1.1), PALETTE.canudoFlower, 0, height + .7, 0, false));
+    }
+    return plant;
+  }
+
+  // Cabeça-de-frade: "deselegantes e monstruosos melocactos de forma elipsoidal,
+  // acanalada, de gomos espinescentes, convergindo-lhes no vértice superior formado
+  // uma flor única intensamente rubra". Uma a três bolas verdes de gomos fundos, com
+  // o capuz vermelho no alto.
+  cabecafrade(seed) {
+    const plant = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 5.89);
+    const count = 1 + Math.floor(rand(1) * 3);
+    for (let i = 0; i < count; i++) {
+      const size = 1.2 + rand(10 + i) * .6;
+      const x = i ? (rand(20 + i) - .5) * 4 : 0, z = i ? (rand(30 + i) - .5) * 4 : 0;
+      const body = new THREE.SphereGeometry(size, 14, 8);
+      const position = body.attributes.position;
+      for (let v = 0; v < position.count; v++) {
+        const px = position.getX(v), py = position.getY(v), pz = position.getZ(v);
+        const rib = 1 + Math.cos(Math.atan2(pz, px) * 12) * .07;
+        position.setXYZ(v, px * rib, py * 1.1, pz * rib);
+      }
+      body.computeVertexNormals();
+      plant.add(this.#block(addVerticalShade(body, .7, 1.08), PALETTE.melocactus, x, size * .9, z));
+      plant.add(this.#block(addVerticalShade(new THREE.CylinderGeometry(size * .45, size * .55, size * .7, 10), .9, 1.1),
+        PALETTE.cephalium, x, size * 2.05, z));
+    }
+    return plant;
+  }
+
+  // Palmatória ("as palmatórias-do-inferno, opúntias de palmas diminutas,
+  // diabolicamente erriçadas de espinhos [...] orladas de flores rutilantes"): raquetes
+  // ovais e chatas, uma brotando da borda da outra, verde-acinzentadas, com as flores
+  // vermelho-alaranjadas na beira.
+  palmatoria(seed) {
+    const plant = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 3.33);
+    let n = 0;
+    const pad = (parent, y, angle, lean, size, depth) => {
+      const holder = new THREE.Group();
+      holder.position.set(0, y, 0);
+      holder.rotation.set(0, angle, lean);
+      const shape = new THREE.SphereGeometry(1, 8, 6);
+      shape.scale(size * .75, size, size * .22);
+      holder.add(this.#block(addVerticalShade(shape, .75, 1.08), PALETTE.palmatoria, 0, size * .9, 0));
+      parent.add(holder);
+      n++;
+      if (rand(10 + n) > .45) {
+        holder.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.5, 0), .95, 1.05), PALETTE.cactusFlower,
+          size * .5, size * 1.6, 0, false));
+      }
+      if (depth <= 0) return;
+      const children = 1 + Math.floor(rand(20 + n) * 2);
+      for (let k = 0; k < children; k++) {
+        pad(holder, size * 1.6, (rand(30 + n + k) - .5) * 1.6, (k ? 1 : -1) * (.3 + rand(40 + n) * .4), size * .85, depth - 1);
+      }
+    };
+    const clumps = 1 + Math.floor(rand(1) * 2);
+    for (let i = 0; i < clumps; i++) {
+      const holder = new THREE.Group();
+      holder.position.set(i * 2.2, 0, (rand(2 + i) - .5) * 2);
+      plant.add(holder);
+      pad(holder, 0, rand(3 + i) * 3, (rand(4 + i) - .5) * .4, 1.5 + rand(5 + i) * .5, 2);
+    }
+    return plant;
+  }
+
   // Pedra de granito do sertão: um matacão arredondado de blocos tortos (às vezes com
   // outro menor encostado) ou um lajedo baixo e largo.
   rock(seed) {
@@ -295,6 +561,27 @@ export class PropFactory {
         Math.cos(angle) * size * .55, s * .25, Math.sin(angle) * size * .5);
       chip.rotation.set((rand(40 + i) - .5) * .5, rand(50 + i) * 3, (rand(60 + i) - .5) * .5);
       rock.add(chip);
+    }
+    return rock;
+  }
+
+  // Lascas de talcoxisto, a pedra das colinas de Canudos ("rasgadas de lascas de
+  // talcoxisto"): placas finas e chatas, todas inclinadas para o mesmo lado — o
+  // folheado da rocha —, encavaladas como telha quebrada, cinza-esverdeadas e de
+  // brilho sedoso. Às vezes só um lajedo baixo de placas deitadas.
+  lasca(seed) {
+    const rock = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 7.07);
+    const tones = [PALETTE.schist, PALETTE.schistLight, PALETTE.schistDark];
+    const heading = rand(1) * Math.PI;
+    const dip = rand(2) < .3 ? .08 : .35 + rand(3) * .35;
+    const plates = 3 + Math.floor(rand(4) * 3);
+    for (let i = 0; i < plates; i++) {
+      const wide = 3 + rand(10 + i) * 4.5;
+      const plate = this.#block(shadedBox(wide, .5 + rand(20 + i) * .5, 1.6 + rand(30 + i) * 2.4, .75, 1.12),
+        tones[i % 3], (i - plates / 2) * 1.2, .5 + rand(40 + i) * .8, (rand(50 + i) - .5) * 2.5);
+      plate.rotation.set((rand(60 + i) - .5) * .2, heading + (rand(70 + i) - .5) * .3, dip + (rand(80 + i) - .5) * .15, 'YXZ');
+      rock.add(plate);
     }
     return rock;
   }
@@ -467,11 +754,16 @@ export class PropFactory {
 
   // Galho que nasce em (x, y, z) do pai, aponta para `angle` no chão e se inclina
   // `tilt` a partir da vertical. Devolve o grupo: (0, comprimento, 0) é a ponta.
-  #limb(parent, x, y, z, angle, tilt, length, width, color) {
+  // Roliço e afinando até `taper` da grossura do pé — galho de verdade, não ripa;
+  // cinco lados nos finos, seis nos grossos, que levam também a casca manchada.
+  #limb(parent, x, y, z, angle, tilt, length, width, color, taper = .65) {
     const limb = new THREE.Group();
     limb.position.set(x, y, z);
     limb.rotation.set(0, -angle, -tilt, 'YXZ');
-    limb.add(this.#block(shadedBox(width, length + width * .5, width, .7, 1.02), color, 0, length / 2, 0));
+    const radius = width * .52;
+    const thick = width >= .8;
+    const wood = new THREE.CylinderGeometry(radius * taper, radius, length + width * .5, thick ? 6 : 5, thick ? 3 : 1);
+    limb.add(this.#block(mottle(addVerticalShade(wood, .7, 1.02), thick ? .3 : .12), color, 0, length / 2, 0));
     parent.add(limb);
     return limb;
   }

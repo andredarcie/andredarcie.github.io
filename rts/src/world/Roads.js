@@ -71,6 +71,23 @@ export function pointAlong(road, distance) {
   return points.at(-1);
 }
 
+// Para onde olhar de (x, y) para ver chegar quem vem pela estrada mais perto: um
+// ponto da trilha `ahead` unidades antes do trecho mais próximo, do lado da beirada
+// do mapa (a trilha corre da beirada para o meio). A trincheira nasce mirando ali.
+export function facingRoad(x, y, ahead = 70) {
+  let nearest = null, index = 0, best = Infinity;
+  for (const points of PATHS.values()) {
+    points.forEach((point, i) => {
+      if (point.plaza) return;
+      const distance = Math.hypot(point.x - x, point.y - y);
+      if (distance < best) { best = distance; nearest = points; index = i; }
+    });
+  }
+  if (!nearest) return Math.atan2(CENTER.y - y, CENTER.x - x) + Math.PI;
+  const target = nearest[Math.max(0, index - Math.round(ahead / STEP))];
+  return Math.atan2(target.y - y, target.x - x);
+}
+
 // O ponto (x, y) está em cima de alguma estrada, com `pad` de folga de cada lado
 // (negativo: só o miolo da trilha)? Só conta o trecho fora da praça: lá dentro é chão
 // da vila.

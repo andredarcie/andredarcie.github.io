@@ -12,6 +12,7 @@ const CONSELHEIRO_AFTER = 25;
 // devolve a partida de onde parou.
 export class StoryBook {
   #root;
+  #events;
   #button;
   #badge;
   #dialog;
@@ -22,6 +23,7 @@ export class StoryBook {
 
   constructor({ root, events }) {
     this.#root = root;
+    this.#events = events;
     this.#button = root.querySelector('#story-button');
     this.#badge = root.querySelector('#story-badge');
     this.#dialog = root.querySelector('#story-dialog');
@@ -56,11 +58,13 @@ export class StoryBook {
     this.#entries.unshift({ id, seen: false });
     this.#unread++;
     this.#render();
+    this.#events.emit('storyEntry', { id });
   }
 
   open() {
     if (this.#dialog.open) return;
     this.#dialog.showModal();
+    this.#events.emit('storyOpen');
     // O mais recente fica no alto: abre sempre do começo.
     this.#dialog.scrollTop = 0;
   }

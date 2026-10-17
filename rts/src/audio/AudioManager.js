@@ -56,8 +56,27 @@ const SOUNDS = {
   rout: { level: .3, reverb: .22, gap: 1, group: 'call', reach: .35 },
   collapse: { level: .42, reverb: .22, pitch: .05, gap: .4, group: 'event', reach: .5 },
   'game-over': { level: .45, reverb: .25, gap: 2, group: 'call', reach: 0 },
-  rain: { level: .26, reverb: .08, gap: 4, group: 'weather', reach: 0 }
+  rain: { level: .3, reverb: .1, gap: 4, group: 'weather', reach: 0 },
+  thirst: { level: .3, reverb: .1, pitch: .05, gap: 3, group: 'event', reach: .5 },
+  deserted: { level: .3, reverb: .12, pitch: .05, gap: .6, group: 'event' },
+  romeiros: { level: .4, reverb: .14, gap: 2, group: 'call', reach: 0 },
+  'drop-wood': { level: .3, reverb: .08, pitch: .06, gap: .12, group: 'work' },
+  'drop-food': { level: .26, reverb: .06, pitch: .06, gap: .12, group: 'work' },
+  'drop-rifles': { level: .3, reverb: .08, pitch: .05, gap: .12, group: 'work' },
+  'rifle-pickup': { level: .3, reverb: .06, pitch: .05, gap: .1, group: 'work' },
+  blessing: { level: .22, reverb: .2, pitch: .02, gap: 2.5, group: 'event', reach: .6 },
+  'build-open': { level: .24, reverb: .02, gap: .3, group: 'ui', reach: 0 },
+  page: { level: .26, reverb: .02, gap: .2, group: 'ui', reach: 0 },
+  'story-new': { level: .18, reverb: .03, gap: 1, group: 'ui', reach: 0 }
 };
+
+// Segundos de paz para um ataque novo tocar o sino de novo.
+const ATTACK_QUIET = 30;
+
+// Laços de ambiente, tocando sempre por baixo: o vento do dia, os grilos da noite e
+// a chuva enquanto chove. `level` é o volume cheio; quanto dele soa a cada momento
+// sai da hora do dia e do tempo (AudioManager.update).
+const BEDS = { wind: { level: .045 }, crickets: { level: .08 }, rainfall: { level: .32 } };
 
 // Teto de vozes por grupo: num tiroteio, a décima espingarda não acrescenta nada
 // além de lama no som.
@@ -68,7 +87,9 @@ const WARM_ORDER = [
   'ui', 'command-move', 'command-gather', 'command-attack', 'command-build', 'command-train', 'command-stop', 'command-trade',
   'place', 'chop', 'hammer', 'tree-crack', 'tree-land', 'gather', 'built', 'trained', 'wave-start', 'shot-musket', 'shot-rifle', 'strike-club', 'strike-machete',
   'strike-spear', 'strike-bayonet', 'death-player', 'death-enemy', 'shot-blunderbuss', 'alarm', 'wave-clear', 'upgrade',
-  'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'shot-matadeira', 'rain', 'game-over'
+  'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'shot-matadeira', 'rain', 'game-over',
+  'drop-wood', 'drop-food', 'drop-rifles', 'rifle-pickup', 'build-open', 'page', 'story-new', 'blessing', 'romeiros', 'thirst', 'deserted',
+  'wind', 'crickets', 'rainfall'
 ];
 
 const MELEE = new Set(['club', 'machete', 'spear', 'bayonet', 'saber']);
@@ -87,6 +108,10 @@ export class AudioManager {
   #last = new Map();
   #voices = new Map();
   #recentShots = [];
+  #beds = new Map();
+  #ambience = { daylight: 1, rain: 0 };
+  #bedKey = '';
+  #lastAttack = -Infinity;
 
   constructor({ events, root, camera = null }) {
     this.#events = events;
@@ -128,7 +153,14 @@ export class AudioManager {
     on('waveStart', () => this.#play('wave-start'));
     on('waveCleared', () => this.#play('wave-clear'));
     on('convoyTaken', () => this.#play('wave-clear'));
-    on('underAttack', place => this.#play('alarm', at(place)));
+    // O aviso de ataque se repete a cada golpe perto de casa; o sino toca uma vez só
+    // por ataque, e só volta a tocar depois de o arraial ficar meio minuto em paz.
+    on('underAttack', place => {
+      const now = performance.now();
+      const quiet = now - this.#lastAttack > ATTACK_QUIET * 1000;
+      this.#lastAttack = now;
+      if (quiet) this.#play('alarm', at(place));
+    });
     on('convoyEscaped', () => this.#play('alarm'));
     on('death', ({ organism }) => this.#play(organism.team === 'enemy' ? 'death-enemy' : 'death-player', at(organism)));
     on('chop', place => this.#play('chop', at(place)));
@@ -144,6 +176,15 @@ export class AudioManager {
     on('convoy', () => this.#play('convoy'));
     on('debandada', place => this.#play('rout', at(place)));
     on('rainStart', () => this.#play('rain'));
+    on('thirst', place => this.#play('thirst', at(place)));
+    on('deserted', ({ unit }) => this.#play('deserted', at(unit)));
+    on('romeiros', ({ count, hero }) => { if (count || hero) this.#play('romeiros'); });
+    on('deliver', ({ x, y, resource }) => this.#play({ wood: 'drop-wood', food: 'drop-food', rifles: 'drop-rifles' }[resource], { x, y }));
+    on('riflePickup', place => this.#play('rifle-pickup', at(place)));
+    on('blessing', place => this.#play('blessing', at(place)));
+    on('buildMode', ({ on: entering }) => { if (entering) this.#play('build-open'); });
+    on('storyOpen', () => this.#play('page'));
+    on('storyEntry', () => this.#play('story-new'));
   }
 
   #strike({ weapon, x, y, tx, ty }) {
@@ -218,6 +259,7 @@ export class AudioManager {
         this.#variant(name, index);
       }
       if (this.#warmQueue.length) this.#warmNext();
+      else this.#startBeds();
     };
     if (window.requestIdleCallback) window.requestIdleCallback(step, { timeout: 400 });
     else setTimeout(step, 16);
@@ -335,6 +377,59 @@ export class AudioManager {
       cutoff: distance > .02 ? Math.max(650, 18000 / (1 + distance * 7)) : 0,
       wet: 1 + distance * 1.5
     };
+  }
+
+  // ---- Ambiente ----
+
+  // Hora do dia (0 noite, 1 dia) e chuva (0 a 1), a cada quadro: os laços seguem
+  // devagar, como o mundo muda.
+  update({ daylight = 1, rain = 0 } = {}) {
+    this.#ambience = { daylight, rain };
+    this.#mixBeds(1.5);
+  }
+
+  // Os laços nascem depois que todos os sons ficaram prontos (são os mais pesados
+  // de calcular), mudos, e sobem até o volume do momento.
+  #startBeds() {
+    const context = this.#context;
+    if (!context || this.#beds.size) return;
+    for (const name of Object.keys(BEDS)) {
+      try {
+        const source = context.createBufferSource();
+        source.buffer = this.#variant(name, 0);
+        source.loop = true;
+        const gain = context.createGain();
+        gain.gain.value = 0;
+        source.connect(gain).connect(this.#bus);
+        // Cada laço começa num ponto diferente, para o vento e os grilos não
+        // recomeçarem juntos.
+        source.start(0, Math.random() * source.buffer.duration);
+        this.#beds.set(name, gain);
+      } catch { /* sem ambiente: o jogo segue */ }
+    }
+    this.#mixBeds(3);
+  }
+
+  // Vento sempre, mais forte de dia e com chuva; grilos só com o escuro; a chuva do
+  // tamanho da pancada.
+  #mixBeds(seconds) {
+    if (!this.#beds.size) return;
+    const { daylight, rain } = this.#ambience;
+    const night = Math.max(0, Math.min(1, (.7 - daylight) / .5));
+    const amount = {
+      wind: Math.min(1, .55 + .45 * daylight + .5 * rain),
+      crickets: night * (1 - rain),
+      rainfall: rain
+    };
+    // Só reagenda quando a mistura muda de verdade: um alvo novo por quadro encheria
+    // a fila de automação do volume à toa.
+    const key = Object.values(amount).map(value => value.toFixed(2)).join();
+    if (key === this.#bedKey && seconds < 3) return;
+    this.#bedKey = key;
+    const now = this.#context.currentTime;
+    for (const [name, gain] of this.#beds) {
+      gain.gain.setTargetAtTime(BEDS[name].level * amount[name], now, seconds);
+    }
   }
 
   #handleVisibility() {

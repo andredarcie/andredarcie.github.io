@@ -2,19 +2,28 @@ import { LIFE_SIZE, WALK_SPEED } from '../config/organisms.js';
 import { BIRTH_ANIMATION_DURATION } from '../config/reproduction.js';
 import { DEATH_FALL, DECAY_DAYS, CORPSE_DAYS } from '../config/death.js';
 import { CHOP_SWING } from '../config/settlement.js';
+import { BUILDING_TYPES } from '../config/rts.js';
+import { WORLD } from '../config/world.js';
+import { Building } from '../entities/Building.js';
+import { facingRoad } from '../world/Roads.js';
 
 // Um quadro na tela: passa o estado do mundo para a cena 3D, desenha, depois a
 // sobreposição 2D por cima.
 export class FrameRenderer {
   #state;
+  #selection;
+  #grid;
+  #ghost = null;
   #sky;
   #weather;
   #motion;
   #view;
   #overlay;
 
-  constructor({ state, skyClock, weather, motionPreference, view, overlay }) {
+  constructor({ state, selection, grid, skyClock, weather, motionPreference, view, overlay }) {
     this.#state = state;
+    this.#selection = selection;
+    this.#grid = grid;
     this.#sky = skyClock;
     this.#weather = weather;
     this.#motion = motionPreference;
@@ -33,12 +42,16 @@ export class FrameRenderer {
     // movimento.
     const wind = animate ? .35 + .65 * overcast : 0;
     const huts = state.huts;
+    const ghost = this.#preview();
+    const withGhost = (list, belongs) => ghost && belongs ? [...list, ghost] : list;
     view.sky.update(sky, { overcast, time: animate ? elapsed : 0 });
-    view.campfires.sync(state.campfires, { elapsed, animate, daylight: sky.daylight });
+    view.campfires.sync(withGhost(state.campfires, ghost?.kind === 'camp'), { elapsed, animate, daylight: sky.daylight });
     view.trees.sync(state.trees, { elapsed, animate, wind });
     view.logs.sync(state.logs);
-    view.huts.sync(huts, { daylight: sky.daylight });
-    view.towers.sync(state.towers, { elapsed, animate });
+    view.pickups.sync(state.pickups, { elapsed, animate });
+    view.fauna.sync(state, { elapsed, animate });
+    view.huts.sync(withGhost(huts, ghost?.isHut), { daylight: sky.daylight });
+    view.towers.sync(withGhost(state.towers, ghost?.isTower), { elapsed, animate });
     view.food.sync(state.grass);
     view.grass.sync({ ponds: state.ponds, huts, elapsed, wind });
     view.terrain.syncPonds(state.ponds);
@@ -63,5 +76,33 @@ export class FrameRenderer {
     view.occlusion.update();
     view.render();
     this.#overlay.draw();
+  }
+
+  // A obra fantasma do modo de obra: a construção escolhida já pronta, transparente,
+  // assentada na casa da grade embaixo do cursor e virada como vai ficar (a porta
+  // para o meio do mapa, como Commands.spawnBuilding); puxada para o vermelho se ali
+  // não dá. Entra na lista de cada renderizador como mais uma construção, mas não
+  // existe na simulação. É refeita só quando o cursor muda de casa.
+  #preview() {
+    const s = this.#selection;
+    const cell = s.placing && s.hover ? this.#grid.snap(s.hover.x, s.hover.y) : null;
+    if (!cell) {
+      this.#ghost = null;
+      return null;
+    }
+    const key = `${s.placing}:${cell.col}:${cell.row}`;
+    if (this.#ghost?.previewKey !== key) {
+      const ghost = new Building({
+        id: 0, team: 'player', kind: s.placing, stats: BUILDING_TYPES[s.placing], x: cell.x, y: cell.y,
+        angle: Math.atan2(WORLD.height / 2 - cell.y, WORLD.width / 2 - cell.x),
+        outfit: this.#state.teams.player.outfit, built: true
+      });
+      if (ghost.isTower) ghost.aim = facingRoad(cell.x, cell.y);
+      ghost.preview = true;
+      ghost.previewOpen = this.#grid.isOpen(cell);
+      ghost.previewKey = key;
+      this.#ghost = ghost;
+    }
+    return this.#ghost;
   }
 }

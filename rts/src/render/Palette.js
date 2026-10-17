@@ -62,6 +62,32 @@ export const PALETTE = Object.freeze({
   cornTassel: 0xd9c27c,
   cornHusk: 0xb7b56c,
   cornSilk: 0x8a5a32,
+  // Favela: casca cinza-parda lisa e a folha recortada cinza-esverdeada, de pelo.
+  favelaBark: 0x8f877a,
+  favelaLeaf: 0x7f8f6c,
+  favelaLeafLight: 0x9aa684,
+  // Quixabeira: copa fechada verde-escura, de folha miúda.
+  quixabaLeaf: 0x4f6638,
+  quixabaLeafDark: 0x3d522c,
+  // Juazeiro: o verde intenso que não cai na seca, e a flor "cor de ouro".
+  juazeiroLeaf: 0x5e8c36,
+  juazeiroLeafLight: 0x77a444,
+  juazeiroLeafDark: 0x46702a,
+  juazeiroFlower: 0xe2c23e,
+  // Canudo-de-pito: vara verde-acinzentada pintalgada de branco, espiga clara.
+  canudoStem: 0x98a284,
+  canudoLeaf: 0x6f8a4e,
+  canudoFlower: 0xe8e2ec,
+  // Cabeça-de-frade: corpo verde de gomos e o capuz vermelho no alto.
+  melocactus: 0x4e7b5c,
+  cephalium: 0xb8443a,
+  // Palmatória: raquete verde-acinzentada e a flor vermelho-alaranjada.
+  palmatoria: 0x6e8e5c,
+  cactusFlower: 0xd9502e,
+  // Talcoxisto: placas cinza-esverdeadas, de brilho sedoso.
+  schist: 0x9b9c8a,
+  schistLight: 0xb9baa6,
+  schistDark: 0x7b7c6c,
   xiquexique: 0x7a9a6c,
   macambira: 0x7f8f55,
   macambiraRed: 0xa8553a,

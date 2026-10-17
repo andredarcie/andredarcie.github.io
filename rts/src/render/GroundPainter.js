@@ -102,14 +102,13 @@ export class GroundPainter {
   toneAt(worldX, worldY) {
     const clampedX = Math.max(0, Math.min(WORLD.width - 1, worldX));
     const clampedY = Math.max(0, Math.min(WORLD.height - 1, worldY));
-    return this.#toneWithin(this.#biomes.boundaries(clampedY), clampedX, clampedY);
+    return this.#toneWithin(clampedX, clampedY);
   }
 
-  #toneWithin({ riverEnd, thicketEnd }, worldX, worldY) {
+  #toneWithin(worldX, worldY) {
     const biomes = this.#biomes;
     const edge = biomes.noise(worldX * 1.7, worldY * 1.7) * 24;
-    const biome = worldX < riverEnd + edge ? 'riverbed'
-      : worldX < thicketEnd + edge ? 'thicket' : 'scrub';
+    const biome = biomes.biomeAt(worldX, worldY, edge);
     const variation = biomes.noise(worldX * .55, worldY * .55);
     return this.#tones[biome][variation > .34 ? 1 : variation < -.3 ? 2 : 0];
   }
@@ -123,10 +122,9 @@ export class GroundPainter {
     let offset = 0;
     for (let row = 0; row < size; row++) {
       const worldY = offsetY + row * stepY;
-      const boundaries = biomes.boundaries(worldY);
       for (let column = 0; column < size; column++, offset += 4) {
         const worldX = offsetX + column * stepX;
-        const tone = this.#toneWithin(boundaries, worldX, worldY);
+        const tone = this.#toneWithin(worldX, worldY);
         // Por cima do tom do bioma: manchas grandes de claro e escuro (solo mais seco
         // ou mais úmido) e um grão fino de pixel, que tiram o aspecto de tinta chapada.
         const mottle = biomes.noise(worldX * .09 + 31.7, worldY * .09 + 17.3) * .07;
@@ -197,7 +195,8 @@ export class GroundPainter {
     context.restore();
   }
 
-  // Os morros: chão pedregoso, mais claro no alto, com lajedos e cascalho de granito.
+  // Os morros: chão pedregoso, mais claro no alto, com lajedos e cascalho de xisto
+  // ("rasgadas de lascas de talcoxisto").
   static #paintHills(context, size) {
     const scale = size / WORLD.width;
     context.save();

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { hutSize } from '../settlement/HutDimensions.js';
 import { WINDOW_DARK } from './SertaoBuildingModel.js';
 import { hillHeight } from '../world/Hills.js';
+import { ghostify } from './GhostLook.js';
 
 // Luz de candeeiro de azeite, amarelada, nas janelas quando escurece.
 const WINDOW_LIT = new THREE.Color(0xffb85a);
@@ -42,6 +43,8 @@ export class HutRenderer {
         const place = this.#space.toScene(hut.x, hut.y);
         parts.group.position.set(place.x, hillHeight(hut.x, hut.y), place.z);
         parts.group.rotation.y = -hut.angle;
+        // A obra fantasma do modo de obra (FrameRenderer): a casa pronta, transparente.
+        if (hut.preview) ghostify(parts.group, hut.previewOpen);
         this.#layer.add(parts.group);
         view = { ...parts, stage, height: hut.kind === 'hall' || hut.kind === 'igrejanova' ? CHURCH_HEIGHT : HOUSE_HEIGHT };
         this.#views.set(hut, view);
@@ -60,6 +63,7 @@ export class HutRenderer {
   occluders() {
     const list = [];
     for (const [hut, view] of this.#views) {
+      if (hut.preview) continue;
       const size = hutSize(hut.capacity);
       list.push({
         object: view.group,

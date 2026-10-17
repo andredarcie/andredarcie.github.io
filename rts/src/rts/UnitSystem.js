@@ -7,7 +7,7 @@ import { CORPSE_DAYS } from '../config/death.js';
 import {
   FOOD_PER_TRIP, FOOD_GATHER_TIME, WOOD_PER_LOG, RESOURCE_SEARCH_RANGE, LOG_PICKUP_RANGE,
   GUARD_LEASH, WORKER_RETALIATE, WOUND_HIT_CHANCE, UNIT_TYPES, ROAD_WIDTH, CENTER, PLAZA_RADIUS,
-  THICKET, TOCAIA, THIRST, NIGHT, DEBANDADA, CONVOY, TRADE, HILL_REACH, BLESSING_FADE
+  THICKET, TOCAIA, THIRST, NIGHT, DEBANDADA, CONVOY, TRADE, HILL_REACH, BLESSING_FADE, RIFLE_PICKUP_REACH
 } from '../config/rts.js';
 import { Corpse } from '../entities/Corpse.js';
 import { Log } from '../entities/Log.js';
@@ -134,6 +134,7 @@ export class UnitSystem {
       this.#preach(dt);
       this.#bless(dt);
       for (const u of state.organisms) this.#tick(u, dt);
+      this.#collectRifles();
       for (const b of state.buildings) {
         this.#trainTick(b, dt);
         this.#herdTick(b, dt);
@@ -198,6 +199,8 @@ export class UnitSystem {
         u.blessed = BLESSING_FADE;
         if (!worst || u.life / u.maxLife < worst.life / worst.maxLife) worst = u;
       }
+      // Começou a rezar agora: a sineta toca (AudioManager).
+      if (worst && holy.praying <= 0) this.#events.emit('blessing', { x: holy.x, y: holy.y });
       holy.praying = worst ? BLESSING_FADE : Math.max(0, holy.praying - dt);
       if (worst && holy.speed < 1) holy.heading = Math.atan2(worst.y - holy.y, worst.x - holy.x);
     }
@@ -268,6 +271,12 @@ export class UnitSystem {
       }
     }
     u.foe = null;
+    // Fuzil apanhado do chão: antes de qualquer ordem, leva na mão até a igreja. A
+    // ordem fica guardada e segue sozinha depois da entrega.
+    if (u.loot > 0) {
+      this.#deliverLoot(u, dt);
+      return;
+    }
     switch (order?.type) {
       case 'move':
       case 'attackMove':
@@ -825,11 +834,51 @@ export class UnitSystem {
     if (u.carrying) {
       u.carrying = false;
       this.#deposit('wood', WOOD_PER_LOG);
+      this.#events.emit('deliver', { x: u.x, y: u.y, resource: 'wood' });
     }
     if (u.carryFood) {
       this.#deposit('food', u.carryFood);
       u.carryFood = 0;
+      this.#events.emit('deliver', { x: u.x, y: u.y, resource: 'food' });
     }
+  }
+
+  // ---- Fuzis tomados ----
+
+  // Fuzil não se fabrica no sertão: cada soldado abatido deixa o dele no chão (e o
+  // oficial, o canhão e o comboio, as armas que levavam a mais). Fica ali, à vista,
+  // até alguém do arraial passar por cima.
+  #dropRifles(x, y, count) {
+    if (count <= 0) return;
+    this.#state.pickups.push({ x: x + (Math.random() - .5) * 4, y: y + (Math.random() - .5) * 4, count });
+  }
+
+  // Quem do arraial passar perto de um fuzil caído o apanha — sertanejo, jagunço,
+  // chefe, qualquer um — e junta com os que já leva.
+  #collectRifles() {
+    const state = this.#state;
+    if (!state.pickups.length) return;
+    state.pickups = state.pickups.filter(pickup => {
+      const taker = state.organisms.find(u => u.team === 'player' && u.life > 0 && !u.gone &&
+        Math.abs(u.x - pickup.x) < RIFLE_PICKUP_REACH && Math.hypot(u.x - pickup.x, u.y - pickup.y) < RIFLE_PICKUP_REACH);
+      if (!taker) return true;
+      taker.loot += pickup.count;
+      this.#events.emit('riflePickup', { x: pickup.x, y: pickup.y, count: pickup.count, first: !state.flags.riflePickup });
+      state.flags.riflePickup = true;
+      return false;
+    });
+  }
+
+  // Com fuzil na mão, o caminho é a igreja: lá ele entra na conta do arraial.
+  #deliverLoot(u, dt) {
+    u.chop = null;
+    u.eating = 0;
+    const church = this.#ledger.hall() ?? this.#ledger.nearestDropOff(u.team, u.x, u.y);
+    if (!church || !this.#steer(u, church.x, church.y, church.radius + 5, dt)) return;
+    this.#ledger.deposit('player', 'rifles', u.loot);
+    this.#state.floaters.push({ x: u.x, y: u.y, rifles: u.loot, time: 0, life: 1.6 });
+    this.#events.emit('deliver', { x: u.x, y: u.y, resource: 'rifles', count: u.loot });
+    u.loot = 0;
   }
 
   // ---- Construção ----
@@ -954,11 +1003,8 @@ export class UnitSystem {
       if (!u.disarmed && Math.random() < DEBANDADA.rifleChance) {
         u.disarmed = true;
         rifles++;
+        this.#dropRifles(u.x, u.y, 1);
       }
-    }
-    if (rifles) {
-      this.#ledger.deposit('player', 'rifles', rifles);
-      this.#state.floaters.push({ x: officer.x + 14, y: officer.y - 14, rifles, time: 0, life: 2.2 });
     }
     this.#events.emit('debandada', { x: officer.x, y: officer.y, fled, rifles });
   }
@@ -1135,16 +1181,17 @@ export class UnitSystem {
       anyDead = true;
       if (u.carrying) this.#forest.dropLog(u.x, u.y, u.heading);
       state.corpses.push(new Corpse(u));
-      // Soldado derrubado paga a recompensa (e às vezes o fuzil), que sobe de onde ele
-      // caiu.
+      // Soldado derrubado paga a recompensa, que sobe de onde ele caiu, e o fuzil dele
+      // (se não o largou na debandada) fica no chão para alguém do arraial buscar.
       const bounty = u.stats.bounty;
       if (bounty && u.team === 'enemy') {
-        const rifles = (bounty.rifles ?? 0) + (!u.disarmed && Math.random() < (u.stats.rifleDrop ?? 0) ? 1 : 0);
         this.#deposit('food', bounty.food);
         this.#deposit('wood', bounty.wood);
-        if (rifles) this.#ledger.deposit('player', 'rifles', rifles);
-        state.floaters.push({ x: u.x, y: u.y, food: bounty.food, wood: bounty.wood, rifles, time: 0, life: 1.6 });
+        state.floaters.push({ x: u.x, y: u.y, food: bounty.food, wood: bounty.wood, time: 0, life: 1.6 });
+        this.#dropRifles(u.x, u.y, (u.disarmed ? 0 : 1) + (bounty.rifles ?? 0));
       }
+      // Quem morre com fuzil apanhado na mão o deixa cair de novo ali.
+      if (u.loot > 0) this.#dropRifles(u.x, u.y, u.loot);
       if (u.stats.commander && u.team === 'enemy') this.#rout(u);
       if (u.stats.convoy) this.#events.emit('convoyTaken', { x: u.x, y: u.y });
       this.#events.emit('death', { organism: u });

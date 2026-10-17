@@ -40,6 +40,8 @@ export class Unit {
     // quando a cura acaba.
     this.blessed = 0;
     this.praying = 0;
+    // Fuzis apanhados do chão, levados na mão até a igreja (UnitSystem.#deliverLoot).
+    this.loot = 0;
     // Tocaia: parado na caatinga, some da vista do inimigo; `ambush` multiplica o
     // primeiro golpe de quem saiu dela.
     this.hidden = false;

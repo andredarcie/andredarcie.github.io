@@ -153,7 +153,9 @@ const WEAPONS = [['rifle', 'Fuzil Mannlicher M1888', 'Ferrolho de puxar reto, pe
   ['saber', 'Sabre de oficial', 'Guarda de latão com arco'], ['spear', 'Chuço', 'Ponta de ferro em folha'],
   ['club', 'Porrete', 'Pau nodoso'], ['axe', 'Machado', 'Cunha de ferro']];
 const PROPS = [['umbuzeiro', 'Umbuzeiro'], ['catingueira', 'Catingueira'], ['mandacaru', 'Mandacaru'], ['xiquexique', 'Xique-xique'],
-  ['macambira', 'Macambira'], ['garrancho', 'Garrancho'], ['rock', 'Pedra']];
+  ['macambira', 'Macambira'], ['garrancho', 'Garrancho'], ['rock', 'Pedra'], ['favela', 'Favela'],
+  ['quixabeira', 'Quixabeira'], ['juazeiro', 'Juazeiro'], ['canudo', 'Canudo-de-pito'], ['cabecafrade', 'Cabeça-de-frade'],
+  ['palmatoria', 'Palmatória'], ['lasca', 'Lasca de talcoxisto']];
 
 export function installModelViewer() {
   const characters = new CharacterModel();

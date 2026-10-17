@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { ghostify, ghostFade } from './GhostLook.js';
 import { pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
 import { hillHeight } from '../world/Hills.js';
@@ -42,6 +43,8 @@ export class CampfireRenderer {
       let view = this.#views.get(fire);
       if (!view) {
         view = this.#createView(fire);
+        // A obra fantasma do modo de obra (FrameRenderer): o acampamento, transparente.
+        if (fire.preview) ghostify(view, fire.previewOpen);
         this.#layer.add(view);
         this.#views.set(fire, view);
       }
@@ -60,13 +63,13 @@ export class CampfireRenderer {
         part.mesh.scale.set(part.width * (.6 + .4 * flame), Math.max(.01, height), part.width * (.6 + .4 * flame));
         part.mesh.position.set(sway * .5, 2.4 + height / 2, 0);
         part.mesh.rotation.y = part.phase + (animate ? elapsed * .8 : 0);
-        part.mesh.material.opacity = Math.min(1, flame * 1.6);
+        part.mesh.material.opacity = Math.min(1, flame * 1.6) * ghostFade(fire);
       }
       // Brasa: ainda acesa quando a chama já foi, que é como o fogo morre de manhã.
-      embers.material.opacity = Math.min(1, .25 + flame * 1.5);
+      embers.material.opacity = Math.min(1, .25 + flame * 1.5) * ghostFade(fire);
       const dark = 1 - daylight;
       glow.scale.setScalar(26 + 8 * flicker);
-      glow.material.opacity = .32 * flame * dark * flicker;
+      glow.material.opacity = .32 * flame * dark * flicker * ghostFade(fire);
 
       const light = this.#lights[index];
       if (light) {

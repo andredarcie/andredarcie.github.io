@@ -42,8 +42,15 @@ export const TEAMS = Object.freeze({
   enemy: { id: 'enemy', name: 'Exército republicano', outfit: CLOTH.armyTunic, ring: '#ff6a55', base: CENTER }
 });
 
-export const START_FOOD = 150;
-export const START_WOOD = 200;
+// O arraial começa com o bastante para uma trincheira só (30 de comida e 70 de
+// madeira) e quase nada de troco: a próxima obra vem do trabalho na roça e na lenha.
+export const START_FOOD = 60;
+export const START_WOOD = 90;
+// Fuzis tomados da tropa: fuzil não se fabrica no sertão, só se toma do inimigo
+// abatido. O arraial começa com dois, e cada jagunço e cada trincheira levam um.
+export const START_RIFLES = 2;
+// Fuzil caído no chão: quem do arraial passar a esta distância dele o apanha.
+export const RIFLE_PICKUP_REACH = 9;
 export const START_WORKERS = 6;
 export const MAX_POPULATION = 40;
 
@@ -102,7 +109,8 @@ export const LOOKS = Object.freeze({
 // `speed` multiplica o passo de caminhada; `reach` é o alcance do golpe (ou do tiro,
 // em `ranged`); `sight` a distância em que se percebe inimigo; `vsBuilding`
 // multiplica o dano em construção; `accuracy` é a chance do tiro acertar. Soldado da
-// República: `bounty` é o que o arraial recolhe dele (munição, comida, as armas).
+// República: `bounty` é o que o arraial recolhe dele (munição e comida; `rifles`,
+// os fuzis a mais além do dele, que cai no chão junto — UnitSystem.#dropRifles).
 export const UNIT_TYPES = Object.freeze({
   worker: {
     label: 'Sertanejo', plural: 'Sertanejos', icon: 'sertanejo', hp: 45, damage: 4, weapon: 'club', reach: 12,
@@ -112,23 +120,23 @@ export const UNIT_TYPES = Object.freeze({
   warrior: {
     label: 'Jagunço de facão', plural: 'Jagunços de facão', icon: 'jagunco', hp: 115, damage: 11, weapon: 'machete', reach: 13,
     interval: 1.2, swing: .9, speed: 1.2, size: 10.2, sight: 120, vsBuilding: 1, look: 'jaguncoBlade',
-    cost: { food: 50, wood: 25 }, time: 11, from: 'camp'
+    cost: { food: 50, wood: 25, rifles: 1 }, time: 11, from: 'camp'
   },
   spearman: {
     label: 'Jagunço de chuço', plural: 'Jagunços de chuço', icon: 'pike', hp: 85, damage: 10, weapon: 'spear', reach: 26,
     interval: 1.35, swing: .85, speed: 1.25, size: 10.2, sight: 135, vsBuilding: .7, look: 'jaguncoPike',
-    cost: { food: 40, wood: 45 }, time: 12, from: 'camp'
+    cost: { food: 40, wood: 45, rifles: 1 }, time: 12, from: 'camp'
   },
   rifleman: {
     // (o bacamarte carrega pela boca: o ciclo é mais longo e o tiro, mais forte)
     label: 'Atirador', plural: 'Atiradores', icon: 'blunderbuss', hp: 75, damage: 16, weapon: 'blunderbuss', reach: 78,
     interval: 3, swing: .7, speed: 1.1, size: 10.2, sight: 110, vsBuilding: .5, look: 'jaguncoRifle',
-    ranged: true, accuracy: .7, cost: { food: 70, wood: 50 }, time: 14, from: 'camp'
+    ranged: true, accuracy: .7, cost: { food: 70, wood: 50, rifles: 1 }, time: 14, from: 'camp'
   },
   conselheiro: {
     label: 'Antônio Conselheiro', plural: 'Antônio Conselheiro', icon: 'cross', hp: 240, damage: 0, weapon: null,
     reach: 0, interval: 1, swing: 1, speed: .8, size: 10.4, sight: 0, vsBuilding: 0, look: 'conselheiro',
-    passive: true, blessing: { radius: 34, heal: 6 }
+    passive: true, blessing: { radius: 60, heal: 6 }
   },
   // Os chefes de Belo Monte (Os Sertões, O Homem e A Luta). Chegam ao arraial com os
   // romeiros, um por vez (HEROES); cada um é único e, morto, não volta.
@@ -165,7 +173,7 @@ export const UNIT_TYPES = Object.freeze({
   private: {
     label: 'Soldado de linha', plural: 'Soldados de linha', icon: 'soldier', hp: 45, damage: 7, weapon: 'rifle', reach: 70,
     interval: 2.4, swing: .7, speed: .6, size: 10, sight: 90, vsBuilding: .5, look: 'soldier',
-    ranged: true, accuracy: .6, bounty: { food: 6, wood: 4 }, rifleDrop: .3
+    ranged: true, accuracy: .6, bounty: { food: 6, wood: 4 }
   },
   bayonet: {
     label: 'Soldado de baioneta', plural: 'Soldados de baioneta', icon: 'bayonet', hp: 55, damage: 10, weapon: 'bayonet', reach: 24,
@@ -200,6 +208,11 @@ export const UNIT_TYPES = Object.freeze({
 
 // `capacity` é o tamanho da casa (hutSize); `radius` o chão que ocupa; `pop` quanto
 // teto de população dá; `build` os segundos de trabalho de UM trabalhador.
+// Os custos sobem em escada, na ordem de BUILD_ORDER: no começo só a trincheira
+// cabe no bolso, e cada obra seguinte pede mais trabalho acumulado que a anterior
+// (com 6 sertanejos, o arraial junta perto de 100 de madeira e 100 de comida por
+// minuto, mais o prêmio de cada onda vencida). Assim as opções vão se abrindo com
+// o tempo, uma de cada vez, em vez de todas de uma vez logo no início.
 // A igreja de Santo Antônio é o coração do arraial: caiu, acabou.
 export const BUILDING_TYPES = Object.freeze({
   hall: {
@@ -208,30 +221,30 @@ export const BUILDING_TYPES = Object.freeze({
   },
   tower: {
     label: 'Trincheira', fem: true, icon: 'trench', hp: 420, radius: 11, capacity: 0, pop: 0, build: 20,
-    cost: { food: 30, wood: 70 }, trains: [], dropOff: false
+    cost: { food: 30, wood: 70, rifles: 1 }, trains: [], dropOff: false
   },
   house: {
     label: 'Casa de taipa', fem: true, icon: 'house', hp: 220, radius: 16, capacity: 4, pop: 6, build: 18,
-    cost: { food: 0, wood: 60 }, trains: [], dropOff: false
+    cost: { food: 20, wood: 120 }, trains: [], dropOff: false
   },
   camp: {
     label: 'Acampamento', icon: 'campfire', hp: 360, radius: 14, capacity: 0, pop: 0, build: 26,
-    cost: { food: 0, wood: 110 }, trains: ['warrior', 'spearman', 'rifleman'], dropOff: false
+    cost: { food: 60, wood: 230 }, trains: ['warrior', 'spearman', 'rifleman'], dropOff: false
   },
   lodge: {
     label: 'Armazém', icon: 'storehouse', hp: 450, radius: 22, capacity: 8, pop: 4, build: 40,
-    cost: { food: 0, wood: 150 }, trains: [], dropOff: true
+    cost: { food: 80, wood: 300 }, trains: [], dropOff: true
   },
   // "...ou tangiam os rebanhos de cabras": o curral rende comida sozinho.
   curral: {
     label: 'Curral de cabras', icon: 'goat', hp: 260, radius: 15, capacity: 6, pop: 0, build: 24,
-    cost: { food: 0, wood: 80 }, trains: [], dropOff: false, herd: { food: 4, every: 5 }
+    cost: { food: 40, wood: 170 }, trains: [], dropOff: false, herd: { food: 4, every: 5 }
   },
   // A igreja nova, "retangular, e vasto, e pesado", inacabada, de cujas torres os
   // jagunços atiravam. Uma só, cara e demorada.
   igrejanova: {
     label: 'Igreja Nova', fem: true, icon: 'newchurch', hp: 2400, radius: 26, capacity: 12, pop: 0, build: 140,
-    cost: { food: 150, wood: 400 }, trains: [], dropOff: false, unique: true,
+    cost: { food: 220, wood: 600 }, trains: [], dropOff: false, unique: true,
     turret: { range: 190, damage: 13, interval: .8 }
   }
 });
@@ -251,10 +264,12 @@ export const TOWER = Object.freeze({
 // Os jagunços tomaram centenas de fuzis Mannlicher e munição da 3ª expedição
 // (março de 1897); o jirau é o estrado de forquilhas do sertão, aqui como posto de
 // vigia; e o bacamarte carregado de pedra e prego era arma comum no arraial.
+// Melhorar custa mais que erguer: a trincheira nova não sai melhorada na mesma
+// hora, e cada nível pede um bom tempo de trabalho (o segundo, bem mais).
 export const TOWER_UPGRADES = Object.freeze({
-  power: { label: 'Mannlichers tomados', short: 'Fuzis', icon: 'mannlicher', costs: [{ food: 20, wood: 50, rifles: 4 }, { food: 40, wood: 90, rifles: 10 }] },
-  range: { label: 'Jirau de vigia', short: 'Jirau', icon: 'jirau', costs: [{ food: 0, wood: 60 }, { food: 40, wood: 110 }] },
-  scatter: { label: 'Carga de bacamarte', short: 'Bacamarte', icon: 'scatter', costs: [{ food: 90, wood: 90 }] }
+  power: { label: 'Mannlichers tomados', short: 'Fuzis', icon: 'mannlicher', costs: [{ food: 60, wood: 150, rifles: 4 }, { food: 130, wood: 280, rifles: 10 }] },
+  range: { label: 'Jirau de vigia', short: 'Jirau', icon: 'jirau', costs: [{ food: 40, wood: 120 }, { food: 100, wood: 240 }] },
+  scatter: { label: 'Carga de bacamarte', short: 'Bacamarte', icon: 'scatter', costs: [{ food: 150, wood: 220 }] }
 });
 export const TOWER_UPGRADE_ORDER = Object.freeze(['power', 'range', 'scatter']);
 
@@ -310,8 +325,8 @@ export const TRADE = Object.freeze({ give: 100, get: 60, bonus: 1.2 });
 export const BLESSING_FADE = .6;
 // Os morros em volta do arraial: em cima deles o tiro alcança mais longe.
 export const HILLS = Object.freeze([
-  { id: 'favela', label: 'Morro da Favela', x: 575, y: 640, radius: 84, height: 26 },
-  { id: 'mario', label: 'Alto do Mário', x: 215, y: 205, radius: 70, height: 22 }
+  { id: 'favela', label: 'Morro da Favela', x: 590, y: 668, radius: 86, height: 46 },
+  { id: 'mario', label: 'Alto do Mário', x: 215, y: 205, radius: 72, height: 36 }
 ]);
 export const HILL_REACH = 1.22;
 

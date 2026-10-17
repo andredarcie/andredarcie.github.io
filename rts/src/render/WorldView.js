@@ -19,6 +19,8 @@ import { HutRenderer } from './HutRenderer.js';
 import { TowerRenderer } from './TowerRenderer.js';
 import { GrassRenderer } from './GrassRenderer.js';
 import { OcclusionFader } from './OcclusionFader.js';
+import { PickupRenderer } from './PickupRenderer.js';
+import { FaunaRenderer } from './FaunaRenderer.js';
 
 // A cena 3D inteira, vista de fora como uma coisa só: monta o renderer, a câmera e um
 // renderizador por tipo de coisa do mundo, e expõe só o que o resto do jogo usa.
@@ -64,6 +66,10 @@ export class WorldView {
     this.ponds = new PondRenderer(pondLayer, space);
     this.corpses = new CorpseRenderer(this.#layer(), characters, space);
     this.campfires = new CampfireRenderer(this.#layer(), scene, props, space);
+    // Fuzis caídos dos soldados abatidos, flutuando à espera de quem os apanhe.
+    this.pickups = new PickupRenderer(this.#layer(), space);
+    // As cabras do arraial e os urubus sobre as batalhas.
+    this.fauna = new FaunaRenderer(this.#layer(), space);
     const treeLayer = new THREE.Group();
     const logLayer = new THREE.Group();
     const hutLayer = new THREE.Group();

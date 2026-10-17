@@ -107,6 +107,10 @@ export class RtsHud {
         this.toast(people, 'info', road.mouth);
       }
     });
+    // O primeiro fuzil apanhado ensina o caminho dele.
+    events.on('riflePickup', ({ x, y, first }) => {
+      if (first) this.toast('Fuzil tomado da tropa! Quem apanhou leva até a igreja', 'info', { x, y });
+    });
     events.on('thirst', () => {
       this.toast('A tropa está com sede: longe d\'água, os soldados enfraquecem');
     });

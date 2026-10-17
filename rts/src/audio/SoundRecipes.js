@@ -725,45 +725,246 @@ function convoy(sr, rand) {
   return widen(fade(out, sr, .002, .3), sr, .3);
 }
 
-function rain(sr, rand) {
-  // Pancada de chuva no sertão: trovão longe, o chiado chegando em rajadas e os
-  // pingos batendo em folha e terra seca. Trovão de verdade dura 10–15 s, em
-  // estrondos a uns 2 s um do outro, com o grosso da energia entre 40 e 200 Hz.
+function thunder(sr, rand) {
+  // Trovão longe, quando a pancada de chuva chega (a chuva em si é o laço
+  // `rainfall`). Trovão de verdade dura 10–15 s, em estrondos a uns 2 s um do outro,
+  // com o grosso da energia entre 40 e 200 Hz.
   const seconds = 11;
-  const density = t => Math.min(1, t / 1.8) * Math.min(1, (seconds - t) / 2);
-  const thunder = empty(sr, seconds);
+  const out = empty(sr, seconds);
   let clap = .3;
   for (let k = 0; k < 4 && clap < seconds - 3; k++) {
     const roll = rumble(sr, rand, seconds - clap, { cutoff: between(rand, 110, 170), onset: between(rand, .08, .3), decay: between(rand, 1.4, 2.4), rate: 3000 });
     mix(roll, burst(sr, rand, 1.2, { type: 'bandpass', frequency: between(rand, 350, 600), q: .6, envelope: t => Math.min(1, t / .12) * Math.exp(-t / .35) }), .05 * sr, k ? .15 : .3);
-    mix(thunder, roll, clap * sr, [1, .75, .55, .4][k]);
+    mix(out, roll, clap * sr, [1, .75, .55, .4][k]);
     clap += between(rand, 1.6, 2.6);
   }
-  normalize(1, thunder);
+  filter(out, 'highpass', sr, 35, .7);
+  return widen(fade(out, sr, .05, .8), sr, .3);
+}
+
+// ---------------------------------------------------------------- vida no arraial
+
+// Cantil de folha de flandres quase seco, sacudido pela tropa com sede: a lata
+// fina bate (contato curto, Q de metal fino) e o restinho d'água chacoalha dentro.
+function canteen(sr, rand) {
+  const out = empty(sr, .9);
+  for (let k = 0; k < 4; k++) {
+    const at = k * between(rand, .13, .17);
+    mix(out, knock(sr, rand, .25, { touch: .0002, base: between(rand, 650, 850), q: 45, count: 7, tilt: .6 }), at * sr, .5 * (1 - k * .15));
+    mix(out, burst(sr, rand, .09, {
+      type: 'bandpass', frequency: between(rand, 350, 700), q: 2.5, envelope: t => Math.sin(Math.PI * Math.min(1, t / .09))
+    }), (at + .02) * sr, .3);
+  }
+  filter(out, 'highpass', sr, 120, .7);
+  return fade(out, sr, .002, .1);
+}
+
+// Desertor: o soldado larga a tropa e some correndo pela caatinga — passos rápidos
+// cada vez mais baixos e abafados (o ar e o mato comem o agudo) e a correia do
+// equipamento batendo no ritmo da corrida.
+function deserter(sr, rand) {
+  const out = empty(sr, 1.7);
+  for (let k = 0; k < 9; k++) {
+    const at = k * between(rand, .15, .19);
+    const away = Math.exp(-k * .28);
+    footstep(sr, rand, out, at, .7 * away);
+    if (k % 2 === 0) steel(sr, rand, out, at + .02, between(rand, 2200, 2800), .06 * away, 120);
+  }
+  sweep(out, 'lowpass', sr, t => 6000 * Math.exp(-t * 1.6) + 600, .7);
+  return fade(out, sr, .002, .2);
+}
+
+// Romeiros chegando a Belo Monte: a viola saúda (ré, lá, ré), e por baixo o arrastar
+// de muitos pés na estrada, longe, e o chocalho de uma cabra que vem junto.
+function romeiros(sr, rand) {
+  const seconds = 3.4;
+  const out = viola(sr, rand, seconds, [
+    ...strum([D3, A3, D4, Fs4, A4], 0, .03, { decay: 1.6 }),
+    ...strum([A3, Cs4, E4, A4], .85, .03, { decay: 1.4, gain: .85 }),
+    ...strum([D3, A3, D4, Fs4, A4], 1.7, .035, { decay: 2.4 })
+  ]);
+  const crowd = empty(sr, seconds);
+  for (let k = 0; k < 34; k++) footstep(sr, rand, crowd, between(rand, .1, 3), between(rand, .1, .25));
+  for (let k = 0; k < 5; k++) {
+    mix(crowd, knock(sr, rand, .4, { touch: .0002, base: between(rand, 880, 940), q: 80, ratios: [1, 1.52, 2.04, 2.76], tilt: .5 }),
+      (.3 + k * between(rand, .45, .6)) * sr, k % 2 ? .05 : .09);
+  }
+  filter(crowd, 'lowpass', sr, 2600, .7);
+  mix(out, crowd, 0, .45);
+  return widen(fade(out, sr, .002, .3), sr, .3);
+}
+
+// Carga entregue na igreja. Lenha: a tora cai no monte (baque de pau grosso e seco,
+// o quique e um pouco de poeira).
+function dropWood(sr, rand) {
+  const out = empty(sr, .7);
+  mix(out, knock(sr, rand, .5, { touch: .002, base: between(rand, 160, 220), q: 16, count: 9, tilt: .7 }), 0, 1);
+  mix(out, knock(sr, rand, .4, { touch: .0015, base: between(rand, 260, 330), q: 18, count: 8, tilt: .7 }), between(rand, .08, .12) * sr, .35);
+  crackle(out, sr, rand, { count: 10, from: .01, span: .2, gain: .08, cutoff: 1800 });
+  return fade(out, sr, 0, .1);
+}
+
+// Fuzil apanhado do chão: a mão agarra a madeira da coronha (toque surdo), o ferrolho
+// e as braçadeiras de aço chacoalham e a bandoleira de couro estala.
+function riflePickup(sr, rand) {
+  const out = empty(sr, .5);
+  mix(out, knock(sr, rand, .25, { touch: .0012, base: between(rand, 380, 460), q: 16, count: 7, tilt: .7 }), 0, .6);
+  for (let k = 0; k < 3; k++) steel(sr, rand, out, .03 + k * between(rand, .03, .06), between(rand, 1900, 2700), .22 - k * .05, 90);
+  mix(out, burst(sr, rand, .05, { type: 'bandpass', frequency: 1400, q: .9, envelope: hit(.001, .01) }), .06 * sr, .25);
+  filter(out, 'highpass', sr, 120, .7);
+  return fade(out, sr, .002, .08);
+}
+
+// Fuzis entregues na igreja: postos no monte das armas tomadas — madeira batendo em
+// madeira e o aço tinindo uma vez.
+function dropRifles(sr, rand) {
+  const out = empty(sr, .7);
+  mix(out, knock(sr, rand, .4, { touch: .0012, base: between(rand, 300, 380), q: 18, count: 8, tilt: .7 }), 0, .9);
+  mix(out, knock(sr, rand, .3, { touch: .001, base: between(rand, 420, 500), q: 18, count: 7, tilt: .7 }), between(rand, .07, .1) * sr, .4);
+  steel(sr, rand, out, .01, between(rand, 2000, 2600), .2, 140);
+  return fade(out, sr, 0, .1);
+}
+
+// Mandioca: o feixe assenta no chão (baque macio das raízes), as folhas da rama
+// raspam e cai terra das raízes.
+function dropCassava(sr, rand) {
+  const out = empty(sr, .6);
+  mix(out, knock(sr, rand, .3, { touch: between(rand, .005, .008), base: between(rand, 120, 160), q: 2, count: 5, tilt: .6, rough: .5 }), 0, 1);
+  for (let k = 0; k < 8; k++) {
+    const length = between(rand, .02, .05);
+    mix(out, burst(sr, rand, length, {
+      color: 'pink', type: 'bandpass', frequency: between(rand, 2500, 5000), q: 1, envelope: t => Math.sin(Math.PI * Math.min(1, t / length))
+    }), between(rand, 0, .2) * sr, between(rand, .08, .25));
+  }
+  for (let k = 0; k < 10; k++) {
+    mix(out, burst(sr, rand, .02, { type: 'bandpass', frequency: between(rand, 300, 1200), q: 1, envelope: hit(.0005, .006) }),
+      between(rand, .03, .3) * sr, between(rand, .05, .15));
+  }
+  filter(out, 'highpass', sr, 70, .7);
+  return fade(out, sr, .002, .08);
+}
+
+// Papel: a folha empurra o ar ao se mover (ruído num passa-banda que varre e some)
+// e estala em grãos agudos e esparsos onde dobra. Planta da obra se abrindo e a
+// página do diário virando.
+function paper(sr, rand, seconds, from, to, crinkles) {
+  const out = empty(sr, seconds);
+  const swish = pink(samples(sr, seconds), rand);
+  sweep(swish, 'bandpass', sr, t => from * Math.pow(to / from, Math.min(1, t / seconds)), .8);
+  shape(swish, sr, t => Math.pow(Math.sin(Math.PI * Math.min(1, t / seconds)), 1.4));
+  mix(out, peakTo(swish), 0, .6);
+  for (let k = 0; k < crinkles; k++) {
+    const grain = burst(sr, rand, .006, { type: 'bandpass', frequency: between(rand, 2500, 7000), q: 1.2, envelope: hit(.0002, .0015) });
+    mix(out, grain, seconds * Math.pow(rand(), 1.3) * sr, between(rand, .1, .4) * (rand() < .5 ? -1 : 1));
+  }
+  filter(out, 'highpass', sr, 400, .7);
+  return fade(out, sr, .003, .06);
+}
+
+// Sineta de bronze: um toque leve, e um segundo mais fraco, quando o Conselheiro
+// começa a rezar por um ferido.
+function blessing(sr, rand) {
+  const out = empty(sr, 2.6);
+  const prime = between(rand, 1180, 1260);
+  bell(sr, rand, out, 0, prime, { gain: 1, decay: .45, bright: .9 });
+  bell(sr, rand, out, between(rand, .32, .4), prime, { gain: .45, decay: .4, bright: .8 });
+  return widen(fade(out, sr, 0, .4), sr, .3);
+}
+
+// ---------------------------------------------------------------- ambiente
+
+// Laço sem emenda: o fim desliza sobre o começo (troca de potência igual, para o
+// volume não afundar no meio da emenda) e sai cortado, pronto para repetir.
+function seamless(channels, sr, overlap) {
+  const n = samples(sr, overlap);
+  return channels.map(data => {
+    const start = data.length - n;
+    for (let i = 0; i < n; i++) {
+      const w = i / n;
+      data[i] = data[i] * Math.sin(w * Math.PI / 2) + data[start + i] * Math.cos(w * Math.PI / 2);
+    }
+    return data.slice(0, start);
+  });
+}
+
+// Vento seco da caatinga: um sopro largo e grave que sobe e desce em lufadas, com
+// a folhagem seca chiando por cima só quando a lufada aperta.
+function wind(sr, rand) {
+  const seconds = 16;
+  const channels = [];
+  for (let c = 0; c < 2; c++) {
+    const n = samples(sr, seconds);
+    const body = burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: between(rand, 420, 560), q: .5 });
+    const leaves = burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: between(rand, 3000, 4200), q: .7 });
+    const low = burst(sr, rand, seconds, { color: 'brown', frequency: 160, q: .5 });
+    const out = new Float32Array(n);
+    let gust = .5, goal = .5;
+    for (let i = 0; i < n; i++) {
+      if (i % Math.round(sr * 1.4) === 0) goal = between(rand, .25, 1);
+      gust += (goal - gust) * (1.5 / sr);
+      out[i] = body[i] * (.35 + .65 * gust) * .6 + leaves[i] * gust * gust * .25 + low[i] * (.5 + .5 * gust) * .3;
+    }
+    channels.push(out);
+  }
+  const [l, r] = seamless(channels, sr, 2.5);
+  return { l, r };
+}
+
+// Grilos na noite do sertão: cada um no seu tom (perto de 4,5 kHz) e no seu
+// compasso, cantando em trinados de três ou quatro pulsos curtos; uns mais perto,
+// outros longe e mais de um lado. Grilo canta quase senoide pura, por isso a
+// síntese aditiva aqui é fiel e não soa de brinquedo.
+function crickets(sr, rand) {
+  const seconds = 9;
+  const n = samples(sr, seconds);
+  const channels = [new Float32Array(n), new Float32Array(n)];
+  for (let k = 0; k < 6; k++) {
+    const frequency = between(rand, 4100, 4900);
+    const period = between(rand, .45, .85);
+    const pulses = 3 + Math.floor(rand() * 2);
+    const near = between(rand, .25, 1);
+    const pan = between(rand, -.8, .8);
+    const gains = [near * (1 - pan) / 2, near * (1 + pan) / 2];
+    const pulse = samples(sr, .013);
+    for (let t = between(rand, 0, period); t < seconds - .2; t += period * between(rand, .97, 1.03)) {
+      for (let p = 0; p < pulses; p++) {
+        const start = Math.round((t + p * .028) * sr);
+        for (let i = 0; i < pulse && start + i < n; i++) {
+          const v = Math.sin(TAU * frequency * (start + i) / sr) * Math.sin(Math.PI * i / pulse);
+          channels[0][start + i] += v * gains[0];
+          channels[1][start + i] += v * gains[1];
+        }
+      }
+    }
+  }
+  // O coro dos que estão longe: um chiado estreito e baixinho no mesmo tom.
+  for (const data of channels) {
+    mix(data, burst(sr, rand, seconds, { type: 'bandpass', frequency: 4500, q: 6 }), 0, .06);
+    filter(data, 'lowpass', sr, 9000, .7);
+  }
+  const [l, r] = seamless(channels, sr, .6);
+  return { l, r };
+}
+
+// Chuva caindo, sem começo nem fim: o chiado largo, o rumor grave da água no chão
+// e os pingos batendo em folha e terra seca, cada canal com os seus.
+function rainfall(sr, rand) {
+  const seconds = 7;
   const channels = [];
   for (let c = 0; c < 2; c++) {
     const out = empty(sr, seconds);
-    const hiss = burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: 3200, q: .4 });
-    let gust = .6, goal = .6;
-    for (let i = 0; i < hiss.length; i++) {
-      if (i % 4096 === 0) goal = between(rand, .45, 1);
-      gust += (goal - gust) * .0004;
-      hiss[i] *= gust * density(i / sr);
-    }
-    mix(out, hiss, 0, .3);
-    mix(out, burst(sr, rand, seconds, { color: 'pink', frequency: 700, q: .5, envelope: density }), 0, .15);
-    for (let k = 0; k < 3000; k++) {
-      const at = seconds * rand();
-      if (rand() > density(at)) continue;
+    mix(out, burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: 3200, q: .4 }), 0, .3);
+    mix(out, burst(sr, rand, seconds, { color: 'pink', frequency: 700, q: .5 }), 0, .15);
+    for (let k = 0; k < 2200; k++) {
       const length = between(rand, .003, .008);
       const drop = burst(sr, rand, length, { type: 'bandpass', frequency: between(rand, 1500, 6000), q: 1.2, envelope: hit(.0001, .0015) });
-      mix(out, drop, at * sr, between(rand, .03, .12));
+      mix(out, drop, seconds * rand() * sr, between(rand, .03, .12));
     }
-    mix(out, thunder, 0, .8);
     filter(out, 'highpass', sr, 35, .7);
-    channels.push(fade(out, sr, .05, .6));
+    channels.push(out);
   }
-  return { l: channels[0], r: channels[1] };
+  const [l, r] = seamless(channels, sr, 1);
+  return { l, r };
 }
 
 // Clique de interface: um toque seco de madeira, curto.
@@ -859,9 +1060,9 @@ export const RECIPES = {
   alarm: {
     variants: 2,
     make: (sr, rand) => {
-      // Rebate: o sino pequeno batido depressa chama todo mundo.
+      // O sino da igreja, uma badalada só: o arraial está sendo atacado.
       const out = empty(sr, 2.6);
-      for (let k = 0; k < 4; k++) bell(sr, rand, out, k * .28, between(rand, 518, 526), { gain: k % 2 ? .75 : 1, decay: .55, bright: 1.2 });
+      bell(sr, rand, out, 0, between(rand, 518, 526), { gain: 1, decay: .55, bright: 1.2 });
       return widen(fade(out, sr, 0, .3), sr, .25);
     }
   },
@@ -882,5 +1083,20 @@ export const RECIPES = {
       return { l: fade(l, sr, 0, .8), r: fade(r, sr, 0, .8) };
     }
   },
-  rain: { variants: 1, make: rain }
+  rain: { variants: 1, make: thunder },
+  thirst: { variants: 2, make: canteen },
+  deserted: { variants: 3, make: deserter },
+  romeiros: { variants: 2, make: romeiros },
+  'drop-wood': { variants: 4, make: dropWood },
+  'drop-food': { variants: 4, make: dropCassava },
+  'drop-rifles': { variants: 3, make: dropRifles },
+  'rifle-pickup': { variants: 3, make: riflePickup },
+  blessing: { variants: 2, make: blessing },
+  'build-open': { variants: 2, make: (sr, rand) => paper(sr, rand, .55, 900, 3500, 22) },
+  page: { variants: 3, make: (sr, rand) => paper(sr, rand, .4, 1200, 4500, 14) },
+  'story-new': { variants: 2, make: (sr, rand) => paper(sr, rand, .28, 1800, 5000, 8) },
+  // Laços de ambiente (AudioManager.#beds).
+  wind: { variants: 1, make: wind },
+  crickets: { variants: 1, make: crickets },
+  rainfall: { variants: 1, make: rainfall }
 };

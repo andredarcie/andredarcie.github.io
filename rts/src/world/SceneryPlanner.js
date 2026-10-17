@@ -1,5 +1,7 @@
 import { pseudoRandom } from '../core/math.js';
-import { WORLD, SCENERY_DENSITY, SCENERY_KINDS, SCENERY_SAMPLES, FOOTPRINT } from '../config/world.js';
+import {
+  WORLD, SCENERY_DENSITY, SCENERY_KINDS, SCENERY_SAMPLES, FOOTPRINT, TREE_KINDS, SCHIST_RADIUS
+} from '../config/world.js';
 import { CHOP_HITS } from '../config/settlement.js';
 import { Tree } from '../entities/Tree.js';
 
@@ -31,13 +33,17 @@ export class SceneryPlanner {
       if (Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < clearing) continue;
       const biome = this.#biomes.biomeAt(x, y);
       if (pseudoRandom(seed + 2) > SCENERY_DENSITY[biome]) continue;
-      const kind = SceneryPlanner.#kindFor(biome, pseudoRandom(seed + 3));
+      let kind = SceneryPlanner.#kindFor(biome, pseudoRandom(seed + 3));
+      // Em volta do arraial a caatinga foi rapada (lenha, roça, casas): árvore ali é
+      // rara, e as fotos de 1897 mostram o chão pelado até o rio.
+      if (TREE_KINDS.includes(kind) && biome !== 'riverbed' && pseudoRandom(seed + 4) < this.#biomes.openness(x, y) * .7) continue;
+      if (kind === 'rock' && Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < SCHIST_RADIUS) kind = 'lasca';
       // Nem dentro de lago, nem em cima de outra planta ou pedra. A chuva abre lagos
       // novos depois, mas eles também conferem o lugar (PondSystem).
       if (!this.#occupancy.isFree(x, y, FOOTPRINT[kind] ?? 5)) continue;
       // Árvore dentro do mundo é recurso da simulação, não enfeite: vai para a
       // lista de árvores, que a cena desenha e anima à parte.
-      if (kind === 'umbuzeiro' || kind === 'catingueira') {
+      if (TREE_KINDS.includes(kind)) {
         this.#state.trees.push(new Tree({
           id: this.#state.trees.length + 1, x, y, kind, seed, health: CHOP_HITS
         }));

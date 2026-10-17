@@ -32,6 +32,9 @@ export class WorldState {
     this.shots = [];
     this.sparks = [];
     this.floaters = [];
+    // Fuzis caídos dos soldados abatidos, esperando alguém do arraial apanhar:
+    // { x, y, count, time }.
+    this.pickups = [];
     // A onda (WaveDirector): número, fase ('calm' | 'active'), relógio e a próxima.
     this.wave = null;
     // Coisas que só acontecem uma vez por partida (o primeiro aviso de sede...).

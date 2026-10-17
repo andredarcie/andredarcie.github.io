@@ -9,9 +9,9 @@ export class TeamLedger {
     this.#state = state;
   }
 
-  reset({ food, wood }) {
+  reset({ food, wood, rifles = 0 }) {
     this.#state.teams = {
-      player: { ...TEAMS.player, food, wood, rifles: 0 },
+      player: { ...TEAMS.player, food, wood, rifles },
       enemy: { ...TEAMS.enemy, food: 0, wood: 0, rifles: 0 }
     };
   }

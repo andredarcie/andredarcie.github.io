@@ -1,7 +1,7 @@
 import { WORLD } from '../config/world.js';
 import { BUILDING_TYPES, UNIT_TYPES, FORMATION_SPACING, TRAIN_QUEUE_MAX, TOWER_UPGRADES, TRADE } from '../config/rts.js';
 import { Building } from '../entities/Building.js';
-import { onRoad } from '../world/Roads.js';
+import { onRoad, facingRoad } from '../world/Roads.js';
 import { TeamLedger } from './TeamLedger.js';
 
 // As ordens do jogo: andar, atacar, colher, construir (ou consertar), treinar,
@@ -165,6 +165,8 @@ export class Commands {
       id: state.newId(), team: teamId, kind, stats: BUILDING_TYPES[kind], x, y, angle,
       outfit: state.teams[teamId].outfit, built
     });
+    // A trincheira nasce com os atiradores olhando a estrada de onde vem a tropa.
+    if (building.isTower) building.aim = facingRoad(x, y);
     state.buildings.push(building);
     this.#events.emit('placed', { building });
     return building;

@@ -103,7 +103,8 @@ export class OrganismRenderer {
         torch: o.torch,
         // Soldado anda com a arma na mão; trabalhador só a pega para brigar.
         // Na roça, o facão de cortar a mandioca.
-        weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : o.eating > 0 && !o.chop && !o.carrying ? 'machete' : null,
+        // Fuzil tomado da tropa, levado no ombro até a igreja.
+        weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : o.loot > 0 ? 'rifle' : o.eating > 0 && !o.chop && !o.carrying ? 'machete' : null,
         pushing: Boolean(o.look?.cannon || o.look?.bigCannon),
         guard: Boolean(o.foe) && o.speed < 6,
         strike: o.strike > 0 && animate ? o.strike / o.strikeSwing : 0,

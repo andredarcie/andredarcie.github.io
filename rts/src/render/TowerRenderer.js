@@ -7,6 +7,7 @@ import { CENTER, SKIN_TONES, CLOTH, TOWER } from '../config/rts.js';
 import { easeInOut } from '../core/math.js';
 import { hillHeight } from '../world/Hills.js';
 import { weaponModel, BOLT_Y as WEAPON_BOLT_Y } from './WeaponModels.js';
+import { ghostify, disposeGhost } from './GhostLook.js';
 
 // Medidas da trincheira. RING é o raio do muro de pedra; por fora dele o aterro desce
 // até BERM_OUT; por dentro, a banqueta de tiro (onde os atiradores se ajoelham) sobe
@@ -199,6 +200,8 @@ export class TowerRenderer {
       if (!view || view.stage !== stage) {
         if (view) this.#dispose(view);
         view = this.#build(tower, stage);
+        // A obra fantasma do modo de obra (FrameRenderer): a trincheira pronta, transparente.
+        if (tower.preview) ghostify(view.group, tower.previewOpen);
         this.#layer.add(view.group);
         this.#views.set(tower, view);
       }
@@ -224,7 +227,8 @@ export class TowerRenderer {
   // Trincheiras que podem tapar alguém atrás delas (OcclusionFader).
   occluders() {
     const list = [];
-    for (const view of this.#views.values()) {
+    for (const [tower, view] of this.#views) {
+      if (tower.preview) continue;
       list.push({ object: view.frame, x: view.group.position.x, z: view.group.position.z, radius: BERM_OUT, height: view.height });
     }
     return list;
@@ -234,6 +238,7 @@ export class TowerRenderer {
   #dispose(view) {
     this.#layer.remove(view.group);
     for (const geometry of view.owned) geometry.dispose();
+    disposeGhost(view.group);
   }
 
   #build(tower, stage) {

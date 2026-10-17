@@ -31,7 +31,7 @@ export class ForestSystem {
               fall.landed = true;
               state.fallDust.push({ x: tree.x, y: tree.y, dir: fall.dir, time: 0 });
               // A copa bate a uma altura de árvore de distância do pé, na direção da queda.
-              const reach = 26 * tree.growth;
+              const reach = 34 * tree.growth;
               this.#events?.emit('treeLand', { x: tree.x + Math.cos(fall.dir) * reach, y: tree.y + Math.sin(fall.dir) * reach });
             }
             // Quica um pouco na copa e assenta.
