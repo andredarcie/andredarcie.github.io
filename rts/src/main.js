@@ -46,7 +46,6 @@ import { PondRipplesLayer } from './overlay/layers/PondRipplesLayer.js';
 import { FirefliesLayer } from './overlay/layers/FirefliesLayer.js';
 import { EffectsLayer } from './overlay/layers/EffectsLayer.js';
 import { RoadWarningLayer } from './overlay/layers/RoadWarningLayer.js';
-import { PickupLayer } from './overlay/layers/PickupLayer.js';
 import { RtsHud } from './ui/RtsHud.js';
 import { paintIcons } from './ui/Icons.js';
 import { Minimap } from './ui/Minimap.js';
@@ -140,7 +139,6 @@ const overlay = new OverlayRenderer({
     new CloudShadowsLayer(state, skyClock, weather, motion),
     new PondRipplesLayer(state, weather, theme, motion),
     new RoadWarningLayer(state, motion),
-    new PickupLayer(state, motion),
     new SelectionLayer(state, selection, buildGrid),
     new FallDustLayer(state)
   ],
