@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css?v=58" />
+  <link rel="stylesheet" href="tokens.css?v=59" />
   <!-- Cache-busting centralizado: cada módulo local aponta para a URL com ?v=N. Os .js
        importam SEM query string. A cada alteração em qualquer .js, trocar TODOS os
        ?v=N daqui pelo número novo e atualizar o BUILD N para o mesmo número.
@@ -16,116 +16,117 @@
   <script type="importmap">
   { "imports": {
     "three": "./lib/three.module.min.js",
-    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=58",
-    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=58",
-    "./src/app/Viewport.js": "./src/app/Viewport.js?v=58",
-    "./src/audio/AudioManager.js": "./src/audio/AudioManager.js?v=58",
-    "./src/audio/Dsp.js": "./src/audio/Dsp.js?v=58",
-    "./src/audio/SoundRecipes.js": "./src/audio/SoundRecipes.js?v=58",
-    "./src/config/combat.js": "./src/config/combat.js?v=58",
-    "./src/config/death.js": "./src/config/death.js?v=58",
-    "./src/config/environment.js": "./src/config/environment.js?v=58",
-    "./src/config/flame.js": "./src/config/flame.js?v=58",
-    "./src/config/organisms.js": "./src/config/organisms.js?v=58",
-    "./src/config/reproduction.js": "./src/config/reproduction.js?v=58",
-    "./src/config/story.js": "./src/config/story.js?v=58",
-    "./src/config/rts.js": "./src/config/rts.js?v=58",
-    "./src/config/sertoes.js": "./src/config/sertoes.js?v=58",
-    "./src/config/settlement.js": "./src/config/settlement.js?v=58",
-    "./src/config/social.js": "./src/config/social.js?v=58",
-    "./src/config/ui.js": "./src/config/ui.js?v=58",
-    "./src/config/world.js": "./src/config/world.js?v=58",
-    "./src/core/EventBus.js": "./src/core/EventBus.js?v=58",
-    "./src/core/geometry.js": "./src/core/geometry.js?v=58",
-    "./src/core/math.js": "./src/core/math.js?v=58",
-    "./src/entities/Building.js": "./src/entities/Building.js?v=58",
-    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=58",
-    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=58",
-    "./src/entities/Log.js": "./src/entities/Log.js?v=58",
-    "./src/entities/Pond.js": "./src/entities/Pond.js?v=58",
-    "./src/entities/Tree.js": "./src/entities/Tree.js?v=58",
-    "./src/entities/Unit.js": "./src/entities/Unit.js?v=58",
-    "./src/input/CameraController.js": "./src/input/CameraController.js?v=58",
-    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=58",
-    "./src/main.js": "./src/main.js?v=58",
-    "./src/dev/ModelViewer.js": "./src/dev/ModelViewer.js?v=58",
-    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=58",
-    "./src/overlay/layers/BlessingLayer.js": "./src/overlay/layers/BlessingLayer.js?v=58",
-    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=58",
-    "./src/overlay/layers/EffectsLayer.js": "./src/overlay/layers/EffectsLayer.js?v=58",
-    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=58",
-    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=58",
-    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=58",
-    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=58",
-    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=58",
-    "./src/overlay/layers/RoadWarningLayer.js": "./src/overlay/layers/RoadWarningLayer.js?v=58",
-    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=58",
-    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=58",
-    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=58",
-    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=58",
-    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=58",
-    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=58",
-    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=58",
-    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=58",
-    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=58",
-    "./src/render/WeaponModels.js": "./src/render/WeaponModels.js?v=58",
-    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=58",
-    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=58",
-    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=58",
-    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=58",
-    "./src/render/GhostLook.js": "./src/render/GhostLook.js?v=58",
-    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=58",
-    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=58",
-    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=58",
-    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=58",
-    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=58",
-    "./src/render/Palette.js": "./src/render/Palette.js?v=58",
-    "./src/render/PickupRenderer.js": "./src/render/PickupRenderer.js?v=58",
-    "./src/render/FaunaRenderer.js": "./src/render/FaunaRenderer.js?v=58",
-    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=58",
-    "./src/render/PondShape.js": "./src/render/PondShape.js?v=58",
-    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=58",
-    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=58",
-    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=58",
-    "./src/render/SertaoBuildingModel.js": "./src/render/SertaoBuildingModel.js?v=58",
-    "./src/render/Shading.js": "./src/render/Shading.js?v=58",
-    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=58",
-    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=58",
-    "./src/render/TowerRenderer.js": "./src/render/TowerRenderer.js?v=58",
-    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=58",
-    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=58",
-    "./src/render/WorldView.js": "./src/render/WorldView.js?v=58",
-    "./src/rts/BuildGrid.js": "./src/rts/BuildGrid.js?v=58",
-    "./src/rts/Commands.js": "./src/rts/Commands.js?v=58",
-    "./src/rts/Selection.js": "./src/rts/Selection.js?v=58",
-    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=58",
-    "./src/rts/TowerSystem.js": "./src/rts/TowerSystem.js?v=58",
-    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=58",
-    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=58",
-    "./src/rts/WaveDirector.js": "./src/rts/WaveDirector.js?v=58",
-    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=58",
-    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=58",
-    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=58",
-    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=58",
-    "./src/ui/StoryBook.js": "./src/ui/StoryBook.js?v=58",
-    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=58",
-    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=58",
-    "./src/ui/Icons.js": "./src/ui/Icons.js?v=58",
-    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=58",
-    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=58",
-    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=58",
-    "./src/ui/Theme.js": "./src/ui/Theme.js?v=58",
-    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=58",
-    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=58",
-    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=58",
-    "./src/world/Hills.js": "./src/world/Hills.js?v=58",
-    "./src/world/GrassField.js": "./src/world/GrassField.js?v=58",
-    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=58",
-    "./src/world/Roads.js": "./src/world/Roads.js?v=58",
-    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=58",
-    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=58",
-    "./src/world/Weather.js": "./src/world/Weather.js?v=58",
-    "./src/world/WorldState.js": "./src/world/WorldState.js?v=58"
+    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=59",
+    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=59",
+    "./src/app/Viewport.js": "./src/app/Viewport.js?v=59",
+    "./src/audio/AudioManager.js": "./src/audio/AudioManager.js?v=59",
+    "./src/audio/Dsp.js": "./src/audio/Dsp.js?v=59",
+    "./src/audio/SoundRecipes.js": "./src/audio/SoundRecipes.js?v=59",
+    "./src/config/combat.js": "./src/config/combat.js?v=59",
+    "./src/config/death.js": "./src/config/death.js?v=59",
+    "./src/config/environment.js": "./src/config/environment.js?v=59",
+    "./src/config/flame.js": "./src/config/flame.js?v=59",
+    "./src/config/organisms.js": "./src/config/organisms.js?v=59",
+    "./src/config/reproduction.js": "./src/config/reproduction.js?v=59",
+    "./src/config/story.js": "./src/config/story.js?v=59",
+    "./src/config/rts.js": "./src/config/rts.js?v=59",
+    "./src/config/sertoes.js": "./src/config/sertoes.js?v=59",
+    "./src/config/settlement.js": "./src/config/settlement.js?v=59",
+    "./src/config/social.js": "./src/config/social.js?v=59",
+    "./src/config/ui.js": "./src/config/ui.js?v=59",
+    "./src/config/world.js": "./src/config/world.js?v=59",
+    "./src/core/EventBus.js": "./src/core/EventBus.js?v=59",
+    "./src/core/geometry.js": "./src/core/geometry.js?v=59",
+    "./src/core/math.js": "./src/core/math.js?v=59",
+    "./src/entities/Building.js": "./src/entities/Building.js?v=59",
+    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=59",
+    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=59",
+    "./src/entities/Log.js": "./src/entities/Log.js?v=59",
+    "./src/entities/Pond.js": "./src/entities/Pond.js?v=59",
+    "./src/entities/Tree.js": "./src/entities/Tree.js?v=59",
+    "./src/entities/Unit.js": "./src/entities/Unit.js?v=59",
+    "./src/input/CameraController.js": "./src/input/CameraController.js?v=59",
+    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=59",
+    "./src/main.js": "./src/main.js?v=59",
+    "./src/dev/ModelViewer.js": "./src/dev/ModelViewer.js?v=59",
+    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=59",
+    "./src/overlay/layers/BlessingLayer.js": "./src/overlay/layers/BlessingLayer.js?v=59",
+    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=59",
+    "./src/overlay/layers/EffectsLayer.js": "./src/overlay/layers/EffectsLayer.js?v=59",
+    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=59",
+    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=59",
+    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=59",
+    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=59",
+    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=59",
+    "./src/overlay/layers/RoadWarningLayer.js": "./src/overlay/layers/RoadWarningLayer.js?v=59",
+    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=59",
+    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=59",
+    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=59",
+    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=59",
+    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=59",
+    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=59",
+    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=59",
+    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=59",
+    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=59",
+    "./src/render/WeaponModels.js": "./src/render/WeaponModels.js?v=59",
+    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=59",
+    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=59",
+    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=59",
+    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=59",
+    "./src/render/GhostLook.js": "./src/render/GhostLook.js?v=59",
+    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=59",
+    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=59",
+    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=59",
+    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=59",
+    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=59",
+    "./src/render/Palette.js": "./src/render/Palette.js?v=59",
+    "./src/render/PickupRenderer.js": "./src/render/PickupRenderer.js?v=59",
+    "./src/render/FaunaRenderer.js": "./src/render/FaunaRenderer.js?v=59",
+    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=59",
+    "./src/render/PondShape.js": "./src/render/PondShape.js?v=59",
+    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=59",
+    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=59",
+    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=59",
+    "./src/render/SertaoBuildingModel.js": "./src/render/SertaoBuildingModel.js?v=59",
+    "./src/render/Shading.js": "./src/render/Shading.js?v=59",
+    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=59",
+    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=59",
+    "./src/render/TowerRenderer.js": "./src/render/TowerRenderer.js?v=59",
+    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=59",
+    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=59",
+    "./src/render/WorldView.js": "./src/render/WorldView.js?v=59",
+    "./src/rts/BuildGrid.js": "./src/rts/BuildGrid.js?v=59",
+    "./src/rts/Commands.js": "./src/rts/Commands.js?v=59",
+    "./src/rts/Selection.js": "./src/rts/Selection.js?v=59",
+    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=59",
+    "./src/rts/TowerSystem.js": "./src/rts/TowerSystem.js?v=59",
+    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=59",
+    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=59",
+    "./src/rts/WaveDirector.js": "./src/rts/WaveDirector.js?v=59",
+    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=59",
+    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=59",
+    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=59",
+    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=59",
+    "./src/ui/StoryBook.js": "./src/ui/StoryBook.js?v=59",
+    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=59",
+    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=59",
+    "./src/ui/Icons.js": "./src/ui/Icons.js?v=59",
+    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=59",
+    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=59",
+    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=59",
+    "./src/ui/ResourceGains.js": "./src/ui/ResourceGains.js?v=59",
+    "./src/ui/Theme.js": "./src/ui/Theme.js?v=59",
+    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=59",
+    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=59",
+    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=59",
+    "./src/world/Hills.js": "./src/world/Hills.js?v=59",
+    "./src/world/GrassField.js": "./src/world/GrassField.js?v=59",
+    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=59",
+    "./src/world/Roads.js": "./src/world/Roads.js?v=59",
+    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=59",
+    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=59",
+    "./src/world/Weather.js": "./src/world/Weather.js?v=59",
+    "./src/world/WorldState.js": "./src/world/WorldState.js?v=59"
   } }
   </script>
   <style>
@@ -214,7 +215,15 @@
       display: inline-flex; align-items: center; gap: 5px; min-width: 0; height: var(--chip); padding: 0 9px 0 7px;
       border-radius: var(--hud-r); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
     }
-    .res b { font-size: 13px; }
+    .res b { display: inline-block; font-size: 13px; }
+    /* O "+N" que salta do lado do recurso quando ele sobe (ui/ResourceGains.js). */
+    .res { position: relative; }
+    .res-gain {
+      position: absolute; z-index: 1; left: calc(100% - 4px); top: 50%; margin-top: -9px;
+      font-size: 14px; line-height: 18px; font-weight: 800; color: oklch(86% 0.17 140); pointer-events: none;
+      transform-origin: left center; white-space: nowrap; opacity: 0;
+      text-shadow: 0 1px 0 var(--hud-shadow), 0 -1px 0 var(--hud-shadow), 1px 0 0 var(--hud-shadow), -1px 0 0 var(--hud-shadow), 0 2px 4px oklch(10% 0.02 50 / .7);
+    }
     .res[data-full="true"] { border-color: var(--hud-blood); background: var(--hud-blood-deep); color: var(--hud-blood-light); }
     .res[data-full="true"] .res-icon { color: var(--hud-blood-light); }
     .icon-button {
@@ -516,7 +525,7 @@
     </div>
     <p class="loading-status" aria-live="polite"><span class="loading-label">Baixando o jogo</span><span class="loading-percent">0%</span></p>
   </div>
-  <script src="./src/boot/loading.js?v=58"></script>
+  <script src="./src/boot/loading.js?v=59"></script>
 
   <section class="arena-wrap" aria-label="Campo de batalha">
     <canvas id="arena" aria-label="O sertão da Bahia com Belo Monte no meio"></canvas>
@@ -585,7 +594,7 @@
     <p class="field-label">Dificuldade</p>
     <div id="start-levels" class="levels"></div>
     <button id="start-play" class="primary" type="button" autofocus>Jogar</button>
-    <small class="build-badge">BUILD 58</small>
+    <small class="build-badge">BUILD 59</small>
   </dialog>
 
   <!-- Livro de história: os registros que a partida vai abrindo, o mais novo no alto.
@@ -610,7 +619,7 @@
     </div>
     <button id="pause-resume" class="primary" type="button">Continuar</button>
     <button id="pause-restart" class="secondary" type="button">Recomeçar a partida</button>
-    <small class="build-badge">BUILD 58</small>
+    <small class="build-badge">BUILD 59</small>
   </dialog>
 
   <dialog id="result-dialog" aria-labelledby="result-title">

@@ -6,6 +6,7 @@ import { BASE_SIMULATION_SPEED } from '../config/world.js';
 import { TowerSystem } from '../rts/TowerSystem.js';
 import { icon } from './Icons.js';
 import { TeamLedger } from '../rts/TeamLedger.js';
+import { ResourceGains } from './ResourceGains.js';
 
 const TOAST_SECONDS = 2.6;
 // Quanto tempo (s reais) o letreiro grande da onda fica no meio da tela.
@@ -35,6 +36,7 @@ export class RtsHud {
   #waves;
   #bannerTimer = 0;
   #heroCursor = 0;
+  #gains;
 
   constructor({ root, state, selection, commands, ledger, camera, events, waves }) {
     this.#root = root;
@@ -53,6 +55,10 @@ export class RtsHud {
       banner: $('#wave-banner'), bannerKicker: $('#wave-banner-kicker'),
       bannerTitle: $('#wave-banner-title'), bannerSub: $('#wave-banner-sub')
     };
+    const chip = el => el.closest('.res');
+    this.#gains = new ResourceGains({
+      food: chip(this.#els.food), wood: chip(this.#els.wood), rifles: chip(this.#els.rifles)
+    });
     this.#els.waveCall.addEventListener('click', () => {
       const bonus = this.#waves.callNow();
       if (bonus) this.toast(`Chamada antecipada: +${bonus} de comida`);
@@ -204,9 +210,11 @@ export class RtsHud {
     this.#refreshWave();
     const team = this.#ledger.team('player');
     const pop = this.#ledger.population('player'), cap = this.#ledger.popCap('player');
-    this.#els.food.textContent = Math.floor(team.food);
-    this.#els.wood.textContent = Math.floor(team.wood);
-    this.#els.rifles.textContent = Math.floor(team.rifles ?? 0);
+    const stock = { food: Math.floor(team.food), wood: Math.floor(team.wood), rifles: Math.floor(team.rifles ?? 0) };
+    this.#els.food.textContent = stock.food;
+    this.#els.wood.textContent = stock.wood;
+    this.#els.rifles.textContent = stock.rifles;
+    this.#gains.update(stock, realDt);
     this.#els.pop.textContent = `${pop}/${cap}`;
     this.#els.popBox.dataset.full = String(pop >= cap);
     const specs = this.#buttons();
