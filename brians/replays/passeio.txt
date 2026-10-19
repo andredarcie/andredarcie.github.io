@@ -1,0 +1,748 @@
+# Passeio por todos os mapas (seletor de fases), com movimento, C para falar/avançar
+# mensagens e o botão de pause. Gerado para a comparação Ruby × JS da fase 3.
+semente 7
+espera 120
+aperta C 2
+espera 400
+ir 11 16 12 2       # Primeira Parte: o tutorial liga o interruptor 3, e o evento comum
+espera 1400         # "Vida" desliga o menu do VX (no jogo real ele nunca abre)
+ir 4 8 6 2   # Começo
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 14 15 12 2   # Apresentação
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 5 10 19 2   # Floresta
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 6 8 11 2   # Hall
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 7 6 12 2   # Buraco
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 8 0 6 2   # Lado Direito
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 9 28 7 2   # A mesa
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 10 8 12 2   # Dentro da Lareira
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 31 8 6 2   # Meio
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 11 16 12 2   # Primeira Parte
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 12 5 10 2   # Lugar Escuro
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 28 6 10 2   # Corredor espinhos
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 25 9 4 2   # Segunda Parte
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 26 48 53 2   # Lugar secreto
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 1 12 4 2   # Caverna
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 13 8 8 2   # Sub-Caverna
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 38 2 6 2   # Corredor
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 27 8 36 2   # Os Quartos
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 32 8 6 2   # Fim
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 23 8 6 2   # [Cena] Os fantasmas
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 22 8 10 2   # Pego
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 15 16 12 2   # Os namorados
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 17 16 12 2   # A morte
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 16 15 12 2   # O cemiterio
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 18 16 12 2   # Fantasmas
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 19 16 12 2   # Prisão
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 21 13 5 2   # Celas Primeira Parte
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 40 5 10 2   # Celas Segunda Parte
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 41 0 9 2   # Preparando
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 42 13 3 2   # Hall Diferente
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 43 8 12 2   # Buraco
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 2 8 56 2   # Corredor
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 44 8 10 2   # Salvando
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 29 10 18 2   # Boss
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 45 8 9 2   # Fine
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 47 8 12 2   # Floresta 
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60
+ir 46 16 12 2   # Fim
+espera 90
+aperta direita 20
+aperta C 2
+espera 30
+aperta C 2
+espera 30
+aperta baixo 20
+aperta A+SHIFT+esquerda 24
+aperta C 2
+espera 40
+aperta cima 20
+aperta B 2
+espera 40
+aperta B 2
+espera 20
+aperta C 2
+espera 30
+aperta C 2
+espera 60

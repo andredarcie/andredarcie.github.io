@@ -1,0 +1,106 @@
+# O final do jogo e o "Continuar": salva (Mapa 11, EV8), vai ao Fim (Mapa 46,
+# cujo evento automático termina com "Voltar à tela de título", comando 354),
+# e no título escolhe Continuar e carrega o save (Scene_File de leitura).
+semente 5
+espera 120
+aperta C 2          # Novo jogo
+espera 400
+ir 11 16 12 2       # Primeira Parte: o tutorial liga o interruptor 3 (menu do VX desligado)
+espera 1400
+variavel 3 1
+espera 1
+ir 11 4 51 8        # ponto de save
+espera 60
+aperta C 2          # abre a tela de save
+espera 60
+aperta C 2          # salva no slot 1
+espera 120
+ir 46 16 12 2       # Fim
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 60
+aperta C 2
+espera 300          # tela de título de novo (Continuar fica selecionado: há save)
+aperta C 2          # Continuar
+espera 90
+aperta C 2          # carrega o slot 1
+espera 300
+aperta baixo 20
+aperta C 2
+espera 120

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR" data-build="31">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trilha do jogo</title>
+<script type="importmap">
+{
+  "imports": {
+    "./src/musica/catalogo.js": "./src/musica/catalogo.js?v=31",
+    "./src/musica/render.js": "./src/musica/render.js?v=31",
+    "./src/musica/sintese.js": "./src/musica/sintese.js?v=31",
+    "./src/musica/partitura.js": "./src/musica/partitura.js?v=31",
+    "./src/musica/kit.js": "./src/musica/kit.js?v=31",
+    "./src/musica/efeitos-sonoros.js": "./src/musica/efeitos-sonoros.js?v=31",
+    "./src/musica/faixas/01-mansao.js": "./src/musica/faixas/01-mansao.js?v=31",
+    "./src/musica/faixas/02-jardim.js": "./src/musica/faixas/02-jardim.js?v=31",
+    "./src/musica/faixas/03-noite.js": "./src/musica/faixas/03-noite.js?v=31",
+    "./src/musica/faixas/04-caverna.js": "./src/musica/faixas/04-caverna.js?v=31",
+    "./src/musica/faixas/05-quartos.js": "./src/musica/faixas/05-quartos.js?v=31",
+    "./src/musica/faixas/06-chefe1.js": "./src/musica/faixas/06-chefe1.js?v=31",
+    "./src/musica/faixas/07-chefe2.js": "./src/musica/faixas/07-chefe2.js?v=31",
+    "./src/musica/faixas/08-final.js": "./src/musica/faixas/08-final.js?v=31",
+    "./src/musica/faixas/09-fuga.js": "./src/musica/faixas/09-fuga.js?v=31",
+    "./src/musica/faixas/10-ronco.js": "./src/musica/faixas/10-ronco.js?v=31"
+  }
+}
+</script>
+<style>
+  :root { color-scheme: dark; --fundo: #0b0a10; --cartao: #15131d; --borda: #2c2838; --texto: #e6e3ef; --suave: #8c86a0; --azul: #96c4ff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 system-ui, sans-serif; padding: 24px 16px 48px; }
+  main { max-width: 820px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.sub { color: var(--suave); margin: 0 0 24px; }
+  .faixa { background: var(--cartao); border: 1px solid var(--borda); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .faixa h2 { font-size: 17px; margin: 0 0 2px; }
+  .onde { color: var(--suave); font-size: 13px; margin-bottom: 12px; }
+  .linha { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .pitch { min-width: 74px; color: var(--suave); font-size: 13px; }
+  button { font: inherit; font-size: 14px; color: var(--texto); background: #1f1c2a; border: 1px solid var(--borda); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  button:hover { border-color: #5b5470; }
+  button.ativo { border-color: var(--azul); color: var(--azul); }
+  .estado { color: var(--suave); font-size: 13px; }
+  #parar { position: sticky; top: 8px; float: right; }
+</style>
+</head>
+<body>
+<main>
+  <button id="parar">■ Parar</button>
+  <h1>Trilha gerada do Brian's Mansion</h1>
+  <p class="sub">As 10 músicas do jogo, geradas por código, nos pitches em que o jogo as toca. "Emenda" toca os 4 s finais e os 4 iniciais do loop.</p>
+  <div id="lista"></div>
+</main>
+<script type="module">
+import { FAIXAS, bufferDe } from './src/musica/catalogo.js';
+
+const ctx = new AudioContext();
+let fonte = null;
+async function nova(f, estado) {
+  const t0 = performance.now();
+  const b = await bufferDe(f);
+  if (estado && !estado.dataset.ok) { estado.textContent = `render: ${Math.round(performance.now() - t0)} ms · loop de ${b.duration.toFixed(1)} s`; estado.dataset.ok = 1; }
+  return b;
+}
+function parar() { if (fonte) { try { fonte.stop(); } catch {} fonte = null; } document.querySelectorAll('button.ativo').forEach((b) => b.classList.remove('ativo')); }
+function tocar(buffer, pitch, offset = 0, loop = true, botao = null) {
+  parar();
+  ctx.resume();
+  fonte = ctx.createBufferSource();
+  fonte.buffer = buffer; fonte.loop = loop; fonte.playbackRate.value = pitch / 100;
+  fonte.connect(ctx.destination);
+  fonte.start(0, offset % buffer.duration);
+  botao?.classList.add('ativo');
+}
+
+const lista = document.querySelector('#lista');
+for (const f of FAIXAS) {
+  const el = document.createElement('section');
+  el.className = 'faixa';
+  el.innerHTML = `<h2>${f.id}</h2><div class="onde">${f.onde} · nome no jogo: ${f.nome.split('/').pop()}</div><div class="estado">ainda não renderizada</div>`;
+  const estado = el.querySelector('.estado');
+  for (const pitch of f.pitches) {
+    const linha = document.createElement('div');
+    linha.className = 'linha';
+    linha.innerHTML = `<span class="pitch">pitch ${pitch}</span>`;
+    const botao = (rotulo, acao) => { const b = document.createElement('button'); b.textContent = rotulo; b.onclick = () => acao(b); linha.append(b); return b; };
+    botao('▶ Tocar', async (b) => tocar(await nova(f, estado), pitch, 0, true, b));
+    botao('Emenda', async (b) => { const buf = await nova(f, estado); tocar(buf, pitch, buf.duration - 4, true, b); });
+    el.append(linha);
+  }
+  lista.append(el);
+}
+document.querySelector('#parar').onclick = parar;
+
+// para ferramentas/renderizar-musica.mjs: WAV 16 bits da faixa nova (base64)
+window.__exportarWav = async (id) => {
+  const t0 = performance.now();
+  const b = await bufferDe(FAIXAS.find((f) => f.id === id));
+  const ms = Math.round(performance.now() - t0);
+  const canais = b.numberOfChannels, n = b.length;
+  const dados = new DataView(new ArrayBuffer(44 + n * canais * 2));
+  const txt = (o, s) => [...s].forEach((c, i) => dados.setUint8(o + i, c.charCodeAt(0)));
+  txt(0, 'RIFF'); dados.setUint32(4, 36 + n * canais * 2, true); txt(8, 'WAVEfmt ');
+  dados.setUint32(16, 16, true); dados.setUint16(20, 1, true); dados.setUint16(22, canais, true);
+  dados.setUint32(24, b.sampleRate, true); dados.setUint32(28, b.sampleRate * canais * 2, true);
+  dados.setUint16(32, canais * 2, true); dados.setUint16(34, 16, true); txt(36, 'data'); dados.setUint32(40, n * canais * 2, true);
+  const ch = [...Array(canais)].map((_, c) => b.getChannelData(c));
+  let o = 44;
+  for (let i = 0; i < n; i++) for (let c = 0; c < canais; c++) { dados.setInt16(o, Math.max(-1, Math.min(1, ch[c][i])) * 32767, true); o += 2; }
+  let bin = ''; const u8 = new Uint8Array(dados.buffer);
+  for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return { ms, duracao: b.duration, base64: btoa(bin) };
+};
+window.__faixas = FAIXAS.map((f) => ({ id: f.id, pitches: f.pitches }));
+</script>
+</body>
+</html>

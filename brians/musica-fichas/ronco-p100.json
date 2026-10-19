@@ -1,0 +1,167 @@
+{
+ "ficha": {
+  "arquivo": "Darkness.ogg",
+  "pitch": 100,
+  "duracao_s": 12.2,
+  "andamento": {
+   "bpm": 83.5,
+   "candidatos": [
+    167.0,
+    160.0,
+    111.0,
+    83.5
+   ],
+   "batidas": 17,
+   "regularidade": 0.35,
+   "swing_fase": 0.55
+  },
+  "tom": {
+   "tonica": "D",
+   "modo": "menor",
+   "confianca": 0.5,
+   "alternativas": [
+    "F maior (0.36)",
+    "C maior (0.35)",
+    "D maior (0.32)"
+   ],
+   "croma": {
+    "C": 0.8,
+    "C#": 0.72,
+    "D": 1.0,
+    "D#": 0.06,
+    "E": 0.43,
+    "F": 0.79,
+    "F#": 0.74,
+    "G": 0.46,
+    "G#": 0.38,
+    "A": 0.3,
+    "A#": 0.22,
+    "B": 0.17
+   },
+   "fora_da_escala": [
+    [
+     "F#",
+     0.74
+    ],
+    [
+     "G#",
+     0.38
+    ],
+    [
+     "C#",
+     0.72
+    ]
+   ]
+  },
+  "harmonia": {
+   "compassos": 4,
+   "trocas_por_compasso": 0.33,
+   "acordes_mais_usados": [
+    [
+     "A#",
+     3
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  "voz_aguda": {
+   "extensao_midi": [
+    56,
+    70
+   ],
+   "mediana_midi": 65,
+   "grau_conjunto_%": 70.4,
+   "saltos_%": 18.5,
+   "notas_por_batida": 3.59
+  },
+  "bandas_%": {
+   "sub_<60": 79.8,
+   "grave_60-250": 19.3,
+   "medio_250-2k": 0.9,
+   "agudo_2k-6k": 0.0,
+   "ar_>6k": 0.0
+  },
+  "timbre": {
+   "centroide_hz": 44,
+   "planicidade": 0.0
+  },
+  "ataques_por_s": 5.65,
+  "dinamica": {
+   "rms_db_mediana": -14.1,
+   "faixa_db": 5.4,
+   "silencio_%": 0.0
+  },
+  "estereo": {
+   "correlacao": 1.0,
+   "largura": 0.0
+  },
+  "decaimento_20db_s": 1.5,
+  "repeticao": null
+ },
+ "notas": [
+  56,
+  56,
+  56,
+  69,
+  68,
+  71,
+  69,
+  68,
+  69,
+  68,
+  66,
+  65,
+  67,
+  65,
+  69,
+  65,
+  70,
+  56,
+  70,
+  58,
+  56,
+  58,
+  58,
+  59,
+  58,
+  56,
+  64,
+  58,
+  56,
+  56,
+  56,
+  56,
+  69,
+  68,
+  71,
+  69,
+  68,
+  69,
+  68,
+  66,
+  65,
+  67,
+  65,
+  69,
+  65,
+  70,
+  56,
+  70,
+  58,
+  65,
+  56,
+  56,
+  58,
+  58,
+  59,
+  58,
+  56,
+  63,
+  64,
+  58,
+  56
+ ]
+}

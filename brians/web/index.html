@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="pt-BR" data-build="31">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Brian's Mansion</title>
+<script type="importmap">
+{
+  "imports": {
+    "./main.js": "./main.js?v=31",
+    "./src/arquivos.js": "./src/arquivos.js?v=31",
+    "./src/rastro.js": "./src/rastro.js?v=31",
+    "./src/rb/rb.js": "./src/rb/rb.js?v=31",
+    "rb": "./src/rb/rb.js?v=31",
+    "./src/boot.js": "./src/boot.js?v=31",
+    "./src/rastro-js.js": "./src/rastro-js.js?v=31",
+    "./src/perfil.js": "./src/perfil.js?v=31",
+    "./src/ajustes.js": "./src/ajustes.js?v=31",
+    "./src/dispositivo.js": "./src/dispositivo.js?v=31",
+    "./src/musica/catalogo.js": "./src/musica/catalogo.js?v=31",
+    "./src/musica/render.js": "./src/musica/render.js?v=31",
+    "./src/musica/sintese.js": "./src/musica/sintese.js?v=31",
+    "./src/musica/partitura.js": "./src/musica/partitura.js?v=31",
+    "./src/musica/kit.js": "./src/musica/kit.js?v=31",
+    "./src/musica/efeitos-sonoros.js": "./src/musica/efeitos-sonoros.js?v=31",
+    "./src/musica/faixas/01-mansao.js": "./src/musica/faixas/01-mansao.js?v=31",
+    "./src/musica/faixas/02-jardim.js": "./src/musica/faixas/02-jardim.js?v=31",
+    "./src/musica/faixas/03-noite.js": "./src/musica/faixas/03-noite.js?v=31",
+    "./src/musica/faixas/04-caverna.js": "./src/musica/faixas/04-caverna.js?v=31",
+    "./src/musica/faixas/05-quartos.js": "./src/musica/faixas/05-quartos.js?v=31",
+    "./src/musica/faixas/06-chefe1.js": "./src/musica/faixas/06-chefe1.js?v=31",
+    "./src/musica/faixas/07-chefe2.js": "./src/musica/faixas/07-chefe2.js?v=31",
+    "./src/musica/faixas/08-final.js": "./src/musica/faixas/08-final.js?v=31",
+    "./src/musica/faixas/09-fuga.js": "./src/musica/faixas/09-fuga.js?v=31",
+    "./src/musica/faixas/10-ronco.js": "./src/musica/faixas/10-ronco.js?v=31",
+    "./src/tutoriais.js": "./src/tutoriais.js?v=31",
+    "./src/dano.js": "./src/dano.js?v=31",
+    "./src/rb/nucleo.js": "./src/rb/nucleo.js?v=31",
+    "./src/rb/objeto.js": "./src/rb/objeto.js?v=31",
+    "./src/rb/biblioteca.js": "./src/rb/biblioteca.js?v=31",
+    "./src/rb/io.js": "./src/rb/io.js?v=31",
+    "./src/rgss2/rgss2.js": "./src/rgss2/rgss2.js?v=31",
+    "./src/rgss2/motor.js": "./src/rgss2/motor.js?v=31",
+    "./src/rgss2/basicos.js": "./src/rgss2/basicos.js?v=31",
+    "./src/rgss2/bitmap.js": "./src/rgss2/bitmap.js?v=31",
+    "./src/rgss2/cena.js": "./src/rgss2/cena.js?v=31",
+    "./src/rgss2/modulos.js": "./src/rgss2/modulos.js?v=31",
+    "./src/rgss2/rpg.js": "./src/rgss2/rpg.js?v=31",
+    "./jogo/_globais.js": "./jogo/_globais.js?v=31",
+    "./jogo/002-Vocab.js": "./jogo/002-Vocab.js?v=31",
+    "./jogo/003-Sound.js": "./jogo/003-Sound.js?v=31",
+    "./jogo/004-Cache.js": "./jogo/004-Cache.js?v=31",
+    "./jogo/007-Game_Temp.js": "./jogo/007-Game_Temp.js?v=31",
+    "./jogo/008-Game_System.js": "./jogo/008-Game_System.js?v=31",
+    "./jogo/009-Game_Message.js": "./jogo/009-Game_Message.js?v=31",
+    "./jogo/010-Game_Switches.js": "./jogo/010-Game_Switches.js?v=31",
+    "./jogo/011-Game_Variables.js": "./jogo/011-Game_Variables.js?v=31",
+    "./jogo/012-Game_SelfSwitches.js": "./jogo/012-Game_SelfSwitches.js?v=31",
+    "./jogo/013-Game_Screen.js": "./jogo/013-Game_Screen.js?v=31",
+    "./jogo/014-Game_Picture.js": "./jogo/014-Game_Picture.js?v=31",
+    "./jogo/015-Game_Battler.js": "./jogo/015-Game_Battler.js?v=31",
+    "./jogo/016-Game_BattleAction.js": "./jogo/016-Game_BattleAction.js?v=31",
+    "./jogo/017-Game_Actor.js": "./jogo/017-Game_Actor.js?v=31",
+    "./jogo/019-Game_Actors.js": "./jogo/019-Game_Actors.js?v=31",
+    "./jogo/020-Game_Unit.js": "./jogo/020-Game_Unit.js?v=31",
+    "./jogo/021-Game_Party.js": "./jogo/021-Game_Party.js?v=31",
+    "./jogo/022-Game_Troop.js": "./jogo/022-Game_Troop.js?v=31",
+    "./jogo/023-Game_Map.js": "./jogo/023-Game_Map.js?v=31",
+    "./jogo/024-Game_CommonEvent.js": "./jogo/024-Game_CommonEvent.js?v=31",
+    "./jogo/025-Game_Character.js": "./jogo/025-Game_Character.js?v=31",
+    "./jogo/026-Game_Event.js": "./jogo/026-Game_Event.js?v=31",
+    "./jogo/027-Game_Vehicle.js": "./jogo/027-Game_Vehicle.js?v=31",
+    "./jogo/028-Game_Player.js": "./jogo/028-Game_Player.js?v=31",
+    "./jogo/029-Game_Interpreter.js": "./jogo/029-Game_Interpreter.js?v=31",
+    "./jogo/032-Sprite_Base.js": "./jogo/032-Sprite_Base.js?v=31",
+    "./jogo/033-Sprite_Character.js": "./jogo/033-Sprite_Character.js?v=31",
+    "./jogo/034-Sprite_Battler.js": "./jogo/034-Sprite_Battler.js?v=31",
+    "./jogo/035-Sprite_Picture.js": "./jogo/035-Sprite_Picture.js?v=31",
+    "./jogo/036-Sprite_Timer.js": "./jogo/036-Sprite_Timer.js?v=31",
+    "./jogo/037-Spriteset_Weather.js": "./jogo/037-Spriteset_Weather.js?v=31",
+    "./jogo/038-Spriteset_Map.js": "./jogo/038-Spriteset_Map.js?v=31",
+    "./jogo/042-Window_Base.js": "./jogo/042-Window_Base.js?v=31",
+    "./jogo/043-Window_Selectable.js": "./jogo/043-Window_Selectable.js?v=31",
+    "./jogo/044-Window_Command.js": "./jogo/044-Window_Command.js?v=31",
+    "./jogo/045-Window_Help.js": "./jogo/045-Window_Help.js?v=31",
+    "./jogo/046-Window_Gold.js": "./jogo/046-Window_Gold.js?v=31",
+    "./jogo/055-Window_SaveFile.js": "./jogo/055-Window_SaveFile.js?v=31",
+    "./jogo/062-Window_NumberInput.js": "./jogo/062-Window_NumberInput.js?v=31",
+    "./jogo/063-Window_Message.js": "./jogo/063-Window_Message.js?v=31",
+    "./jogo/073-Scene_Base.js": "./jogo/073-Scene_Base.js?v=31",
+    "./jogo/074-Scene_Title.js": "./jogo/074-Scene_Title.js?v=31",
+    "./jogo/075-Scene_Map.js": "./jogo/075-Scene_Map.js?v=31",
+    "./jogo/076-Scene_Menu.js": "./jogo/076-Scene_Menu.js?v=31",
+    "./jogo/081-Scene_File.js": "./jogo/081-Scene_File.js?v=31",
+    "./jogo/086-Scene_Battle.js": "./jogo/086-Scene_Battle.js?v=31",
+    "./jogo/090-VX_SP1.js": "./jogo/090-VX_SP1.js?v=31",
+    "./jogo/091-Modulo_Vs_1_1.js": "./jogo/091-Modulo_Vs_1_1.js?v=31",
+    "./jogo/092-Variavel_na_Tela.js": "./jogo/092-Variavel_na_Tela.js?v=31",
+    "./jogo/093-_insira_scripts_aqui.js": "./jogo/093-_insira_scripts_aqui.js?v=31",
+    "./jogo/095-VX_Fog_System.js": "./jogo/095-VX_Fog_System.js?v=31",
+    "./jogo/096-Sistema_de_Particulas.js": "./jogo/096-Sistema_de_Particulas.js?v=31",
+    "./jogo/097-Configuracoes_do_SP.js": "./jogo/097-Configuracoes_do_SP.js?v=31",
+    "./jogo/098-Tutorial_do_SP.js": "./jogo/098-Tutorial_do_SP.js?v=31",
+    "./jogo/099-Simples_Pause.js": "./jogo/099-Simples_Pause.js?v=31",
+    "./jogo/100-_sem_nome.js": "./jogo/100-_sem_nome.js?v=31",
+    "./jogo/103-Main.js": "./jogo/103-Main.js?v=31",
+    "./src/rb/marshal.js": "./src/rb/marshal.js?v=31",
+    "./src/rb/tipos.js": "./src/rb/tipos.js?v=31",
+    "./src/seletor-niveis.js": "./src/seletor-niveis.js?v=31",
+    "./src/rgss/api.js": "./src/rgss/api.js?v=31",
+    "./src/rgss/audio.js": "./src/rgss/audio.js?v=31",
+    "./src/rgss/bitmap.js": "./src/rgss/bitmap.js?v=31",
+    "./src/rgss/entrada.js": "./src/rgss/entrada.js?v=31",
+    "./src/rgss/graficos.js": "./src/rgss/graficos.js?v=31",
+    "./src/rgss/objetos.js": "./src/rgss/objetos.js?v=31",
+    "./src/rgss/render.js": "./src/rgss/render.js?v=31",
+    "./src/rgss/tilemap.js": "./src/rgss/tilemap.js?v=31"
+  }
+}
+</script>
+<style>
+  :root { color-scheme: dark; --fundo: #000; --texto: #ddd; --suave: #777; --borda: #444; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--fundo); color: var(--texto);
+    font: 14px/1.4 "Open Sans", system-ui, sans-serif; overflow: hidden; touch-action: none; }
+  #palco { position: fixed; inset: 0; display: grid; place-items: center; }
+  #tela { width: min(100vw, calc(100vh * 544 / 416)); aspect-ratio: 544 / 416;
+    image-rendering: pixelated; background: #000; display: block; }
+  #status { position: fixed; left: 0; right: 0; bottom: 12px; text-align: center; color: var(--suave); }
+  #build { position: fixed; right: 8px; bottom: 6px; color: #333; font-size: 11px; }
+  /* ?gravar / ?replay (src/rastro.js) */
+  #rastro { position: fixed; right: 8px; top: 8px; color: #e66; font-size: 12px; }
+  #baixar-replay { position: fixed; right: 8px; top: 28px; font: inherit; font-size: 12px; color: #ccc;
+    background: #111; border: 1px solid var(--borda); border-radius: 3px; padding: 4px 10px; cursor: pointer; }
+  #jogar { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    padding: 14px 28px; font: inherit; font-size: 18px; color: #fff; background: #111;
+    border: 1px solid var(--borda); border-radius: 4px; cursor: pointer; }
+  #jogar:hover, #jogar:focus-visible { border-color: #999; outline: none; }
+  #aviso { position: fixed; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / .6); }
+  #aviso > div { max-width: min(90vw, 560px); background: #111; border: 1px solid var(--borda);
+    border-radius: 4px; padding: 16px; }
+  #aviso pre { margin: 0 0 12px; white-space: pre-wrap; font: inherit; }
+  #aviso button { font: inherit; padding: 6px 18px; background: #222; color: #fff;
+    border: 1px solid var(--borda); border-radius: 3px; cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  /* Seletor de fases: só em localhost (src/seletor-niveis.js) */
+  #abrir-niveis { position: fixed; left: 8px; top: 8px; font: inherit; font-size: 12px; color: #888;
+    background: #111; border: 1px solid var(--borda); border-radius: 3px; padding: 4px 10px; cursor: pointer; }
+  #niveis { position: fixed; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / .6); }
+  #niveis > div { width: min(92vw, 440px); max-height: 86vh; display: flex; flex-direction: column;
+    background: #111; border: 1px solid var(--borda); border-radius: 4px; padding: 14px; gap: 8px; }
+  #niveis h2 { margin: 0; font-size: 15px; font-weight: normal; }
+  #niveis h2 small { color: var(--suave); }
+  #niveis input { font: inherit; padding: 6px 8px; color: #fff; background: #000;
+    border: 1px solid var(--borda); border-radius: 3px; outline: none; }
+  #niveis input:focus { border-color: #888; }
+  #niveis .aviso { margin: 0; color: #e9a; }
+  #niveis .aviso:empty { display: none; }
+  #niveis ol { list-style: none; margin: 0; padding: 0; overflow-y: auto; }
+  #niveis li { display: flex; flex-wrap: wrap; gap: 4px; align-items: baseline; padding-block: 1px; }
+  #niveis li button { font: inherit; color: #ccc; background: none; border: 1px solid transparent;
+    border-radius: 3px; padding: 2px 6px; cursor: pointer; text-align: left; }
+  #niveis li button.mapa { flex: 1; }
+  #niveis li button.entrada { font-size: 12px; color: var(--suave); }
+  #niveis li button:hover, #niveis li button.foco { background: #222; border-color: #555; color: #fff; }
+  #niveis li.atual button.mapa { color: #fd6; }
+  #niveis .id { color: var(--suave); font-size: 12px; }
+
+  /* Controle virtual: só em telas de toque */
+  #controle { display: none; }
+  @media (pointer: coarse) {
+    #controle { display: block; position: fixed; inset: auto 0 0 0; height: 170px; pointer-events: none; }
+    #controle .pad, #controle .acoes { position: absolute; bottom: 18px; pointer-events: auto; }
+    #controle .pad { left: 18px; width: 138px; height: 138px; display: grid;
+      grid-template: repeat(3, 1fr) / repeat(3, 1fr); gap: 2px; }
+    #controle .acoes { right: 18px; display: flex; gap: 12px; align-items: flex-end; }
+    #controle button { font: inherit; color: #ccc; background: rgb(255 255 255 / .1);
+      border: 1px solid rgb(255 255 255 / .25); border-radius: 8px; user-select: none;
+      -webkit-user-select: none; touch-action: none; }
+    #controle .acoes button { width: 62px; height: 62px; border-radius: 50%; }
+  }
+</style>
+</head>
+<body>
+<div id="palco"><canvas id="tela" width="544" height="416"></canvas></div>
+<button id="jogar" hidden>▶ Jogar</button>
+<div id="controle" aria-hidden="true">
+  <div class="pad">
+    <span></span><button data-botao="8">▲</button><span></span>
+    <button data-botao="4">◀</button><span></span><button data-botao="6">▶</button>
+    <span></span><button data-botao="2">▼</button><span></span>
+  </div>
+  <div class="acoes">
+    <button data-botao="11,21">Correr</button>
+    <button data-botao="12">B</button>
+    <button data-botao="13">A</button>
+  </div>
+</div>
+<button id="abrir-niveis" hidden title="Seletor de fases (tecla I) · segure Tab para acelerar">Fases (I)</button>
+<div id="niveis" hidden>
+  <div role="dialog" aria-label="Ir para uma fase">
+    <h2>Ir para uma fase <small>· só no localhost</small></h2>
+    <input type="search" placeholder="filtrar por nome ou número" aria-label="Filtrar">
+    <p class="aviso"></p>
+    <ol></ol>
+  </div>
+</div>
+<div id="aviso" hidden><div><pre></pre><button>OK</button></div></div>
+<div id="status"></div>
+<div id="rastro" hidden></div>
+<button id="baixar-replay" hidden>Baixar replay</button>
+<div id="build">BUILD 31</div>
+<script type="module" src="./main.js?v=31"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Replay curto de teste (ferramentas/criar-replay.mjs). Cobre título, novo
+# jogo, cena automática (abertura no Hall), névoa da floresta, o tutorial da
+# Primeira Parte (esperas fixas de 300 e 500 quadros) e, depois dele, o Brian
+# andando com o controle na mão, inclusive correndo e falando com C.
+semente 1
+espera 120          # tela de título
+aperta C 2          # Novo jogo
+espera 400          # começo da cena de abertura
+ir 6 8 11 8         # Hall: cai na cena automática "Jogo criado por…"
+espera 200
+ir 5 10 19 8        # Floresta (névoa, partículas; também tem cena automática)
+espera 240
+ir 11 16 12 2       # Primeira Parte: tutorial Ajuda_3 e Ajuda_5
+espera 1400         # o tutorial acaba e o Brian fica livre
+aperta esquerda 24
+aperta cima 16
+aperta A+SHIFT+direita 30
+aperta baixo 12
+aperta C 2
+espera 60
+aperta esquerda 20
+espera 60

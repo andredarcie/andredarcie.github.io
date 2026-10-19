@@ -1,0 +1,43 @@
+# Eventos que o passeio não cobre: tela de save (cursor e salvar), escolha numa mensagem (Não e Sim) e a morte pela variável de
+# vidas, que volta ao checkpoint gravado antes (evento comum "Vida" → load_ksch).
+semente 3
+espera 120
+aperta C 2          # Novo jogo
+espera 400
+ir 11 16 12 2       # Primeira Parte: o tutorial liga o interruptor 3 (menu do VX desligado)
+espera 1400
+# --- save (Mapa 11, EV8 em 4,50: exige variável 3 >= 1)
+variavel 3 1
+espera 1
+ir 11 4 51 8
+espera 60
+aperta C 2          # abre a tela de save
+espera 60
+aperta baixo 2      # cursor no slot 2 (o slot 1 carrega o resumo do save: load_gamedata)
+espera 10
+aperta C 2          # salva no slot 2
+espera 120
+# o EV8 só abre uma vez (interruptor local A); o B aqui seria o pause
+# --- checkpoint (Mapa 11, EV155 em 15,51, de toque: create_ksch grava o ks_checkpoint)
+ir 11 13 51 6
+espera 30
+aperta direita 24
+espera 90
+# --- escolha (Mapa 11, EV38 em 51,13)
+ir 11 51 14 8
+espera 60
+aperta C 2
+espera 90
+aperta baixo 2      # "Não"
+aperta C 2
+espera 90
+aperta C 2
+espera 90
+aperta C 2          # "Sim": reseta o puzzle
+espera 200
+# --- morte: vidas = 0 → imagens Vida_0, "Fall", load_ksch
+variavel 2 0
+espera 400
+aperta direita 20
+aperta C 2
+espera 200
