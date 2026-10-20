@@ -61,12 +61,18 @@ function incluirCena(C) {
   }
 }
 
-// attr_reader + setter que converte e suja
+// attr_reader + setter que converte e suja (só se o valor mudou: os
+// Sprite_* do jogo reatribuem x, y, z, opacity… em todo quadro)
 function atributos(C, mapa) {
   for (const [nome, converter] of Object.entries(mapa)) {
+    const chave = `$${nome}`;
     Object.defineProperty(C.prototype, nome, {
-      get() { return this[`$${nome}`]; },
-      set(v) { this[`$${nome}`] = converter(v); this.$sujar(); },
+      get() { return this[chave]; },
+      set(v) {
+        const novo = converter(v);
+        if (novo === this[chave]) return;
+        this[chave] = novo; this.$sujar();
+      },
       configurable: true,
     });
   }
@@ -81,15 +87,19 @@ function valores(C, nomes) {
     tone: (o, t) => o.set(t.red, t.green, t.blue, t.gray),
   };
   for (const nome of nomes) {
+    const chave = `$${nome}`;
     Object.defineProperty(C.prototype, nome, {
-      get() { return this[`$${nome}`]; },
-      set(v) { copiar[nome](this[`$${nome}`], v); },
+      get() { return this[chave]; },
+      set(v) { copiar[nome](this[chave], v); },
       configurable: true,
     });
   }
 }
 const somente = (C, nomes) => {
-  for (const nome of nomes) Object.defineProperty(C.prototype, nome, { get() { return this[`$${nome}`]; }, configurable: true });
+  for (const nome of nomes) {
+    const chave = `$${nome}`;
+    Object.defineProperty(C.prototype, nome, { get() { return this[chave]; }, configurable: true });
+  }
 };
 
 const igual = (v) => v;

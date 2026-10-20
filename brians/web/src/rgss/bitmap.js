@@ -9,14 +9,16 @@ let proximoId = 1;
 export class Bitmap {
   static SUPER = 4; // fator de superamostragem do texto
 
-  constructor(largura, altura) {
+  // lerMuito: canvas na memória (não na GPU), para bitmap que vai ser lido
+  // pixel a pixel (getImageData na GPU obriga a esperar e copiar de volta)
+  constructor(largura, altura, lerMuito = false) {
     this.id = proximoId++;
     this.largura = Math.max(1, largura | 0);
     this.altura = Math.max(1, altura | 0);
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.largura;
     this.canvas.height = this.altura;
-    this.ctx = this.canvas.getContext('2d', { willReadFrequently: false });
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: lerMuito });
     this.ctx.imageSmoothingEnabled = false;
     this.versao = 1;      // muda a cada escrita
     this.textura = null;  // cache do renderizador
@@ -152,17 +154,21 @@ export class Bitmap {
   }
 
   blur() {
+    // média 3×3 dos vizinhos que existem, separada em linha e coluna: a
+    // soma e o divisor são os mesmos da janela 3×3 (o resultado é idêntico),
+    // com 6 leituras por canal em vez de 9 e sem testar borda a cada vizinho
     this.aplicarPixels((d, w, h) => {
-      const o = new Uint8ClampedArray(d);
-      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-        for (let c = 0; c < 4; c++) {
-          let s = 0, n = 0;
-          for (let j = -1; j <= 1; j++) for (let k = -1; k <= 1; k++) {
-            const xx = x + k, yy = y + j;
-            if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
-            s += o[(yy * w + xx) * 4 + c]; n++;
-          }
-          d[(y * w + x) * 4 + c] = s / n;
+      const L = w * 4, soma = new Uint16Array(d.length), nx = new Uint8Array(w);
+      for (let x = 0; x < w; x++) nx[x] = 1 + (x > 0) + (x < w - 1);
+      for (let ini = 0; ini < d.length; ini += L) {
+        const fim = ini + L;
+        for (let i = ini; i < fim; i++) soma[i] = d[i] + (i - 4 >= ini ? d[i - 4] : 0) + (i + 4 < fim ? d[i + 4] : 0);
+      }
+      for (let y = 0, ini = 0; y < h; y++, ini += L) {
+        const ny = 1 + (y > 0) + (y < h - 1);
+        for (let i = ini, x = 0; x < w; x++) {
+          const n = nx[x] * ny;
+          for (let c = 0; c < 4; c++, i++) d[i] = (soma[i] + (y > 0 ? soma[i - L] : 0) + (y < h - 1 ? soma[i + L] : 0)) / n;
         }
       }
     });
@@ -239,20 +245,21 @@ export class Bitmap {
     if (!texto || w <= 0 || h <= 0) return;
     const S = Bitmap.SUPER;
     const css = Bitmap.fonteCss(nome, tamanho * S, negrito, italico);
-    const aux = Bitmap.ctxTexto ??= document.createElement('canvas').getContext('2d');
+    // A janela de mensagem escreve uma letra por quadro: as letras soltas
+    // ficam prontas num cache (trocar ctx.font, medir e rasterizar em 4×
+    // custava ~1 ms por letra no PC, bem mais no celular).
+    const chave = texto.length <= 2 ? `${css}|${sombra ? 1 : 0}|${r | 0},${g | 0},${b | 0}|${texto}` : null;
+    const pronto = chave && Bitmap.cacheTexto.get(chave);
+    if (pronto) return this.colarTexto(pronto, x, y, w, h, alinhamento, a);
+    const aux = chave ? document.createElement('canvas').getContext('2d')
+      : Bitmap.ctxTexto ??= document.createElement('canvas').getContext('2d');
     const m = Bitmap.medir(aux, texto, css);
-    const largura = m.largura / S, altura = m.altura / S;
-    const escala = largura > w ? w / largura : 1;
-    const larguraFinal = largura * escala;
-    let tx = x;
-    if (alinhamento === 1) tx = x + (w - larguraFinal) / 2;
-    else if (alinhamento === 2) tx = x + w - larguraFinal;
-    const ty = y + (h - altura) / 2;
     // texto (e sombra) em alta resolução
     const margem = 2 * S;
     const cw = Math.ceil(m.largura) + margem * 2, ch = Math.ceil(m.altura) + margem * 2;
     const cv = aux.canvas;
-    if (cv.width < cw || cv.height < ch) { cv.width = Math.max(cv.width, cw); cv.height = Math.max(cv.height, ch); }
+    if (chave) { cv.width = cw; cv.height = ch; }
+    else if (cv.width < cw || cv.height < ch) { cv.width = Math.max(cv.width, cw); cv.height = Math.max(cv.height, ch); }
     aux.setTransform(1, 0, 0, 1, 0, 0);
     // limpa tudo: a redução suavizada lê pixels além da borda do recorte
     aux.clearRect(0, 0, cv.width, cv.height);
@@ -264,6 +271,26 @@ export class Bitmap {
     }
     aux.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
     aux.fillText(texto, margem, margem + m.ascendente);
+    const feito = { cv, cw, ch, largura: m.largura, altura: m.altura };
+    if (chave) {
+      if (Bitmap.cacheTexto.size >= 512) Bitmap.cacheTexto.clear();
+      Bitmap.cacheTexto.set(chave, feito);
+    }
+    this.colarTexto(feito, x, y, w, h, alinhamento, a);
+  }
+
+  static cacheTexto = new Map(); // letra + fonte + cor → texto já rasterizado
+
+  // reduz o texto rasterizado em SUPER× para o bitmap, alinhado no retângulo
+  colarTexto({ cv, cw, ch, largura: lm, altura: am }, x, y, w, h, alinhamento, a) {
+    const S = Bitmap.SUPER, margem = 2 * S;
+    const largura = lm / S, altura = am / S;
+    const escala = largura > w ? w / largura : 1;
+    const larguraFinal = largura * escala;
+    let tx = x;
+    if (alinhamento === 1) tx = x + (w - larguraFinal) / 2;
+    else if (alinhamento === 2) tx = x + w - larguraFinal;
+    const ty = y + (h - altura) / 2;
     const c = this.ctx;
     c.save();
     c.beginPath(); c.rect(x, y, w + 1, h + 1); c.clip();
@@ -279,8 +306,20 @@ export class Bitmap {
   // Largura e altura empacotadas: largura * 65536 + altura.
   static textSize(texto, nome, tamanho, negrito, italico) {
     const S = Bitmap.SUPER;
+    texto = String(texto);
+    const css = Bitmap.fonteCss(nome, tamanho * S, negrito, italico);
+    const chave = texto.length <= 2 ? `${css}|${texto}` : null;
+    const pronto = chave && Bitmap.cacheMedida.get(chave);
+    if (pronto !== undefined && pronto !== null) return pronto;
     const ctx = Bitmap.ctxMedida ??= document.createElement('canvas').getContext('2d');
-    const m = Bitmap.medir(ctx, String(texto), Bitmap.fonteCss(nome, tamanho * S, negrito, italico));
-    return Math.ceil(m.largura / S) * 65536 + Math.ceil(m.altura / S);
+    const m = Bitmap.medir(ctx, texto, css);
+    const r = Math.ceil(m.largura / S) * 65536 + Math.ceil(m.altura / S);
+    if (chave) {
+      if (Bitmap.cacheMedida.size >= 2048) Bitmap.cacheMedida.clear();
+      Bitmap.cacheMedida.set(chave, r);
+    }
+    return r;
   }
+
+  static cacheMedida = new Map(); // letra + fonte → tamanho empacotado
 }

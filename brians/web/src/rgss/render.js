@@ -60,7 +60,6 @@ uniform sampler2D u_tex; uniform vec4 u_cor; uniform vec4 u_tom;
 uniform float u_escuro; uniform float u_altura; uniform int u_n;
 uniform vec4 u_luz[${MAX_LUZES}]; uniform vec3 u_corLuz[${MAX_LUZES}];
 in vec2 v_uv; out vec4 saida;
-const float BAYER[16] = float[16](0.0, 8.0, 2.0, 10.0, 12.0, 4.0, 14.0, 6.0, 3.0, 11.0, 1.0, 9.0, 15.0, 7.0, 13.0, 5.0);
 void main() {
   vec3 base = texture(u_tex, v_uv).rgb;
   float l = dot(base, vec3(0.299, 0.587, 0.114));
@@ -69,12 +68,19 @@ void main() {
   float luz = 0.0; vec3 tinta = vec3(0.0);
   for (int i = 0; i < ${MAX_LUZES}; i++) {
     if (i >= u_n) break;
-    float f = clamp(1.0 - distance(p, u_luz[i].xy) / u_luz[i].z, 0.0, 1.0);
+    // fora do raio não soma nada: pula sem a raiz (e, em fp16, a distância
+    // ao quadrado de longe estoura para infinito, que também cai aqui)
+    vec2 d = p - u_luz[i].xy; float r = u_luz[i].z, d2 = dot(d, d);
+    if (d2 >= r * r) continue;
+    float f = 1.0 - sqrt(d2) / r;
     f = f * f * (3.0 - 2.0 * f) * u_luz[i].w;
     luz += f; tinta += u_corLuz[i] * f;
   }
-  int b = int(mod(p.x, 4.0)) + int(mod(p.y, 4.0)) * 4;
-  float degrau = clamp(floor(luz * 5.0 + BAYER[b] / 16.0) / 5.0, 0.0, 1.0);
+  // Bayer 4×4 (0 8 2 10 / 12 4 14 6 / 3 11 1 9 / 15 7 13 5) por bits: vetor
+  // constante indexado por variável é lento em GPU de celular
+  ivec2 q = ivec2(p) & 3; int e = q.x ^ q.y;
+  float bayer = float(((e & 1) << 3) | ((q.y & 1) << 2) | ((e >> 1) << 1) | (q.y >> 1));
+  float degrau = clamp(floor(luz * 5.0 + bayer / 16.0) / 5.0, 0.0, 1.0);
   vec3 corLuz = luz > 0.0 ? tinta / luz : vec3(1.0);
   vec3 escuro = tom * (1.0 - u_escuro);
   vec3 aceso = mix(tom, base, 0.3) * mix(vec3(1.0), corLuz, 0.5) * (1.0 + 0.3 * degrau);

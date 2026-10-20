@@ -137,6 +137,8 @@ function metodo(nome, proprio) {
 // ------------------------------------------------------------------ texto
 // String no Ruby 1.8 é bytes: size é em bytes (UTF-8), não em caracteres.
 const utf8 = new TextEncoder();
+const utf8Dec = new TextDecoder();
+const SO_ASCII = /^[\x00-\x7f]*$/;
 const bytesDe = (s) => utf8.encode(s).length;
 
 // to_s do Ruby 1.8: nil → "", Array junta sem separador, Symbol → nome.
@@ -525,11 +527,14 @@ export function idx(x, ...args) {
       return ultimoCasamento ? ultimoCasamento[n ?? 0] ?? null : null;
     }
     if (typeof i === 'string') return x.includes(i) ? i : null;
-    // Ruby 1.8: s[i] é o byte (Integer); s[i, n] é o pedaço em bytes
+    // Ruby 1.8: s[i] é o byte (Integer); s[i, n] é o pedaço em bytes.
+    // Só ASCII: byte = caractere, sem codificar (object? faz name[0, 1] em
+    // todo personagem a cada quadro).
+    if (SO_ASCII.test(x)) return args.length === 2 ? fatia(x, i, n) : at(x, i)?.charCodeAt(0) ?? null;
     const b = utf8.encode(x);
     if (args.length === 2) {
       const pedaco = fatia([...b], i, n);
-      return pedaco === null ? null : new TextDecoder().decode(Uint8Array.from(pedaco));
+      return pedaco === null ? null : utf8Dec.decode(Uint8Array.from(pedaco));
     }
     return at([...b], i);
   }

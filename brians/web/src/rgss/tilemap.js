@@ -71,26 +71,50 @@ export function desenharTilemap(r, camada, bx, by, area) {
   const acima = camada.indice === 1;
   const pass = tm.passagens;
   const porCamada = xs * ys;
-  for (let j = 0; j < linhas; j++) {
-    const my = ty0 + j, y = ((my % ys) + ys) % ys;
-    const dy = by + my * T - oy;
-    for (let i = 0; i < colunas; i++) {
-      const mx = tx0 + i, x = ((mx % xs) + xs) % xs;
-      const dx = bx + mx * T - ox;
-      for (let z = 0; z < zs; z++) {
+  // Tiles de uma mesma camada z não se sobrepõem (cada um no seu quadrado),
+  // então a ordem entre células não importa: desenha camada por camada e,
+  // dentro dela, um bitmap por vez. Tile a tile, cada troca de bitmap
+  // (A1, A2, B…) virava uma chamada de desenho (~70 por quadro).
+  for (let z = 0; z < zs; z++) {
+    // uma passada pelas células: separa os tiles da camada por bitmap
+    for (const l of LOTES) l.length = 0;
+    const base = z * porCamada;
+    for (let j = 0; j < linhas; j++) {
+      const my = ty0 + j, y = ((my % ys) + ys) % ys;
+      const dy = by + my * T - oy;
+      for (let i = 0; i < colunas; i++) {
+        const mx = tx0 + i, x = ((mx % xs) + xs) % xs;
+        const dx = bx + mx * T - ox;
         // Sombra automática do VX: depois das camadas A, antes dos objetos B–E.
-        if (z === 2 && !acima && temSombra(dados, xs, ys, x, y)) {
-          r.preparar(r.branco, SOMBRA_ALFA, PRETO, NEUTRO, 0);
-          r.quad(dx, dy, M, T, 0, 0, 1, 1, 1, 1);
-        }
-        const id = dados[x + y * xs + z * porCamada];
+        if (z === 2 && !acima && temSombra(dados, xs, ys, x, y)) LOTES[SOMBRA].push(0, dx, dy);
+        const id = dados[x + y * xs + base];
         if (id <= 0) continue;
         const ehAcima = pass ? (pass[id] & 0x10) !== 0 : false;
         if (ehAcima !== acima) continue;
-        desenharTile(r, tm, id, dx, dy, quadro);
+        LOTES[indiceBitmap(id)].push(id, dx, dy);
       }
     }
+    const sombras = LOTES[SOMBRA];
+    if (sombras.length) {
+      r.preparar(r.branco, SOMBRA_ALFA, PRETO, NEUTRO, 0);
+      for (let k = 0; k < sombras.length; k += 3) r.quad(sombras[k + 1], sombras[k + 2], M, T, 0, 0, 1, 1, 1, 1);
+    }
+    for (let b = 0; b < SOMBRA; b++) {
+      const l = LOTES[b];
+      for (let k = 0; k < l.length; k += 3) desenharTile(r, tm, l[k], l[k + 1], l[k + 2], quadro);
+    }
   }
+}
+
+// (id, dx, dy) por bitmap, reaproveitados de quadro em quadro; o último é o das sombras
+const SOMBRA = 10;
+const LOTES = Array.from({ length: SOMBRA + 1 }, () => []);
+
+// bitmap do tile (0=A1 … 8=E; 9 = nenhum, ids de 1024 a 1535)
+function indiceBitmap(id) {
+  if (id >= 2048) return id < 2816 ? 0 : id < 4352 ? 1 : id < 5888 ? 2 : 3;
+  if (id >= 1536) return 4;
+  return id < 1024 ? 5 + (id >> 8) : 9;
 }
 
 function desenharTile(r, tm, id, dx, dy, quadro) {
