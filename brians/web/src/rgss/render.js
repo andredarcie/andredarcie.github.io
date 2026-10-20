@@ -47,6 +47,41 @@ void main() {
   saida = vec4(mix(a.rgb, b.rgb, t), 1.0);
 }`;
 
+// Luz (src/luz.js põe vp.luz no viewport do mapa): no lugar do tom chapado,
+// o tom vira o "escuro" (e escurece mais u_escuro), e perto de cada fonte o
+// próprio tom clareia, puxando só um pouco das cores originais e tingido
+// pela cor da luz (a paleta do mapa fica; devolver as cores originais
+// inteiras fazia um holofote de outra cor, verde-limão na Floresta). A borda da luz sai em
+// degraus com pontilhado Bayer 4×4, na resolução do jogo, como pixel art.
+const MAX_LUZES = 32;
+const FRAG_LUZ = `#version 300 es
+precision mediump float;
+uniform sampler2D u_tex; uniform vec4 u_cor; uniform vec4 u_tom;
+uniform float u_escuro; uniform float u_altura; uniform int u_n;
+uniform vec4 u_luz[${MAX_LUZES}]; uniform vec3 u_corLuz[${MAX_LUZES}];
+in vec2 v_uv; out vec4 saida;
+const float BAYER[16] = float[16](0.0, 8.0, 2.0, 10.0, 12.0, 4.0, 14.0, 6.0, 3.0, 11.0, 1.0, 9.0, 15.0, 7.0, 13.0, 5.0);
+void main() {
+  vec3 base = texture(u_tex, v_uv).rgb;
+  float l = dot(base, vec3(0.299, 0.587, 0.114));
+  vec3 tom = clamp(mix(base, vec3(l), u_tom.a) + u_tom.rgb, 0.0, 1.0);
+  vec2 p = floor(vec2(gl_FragCoord.x, u_altura - gl_FragCoord.y));
+  float luz = 0.0; vec3 tinta = vec3(0.0);
+  for (int i = 0; i < ${MAX_LUZES}; i++) {
+    if (i >= u_n) break;
+    float f = clamp(1.0 - distance(p, u_luz[i].xy) / u_luz[i].z, 0.0, 1.0);
+    f = f * f * (3.0 - 2.0 * f) * u_luz[i].w;
+    luz += f; tinta += u_corLuz[i] * f;
+  }
+  int b = int(mod(p.x, 4.0)) + int(mod(p.y, 4.0)) * 4;
+  float degrau = clamp(floor(luz * 5.0 + BAYER[b] / 16.0) / 5.0, 0.0, 1.0);
+  vec3 corLuz = luz > 0.0 ? tinta / luz : vec3(1.0);
+  vec3 escuro = tom * (1.0 - u_escuro);
+  vec3 aceso = mix(tom, base, 0.3) * mix(vec3(1.0), corLuz, 0.5) * (1.0 + 0.3 * degrau);
+  vec3 c = mix(escuro, clamp(aceso, 0.0, 1.0), degrau);
+  saida = vec4(mix(c, u_cor.rgb, u_cor.a), 1.0);
+}`;
+
 const NEUTRO = [0, 0, 0, 0];
 const MAX_QUADS = 4096;
 
@@ -58,6 +93,7 @@ export class Renderizador {
     this.gl = gl;
     this.progSprite = this.programa(VERT, FRAG_SPRITE);
     this.progTransicao = this.programa(VERT, FRAG_TRANSICAO);
+    this.progLuz = this.programa(VERT, FRAG_LUZ);
     this.vertices = new Float32Array(MAX_QUADS * 6 * 4);
     this.nVertices = 0;
     this.vao = gl.createVertexArray();
@@ -65,7 +101,7 @@ export class Renderizador {
     this.vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, this.vertices.byteLength, gl.DYNAMIC_DRAW);
-    for (const prog of [this.progSprite, this.progTransicao]) {
+    for (const prog of [this.progSprite, this.progTransicao, this.progLuz]) {
       const pos = gl.getAttribLocation(prog.p, 'a_pos'), uv = gl.getAttribLocation(prog.p, 'a_uv');
       gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 16, 0);
       gl.enableVertexAttribArray(uv); gl.vertexAttribPointer(uv, 2, gl.FLOAT, false, 16, 8);
@@ -254,7 +290,8 @@ export class Renderizador {
     this.recorte(vp.x, vp.y, vp.w, vp.h);
     lista.sort(ordenar);
     for (const o of lista) this.desenharObjeto(o, vp.x - vp.ox, vp.y - vp.oy, area);
-    if (vp.cor[3] > 0 || vp.tom[0] || vp.tom[1] || vp.tom[2] || vp.tom[3]) this.efeitoRegiao(alvo, area, vp.cor, vp.tom);
+    if (vp.luz) this.efeitoLuz(area, vp.cor, vp.tom, vp.luz);
+    else if (vp.cor[3] > 0 || vp.tom[0] || vp.tom[1] || vp.tom[2] || vp.tom[3]) this.efeitoRegiao(alvo, area, vp.cor, vp.tom);
     this.recorte(null);
   }
 
@@ -272,6 +309,37 @@ export class Renderizador {
     // textura de FBO: v invertido
     this.quadLivre([x0, y0, x1, y0, x1, y1, x0, y1], x0, this.altura - y0, x1, this.altura - y1, this.largura, this.altura);
     this.flush();
+    this.estado = null;
+  }
+
+  // Como efeitoRegiao, mas com o shader de luz (luz: { escuro, n, luzes:
+  // Float32Array(4n: x, y, raio, intensidade), cores: Float32Array(3n) }).
+  efeitoLuz(a, cor, tom, luz) {
+    const gl = this.gl;
+    this.flush();
+    const x0 = Math.max(0, a.x | 0), y0 = Math.max(0, a.y | 0);
+    const x1 = Math.min(this.largura, a.x + a.w), y1 = Math.min(this.altura, a.y + a.h);
+    if (x1 <= x0 || y1 <= y0) return;
+    gl.bindTexture(gl.TEXTURE_2D, this.temp.tex);
+    gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, x0, this.altura - y1, x0, this.altura - y1, x1 - x0, y1 - y0);
+    const p = this.progLuz, u = p.u;
+    gl.useProgram(p.p);
+    gl.uniform2f(u.u_tela, this.largura, this.altura);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.temp.tex); gl.uniform1i(u.u_tex, 0);
+    gl.uniform4f(u.u_cor, cor[0] / 255, cor[1] / 255, cor[2] / 255, cor[3] / 255);
+    gl.uniform4f(u.u_tom, tom[0] / 255, tom[1] / 255, tom[2] / 255, tom[3] / 255);
+    gl.uniform1f(u.u_escuro, luz.escuro);
+    gl.uniform1f(u.u_altura, this.altura);
+    const n = Math.min(luz.n, MAX_LUZES);
+    gl.uniform1i(u.u_n, n);
+    if (n) {
+      gl.uniform4fv(u['u_luz[0]'], luz.luzes, 0, n * 4);
+      gl.uniform3fv(u['u_corLuz[0]'], luz.cores, 0, n * 3);
+    }
+    gl.blendEquation(gl.FUNC_ADD); gl.blendFunc(gl.ONE, gl.ZERO);
+    this.quadLivre([x0, y0, x1, y0, x1, y1, x0, y1], x0, this.altura - y0, x1, this.altura - y1, this.largura, this.altura);
+    this.flush();
+    gl.useProgram(this.progSprite.p);
     this.estado = null;
   }
 

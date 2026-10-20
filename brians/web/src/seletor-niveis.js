@@ -1,24 +1,23 @@
 // Seletor de fases para testar: só existe em localhost. Tecla I (ou o botão
-// "Fases" no canto) abre um modal com todos os mapas na ordem da árvore do
-// editor; cada mapa lista as entradas reais dele (de onde o jogo teleporta o
-// Brian para lá, ver ferramentas/montar-niveis.mjs). O pedido fica pendente
-// até o próximo Graphics.update, que o aplica (src/rastro-js.js).
+// "Fases" no canto) abre um modal com as fases na ordem de uma partida
+// linear (src/fases.js); escolher uma entra nela como se tivesse vindo
+// jogando. O pedido fica pendente até o próximo Graphics.update, que o
+// aplica (src/rastro-js.js).
+import { FASES } from './fases.js';
 
 export const LOCAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
 
-export function ligarSeletorNiveis({ entrada, graficos, build }) {
+export function ligarSeletorNiveis({ entrada, graficos }) {
   const modal = document.querySelector('#niveis');
   const busca = modal.querySelector('input');
   const lista = modal.querySelector('ol');
   const aviso = modal.querySelector('.aviso');
   const abrirBotao = document.querySelector('#abrir-niveis');
-  let niveis = [];
   let pedido = '';
   let mapaAtual = 0;
   let linhas = [];   // botões visíveis, na ordem, para navegar com as setas
   let foco = 0;
 
-  fetch(`niveis.json?v=${build}`).then((r) => r.json()).then((n) => { niveis = n; desenhar(); });
   abrirBotao.hidden = false;
   abrirBotao.addEventListener('click', () => (modal.hidden ? abrir() : fechar()));
   modal.addEventListener('click', (e) => { if (e.target === modal) fechar(); });
@@ -49,30 +48,22 @@ export function ligarSeletorNiveis({ entrada, graficos, build }) {
     const termo = busca.value.trim().toLowerCase();
     lista.replaceChildren();
     linhas = [];
-    for (const n of niveis) {
-      if (termo && !`${n.id} ${n.nome}`.toLowerCase().includes(termo)) continue;
+    FASES.forEach((f, i) => {
+      if (termo && !`${i + 1} ${f.mapa} ${f.nome}`.toLowerCase().includes(termo)) return;
       const li = document.createElement('li');
-      li.style.paddingLeft = `${n.profundidade * 16}px`;
-      if (n.id === mapaAtual) li.classList.add('atual');
-      n.entradas.forEach((e, i) => {
-        const b = document.createElement('button');
-        b.dataset.mapa = n.id;
-        b.dataset.pedido = `${n.id},${e.x},${e.y},${e.dir}`;
-        b.title = `${e.origem} → (${e.x}, ${e.y})`;
-        if (i === 0) {
-          b.className = 'mapa';
-          b.innerHTML = `<span class="id">${String(n.id).padStart(3, '0')}</span> `;
-          b.append(n.nome);
-        } else {
-          b.className = 'entrada';
-          b.textContent = `entrada ${i + 1}`;
-        }
-        b.addEventListener('click', () => ir(b));
-        li.append(b);
-        linhas.push(b);
-      });
+      if (f.mapa === mapaAtual) li.classList.add('atual');
+      const b = document.createElement('button');
+      b.dataset.mapa = f.mapa;
+      b.dataset.pedido = `fase,${i}`;
+      b.title = f.origem ? `mapa ${f.mapa}, vindo do evento ${f.origem.ev} do mapa ${f.origem.mapa}` : `mapa ${f.mapa}, começo do jogo`;
+      b.className = 'mapa';
+      b.innerHTML = `<span class="id">${String(i + 1).padStart(2, '0')}</span> `;
+      b.append(f.nome);
+      b.addEventListener('click', () => ir(b));
+      li.append(b);
+      linhas.push(b);
       lista.append(li);
-    }
+    });
     foco = Math.min(foco, Math.max(0, linhas.length - 1));
     focar();
   }

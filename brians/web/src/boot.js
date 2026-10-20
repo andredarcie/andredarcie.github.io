@@ -113,7 +113,11 @@ export async function iniciar({ build, $, status, esperarClique, mensagem, mostr
   try {
     for (const arquivo of ordem) {
       script = arquivo;
-      if (ajustes && arquivo === ordem[ordem.length - 1]) await (await import('./ajustes.js')).aplicarAjustes();
+      if (ajustes && arquivo === ordem[ordem.length - 1]) {
+        await (await import('./ajustes.js')).aplicarAjustes();
+        // ?arena: arena de teste da visão dos inimigos (src/arena.js)
+        if (new URLSearchParams(location.search).has('arena')) (await import('./arena.js')).ligarArena();
+      }
       await import(`${JOGO_IMPORT}${arquivo}`);
     }
     fim();

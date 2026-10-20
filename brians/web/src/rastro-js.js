@@ -120,6 +120,11 @@ export function ligarRastroJs({ rastro, seletor, detalhe = -1 }) {
   const comNiveis = !seletor ? updateOriginal : async function () {
     const pedido = String(seletor.pegarPedidoNivel() ?? '');
     if (pedido.startsWith('var,')) mudarVariavel(...pedido.split(',').slice(1, 3).map((n) => rb.to_i(n)));
+    else if (pedido.startsWith('fase,')) {
+      // fase do seletor: entra como numa partida linear (src/fases.js)
+      if (!($game_map && $game_party && $game_player)) seletor.avisarNivel?.('Espere a tela de título carregar.');
+      else (await import('./fases.js')).irParaFase(rb.to_i(pedido.split(',')[1]));
+    }
     else if (pedido) await irParaNivel(seletor, ...pedido.split(',').map((n) => rb.to_i(n)));
     if ($game_map && $game_map.map_id !== mapaAvisado) {
       mapaAvisado = $game_map.map_id;

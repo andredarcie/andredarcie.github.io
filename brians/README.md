@@ -48,12 +48,41 @@ Os nomes de arquivo seguem o RGSS (sem maiúsculas, sem extensão);
 Por cima dos scripts, que continuam como o jogo de 2014. Desligadas em
 `?gravar`/`?replay` (os replays seguem o jogo original) e com `&original`.
 
+- **Abertura sem texto** (`web/src/abertura.js`): a imagem "Introdução"
+  (o bloco de texto da Apresentação) saiu; a história é encenada na
+  Floresta antes da cena original: o Brian conduz a bola, chuta para a
+  esquerda, dá a volta, chuta para a direita, faz embaixadinhas e chuta forte
+  para cima sem querer ("!" de susto); daí a cena de 2014 (vidro, câmera,
+  porta). O jogo novo começa direto na Floresta (a Apresentação, um mapa
+  preto que piscava antes, fica de fora). Feito nos dados ao carregar
+  (`load_data`: System e mapas 14 e 5); os `.rvdata` não mudam.
+- **Portas de chave** (`web/src/porta.js`): a porta alta (Other3[6], 2
+  tiles) passa à frente do Brian quando ele está acima dela (antes ele
+  parecia subir na porta: empate de z resolvido pela ordem de criação); ao
+  usar a chave, uma cópia do sprite anima a abertura: ícone da chave
+  saltando, tremida, rangido (Open1), giro na dobradiça escurecendo e poeira.
+- **Puzzle das plataformas da Caverna** (`web/src/plataformas.js`): em
+  cima de uma plataforma giratória aparece "Enter para girar" ("A para
+  girar" no toque) sobre a cabeça do Brian; plataforma cuja seta aponta para
+  o alvo dela solta um laser da ponta até a próxima peça (estende com som ao
+  acertar, recolhe ao errar; também ilumina). Corrente: 5 → 2 → 3 → 4 → 6 →
+  portal (30, 5). Só visual: a lógica (variável 64) é a de 2014.
+- **Luz e sombra 2D** (`web/src/luz.js` + `efeitoLuz` em
+  `web/src/rgss/render.js`; `&semluz` desliga para comparar): no viewport
+  do mapa, o tom de tela vira escuro (mais forte quanto mais escuro o tom do
+  mapa) e há poças de luz no Brian e nos objetos acesos de `!Flame`,
+  `Other2` e `Other3` (nome + índice + direção; chamas tremulam). Borda da
+  luz em degraus com pontilhado Bayer 4×4, na resolução do jogo. Ligar é
+  decidido por mapa (tom escuro ou luminária em alguma página de evento), e
+  o escuro muda devagar; mapa claro e sem luminárias fica idêntico ao
+  original.
 - **Cutscenes 2×**: com um evento no controle, um quadro em cada dois não é
   desenhado; tudo que conta quadros anda no dobro, a música não muda.
 - **Teclado × celular**: todo texto que cita botão segue o modo atual
   (`dispositivo.js`: começa pelo `pointer: coarse`, muda com o uso). No
   toque é o controle da tela: **A** (ação, = Enter), **Correr** (= Shift),
-  **B** (pausa), direcional. No celular o cartão de tutorial fica no topo
+  **B** (pausa), direcional; no canto de cima, botões de pausar e de tela
+  cheia (este só onde o navegador deixa). No celular o cartão de tutorial fica no topo
   (os botões A/B/Correr cobrem o canto de baixo em paisagem).
 - **Pular qualquer cutscene**: em evento automático ou comum aparece, pequeno
   e no topo, "Segure Enter para pular" (no celular, "Segure A para pular");
@@ -68,14 +97,36 @@ Por cima dos scripts, que continuam como o jogo de 2014. Desligadas em
   "−1", coração da HUD estourando e o inimigo se extinguindo. **Fantasma
   derrotado não volta** (a página escondida não desliga mais o interruptor
   local A; vai no save; morrer recarrega o checkpoint).
+- **Visão dos inimigos**: fantasma, caveira e dragãozinho da caverna
+  (`RetroMonster-2` índices 0, 1 e 3, movimento "aproximar" ou "aleatório",
+  todos os inimigos do jogo) só perseguem o
+  Brian dentro de um círculo de 5 tiles (`VISAO`); fora dele vagam (passo em
+  direção sorteada ou pausa, sem o "passo à frente" do aleatório do VX, que
+  os levava de volta ao Brian). Sair do círculo faz o inimigo desistir,
+  então fugir é possível e eles não se amontoam nas portas de longe. Chefe
+  (índice 5) e chamas seguem como no original. A virada mostra o balão do
+  VX (`Graphics/System/Balloon.png`) na cabeça do inimigo: **!** ao ver o
+  Brian, **?** ao perdê-lo (sobe e some no fim); nada com evento rodando.
+  **Arena de teste**: `index.html?arena` (`web/src/arena.js`) pula o título
+  e monta um mapa inteiro de chão com o Brian e os três inimigos originais,
+  com o círculo de visão desenhado (verde vagando, vermelho perseguindo);
+  inimigo que pega o Brian volta, a vida não acaba, **R** remonta.
 
 ## Desenvolvimento
 
 - **Cache**: a cada mudança em `.js`, trocar todos os `?v=N` do
   `index.html` e o `BUILD N` (mesmo número). Módulo novo entra no import map.
-- **Seletor de fases** (só localhost): tecla **I**; lista em
-  `web/niveis.json` (`node ferramentas/montar-niveis.mjs`). **Tab** segurado
-  acelera.
+- **Seletor de fases** (só localhost): tecla **I**; as fases na ordem de
+  uma partida linear, em `web/src/fases.js` (mapa + o evento que de verdade
+  leva até ele). Escolher uma recria a partida, aplica o estado da história
+  até ali (cenas únicas dos mapas anteriores e as transições anteriores:
+  interruptores, variáveis constantes, interruptores locais, tom, música,
+  `$wvar`), abre o mapa de origem e roda o evento de transição em avanço
+  rápido até o Brian chegar; daí em diante tudo segue no tempo normal, e um
+  checkpoint fica na chegada. Moedas/chaves/poções do caminho não entram.
+  Os replays (`ir mapa x y dir`) continuam com o teleporte cru; o
+  `web/niveis.json` (`node ferramentas/montar-niveis.mjs`) segue servindo às
+  ferramentas. **Tab** segurado acelera.
 - **Replay**: `?gravar` grava a entrada; `?replay=<url>` toca e monta o
   rastro (hash do estado do jogo, da cena e do áudio por quadro).
 - **Profiler**: `?perfil` (painel na tecla P; `__perfil.relatorio()`).

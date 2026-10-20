@@ -16,14 +16,34 @@
 //     cartão animado desenhado por código; Enter pula. Enquanto o cartão está
 //     na tela as cutscenes não aceleram (dá tempo de ler).
 //   - dano com juice e fantasma derrotado para sempre (src/dano.js).
+//   - abertura sem texto (src/abertura.js): no lugar da imagem que contava
+//     a história, o Brian joga bola na Floresta até chutar a bola na mansão.
+//   - portas de chave (src/porta.js): a porta alta cobre o Brian quando ele
+//     está acima dela, e abre com animação (chave, tremida, giro, poeira).
+//   - puzzle das plataformas da Caverna (src/plataformas.js): dica "Enter
+//     para girar" sobre a cabeça e laser de cada plataforma que aponta certo.
+//   - luz e sombra 2D (src/luz.js; &semluz desliga): escuro pelo tom do mapa
+//     e poças de luz no Brian, velas, braseiros e chamas.
+//   - visão dos inimigos: fantasma, caveira e dragãozinho só perseguem o
+//     Brian dentro de um raio, com balão "!" ao ver e "?" ao perder.
 import * as rb from 'rb';
 import { prepararTutoriais, tutorial } from './tutoriais.js';
 import { prepararDano, dano } from './dano.js';
+import { prepararAbertura } from './abertura.js';
+import { prepararLuz } from './luz.js';
+import { prepararPorta, porta } from './porta.js';
+import { plataformas } from './plataformas.js';
 import { botoes } from './dispositivo.js';
 
+export const VISAO = 5;    // raio de visão dos inimigos, em tiles
 const SEGURAR = 40;        // quadros segurando C para pular
 const AVANCO = 40;         // quadros de lógica por quadro desenhado ao pular
 const LIMITE = 30000;      // trava de segurança do avanço (quadros de lógica)
+
+// avanço rápido pedido de fora (src/fases.js): roda como o "pular cutscene"
+// até fim() dar true; o véu mostra o texto
+let avancoPedido = null;
+export function avancarAte(fim, texto) { avancoPedido = { fim, texto }; }
 
 const emCutscene = () =>
   rb.is_a($scene, Scene_Map) && $game_map?.interpreter?.running_p() === true;
@@ -38,7 +58,9 @@ function pulavel() {
 }
 
 export async function aplicarAjustes() {
-  await Promise.all([prepararTutoriais(), prepararDano()]);
+  await Promise.all([prepararTutoriais(), prepararDano(), prepararPorta()]);
+  prepararAbertura();
+  prepararLuz();
   const pressionado = Input.press_p.bind(Input);
 
   // ------------------------------------------------------------ pular cutscene
@@ -78,7 +100,8 @@ export async function aplicarAjustes() {
     }
   };
   const tirarVeu = () => { if (veu) { veu.bitmap.dispose(); veu.dispose(); veu = null; } };
-  const comecarAvanco = () => {
+  let fimAvanco = null;
+  const comecarAvanco = (texto = 'Pulando…') => {
     avancando = 1;
     // só esta cena: o avanço para quando o interpretador troca de lista
     // (a próxima cena automática pede outro "segurar")
@@ -89,10 +112,10 @@ export async function aplicarAjustes() {
     veu.bitmap.fill_rect(0, 0, Graphics.width, Graphics.height, Color.new(0, 0, 0, 110));
     veu.bitmap.font.size = 13;
     veu.bitmap.font.color.set(150, 196, 255, 255);
-    veu.bitmap.draw_text(0, 6, Graphics.width, 16, 'Pulando…', 1);
+    veu.bitmap.draw_text(0, 6, Graphics.width, 16, texto, 1);
     veu.z = 9998;
   };
-  const pararAvanco = () => { avancando = 0; segurando = 0; tirarVeu(); };
+  const pararAvanco = () => { avancando = 0; segurando = 0; fimAvanco = null; tirarVeu(); };
 
   // a cada quadro desenhado: a dica de pular e a contagem
   const atualizarPulo = () => {
@@ -107,10 +130,18 @@ export async function aplicarAjustes() {
   const update = Graphics.update, transition = Graphics.transition;
   let pulouQuadro = false;
   Graphics.update = async function () {
+    if (avancoPedido) {
+      const { fim, texto } = avancoPedido;
+      avancoPedido = null;
+      if (avancando) pararAvanco();
+      comecarAvanco(texto);
+      fimAvanco = fim;
+    }
     if (avancando) {
       avancando += 1;
-      if (!emCutscene() || $game_map.interpreter._list !== cenaAlvo || tutorial.emUso() || avancando > LIMITE ||
-        ($game_message.visible && $game_message.choice_max > 0)) pararAvanco();
+      const acabou = fimAvanco ? fimAvanco()
+        : !emCutscene() || $game_map.interpreter._list !== cenaAlvo || tutorial.emUso();
+      if (acabou || avancando > LIMITE || ($game_message.visible && $game_message.choice_max > 0)) pararAvanco();
       else if (avancando % AVANCO !== 0) { Graphics.frame_count += 1; return; }
       else return update.call(this);
     }
@@ -127,6 +158,8 @@ export async function aplicarAjustes() {
   const desenhar = () => {
     tutorial.quadro();
     dano.quadro();
+    porta.quadro();
+    plataformas.quadro();
     return update.call(Graphics);
   };
   Graphics.transition = function (duration = 10, ...resto) {
@@ -174,7 +207,78 @@ export async function aplicarAjustes() {
   const command_123 = Game_Interpreter.prototype.command_123;
   Game_Interpreter.prototype.command_123 = function () {
     if (dano.bloquearRespawn(this, this._params)) return true;
+    porta.aoAbrir(this, this._params);
     return command_123.call(this);
+  };
+
+  // ------------------------------------------------------------ visão dos inimigos
+  // Os inimigos com movimento "aproximar" perseguiam o Brian de qualquer
+  // ponto do mapa (só desistiam a 20 passos) e se amontoavam nas portas.
+  // Todos são do RetroMonster-2: fantasma (índice 0), caveira (1), dragãozinho
+  // da caverna (3) e o Chefe (5). Agora cada um, menos o Chefe, tem um
+  // círculo de visão de VISAO tiles: fora dele vaga à toa; dentro, persegue
+  // como antes. Saiu do círculo, volta a vagar, então fugir funciona. As
+  // chamas (!Flame) seguem como antes.
+  // Vagar não usa o "aleatório" do VX: metade dele é "um passo à frente", e
+  // o inimigo que acabou de perder o Brian está virado para ele, então
+  // seguia reto até entrar no círculo de novo. Aqui é passo em direção
+  // sorteada (4 em 6) ou pausa (2 em 6).
+  // $perseguindo guarda o estado (campos $ não vão para o save). Ele é
+  // conferido a cada quadro, e a virada mostra um balão do VX (Balloon.png)
+  // na cabeça do inimigo: "!" ao ver o Brian, "?" ao perdê-lo (este sobe e
+  // some no fim). Sem balão com evento rodando (dano, cutscene).
+  // A arena de teste (?arena, src/arena.js) mostra os círculos.
+  // Também os de movimento "aleatório" (três fantasmas d'Os Quartos, que
+  // antes nunca perseguiam): todo inimigo usa a mesma IA.
+  const perseguir = Game_Character.prototype.move_type_toward_player;
+  const temVisao = (c) => rb.is_a(c, Game_Event) && (c._move_type === 1 || c._move_type === 2) &&
+    rb.str(c._character_name) === 'RetroMonster-2' && rb.str(c._event?.name ?? '') !== 'Chefe';
+  const olhar = (c) => {
+    const dx = rb.to_i(c._x) - rb.to_i($game_player.x), dy = rb.to_i(c._y) - rb.to_i($game_player.y);
+    const antes = c.$perseguindo, agora = dx * dx + dy * dy <= VISAO * VISAO;
+    c.$perseguindo = agora;
+    if (agora === !!antes || $game_map.interpreter.running_p()) return;
+    if (agora) { c.balloon_id = 1; c.$balaoSobe = false; } else if (antes) { c.balloon_id = 2; c.$balaoSobe = true; }
+  };
+  const decidir = async (c) => {
+    olhar(c);
+    if (c.$perseguindo) return await perseguir.call(c);
+    if (rb.rand(6) < 4) return await c.move_random();
+    return c._stop_count = 0;
+  };
+  Game_Character.prototype.move_type_toward_player = async function () {
+    return temVisao(this) ? await decidir(this) : await perseguir.call(this);
+  };
+  const aleatorio = Game_Character.prototype.move_type_random;
+  Game_Character.prototype.move_type_random = async function () {
+    return temVisao(this) ? await decidir(this) : await aleatorio.call(this);
+  };
+  const updateEvento = Game_Event.prototype.update;
+  Game_Event.prototype.update = async function () {
+    const r = await updateEvento.call(this);
+    // página que não persegue (fugir, apagado…): esquece o estado, para não
+    // soltar um "?" quando a página de perseguir voltar
+    if (temVisao(this)) olhar(this); else this.$perseguindo = undefined;
+    return r;
+  };
+  // "?": nos últimos SOBE quadros (o desenho já está completo) sobe e some
+  const SOBE = 20;
+  const startBalloon = Sprite_Character.prototype.start_balloon;
+  Sprite_Character.prototype.start_balloon = async function () {
+    this.$sobe = !!this._character?.$balaoSobe;
+    if (this._character) this._character.$balaoSobe = false;
+    return await startBalloon.call(this);
+  };
+  const updateBalloon = Sprite_Character.prototype.update_balloon;
+  Sprite_Character.prototype.update_balloon = function () {
+    const r = updateBalloon.call(this);
+    const b = this._balloon_sprite;
+    if (b && this.$sobe && this._balloon_duration < SOBE) {
+      const k = 1 - this._balloon_duration / SOBE;
+      b.y -= Math.round(k * k * 16);
+      b.opacity = Math.round(255 * (1 - k));
+    } else if (b) b.opacity = 255;
+    return r;
   };
 
   // ------------------------------------------------------------ tutoriais
@@ -183,6 +287,9 @@ export async function aplicarAjustes() {
   // entrada e para y=80 a saída.
   const command_231 = Game_Interpreter.prototype.command_231;
   Game_Interpreter.prototype.command_231 = function () {
+    // a tela de "Inventário" dos Quartos (tecla X) é uma imagem de 16 vagas que
+    // nada preenche no jogo: não aparece mais (o evento original continua)
+    if (rb.str(rb.idx(this._params, 1)) === 'Inventario') return true;
     const m = /^Ajuda_(\d)$/.exec(rb.str(rb.idx(this._params, 1)));
     if (m && tutorial.mostrar(Number(m[1]))) {
       const params = [...this._params];
