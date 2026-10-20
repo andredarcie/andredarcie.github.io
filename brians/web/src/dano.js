@@ -2,7 +2,7 @@
 // pega o Brian, o evento original (Bite, vida − 1, pulinho, inimigo volta ao
 // buraco) segue igual; por cima dele:
 //   - parada de impacto (alguns quadros congelados), tremor e clarão
-//     vermelho na tela, o Brian pisca em vermelho e um "−1" salta;
+//     vermelho na tela e o Brian pisca em vermelho (sem texto de "−1");
 //   - o coração perdido salta da HUD, racha em duas metades que caem
 //     girando e solta faíscas;
 //   - o inimigo se extingue: clarão branco, achata, é puxado para cima
@@ -17,7 +17,6 @@ const PARADA = 7;            // quadros de parada no impacto
 const CORACAO = { x: 12, y: 14, passo: 23, tam: 18 };
 
 const limitar = (v) => Math.max(0, Math.min(1, v));
-const saiComVolta = (t) => { const c = 1.70158, u = t - 1; return 1 + (c + 1) * u * u * u + c * u * u; };
 
 let vidas = null;            // Vida_4: os corações cheios, para recortar
 export async function prepararDano() { vidas = await Bitmap.new('Graphics/Pictures/Vida_4'); }
@@ -94,25 +93,6 @@ function extinguir(spriteInimigo, fantasma) {
   Audio.se_play('Audio/SE/Darkness1', 55, 150);
 }
 
-// "−1" que salta sobre o Brian
-function menosUm(spriteBrian) {
-  const b = Bitmap.new(40, 24);
-  b.font.size = 20; b.font.bold = true;
-  b.font.color.set(255, 90, 90, 255);
-  b.draw_text(0, 0, 40, 24, '−1', 1);
-  const s = Sprite.new(spriteBrian.viewport);
-  s.bitmap = b; s.ox = 20; s.oy = 12; s.z = spriteBrian.z + 10;
-  const x0 = spriteBrian.x, y0 = spriteBrian.y - 40;
-  efeitos.push({ s, vida: 50, total: 50,
-    passo(e) {
-      const t = e.total - e.vida;
-      const u = limitar(t / 10);
-      e.s.zoom_x = e.s.zoom_y = 0.3 + saiComVolta(u) * 0.9;
-      e.s.x = x0; e.s.y = y0 - Math.round(t * 0.5);
-      e.s.opacity = t < 34 ? 255 : 255 * (e.vida / 16);
-    } });
-}
-
 // o coração perdido salta da HUD e racha em duas metades
 function perderCoracao(indice) {
   if (!vidas || indice < 0 || indice > 3) return;
@@ -166,10 +146,9 @@ export const dano = {
     if (cena !== $scene) this.descartar();
     cena = $scene;
     const vida = rb.to_i(rb.idx($game_variables, 2));
-    const spriteInimigo = spriteDe(ev), spriteBrian = spriteDe($game_player);
+    const spriteInimigo = spriteDe(ev);
     const fantasma = graficoBase(ev) === FANTASMA;
     if (spriteInimigo?.bitmap) { extinguir(spriteInimigo, fantasma); ev.$escondidoAte = { x: ev.x, y: ev.y }; }
-    if (spriteBrian) menosUm(spriteBrian);
     perderCoracao(vida - 1);
     piscando = 70;
     $game_map.screen.start_shake(6, 9, 14);

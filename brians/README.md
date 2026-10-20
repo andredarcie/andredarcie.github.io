@@ -94,7 +94,7 @@ Por cima dos scripts, que continuam como o jogo de 2014. Desligadas em
   desenhados por código, com ícones animados feitos dos gráficos do jogo;
   Enter pula. O evento original continua mandando no tempo.
 - **Dano** (`dano.js`): parada de impacto, tremor e clarão, Brian piscando,
-  "−1", coração da HUD estourando e o inimigo se extinguindo. **Fantasma
+  coração da HUD estourando e o inimigo se extinguindo. **Fantasma
   derrotado não volta** (a página escondida não desliga mais o interruptor
   local A; vai no save; morrer recarrega o checkpoint).
 - **Visão dos inimigos**: fantasma, caveira e dragãozinho da caverna
