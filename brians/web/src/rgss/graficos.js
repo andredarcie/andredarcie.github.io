@@ -1,6 +1,11 @@
 // Graphics do RGSS2: ritmo fixo de quadros (frame_rate, padrão 60),
 // freeze/transition (com imagem de transição opcional), brilho e snap_to_bitmap.
+// Atrasado (rAF a 30 Hz no modo de economia de bateria, aparelho fraco), pula
+// o desenho e roda o quadro de lógica seguinte na hora, como o RPG Maker faz
+// no PC: o jogo mantém a velocidade e só fica menos fluido.
 import { Bitmap } from './bitmap.js';
+
+const MAX_PULOS = 4; // quadros sem desenho seguidos, no máximo
 
 export class Graficos {
   constructor(renderizador, aoQuadro) {
@@ -9,11 +14,18 @@ export class Graficos {
     this.congelado = false;
     this.alvoTempo = performance.now();
     this.quadros = 0;
+    this.pulando = false;
+    this.pulados = 0;
   }
 
   // Graphics.update: desenha o quadro e espera o próximo instante do ritmo.
   async atualizar(brilho, taxa) {
-    if (this.semTela) { /* replay sem imagem: só a lógica */ }
+    // o instante do próximo quadro já passou: não desenha este, e esperar()
+    // devolve na hora
+    this.pulando = !this.semTela && !this.turbo && this.pulados < MAX_PULOS &&
+      performance.now() >= this.alvoTempo + 1000 / Math.max(1, taxa);
+    this.pulados = this.pulando ? this.pulados + 1 : 0;
+    if (this.semTela || this.pulando) { /* replay sem imagem ou atrasado: só a lógica */ }
     else if (this.congelado) this.r.copiar(this.r.congelada, null, brilho);
     else {
       this.r.desenharCena(this.r.tela);
@@ -37,6 +49,7 @@ export class Graficos {
     this.alvoTempo += duracao;
     // Atrasou demais (aba em segundo plano, engasgo): não tenta "alcançar".
     if (agora - this.alvoTempo > 100) this.alvoTempo = agora;
+    if (this.pulando) { this.pulando = false; return Promise.resolve(); }
     return new Promise((resolver) => {
       const tique = (t) => {
         if (t >= this.alvoTempo - 2) resolver();
