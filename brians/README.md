@@ -1,6 +1,6 @@
 # Brian's Mansion na web
 
-Jogo de 2014 feito em **RPG Maker VX (RGSS2)**, recuperado do instalador e
+Jogo de 2011 feito em **RPG Maker VX (RGSS2)**, recuperado do instalador e
 rodando no navegador **100% em JavaScript**, sem RPG Maker e sem Ruby.
 Jogar: `brians/web/index.html` (o site linka por `brians-mansion.html`).
 
@@ -24,9 +24,9 @@ necessário para rodar o jogo.
 | `web/src/ajustes.js`, `tutoriais.js`, `dano.js` | as mudanças de jogabilidade (abaixo) |
 | `web/src/dispositivo.js` | teclado ou toque: decide se os textos mostram Enter/Shift/setas ou A/Correr/direcional |
 | `web/src/rastro.js`, `rastro-js.js`, `seletor-niveis.js`, `perfil.js` | replay, rastro, seletor de fases e profiler |
-| `projeto/` | os recursos do jogo, **só os que ele usa** (163 arquivos, 4,2 MB; o tiro e o teletransporte são gerados por código em `web/src/musica/efeitos-sonoros.js`): `Graphics/`, `Audio/SE` (efeitos sonoros), `Fonts/` (Open Sans latina, 48 KB, OFL: interface e reserva da Verdana), `Data/*.rvdata` (mapas, eventos, banco de dados) e o `ks_checkpoint` do instalador. `node ferramentas/arquivos-sem-uso.mjs` lista o que nada chama; o resto do RTP do VX e as sobras de 2014 estão no `brians-legado.zip` |
+| `projeto/` | os recursos do jogo, **só os que ele usa** (163 arquivos, 4,2 MB; o tiro e o teletransporte são gerados por código em `web/src/musica/efeitos-sonoros.js`): `Graphics/`, `Audio/SE` (efeitos sonoros), `Fonts/` (Open Sans latina, 48 KB, OFL: interface e reserva da Verdana), `Data/*.rvdata` (mapas, eventos, banco de dados) e o `ks_checkpoint` do instalador. `node ferramentas/arquivos-sem-uso.mjs` lista o que nada chama; o resto do RTP do VX e as sobras de 2011 estão no `brians-legado.zip` |
 | `web/src/musica/` | **a trilha sonora, gerada por código** (síntese própria em JS, uma composição por faixa em `faixas/`); `web/musica.html` toca as 10 |
-| `musica-fichas/` | os números medidos das músicas de 2014 (andamento, tom, timbre…), alvos para afinar as faixas |
+| `musica-fichas/` | os números medidos das músicas de 2011 (andamento, tom, timbre…), alvos para afinar as faixas |
 | `ferramentas/` | ferramentas de desenvolvimento em Node (abaixo) |
 | `replays/` | replays de teste (roteiro `.txt` + `.json`) |
 
@@ -45,14 +45,14 @@ Os nomes de arquivo seguem o RGSS (sem maiúsculas, sem extensão);
 
 ## Mudanças de jogabilidade (`web/src/ajustes.js`)
 
-Por cima dos scripts, que continuam como o jogo de 2014. Desligadas em
+Por cima dos scripts, que continuam como o jogo de 2011. Desligadas em
 `?gravar`/`?replay` (os replays seguem o jogo original) e com `&original`.
 
 - **Abertura sem texto** (`web/src/abertura.js`): a imagem "Introdução"
   (o bloco de texto da Apresentação) saiu; a história é encenada na
   Floresta antes da cena original: o Brian conduz a bola, chuta para a
   esquerda, dá a volta, chuta para a direita, faz embaixadinhas e chuta forte
-  para cima sem querer ("!" de susto); daí a cena de 2014 (vidro, câmera,
+  para cima sem querer ("!" de susto); daí a cena de 2011 (vidro, câmera,
   porta). O jogo novo começa direto na Floresta (a Apresentação, um mapa
   preto que piscava antes, fica de fora). Feito nos dados ao carregar
   (`load_data`: System e mapas 14 e 5); os `.rvdata` não mudam.
@@ -66,7 +66,7 @@ Por cima dos scripts, que continuam como o jogo de 2014. Desligadas em
   girar" no toque) sobre a cabeça do Brian; plataforma cuja seta aponta para
   o alvo dela solta um laser da ponta até a próxima peça (estende com som ao
   acertar, recolhe ao errar; também ilumina). Corrente: 5 → 2 → 3 → 4 → 6 →
-  portal (30, 5). Só visual: a lógica (variável 64) é a de 2014.
+  portal (30, 5). Só visual: a lógica (variável 64) é a de 2011.
 - **Luz e sombra 2D** (`web/src/luz.js` + `efeitoLuz` em
   `web/src/rgss/render.js`; `&semluz` desliga para comparar): no viewport
   do mapa, o tom de tela vira escuro (mais forte quanto mais escuro o tom do
@@ -163,7 +163,7 @@ o rastro, mexer e comparar.
   trilha própria gerada por código. Feita no build 27: os arquivos de música
   saíram do projeto (backup no `brians-legado.zip`).
 
-## Achados do jogo de 2014 (mantidos como eram)
+## Achados do jogo de 2011 (mantidos como eram)
 
 - Fonte: o RGSS200E desenha em **Verdana**; `font.size` é a altura da célula
   do GDI (Verdana 20 → em de 16,5 px). Sem Verdana, DejaVu Sans.
@@ -175,4 +175,4 @@ o rastro, mexer e comparar.
 - Batalha, loja, nome, menu do VX e debug não existem nesta versão: o jogo
   não os usa (o menu é desligado pelo evento comum "Vida" antes de o jogador
   ter controle). Chamá-los dá erro "fora do escopo".
-- Há BGMs de terceiros (Nintendo), como no jogo de 2014.
+- Há BGMs de terceiros (Nintendo), como no jogo de 2011.
