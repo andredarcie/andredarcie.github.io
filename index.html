@@ -486,16 +486,15 @@
       </div>
       <p class="games-note">Making small games is a hobby of mine.</p>
       <button type="button" id="reveal" class="reveal-btn" aria-expanded="false" aria-controls="games-panel">
-        <span class="arrow">▸</span><span class="label">Show my games (11)</span>
+        <span class="arrow">▸</span><span class="label">Show my games (8)</span>
       </button>
 
       <div id="games-panel" hidden>
         <div class="filters" role="group" aria-label="Filter games by category">
-          <span class="flabel"><b id="games-count">11</b> games · filter</span>
+          <span class="flabel"><b id="games-count">8</b> games · filter</span>
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
           <button type="button" class="chip" data-filter="adventure" aria-pressed="false">Adventure</button>
           <button type="button" class="chip" data-filter="horror" aria-pressed="false">Horror</button>
-          <button type="button" class="chip" data-filter="shooter" aria-pressed="false">Shooter</button>
           <button type="button" class="chip" data-filter="action" aria-pressed="false">Action</button>
           <button type="button" class="chip" data-filter="narrative" aria-pressed="false">Narrative</button>
           <button type="button" class="chip" data-filter="sim" aria-pressed="false">Sim</button>
@@ -518,30 +517,15 @@
             <div class="card-desc">Offline open-world 3D action in the browser, set in Divinolândia, a real Brazilian town, with the whole world built in code.</div>
             <span class="card-tag">Action</span>
           </a>
-          <a class="card" href="hills/" data-cat="shooter">
-            <div class="card-title">DOOM Hills</div>
-            <div class="card-desc">First-person PSX-style shooter with an endless horde.</div>
-            <span class="card-tag">Shooter</span>
-          </a>
           <a class="card" href="zero/" data-cat="narrative">
             <div class="card-title">Zero To One</div>
             <div class="card-desc">A short existential narrative told over five days.</div>
             <span class="card-tag">Narrative</span>
           </a>
-          <a class="card" href="zero-void/" data-cat="shooter">
-            <div class="card-title">Zero Void</div>
-            <div class="card-desc">A bullet-hell spaceship shooter, an homage to the arcade classics.</div>
-            <span class="card-tag">Shooter</span>
-          </a>
           <a class="card" href="https://andredarcie.github.io/get-out/" target="_blank" rel="noopener" data-cat="horror">
             <div class="card-title">Get Out</div>
             <div class="card-desc">Text horror-survival: manage a family's sanity through supernatural events.</div>
             <span class="card-tag">Horror</span>
-          </a>
-          <a class="card" href="tiny-creatures/" data-cat="sim">
-            <div class="card-title">Tiny Creatures</div>
-            <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
-            <span class="card-tag">Sim</span>
           </a>
           <a class="card" href="house/" data-cat="sim">
             <div class="card-title">House Walkthrough</div>
@@ -566,11 +550,11 @@
       <div class="sec-head">
         <h2>Tests &amp; prototypes</h2>
         <span class="rule"></span>
-        <span class="count">17</span>
+        <span class="count">20</span>
       </div>
       <p class="games-note">Rough experiments, game-jam entries, course work and one-off builds, kept here for the record.</p>
       <button type="button" id="reveal-proto" class="reveal-btn" aria-expanded="false" aria-controls="prototypes-panel">
-        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (17)</span>
+        <span class="arrow">▸</span><span class="label">Show tests &amp; prototypes (20)</span>
       </button>
 
       <div id="prototypes-panel" hidden>
@@ -660,6 +644,21 @@
           <div class="card-desc">A living-world simulation where organisms evolve, build tribes and adapt to changing biomes.</div>
           <span class="card-tag">Sim</span>
         </a>
+        <a class="card" href="hills/">
+          <div class="card-title">DOOM Hills</div>
+          <div class="card-desc">First-person PSX-style shooter with an endless horde.</div>
+          <span class="card-tag">Shooter</span>
+        </a>
+        <a class="card" href="zero-void/">
+          <div class="card-title">Zero Void</div>
+          <div class="card-desc">A bullet-hell spaceship shooter, an homage to the arcade classics.</div>
+          <span class="card-tag">Shooter</span>
+        </a>
+        <a class="card" href="tiny-creatures/">
+          <div class="card-title">Tiny Creatures</div>
+          <div class="card-desc">Genetic-algorithm creatures adapting over generations.</div>
+          <span class="card-tag">Sim</span>
+        </a>
         </div>
       </div>
     </section>
@@ -703,7 +702,7 @@
         var willOpen = panel.hasAttribute('hidden');
         if (willOpen) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
         reveal.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        label.textContent = willOpen ? 'Hide games' : 'Show my games (11)';
+        label.textContent = willOpen ? 'Hide games' : 'Show my games (8)';
       });
 
       var revealP = document.getElementById('reveal-proto');
@@ -713,7 +712,7 @@
         var willOpen = panelP.hasAttribute('hidden');
         if (willOpen) { panelP.removeAttribute('hidden'); } else { panelP.setAttribute('hidden', ''); }
         revealP.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (17)';
+        labelP.textContent = willOpen ? 'Hide tests & prototypes' : 'Show tests & prototypes (20)';
       });
 
       var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
