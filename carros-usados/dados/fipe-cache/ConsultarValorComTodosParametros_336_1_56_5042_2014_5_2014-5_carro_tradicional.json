@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 5042,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:14:30.663Z",
+ "resposta": {
+  "Valor": "R$ 64.841,00",
+  "Marca": "Toyota",
+  "Modelo": "Corolla GLi 1.8 Flex 16V Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "002108-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "3vk5w70rmzsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:14"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 4298,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:18:26.479Z",
+ "resposta": {
+  "Valor": "R$ 56.259,00",
+  "Marca": "Nissan",
+  "Modelo": "Sentra SL 2.0/ 2.0 Flex Fuel 16V Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "023064-2",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "0lywp9422srl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:18"
+ }
+}

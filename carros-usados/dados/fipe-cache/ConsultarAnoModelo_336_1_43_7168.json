@@ -1,0 +1,16 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 7168
+ },
+ "consultadoEm": "2026-10-26T00:19:24.135Z",
+ "resposta": [
+  {
+   "Label": "2016 Flex",
+   "Value": "2016-5"
+  }
+ ]
+}

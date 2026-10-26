@@ -1,0 +1,36 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 1824
+ },
+ "consultadoEm": "2026-10-26T00:18:03.841Z",
+ "resposta": [
+  {
+   "Label": "1996 Gasolina",
+   "Value": "1996-1"
+  },
+  {
+   "Label": "1995 Gasolina",
+   "Value": "1995-1"
+  },
+  {
+   "Label": "1994 Gasolina",
+   "Value": "1994-1"
+  },
+  {
+   "Label": "1993 Gasolina",
+   "Value": "1993-1"
+  },
+  {
+   "Label": "1992 Gasolina",
+   "Value": "1992-1"
+  },
+  {
+   "Label": "1991 Gasolina",
+   "Value": "1991-1"
+  }
+ ]
+}

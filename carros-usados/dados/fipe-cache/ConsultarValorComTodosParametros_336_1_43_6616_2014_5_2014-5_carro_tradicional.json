@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 6616,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:18:36.476Z",
+ "resposta": {
+  "Valor": "R$ 50.091,00",
+  "Marca": "Nissan",
+  "Modelo": "Sentra SV 2.0 FlexStart 16V Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "023123-1",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "x8m0dz6b94sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:18"
+ }
+}

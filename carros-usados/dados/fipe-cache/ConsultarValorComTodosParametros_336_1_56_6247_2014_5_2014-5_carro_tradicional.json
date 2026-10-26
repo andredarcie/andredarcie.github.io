@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 6247,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:16:23.495Z",
+ "resposta": {
+  "Valor": "R$ 41.540,00",
+  "Marca": "Toyota",
+  "Modelo": "ETIOS X Sedan 1.5 Flex 16V 4p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "002125-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "t1czh6lj4qsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:16"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 2224
+ },
+ "consultadoEm": "2026-10-26T00:14:50.732Z",
+ "resposta": [
+  {
+   "Label": "1997 Gasolina",
+   "Value": "1997-1"
+  },
+  {
+   "Label": "1996 Gasolina",
+   "Value": "1996-1"
+  },
+  {
+   "Label": "1995 Gasolina",
+   "Value": "1995-1"
+  }
+ ]
+}

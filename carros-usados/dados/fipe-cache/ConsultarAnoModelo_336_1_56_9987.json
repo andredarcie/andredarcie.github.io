@@ -1,0 +1,40 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 9987
+ },
+ "consultadoEm": "2026-10-26T00:13:58.038Z",
+ "resposta": [
+  {
+   "Label": "32000 Híbrido",
+   "Value": "32000-6"
+  },
+  {
+   "Label": "2027 Híbrido",
+   "Value": "2027-6"
+  },
+  {
+   "Label": "2026 Híbrido",
+   "Value": "2026-6"
+  },
+  {
+   "Label": "2025 Híbrido",
+   "Value": "2025-6"
+  },
+  {
+   "Label": "2024 Híbrido",
+   "Value": "2024-6"
+  },
+  {
+   "Label": "2023 Híbrido",
+   "Value": "2023-6"
+  },
+  {
+   "Label": "2022 Híbrido",
+   "Value": "2022-6"
+  }
+ ]
+}

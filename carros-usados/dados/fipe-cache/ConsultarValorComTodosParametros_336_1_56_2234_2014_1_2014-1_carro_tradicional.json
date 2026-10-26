@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 2234,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:15:30.867Z",
+ "resposta": {
+  "Valor": "R$ 65.452,00",
+  "Marca": "Toyota",
+  "Modelo": "Corolla XLi 1.8/1.8 Flex 16V Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "002027-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "32q8czs4jwrl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:15"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 5710,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:19:16.615Z",
+ "resposta": {
+  "Valor": "R$ 38.563,00",
+  "Marca": "Nissan",
+  "Modelo": "VERSA SV 1.6 16V Flex Fuel 4p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "023112-6",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "sxgxzzkdlzsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:19"
+ }
+}

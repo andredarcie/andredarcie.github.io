@@ -1,0 +1,16 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 26,
+  "codigoModelo": 8453
+ },
+ "consultadoEm": "2026-10-26T00:19:46.689Z",
+ "resposta": [
+  {
+   "Label": "2019 Flex",
+   "Value": "2019-5"
+  }
+ ]
+}

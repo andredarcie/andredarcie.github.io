@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 10572
+ },
+ "consultadoEm": "2026-10-26T00:17:58.822Z",
+ "resposta": [
+  {
+   "Label": "32000 Gasolina",
+   "Value": "32000-1"
+  },
+  {
+   "Label": "2025 Gasolina",
+   "Value": "2025-1"
+  },
+  {
+   "Label": "2024 Gasolina",
+   "Value": "2024-1"
+  },
+  {
+   "Label": "2023 Gasolina",
+   "Value": "2023-1"
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 7628
+ },
+ "consultadoEm": "2026-10-26T00:19:01.562Z",
+ "resposta": [
+  {
+   "Label": "2020 Flex",
+   "Value": "2020-5"
+  },
+  {
+   "Label": "2019 Flex",
+   "Value": "2019-5"
+  },
+  {
+   "Label": "2018 Flex",
+   "Value": "2018-5"
+  },
+  {
+   "Label": "2017 Flex",
+   "Value": "2017-5"
+  }
+ ]
+}

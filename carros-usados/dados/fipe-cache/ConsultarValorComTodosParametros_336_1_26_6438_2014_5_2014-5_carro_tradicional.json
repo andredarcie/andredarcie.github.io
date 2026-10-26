@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 26,
+  "codigoModelo": 6438,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:21:09.409Z",
+ "resposta": {
+  "Valor": "R$ 52.395,00",
+  "Marca": "Hyundai",
+  "Modelo": "HB20S Premium 1.6 Flex 16V Mec. 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "015102-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "y4nfv3ybntsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:21"
+ }
+}

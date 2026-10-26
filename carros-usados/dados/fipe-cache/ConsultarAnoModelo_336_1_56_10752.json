@@ -1,0 +1,20 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 10752
+ },
+ "consultadoEm": "2026-10-26T00:14:43.195Z",
+ "resposta": [
+  {
+   "Label": "32000 Gasolina",
+   "Value": "32000-1"
+  },
+  {
+   "Label": "2024 Gasolina",
+   "Value": "2024-1"
+  }
+ ]
+}

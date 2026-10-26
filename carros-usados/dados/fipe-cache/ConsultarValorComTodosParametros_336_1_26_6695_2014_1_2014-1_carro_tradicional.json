@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 26,
+  "codigoModelo": 6695,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:21:39.501Z",
+ "resposta": {
+  "Valor": "R$ 60.921,00",
+  "Marca": "Hyundai",
+  "Modelo": "i30 1.8 16V Aut. 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "015106-8",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "2cmc2j96p9rl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:21"
+ }
+}

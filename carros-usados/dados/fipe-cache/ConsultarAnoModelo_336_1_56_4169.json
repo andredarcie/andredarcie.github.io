@@ -1,0 +1,16 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 4169
+ },
+ "consultadoEm": "2026-10-26T00:14:55.761Z",
+ "resposta": [
+  {
+   "Label": "2007 Gasolina",
+   "Value": "2007-1"
+  }
+ ]
+}

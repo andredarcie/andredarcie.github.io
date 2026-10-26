@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 5643,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:17:08.648Z",
+ "resposta": {
+  "Valor": "R$ 35.721,00",
+  "Marca": "Nissan",
+  "Modelo": "MARCH 1.0 16V Flex Fuel 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "023105-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "rt4ylhsdn9sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:17"
+ }
+}

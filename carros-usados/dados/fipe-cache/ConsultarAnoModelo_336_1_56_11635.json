@@ -1,0 +1,20 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 56,
+  "codigoModelo": 11635
+ },
+ "consultadoEm": "2026-10-26T00:14:20.619Z",
+ "resposta": [
+  {
+   "Label": "32000 Híbrido",
+   "Value": "32000-6"
+  },
+  {
+   "Label": "2026 Híbrido",
+   "Value": "2026-6"
+  }
+ ]
+}
