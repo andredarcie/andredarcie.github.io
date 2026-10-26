@@ -24,7 +24,7 @@
   a{color:var(--destaque)}
   .sub{color:var(--suave);max-width:820px}
   .cartao{background:var(--papel);border:1px solid var(--linha);border-radius:12px;padding:18px 20px;margin:16px 0}
-  .resposta{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .resposta{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:16px}
   .resposta h3{margin-top:0}
   .resposta ol{margin:6px 0 0;padding-left:22px}
   .resposta li{margin:4px 0}
@@ -52,7 +52,30 @@
   details{margin:8px 0}
   summary{cursor:pointer;font-weight:600}
   footer{margin-top:56px;color:var(--suave);font-size:14px}
+  td.opiniao{min-width:260px}
+  code{word-break:break-all}
+  .cartao,.sub,td,li{overflow-wrap:anywhere}
   @media (max-width:640px){ .barra{grid-template-columns:1fr 80px} .barra .trilho{grid-column:1 / -1;grid-row:2} }
+  /* celular: cada linha da tabela vira um cartão, com o nome do campo ao lado do valor */
+  @media (max-width:820px){
+    main{padding:20px 14px 60px}
+    h2{font-size:21px;margin-top:36px}
+    .cartao{padding:14px}
+    .tabela{border:none;background:none;overflow:visible}
+    table{min-width:0;font-size:14.5px}
+    thead{display:none}
+    table,tbody,tr,td{display:block;width:100%}
+    tr{background:var(--papel);border:1px solid var(--linha);border-radius:12px;margin:0 0 14px;padding:4px 14px 8px;position:relative}
+    td{border-bottom:1px solid var(--linha);padding:9px 0;text-align:left!important;white-space:normal!important}
+    tr td:last-child{border-bottom:none}
+    td[data-label]{display:grid;grid-template-columns:minmax(98px,34%) 1fr;gap:10px;align-items:start}
+    td[data-label]::before{content:attr(data-label);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--suave);padding-top:2px}
+    td.pos{position:absolute;top:12px;right:14px;width:auto;border:none;padding:0;font-weight:700;color:var(--suave)}
+    td.carro{padding-right:44px;font-size:16px}
+    td.opiniao{min-width:0}
+    td.total{font-size:16px}
+    .legenda{gap:10px;font-size:13px}
+  }
 </style>
 </head>
 <body>
@@ -150,18 +173,18 @@
       const seg = c.seguro ? `${R(c.custo.seguro / 5)}/ano<div class="nota">taxa ${pct(c.seguro.taxa)} (${esc(c.seguro.regiao)})</div>` : '—';
       const isento = c.ano === 2008 ? `<div class="nota">isento a partir de ${c.ano + P.ipvaIsencaoIdade}</div>` : '';
       return `<tr>
-        <td class="n">${i + 1}</td>
-        <td><b>${esc(c.nome)}</b> ${c.ano}<div class="fonte">${link(c.ficha.url, 'ficha técnica')} · FIPE ${esc(c.codigoFipe)}</div>${c.confirmacao ? `<div class="nota">airbag e ABS também em: ${c.confirmacao.map(([t, u]) => link(u, t)).join('; ')}</div>` : ''}${c.alerta ? `<div class="nota aviso">⚠ ${esc(c.alerta)}</div>` : ''}</td>
-        <td class="n">${R(c.fipe[2026])}<div class="nota">ago/2026</div></td>
-        <td class="n">${real}</td>
-        <td>${consumo}<div class="nota">km/l cidade / estrada</div><div class="fonte">${u.confirma ? `Ficha Completa; ${link(u.confirma[1], u.confirma[0])}` : u.fonteNome === 'Ficha Completa' ? `${link(u.fonte, 'Ficha Completa')} <span class="nota">(sem medição do Inmetro ${c.ano === 2008 ? 'para 2008' : 'nas tabelas de 2013 a 2015'})</span>` : link(u.fonte, u.fonteNome)}</div></td>
-        <td class="n">${solo}</td>
-        <td style="min-width:260px">${op}</td>
-        <td class="n">${R(c.custo.combustivel)}<div class="nota">${u.combustivel}, ${N1(u.kmPorLitroMedio)} km/l</div></td>
-        <td class="n">${seg}</td>
-        <td class="n">${R(c.custo.ipva)}${isento}</td>
-        <td class="n">${R(c.custo.depreciacao)}<div class="nota">${c.taxaRealAno >= 0 ? '+' : ''}${pct(c.taxaRealAno)}/ano real${c.fipePeriodo[0] !== 2021 ? ` (${c.fipePeriodo[0]}–2026)` : ''}</div></td>
-        <td class="n"><b>${R(c.custo.total)}</b><div class="nota">${R(c.custo.total / 5)}/ano</div></td>
+        <td class="n pos">${i + 1}º</td>
+        <td class="carro"><b>${esc(c.nome)}</b> ${c.ano}<div class="fonte">${link(c.ficha.url, 'ficha técnica')} · FIPE ${esc(c.codigoFipe)}</div>${c.confirmacao ? `<div class="nota">airbag e ABS também em: ${c.confirmacao.map(([t, u]) => link(u, t)).join('; ')}</div>` : ''}${c.alerta ? `<div class="nota aviso">⚠ ${esc(c.alerta)}</div>` : ''}</td>
+        <td class="n" data-label="FIPE">${R(c.fipe[2026])}<div class="nota">ago/2026</div></td>
+        <td class="n" data-label="Preço anunciado">${real}</td>
+        <td data-label="Consumo">${consumo}<div class="nota">km/l cidade / estrada</div><div class="fonte">${u.confirma ? `Ficha Completa; ${link(u.confirma[1], u.confirma[0])}` : u.fonteNome === 'Ficha Completa' ? `${link(u.fonte, 'Ficha Completa')} <span class="nota">(sem medição do Inmetro ${c.ano === 2008 ? 'para 2008' : 'nas tabelas de 2013 a 2015'})</span>` : link(u.fonte, u.fonteNome)}</div></td>
+        <td class="n" data-label="Vão livre">${solo}</td>
+        <td class="opiniao" data-label="Opinião de donos">${op}</td>
+        <td class="n" data-label="Combustível (5 anos)">${R(c.custo.combustivel)}<div class="nota">${u.combustivel}, ${N1(u.kmPorLitroMedio)} km/l</div></td>
+        <td class="n" data-label="Seguro">${seg}</td>
+        <td class="n" data-label="IPVA (5 anos)">${R(c.custo.ipva)}${isento}</td>
+        <td class="n" data-label="Depreciação (5 anos)">${R(c.custo.depreciacao)}<div class="nota">${c.taxaRealAno >= 0 ? '+' : ''}${pct(c.taxaRealAno)}/ano real${c.fipePeriodo[0] !== 2021 ? ` (${c.fipePeriodo[0]}–2026)` : ''}</div></td>
+        <td class="n total" data-label="Total em 5 anos"><b>${R(c.custo.total)}</b><div class="nota">${R(c.custo.total / 5)}/ano</div></td>
       </tr>`;
     }).join('');
     document.getElementById('g' + g).innerHTML = `
