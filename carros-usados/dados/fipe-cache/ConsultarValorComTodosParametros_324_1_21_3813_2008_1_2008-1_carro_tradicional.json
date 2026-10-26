@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 324,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 3813,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 1,
+  "ano": "2008-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:39:29.529Z",
+ "resposta": {
+  "Valor": "R$ 21.745,00",
+  "Marca": "Fiat",
+  "Modelo": "Stilo 1.8/ 1.8 Connect Flex 8V 5p",
+  "AnoModelo": 2008,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "001230-0",
+  "MesReferencia": "agosto de 2025 ",
+  "Autenticacao": "lj821rdd125h",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:39"
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/fiat/linea/ano-2014",
+ "coletadoEm": "2026-10-26T00:13:21.915Z",
+ "totalInformado": 1,
+ "anuncios": [
+  {
+   "id": 33231268,
+   "marca": "Fiat",
+   "modelo": "Linea",
+   "versao": "Essence 1.8 16V (Flex)",
+   "anoModelo": 2014,
+   "anoFabricacao": 2014,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 137000,
+   "preco": 34900,
+   "zeroKm": false,
+   "cidade": "Franca",
+   "uf": "SP"
+  }
+ ]
+}

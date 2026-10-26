@@ -1,0 +1,36 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 2411
+ },
+ "consultadoEm": "2026-10-25T22:52:29.429Z",
+ "resposta": [
+  {
+   "Label": "2005 Gasolina",
+   "Value": "2005-1"
+  },
+  {
+   "Label": "2005 Álcool",
+   "Value": "2005-2"
+  },
+  {
+   "Label": "2004 Gasolina",
+   "Value": "2004-1"
+  },
+  {
+   "Label": "2004 Álcool",
+   "Value": "2004-2"
+  },
+  {
+   "Label": "2003 Gasolina",
+   "Value": "2003-1"
+  },
+  {
+   "Label": "2003 Álcool",
+   "Value": "2003-2"
+  }
+ ]
+}

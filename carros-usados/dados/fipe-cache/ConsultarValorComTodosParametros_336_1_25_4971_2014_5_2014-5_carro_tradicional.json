@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 25,
+  "codigoModelo": 4971,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:10:23.559Z",
+ "resposta": {
+  "Valor": "R$ 57.771,00",
+  "Marca": "Honda",
+  "Modelo": "CITY Sedan EX 1.5 Flex 16V 4p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "014061-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "05pf8cjngbsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:10"
+ }
+}

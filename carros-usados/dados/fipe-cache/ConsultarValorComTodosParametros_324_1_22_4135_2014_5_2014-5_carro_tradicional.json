@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 324,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 22,
+  "codigoModelo": 4135,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:02:44.985Z",
+ "resposta": {
+  "Valor": "R$ 32.829,00",
+  "Marca": "Ford",
+  "Modelo": "Fiesta 1.0 8V Flex/Class 1.0 8V Flex 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "003310-3",
+  "MesReferencia": "agosto de 2025 ",
+  "Autenticacao": "qq7sn19l5ysw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:02"
+ }
+}

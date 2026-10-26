@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 5117,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:05:25.218Z",
+ "resposta": {
+  "Valor": "R$ 40.003,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "VOYAGE I MOTION COMF/Hghli.1.6 T.Flex 8V",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005313-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "tgb98smgm6sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:05"
+ }
+}

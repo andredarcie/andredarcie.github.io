@@ -1,0 +1,7 @@
+# fontes brutas grandes, que os scripts baixam de novo (dados/README da metodologia no site)
+dados/susep/*.csv
+dados/susep/*.zip
+dados/susep/*.pdf
+dados/anp/*.xlsx
+dados/fc-cache/
+dados/cnw-cache/

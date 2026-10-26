@@ -1,0 +1,22 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/renault/scenic/ano-2008",
+ "coletadoEm": "2026-10-25T23:09:42.444Z",
+ "totalInformado": 1,
+ "anuncios": [
+  {
+   "id": 23461803,
+   "marca": "Renault",
+   "modelo": "Scenic",
+   "versao": "Scénic Privilége 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 120000,
+   "preco": 24900,
+   "zeroKm": false,
+   "cidade": "Guarulhos",
+   "uf": "SP"
+  }
+ ]
+}

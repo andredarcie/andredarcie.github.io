@@ -1,0 +1,16 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 44,
+  "codigoModelo": 6547
+ },
+ "consultadoEm": "2026-10-26T00:07:05.465Z",
+ "resposta": [
+  {
+   "Label": "2014 Gasolina",
+   "Value": "2014-1"
+  }
+ ]
+}

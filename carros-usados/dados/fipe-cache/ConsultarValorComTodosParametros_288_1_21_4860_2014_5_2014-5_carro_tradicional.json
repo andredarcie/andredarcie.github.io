@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 288,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 4860,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:04:46.913Z",
+ "resposta": {
+  "Valor": "R$ 32.893,00",
+  "Marca": "Fiat",
+  "Modelo": "Siena EL 1.0 mpi Fire Flex 8V 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001272-6",
+  "MesReferencia": "agosto de 2022 ",
+  "Autenticacao": "qrz1db6zn4rl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:04"
+ }
+}

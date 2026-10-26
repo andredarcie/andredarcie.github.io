@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 300,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 31,
+  "codigoModelo": 4142,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:05:51.704Z",
+ "resposta": {
+  "Valor": "R$ 38.599,00",
+  "Marca": "Kia Motors",
+  "Modelo": "Picanto EX 1.1/1.0/ 1.0 Flex Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "018059-9",
+  "MesReferencia": "agosto de 2023 ",
+  "Autenticacao": "sxwz6yh2nxrl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:05"
+ }
+}

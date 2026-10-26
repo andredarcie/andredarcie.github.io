@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 6064,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:51:12.363Z",
+ "resposta": {
+  "Valor": "R$ 38.709,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "SONIC Sed. LTZ 1.6 16V FlexPower 4p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004406-7",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "sy5z1y1zdwsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:51"
+ }
+}

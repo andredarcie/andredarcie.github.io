@@ -1,0 +1,111 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/nissan/sentra/ano-2008",
+ "coletadoEm": "2026-10-25T23:01:10.838Z",
+ "totalInformado": 8,
+ "anuncios": [
+  {
+   "id": 32197019,
+   "versao": "S 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "CVT",
+   "km": 244000,
+   "preco": 31900,
+   "zeroKm": false,
+   "cidade": "Sumaré",
+   "uf": "SP"
+  },
+  {
+   "id": 33212733,
+   "versao": "2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "CVT",
+   "km": 150056,
+   "preco": 34900,
+   "zeroKm": false,
+   "cidade": "São Paulo",
+   "uf": "SP"
+  },
+  {
+   "id": 33425063,
+   "versao": "S 2.0 16V",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 159000,
+   "preco": 34990,
+   "zeroKm": false,
+   "cidade": "Osasco",
+   "uf": "SP"
+  },
+  {
+   "id": 32541722,
+   "versao": "2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 201252,
+   "preco": 30900,
+   "zeroKm": false,
+   "cidade": "São José do Rio Preto",
+   "uf": "SP"
+  },
+  {
+   "id": 30516239,
+   "versao": "S 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "CVT",
+   "km": 151346,
+   "preco": 33900,
+   "zeroKm": false,
+   "cidade": "Araraquara",
+   "uf": "SP"
+  },
+  {
+   "id": 32532991,
+   "versao": "S 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Flex",
+   "cambio": "Automática",
+   "km": 170000,
+   "preco": 35900,
+   "zeroKm": false,
+   "cidade": "Mirassol",
+   "uf": "SP"
+  },
+  {
+   "id": 5190248,
+   "versao": "S 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 92894,
+   "preco": 33000,
+   "zeroKm": false,
+   "cidade": "Itapecerica da Serra",
+   "uf": "SP"
+  },
+  {
+   "id": 29915158,
+   "versao": "S 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 182986,
+   "preco": 38900,
+   "zeroKm": false,
+   "cidade": "Osasco",
+   "uf": "SP"
+  }
+ ]
+}

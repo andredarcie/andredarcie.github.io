@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 6582,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:53:10.266Z",
+ "resposta": {
+  "Valor": "R$ 33.965,00",
+  "Marca": "Fiat",
+  "Modelo": "LINEA ESSEN.SUBLIME Dual.1.8 Flex 16V 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001410-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "q5kprpv7hdsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:53"
+ }
+}

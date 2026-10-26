@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 5512,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:02:27.187Z",
+ "resposta": {
+  "Valor": "R$ 63.902,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "JETTA Comfortline  2.0 T.Flex 8V 4p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005326-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "3hkwnwz0htsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:02"
+ }
+}

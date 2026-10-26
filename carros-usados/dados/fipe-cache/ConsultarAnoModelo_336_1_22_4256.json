@@ -1,0 +1,36 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 22,
+  "codigoModelo": 4256
+ },
+ "consultadoEm": "2026-10-25T23:56:08.345Z",
+ "resposta": [
+  {
+   "Label": "2012 Gasolina",
+   "Value": "2012-1"
+  },
+  {
+   "Label": "2011 Gasolina",
+   "Value": "2011-1"
+  },
+  {
+   "Label": "2010 Gasolina",
+   "Value": "2010-1"
+  },
+  {
+   "Label": "2009 Gasolina",
+   "Value": "2009-1"
+  },
+  {
+   "Label": "2008 Gasolina",
+   "Value": "2008-1"
+  },
+  {
+   "Label": "2007 Gasolina",
+   "Value": "2007-1"
+  }
+ ]
+}

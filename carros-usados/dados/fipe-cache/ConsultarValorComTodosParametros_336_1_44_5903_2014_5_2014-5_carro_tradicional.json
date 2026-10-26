@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 44,
+  "codigoModelo": 5903,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:06:47.937Z",
+ "resposta": {
+  "Valor": "R$ 40.910,00",
+  "Marca": "Peugeot",
+  "Modelo": "308 Allure 2.0 Flex 16V 5p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "024189-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "tszzyr08bbsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:06"
+ }
+}

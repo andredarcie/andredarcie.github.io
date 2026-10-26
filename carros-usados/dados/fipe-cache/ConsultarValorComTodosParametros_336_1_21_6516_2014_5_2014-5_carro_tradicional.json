@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 6516,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:52:02.504Z",
+ "resposta": {
+  "Valor": "R$ 37.973,00",
+  "Marca": "Fiat",
+  "Modelo": "Bravo WOLVERINE 1.8 Flex 16V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001402-8",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "spkg4b6lztsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:52"
+ }
+}

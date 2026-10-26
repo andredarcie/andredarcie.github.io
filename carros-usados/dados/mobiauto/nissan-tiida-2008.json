@@ -1,0 +1,33 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/nissan/tiida/ano-2008",
+ "coletadoEm": "2026-10-25T23:01:07.574Z",
+ "totalInformado": 2,
+ "anuncios": [
+  {
+   "id": 32653416,
+   "versao": "S 1.8",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "Manual",
+   "km": 199000,
+   "preco": 29900,
+   "zeroKm": false,
+   "cidade": "Santo André",
+   "uf": "SP"
+  },
+  {
+   "id": 32771652,
+   "versao": "S 1.8 (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 111800,
+   "preco": 32400,
+   "zeroKm": false,
+   "cidade": "Campinas",
+   "uf": "SP"
+  }
+ ]
+}

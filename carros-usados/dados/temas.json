@@ -1,0 +1,1684 @@
+{
+ "Chevrolet Vectra Elegance 2.0": {
+  "n": 30,
+  "nota": 8.5,
+  "temas": {
+   "consumo": {
+    "pros": 5,
+    "contras": 14
+   },
+   "manutenção": {
+    "pros": 6,
+    "contras": 3
+   },
+   "conforto": {
+    "pros": 19,
+    "contras": 9
+   },
+   "espaço": {
+    "pros": 14,
+    "contras": 1
+   },
+   "desempenho": {
+    "pros": 7,
+    "contras": 3
+   },
+   "estabilidade": {
+    "pros": 9,
+    "contras": 9
+   },
+   "câmbio": {
+    "pros": 2,
+    "contras": 10
+   },
+   "acabamento": {
+    "pros": 2,
+    "contras": 2
+   },
+   "ar": {
+    "pros": 3,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 4,
+    "contras": 5
+   },
+   "segurança": {
+    "pros": 5,
+    "contras": 2
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 2,
+    "contras": 5
+   }
+  }
+ },
+ "Fiat Stilo 1.8": {
+  "n": 46,
+  "nota": 8.4,
+  "temas": {
+   "consumo": {
+    "pros": 13,
+    "contras": 15
+   },
+   "manutenção": {
+    "pros": 5,
+    "contras": 10
+   },
+   "conforto": {
+    "pros": 28,
+    "contras": 20
+   },
+   "espaço": {
+    "pros": 7,
+    "contras": 5
+   },
+   "desempenho": {
+    "pros": 6,
+    "contras": 6
+   },
+   "estabilidade": {
+    "pros": 11,
+    "contras": 12
+   },
+   "câmbio": {
+    "pros": 4,
+    "contras": 11
+   },
+   "acabamento": {
+    "pros": 7,
+    "contras": 7
+   },
+   "ar": {
+    "pros": 3,
+    "contras": 6
+   },
+   "elétrica": {
+    "pros": 6,
+    "contras": 12
+   },
+   "segurança": {
+    "pros": 3,
+    "contras": 10
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 4,
+    "contras": 4
+   }
+  }
+ },
+ "Fiat Punto ELX 1.4": {
+  "n": 53,
+  "nota": 6.9,
+  "temas": {
+   "consumo": {
+    "pros": 5,
+    "contras": 28
+   },
+   "manutenção": {
+    "pros": 3,
+    "contras": 9
+   },
+   "conforto": {
+    "pros": 11,
+    "contras": 19
+   },
+   "espaço": {
+    "pros": 6,
+    "contras": 19
+   },
+   "desempenho": {
+    "pros": 7,
+    "contras": 26
+   },
+   "estabilidade": {
+    "pros": 28,
+    "contras": 6
+   },
+   "câmbio": {
+    "pros": 1,
+    "contras": 9
+   },
+   "acabamento": {
+    "pros": 9,
+    "contras": 11
+   },
+   "ar": {
+    "pros": 3,
+    "contras": 9
+   },
+   "elétrica": {
+    "pros": 4,
+    "contras": 10
+   },
+   "segurança": {
+    "pros": 7,
+    "contras": 10
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 5,
+    "contras": 3
+   }
+  }
+ },
+ "Volkswagen Jetta 2.5": {
+  "n": 10,
+  "nota": 8.9,
+  "temas": {
+   "consumo": {
+    "pros": 0,
+    "contras": 5
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 2,
+    "contras": 1
+   },
+   "espaço": {
+    "pros": 1,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 4,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 3,
+    "contras": 3
+   },
+   "câmbio": {
+    "pros": 2,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 1,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 1
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 1
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 3
+   }
+  }
+ },
+ "Renault Mégane Sedan Expression 1.6": {
+  "n": 50,
+  "nota": 8.7,
+  "temas": {
+   "consumo": {
+    "pros": 20,
+    "contras": 9
+   },
+   "manutenção": {
+    "pros": 2,
+    "contras": 10
+   },
+   "conforto": {
+    "pros": 29,
+    "contras": 11
+   },
+   "espaço": {
+    "pros": 15,
+    "contras": 3
+   },
+   "desempenho": {
+    "pros": 7,
+    "contras": 4
+   },
+   "estabilidade": {
+    "pros": 20,
+    "contras": 10
+   },
+   "câmbio": {
+    "pros": 3,
+    "contras": 4
+   },
+   "acabamento": {
+    "pros": 7,
+    "contras": 3
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 8
+   },
+   "elétrica": {
+    "pros": 5,
+    "contras": 11
+   },
+   "segurança": {
+    "pros": 13,
+    "contras": 8
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 7,
+    "contras": 9
+   }
+  }
+ },
+ "Renault Mégane Grand Tour Expression 1.6": {
+  "n": 16,
+  "nota": 9.2,
+  "temas": {
+   "consumo": {
+    "pros": 5,
+    "contras": 2
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 9,
+    "contras": 4
+   },
+   "espaço": {
+    "pros": 4,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 1,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 3,
+    "contras": 4
+   },
+   "câmbio": {
+    "pros": 1,
+    "contras": 1
+   },
+   "acabamento": {
+    "pros": 1,
+    "contras": 1
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 3
+   },
+   "segurança": {
+    "pros": 2,
+    "contras": 1
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 1,
+    "contras": 1
+   }
+  }
+ },
+ "Renault Grand Scénic Dynamique 2.0 AT": {
+  "n": 0,
+  "nota": null,
+  "temas": {
+   "consumo": {
+    "pros": 0,
+    "contras": 0
+   },
+   "manutenção": {
+    "pros": 0,
+    "contras": 0
+   },
+   "conforto": {
+    "pros": 0,
+    "contras": 0
+   },
+   "espaço": {
+    "pros": 0,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 0,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 0
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 0
+   }
+  }
+ },
+ "Citroën C3 Exclusive 1.6 AT": {
+  "n": 21,
+  "nota": 7.3,
+  "temas": {
+   "consumo": {
+    "pros": 7,
+    "contras": 3
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 9
+   },
+   "conforto": {
+    "pros": 8,
+    "contras": 10
+   },
+   "espaço": {
+    "pros": 2,
+    "contras": 3
+   },
+   "desempenho": {
+    "pros": 4,
+    "contras": 2
+   },
+   "estabilidade": {
+    "pros": 3,
+    "contras": 5
+   },
+   "câmbio": {
+    "pros": 3,
+    "contras": 3
+   },
+   "acabamento": {
+    "pros": 3,
+    "contras": 7
+   },
+   "ar": {
+    "pros": 4,
+    "contras": 2
+   },
+   "elétrica": {
+    "pros": 6,
+    "contras": 8
+   },
+   "segurança": {
+    "pros": 6,
+    "contras": 2
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 2,
+    "contras": 5
+   }
+  }
+ },
+ "Citroën C4 VTR 2.0": {
+  "n": 11,
+  "nota": 9.2,
+  "temas": {
+   "consumo": {
+    "pros": 5,
+    "contras": 3
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 5
+   },
+   "conforto": {
+    "pros": 4,
+    "contras": 4
+   },
+   "espaço": {
+    "pros": 0,
+    "contras": 1
+   },
+   "desempenho": {
+    "pros": 3,
+    "contras": 1
+   },
+   "estabilidade": {
+    "pros": 9,
+    "contras": 5
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 3
+   },
+   "acabamento": {
+    "pros": 5,
+    "contras": 1
+   },
+   "ar": {
+    "pros": 3,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 2,
+    "contras": 5
+   },
+   "segurança": {
+    "pros": 7,
+    "contras": 2
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 2,
+    "contras": 5
+   }
+  }
+ },
+ "Citroën C4 Pallas GLX 2.0": {
+  "n": 14,
+  "nota": 8.4,
+  "temas": {
+   "consumo": {
+    "pros": 3,
+    "contras": 7
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 1
+   },
+   "conforto": {
+    "pros": 12,
+    "contras": 3
+   },
+   "espaço": {
+    "pros": 9,
+    "contras": 2
+   },
+   "desempenho": {
+    "pros": 2,
+    "contras": 2
+   },
+   "estabilidade": {
+    "pros": 7,
+    "contras": 6
+   },
+   "câmbio": {
+    "pros": 2,
+    "contras": 7
+   },
+   "acabamento": {
+    "pros": 3,
+    "contras": 1
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 3
+   },
+   "segurança": {
+    "pros": 8,
+    "contras": 4
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 5,
+    "contras": 0
+   }
+  }
+ },
+ "Honda Civic LXS 1.8": {
+  "n": 33,
+  "nota": 8.2,
+  "temas": {
+   "consumo": {
+    "pros": 8,
+    "contras": 12
+   },
+   "manutenção": {
+    "pros": 8,
+    "contras": 4
+   },
+   "conforto": {
+    "pros": 16,
+    "contras": 8
+   },
+   "espaço": {
+    "pros": 4,
+    "contras": 6
+   },
+   "desempenho": {
+    "pros": 4,
+    "contras": 4
+   },
+   "estabilidade": {
+    "pros": 13,
+    "contras": 11
+   },
+   "câmbio": {
+    "pros": 5,
+    "contras": 7
+   },
+   "acabamento": {
+    "pros": 4,
+    "contras": 2
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 4
+   },
+   "elétrica": {
+    "pros": 5,
+    "contras": 5
+   },
+   "segurança": {
+    "pros": 2,
+    "contras": 6
+   },
+   "robustez": {
+    "pros": 5,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 1,
+    "contras": 6
+   }
+  }
+ },
+ "Toyota Corolla Fielder XEi 1.8": {
+  "n": 10,
+  "nota": 9.7,
+  "temas": {
+   "consumo": {
+    "pros": 3,
+    "contras": 0
+   },
+   "manutenção": {
+    "pros": 3,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 7,
+    "contras": 1
+   },
+   "espaço": {
+    "pros": 6,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 1,
+    "contras": 2
+   },
+   "estabilidade": {
+    "pros": 1,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 2,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 2,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 2
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 2
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 0
+   }
+  }
+ },
+ "Nissan Tiida SL 1.8": {
+  "n": 23,
+  "nota": 8.1,
+  "temas": {
+   "consumo": {
+    "pros": 8,
+    "contras": 1
+   },
+   "manutenção": {
+    "pros": 2,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 12,
+    "contras": 6
+   },
+   "espaço": {
+    "pros": 16,
+    "contras": 2
+   },
+   "desempenho": {
+    "pros": 5,
+    "contras": 1
+   },
+   "estabilidade": {
+    "pros": 5,
+    "contras": 6
+   },
+   "câmbio": {
+    "pros": 4,
+    "contras": 2
+   },
+   "acabamento": {
+    "pros": 5,
+    "contras": 1
+   },
+   "ar": {
+    "pros": 2,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 4,
+    "contras": 9
+   },
+   "segurança": {
+    "pros": 3,
+    "contras": 6
+   },
+   "robustez": {
+    "pros": 4,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 2,
+    "contras": 3
+   }
+  }
+ },
+ "Nissan Sentra 2.0": {
+  "n": 46,
+  "nota": 8.9,
+  "temas": {
+   "consumo": {
+    "pros": 11,
+    "contras": 6
+   },
+   "manutenção": {
+    "pros": 4,
+    "contras": 5
+   },
+   "conforto": {
+    "pros": 20,
+    "contras": 11
+   },
+   "espaço": {
+    "pros": 14,
+    "contras": 2
+   },
+   "desempenho": {
+    "pros": 16,
+    "contras": 2
+   },
+   "estabilidade": {
+    "pros": 12,
+    "contras": 13
+   },
+   "câmbio": {
+    "pros": 17,
+    "contras": 4
+   },
+   "acabamento": {
+    "pros": 8,
+    "contras": 4
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 3,
+    "contras": 2
+   },
+   "segurança": {
+    "pros": 10,
+    "contras": 6
+   },
+   "robustez": {
+    "pros": 4,
+    "contras": 1
+   },
+   "preço/revenda": {
+    "pros": 4,
+    "contras": 5
+   }
+  }
+ },
+ "Chevrolet Classic LS 1.0": {
+  "n": 11,
+  "nota": 6,
+  "temas": {
+   "consumo": {
+    "pros": 9,
+    "contras": 1
+   },
+   "manutenção": {
+    "pros": 3,
+    "contras": 0
+   },
+   "conforto": {
+    "pros": 3,
+    "contras": 3
+   },
+   "espaço": {
+    "pros": 2,
+    "contras": 3
+   },
+   "desempenho": {
+    "pros": 3,
+    "contras": 4
+   },
+   "estabilidade": {
+    "pros": 2,
+    "contras": 1
+   },
+   "câmbio": {
+    "pros": 2,
+    "contras": 2
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 2
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 2
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 1
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 1
+   }
+  }
+ },
+ "Volkswagen up! take 1.0 (5 portas)": {
+  "n": 14,
+  "nota": 8.9,
+  "temas": {
+   "consumo": {
+    "pros": 13,
+    "contras": 1
+   },
+   "manutenção": {
+    "pros": 5,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 5,
+    "contras": 3
+   },
+   "espaço": {
+    "pros": 10,
+    "contras": 2
+   },
+   "desempenho": {
+    "pros": 5,
+    "contras": 3
+   },
+   "estabilidade": {
+    "pros": 5,
+    "contras": 6
+   },
+   "câmbio": {
+    "pros": 5,
+    "contras": 3
+   },
+   "acabamento": {
+    "pros": 4,
+    "contras": 2
+   },
+   "ar": {
+    "pros": 3,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 8
+   },
+   "segurança": {
+    "pros": 3,
+    "contras": 3
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 1
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 5
+   }
+  }
+ },
+ "Renault Logan Authentique 1.0": {
+  "n": 5,
+  "nota": 5,
+  "temas": {
+   "consumo": {
+    "pros": 1,
+    "contras": 1
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 1
+   },
+   "conforto": {
+    "pros": 0,
+    "contras": 2
+   },
+   "espaço": {
+    "pros": 3,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 0,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 3
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 1
+   }
+  }
+ },
+ "Fiat Uno Vivace/Rua 1.0 (4 portas)": {
+  "n": 4,
+  "nota": 7,
+  "temas": {
+   "consumo": {
+    "pros": 0,
+    "contras": 1
+   },
+   "manutenção": {
+    "pros": 2,
+    "contras": 0
+   },
+   "conforto": {
+    "pros": 1,
+    "contras": 2
+   },
+   "espaço": {
+    "pros": 1,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 1
+   },
+   "estabilidade": {
+    "pros": 0,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 2
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 0
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 1,
+    "contras": 0
+   }
+  }
+ },
+ "Renault Sandero Expression 1.0": {
+  "n": 2,
+  "nota": 9,
+  "temas": {
+   "consumo": {
+    "pros": 0,
+    "contras": 1
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 0
+   },
+   "conforto": {
+    "pros": 1,
+    "contras": 0
+   },
+   "espaço": {
+    "pros": 2,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 1,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 0
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 0
+   }
+  }
+ },
+ "Ford Fiesta 1.0 (hatch)": {
+  "n": 4,
+  "nota": 8.5,
+  "temas": {
+   "consumo": {
+    "pros": 2,
+    "contras": 3
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 4,
+    "contras": 1
+   },
+   "espaço": {
+    "pros": 2,
+    "contras": 1
+   },
+   "desempenho": {
+    "pros": 1,
+    "contras": 2
+   },
+   "estabilidade": {
+    "pros": 2,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 1,
+    "contras": 1
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 1
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 0
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 0
+   }
+  }
+ },
+ "Volkswagen Gol City 1.0 (4 portas)": {
+  "n": 0,
+  "nota": null,
+  "temas": {
+   "consumo": {
+    "pros": 0,
+    "contras": 0
+   },
+   "manutenção": {
+    "pros": 0,
+    "contras": 0
+   },
+   "conforto": {
+    "pros": 0,
+    "contras": 0
+   },
+   "espaço": {
+    "pros": 0,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 0,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 0
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 0
+   }
+  }
+ },
+ "Fiat Palio Fire 1.0 (4 portas)": {
+  "n": 9,
+  "nota": 8.9,
+  "temas": {
+   "consumo": {
+    "pros": 8,
+    "contras": 2
+   },
+   "manutenção": {
+    "pros": 3,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 6,
+    "contras": 1
+   },
+   "espaço": {
+    "pros": 0,
+    "contras": 2
+   },
+   "desempenho": {
+    "pros": 2,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 1,
+    "contras": 1
+   },
+   "câmbio": {
+    "pros": 3,
+    "contras": 2
+   },
+   "acabamento": {
+    "pros": 1,
+    "contras": 3
+   },
+   "ar": {
+    "pros": 5,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 2
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 1
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 1
+   },
+   "preço/revenda": {
+    "pros": 1,
+    "contras": 0
+   }
+  }
+ },
+ "Chevrolet Celta LT 1.0 (4 portas)": {
+  "n": 51,
+  "nota": 7.2,
+  "temas": {
+   "consumo": {
+    "pros": 26,
+    "contras": 8
+   },
+   "manutenção": {
+    "pros": 26,
+    "contras": 8
+   },
+   "conforto": {
+    "pros": 2,
+    "contras": 33
+   },
+   "espaço": {
+    "pros": 3,
+    "contras": 15
+   },
+   "desempenho": {
+    "pros": 14,
+    "contras": 5
+   },
+   "estabilidade": {
+    "pros": 7,
+    "contras": 13
+   },
+   "câmbio": {
+    "pros": 1,
+    "contras": 9
+   },
+   "acabamento": {
+    "pros": 2,
+    "contras": 21
+   },
+   "ar": {
+    "pros": 5,
+    "contras": 7
+   },
+   "elétrica": {
+    "pros": 4,
+    "contras": 6
+   },
+   "segurança": {
+    "pros": 10,
+    "contras": 6
+   },
+   "robustez": {
+    "pros": 5,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 15,
+    "contras": 2
+   }
+  }
+ },
+ "Fiat Siena EL 1.0": {
+  "n": 11,
+  "nota": 7.2,
+  "temas": {
+   "consumo": {
+    "pros": 2,
+    "contras": 2
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 1
+   },
+   "conforto": {
+    "pros": 4,
+    "contras": 5
+   },
+   "espaço": {
+    "pros": 7,
+    "contras": 1
+   },
+   "desempenho": {
+    "pros": 1,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 3,
+    "contras": 4
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 2
+   },
+   "ar": {
+    "pros": 1,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 2
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 2
+   },
+   "robustez": {
+    "pros": 1,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 1,
+    "contras": 0
+   }
+  }
+ },
+ "Peugeot 208 Active 1.5": {
+  "n": 0,
+  "nota": null,
+  "temas": {
+   "consumo": {
+    "pros": 0,
+    "contras": 0
+   },
+   "manutenção": {
+    "pros": 0,
+    "contras": 0
+   },
+   "conforto": {
+    "pros": 0,
+    "contras": 0
+   },
+   "espaço": {
+    "pros": 0,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 0
+   },
+   "estabilidade": {
+    "pros": 0,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 0,
+    "contras": 0
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 0
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 0
+   }
+  }
+ },
+ "Chevrolet Cobalt LS 1.4": {
+  "n": 12,
+  "nota": 8.8,
+  "temas": {
+   "consumo": {
+    "pros": 5,
+    "contras": 5
+   },
+   "manutenção": {
+    "pros": 8,
+    "contras": 3
+   },
+   "conforto": {
+    "pros": 7,
+    "contras": 3
+   },
+   "espaço": {
+    "pros": 12,
+    "contras": 3
+   },
+   "desempenho": {
+    "pros": 2,
+    "contras": 5
+   },
+   "estabilidade": {
+    "pros": 6,
+    "contras": 3
+   },
+   "câmbio": {
+    "pros": 4,
+    "contras": 3
+   },
+   "acabamento": {
+    "pros": 5,
+    "contras": 0
+   },
+   "ar": {
+    "pros": 3,
+    "contras": 3
+   },
+   "elétrica": {
+    "pros": 1,
+    "contras": 4
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 4
+   },
+   "robustez": {
+    "pros": 2,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 4,
+    "contras": 0
+   }
+  }
+ },
+ "Fiat Linea Essence 1.8": {
+  "n": 13,
+  "nota": 8.7,
+  "temas": {
+   "consumo": {
+    "pros": 3,
+    "contras": 3
+   },
+   "manutenção": {
+    "pros": 1,
+    "contras": 2
+   },
+   "conforto": {
+    "pros": 5,
+    "contras": 3
+   },
+   "espaço": {
+    "pros": 3,
+    "contras": 0
+   },
+   "desempenho": {
+    "pros": 1,
+    "contras": 1
+   },
+   "estabilidade": {
+    "pros": 2,
+    "contras": 0
+   },
+   "câmbio": {
+    "pros": 1,
+    "contras": 1
+   },
+   "acabamento": {
+    "pros": 1,
+    "contras": 2
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 0
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 1
+   },
+   "segurança": {
+    "pros": 1,
+    "contras": 0
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 0,
+    "contras": 1
+   }
+  }
+ },
+ "Chevrolet Spin LS 1.8": {
+  "n": 27,
+  "nota": 7.1,
+  "temas": {
+   "consumo": {
+    "pros": 5,
+    "contras": 5
+   },
+   "manutenção": {
+    "pros": 2,
+    "contras": 3
+   },
+   "conforto": {
+    "pros": 11,
+    "contras": 6
+   },
+   "espaço": {
+    "pros": 16,
+    "contras": 7
+   },
+   "desempenho": {
+    "pros": 0,
+    "contras": 3
+   },
+   "estabilidade": {
+    "pros": 5,
+    "contras": 5
+   },
+   "câmbio": {
+    "pros": 1,
+    "contras": 4
+   },
+   "acabamento": {
+    "pros": 0,
+    "contras": 4
+   },
+   "ar": {
+    "pros": 0,
+    "contras": 5
+   },
+   "elétrica": {
+    "pros": 0,
+    "contras": 9
+   },
+   "segurança": {
+    "pros": 0,
+    "contras": 1
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 2,
+    "contras": 3
+   }
+  }
+ },
+ "Nissan Livina 1.6": {
+  "n": 24,
+  "nota": 8,
+  "temas": {
+   "consumo": {
+    "pros": 7,
+    "contras": 4
+   },
+   "manutenção": {
+    "pros": 0,
+    "contras": 4
+   },
+   "conforto": {
+    "pros": 7,
+    "contras": 12
+   },
+   "espaço": {
+    "pros": 18,
+    "contras": 4
+   },
+   "desempenho": {
+    "pros": 5,
+    "contras": 2
+   },
+   "estabilidade": {
+    "pros": 5,
+    "contras": 4
+   },
+   "câmbio": {
+    "pros": 3,
+    "contras": 4
+   },
+   "acabamento": {
+    "pros": 6,
+    "contras": 3
+   },
+   "ar": {
+    "pros": 5,
+    "contras": 2
+   },
+   "elétrica": {
+    "pros": 5,
+    "contras": 4
+   },
+   "segurança": {
+    "pros": 5,
+    "contras": 4
+   },
+   "robustez": {
+    "pros": 0,
+    "contras": 0
+   },
+   "preço/revenda": {
+    "pros": 2,
+    "contras": 0
+   }
+  }
+ }
+}

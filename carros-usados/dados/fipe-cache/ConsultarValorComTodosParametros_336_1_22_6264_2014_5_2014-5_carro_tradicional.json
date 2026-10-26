@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 22,
+  "codigoModelo": 6264,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:55:58.322Z",
+ "resposta": {
+  "Valor": "R$ 51.964,00",
+  "Marca": "Ford",
+  "Modelo": "EcoSport TITANIUM 2.0 16V Flex 5p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "003374-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "yzlsj78b4dsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:55"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 13,
+  "codigoModelo": 6575,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:08:35.749Z",
+ "resposta": {
+  "Valor": "R$ 45.665,00",
+  "Marca": "Citroën",
+  "Modelo": "C4 LOUNGE Exclusive 1.6 Turbo 4p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "011132-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "wlq859v8fprl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:08"
+ }
+}

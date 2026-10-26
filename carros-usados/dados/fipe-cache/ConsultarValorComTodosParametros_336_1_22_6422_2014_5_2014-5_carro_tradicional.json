@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 22,
+  "codigoModelo": 6422,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:24:20.310Z",
+ "resposta": {
+  "Valor": "R$ 37.693,00",
+  "Marca": "Ford",
+  "Modelo": "Fiesta 1.5 16V Flex Mec. 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "003386-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "sk8p6yb7gdsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:24"
+ }
+}

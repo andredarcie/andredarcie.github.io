@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5483,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:51:26.593Z",
+ "resposta": {
+  "Valor": "R$ 26.064,00",
+  "Marca": "Fiat",
+  "Modelo": "UNO VIVACE 1.0 EVO Fire Flex 8V 3p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001343-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "m5xxr54ltfsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:51"
+ }
+}

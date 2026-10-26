@@ -1,0 +1,119 @@
+[
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "4833",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=4833",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "2035",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=2035",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "1702",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=1702",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "4832",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=4832",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "4831",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=4831",
+  "titulo": "Chevrolet Onix LT 1.0 2014",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "série",
+  "abs": "série",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.8,
+    "rodoviario": 9.2
+   },
+   "gasolina": {
+    "urbano": 11.5,
+    "rodoviario": 12.5
+   }
+  },
+  "alturaSolo": 127,
+  "notaLeitor": 8.3,
+  "revisoes": [
+   5236,
+   60000
+  ],
+  "potencia": "cv  (A) 78 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "4830",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=4830",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Onix",
+  "codigo": "2674",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=2674",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ }
+]

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5926,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:23:28.541Z",
+ "resposta": {
+  "Valor": "R$ 35.914,00",
+  "Marca": "Fiat",
+  "Modelo": "Grand Siena ESSENCE 1.6 Flex 16V",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001379-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "rxd2691dzgsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:23"
+ }
+}

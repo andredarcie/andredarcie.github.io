@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5340,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:51:01.540Z",
+ "resposta": {
+  "Valor": "R$ 39.042,00",
+  "Marca": "Fiat",
+  "Modelo": "Idea ATTRACTIVE 1.4 Fire Flex 8V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001328-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "s2204ylsprsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:51"
+ }
+}

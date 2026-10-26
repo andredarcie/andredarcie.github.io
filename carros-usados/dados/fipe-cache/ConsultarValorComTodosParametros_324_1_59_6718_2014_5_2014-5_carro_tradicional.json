@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 324,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 6718,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:01:37.514Z",
+ "resposta": {
+  "Valor": "R$ 32.175,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "up! take 1.0 Total Flex 12V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005365-1",
+  "MesReferencia": "agosto de 2025 ",
+  "Autenticacao": "qhk2pnx7t1sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:01"
+ }
+}

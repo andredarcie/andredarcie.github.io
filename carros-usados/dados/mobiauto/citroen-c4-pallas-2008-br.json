@@ -1,0 +1,52 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/brasil/citroen/c4-pallas/ano-2008",
+ "coletadoEm": "2026-10-25T23:09:59.146Z",
+ "totalInformado": 3,
+ "anuncios": [
+  {
+   "id": 33076157,
+   "marca": "Citroën",
+   "modelo": "C4 Pallas",
+   "versao": "Exclusive 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 180213,
+   "preco": 29900,
+   "zeroKm": false,
+   "cidade": "Blumenau",
+   "uf": "SC"
+  },
+  {
+   "id": 6200492,
+   "marca": "Citroën",
+   "modelo": "C4 Pallas",
+   "versao": "GLX 2.0 16V",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Manual",
+   "km": 156000,
+   "preco": 24900,
+   "zeroKm": false,
+   "cidade": "Caraguatatuba",
+   "uf": "SP"
+  },
+  {
+   "id": 31350954,
+   "marca": "Citroën",
+   "modelo": "C4 Pallas",
+   "versao": "Exclusive Pack 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Automática",
+   "km": 190300,
+   "preco": 29900,
+   "zeroKm": false,
+   "cidade": "Farroupilha",
+   "uf": "RS"
+  }
+ ]
+}

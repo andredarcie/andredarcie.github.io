@@ -1,0 +1,37 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/brasil/volkswagen/up/ano-2014",
+ "coletadoEm": "2026-10-25T23:10:50.395Z",
+ "totalInformado": 2,
+ "anuncios": [
+  {
+   "id": 33118694,
+   "marca": "Volkswagen",
+   "modelo": "Up!",
+   "versao": "1.0 12v E-Flex high up!",
+   "anoModelo": 2014,
+   "anoFabricacao": 2013,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 76855,
+   "preco": 45900,
+   "zeroKm": false,
+   "cidade": "Piracicaba",
+   "uf": "SP"
+  },
+  {
+   "id": 32173142,
+   "marca": "Volkswagen",
+   "modelo": "Up!",
+   "versao": "1.0 12v E-Flex take up! 2p",
+   "anoModelo": 2014,
+   "anoFabricacao": 2014,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 99999,
+   "preco": 32900,
+   "zeroKm": false,
+   "cidade": "Caxias do Sul",
+   "uf": "RS"
+  }
+ ]
+}

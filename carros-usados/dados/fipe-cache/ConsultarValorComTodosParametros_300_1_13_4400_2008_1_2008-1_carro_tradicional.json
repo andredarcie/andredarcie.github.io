@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 300,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 13,
+  "codigoModelo": 4400,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 1,
+  "ano": "2008-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:40:44.183Z",
+ "resposta": {
+  "Valor": "R$ 22.851,00",
+  "Marca": "Citroën",
+  "Modelo": "C4 PALLAS GLX 2.0/2.0 Flex 16V Mec.",
+  "AnoModelo": 2008,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "011085-0",
+  "MesReferencia": "agosto de 2023 ",
+  "Autenticacao": "ly72pxdz6g5h",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:40"
+ }
+}

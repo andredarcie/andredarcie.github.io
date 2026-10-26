@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 22,
+  "codigoModelo": 6610,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:56:28.431Z",
+ "resposta": {
+  "Valor": "R$ 45.323,00",
+  "Marca": "Ford",
+  "Modelo": "Focus 1.6 S/1.6 SE Flex 16v 5p Aut",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "003404-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "wgqzpngptksw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:56"
+ }
+}

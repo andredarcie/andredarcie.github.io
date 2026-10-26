@@ -1,0 +1,67 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/brasil/renault/megane-sedan/ano-2008",
+ "coletadoEm": "2026-10-25T23:09:36.911Z",
+ "totalInformado": 4,
+ "anuncios": [
+  {
+   "id": 29637986,
+   "marca": "Renault",
+   "modelo": "Megane Sedan",
+   "versao": "Mégane Sedan Dynamique 1.6 16V (flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 175000,
+   "preco": 24900,
+   "zeroKm": false,
+   "cidade": "Blumenau",
+   "uf": "SC"
+  },
+  {
+   "id": 32589165,
+   "marca": "Renault",
+   "modelo": "Megane Sedan",
+   "versao": "Mégane Sedan Dynamique 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 170000,
+   "preco": 16900,
+   "zeroKm": false,
+   "cidade": "Joinville",
+   "uf": "SC"
+  },
+  {
+   "id": 20460013,
+   "marca": "Renault",
+   "modelo": "Megane Sedan",
+   "versao": "Mégane Sedan Expression 1.6 16V (flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 1,
+   "preco": 23900,
+   "zeroKm": false,
+   "cidade": "Sapucaia do Sul",
+   "uf": "RS"
+  },
+  {
+   "id": 32443059,
+   "marca": "Renault",
+   "modelo": "Megane Sedan",
+   "versao": "Mégane Sedan Dynamique 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 102294,
+   "preco": 35900,
+   "zeroKm": false,
+   "cidade": "Curitiba",
+   "uf": "PR"
+  }
+ ]
+}

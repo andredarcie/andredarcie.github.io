@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 4990,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:03:59.946Z",
+ "resposta": {
+  "Valor": "R$ 46.358,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "Polo Sed.COMFORT. I MOTION 1.6 T.Flex 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005297-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "wvv5l645kfsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:03"
+ }
+}

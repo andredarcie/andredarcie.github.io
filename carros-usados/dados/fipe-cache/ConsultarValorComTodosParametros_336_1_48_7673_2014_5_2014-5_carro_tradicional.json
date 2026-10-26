@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 7673,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:06:17.854Z",
+ "resposta": {
+  "Valor": "R$ 41.406,00",
+  "Marca": "Renault",
+  "Modelo": "FLUENCE Sedan Expres. 1.6 16V FLEX Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "025239-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "tzs8nthwq3sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:06"
+ }
+}

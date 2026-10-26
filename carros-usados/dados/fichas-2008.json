@@ -1,0 +1,266 @@
+[
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Celta",
+  "codigo": "6590",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=6590",
+  "titulo": "Chevrolet Celta Life 1.0 2008",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.6,
+    "rodoviario": 8.7
+   },
+   "gasolina": {
+    "urbano": 10.7,
+    "rodoviario": 12.8
+   }
+  },
+  "alturaSolo": null,
+  "notaLeitor": 9.4,
+  "revisoes": [],
+  "potencia": "cv  (A) 70 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Celta",
+  "codigo": "12623",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=12623",
+  "titulo": "Chevrolet Celta Spirit 1.0 2008",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.6,
+    "rodoviario": 8.7
+   },
+   "gasolina": {
+    "urbano": 10.7,
+    "rodoviario": 12.8
+   }
+  },
+  "alturaSolo": null,
+  "notaLeitor": 8.5,
+  "revisoes": [],
+  "potencia": "cv  (A) 70 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Celta",
+  "codigo": "6588",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=6588",
+  "titulo": "Chevrolet Celta Life 1.0 2008",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.6,
+    "rodoviario": 8.7
+   },
+   "gasolina": {
+    "urbano": 10.7,
+    "rodoviario": 12.8
+   }
+  },
+  "alturaSolo": null,
+  "notaLeitor": 8.2,
+  "revisoes": [],
+  "potencia": "cv  (A) 70 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Celta",
+  "codigo": "6587",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=6587",
+  "titulo": "Chevrolet Celta Spirit 1.0 2008",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.6,
+    "rodoviario": 8.7
+   },
+   "gasolina": {
+    "urbano": 10.7,
+    "rodoviario": 12.8
+   }
+  },
+  "alturaSolo": null,
+  "notaLeitor": 9.3,
+  "revisoes": [],
+  "potencia": "cv  (A) 70 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Celta",
+  "codigo": "20302",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=20302",
+  "titulo": "Chevrolet Celta Super 1.0 2008",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.6,
+    "rodoviario": 8.7
+   },
+   "gasolina": {
+    "urbano": 10.7,
+    "rodoviario": 12.8
+   }
+  },
+  "alturaSolo": null,
+  "notaLeitor": 7,
+  "revisoes": [],
+  "potencia": "cv  (A) 70 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Celta",
+  "codigo": "6589",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=6589",
+  "titulo": "Chevrolet Celta Super 1.0 2008",
+  "combustivel": "Flex (álcool/gasolina)",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": {
+    "urbano": 7.6,
+    "rodoviario": 8.7
+   },
+   "gasolina": {
+    "urbano": 10.7,
+    "rodoviario": 12.8
+   }
+  },
+  "alturaSolo": null,
+  "notaLeitor": 9.3,
+  "revisoes": [],
+  "potencia": "cv  (A) 70 cv (G) a 6400 rpm"
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Prisma",
+  "codigo": "8120",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=8120",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Chevrolet",
+  "modelo": "Prisma",
+  "codigo": "8121",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=8121",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Toyota",
+  "modelo": "Corolla",
+  "codigo": "9088",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=9088",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Toyota",
+  "modelo": "Corolla",
+  "codigo": "870",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=870",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Toyota",
+  "modelo": "Corolla",
+  "codigo": "16180",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=16180",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Toyota",
+  "modelo": "Corolla",
+  "codigo": "12320",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=12320",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Toyota",
+  "modelo": "Corolla",
+  "codigo": "1963",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=1963",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ },
+ {
+  "fabricante": "Toyota",
+  "modelo": "Corolla",
+  "codigo": "9418",
+  "url": "https://www.carrosnaweb.com.br/fichadetalhe.asp?codigo=9418",
+  "airbag": "não",
+  "abs": "não",
+  "consumo": {
+   "etanol": null,
+   "gasolina": null
+  },
+  "alturaSolo": null,
+  "notaLeitor": null,
+  "revisoes": []
+ }
+]

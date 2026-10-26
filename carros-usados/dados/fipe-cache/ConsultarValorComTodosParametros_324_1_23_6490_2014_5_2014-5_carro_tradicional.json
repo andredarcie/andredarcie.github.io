@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 324,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 6490,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:28:29.728Z",
+ "resposta": {
+  "Valor": "R$ 36.879,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "SPIN LS 1.8 8V Econo.Flex 5p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004435-0",
+  "MesReferencia": "agosto de 2025 ",
+  "Autenticacao": "r8qt85gtzxsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:28"
+ }
+}

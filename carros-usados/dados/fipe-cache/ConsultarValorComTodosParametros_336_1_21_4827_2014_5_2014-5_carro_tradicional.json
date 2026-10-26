@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 4827,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:39:42.694Z",
+ "resposta": {
+  "Valor": "R$ 27.537,00",
+  "Marca": "Fiat",
+  "Modelo": "Palio 1.0 ECONOMY Fire Flex 8V 2p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001266-1",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "nq59wp7hzqsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:39"
+ }
+}

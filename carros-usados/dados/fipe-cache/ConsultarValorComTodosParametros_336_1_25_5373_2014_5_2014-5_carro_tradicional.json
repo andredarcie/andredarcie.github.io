@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 25,
+  "codigoModelo": 5373,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:10:18.548Z",
+ "resposta": {
+  "Valor": "R$ 51.144,00",
+  "Marca": "Honda",
+  "Modelo": "CITY Sedan DX 1.5 Flex 16V Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "014068-6",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "ynzq4wjq26sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:10"
+ }
+}

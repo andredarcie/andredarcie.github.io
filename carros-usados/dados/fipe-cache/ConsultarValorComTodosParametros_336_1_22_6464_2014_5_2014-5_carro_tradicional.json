@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 22,
+  "codigoModelo": 6464,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:55:00.624Z",
+ "resposta": {
+  "Valor": "R$ 53.822,00",
+  "Marca": "Ford",
+  "Modelo": "EcoSport FREESTYLE 2.0 16V 4WD Flex 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "003391-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "zpc3n315dpsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:55"
+ }
+}

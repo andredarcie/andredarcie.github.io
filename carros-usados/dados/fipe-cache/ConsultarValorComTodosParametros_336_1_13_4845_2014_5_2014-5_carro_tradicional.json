@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 13,
+  "codigoModelo": 4845,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:08:20.746Z",
+ "resposta": {
+  "Valor": "R$ 38.118,00",
+  "Marca": "Citroën",
+  "Modelo": "C4 Excl.2.0/2.0 Solaris Flex 16V 5p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "011095-7",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "sq75xzdcbzsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:08"
+ }
+}

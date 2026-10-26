@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 312,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5273,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:06:06.766Z",
+ "resposta": {
+  "Valor": "R$ 36.189,00",
+  "Marca": "Fiat",
+  "Modelo": "Punto ATTRACTIVE 1.4 Fire Flex 8V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001313-7",
+  "MesReferencia": "agosto de 2024 ",
+  "Autenticacao": "r0m1jvlb0trl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:06"
+ }
+}

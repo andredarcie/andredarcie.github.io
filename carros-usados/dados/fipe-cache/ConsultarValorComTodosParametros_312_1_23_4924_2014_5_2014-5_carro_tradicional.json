@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 312,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 4924,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:01:18.404Z",
+ "resposta": {
+  "Valor": "R$ 28.442,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "Classic Life/LS 1.0 VHC FlexP. 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004360-5",
+  "MesReferencia": "agosto de 2024 ",
+  "Autenticacao": "n2s7rpsb97rl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:01"
+ }
+}

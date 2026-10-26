@@ -1,0 +1,20 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 25,
+  "codigoModelo": 11634
+ },
+ "consultadoEm": "2026-10-26T00:10:11.025Z",
+ "resposta": [
+  {
+   "Label": "32000 Flex",
+   "Value": "32000-5"
+  },
+  {
+   "Label": "2026 Flex",
+   "Value": "2026-5"
+  }
+ ]
+}

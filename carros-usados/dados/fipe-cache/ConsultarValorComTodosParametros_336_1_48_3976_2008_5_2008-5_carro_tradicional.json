@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 3976,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 5,
+  "ano": "2008-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:39:30.769Z",
+ "resposta": {
+  "Valor": "R$ 17.998,00",
+  "Marca": "Renault",
+  "Modelo": "Megane Sedan Expression Hi-Flex 1.6 16V",
+  "AnoModelo": 2008,
+  "Combustivel": "Flex",
+  "CodigoFipe": "025119-4",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "j4b5m3hg4j6s",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:39"
+ }
+}

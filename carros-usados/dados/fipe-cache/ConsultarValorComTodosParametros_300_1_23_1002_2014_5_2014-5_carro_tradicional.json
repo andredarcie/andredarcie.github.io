@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 300,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 1002,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:39:58.412Z",
+ "resposta": {
+  "Valor": "R$ 33.005,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "Celta Spirit/ LT 1.0 MPFI 8V FlexP. 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004321-4",
+  "MesReferencia": "agosto de 2023 ",
+  "Autenticacao": "qs9rhcwfjbrl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:40"
+ }
+}

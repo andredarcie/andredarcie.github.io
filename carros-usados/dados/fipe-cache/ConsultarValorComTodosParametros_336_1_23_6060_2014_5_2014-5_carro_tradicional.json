@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 6060,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:50:44.759Z",
+ "resposta": {
+  "Valor": "R$ 40.330,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "SONIC HB LTZ 1.6 16V FlexPower 5p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004404-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "tk55r164z9sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:50"
+ }
+}

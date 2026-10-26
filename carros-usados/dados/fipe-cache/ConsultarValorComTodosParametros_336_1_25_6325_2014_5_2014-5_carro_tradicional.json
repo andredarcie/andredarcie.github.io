@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 25,
+  "codigoModelo": 6325,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:11:41.332Z",
+ "resposta": {
+  "Valor": "R$ 76.462,00",
+  "Marca": "Honda",
+  "Modelo": "Civic Sedan EXR 2.0 Flexone 16V Aut. 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "014075-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "77t16nl44fsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:11"
+ }
+}

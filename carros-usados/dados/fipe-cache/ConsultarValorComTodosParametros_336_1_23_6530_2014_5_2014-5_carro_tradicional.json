@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 6530,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:49:06.921Z",
+ "resposta": {
+  "Valor": "R$ 50.801,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "ONIX HATCH LT 1.4 8V FlexPower 5p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004438-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "yjy2cy6zrgsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:49"
+ }
+}

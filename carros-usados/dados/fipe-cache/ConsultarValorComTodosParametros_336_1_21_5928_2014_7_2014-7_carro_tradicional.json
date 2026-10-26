@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5928,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 7,
+  "ano": "2014-7",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:23:41.093Z",
+ "resposta": {
+  "Valor": "R$ 32.826,00",
+  "Marca": "Fiat",
+  "Modelo": "Grand Siena TETRAFUEL 1.4 Evo F. Flex 8V",
+  "AnoModelo": 2014,
+  "Combustivel": "Gás Natural",
+  "CodigoFipe": "001381-1",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "qq6p0fs92xtj",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:23"
+ }
+}

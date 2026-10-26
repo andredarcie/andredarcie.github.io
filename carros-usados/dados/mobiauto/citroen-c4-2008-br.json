@@ -1,0 +1,22 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/brasil/citroen/c4/ano-2008",
+ "coletadoEm": "2026-10-25T23:09:55.188Z",
+ "totalInformado": 1,
+ "anuncios": [
+  {
+   "id": 5635276,
+   "marca": "Citroën",
+   "modelo": "C4",
+   "versao": "GLX 2.0 (aut) (flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 180000,
+   "preco": 24900,
+   "zeroKm": false,
+   "cidade": "Alfredo Marcondes",
+   "uf": "SP"
+  }
+ ]
+}

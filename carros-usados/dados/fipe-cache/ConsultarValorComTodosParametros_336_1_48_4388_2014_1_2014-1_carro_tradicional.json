@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 4388,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:53:29.719Z",
+ "resposta": {
+  "Valor": "R$ 32.107,00",
+  "Marca": "Renault",
+  "Modelo": "LOGAN Expres./Exp. UP Hi-Flex 1.0 16V 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "025136-4",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "qgscmrxg9jrl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:53"
+ }
+}

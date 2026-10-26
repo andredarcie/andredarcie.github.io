@@ -1,0 +1,162 @@
+{
+ "_comentario": "Dados que não estão na ficha da versão escolhida, cada um com a fonte. 'resumo' = uma linha resumindo as opiniões de donos (CarroClub), escrita a partir da leitura das avaliações em dados/opinioes.json e conferida com a contagem de temas em dados/temas.json.",
+ "Chevrolet Vectra Elegance 2.0": {
+  "resumo": "Elogiado pelo conforto, pelo espaço e pelo porta-malas; a queixa mais comum é o consumo, seguida do câmbio (o automático tem só 4 marchas) e de barulhos na suspensão."
+ },
+ "Fiat Stilo 1.8": {
+  "resumo": "Donos gostam do conforto e da lista de equipamentos; reclamam de consumo alto, suspensão mole e barulhenta, defeitos no teto solar e peças difíceis de achar."
+ },
+ "Fiat Punto ELX 1.4": {
+  "resumo": "Bonito, estável e confortável, mas o motor 1.4 é a grande crítica: 31 de 53 donos reclamam do consumo e 25 de 53 o acham fraco para o peso do carro.",
+  "confirmacao": [
+   [
+    "Mago dos Carros, ficha do Punto ELX 1.4 2008 (site não oficial): airbag duplo e ABS em \"itens de série\"",
+    "https://magodoscarros.com/ficha-tecnica/punto-elx-14-fire-flex-8v-5p/2008"
+   ]
+  ]
+ },
+ "Volkswagen Jetta 2.5": {
+  "resumo": "Poucas avaliações (10), quase todas muito boas: motor de 5 cilindros, câmbio e acabamento; os pontos fracos citados são consumo, seguro e manutenção caros."
+ },
+ "Renault Mégane Sedan Expression 1.6": {
+  "resumo": "Conforto, estabilidade e bom custo-benefício são os elogios mais frequentes; as críticas vão para ruídos de suspensão, falhas elétricas pontuais e peças de suspensão caras ou difíceis de achar."
+ },
+ "Renault Mégane Grand Tour Expression 1.6": {
+  "resumo": "Donos destacam conforto, espaço e porta-malas; queixas isoladas sobre suspensão cara, plásticos que se soltam e avisos de anomalia no painel."
+ },
+ "Renault Grand Scénic Dynamique 2.0 AT": {
+  "resumo": null
+ },
+ "Citroën C3 Exclusive 1.6 AT": {
+  "resumo": "Opiniões divididas: conforto, estilo e itens de segurança (airbag e ABS) agradam; manutenção cara e suspensão frágil e barulhenta são as queixas mais repetidas.",
+  "confirmacao": [
+   [
+    "Vrum, avaliação do C3 Exclusive (2008): airbag duplo e ABS entre os itens de série",
+    "https://www.vrum.com.br/avaliacoes/equipamentos-preco-e-ficha-tecnica-do-citroen-c3-exclusive/"
+   ]
+  ]
+ },
+ "Citroën C4 VTR 2.0": {
+  "resumo": "Muito bem avaliado: estabilidade, freios e segurança; os donos alertam que a suspensão gasta rápido e que seguro e peças são caros."
+ },
+ "Citroën C4 Pallas GLX 2.0": {
+  "resumo": "Conforto, espaço e porta-malas grande são os elogios mais frequentes; as queixas mais citadas são consumo (5 de 14 donos) e problemas no câmbio automático (4 de 14; a versão deste comparativo é manual)."
+ },
+ "Honda Civic LXS 1.8": {
+  "resumo": "Elogiado pela estabilidade, pelo conforto e pela confiabilidade; as críticas mais comuns são o consumo alto (13 de 33 donos) e a suspensão dura ou barulhenta (10 de 33)."
+ },
+ "Toyota Corolla Fielder XEi 1.8": {
+  "resumo": "Poucas avaliações (10), quase todas nota máxima: mecânica confiável, conforto e muito espaço; as queixas são só detalhes de acabamento.",
+  "confirmacao": [
+   [
+    "car.blog.br, Fielder XEi 2008 automática: airbags frontais e ABS (a versão deste comparativo é a manual)",
+    "https://www.car.blog.br/2011/12/toyota-fielder-2008-xei-automatica-flex.html"
+   ]
+  ]
+ },
+ "Nissan Tiida SL 1.8": {
+  "alturaSolo": 145,
+  "alturaSoloFonte": "https://www.fichacompleta.com.br/carros/nissan/tiida-sl-1-8-at-2008",
+  "alturaSoloNota": "medida da mesma versão (SL 2008) com câmbio automático; carroceria e suspensão iguais",
+  "combustivelNota": "o Tiida passou a ser flex no ano-modelo 2009 (Motor Show, 1/5/2009: https://motorshow.com.br/nissan-tiida-2009-agora-e-flex); o 2008 é a gasolina",
+  "resumo": "O espaço interno é o elogio número um (15 de 23 donos), junto com conforto e silêncio; as queixas são isoladas (ruídos, detalhes elétricos, atendimento da rede)."
+ },
+ "Nissan Sentra 2.0": {
+  "resumo": "Muito bem avaliado: conforto, motor, espaço e o câmbio CVT (nas versões automáticas); a crítica recorrente é a suspensão dura (13 de 46 donos)."
+ },
+ "Chevrolet Classic LS 1.0": {
+  "resumo": "Poucas avaliações (11): economia e manutenção barata agradam; motor fraco em retomadas, acabamento simples e ruídos são as reclamações."
+ },
+ "Volkswagen up! take 1.0 (5 portas)": {
+  "resumo": "O consumo baixo é elogio quase unânime (13 de 14 donos), além do espaço e da dirigibilidade; críticas à suspensão firme e à falta de itens, como vidros traseiros elétricos.",
+  "consumo": {
+   "etanolUrbano": 9.1,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 13.2,
+   "gasolinaRodoviario": 14.3
+  },
+  "consumoFonte": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file",
+  "consumoFonteNome": "Inmetro, PBE Veicular 2014 (up! take 4 portas); a Ficha Completa traz 9,2 / 10,2"
+ },
+ "Renault Logan Authentique 1.0": {
+  "resumo": "Poucas avaliações (5), nota baixa: o espaço interno e o porta-malas agradam; ruídos nas portas e defeitos elétricos aparecem em várias delas.",
+  "consumoConfirma": [
+   "Inmetro, PBE Veicular 2014: mesmos valores",
+   "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file"
+  ]
+ },
+ "Renault Sandero Expression 1.0": {
+  "resumo": "Só 2 avaliações: o espaço interno agrada; ar-condicionado fraco e consumo foram citados.",
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 12.4,
+   "gasolinaRodoviario": 12.8
+  },
+  "consumoFonte": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file",
+  "consumoFonteNome": "Inmetro, PBE Veicular 2014 (Sandero 1.0 Expression com ar-condicionado); a Ficha Completa traz 8,0 / 8,8"
+ },
+ "Ford Fiesta 1.0 (hatch)": {
+  "resumo": "Só 4 avaliações: conforto e dirigibilidade elogiados; arrancada fraca e consumo alto para um 1.0."
+ },
+ "Volkswagen Gol City 1.0 (4 portas)": {
+  "resumo": null,
+  "consumoConfirma": [
+   "Inmetro, PBE Veicular 2014: mesmos valores",
+   "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file"
+  ]
+ },
+ "Fiat Palio Fire 1.0 (4 portas)": {
+  "resumo": "Poucas avaliações (9), quase todas boas: economia, conforto e manutenção barata; queixas só de detalhes, como painel antigo e falta de abertura interna do porta-malas.",
+  "alerta": "A FIPE tem dois códigos para o Palio Fire 1.0 4 portas 2014: \"Economy\" (R$ 32.430, classificado como flex, usado aqui) e \"Palio 1.0/Trofeo Fire/Fire Flex 4p\" (R$ 29.625, que classifica o ano 2014 como gasolina). Com o segundo, o custo em 5 anos seria um pouco menor; a posição não muda.",
+  "consumoConfirma": [
+   "Inmetro, PBE Veicular 2014: mesmos valores",
+   "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file"
+  ]
+ },
+ "Fiat Siena EL 1.0": {
+  "resumo": "Poucas avaliações (11): porta-malas e espaço elogiados; ruídos internos e motor 1.0 lento são as críticas mais citadas.",
+  "consumoConfirma": [
+   "Inmetro, PBE Veicular 2014: mesmos valores",
+   "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file"
+  ]
+ },
+ "Peugeot 208 Active 1.5": {
+  "resumo": null,
+  "consumoConfirma": [
+   "Inmetro, PBE Veicular 2014: mesmos valores",
+   "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file"
+  ]
+ },
+ "Chevrolet Cobalt LS 1.4": {
+  "resumo": "Espaço interno e porta-malas enorme elogiados por todos os 12 donos, com manutenção barata; a crítica é o motor 1.4 fraco para o tamanho do carro."
+ },
+ "Nissan Livina 1.6": {
+  "resumo": "Espaço interno e porta-malas são o grande elogio (18 de 24 donos); a crítica mais repetida é o barulho do motor e o isolamento acústico fraco, além da falta de computador de bordo.",
+  "consumoConfirma": [
+   "Inmetro, PBE Veicular 2013: mesmos valores",
+   "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2013/@@download/file"
+  ]
+ },
+ "Chevrolet Spin LS 1.8": {
+  "resumo": "19 de 27 donos elogiam o espaço, o porta-malas ou os 7 lugares (a maioria das avaliações é das versões LT e LTZ, com o mesmo motor 1.8); as queixas mais citadas são consumo alto, pneus originais que gastam rápido e pequenos defeitos elétricos e de vedação.",
+  "alerta": "O valor FIPE desta versão caiu 22% desde agosto/2021 (de R$ 40.805 para R$ 31.717), ao contrário dos outros carros, e os poucos anúncios pedem cerca de R$ 40 mil. A FIPE da versão LS parece pouco confiável; com ela, a compra parece barata e a depreciação projetada fica alta."
+ },
+ "Fiat Uno Vivace/Rua 1.0 (4 portas)": {
+  "resumo": "Só 4 avaliações: manutenção barata e robustez elogiadas; ruído interno e motor fraco com o ar ligado criticados.",
+  "consumo": {
+   "etanolUrbano": 8.2,
+   "etanolRodoviario": 10.4,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 15
+  },
+  "consumoFonte": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2014/@@download/file",
+  "consumoFonteNome": "Inmetro, PBE Veicular 2014 (Uno Vivace 4 portas); a ficha do Uno Rua traz 8,3 / 9,4"
+ },
+ "Chevrolet Celta LT 1.0 (4 portas)": {
+  "resumo": "Economia e manutenção barata são os pontos fortes; acabamento simples, barulho e pouco espaço são as queixas mais repetidas."
+ },
+ "Fiat Linea Essence 1.8": {
+  "resumo": "Poucas avaliações (13), em geral boas: conforto, estabilidade, espaço e porta-malas; queixas pontuais de consumo, ruído interno e acabamento."
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5928
+ },
+ "consultadoEm": "2026-10-25T23:23:38.577Z",
+ "resposta": [
+  {
+   "Label": "2016 Gás Natural",
+   "Value": "2016-7"
+  },
+  {
+   "Label": "2015 Gás Natural",
+   "Value": "2015-7"
+  },
+  {
+   "Label": "2014 Gás Natural",
+   "Value": "2014-7"
+  },
+  {
+   "Label": "2013 Gás Natural",
+   "Value": "2013-7"
+  }
+ ]
+}

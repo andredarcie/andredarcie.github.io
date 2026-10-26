@@ -1,0 +1,3982 @@
+[
+ {
+  "marca": "chevrolet",
+  "modelo": "celta",
+  "slug": "celta-life-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/celta-life-1-0-2008",
+  "titulo": "Chevrolet Celta Life 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "celta",
+  "slug": "celta-spirit-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/celta-spirit-1-0-2008",
+  "titulo": "Chevrolet Celta Spirit 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "celta",
+  "slug": "celta-super-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/celta-super-1-0-2008",
+  "titulo": "Chevrolet Celta Super 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-joy-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-joy-1-4-2008",
+  "titulo": "Chevrolet Prisma Joy 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 105
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-maxx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-maxx-1-4-2008",
+  "titulo": "Chevrolet Prisma Maxx 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 105
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa",
+  "slug": "corsa-joy-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-joy-1-0-2008",
+  "titulo": "Chevrolet Corsa Joy 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10.9,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa",
+  "slug": "corsa-maxx-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-maxx-1-0-2008",
+  "titulo": "Chevrolet Corsa Maxx 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10.9,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa",
+  "slug": "corsa-maxx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-maxx-1-4-2008",
+  "titulo": "Chevrolet Corsa Maxx 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa",
+  "slug": "corsa-maxx-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-maxx-1-8-2008",
+  "titulo": "Chevrolet Corsa Maxx 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa",
+  "slug": "corsa-premium-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-premium-1-4-2008",
+  "titulo": "Chevrolet Corsa Premium 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa",
+  "slug": "corsa-ss-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-ss-1-8-2008",
+  "titulo": "Chevrolet Corsa SS 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa-sedan",
+  "slug": "corsa-sedan-maxx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-sedan-maxx-1-4-2008",
+  "titulo": "Chevrolet Corsa Sedan Maxx 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa-sedan",
+  "slug": "corsa-sedan-premium-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-sedan-premium-1-4-2008",
+  "titulo": "Chevrolet Corsa Sedan Premium 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "corsa-sedan",
+  "slug": "corsa-sedan-premium-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/corsa-sedan-premium-1-8-2008",
+  "titulo": "Chevrolet Corsa Sedan Premium 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "classic",
+  "slug": "classic-life-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/classic-life-1-0-2008",
+  "titulo": "Chevrolet Classic Life 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "classic",
+  "slug": "classic-spirit-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/classic-spirit-1-0-2008",
+  "titulo": "Chevrolet Classic Spirit 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "classic",
+  "slug": "classic-super-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/classic-super-1-0-2008",
+  "titulo": "Chevrolet Classic Super 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra",
+  "slug": "astra-advantage-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-advantage-2-0-8v-2008",
+  "titulo": "Chevrolet Astra Advantage 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra",
+  "slug": "astra-advantage-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-advantage-2-0-8v-at-2008",
+  "titulo": "Chevrolet Astra Advantage 2.0 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.8,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 7.3,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra",
+  "slug": "astra-elegance-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-elegance-2-0-8v-2008",
+  "titulo": "Chevrolet Astra Elegance 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 6.8,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra",
+  "slug": "astra-ss-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-ss-2-0-2008",
+  "titulo": "Chevrolet Astra SS 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra-sedan",
+  "slug": "astra-sedan-advantage-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-sedan-advantage-2-0-8v-2008",
+  "titulo": "Chevrolet Astra Sedan Advantage 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra-sedan",
+  "slug": "astra-sedan-elegance-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-sedan-elegance-2-0-8v-2008",
+  "titulo": "Chevrolet Astra Sedan Elegance 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "astra-sedan",
+  "slug": "astra-sedan-elegance-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/astra-sedan-elegance-2-0-8v-at-2008",
+  "titulo": "Chevrolet Astra Sedan Elegance 2.0 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 7.7,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "vectra",
+  "slug": "vectra-elegance-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/vectra-elegance-2-0-8v-2008",
+  "titulo": "Chevrolet Vectra Elegance 2.0 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 7.7,
+   "gasolinaRodoviario": 11.1
+  },
+  "alturaSolo": 129
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "vectra",
+  "slug": "vectra-elegance-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/vectra-elegance-2-0-8v-at-2008",
+  "titulo": "Chevrolet Vectra Elegance 2.0 8V AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.9,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 129
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "vectra",
+  "slug": "vectra-elite-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/vectra-elite-2-0-8v-at-2008",
+  "titulo": "Chevrolet Vectra Elite 2.0 8V AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.9,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 129
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "vectra",
+  "slug": "vectra-elite-2-4-16v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/vectra-elite-2-4-16v-at-2008",
+  "titulo": "Chevrolet Vectra Elite 2.4 16V AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.3,
+   "etanolRodoviario": 6.9,
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 9.5
+  },
+  "alturaSolo": 129
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "vectra",
+  "slug": "vectra-expression-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/vectra-expression-2-0-8v-2008",
+  "titulo": "Chevrolet Vectra Expression 2.0 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 7.7,
+   "gasolinaRodoviario": 11.1
+  },
+  "alturaSolo": 129
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "vectra",
+  "slug": "vectra-expression-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/vectra-expression-2-0-8v-at-2008",
+  "titulo": "Chevrolet Vectra Expression 2.0 8V AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.9,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 129
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "meriva",
+  "slug": "meriva-joy-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/meriva-joy-1-8-2008",
+  "titulo": "Chevrolet Meriva Joy 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 7.3,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "meriva",
+  "slug": "meriva-maxx-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/meriva-maxx-1-8-2008",
+  "titulo": "Chevrolet Meriva Maxx 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 7.3,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "meriva",
+  "slug": "meriva-premium-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/meriva-premium-1-8-2008",
+  "titulo": "Chevrolet Meriva Premium 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 7.3,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "meriva",
+  "slug": "meriva-premium-1-8-easytronic-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/meriva-premium-1-8-easytronic-2008",
+  "titulo": "Chevrolet Meriva Premium 1.8 Easytronic 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 7.3,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "meriva",
+  "slug": "meriva-ss-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/meriva-ss-1-8-2008",
+  "titulo": "Chevrolet Meriva SS 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 7.3,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "zafira",
+  "slug": "zafira-comfort-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/zafira-comfort-2-0-8v-2008",
+  "titulo": "Chevrolet Zafira Comfort 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "zafira",
+  "slug": "zafira-elegance-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/zafira-elegance-2-0-8v-2008",
+  "titulo": "Chevrolet Zafira Elegance 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "zafira",
+  "slug": "zafira-elegance-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/zafira-elegance-2-0-8v-at-2008",
+  "titulo": "Chevrolet Zafira Elegance 2.0 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 7.4,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "zafira",
+  "slug": "zafira-elite-2-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/zafira-elite-2-0-8v-2008",
+  "titulo": "Chevrolet Zafira Elite 2.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "zafira",
+  "slug": "zafira-elite-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/zafira-elite-2-0-8v-at-2008",
+  "titulo": "Chevrolet Zafira Elite 2.0 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 7.4,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "zafira",
+  "slug": "zafira-expression-2-0-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/zafira-expression-2-0-8v-at-2008",
+  "titulo": "Chevrolet Zafira Expression 2.0 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 7.4,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-mille-fire-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-mille-fire-1-0-2008",
+  "titulo": "Fiat Uno Mille Fire 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11.2,
+   "gasolinaRodoviario": 15.4
+  },
+  "alturaSolo": 146
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-1-8-r-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-1-8-r-2008",
+  "titulo": "Fiat Palio 1.8 R 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.3,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 138
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-elx-1-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-elx-1-0-8v-2008",
+  "titulo": "Fiat Palio ELX 1.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-elx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-elx-1-4-2008",
+  "titulo": "Fiat Palio ELX 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-fire-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-fire-1-0-2008",
+  "titulo": "Fiat Palio Fire 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio-weekend",
+  "slug": "palio-weekend-adventure-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-weekend-adventure-1-8-8v-2008",
+  "titulo": "Fiat Palio Weekend Adventure 1.8 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio-weekend",
+  "slug": "palio-weekend-elx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-weekend-elx-1-4-2008",
+  "titulo": "Fiat Palio Weekend ELX 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-elx-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-elx-1-0-2008",
+  "titulo": "Fiat Siena ELX 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 11,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-elx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-elx-1-4-2008",
+  "titulo": "Fiat Siena ELX 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 12.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-fire-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-fire-1-0-2008",
+  "titulo": "Fiat Siena Fire 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": 135
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-hlx-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-hlx-1-8-2008",
+  "titulo": "Fiat Siena HLX 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-tetrafuel-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-tetrafuel-1-4-2008",
+  "titulo": "Fiat Siena Tetrafuel 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": 135
+ },
+ {
+  "marca": "fiat",
+  "modelo": "stilo",
+  "slug": "stilo-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/stilo-1-8-8v-2008",
+  "titulo": "Fiat Stilo 1.8 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "stilo",
+  "slug": "stilo-1-8-8v-dualogic-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/stilo-1-8-8v-dualogic-2008",
+  "titulo": "Fiat Stilo 1.8 8V Dualogic 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "stilo",
+  "slug": "stilo-abarth-2-4-20v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/stilo-abarth-2-4-20v-2008",
+  "titulo": "Fiat Stilo Abarth 2.4 20V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 6.6,
+   "gasolinaRodoviario": 10.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "stilo",
+  "slug": "stilo-sporting-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/stilo-sporting-1-8-8v-2008",
+  "titulo": "Fiat Stilo Sporting 1.8 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "stilo",
+  "slug": "stilo-sporting-1-8-8v-dualogic-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/stilo-sporting-1-8-8v-dualogic-2008",
+  "titulo": "Fiat Stilo Sporting 1.8 8V Dualogic 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-adventure-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-adventure-1-8-8v-2008",
+  "titulo": "Fiat Idea Adventure 1.8 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 7.8,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": 185
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-elx-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-elx-1-4-8v-2008",
+  "titulo": "Fiat Idea ELX 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.3,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-hlx-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-hlx-1-8-8v-2008",
+  "titulo": "Fiat Idea HLX 1.8 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 10
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-1-4-2008",
+  "titulo": "Fiat Punto 1.4 2008",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-elx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-elx-1-4-2008",
+  "titulo": "Fiat Punto ELX 1.4 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-hlx-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-hlx-1-8-8v-2008",
+  "titulo": "Fiat Punto HLX 1.8 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 135
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-sporting-1-8-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-sporting-1-8-8v-2008",
+  "titulo": "Fiat Punto Sporting 1.8 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 133
+ },
+ {
+  "marca": "fiat",
+  "modelo": "doblo",
+  "slug": "doblo-adventure-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/doblo-adventure-1-8-2008",
+  "titulo": "Fiat Doblo Adventure 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 7.1,
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 10
+  },
+  "alturaSolo": 223
+ },
+ {
+  "marca": "fiat",
+  "modelo": "doblo",
+  "slug": "doblo-cargo-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/doblo-cargo-1-8-2008",
+  "titulo": "Fiat Doblo Cargo 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.9,
+   "etanolRodoviario": 7.1,
+   "gasolinaUrbano": 8.4,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": 162
+ },
+ {
+  "marca": "fiat",
+  "modelo": "doblo",
+  "slug": "doblo-elx-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/doblo-elx-1-8-2008",
+  "titulo": "Fiat Doblo ELX 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 11,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 14.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "doblo",
+  "slug": "doblo-hlx-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/doblo-hlx-1-8-2008",
+  "titulo": "Fiat Doblo HLX 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 11,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 14.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ka",
+  "slug": "ka-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ka-1-0-2008",
+  "titulo": "Ford Ka 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 10.6,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 13.8
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "ford",
+  "modelo": "ka",
+  "slug": "ka-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ka-1-6-2008",
+  "titulo": "Ford Ka 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 175
+ },
+ {
+  "marca": "ford",
+  "modelo": "ka",
+  "slug": "ka-tecno-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ka-tecno-1-0-2008",
+  "titulo": "Ford Ka Tecno 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 10.6,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 13.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-1-0-2008",
+  "titulo": "Ford Fiesta 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 15.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-1-6-2008",
+  "titulo": "Ford Fiesta 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-trail-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-trail-1-0-2008",
+  "titulo": "Ford Fiesta Trail 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 15.9
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-trail-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-trail-1-6-2008",
+  "titulo": "Ford Fiesta Trail 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta-sedan",
+  "slug": "fiesta-sedan-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-sedan-1-0-2008",
+  "titulo": "Ford Fiesta Sedan 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta-sedan",
+  "slug": "fiesta-sedan-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-sedan-1-6-2008",
+  "titulo": "Ford Fiesta Sedan 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-ghia-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-ghia-2-0-2008",
+  "titulo": "Ford Focus Ghia 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-ghia-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-ghia-2-0-at-2008",
+  "titulo": "Ford Focus Ghia 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-gl-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-gl-1-6-8v-2008",
+  "titulo": "Ford Focus GL 1.6 8V 2008",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 11.4,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-glx-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-glx-1-6-8v-2008",
+  "titulo": "Ford Focus GLX 1.6 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 11.4,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-glx-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-glx-2-0-2008",
+  "titulo": "Ford Focus GLX 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus-sedan",
+  "slug": "focus-sedan-ghia-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-sedan-ghia-2-0-2008",
+  "titulo": "Ford Focus Sedan Ghia 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus-sedan",
+  "slug": "focus-sedan-ghia-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-sedan-ghia-2-0-at-2008",
+  "titulo": "Ford Focus Sedan Ghia 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus-sedan",
+  "slug": "focus-sedan-gl-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-sedan-gl-1-6-8v-2008",
+  "titulo": "Ford Focus Sedan GL 1.6 8V 2008",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 11.4,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus-sedan",
+  "slug": "focus-sedan-glx-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-sedan-glx-1-6-8v-2008",
+  "titulo": "Ford Focus Sedan GLX 1.6 8V 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 11.4,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus-sedan",
+  "slug": "focus-sedan-glx-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-sedan-glx-2-0-2008",
+  "titulo": "Ford Focus Sedan GLX 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus-sedan",
+  "slug": "focus-sedan-glx-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-sedan-glx-2-0-at-2008",
+  "titulo": "Ford Focus Sedan GLX 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-4wd-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-4wd-2-0-2008",
+  "titulo": "Ford Ecosport 4WD 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xl-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xl-1-6-2008",
+  "titulo": "Ford Ecosport XL 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 7.3,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xls-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xls-1-6-2008",
+  "titulo": "Ford Ecosport XLS 1.6 2008",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 7.3,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xls-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xls-2-0-at-2008",
+  "titulo": "Ford Ecosport XLS 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xlt-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xlt-1-6-2008",
+  "titulo": "Ford Ecosport XLT 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 6.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xlt-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xlt-2-0-2008",
+  "titulo": "Ford Ecosport XLT 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 9.8
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xlt-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xlt-2-0-at-2008",
+  "titulo": "Ford Ecosport XLT 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-xlt-freestyle-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-xlt-freestyle-1-6-2008",
+  "titulo": "Ford Ecosport XLT Freestyle 1.6 2008",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 6.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-1-0-2008",
+  "titulo": "Volkswagen Gol 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 14.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-city-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-city-1-0-2008",
+  "titulo": "Volkswagen Gol City 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 14.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-city-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-city-1-6-2008",
+  "titulo": "Volkswagen Gol City 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-plus-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-plus-1-0-2008",
+  "titulo": "Volkswagen Gol Plus 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 14.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-power-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-power-1-6-2008",
+  "titulo": "Volkswagen Gol Power 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-power-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-power-1-8-2008",
+  "titulo": "Volkswagen Gol Power 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-rallye-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-rallye-1-6-2008",
+  "titulo": "Volkswagen Gol Rallye 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.3,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-1-0-2008",
+  "titulo": "Volkswagen Fox 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-city-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-city-1-0-2008",
+  "titulo": "Volkswagen Fox City 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-plus-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-plus-1-0-2008",
+  "titulo": "Volkswagen Fox Plus 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-plus-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-plus-1-6-2008",
+  "titulo": "Volkswagen Fox Plus 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 10.4,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-route-1-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-route-1-0-2008",
+  "titulo": "Volkswagen Fox Route 1.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-route-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-route-1-6-2008",
+  "titulo": "Volkswagen Fox Route 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 10.4,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-1-6-2008",
+  "titulo": "Volkswagen Polo 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-sportline-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-sportline-1-6-2008",
+  "titulo": "Volkswagen Polo Sportline 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo-sedan",
+  "slug": "polo-sedan-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-sedan-1-6-2008",
+  "titulo": "Volkswagen Polo Sedan 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo-sedan",
+  "slug": "polo-sedan-comfortline-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-sedan-comfortline-1-6-2008",
+  "titulo": "Volkswagen Polo Sedan Comfortline 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo-sedan",
+  "slug": "polo-sedan-comfortline-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-sedan-comfortline-2-0-2008",
+  "titulo": "Volkswagen Polo Sedan Comfortline 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-1-6-2008",
+  "titulo": "Volkswagen Golf 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-2-0-2008",
+  "titulo": "Volkswagen Golf 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-2-0-at-2008",
+  "titulo": "Volkswagen Golf 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-comfortline-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-comfortline-2-0-2008",
+  "titulo": "Volkswagen Golf Comfortline 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-comfortline-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-comfortline-2-0-at-2008",
+  "titulo": "Volkswagen Golf Comfortline 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-gti-1-8-turbo-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-gti-1-8-turbo-2008",
+  "titulo": "Volkswagen Golf GTi 1.8 Turbo 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7,
+   "gasolinaRodoviario": 10
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-gti-1-8-turbo-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-gti-1-8-turbo-at-2008",
+  "titulo": "Volkswagen Golf GTi 1.8 Turbo AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7,
+   "gasolinaRodoviario": 10
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-sportline-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-sportline-1-6-2008",
+  "titulo": "Volkswagen Golf Sportline 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "parati",
+  "slug": "parati-plus-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/parati-plus-1-6-2008",
+  "titulo": "Volkswagen Parati Plus 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9.3,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "parati",
+  "slug": "parati-plus-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/parati-plus-1-8-2008",
+  "titulo": "Volkswagen Parati Plus 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "parati",
+  "slug": "parati-surf-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/parati-surf-1-6-2008",
+  "titulo": "Volkswagen Parati Surf 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9.3,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "parati",
+  "slug": "parati-surf-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/parati-surf-1-8-2008",
+  "titulo": "Volkswagen Parati Surf 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "parati",
+  "slug": "parati-track-field-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/parati-track-field-1-6-2008",
+  "titulo": "Volkswagen Parati Track Field 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9.3,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "parati",
+  "slug": "parati-track-field-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/parati-track-field-1-8-2008",
+  "titulo": "Volkswagen Parati Track Field 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "spacefox",
+  "slug": "spacefox-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/spacefox-1-6-2008",
+  "titulo": "Volkswagen Spacefox 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "spacefox",
+  "slug": "spacefox-comfortline-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/spacefox-comfortline-1-6-2008",
+  "titulo": "Volkswagen Spacefox Comfortline 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "spacefox",
+  "slug": "spacefox-plus-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/spacefox-plus-1-6-2008",
+  "titulo": "Volkswagen Spacefox Plus 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "jetta",
+  "slug": "jetta-2-5-tiptronic-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/jetta-2-5-tiptronic-2008",
+  "titulo": "Volkswagen Jetta 2.5 Tiptronic 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.4,
+   "gasolinaRodoviario": 9.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "bora",
+  "slug": "bora-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/bora-2-0-2008",
+  "titulo": "Volkswagen Bora 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "bora",
+  "slug": "bora-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/bora-2-0-at-2008",
+  "titulo": "Volkswagen Bora 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "crossfox",
+  "slug": "crossfox-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/crossfox-1-6-2008",
+  "titulo": "Volkswagen Crossfox 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-air-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-air-1-6-16v-2008",
+  "titulo": "Renault Clio Air 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 10.7,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-authentique-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-authentique-1-0-16v-2008",
+  "titulo": "Renault Clio Authentique 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.9,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-authentique-1-0-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-authentique-1-0-8v-2008",
+  "titulo": "Renault Clio Authentique 1.0 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 14.9
+  },
+  "alturaSolo": 187
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-authentique-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-authentique-1-6-16v-2008",
+  "titulo": "Renault Clio Authentique 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 10.7,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-expression-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-expression-1-0-16v-2008",
+  "titulo": "Renault Clio Expression 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.9,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio-sedan",
+  "slug": "clio-sedan-authentique-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-sedan-authentique-1-0-16v-2008",
+  "titulo": "Renault Clio Sedan Authentique 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio-sedan",
+  "slug": "clio-sedan-authentique-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-sedan-authentique-1-6-16v-2008",
+  "titulo": "Renault Clio Sedan Authentique 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio-sedan",
+  "slug": "clio-sedan-expression-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-sedan-expression-1-0-16v-2008",
+  "titulo": "Renault Clio Sedan Expression 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio-sedan",
+  "slug": "clio-sedan-expression-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-sedan-expression-1-6-16v-2008",
+  "titulo": "Renault Clio Sedan Expression 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio-sedan",
+  "slug": "clio-sedan-privilege-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-sedan-privilege-1-0-16v-2008",
+  "titulo": "Renault Clio Sedan Privilege 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio-sedan",
+  "slug": "clio-sedan-privilege-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-sedan-privilege-1-6-16v-2008",
+  "titulo": "Renault Clio Sedan Privilege 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-authentique-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-authentique-1-0-16v-2008",
+  "titulo": "Renault Logan Authentique 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 12.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-authentique-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-authentique-1-6-8v-2008",
+  "titulo": "Renault Logan Authentique 1.6 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-expression-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-expression-1-0-16v-2008",
+  "titulo": "Renault Logan Expression 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 12.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-expression-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-expression-1-6-8v-2008",
+  "titulo": "Renault Logan Expression 1.6 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-privilege-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-privilege-1-6-16v-2008",
+  "titulo": "Renault Logan Privilege 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-privilege-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-privilege-1-6-8v-2008",
+  "titulo": "Renault Logan Privilege 1.6 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-authentique-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-authentique-1-0-16v-2008",
+  "titulo": "Renault Sandero Authentique 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 12.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-authentique-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-authentique-1-6-8v-2008",
+  "titulo": "Renault Sandero Authentique 1.6 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-expression-1-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-expression-1-0-16v-2008",
+  "titulo": "Renault Sandero Expression 1.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 12.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-expression-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-expression-1-6-8v-2008",
+  "titulo": "Renault Sandero Expression 1.6 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-privilege-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-privilege-1-6-16v-2008",
+  "titulo": "Renault Sandero Privilege 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-privilege-1-6-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-privilege-1-6-8v-2008",
+  "titulo": "Renault Sandero Privilege 1.6 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-dynamique-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-dynamique-1-6-2008",
+  "titulo": "Renault Megane Dynamique 1.6 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-dynamique-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-dynamique-2-0-2008",
+  "titulo": "Renault Megane Dynamique 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-dynamique-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-dynamique-2-0-at-2008",
+  "titulo": "Renault Megane Dynamique 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-expression-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-expression-1-6-2008",
+  "titulo": "Renault Megane Expression 1.6 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-expression-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-expression-2-0-2008",
+  "titulo": "Renault Megane Expression 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-expression-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-expression-2-0-at-2008",
+  "titulo": "Renault Megane Expression 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane",
+  "slug": "megane-privilege-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-privilege-2-0-at-2008",
+  "titulo": "Renault Megane Privilege 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane-grand-tour",
+  "slug": "megane-grand-tour-dynamique-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-grand-tour-dynamique-1-6-2008",
+  "titulo": "Renault Megane Grand Tour Dynamique 1.6 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane-grand-tour",
+  "slug": "megane-grand-tour-dynamique-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-grand-tour-dynamique-2-0-2008",
+  "titulo": "Renault Megane Grand Tour Dynamique 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane-grand-tour",
+  "slug": "megane-grand-tour-dynamique-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-grand-tour-dynamique-2-0-at-2008",
+  "titulo": "Renault Megane Grand Tour Dynamique 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane-grand-tour",
+  "slug": "megane-grand-tour-expression-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-grand-tour-expression-1-6-2008",
+  "titulo": "Renault Megane Grand Tour Expression 1.6 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "megane-grand-tour",
+  "slug": "megane-grand-tour-privilege-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/megane-grand-tour-privilege-2-0-at-2008",
+  "titulo": "Renault Megane Grand Tour Privilege 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-authentique-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-authentique-1-6-16v-2008",
+  "titulo": "Renault Scenic Authentique 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-expression-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-expression-1-6-16v-2008",
+  "titulo": "Renault Scenic Expression 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-expression-1-6-16v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-expression-1-6-16v-at-2008",
+  "titulo": "Renault Scenic Expression 1.6 16V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-grand-dynamique-2-0-16v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-grand-dynamique-2-0-16v-at-2008",
+  "titulo": "Renault Scenic Grand Dynamique 2.0 16V AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 6.9,
+   "gasolinaRodoviario": 11.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-kids-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-kids-1-6-16v-2008",
+  "titulo": "Renault Scenic Kids 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-privilege-2-0-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-privilege-2-0-16v-2008",
+  "titulo": "Renault Scenic Privilege 2.0 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-privilege-2-0-16v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-privilege-2-0-16v-at-2008",
+  "titulo": "Renault Scenic Privilege 2.0 16V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 9.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "scenic",
+  "slug": "scenic-sportway-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/renault/scenic-sportway-1-6-16v-2008",
+  "titulo": "Renault Scenic Sportway 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-allure-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-allure-1-6-16v-2008",
+  "titulo": "Peugeot 206 Allure 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 10.8,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-feline-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-feline-1-4-8v-2008",
+  "titulo": "Peugeot 206 Feline 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-feline-1-6-16v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-feline-1-6-16v-2008",
+  "titulo": "Peugeot 206 Feline 1.6 16V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 10.8,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-feline-1-6-16v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-feline-1-6-16v-at-2008",
+  "titulo": "Peugeot 206 Feline 1.6 16V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-moonlight-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-moonlight-1-4-8v-2008",
+  "titulo": "Peugeot 206 Moonlight 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-presence-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-presence-1-4-8v-2008",
+  "titulo": "Peugeot 206 Presence 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "206",
+  "slug": "206-sensation-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/206-sensation-1-4-8v-2008",
+  "titulo": "Peugeot 206 Sensation 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "307",
+  "slug": "307-feline-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/307-feline-2-0-2008",
+  "titulo": "Peugeot 307 Feline 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "307",
+  "slug": "307-feline-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/307-feline-2-0-at-2008",
+  "titulo": "Peugeot 307 Feline 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.3,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "307",
+  "slug": "307-griffe-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/307-griffe-2-0-at-2008",
+  "titulo": "Peugeot 307 Griffe 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.3,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "307",
+  "slug": "307-presence-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/307-presence-1-6-2008",
+  "titulo": "Peugeot 307 Presence 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "307-sedan",
+  "slug": "307-sedan-feline-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/307-sedan-feline-2-0-at-2008",
+  "titulo": "Peugeot 307 Sedan Feline 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 7.8,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "307-sedan",
+  "slug": "307-sedan-presence-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/307-sedan-presence-1-6-2008",
+  "titulo": "Peugeot 307 Sedan Presence 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.4,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-exclusive-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-exclusive-1-4-2008",
+  "titulo": "Citroen C3 Exclusive 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-exclusive-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-exclusive-1-6-2008",
+  "titulo": "Citroen C3 Exclusive 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-exclusive-1-6-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-exclusive-1-6-at-2008",
+  "titulo": "Citroen C3 Exclusive 1.6 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-glx-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-glx-1-4-2008",
+  "titulo": "Citroen C3 GLX 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-glx-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-glx-1-6-2008",
+  "titulo": "Citroen C3 GLX 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-xtr-1-4-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-xtr-1-4-2008",
+  "titulo": "Citroen C3 XTR 1.4 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-xtr-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-xtr-1-6-2008",
+  "titulo": "Citroen C3 XTR 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4",
+  "slug": "c4-vtr-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-vtr-2-0-2008",
+  "titulo": "Citroen C4 VTR 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-pallas",
+  "slug": "c4-pallas-exclusive-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-pallas-exclusive-2-0-2008",
+  "titulo": "Citroen C4 Pallas Exclusive 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-pallas",
+  "slug": "c4-pallas-exclusive-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-pallas-exclusive-2-0-at-2008",
+  "titulo": "Citroen C4 Pallas Exclusive 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-pallas",
+  "slug": "c4-pallas-glx-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-pallas-glx-2-0-2008",
+  "titulo": "Citroen C4 Pallas GLX 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-pallas",
+  "slug": "c4-pallas-glx-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-pallas-glx-2-0-at-2008",
+  "titulo": "Citroen C4 Pallas GLX 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 11.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "xsara-picasso",
+  "slug": "xsara-picasso-exclusive-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/xsara-picasso-exclusive-1-6-2008",
+  "titulo": "Citroen Xsara Picasso Exclusive 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "xsara-picasso",
+  "slug": "xsara-picasso-exclusive-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/xsara-picasso-exclusive-2-0-2008",
+  "titulo": "Citroen Xsara Picasso Exclusive 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": 140
+ },
+ {
+  "marca": "citroen",
+  "modelo": "xsara-picasso",
+  "slug": "xsara-picasso-exclusive-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/xsara-picasso-exclusive-2-0-at-2008",
+  "titulo": "Citroen Xsara Picasso Exclusive 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 140
+ },
+ {
+  "marca": "citroen",
+  "modelo": "xsara-picasso",
+  "slug": "xsara-picasso-glx-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/xsara-picasso-glx-1-6-2008",
+  "titulo": "Citroen Xsara Picasso GLX 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 140
+ },
+ {
+  "marca": "citroen",
+  "modelo": "xsara-picasso",
+  "slug": "xsara-picasso-glx-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/xsara-picasso-glx-2-0-2008",
+  "titulo": "Citroen Xsara Picasso GLX 2.0 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": 140
+ },
+ {
+  "marca": "citroen",
+  "modelo": "xsara-picasso",
+  "slug": "xsara-picasso-glx-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/xsara-picasso-glx-2-0-at-2008",
+  "titulo": "Citroen Xsara Picasso GLX 2.0 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 140
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-ex-1-5-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-ex-1-5-2008",
+  "titulo": "Honda Fit EX 1.5 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-ex-1-5-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-ex-1-5-at-2008",
+  "titulo": "Honda Fit EX 1.5 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-lx-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-lx-1-4-8v-2008",
+  "titulo": "Honda Fit LX 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 11.2,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 16
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-lx-1-4-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-lx-1-4-8v-at-2008",
+  "titulo": "Honda Fit LX 1.4 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-lxl-1-4-8v-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-lxl-1-4-8v-2008",
+  "titulo": "Honda Fit LXL 1.4 8V 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 11.2,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 16
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-lxl-1-4-8v-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-lxl-1-4-8v-at-2008",
+  "titulo": "Honda Fit LXL 1.4 8V AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-s-1-5-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-s-1-5-2008",
+  "titulo": "Honda Fit S 1.5 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-s-1-5-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-s-1-5-at-2008",
+  "titulo": "Honda Fit S 1.5 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-exs-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-exs-1-8-at-2008",
+  "titulo": "Honda Civic EXS 1.8 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-lxs-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-lxs-1-8-2008",
+  "titulo": "Honda Civic LXS 1.8 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-lxs-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-lxs-1-8-at-2008",
+  "titulo": "Honda Civic LXS 1.8 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-si-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-si-2-0-2008",
+  "titulo": "Honda Civic Si 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 13.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-se-g-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-se-g-1-8-at-2008",
+  "titulo": "Toyota Corolla SE-G 1.8 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 170
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xei-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xei-1-8-2008",
+  "titulo": "Toyota Corolla XEi 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xei-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xei-1-8-at-2008",
+  "titulo": "Toyota Corolla XEi 1.8 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xli-1-6-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xli-1-6-at-2008",
+  "titulo": "Toyota Corolla XLi 1.6 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xli-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xli-1-8-2008",
+  "titulo": "Toyota Corolla XLi 1.8 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xli-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xli-1-8-at-2008",
+  "titulo": "Toyota Corolla XLi 1.8 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "toyota",
+  "modelo": "fielder",
+  "slug": "fielder-se-g-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/fielder-se-g-1-8-at-2008",
+  "titulo": "Toyota Fielder SE-G 1.8 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 170
+ },
+ {
+  "marca": "toyota",
+  "modelo": "fielder",
+  "slug": "fielder-xei-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/fielder-xei-1-8-2008",
+  "titulo": "Toyota Fielder XEi 1.8 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 170
+ },
+ {
+  "marca": "toyota",
+  "modelo": "fielder",
+  "slug": "fielder-xei-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/fielder-xei-1-8-at-2008",
+  "titulo": "Toyota Fielder XEi 1.8 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 170
+ },
+ {
+  "marca": "nissan",
+  "modelo": "tiida",
+  "slug": "tiida-s-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/tiida-s-1-8-2008",
+  "titulo": "Nissan Tiida S 1.8 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "nissan",
+  "modelo": "tiida",
+  "slug": "tiida-s-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/tiida-s-1-8-at-2008",
+  "titulo": "Nissan Tiida S 1.8 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "nissan",
+  "modelo": "tiida",
+  "slug": "tiida-sl-1-8-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/tiida-sl-1-8-2008",
+  "titulo": "Nissan Tiida SL 1.8 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "tiida",
+  "slug": "tiida-sl-1-8-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/tiida-sl-1-8-at-2008",
+  "titulo": "Nissan Tiida SL 1.8 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-2-0-2008",
+  "titulo": "Nissan Sentra 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-2-0-at-2008",
+  "titulo": "Nissan Sentra 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-s-2-0-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-s-2-0-2008",
+  "titulo": "Nissan Sentra S 2.0 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-s-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-s-2-0-at-2008",
+  "titulo": "Nissan Sentra S 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-sl-2-0-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-sl-2-0-at-2008",
+  "titulo": "Nissan Sentra SL 2.0 AT 2008",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "kia",
+  "modelo": "cerato",
+  "slug": "cerato-1-6-2008",
+  "url": "https://www.fichacompleta.com.br/carros/kia/cerato-1-6-2008",
+  "titulo": "Kia Cerato 1.6 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "kia",
+  "modelo": "cerato",
+  "slug": "cerato-1-6-at-2008",
+  "url": "https://www.fichacompleta.com.br/carros/kia/cerato-1-6-at-2008",
+  "titulo": "Kia Cerato 1.6 AT 2008",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "gasolinaUrbano": 8,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ }
+]

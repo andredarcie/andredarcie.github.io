@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 25,
+  "codigoModelo": 1276,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:55:10.983Z",
+ "resposta": {
+  "Valor": "R$ 53.018,00",
+  "Marca": "Honda",
+  "Modelo": "Fit LX 1.4/ 1.4 Flex 8V/16V 5p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "014039-2",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "zcywj9nv55rl",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:55"
+ }
+}

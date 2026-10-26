@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 13,
+  "codigoModelo": 6580,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:09:48.482Z",
+ "resposta": {
+  "Valor": "R$ 31.105,00",
+  "Marca": "Citroën",
+  "Modelo": "C4 Rock You 1.6 Flex 16V 5p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "011134-1",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "p205jxx5glsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:09"
+ }
+}

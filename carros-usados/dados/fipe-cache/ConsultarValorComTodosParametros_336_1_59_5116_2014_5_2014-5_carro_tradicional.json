@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 5116,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:05:20.184Z",
+ "resposta": {
+  "Valor": "R$ 39.056,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "VOYAGE I MOTION 1.6 Mi Total Flex 8V",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005311-2",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "s273w12386sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:05"
+ }
+}

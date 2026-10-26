@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 6870,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:06:22.891Z",
+ "resposta": {
+  "Valor": "R$ 53.118,00",
+  "Marca": "Renault",
+  "Modelo": "FLUENCE Sedan GT Line 2.0 Flex Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "025212-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "zd369x4cjxsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:06"
+ }
+}

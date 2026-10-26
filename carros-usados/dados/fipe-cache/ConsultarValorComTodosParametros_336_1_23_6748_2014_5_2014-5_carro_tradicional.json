@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 6748,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:48:26.837Z",
+ "resposta": {
+  "Valor": "R$ 43.790,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "ONIX  Lollapalooza 1.0 F.Power 5p Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004451-2",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "vwrsjgcktxsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:48"
+ }
+}

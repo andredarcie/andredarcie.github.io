@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5447
+ },
+ "consultadoEm": "2026-10-25T23:51:17.366Z",
+ "resposta": [
+  {
+   "Label": "2014 Flex",
+   "Value": "2014-5"
+  },
+  {
+   "Label": "2013 Flex",
+   "Value": "2013-5"
+  },
+  {
+   "Label": "2012 Flex",
+   "Value": "2012-5"
+  },
+  {
+   "Label": "2011 Flex",
+   "Value": "2011-5"
+  }
+ ]
+}

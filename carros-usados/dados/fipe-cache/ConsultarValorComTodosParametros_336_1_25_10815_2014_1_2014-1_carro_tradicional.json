@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 25,
+  "codigoModelo": 10815,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:13:04.032Z",
+ "resposta": {
+  "Valor": "R$ 56.394,00",
+  "Marca": "Honda",
+  "Modelo": "Fit EX/S 1.5 Flex/Flexone 16V 5p Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "014045-7",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "0njytyfhdncsv",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:13"
+ }
+}

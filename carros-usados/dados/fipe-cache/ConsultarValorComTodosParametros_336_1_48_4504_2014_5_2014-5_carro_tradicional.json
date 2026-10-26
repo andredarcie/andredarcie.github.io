@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 4504,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:53:42.206Z",
+ "resposta": {
+  "Valor": "R$ 31.790,00",
+  "Marca": "Renault",
+  "Modelo": "SANDERO Authentique Hi-Flex 1.0 16V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "025141-0",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "qb14tgptkbsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:53"
+ }
+}

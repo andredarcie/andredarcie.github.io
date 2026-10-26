@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 4966,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:52:10.047Z",
+ "resposta": {
+  "Valor": "R$ 38.277,00",
+  "Marca": "Fiat",
+  "Modelo": "Idea Adv./ Adv.LOCK.Dualogic 1.8 Flex 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001281-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "ss3zgr733vsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:52"
+ }
+}

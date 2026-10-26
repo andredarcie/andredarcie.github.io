@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 5925,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:23:21.016Z",
+ "resposta": {
+  "Valor": "R$ 38.679,00",
+  "Marca": "Fiat",
+  "Modelo": "Grand Siena ATTRAC. 1.4 EVO F.Flex 8V",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001378-1",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "syt2035wv5sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:23"
+ }
+}

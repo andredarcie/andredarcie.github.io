@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 324,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 43,
+  "codigoModelo": 4406,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 1,
+  "ano": "2008-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:41:41.895Z",
+ "resposta": {
+  "Valor": "R$ 22.404,00",
+  "Marca": "Nissan",
+  "Modelo": "TIIDA SL 1.8/1.8 Flex 16V  Mec.",
+  "AnoModelo": 2008,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "023067-7",
+  "MesReferencia": "agosto de 2025 ",
+  "Autenticacao": "ls0mcqtmmd5h",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:41"
+ }
+}

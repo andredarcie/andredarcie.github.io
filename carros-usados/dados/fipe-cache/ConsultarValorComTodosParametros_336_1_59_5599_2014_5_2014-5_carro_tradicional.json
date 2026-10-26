@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 5599,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:58:53.904Z",
+ "resposta": {
+  "Valor": "R$ 44.324,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "Fox Rock in Rio 1.6 Mi Total Flex 8V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005332-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "v20wdlddsjsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:58"
+ }
+}

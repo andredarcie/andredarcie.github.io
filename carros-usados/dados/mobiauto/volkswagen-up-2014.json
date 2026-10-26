@@ -1,0 +1,20 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/volkswagen/up/ano-2014",
+ "coletadoEm": "2026-10-25T23:01:37.785Z",
+ "totalInformado": 1,
+ "anuncios": [
+  {
+   "id": 33118694,
+   "versao": "1.0 12v E-Flex high up!",
+   "anoModelo": 2014,
+   "anoFabricacao": 2013,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 76855,
+   "preco": 45900,
+   "zeroKm": false,
+   "cidade": "Piracicaba",
+   "uf": "SP"
+  }
+ ]
+}

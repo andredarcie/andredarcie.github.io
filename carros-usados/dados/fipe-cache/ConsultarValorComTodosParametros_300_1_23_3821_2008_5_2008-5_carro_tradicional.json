@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 300,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 3821,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 5,
+  "ano": "2008-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:39:28.979Z",
+ "resposta": {
+  "Valor": "R$ 31.056,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "Vectra Elegan. 2.0 MPFI 8V FlexPower Mec",
+  "AnoModelo": 2008,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004323-0",
+  "MesReferencia": "agosto de 2023 ",
+  "Autenticacao": "p2gb0t1vtf5h",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:39"
+ }
+}

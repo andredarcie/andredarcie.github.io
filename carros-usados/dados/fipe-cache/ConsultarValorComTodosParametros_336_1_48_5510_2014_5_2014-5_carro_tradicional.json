@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 5510,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:06:12.832Z",
+ "resposta": {
+  "Valor": "R$ 39.282,00",
+  "Marca": "Renault",
+  "Modelo": "FLUENCE Sed. Dynamique 2.0 16V FLEX Mec.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "025173-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "s5w8clktsbsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:06"
+ }
+}

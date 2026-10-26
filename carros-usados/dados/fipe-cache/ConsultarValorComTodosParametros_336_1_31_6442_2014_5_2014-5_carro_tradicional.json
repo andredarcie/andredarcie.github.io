@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 31,
+  "codigoModelo": 6442,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:23:56.490Z",
+ "resposta": {
+  "Valor": "R$ 61.951,00",
+  "Marca": "Kia Motors",
+  "Modelo": "Cerato 1.6 16V  Flex  Aut.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "018085-8",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "2rprnpwbl4sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:23"
+ }
+}

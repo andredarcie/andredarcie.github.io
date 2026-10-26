@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 13,
+  "codigoModelo": 4761,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 5,
+  "ano": "2008-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:40:16.600Z",
+ "resposta": {
+  "Valor": "R$ 19.840,00",
+  "Marca": "Citroën",
+  "Modelo": "C3 Excl./Excl.Solar./Sonora 1.6 Flex Aut",
+  "AnoModelo": 2008,
+  "Combustivel": "Flex",
+  "CodigoFipe": "011091-4",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "ktypg8ycx66s",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:40"
+ }
+}

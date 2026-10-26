@@ -1,0 +1,20 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/volkswagen/jetta/ano-2008",
+ "coletadoEm": "2026-10-25T22:58:45.382Z",
+ "totalInformado": 1,
+ "anuncios": [
+  {
+   "id": 33171426,
+   "versao": "2.5 20V",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 199999,
+   "preco": 47990,
+   "zeroKm": false,
+   "cidade": "Americana",
+   "uf": "SP"
+  }
+ ]
+}

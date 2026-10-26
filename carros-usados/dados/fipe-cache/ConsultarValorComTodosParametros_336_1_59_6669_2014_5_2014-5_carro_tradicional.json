@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 6669,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:39:09.681Z",
+ "resposta": {
+  "Valor": "R$ 37.173,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "Gol SELEÇÃO 1.6 I MOTION T.Flex 8V 5p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005364-3",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "sc5p2w2zk8sw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:39"
+ }
+}

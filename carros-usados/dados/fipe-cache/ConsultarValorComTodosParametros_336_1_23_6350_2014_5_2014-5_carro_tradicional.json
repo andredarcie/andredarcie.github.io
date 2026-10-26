@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 6350,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:50:17.171Z",
+ "resposta": {
+  "Valor": "R$ 47.631,00",
+  "Marca": "GM - Chevrolet",
+  "Modelo": "PRISMA Sed. LT 1.4 8V FlexPower 4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "004433-4",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "xbsv6yl9wqsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:50"
+ }
+}

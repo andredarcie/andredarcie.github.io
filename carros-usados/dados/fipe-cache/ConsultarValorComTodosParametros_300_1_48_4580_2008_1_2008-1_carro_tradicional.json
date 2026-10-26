@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 300,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 48,
+  "codigoModelo": 4580,
+  "anoModelo": 2008,
+  "codigoTipoCombustivel": 1,
+  "ano": "2008-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:39:31.374Z",
+ "resposta": {
+  "Valor": "R$ 27.144,00",
+  "Marca": "Renault",
+  "Modelo": "Scénic Grand Dynamique 2.0 16V 5p Aut.",
+  "AnoModelo": 2008,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "025148-8",
+  "MesReferencia": "agosto de 2023 ",
+  "Autenticacao": "nllgbgc2qb5h",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:39"
+ }
+}

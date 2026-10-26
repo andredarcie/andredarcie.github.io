@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 21,
+  "codigoModelo": 6560,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:53:40.399Z",
+ "resposta": {
+  "Valor": "R$ 42.730,00",
+  "Marca": "Fiat",
+  "Modelo": "Punto BLACKMOTION 1.8 Flex 16V 5p.",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "001407-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "vhbhxgl64fsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:53"
+ }
+}

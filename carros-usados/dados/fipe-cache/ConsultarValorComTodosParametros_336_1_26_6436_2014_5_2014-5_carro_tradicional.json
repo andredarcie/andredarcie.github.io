@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 26,
+  "codigoModelo": 6436,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T23:26:18.091Z",
+ "resposta": {
+  "Valor": "R$ 49.311,00",
+  "Marca": "Hyundai",
+  "Modelo": "HB20S C.Plus/C.Style 1.6 Flex 16V Mec.4p",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "015100-9",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "xzhhqd6hnwsw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 20:26"
+ }
+}

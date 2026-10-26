@@ -1,0 +1,44 @@
+{
+ "rota": "ConsultarAnoModelo",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 23,
+  "codigoModelo": 8826
+ },
+ "consultadoEm": "2026-10-25T23:49:59.605Z",
+ "resposta": [
+  {
+   "Label": "32000 Flex",
+   "Value": "32000-5"
+  },
+  {
+   "Label": "2026 Flex",
+   "Value": "2026-5"
+  },
+  {
+   "Label": "2025 Flex",
+   "Value": "2025-5"
+  },
+  {
+   "Label": "2024 Flex",
+   "Value": "2024-5"
+  },
+  {
+   "Label": "2023 Flex",
+   "Value": "2023-5"
+  },
+  {
+   "Label": "2022 Flex",
+   "Value": "2022-5"
+  },
+  {
+   "Label": "2021 Flex",
+   "Value": "2021-5"
+  },
+  {
+   "Label": "2020 Flex",
+   "Value": "2020-5"
+  }
+ ]
+}

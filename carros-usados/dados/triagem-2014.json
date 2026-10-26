@@ -1,0 +1,5382 @@
+[
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-lollapalooza-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-lollapalooza-1-0-2014",
+  "titulo": "Chevrolet Onix Lollapalooza 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-ls-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-ls-1-0-2014",
+  "titulo": "Chevrolet Onix LS 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-lt-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-lt-1-0-2014",
+  "titulo": "Chevrolet Onix LT 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-lt-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-lt-1-4-2014",
+  "titulo": "Chevrolet Onix LT 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.9,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-lt-1-4-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-lt-1-4-at-2014",
+  "titulo": "Chevrolet Onix LT 1.4 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-ltz-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-ltz-1-4-2014",
+  "titulo": "Chevrolet Onix LTZ 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.9,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "onix",
+  "slug": "onix-ltz-1-4-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/onix-ltz-1-4-at-2014",
+  "titulo": "Chevrolet Onix LTZ 1.4 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-lt-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-lt-1-0-2014",
+  "titulo": "Chevrolet Prisma LT 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 11.2,
+   "gasolinaUrbano": 9.7,
+   "gasolinaRodoviario": 15.6
+  },
+  "alturaSolo": 128
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-lt-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-lt-1-4-2014",
+  "titulo": "Chevrolet Prisma LT 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 11,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-lt-1-4-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-lt-1-4-at-2014",
+  "titulo": "Chevrolet Prisma LT 1.4 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-ltz-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-ltz-1-4-2014",
+  "titulo": "Chevrolet Prisma LTZ 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 11,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "prisma",
+  "slug": "prisma-ltz-1-4-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/prisma-ltz-1-4-at-2014",
+  "titulo": "Chevrolet Prisma LTZ 1.4 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 130
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "celta",
+  "slug": "celta-advantage-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/celta-advantage-1-0-2014",
+  "titulo": "Chevrolet Celta Advantage 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "celta",
+  "slug": "celta-ls-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/celta-ls-1-0-2014",
+  "titulo": "Chevrolet Celta LS 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "celta",
+  "slug": "celta-lt-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/celta-lt-1-0-2014",
+  "titulo": "Chevrolet Celta LT 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 115
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "classic",
+  "slug": "classic-advantage-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/classic-advantage-1-0-2014",
+  "titulo": "Chevrolet Classic Advantage 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 137
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "classic",
+  "slug": "classic-ls-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/classic-ls-1-0-2014",
+  "titulo": "Chevrolet Classic LS 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 137
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-advantage-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-advantage-1-4-2014",
+  "titulo": "Chevrolet Cobalt Advantage 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-advantage-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-advantage-1-8-at-2014",
+  "titulo": "Chevrolet Cobalt Advantage 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-ls-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-ls-1-4-2014",
+  "titulo": "Chevrolet Cobalt LS 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-lt-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-lt-1-4-2014",
+  "titulo": "Chevrolet Cobalt LT 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-lt-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-lt-1-8-2014",
+  "titulo": "Chevrolet Cobalt LT 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-lt-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-lt-1-8-at-2014",
+  "titulo": "Chevrolet Cobalt LT 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-ltz-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-ltz-1-4-2014",
+  "titulo": "Chevrolet Cobalt LTZ 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-ltz-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-ltz-1-8-2014",
+  "titulo": "Chevrolet Cobalt LTZ 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cobalt",
+  "slug": "cobalt-ltz-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cobalt-ltz-1-8-at-2014",
+  "titulo": "Chevrolet Cobalt LTZ 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": 121
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "agile",
+  "slug": "agile-effect-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/agile-effect-1-4-2014",
+  "titulo": "Chevrolet Agile Effect 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "agile",
+  "slug": "agile-effect-1-4-easytronic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/agile-effect-1-4-easytronic-2014",
+  "titulo": "Chevrolet Agile Effect 1.4 Easytronic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "agile",
+  "slug": "agile-ltz-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/agile-ltz-1-4-2014",
+  "titulo": "Chevrolet Agile LTZ 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "agile",
+  "slug": "agile-ltz-1-4-easytronic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/agile-ltz-1-4-easytronic-2014",
+  "titulo": "Chevrolet Agile LTZ 1.4 Easytronic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "sonic",
+  "slug": "sonic-effect-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/sonic-effect-1-6-at-2014",
+  "titulo": "Chevrolet Sonic Effect 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "sonic",
+  "slug": "sonic-lt-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/sonic-lt-1-6-2014",
+  "titulo": "Chevrolet Sonic LT 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "sonic",
+  "slug": "sonic-lt-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/sonic-lt-1-6-at-2014",
+  "titulo": "Chevrolet Sonic LT 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "sonic",
+  "slug": "sonic-ltz-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/sonic-ltz-1-6-at-2014",
+  "titulo": "Chevrolet Sonic LTZ 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "sonic-sedan",
+  "slug": "sonic-sedan-ltz-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/sonic-sedan-ltz-1-6-2014",
+  "titulo": "Chevrolet Sonic Sedan LTZ 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "sonic-sedan",
+  "slug": "sonic-sedan-ltz-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/sonic-sedan-ltz-1-6-at-2014",
+  "titulo": "Chevrolet Sonic Sedan LTZ 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": 127
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-advantage-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-advantage-1-8-2014",
+  "titulo": "Chevrolet Spin Advantage 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 136
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-advantage-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-advantage-1-8-at-2014",
+  "titulo": "Chevrolet Spin Advantage 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": 136
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-ls-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-ls-1-8-2014",
+  "titulo": "Chevrolet Spin LS 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-lt-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-lt-1-8-2014",
+  "titulo": "Chevrolet Spin LT 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 136
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-lt-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-lt-1-8-at-2014",
+  "titulo": "Chevrolet Spin LT 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": 136
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-ltz-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-ltz-1-8-2014",
+  "titulo": "Chevrolet Spin LTZ 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 136
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "spin",
+  "slug": "spin-ltz-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/spin-ltz-1-8-at-2014",
+  "titulo": "Chevrolet Spin LTZ 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 7.9,
+   "gasolinaRodoviario": 10.6
+  },
+  "alturaSolo": 136
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cruze",
+  "slug": "cruze-lt-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cruze-lt-1-8-2014",
+  "titulo": "Chevrolet Cruze LT 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 131
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cruze",
+  "slug": "cruze-lt-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cruze-lt-1-8-at-2014",
+  "titulo": "Chevrolet Cruze LT 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 131
+ },
+ {
+  "marca": "chevrolet",
+  "modelo": "cruze",
+  "slug": "cruze-ltz-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/chevrolet/cruze-ltz-1-8-at-2014",
+  "titulo": "Chevrolet Cruze LTZ 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": 131
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-college-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-college-1-0-2014",
+  "titulo": "Fiat Uno College 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-economy-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-economy-1-4-2014",
+  "titulo": "Fiat Uno Economy 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.7,
+   "etanolRodoviario": 10.4,
+   "gasolinaUrbano": 12.5,
+   "gasolinaRodoviario": 15.2
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-furgao-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-furgao-1-0-2014",
+  "titulo": "Fiat Uno Furgão 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-rua-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-rua-1-0-2014",
+  "titulo": "Fiat Uno Rua 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-sporting-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-sporting-1-4-2014",
+  "titulo": "Fiat Uno Sporting 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 11.2,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 170
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-vivace-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-vivace-1-0-2014",
+  "titulo": "Fiat Uno Vivace 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.2,
+   "etanolRodoviario": 10.4,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-way-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-way-1-0-2014",
+  "titulo": "Fiat Uno Way 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": 183
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-way-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-way-1-4-2014",
+  "titulo": "Fiat Uno Way 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 190
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-way-xingu-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-way-xingu-1-0-2014",
+  "titulo": "Fiat Uno Way Xingu 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "uno",
+  "slug": "uno-way-xingu-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/uno-way-xingu-1-4-2014",
+  "titulo": "Fiat Uno Way Xingu 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-attractive-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-attractive-1-0-2014",
+  "titulo": "Fiat Palio Attractive 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 147
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-attractive-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-attractive-1-4-2014",
+  "titulo": "Fiat Palio Attractive 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": 147
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-essence-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-essence-1-6-16v-2014",
+  "titulo": "Fiat Palio Essence 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 144
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-essence-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-essence-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Palio Essence 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 144
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-fire-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-fire-1-0-2014",
+  "titulo": "Fiat Palio Fire 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.8,
+   "etanolRodoviario": 10.3,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": 145
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-italia-fire-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-italia-fire-1-0-2014",
+  "titulo": "Fiat Palio Itália Fire 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.8,
+   "etanolRodoviario": 10.3,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-sporting-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-sporting-1-6-16v-2014",
+  "titulo": "Fiat Palio Sporting 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 139
+ },
+ {
+  "marca": "fiat",
+  "modelo": "palio",
+  "slug": "palio-sporting-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/palio-sporting-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Palio Sporting 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 139
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-attractive-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-attractive-1-4-2014",
+  "titulo": "Fiat Siena Attractive 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 11,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-el-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-el-1-0-2014",
+  "titulo": "Fiat Siena EL 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-el-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-el-1-4-2014",
+  "titulo": "Fiat Siena EL 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-essence-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-essence-1-6-16v-2014",
+  "titulo": "Fiat Siena Essence 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-essence-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-essence-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Siena Essence 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-sublime-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-sublime-1-6-16v-2014",
+  "titulo": "Fiat Siena Sublime 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-sublime-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-sublime-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Siena Sublime 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12.6
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "siena",
+  "slug": "siena-tetrafuel-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/siena-tetrafuel-1-4-2014",
+  "titulo": "Fiat Siena Tetrafuel 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": 159
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-attractive-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-attractive-1-4-2014",
+  "titulo": "Fiat Punto Attractive 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": 149
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-blackmotion-1-8-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-blackmotion-1-8-16v-2014",
+  "titulo": "Fiat Punto Blackmotion 1.8 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 153
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-blackmotion-1-8-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-blackmotion-1-8-16v-dualogic-2014",
+  "titulo": "Fiat Punto Blackmotion 1.8 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 153
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-essence-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-essence-1-6-16v-2014",
+  "titulo": "Fiat Punto Essence 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": 149
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-essence-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-essence-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Punto Essence 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": 149
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-essence-sp-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-essence-sp-1-6-16v-2014",
+  "titulo": "Fiat Punto Essence SP 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-essence-sp-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-essence-sp-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Punto Essence SP 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-italia-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-italia-1-4-2014",
+  "titulo": "Fiat Punto Itália 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-sporting-1-8-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-sporting-1-8-16v-2014",
+  "titulo": "Fiat Punto Sporting 1.8 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 11.3
+  },
+  "alturaSolo": 153
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-sporting-1-8-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-sporting-1-8-16v-dualogic-2014",
+  "titulo": "Fiat Punto Sporting 1.8 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 11.3
+  },
+  "alturaSolo": 153
+ },
+ {
+  "marca": "fiat",
+  "modelo": "punto",
+  "slug": "punto-t-jet-1-4-turbo-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/punto-t-jet-1-4-turbo-2014",
+  "titulo": "Fiat Punto T-Jet 1.4 Turbo 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": 135
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-adventure-1-8-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-adventure-1-8-16v-2014",
+  "titulo": "Fiat Idea Adventure 1.8 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.9,
+   "etanolRodoviario": 6.7,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 9.9
+  },
+  "alturaSolo": 185
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-adventure-1-8-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-adventure-1-8-16v-dualogic-2014",
+  "titulo": "Fiat Idea Adventure 1.8 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.9,
+   "etanolRodoviario": 6.7,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 10.1
+  },
+  "alturaSolo": 185
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-attractive-1-4-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-attractive-1-4-8v-2014",
+  "titulo": "Fiat Idea Attractive 1.4 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.3,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": 170
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-essence-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-essence-1-6-16v-2014",
+  "titulo": "Fiat Idea Essence 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-essence-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-essence-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Idea Essence 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-sublime-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-sublime-1-6-16v-2014",
+  "titulo": "Fiat Idea Sublime 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "fiat",
+  "modelo": "idea",
+  "slug": "idea-sublime-1-6-16v-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/idea-sublime-1-6-16v-dualogic-2014",
+  "titulo": "Fiat Idea Sublime 1.6 16V Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 160
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-absolute-1-8-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-absolute-1-8-dualogic-2014",
+  "titulo": "Fiat Bravo Absolute 1.8 Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 7.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 153
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-essence-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-essence-1-8-2014",
+  "titulo": "Fiat Bravo Essence 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 7.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 143
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-essence-1-8-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-essence-1-8-dualogic-2014",
+  "titulo": "Fiat Bravo Essence 1.8 Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 7.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 143
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-sporting-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-sporting-1-8-2014",
+  "titulo": "Fiat Bravo Sporting 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.6,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 10.8
+  },
+  "alturaSolo": 123
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-sporting-1-8-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-sporting-1-8-dualogic-2014",
+  "titulo": "Fiat Bravo Sporting 1.8 Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.6,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 10.8
+  },
+  "alturaSolo": 123
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-t-jet-1-4-turbo-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-t-jet-1-4-turbo-2014",
+  "titulo": "Fiat Bravo T-Jet 1.4 Turbo 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 10.4
+  },
+  "alturaSolo": 123
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-wolverine-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-wolverine-1-8-2014",
+  "titulo": "Fiat Bravo Wolverine 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 7.5,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": 123
+ },
+ {
+  "marca": "fiat",
+  "modelo": "bravo",
+  "slug": "bravo-wolverine-1-8-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/bravo-wolverine-1-8-dualogic-2014",
+  "titulo": "Fiat Bravo Wolverine 1.8 Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.6,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 10.8
+  },
+  "alturaSolo": 123
+ },
+ {
+  "marca": "fiat",
+  "modelo": "linea",
+  "slug": "linea-absolute-1-8-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/linea-absolute-1-8-dualogic-2014",
+  "titulo": "Fiat Linea Absolute 1.8 Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "linea",
+  "slug": "linea-essence-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/linea-essence-1-8-2014",
+  "titulo": "Fiat Linea Essence 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "fiat",
+  "modelo": "linea",
+  "slug": "linea-essence-1-8-dualogic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/fiat/linea-essence-1-8-dualogic-2014",
+  "titulo": "Fiat Linea Essence 1.8 Dualogic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-1-0-2014",
+  "titulo": "Ford Fiesta 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 15.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-1-6-2014",
+  "titulo": "Ford Fiesta 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 9.7,
+   "gasolinaRodoviario": 12.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-s-1-5-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-s-1-5-16v-2014",
+  "titulo": "Ford Fiesta S 1.5 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-se-1-5-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-se-1-5-16v-2014",
+  "titulo": "Ford Fiesta SE 1.5 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-se-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-se-1-6-16v-2014",
+  "titulo": "Ford Fiesta SE 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-se-1-6-16v-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-se-1-6-16v-at-2014",
+  "titulo": "Ford Fiesta SE 1.6 16V AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.9,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 11.4,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-titanium-1-6-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-titanium-1-6-16v-2014",
+  "titulo": "Ford Fiesta Titanium 1.6 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "fiesta",
+  "slug": "fiesta-titanium-1-6-16v-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/fiesta-titanium-1-6-16v-at-2014",
+  "titulo": "Ford Fiesta Titanium 1.6 16V AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.9,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 11.4,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-s-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-s-1-6-2014",
+  "titulo": "Ford Focus S 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-s-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-s-1-6-at-2014",
+  "titulo": "Ford Focus S 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-se-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-se-1-6-2014",
+  "titulo": "Ford Focus SE 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-se-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-se-1-6-at-2014",
+  "titulo": "Ford Focus SE 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-se-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-se-2-0-at-2014",
+  "titulo": "Ford Focus SE 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-se-plus-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-se-plus-2-0-at-2014",
+  "titulo": "Ford Focus SE Plus 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-titanium-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-titanium-2-0-at-2014",
+  "titulo": "Ford Focus Titanium 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "focus",
+  "slug": "focus-titanium-plus-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/focus-titanium-plus-2-0-at-2014",
+  "titulo": "Ford Focus Titanium Plus 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 9.9,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-freestyle-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-freestyle-1-6-2014",
+  "titulo": "Ford Ecosport Freestyle 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-freestyle-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-freestyle-2-0-2014",
+  "titulo": "Ford Ecosport Freestyle 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.2,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-freestyle-2-0-4wd-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-freestyle-2-0-4wd-2014",
+  "titulo": "Ford Ecosport Freestyle 2.0 4WD 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 7,
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 10.3
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-s-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-s-1-6-2014",
+  "titulo": "Ford Ecosport S 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-se-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-se-1-6-2014",
+  "titulo": "Ford Ecosport SE 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-se-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-se-2-0-at-2014",
+  "titulo": "Ford Ecosport SE 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.7,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-titanium-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-titanium-1-6-2014",
+  "titulo": "Ford Ecosport Titanium 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-titanium-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-titanium-2-0-2014",
+  "titulo": "Ford Ecosport Titanium 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.2,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "ford",
+  "modelo": "ecosport",
+  "slug": "ecosport-titanium-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/ford/ecosport-titanium-2-0-at-2014",
+  "titulo": "Ford Ecosport Titanium 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9.7,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 200
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-1-0-2014",
+  "titulo": "Volkswagen Gol 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 11.1,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-1-6-2014",
+  "titulo": "Volkswagen Gol 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-1-6-i-motion-2014",
+  "titulo": "Volkswagen Gol 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-city-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-city-1-0-2014",
+  "titulo": "Volkswagen Gol City 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-city-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-city-1-6-2014",
+  "titulo": "Volkswagen Gol City 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-ecomotion-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-ecomotion-1-0-2014",
+  "titulo": "Volkswagen Gol Ecomotion 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-highline-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-highline-1-6-2014",
+  "titulo": "Volkswagen Gol Highline 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-highline-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-highline-1-6-i-motion-2014",
+  "titulo": "Volkswagen Gol Highline 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-rallye-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-rallye-1-6-2014",
+  "titulo": "Volkswagen Gol Rallye 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-rallye-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-rallye-1-6-i-motion-2014",
+  "titulo": "Volkswagen Gol Rallye 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-selecao-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-selecao-1-0-2014",
+  "titulo": "Volkswagen Gol Seleção 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-selecao-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-selecao-1-6-2014",
+  "titulo": "Volkswagen Gol Seleção 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": 163
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-selecao-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-selecao-1-6-i-motion-2014",
+  "titulo": "Volkswagen Gol Seleção 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "gol",
+  "slug": "gol-track-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/gol-track-1-0-2014",
+  "titulo": "Volkswagen Gol Track 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 11.4,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-1-0-2014",
+  "titulo": "Volkswagen Voyage 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 14.9
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-1-6-2014",
+  "titulo": "Volkswagen Voyage 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-1-6-i-motion-2014",
+  "titulo": "Volkswagen Voyage 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-city-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-city-1-6-2014",
+  "titulo": "Volkswagen Voyage City 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-comfortline-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-comfortline-1-6-2014",
+  "titulo": "Volkswagen Voyage Comfortline 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-comfortline-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-comfortline-1-6-i-motion-2014",
+  "titulo": "Volkswagen Voyage Comfortline 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-highline-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-highline-1-6-2014",
+  "titulo": "Volkswagen Voyage Highline 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-highline-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-highline-1-6-i-motion-2014",
+  "titulo": "Volkswagen Voyage Highline 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-selecao-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-selecao-1-0-2014",
+  "titulo": "Volkswagen Voyage Seleção 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 14.9
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-selecao-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-selecao-1-6-2014",
+  "titulo": "Volkswagen Voyage Seleção 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-selecao-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-selecao-1-6-i-motion-2014",
+  "titulo": "Volkswagen Voyage Seleção 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": 161
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-trend-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-trend-1-6-2014",
+  "titulo": "Volkswagen Voyage Trend 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "voyage",
+  "slug": "voyage-trend-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/voyage-trend-1-6-i-motion-2014",
+  "titulo": "Volkswagen Voyage Trend 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.7,
+   "gasolinaRodoviario": 13.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-1-0-2014",
+  "titulo": "Volkswagen Fox 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-1-6-2014",
+  "titulo": "Volkswagen Fox 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 8.6,
+   "gasolinaRodoviario": 11.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-1-6-i-motion-2014",
+  "titulo": "Volkswagen Fox 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-bluemotion-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-bluemotion-1-0-2014",
+  "titulo": "Volkswagen Fox Bluemotion 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.8,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 12.7,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-highline-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-highline-1-6-2014",
+  "titulo": "Volkswagen Fox Highline 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-highline-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-highline-1-6-i-motion-2014",
+  "titulo": "Volkswagen Fox Highline 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-rock-in-rio-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-rock-in-rio-1-6-2014",
+  "titulo": "Volkswagen Fox Rock in Rio 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-selecao-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-selecao-1-0-2014",
+  "titulo": "Volkswagen Fox Seleção 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-selecao-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-selecao-1-6-2014",
+  "titulo": "Volkswagen Fox Seleção 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "fox",
+  "slug": "fox-selecao-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/fox-selecao-1-6-i-motion-2014",
+  "titulo": "Volkswagen Fox Seleção 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 9.8,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-black-white-red-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-black-white-red-1-0-2014",
+  "titulo": "Volkswagen Up Black/White/Red 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9.2,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.5,
+   "gasolinaRodoviario": 14.6
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-black-white-red-1-0-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-black-white-red-1-0-i-motion-2014",
+  "titulo": "Volkswagen Up Black/White/Red 1.0 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9.2,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.2,
+   "gasolinaRodoviario": 14.8
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-high-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-high-1-0-2014",
+  "titulo": "Volkswagen Up High 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9.2,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.5,
+   "gasolinaRodoviario": 14.6
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-high-1-0-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-high-1-0-i-motion-2014",
+  "titulo": "Volkswagen Up High 1.0 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.2,
+   "gasolinaRodoviario": 14.8
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-move-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-move-1-0-2014",
+  "titulo": "Volkswagen Up Move 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9.2,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.5,
+   "gasolinaRodoviario": 14.6
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-move-1-0-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-move-1-0-i-motion-2014",
+  "titulo": "Volkswagen Up Move 1.0 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.2,
+   "gasolinaRodoviario": 14.8
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "up",
+  "slug": "up-take-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/up-take-1-0-2014",
+  "titulo": "Volkswagen Up Take 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 9.2,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 13.5,
+   "gasolinaRodoviario": 14.6
+  },
+  "alturaSolo": 164
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-1-6-2014",
+  "titulo": "Volkswagen Polo 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-1-6-i-motion-2014",
+  "titulo": "Volkswagen Polo 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-bluemotion-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-bluemotion-1-6-2014",
+  "titulo": "Volkswagen Polo Bluemotion 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 10.5,
+   "gasolinaUrbano": 10.8,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-sportline-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-sportline-1-6-2014",
+  "titulo": "Volkswagen Polo Sportline 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "polo",
+  "slug": "polo-sportline-1-6-i-motion-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/polo-sportline-1-6-i-motion-2014",
+  "titulo": "Volkswagen Polo Sportline 1.6 I-Motion 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-1-6-2014",
+  "titulo": "Volkswagen Golf 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-2-0-at-2014",
+  "titulo": "Volkswagen Golf 2.0 AT 2014",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-comfortline-1-4-tsi-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-comfortline-1-4-tsi-2014",
+  "titulo": "Volkswagen Golf Comfortline 1.4 TSi 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-comfortline-1-4-tsi-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-comfortline-1-4-tsi-at-2014",
+  "titulo": "Volkswagen Golf Comfortline 1.4 TSi AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-gti-2-0-tsi-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-gti-2-0-tsi-2014",
+  "titulo": "Volkswagen Golf GTi 2.0 TSi 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-highline-1-4-tsi-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-highline-1-4-tsi-2014",
+  "titulo": "Volkswagen Golf Highline 1.4 TSi 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-highline-1-4-tsi-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-highline-1-4-tsi-at-2014",
+  "titulo": "Volkswagen Golf Highline 1.4 TSi AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-sportline-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-sportline-1-6-2014",
+  "titulo": "Volkswagen Golf Sportline 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.4,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "golf",
+  "slug": "golf-sportline-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/golf-sportline-2-0-at-2014",
+  "titulo": "Volkswagen Golf Sportline 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "jetta",
+  "slug": "jetta-comfortline-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/jetta-comfortline-2-0-2014",
+  "titulo": "Volkswagen Jetta Comfortline 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.3,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": 138
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "jetta",
+  "slug": "jetta-comfortline-2-0-tiptronic-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/jetta-comfortline-2-0-tiptronic-2014",
+  "titulo": "Volkswagen Jetta Comfortline 2.0 Tiptronic 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 7.8,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 10.8
+  },
+  "alturaSolo": 138
+ },
+ {
+  "marca": "volkswagen",
+  "modelo": "jetta",
+  "slug": "jetta-highline-2-0-tsi-dsg-2014",
+  "url": "https://www.fichacompleta.com.br/carros/volkswagen/jetta-highline-2-0-tsi-dsg-2014",
+  "titulo": "Volkswagen Jetta Highline 2.0 TSi DSG 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 12.1
+  },
+  "alturaSolo": 138
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-authentique-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-authentique-1-0-16v-2014",
+  "titulo": "Renault Clio Authentique 1.0 16V 2014",
+  "semEquipamentos": true,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 9.1,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 13.1,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "clio",
+  "slug": "clio-expression-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/clio-expression-1-0-16v-2014",
+  "titulo": "Renault Clio Expression 1.0 16V 2014",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 9.1,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 13.1,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-authentique-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-authentique-1-0-16v-2014",
+  "titulo": "Renault Logan Authentique 1.0 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-dynamique-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-dynamique-1-6-8v-2014",
+  "titulo": "Renault Logan Dynamique 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-expression-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-expression-1-0-16v-2014",
+  "titulo": "Renault Logan Expression 1.0 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "logan",
+  "slug": "logan-expression-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/logan-expression-1-6-8v-2014",
+  "titulo": "Renault Logan Expression 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.3,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-authentique-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-authentique-1-0-16v-2014",
+  "titulo": "Renault Sandero Authentique 1.0 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 12.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-expression-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-expression-1-0-16v-2014",
+  "titulo": "Renault Sandero Expression 1.0 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 12.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-expression-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-expression-1-6-8v-2014",
+  "titulo": "Renault Sandero Expression 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-gt-line-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-gt-line-1-6-8v-2014",
+  "titulo": "Renault Sandero GT Line 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-privilege-1-6-16v-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-privilege-1-6-16v-at-2014",
+  "titulo": "Renault Sandero Privilege 1.6 16V AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-privilege-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-privilege-1-6-8v-2014",
+  "titulo": "Renault Sandero Privilege 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-stepway-1-6-16v-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-stepway-1-6-16v-at-2014",
+  "titulo": "Renault Sandero Stepway 1.6 16V AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-stepway-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-stepway-1-6-8v-2014",
+  "titulo": "Renault Sandero Stepway 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-stepway-tweed-1-6-16v-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-stepway-tweed-1-6-16v-at-2014",
+  "titulo": "Renault Sandero Stepway Tweed 1.6 16V AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 10.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-stepway-tweed-1-6-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-stepway-tweed-1-6-8v-2014",
+  "titulo": "Renault Sandero Stepway Tweed 1.6 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "sandero",
+  "slug": "sandero-tech-run-1-0-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/sandero-tech-run-1-0-16v-2014",
+  "titulo": "Renault Sandero Tech Run 1.0 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 8.6,
+   "gasolinaUrbano": 12.4,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "fluence",
+  "slug": "fluence-dynamique-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/fluence-dynamique-2-0-2014",
+  "titulo": "Renault Fluence Dynamique 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 14.1
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "fluence",
+  "slug": "fluence-dynamique-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/fluence-dynamique-2-0-at-2014",
+  "titulo": "Renault Fluence Dynamique 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "fluence",
+  "slug": "fluence-expression-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/fluence-expression-1-6-2014",
+  "titulo": "Renault Fluence Expression 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 10.4,
+   "gasolinaRodoviario": 14.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "fluence",
+  "slug": "fluence-gt-2-0-turbo-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/fluence-gt-2-0-turbo-2014",
+  "titulo": "Renault Fluence GT 2.0 Turbo 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.1,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "fluence",
+  "slug": "fluence-gt-line-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/fluence-gt-line-2-0-at-2014",
+  "titulo": "Renault Fluence GT Line 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "renault",
+  "modelo": "fluence",
+  "slug": "fluence-privilege-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/renault/fluence-privilege-2-0-at-2014",
+  "titulo": "Renault Fluence Privilege 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "207",
+  "slug": "207-active-1-4-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/207-active-1-4-8v-2014",
+  "titulo": "Peugeot 207 Active 1.4 8V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "207",
+  "slug": "207-blue-lion-1-4-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/207-blue-lion-1-4-8v-2014",
+  "titulo": "Peugeot 207 Blue Lion 1.4 8V 2014",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 15
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "207",
+  "slug": "207-xr-1-4-8v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/207-xr-1-4-8v-2014",
+  "titulo": "Peugeot 207 XR 1.4 8V 2014",
+  "semEquipamentos": false,
+  "airbag": false,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 13.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "208",
+  "slug": "208-active-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/208-active-1-5-2014",
+  "titulo": "Peugeot 208 Active 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "208",
+  "slug": "208-active-pack-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/208-active-pack-1-5-2014",
+  "titulo": "Peugeot 208 Active Pack 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "208",
+  "slug": "208-allure-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/208-allure-1-5-2014",
+  "titulo": "Peugeot 208 Allure 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 14.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "208",
+  "slug": "208-griffe-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/208-griffe-1-6-2014",
+  "titulo": "Peugeot 208 Griffe 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "208",
+  "slug": "208-griffe-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/208-griffe-1-6-at-2014",
+  "titulo": "Peugeot 208 Griffe 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 8.4,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "208",
+  "slug": "208-premier-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/208-premier-1-6-2014",
+  "titulo": "Peugeot 208 Premier 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "308",
+  "slug": "308-active-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/308-active-1-6-2014",
+  "titulo": "Peugeot 308 Active 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 9.1,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "308",
+  "slug": "308-allure-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/308-allure-2-0-2014",
+  "titulo": "Peugeot 308 Allure 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "308",
+  "slug": "308-allure-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/308-allure-2-0-at-2014",
+  "titulo": "Peugeot 308 Allure 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 4.8,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 6.8,
+   "gasolinaRodoviario": 10.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "308",
+  "slug": "308-griffe-1-6-turbo-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/308-griffe-1-6-turbo-at-2014",
+  "titulo": "Peugeot 308 Griffe 1.6 Turbo AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "peugeot",
+  "modelo": "308",
+  "slug": "308-roland-garros-1-6-turbo-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/peugeot/308-roland-garros-1-6-turbo-at-2014",
+  "titulo": "Peugeot 308 Roland Garros 1.6 Turbo AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 8.5,
+   "gasolinaRodoviario": 13.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-exclusive-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-exclusive-1-6-2014",
+  "titulo": "Citroen C3 Exclusive 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-exclusive-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-exclusive-1-6-at-2014",
+  "titulo": "Citroen C3 Exclusive 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-origine-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-origine-1-5-2014",
+  "titulo": "Citroen C3 Origine 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-tendance-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-tendance-1-5-2014",
+  "titulo": "Citroen C3 Tendance 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c3",
+  "slug": "c3-xbox-one-edition-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c3-xbox-one-edition-1-6-2014",
+  "titulo": "Citroen C3 Xbox One Edition 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10.6,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4",
+  "slug": "c4-competition-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-competition-1-6-2014",
+  "titulo": "Citroen C4 Competition 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4",
+  "slug": "c4-competition-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-competition-2-0-at-2014",
+  "titulo": "Citroen C4 Competition 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 7.8,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4",
+  "slug": "c4-rock-you-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-rock-you-1-6-2014",
+  "titulo": "Citroen C4 Rock You 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4",
+  "slug": "c4-tendance-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-tendance-1-6-2014",
+  "titulo": "Citroen C4 Tendance 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 10,
+   "gasolinaUrbano": 8.8,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4",
+  "slug": "c4-tendance-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-tendance-2-0-at-2014",
+  "titulo": "Citroen C4 Tendance 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 7.8,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-lounge",
+  "slug": "c4-lounge-exclusive-1-6-turbo-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-lounge-exclusive-1-6-turbo-2014",
+  "titulo": "Citroen C4 Lounge Exclusive 1.6 Turbo 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 12
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-lounge",
+  "slug": "c4-lounge-exclusive-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-lounge-exclusive-2-0-at-2014",
+  "titulo": "Citroen C4 Lounge Exclusive 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 8.3,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-lounge",
+  "slug": "c4-lounge-origine-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-lounge-origine-2-0-2014",
+  "titulo": "Citroen C4 Lounge Origine 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 7.7,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 11.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-lounge",
+  "slug": "c4-lounge-tendance-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-lounge-tendance-2-0-2014",
+  "titulo": "Citroen C4 Lounge Tendance 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.1,
+   "etanolRodoviario": 7.7,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 11.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "citroen",
+  "modelo": "c4-lounge",
+  "slug": "c4-lounge-tendance-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/citroen/c4-lounge-tendance-2-0-at-2014",
+  "titulo": "Citroen C4 Lounge Tendance 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 5.7,
+   "etanolRodoviario": 7.9,
+   "gasolinaUrbano": 8.3,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-cx-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-cx-1-4-2014",
+  "titulo": "Honda Fit CX 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-cx-1-4-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-cx-1-4-at-2014",
+  "titulo": "Honda Fit CX 1.4 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 11,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-dx-1-4-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-dx-1-4-2014",
+  "titulo": "Honda Fit DX 1.4 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-ex-1-5-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-ex-1-5-at-2014",
+  "titulo": "Honda Fit EX 1.5 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-lx-1-4-16v-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-lx-1-4-16v-2014",
+  "titulo": "Honda Fit LX 1.4 16V 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.1,
+   "etanolRodoviario": 9.2,
+   "gasolinaUrbano": 11.8,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-lx-1-4-16v-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-lx-1-4-16v-at-2014",
+  "titulo": "Honda Fit LX 1.4 16V AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 11,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-twist-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-twist-1-5-2014",
+  "titulo": "Honda Fit Twist 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 11.3,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "fit",
+  "slug": "fit-twist-1-5-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/fit-twist-1-5-at-2014",
+  "titulo": "Honda Fit Twist 1.5 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "city",
+  "slug": "city-dx-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/city-dx-1-5-2014",
+  "titulo": "Honda City DX 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.9,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "city",
+  "slug": "city-ex-1-5-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/city-ex-1-5-at-2014",
+  "titulo": "Honda City EX 1.5 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 11.2,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "city",
+  "slug": "city-lx-1-5-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/city-lx-1-5-at-2014",
+  "titulo": "Honda City LX 1.5 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.5,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 11.2,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "city",
+  "slug": "city-sport-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/city-sport-1-5-2014",
+  "titulo": "Honda City Sport 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.9,
+   "gasolinaRodoviario": 12.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-exr-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-exr-2-0-2014",
+  "titulo": "Honda Civic EXR 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-lxr-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-lxr-2-0-2014",
+  "titulo": "Honda Civic LXR 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-lxs-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-lxs-1-8-2014",
+  "titulo": "Honda Civic LXS 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.4,
+   "etanolRodoviario": 10.7,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "honda",
+  "modelo": "civic",
+  "slug": "civic-lxs-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/honda/civic-lxs-1-8-at-2014",
+  "titulo": "Honda Civic LXS 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.6,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios",
+  "slug": "etios-1-3-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-1-3-2014",
+  "titulo": "Toyota Etios 1.3 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8.5,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 12.5,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios",
+  "slug": "etios-cross-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-cross-1-5-2014",
+  "titulo": "Toyota Etios Cross 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.5,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 12.4,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios",
+  "slug": "etios-platinum-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-platinum-1-5-2014",
+  "titulo": "Toyota Etios Platinum 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.5,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 12.4,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios",
+  "slug": "etios-x-1-3-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-x-1-3-2014",
+  "titulo": "Toyota Etios X 1.3 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.5,
+   "etanolRodoviario": 9,
+   "gasolinaUrbano": 12.5,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios",
+  "slug": "etios-xls-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-xls-1-5-2014",
+  "titulo": "Toyota Etios XLS 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.5,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 12.4,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios",
+  "slug": "etios-xs-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-xs-1-5-2014",
+  "titulo": "Toyota Etios XS 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.5,
+   "etanolRodoviario": 8.9,
+   "gasolinaUrbano": 12.4,
+   "gasolinaRodoviario": 13.4
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios-sedan",
+  "slug": "etios-sedan-platinum-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-sedan-platinum-1-5-2014",
+  "titulo": "Toyota Etios Sedan Platinum 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios-sedan",
+  "slug": "etios-sedan-x-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-sedan-x-1-5-2014",
+  "titulo": "Toyota Etios Sedan X 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios-sedan",
+  "slug": "etios-sedan-xls-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-sedan-xls-1-5-2014",
+  "titulo": "Toyota Etios Sedan XLS 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "etios-sedan",
+  "slug": "etios-sedan-xs-1-5-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/etios-sedan-xs-1-5-2014",
+  "titulo": "Toyota Etios Sedan XS 1.5 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.9,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": 150
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-altis-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-altis-2-0-2014",
+  "titulo": "Toyota Corolla Altis 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-gli-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-gli-1-8-2014",
+  "titulo": "Toyota Corolla GLi 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-gli-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-gli-1-8-at-2014",
+  "titulo": "Toyota Corolla GLi 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xei-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xei-2-0-2014",
+  "titulo": "Toyota Corolla XEi 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 8.7,
+   "gasolinaRodoviario": 12.2
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xli-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xli-1-8-2014",
+  "titulo": "Toyota Corolla XLi 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 10.2,
+   "gasolinaUrbano": 9.6,
+   "gasolinaRodoviario": 13.5
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xli-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xli-1-8-at-2014",
+  "titulo": "Toyota Corolla XLi 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.1,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 13.3
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "toyota",
+  "modelo": "corolla",
+  "slug": "corolla-xrs-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/toyota/corolla-xrs-2-0-2014",
+  "titulo": "Toyota Corolla XRS 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.7,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 8.2,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 155
+ },
+ {
+  "marca": "nissan",
+  "modelo": "march",
+  "slug": "march-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/march-1-0-2014",
+  "titulo": "Nissan March 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "march",
+  "slug": "march-s-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/march-s-1-0-2014",
+  "titulo": "Nissan March S 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 8.4,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 12.3,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "march",
+  "slug": "march-s-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/march-s-1-6-2014",
+  "titulo": "Nissan March S 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.2,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "march",
+  "slug": "march-sr-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/march-sr-1-6-2014",
+  "titulo": "Nissan March SR 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.2,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "march",
+  "slug": "march-sv-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/march-sv-1-6-2014",
+  "titulo": "Nissan March SV 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.2,
+   "etanolRodoviario": 9.5,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "versa",
+  "slug": "versa-s-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/versa-s-1-6-2014",
+  "titulo": "Nissan Versa S 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "versa",
+  "slug": "versa-sl-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/versa-sl-1-6-2014",
+  "titulo": "Nissan Versa SL 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "versa",
+  "slug": "versa-sv-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/versa-sv-1-6-2014",
+  "titulo": "Nissan Versa SV 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.7,
+   "gasolinaRodoviario": 13.9
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-s-2-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-s-2-0-2014",
+  "titulo": "Nissan Sentra S 2.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 10.5,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 177
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-sl-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-sl-2-0-at-2014",
+  "titulo": "Nissan Sentra SL 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 182
+ },
+ {
+  "marca": "nissan",
+  "modelo": "sentra",
+  "slug": "sentra-sv-2-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/sentra-sv-2-0-at-2014",
+  "titulo": "Nissan Sentra SV 2.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.9
+  },
+  "alturaSolo": 177
+ },
+ {
+  "marca": "nissan",
+  "modelo": "livina",
+  "slug": "livina-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/livina-1-6-2014",
+  "titulo": "Nissan Livina 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "nissan",
+  "modelo": "livina",
+  "slug": "livina-grand-s-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/livina-grand-s-1-8-2014",
+  "titulo": "Nissan Livina Grand S 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.4,
+   "etanolRodoviario": 8,
+   "gasolinaUrbano": 9,
+   "gasolinaRodoviario": 11.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "nissan",
+  "modelo": "livina",
+  "slug": "livina-grand-sl-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/livina-grand-sl-1-8-at-2014",
+  "titulo": "Nissan Livina Grand SL 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.2,
+   "etanolRodoviario": 7.7,
+   "gasolinaUrbano": 8.9,
+   "gasolinaRodoviario": 11.2
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "nissan",
+  "modelo": "livina",
+  "slug": "livina-s-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/livina-s-1-6-2014",
+  "titulo": "Nissan Livina S 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.1,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 11.9
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "nissan",
+  "modelo": "livina",
+  "slug": "livina-s-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/livina-s-1-8-at-2014",
+  "titulo": "Nissan Livina S 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.5,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "nissan",
+  "modelo": "livina",
+  "slug": "livina-x-gear-1-8-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/nissan/livina-x-gear-1-8-at-2014",
+  "titulo": "Nissan Livina X-Gear 1.8 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.5,
+   "etanolRodoviario": 7.5,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 11
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-1-0-2014",
+  "titulo": "Hyundai Hb20 Comfort 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-plus-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-plus-1-0-2014",
+  "titulo": "Hyundai Hb20 Comfort Plus 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-plus-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-plus-1-6-2014",
+  "titulo": "Hyundai Hb20 Comfort Plus 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-plus-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-plus-1-6-at-2014",
+  "titulo": "Hyundai Hb20 Comfort Plus 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-style-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-style-1-0-2014",
+  "titulo": "Hyundai Hb20 Comfort Style 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-style-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-style-1-6-2014",
+  "titulo": "Hyundai Hb20 Comfort Style 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-comfort-style-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-comfort-style-1-6-at-2014",
+  "titulo": "Hyundai Hb20 Comfort Style 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-copa-do-mundo-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-copa-do-mundo-1-0-2014",
+  "titulo": "Hyundai Hb20 Copa do Mundo 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.5
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-copa-do-mundo-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-copa-do-mundo-1-6-2014",
+  "titulo": "Hyundai Hb20 Copa do Mundo 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.7,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-copa-do-mundo-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-copa-do-mundo-1-6-at-2014",
+  "titulo": "Hyundai Hb20 Copa do Mundo 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.2,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10.3,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-premium-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-premium-1-6-2014",
+  "titulo": "Hyundai Hb20 Premium 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.6,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 11.6,
+   "gasolinaRodoviario": 12.7
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20",
+  "slug": "hb20-premium-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20-premium-1-6-at-2014",
+  "titulo": "Hyundai Hb20 Premium 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7,
+   "etanolRodoviario": 8.3,
+   "gasolinaUrbano": 10.1,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-comfort-plus-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-comfort-plus-1-0-2014",
+  "titulo": "Hyundai Hb20s Comfort Plus 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": false,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-comfort-plus-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-comfort-plus-1-6-2014",
+  "titulo": "Hyundai Hb20s Comfort Plus 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 11.1,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-comfort-plus-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-comfort-plus-1-6-at-2014",
+  "titulo": "Hyundai Hb20s Comfort Plus 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-comfort-style-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-comfort-style-1-0-2014",
+  "titulo": "Hyundai Hb20s Comfort Style 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.7,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-comfort-style-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-comfort-style-1-6-2014",
+  "titulo": "Hyundai Hb20s Comfort Style 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 11.1,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-comfort-style-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-comfort-style-1-6-at-2014",
+  "titulo": "Hyundai Hb20s Comfort Style 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-copa-do-mundo-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-copa-do-mundo-1-0-2014",
+  "titulo": "Hyundai Hb20s Copa do Mundo 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8,
+   "etanolRodoviario": 10.1,
+   "gasolinaUrbano": 11.5,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-copa-do-mundo-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-copa-do-mundo-1-6-2014",
+  "titulo": "Hyundai Hb20s Copa do Mundo 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 11.4,
+   "gasolinaRodoviario": 13
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-copa-do-mundo-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-copa-do-mundo-1-6-at-2014",
+  "titulo": "Hyundai Hb20s Copa do Mundo 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.8,
+   "gasolinaUrbano": 10.2,
+   "gasolinaRodoviario": 12.3
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-premium-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-premium-1-6-2014",
+  "titulo": "Hyundai Hb20s Premium 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 7.8,
+   "etanolRodoviario": 8.7,
+   "gasolinaUrbano": 11.1,
+   "gasolinaRodoviario": 12.8
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "hb20s",
+  "slug": "hb20s-premium-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/hb20s-premium-1-6-at-2014",
+  "titulo": "Hyundai Hb20s Premium 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.9,
+   "etanolRodoviario": 8.2,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 11.7
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "i30",
+  "slug": "i30-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/i30-1-6-2014",
+  "titulo": "Hyundai I30 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 8.5,
+   "gasolinaUrbano": 9.3,
+   "gasolinaRodoviario": 11.6
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "hyundai",
+  "modelo": "i30",
+  "slug": "i30-1-8-2014",
+  "url": "https://www.fichacompleta.com.br/carros/hyundai/i30-1-8-2014",
+  "titulo": "Hyundai I30 1.8 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "gasolinaUrbano": 9.2,
+   "gasolinaRodoviario": 11.8
+  },
+  "alturaSolo": null
+ },
+ {
+  "marca": "kia",
+  "modelo": "picanto",
+  "slug": "picanto-ex-1-0-2014",
+  "url": "https://www.fichacompleta.com.br/carros/kia/picanto-ex-1-0-2014",
+  "titulo": "Kia Picanto EX 1.0 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.2,
+   "etanolRodoviario": 9.8,
+   "gasolinaUrbano": 12,
+   "gasolinaRodoviario": 14.4
+  },
+  "alturaSolo": 152
+ },
+ {
+  "marca": "kia",
+  "modelo": "picanto",
+  "slug": "picanto-ex-1-0-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/kia/picanto-ex-1-0-at-2014",
+  "titulo": "Kia Picanto EX 1.0 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 8.3,
+   "etanolRodoviario": 9.4,
+   "gasolinaUrbano": 11.4,
+   "gasolinaRodoviario": 13.1
+  },
+  "alturaSolo": 152
+ },
+ {
+  "marca": "kia",
+  "modelo": "cerato",
+  "slug": "cerato-1-6-2014",
+  "url": "https://www.fichacompleta.com.br/carros/kia/cerato-1-6-2014",
+  "titulo": "Kia Cerato 1.6 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.8,
+   "etanolRodoviario": 9.3,
+   "gasolinaUrbano": 10,
+   "gasolinaRodoviario": 14
+  },
+  "alturaSolo": 165
+ },
+ {
+  "marca": "kia",
+  "modelo": "cerato",
+  "slug": "cerato-1-6-at-2014",
+  "url": "https://www.fichacompleta.com.br/carros/kia/cerato-1-6-at-2014",
+  "titulo": "Kia Cerato 1.6 AT 2014",
+  "semEquipamentos": false,
+  "airbag": true,
+  "abs": true,
+  "consumo": {
+   "etanolUrbano": 6.6,
+   "etanolRodoviario": 9.1,
+   "gasolinaUrbano": 9.5,
+   "gasolinaRodoviario": 12.4
+  },
+  "alturaSolo": 165
+ }
+]

@@ -1,0 +1,33 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/sp/renault/megane-grand-tour/ano-2008",
+ "coletadoEm": "2026-10-25T22:59:48.445Z",
+ "totalInformado": 2,
+ "anuncios": [
+  {
+   "id": 33461867,
+   "versao": "Mégane Grand Tour Dynamique 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 149000,
+   "preco": 26800,
+   "zeroKm": false,
+   "cidade": "Bauru",
+   "uf": "SP"
+  },
+  {
+   "id": 33290536,
+   "versao": "Mégane Grand Tour Dynamique 2.0 16V (aut)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2007,
+   "combustivel": "Gasolina",
+   "cambio": "Automática",
+   "km": 132000,
+   "preco": 29900,
+   "zeroKm": false,
+   "cidade": "Jacareí",
+   "uf": "SP"
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 44,
+  "codigoModelo": 6547,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 1,
+  "ano": "2014-1",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:07:07.971Z",
+ "resposta": {
+  "Valor": "R$ 110.320,00",
+  "Marca": "Peugeot",
+  "Modelo": "308 CC Roland Garros 1.6 Turbo16V 2p Aut",
+  "AnoModelo": 2014,
+  "Combustivel": "Gasolina",
+  "CodigoFipe": "024201-2",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "ghn4d2y6sccsv",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "G",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:07"
+ }
+}

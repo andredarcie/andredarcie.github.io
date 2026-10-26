@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 26,
+  "codigoModelo": 6205,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-25T22:57:29.281Z",
+ "resposta": {
+  "Valor": "R$ 41.247,00",
+  "Marca": "Hyundai",
+  "Modelo": "HB20 Comf./C.Plus/C.Style 1.0 Flex 12V",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "015088-6",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "txyg3y5w9msw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 19:57"
+ }
+}

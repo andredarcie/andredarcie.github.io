@@ -1,0 +1,28 @@
+{
+ "rota": "ConsultarValorComTodosParametros",
+ "corpo": {
+  "codigoTabelaReferencia": 336,
+  "codigoTipoVeiculo": 1,
+  "codigoMarca": 59,
+  "codigoModelo": 3982,
+  "anoModelo": 2014,
+  "codigoTipoCombustivel": 5,
+  "ano": "2014-5",
+  "tipoVeiculo": "carro",
+  "tipoConsulta": "tradicional"
+ },
+ "consultadoEm": "2026-10-26T00:03:49.911Z",
+ "resposta": {
+  "Valor": "R$ 45.556,00",
+  "Marca": "VW - VolksWagen",
+  "Modelo": "Polo Sed. COMFORT. 1.6 Mi Tot. Flex 8v",
+  "AnoModelo": 2014,
+  "Combustivel": "Flex",
+  "CodigoFipe": "005248-5",
+  "MesReferencia": "agosto de 2026 ",
+  "Autenticacao": "wkgn04jwhysw",
+  "TipoVeiculo": 1,
+  "SiglaCombustivel": "F",
+  "DataConsulta": "domingo, 25 de outubro de 2026 21:03"
+ }
+}

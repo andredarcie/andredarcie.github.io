@@ -1,0 +1,82 @@
+{
+ "fonte": "https://www.mobiauto.com.br/comprar/carros-usados/brasil/fiat/stilo/ano-2008",
+ "coletadoEm": "2026-10-25T23:09:22.466Z",
+ "totalInformado": 5,
+ "anuncios": [
+  {
+   "id": 33085891,
+   "marca": "Fiat",
+   "modelo": "Stilo",
+   "versao": "Sporting 1.8 8V (Flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 133416,
+   "preco": 42900,
+   "zeroKm": false,
+   "cidade": "Esmeraldas",
+   "uf": "MG"
+  },
+  {
+   "id": 22974917,
+   "marca": "Fiat",
+   "modelo": "Stilo",
+   "versao": "1.8 8V (Flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 100,
+   "preco": 34900,
+   "zeroKm": false,
+   "cidade": "Catanduva",
+   "uf": "SP"
+  },
+  {
+   "id": 13770718,
+   "marca": "Fiat",
+   "modelo": "Stilo",
+   "versao": "Sporting 1.8 8V Dualogic (Flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Automática",
+   "km": 160000,
+   "preco": 25900,
+   "zeroKm": false,
+   "cidade": "Porto União",
+   "uf": "SC"
+  },
+  {
+   "id": 32731194,
+   "marca": "Fiat",
+   "modelo": "Stilo",
+   "versao": "1.8 8V (Flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 163619,
+   "preco": 26900,
+   "zeroKm": false,
+   "cidade": "Arapongas",
+   "uf": "PR"
+  },
+  {
+   "id": 28082940,
+   "marca": "Fiat",
+   "modelo": "Stilo",
+   "versao": "Sporting 1.8 8V (Flex)",
+   "anoModelo": 2008,
+   "anoFabricacao": 2008,
+   "combustivel": "Flex",
+   "cambio": "Manual",
+   "km": 115000,
+   "preco": 32900,
+   "zeroKm": false,
+   "cidade": "Arapongas",
+   "uf": "PR"
+  }
+ ]
+}
