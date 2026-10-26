@@ -55,3 +55,11 @@ life-lab/output/
 life-lab/mini.png
 # Original da trilha do explorer (192 kbps); o site usa as versões comprimidas em explorer/audio/.
 explorer/audio/source/
+
+# ── Hallmark (skill de design) ────────────────────────────────────────
+# Artefatos locais da skill; não fazem parte do site.
+.hallmark/
+
+# ── Previews da home ──────────────────────────────────────────────────
+# Capturas brutas (PNG 1280×800); o site usa as WebP de img/previews/.
+_previews-wip/shots/
