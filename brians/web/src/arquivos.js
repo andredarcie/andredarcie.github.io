@@ -7,7 +7,9 @@ export const RAIZ = '../projeto/';
 const porNome = new Map(); // "graphics/characters/$brian.png" → caminho real
 
 export async function carregarIndice(build) {
-  const lista = await (await fetch(`arquivos.json?v=${build}`)).json();
+  const r = await fetch(`arquivos.json?v=${build}`);
+  if (!r.ok) throw new Error(`não consegui baixar arquivos.json (${r.status})`);
+  const lista = await r.json();
   for (const real of lista) porNome.set(real.toLowerCase(), real);
   return lista;
 }

@@ -6,13 +6,16 @@ const BUILD = document.documentElement.dataset.build;
 
 const $ = (s) => document.querySelector(s);
 const status = (t) => { $('#status').textContent = t; };
+// tela de carregamento: criada pelo script inline do index.html
+const carga = window.__carga;
 
+// O botão Jogar fica na janela da tela de carregamento; o clique fecha a tela.
 function esperarClique() {
   const botao = $('#jogar');
   botao.hidden = false;
   botao.focus();
   return new Promise((resolver) => {
-    const ir = () => { botao.hidden = true; resolver(); };
+    const ir = () => { carga.fechar(); resolver(); };
     botao.addEventListener('click', ir, { once: true });
   });
 }
@@ -60,8 +63,9 @@ function ligarTelaCheia() {
 }
 ligarTelaCheia();
 
-iniciar({ build: BUILD, $, status, esperarClique, mensagem, mostrarAviso }).catch((e) => {
+iniciar({ build: BUILD, $, status, carga, esperarClique, mensagem, mostrarAviso }).catch((e) => {
   console.error(e);
-  mostrarAviso(`Falha ao iniciar: ${e.message ?? e}`, false);
+  if (carga.aberto) carga.erro(e);
+  else mostrarAviso(`Falha ao iniciar: ${e.message ?? e}`, true, () => location.reload(), 'Tentar de novo');
   status('');
 });

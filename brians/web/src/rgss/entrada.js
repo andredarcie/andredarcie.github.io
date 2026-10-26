@@ -22,6 +22,7 @@ export class Entrada {
   constructor() {
     this.teclas = new Set();   // códigos físicos pressionados
     this.toque = new Set();    // botões RGSS vindos do controle virtual
+    this.travados = new Set(); // botões de alternar do controle virtual que estão ligados (Correr)
     this.pulsos = new Set();   // apertos já soltos que o jogo ainda não viu (toque rápido < 1 quadro)
     this.tempo = new Int32Array(32);
     this.ordemDirecao = [];    // direções na ordem em que foram apertadas
@@ -52,6 +53,7 @@ export class Entrada {
     let press = 0;
     for (const t of this.teclas) for (const b of TECLAS[t]) press |= 1 << b;
     for (const b of this.toque) press |= 1 << b;
+    for (const b of this.travados) press |= 1 << b;
     for (const b of this.pulsos) press |= 1 << b;
     this.pulsos.clear();
     // Replay: grava esta máscara ou troca pela gravada (src/rastro.js)
@@ -82,22 +84,34 @@ export class Entrada {
   }
 
   // Controle virtual para celular: elementos com data-botao="13" etc.
+  // Com data-alternar, o botão liga num toque e desliga no seguinte (Correr:
+  // segurar com o polegar enquanto o outro usa o direcional era ruim).
   ligarControleVirtual(raiz) {
     const ativos = new Map(); // pointerId → botões
     const soltar = (id) => {
       for (const b of ativos.get(id) ?? []) this.toque.delete(b);
       ativos.delete(id);
     };
-    const pegar = (e) => {
+    const alternar = (alvo) => {
+      const botoes = alvo.dataset.botao.split(',').map(Number);
+      const ligar = !alvo.classList.contains('ligado');
+      alvo.classList.toggle('ligado', ligar);
+      for (const b of botoes) {
+        if (ligar) { this.travados.add(b); this.pulsos.add(b); } else this.travados.delete(b);
+      }
+    };
+    const pegar = (e, comecou) => {
       const alvo = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-botao]');
       soltar(e.pointerId);
       if (!alvo || !raiz.contains(alvo)) return;
+      // alternar só no toque que começa nele (deslizar o dedo por cima não muda)
+      if (alvo.hasAttribute('data-alternar')) { if (comecou) alternar(alvo); return; }
       const botoes = alvo.dataset.botao.split(',').map(Number);
       ativos.set(e.pointerId, botoes);
       for (const b of botoes) { this.toque.add(b); this.pulsos.add(b); }
     };
-    raiz.addEventListener('pointerdown', (e) => { e.preventDefault(); raiz.setPointerCapture?.(e.pointerId); pegar(e); });
-    raiz.addEventListener('pointermove', (e) => { if (ativos.has(e.pointerId)) pegar(e); });
+    raiz.addEventListener('pointerdown', (e) => { e.preventDefault(); raiz.setPointerCapture?.(e.pointerId); pegar(e, true); });
+    raiz.addEventListener('pointermove', (e) => { if (ativos.has(e.pointerId)) pegar(e, false); });
     for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) raiz.addEventListener(ev, (e) => soltar(e.pointerId));
   }
 }

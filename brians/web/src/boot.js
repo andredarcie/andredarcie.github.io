@@ -24,22 +24,62 @@ const LARGURA = 544, ALTURA = 416;
 const JOGO = './jogo/';
 const JOGO_IMPORT = '../jogo/';
 
-export async function iniciar({ build, $, status, esperarClique, mensagem, mostrarAviso }) {
-  status('carregando…');
+// fetch que diz qual arquivo falhou (o "Failed to fetch" do navegador não diz)
+async function buscar(endereco, nome) {
+  let r;
+  try { r = await fetch(endereco); } catch { throw new Error(`não consegui baixar ${nome} (sem resposta do servidor; a internet caiu?)`); }
+  if (!r.ok) throw new Error(`não consegui baixar ${nome} (${r.status})`);
+  return r;
+}
+
+// Os scripts do jogo só rodam depois do clique, um por vez e em ordem (cada
+// um define globais que os seguintes usam). Aqui eles só são baixados e
+// compilados, sem executar (modulepreload), para o título abrir logo após o
+// clique em vez de deixar a tela preta. A URL é a mesma do import map.
+function precarregarScripts(ordem, build, carga) {
+  const comPreload = document.createElement('link').relList?.supports?.('modulepreload');
+  let feitos = 0;
+  return Promise.all(ordem.map(async (arquivo) => {
+    const href = `${JOGO}${arquivo}?v=${build}`;
+    if (comPreload) {
+      await new Promise((ok, falhou) => {
+        const link = document.createElement('link');
+        link.rel = 'modulepreload';
+        link.href = href;
+        link.onload = ok;
+        link.onerror = () => falhou(new Error(`não consegui baixar jogo/${arquivo} (ou ele tem erro de sintaxe)`));
+        document.head.append(link);
+      });
+    } else {
+      await buscar(href, `jogo/${arquivo}`); // só aquece o cache HTTP
+    }
+    carga.progresso(++feitos, ordem.length, arquivo);
+  }));
+}
+
+export async function iniciar({ build, $, status, carga, esperarClique, mensagem, mostrarAviso }) {
+  carga.etapa('Lendo a lista de arquivos…', 35, 40);
   const lista = await carregarIndice(build);
 
   // Open Sans (48 KB, só latino): a interface da página e a reserva da Verdana
   // onde ela não existe (Android, Linux). O texto do jogo continua em Verdana.
   const fonte = new FontFace('Open Sans', `url("${url('Fonts/open-sans-latin.woff2')}")`, { weight: '300 800' });
-  document.fonts.add(await fonte.load());
+  document.fonts.add(await fonte.load().catch(() => { throw new Error('não consegui baixar a fonte Open Sans'); }));
 
+  // mapas, eventos e banco de dados (Data/*.rvdata); o ks_checkpoint pode
+  // vir a mais quando não há um salvo, por isso a conta é limitada ao total
+  const totalDados = lista.filter((p) => /^Data\/[^/]+\.rvdata$/i.test(p)).length;
+  let baixados = 0;
+  carga.etapa('Baixando os mapas da mansão…', 40, 70);
   const baixar = async (real) => {
-    const r = await fetch(url(real));
-    if (!r.ok) throw new Error(`não consegui baixar ${real} (${r.status})`);
-    return new Uint8Array(await r.arrayBuffer());
+    const r = await buscar(url(real), real);
+    const bytes = new Uint8Array(await r.arrayBuffer());
+    baixados++;
+    carga.progresso(Math.min(baixados, totalDados), totalDados, real.split('/').pop());
+    return bytes;
   };
   const [ordem] = await Promise.all([
-    fetch(`${JOGO}_ordem.json?v=${build}`).then((r) => r.json()),
+    buscar(`${JOGO}_ordem.json?v=${build}`, 'jogo/_ordem.json').then((r) => r.json()),
     // gravar/replay começam limpos: só o ks_checkpoint do instalador, nada persistido
     rb.montarArquivos(lista, baixar, { persistidos: !MODO }),
   ]);
@@ -49,13 +89,18 @@ export async function iniciar({ build, $, status, esperarClique, mensagem, mostr
   const titulo = faixaGerada('Audio/BGM/4-14 - Haunted House BGM');
   if (titulo) bufferDe(titulo);
 
+  carga.etapa('Preparando os scripts do jogo…', 70, 100);
+  await precarregarScripts(ordem, build, carga);
+
   const renderizador = new Renderizador($('#tela'), LARGURA, ALTURA);
   const entrada = new Entrada();
   entrada.ligarControleVirtual($('#controle'));
   const audio = new Audio();
 
   status('');
+  carga.pronto();
   if (MODO !== 'replay') await esperarClique();
+  else carga.fechar();
   audio.iniciar();
 
   let rastro = null;

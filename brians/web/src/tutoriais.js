@@ -34,7 +34,7 @@ const TUTORIAIS = {
     toque: 'Toque em A para examinar e interagir com o que estiver à sua frente.' },
   3: { titulo: 'Correr', icone: 'shift',
     teclado: 'Segure Shift enquanto anda para correr.',
-    toque: 'Segure o botão Correr enquanto anda.' },
+    toque: 'Toque em Correr para ligar ou desligar a corrida.' },
   4: { titulo: 'Potes', icone: 'pote',
     teclado: 'Quebre os potes com o Enter. Dentro deles você pode encontrar itens que vão ajudar.',
     toque: 'Quebre os potes com o botão A. Dentro deles você pode encontrar itens que vão ajudar.' },

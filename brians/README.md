@@ -14,7 +14,7 @@ necessário para rodar o jogo.
 
 | Pasta | O que é |
 |---|---|
-| `web/index.html` | a página; import map com `?v=N` e o selo `BUILD N` |
+| `web/index.html` | a página; import map com `?v=N`, o selo `BUILD N` e a tela de carregamento (script inline: progresso por etapa e o erro, mesmo se `main.js` não chegar; o boot assume por `window.__carga`) |
 | `web/main.js` | a página (botão Jogar, avisos) e a partida |
 | `web/src/boot.js` | o boot: arquivos, fonte, motor, fachada, ajustes, scripts |
 | `web/jogo/` | **os scripts do jogo** (Game_*, Scene_*, Window_*, Fog, Partículas, Checkpoint…), na ordem de `_ordem.json` |
@@ -80,7 +80,7 @@ Por cima dos scripts, que continuam como o jogo de 2011. Desligadas em
   desenhado; tudo que conta quadros anda no dobro, a música não muda.
 - **Teclado × celular**: todo texto que cita botão segue o modo atual
   (`dispositivo.js`: começa pelo `pointer: coarse`, muda com o uso). No
-  toque é o controle da tela: **A** (ação, = Enter), **Correr** (= Shift),
+  toque é o controle da tela: **A** (ação, = Enter), **Correr** (= Shift, mas liga/desliga com um toque e fica aceso enquanto ligado),
   **B** (pausa), direcional; no canto de cima, botões de pausar e de tela
   cheia (este só onde o navegador deixa). No celular o cartão de tutorial fica no topo
   (os botões A/B/Correr cobrem o canto de baixo em paisagem).
