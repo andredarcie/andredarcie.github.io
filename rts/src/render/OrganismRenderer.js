@@ -4,6 +4,7 @@ import { groundHeight } from './PondShape.js';
 import { smoothstep } from '../core/math.js';
 import { NEWBORN_DISTANCE } from '../config/reproduction.js';
 import { HURT_FLASH } from '../config/flame.js';
+import { TOOLS } from '../config/rts.js';
 
 // Raio da sombra de contato de um bicho adulto, em unidades do boneco.
 const CONTACT_RADIUS = 5.5;
@@ -104,7 +105,8 @@ export class OrganismRenderer {
         // Soldado anda com a arma na mão; trabalhador só a pega para brigar.
         // Na roça, o facão de cortar a mandioca.
         // Fuzil tomado da tropa, levado no ombro até a igreja.
-        weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : o.loot > 0 ? 'rifle' : o.eating > 0 && !o.chop && !o.carrying ? 'machete' : null,
+        // Na aldeia: o feixe de flechas apanhadas e o pau de cavar (TOOLS da missão).
+        weapon: o.armed || o.foe || o.strike > 0 ? o.weapon : o.loot > 0 ? TOOLS.loot : o.eating > 0 && !o.chop && !o.carrying ? TOOLS.gather : null,
         pushing: Boolean(o.look?.cannon || o.look?.bigCannon),
         guard: Boolean(o.foe) && o.speed < 6,
         strike: o.strike > 0 && animate ? o.strike / o.strikeSwing : 0,
@@ -112,12 +114,16 @@ export class OrganismRenderer {
         // Entre um tiro e outro, quanto da recarga já foi (0 → 1); -1 fora dela.
         reload: OrganismRenderer.#reloadPhase(o, animate),
         reloadMag: Boolean(o.reloadMag),
+        // Os nomes tomados matando contrários: um risco no corpo por nome.
+        names: o.names ?? 0,
         hurt: animate ? o.hurt / HURT_FLASH : 0,
         wounds: Math.ceil(o.wounds),
         eyes: OrganismRenderer.#eyeOpening(o, view.rest, animate, elapsed, labor),
         elapsed
       });
       this.#syncBaby(view, o, labor, scale);
+      // A igara: quantos remadores ainda vão nela.
+      if (o.stats.boat) this.#characters.syncCanoe(view.body, o.crew?.length ?? 0, elapsed, animate);
 
       // Dentro da cabana o bicho some de vista.
       view.body.visible = !o.inHut;
@@ -242,7 +248,7 @@ export class OrganismRenderer {
   // (strikeTimer conta de strikeSpan a 0; o golpe toma os primeiros strikeSwing).
   static #reloadPhase(o, animate) {
     if (!animate || o.strike > 0 || !(o.strikeTimer > 0)) return -1;
-    if (o.strikeKind !== 'rifle' && o.strikeKind !== 'blunderbuss') return -1;
+    if (o.strikeKind !== 'rifle' && o.strikeKind !== 'blunderbuss' && o.strikeKind !== 'bow') return -1;
     const span = (o.strikeSpan ?? 0) - (o.strikeSwing ?? 0);
     if (span <= .05) return -1;
     return Math.max(0, Math.min(1, 1 - o.strikeTimer / span));

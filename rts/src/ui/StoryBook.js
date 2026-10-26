@@ -1,9 +1,9 @@
-import { STORY } from '../config/story.js';
+import { STORY, STORY_TRIGGERS, quoteCite } from '../config/story.js';
 
-// Segundos de partida até o registro sobre Antônio Conselheiro se abrir: o
-// primeiro (o que é Canudos) sai logo no começo, e este vem depois, para cada um
-// ter a sua novidade.
-const CONSELHEIRO_AFTER = 25;
+// Quando cada registro se abre vem da missão (STORY_TRIGGERS): o primeiro (o que é
+// Canudos, o que é a aldeia) sai logo no começo, e o do pregador alguns segundos
+// depois, para cada um ter a sua novidade.
+const T = STORY_TRIGGERS;
 
 // O livro de história: o botão do livro na barra de cima e o diário que ele abre.
 // Ler é opcional. Quando um momento da partida libera um registro novo, o botão
@@ -31,8 +31,15 @@ export class StoryBook {
     this.#button.addEventListener('click', () => this.open());
     root.querySelector('#story-close').addEventListener('click', () => this.#dialog.close());
     this.#dialog.addEventListener('close', () => this.#markRead());
-    events.on('waveStart', ({ number }) => { if (number === 1) this.unlock('uaua'); });
-    events.on('waveCleared', ({ number }) => { if (number === 1) this.unlock('sertoes'); });
+    events.on('waveStart', ({ number, canoes }) => {
+      if (T.waveStart[number]) this.unlock(T.waveStart[number]);
+      if (canoes && T.canoes) this.unlock(T.canoes);
+    });
+    events.on('waveCleared', ({ number }) => { if (T.waveCleared[number]) this.unlock(T.waveCleared[number]); });
+    events.on('built', ({ building }) => {
+      if (building.team === 'player' && T.built[building.kind]) this.unlock(T.built[building.kind]);
+    });
+    events.on('riflePickup', () => { if (T.riflePickup) this.unlock(T.riflePickup); });
     // Os chefes chegam com os romeiros, um por vez.
     events.on('romeiros', ({ hero }) => { if (hero && STORY[hero]) this.unlock(hero); });
     this.#render();
@@ -42,15 +49,15 @@ export class StoryBook {
     return this.#dialog.open;
   }
 
-  // Começo da partida: o primeiro registro, o que foi Canudos.
+  // Começo da partida: o primeiro registro, o que foi Canudos (ou a aldeia).
   begin() {
-    this.unlock('canudos');
+    this.unlock(T.begin);
   }
 
   // Tempo de jogo correndo (parado, pausado ou com o livro aberto não conta).
   update(dt) {
     this.#playTime += dt;
-    if (this.#playTime >= CONSELHEIRO_AFTER) this.unlock('conselheiro');
+    if (this.#playTime >= T.after.seconds) this.unlock(T.after.id);
   }
 
   unlock(id) {
@@ -127,7 +134,7 @@ export class StoryBook {
       const quote = document.createElement('blockquote');
       quote.textContent = story.quote.text;
       const caption = document.createElement('figcaption');
-      caption.innerHTML = `Euclides da Cunha, <cite>Os Sertões</cite> · ${story.quote.part}`;
+      caption.innerHTML = quoteCite(story.quote);
       figure.append(quote, caption);
       article.append(figure);
     }

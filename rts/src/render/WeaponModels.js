@@ -38,7 +38,21 @@ const M = {
   leather: new THREE.MeshLambertMaterial({ color: 0x5e3e24 }),
   horn: new THREE.MeshLambertMaterial({ color: 0x2e241c }),
   wrap: new THREE.MeshLambertMaterial({ color: 0x2a2420 }),
-  flint: new THREE.MeshLambertMaterial({ color: 0x6f6a62 })
+  flint: new THREE.MeshLambertMaterial({ color: 0x6f6a62 }),
+  // As armas dos tupinambás: pau escuro e duro do tacape, pau-d'arco do arco, a taquara
+  // das flechas, o algodão cru das amarrações, as penas e a pedra polida do machado.
+  tacapeWood: new THREE.MeshLambertMaterial({ color: 0x4a2a1c }),
+  bowWood: new THREE.MeshLambertMaterial({ color: 0x3a2618 }),
+  cane: new THREE.MeshLambertMaterial({ color: 0xc8b47a }),
+  cotton: new THREE.MeshLambertMaterial({ color: 0xe8e0cc }),
+  featherYellow: new THREE.MeshLambertMaterial({ color: 0xe8c43a }),
+  featherRed: new THREE.MeshLambertMaterial({ color: 0xc0392b }),
+  featherBlack: new THREE.MeshLambertMaterial({ color: 0x24201c }),
+  shell: new THREE.MeshLambertMaterial({ color: 0xf0e8d6 }),
+  greenStone: new THREE.MeshLambertMaterial({ color: 0x5a6e5e }),
+  bone: new THREE.MeshLambertMaterial({ color: 0xe0d4b8 }),
+  ember: new THREE.MeshBasicMaterial({ color: 0xff7a24 }),
+  flame: new THREE.MeshBasicMaterial({ color: 0xffc04a })
 };
 export const WEAPON_MATERIALS = M;
 
@@ -269,6 +283,70 @@ function axeParts() {
   return p;
 }
 
+/* ---------- as armas dos tupinambás (missão de antes de 1500: nada de ferro) ---------- */
+// Tacape: o pau de guerra, "à feição de arrochos, com uma quina por uma ponta"
+// (Soares, cap. CLXVIII): cabo roliço com amarração de algodão e a cabeça achatada,
+// de gume dos dois lados.
+function tacapeParts() {
+  return [
+    tube(.26, .3, 6.6, M.tacapeWood, 0, -1.6, 0, 8),
+    profile([[-4.4, .32], [-6.6, 1.25], [-8.6, 1.35], [-9.7, .7], [-9.9, 0], [-9.7, -.7], [-8.6, -1.35], [-6.6, -1.25], [-4.4, -.32]], .42, M.tacapeWood, 0, .08),
+    ring(.33, .07, M.cotton, .6, 0), ring(.33, .07, M.cotton, .2, 0), ring(.33, .07, M.cotton, -.2, 0)
+  ];
+}
+// Ibirapema, a "espada de pau de ambas as mãos muito pesada, marchetada com continhas
+// brancas de búzios", com o penacho pendurado da empunhadura (cap. CLXXIII).
+function ibirapemaParts() {
+  const p = [
+    tube(.3, .34, 8.2, M.tacapeWood, 0, -2.2, 0, 8),
+    profile([[-6, .4], [-8.4, 1.9], [-10.6, 2.2], [-12, 1.3], [-12.3, 0], [-12, -1.3], [-10.6, -2.2], [-8.4, -1.9], [-6, -.4]], .5, M.tacapeWood, 0, .1)
+  ];
+  for (const [y, z] of [[-9.2, .9], [-9.2, -.9], [-10.6, 0], [-11.4, .8], [-11.4, -.8], [-8.2, 0], [-10, 1.6], [-10, -1.6]]) {
+    for (const side of [-1, 1]) p.push(sphere(.14, M.shell, side * .27, y, z));
+  }
+  for (let i = 0; i < 4; i++) p.push(ring(.37, .08, M.cotton, 1.2 - i * .35, 0));
+  // a embagadura: penas em molho pendendo do pé da empunhadura
+  for (let i = 0; i < 5; i++) p.push(box(.12, 2.4, .5, i % 2 ? M.featherRed : M.featherYellow, (i - 2) * .16, 2.3, (i - 2) * .12, (i - 2) * .12));
+  return p;
+}
+// Tição: pau comprido com a ponta em brasa e a chama.
+function torchParts() {
+  return [
+    tube(.24, .28, 7.6, M.tacapeWood, 0, -2.2, 0, 7),
+    tube(.5, .36, 1.4, M.ember, 0, -6.4, 0, 7),
+    part(new THREE.ConeGeometry(.6, 2, 6), M.flame, 0, -8, 0, Math.PI)
+  ];
+}
+// Machado de pedra polida (o "djí"): a lâmina encaixada no cabo e amarrada com fibra.
+function stoneAxeParts() {
+  const head = new THREE.DodecahedronGeometry(1, 0);
+  head.scale(1.7, 1.15, .5);
+  return [
+    tube(.3, .34, 9, M.woodLight, 0, -3.2, 0, 7),
+    part(head, M.greenStone, -1.2, -7.4, 0),
+    ring(.42, .1, M.cotton, -7, 0), ring(.42, .1, M.cotton, -7.8, 0)
+  ];
+}
+// Pau de cavar, de ponta afinada, para arrancar a mandioca.
+function diggerParts() {
+  return [tube(.22, .26, 6.4, M.woodLight, 0, -1.8, 0, 6), part(new THREE.ConeGeometry(.22, 1.4, 6), M.woodLight, 0, -5.7, 0, Math.PI)];
+}
+// Flecha de taquara: haste, a ponta de pau (ou de dente) e a empenagem de duas penas.
+function arrowParts(x = 0, z = 0, length = 11) {
+  return [
+    tube(.08, .08, length, M.cane, x, -length / 2 + 1.5, z, 5),
+    part(new THREE.ConeGeometry(.16, 1, 4), M.bone, x, -length + 1, z, Math.PI),
+    box(.05, 1.6, .5, M.featherBlack, x, .7, z + .2), box(.5, 1.6, .05, M.featherBlack, x - .2, .7, z)
+  ];
+}
+// O feixe de flechas apanhadas do chão, levado na mão até a casa do principal.
+function arrowBundleParts() {
+  const p = [];
+  for (const [x, z] of [[0, 0], [.3, .2], [-.3, .15], [.15, -.3], [-.2, -.25]]) p.push(...arrowParts(x, z));
+  p.push(ring(.5, .08, M.cotton, -2, 0));
+  return p;
+}
+
 const BUILDERS = {
   rifle: () => ({ main: rifleParts(false), bolt: boltParts() }),
   bayonet: () => ({ main: rifleParts(true), bolt: boltParts() }),
@@ -277,7 +355,14 @@ const BUILDERS = {
   saber: () => ({ main: saberParts() }),
   spear: () => ({ main: spearParts() }),
   club: () => ({ main: clubParts() }),
-  axe: () => ({ main: axeParts() })
+  axe: () => ({ main: axeParts() }),
+  tacape: () => ({ main: tacapeParts() }),
+  ibirapema: () => ({ main: ibirapemaParts() }),
+  torch: () => ({ main: torchParts() }),
+  stoneAxe: () => ({ main: stoneAxeParts() }),
+  digger: () => ({ main: diggerParts() }),
+  arrows: () => ({ main: arrowBundleParts() }),
+  arrow: () => ({ main: arrowParts() })
 };
 const cache = new Map();
 
@@ -313,3 +398,51 @@ export function weaponModel(kind) {
   return { group, bolt, ramrod };
 }
 export const WEAPON_KINDS = Object.keys(BUILDERS);
+
+/* ---------- o arco ---------- */
+// O arco tupinambá: comprido (quase da altura de quem atira), de pau escuro, com a
+// empunhadura enrolada de algodão. A vara corre em y (de pé), com a empunhadura na
+// origem e as pontas um pouco para trás (-z): é a curva do arco armado. A corda não
+// vem aqui: quem usa o arco estica duas barras finas das pontas até a mão que puxa
+// (CharacterModel, PalisadeRenderer).
+export const BOW = Object.freeze({ half: 9.2, sag: 1.4 });
+let bowGeometry = null;
+export function bowModel() {
+  if (!bowGeometry) {
+    const p = [];
+    const n = 10;
+    const at = t => [0, t * BOW.half, -BOW.sag * t * t];
+    for (let i = 0; i < n; i++) {
+      const a = at(-1 + 2 * i / n), b = at(-1 + 2 * (i + 1) / n);
+      const dy = b[1] - a[1], dz = b[2] - a[2], len = Math.hypot(dy, dz);
+      const r = .2 - Math.abs(-1 + (2 * i + 1) / n) * .08;
+      const g = new THREE.CylinderGeometry(r, r, len + .05, 6);
+      g.rotateX(Math.atan2(dz, dy));
+      g.translate(0, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2);
+      p.push({ g, m: M.bowWood });
+    }
+    for (let i = 0; i < 5; i++) p.push(ring(.25, .06, M.cotton, -.8 + i * .4, 0));
+    bowGeometry = fuse(p);
+  }
+  const group = new THREE.Group();
+  for (const [g, m] of bowGeometry) {
+    const mesh = new THREE.Mesh(g, m);
+    mesh.castShadow = true;
+    group.add(mesh);
+  }
+  return group;
+}
+// A corda: uma barra fina de comprimento 1 em y, esticada entre dois pontos (stringTo).
+const STRING_SHAPE = new THREE.BoxGeometry(.07, 1, .07).translate(0, .5, 0);
+const STRING_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xd8ccb0 });
+export function bowString() {
+  return new THREE.Mesh(STRING_SHAPE, STRING_MATERIAL);
+}
+const _dirS = new THREE.Vector3(), _upS = new THREE.Vector3(0, 1, 0);
+export function stringTo(mesh, a, b) {
+  _dirS.set(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+  const length = _dirS.length() || 1e-3;
+  mesh.position.set(a[0], a[1], a[2]);
+  mesh.quaternion.setFromUnitVectors(_upS, _dirS.divideScalar(length));
+  mesh.scale.set(1, length, 1);
+}

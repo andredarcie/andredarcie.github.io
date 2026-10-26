@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { weaponModel } from './WeaponModels.js';
 import { hillHeight } from '../world/Hills.js';
+import { TOOLS } from '../config/rts.js';
 
 // O fuzil caído sai a pouco mais da metade do modelo: inteiro, ele tomava conta do
 // chão; a um terço, sumia dentro do anel.
@@ -11,6 +12,9 @@ const BOB = .3;
 // O fuzil (15 de comprido) tem a origem no punho, com o cano para -y: deitado, o
 // meio dele fica a esta distância do punho.
 const RIFLE_MIDDLE = 2.5;
+// Na aldeia tupinambá o que cai no chão são flechas: o feixe (TOOLS.loot), cujo meio
+// fica mais longe da origem.
+const MIDDLE = TOOLS.loot === 'arrows' ? 4 : RIFLE_MIDDLE;
 // Contorno verde em volta do fuzil, em unidades do modelo (encolhido pelo SCALE): o
 // verde é a cor do que dá para pegar, como o anel no chão; o amarelo fica para a base.
 const OUTLINE = .55;
@@ -73,10 +77,10 @@ export class PickupRenderer {
     group.scale.setScalar(SCALE);
     const copies = Math.min(3, pickup.count);
     for (let i = 0; i < copies; i++) {
-      const rifle = weaponModel('rifle').group;
+      const rifle = weaponModel(TOOLS.loot).group;
       // Deitado: o cano vira para o lado (y → x) e o fuzil fica centrado no giro.
       rifle.rotation.set(0, i * .5, Math.PI / 2);
-      rifle.position.set(-RIFLE_MIDDLE, i * .7, (i - (copies - 1) / 2) * 1.1);
+      rifle.position.set(-MIDDLE, i * .7, (i - (copies - 1) / 2) * 1.1);
       PickupRenderer.#outline(rifle);
       group.add(rifle);
     }

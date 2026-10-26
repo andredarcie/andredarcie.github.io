@@ -7,8 +7,10 @@ import { CORPSE_DAYS } from '../config/death.js';
 import {
   FOOD_PER_TRIP, FOOD_GATHER_TIME, WOOD_PER_LOG, RESOURCE_SEARCH_RANGE, LOG_PICKUP_RANGE,
   GUARD_LEASH, WORKER_RETALIATE, WOUND_HIT_CHANCE, UNIT_TYPES, ROAD_WIDTH, CENTER, PLAZA_RADIUS,
-  THICKET, TOCAIA, THIRST, NIGHT, DEBANDADA, CONVOY, TRADE, HILL_REACH, BLESSING_FADE, RIFLE_PICKUP_REACH
+  THICKET, TOCAIA, THIRST, NIGHT, DEBANDADA, CONVOY, TRADE, HILL_REACH, BLESSING_FADE, RIFLE_PICKUP_REACH,
+  RECOVER_ARROWS, NAMES, SNARE
 } from '../config/rts.js';
+import { inSea, coastY } from '../world/Coast.js';
 import { Corpse } from '../entities/Corpse.js';
 import { Log } from '../entities/Log.js';
 import { marchPath, roadPath } from '../world/Roads.js';
@@ -19,6 +21,13 @@ import { hillAt } from '../world/Hills.js';
 const MARCH = WALK_SPEED * 1.25;
 // Intervalo entre as varreduras de inimigo por perto de cada soldado.
 const SCAN_INTERVAL = .3;
+// Flecha errada que fica no chão: a esta distância de outra já caída, as duas viram
+// um feixe só (até o teto); e a chance de ela não quebrar ao cair.
+const ARROW_HEAP = 12;
+const ARROW_HEAP_MAX = 8;
+const ARROW_KEEP = .6;
+// Velocidade da flecha no ar (para quanto ela leva até o alvo, na tela).
+const ARROW_SPEED = 230;
 // O pente do fuzil de ferrolho: balas por pente e o tempo a mais da recarga dele.
 const CLIP_ROUNDS = 5;
 const CLIP_RELOAD = 1.6;
@@ -93,7 +102,18 @@ export class UnitSystem {
     if (this.#inThicket(u.x, u.y)) factor *= THICKET.slow;
     if (this.night) factor *= NIGHT.pace;
     if (u.flee > 0) factor *= 1.3;
+    // A rede de madeira em volta de uma cerca embaraça quem passa por ela.
+    if (SNARE && this.#snared(u)) factor *= SNARE.slow;
     return factor;
+  }
+
+  #snared(u) {
+    for (const b of this.#state.buildings) {
+      if (b.team === u.team || !b.built || !b.isTower || !b.levels.scatter) continue;
+      const dx = b.x - u.x, dy = b.y - u.y;
+      if (dx * dx + dy * dy < SNARE.radius * SNARE.radius) return true;
+    }
+    return false;
   }
 
   // Alcance do golpe ou do tiro; do alto do morro, o tiro vai mais longe.
@@ -115,7 +135,8 @@ export class UnitSystem {
 
   // Quanto cada golpe rende: o ânimo da pregação, a sede, o fuzil perdido na fuga.
   #might(u) {
-    return u.power * (u.boost ?? 1) * this.#thirst(u) * (u.disarmed ? .5 : 1);
+    const named = NAMES ? 1 + NAMES.bonus * Math.min(NAMES.max, u.names ?? 0) : 1;
+    return u.power * (u.boost ?? 1) * this.#thirst(u) * (u.disarmed ? .5 : 1) * named;
   }
 
   traderAlive(team = 'player') {
@@ -298,6 +319,9 @@ export class UnitSystem {
       case 'escort':
         this.#escort(u, order, dt);
         return;
+      case 'sail':
+        this.#sail(u, order, dt);
+        return;
       default:
         if (invader) this.#hunt(u, dt);
         else this.#idle(u, dt);
@@ -355,6 +379,8 @@ export class UnitSystem {
     const leashed = target => post && Math.hypot(target.x - post.x, target.y - post.y) > GUARD_LEASH;
     for (const other of this.#state.organisms) {
       if (other.team === u.team || other.life <= 0 || leashed(other)) continue;
+      // Canoa vazia na areia não chama ninguém para a praia (atacar, só mandando).
+      if (other.stats.boat && !other.crew?.length) continue;
       const dx = other.x - u.x, dy = other.y - u.y;
       if (dx > range || dx < -range || dy > range || dy < -range) continue;
       const distance = Math.hypot(dx, dy);
@@ -570,12 +596,18 @@ export class UnitSystem {
       // Tiro: fumaça na boca da arma e o risco até o alvo; nem todo tiro acerta.
       u.shots++;
       const hit = isBuilding || Math.random() < this.#accuracy(u, target);
+      // A flecha voa em arco e leva o tempo do caminho; o tiro é um risco e a fumaça.
+      const arrow = u.weapon === 'bow';
+      const tx = target.x + (hit ? 0 : (Math.random() - .5) * (arrow ? 30 : 18));
+      const ty = target.y + (hit ? 0 : (Math.random() - .5) * (arrow ? 30 : 18));
       this.#state.shots.push({
         x: u.x + Math.cos(u.heading) * (u.stats.cannon ? 14 : 9), y: u.y + Math.sin(u.heading) * (u.stats.cannon ? 14 : 9),
         z: u.stats.cannon ? 5 : 11 * u.size / 10,
-        tx: target.x + (hit ? 0 : (Math.random() - .5) * 18), ty: target.y + (hit ? 0 : (Math.random() - .5) * 18),
-        tz: isBuilding ? 10 : 8, cannon: Boolean(u.stats.cannon), time: 0, life: u.stats.cannon ? 1.6 : 1.1
+        tx, ty, tz: isBuilding ? 10 : hit || !arrow ? 8 : 0, cannon: Boolean(u.stats.cannon), arrow, time: 0,
+        life: arrow ? Math.max(.25, Math.hypot(tx - u.x, ty - u.y) / ARROW_SPEED) : u.stats.cannon ? 1.6 : 1.1
       });
+      // A flecha do contrário que erra fica no chão, e quem passar a apanha.
+      if (arrow && !hit && RECOVER_ARROWS && u.team === 'enemy' && Math.random() < ARROW_KEEP) this.#dropArrow(tx, ty);
       const gun = u.stats.cannon ? (u.stats.churchHunter ? 'matadeira' : 'cannon') : u.weapon;
       this.#events.emit('strike', { weapon: gun, cannon: Boolean(u.stats.cannon), x: u.x, y: u.y, tx: target.x, ty: target.y });
       if (u.stats.cannon) {
@@ -597,8 +629,15 @@ export class UnitSystem {
     const damage = u.stats.damage * this.#might(u) * (u.ambush ?? 1) * antiCannon * (.85 + Math.random() * .3);
     u.ambush = 1;
     const direction = Math.atan2(foe.y - u.y, foe.x - u.x);
-    const weapon = u.stats.ranged ? 'bullet' : u.weapon;
-    if (!this.wound(foe, damage, direction, { by: u.stats.label, weapon })) return;
+    const weapon = u.stats.ranged ? (u.weapon === 'bow' ? 'arrow' : 'bullet') : u.weapon;
+    if (!this.wound(foe, damage, direction, { by: u.stats.label, weapon })) {
+      // Quem mata um contrário toma um nome novo (Soares, cap. CLXX).
+      if (NAMES && u.team === 'player' && u.type !== 'worker') {
+        u.names = (u.names ?? 0) + 1;
+        if (u.names === 1 || u.names % 3 === 0) this.#events.emit('newName', { unit: u });
+      }
+      return;
+    }
     this.#answer(foe, u);
     if (foe.type === 'worker') this.#alert(foe.team, foe.x, foe.y);
   }
@@ -606,6 +645,9 @@ export class UnitSystem {
   // Dano em alguém, de golpe ou de flecha: vida, ferida, sangue e o tranco. Devolve
   // true se a vítima continua de pé.
   wound(foe, damage, direction, { by, weapon }) {
+    // O pavês de pau leve segura boa parte da flecha.
+    if (foe.stats.shield && (weapon === 'arrow' || weapon === 'bullet')) damage *= foe.stats.shield;
+    if (weapon === 'arrow') weapon = 'bullet';
     foe.life -= damage;
     foe.hurt = HURT_FLASH;
     foe.woundedBy = by;
@@ -632,6 +674,13 @@ export class UnitSystem {
     const damage = u.stats.damage * this.#might(u) * u.stats.vsBuilding * (.85 + Math.random() * .3);
     building.life -= damage;
     building.hurt = .3;
+    // O tição pega fogo na palha: fumaça e fagulha onde ele bateu.
+    if (u.weapon === 'torch') {
+      this.#state.sparks.push({
+        x: building.x - Math.cos(u.heading) * building.radius * .7, y: building.y - Math.sin(u.heading) * building.radius * .7,
+        time: 0, life: 1.1, radius: 14, kind: 'fire'
+      });
+    }
     this.#state.woodChips.push({
       x: building.x - Math.cos(u.heading) * building.radius * .6,
       y: building.y - Math.sin(u.heading) * building.radius * .6,
@@ -853,6 +902,17 @@ export class UnitSystem {
     this.#state.pickups.push({ x: x + (Math.random() - .5) * 4, y: y + (Math.random() - .5) * 4, count });
   }
 
+  // Flecha errada no chão: junta com o feixe que já estiver ali perto.
+  #dropArrow(x, y) {
+    x = Math.max(12, Math.min(WORLD.width - 12, x));
+    y = Math.max(12, Math.min(WORLD.height - 12, y));
+    if (inSea(x, y, 2)) return;
+    const heap = this.#state.pickups.find(p => p.count < ARROW_HEAP_MAX && Math.abs(p.x - x) < ARROW_HEAP &&
+      Math.hypot(p.x - x, p.y - y) < ARROW_HEAP);
+    if (heap) heap.count++;
+    else this.#state.pickups.push({ x, y, count: 1 });
+  }
+
   // Quem do arraial passar perto de um fuzil caído o apanha — sertanejo, jagunço,
   // chefe, qualquer um — e junta com os que já leva.
   #collectRifles() {
@@ -1015,7 +1075,7 @@ export class UnitSystem {
     u.foe = null;
     const away = Math.atan2(u.y - CENTER.y, u.x - CENTER.x);
     this.#steer(u, u.x + Math.cos(away) * 60, u.y + Math.sin(away) * 60, 0, dt);
-    if (u.x < 14 || u.y < 14 || u.x > WORLD.width - 14 || u.y > WORLD.height - 14) {
+    if (u.x < 14 || u.y < 14 || u.x > WORLD.width - 14 || u.y > WORLD.height - 14 || inSea(u.x, u.y, 4)) {
       u.gone = true;
       this.#events.emit('deserted', { unit: u });
     }
@@ -1078,6 +1138,60 @@ export class UnitSystem {
       this.#state.organisms.push(escort);
     }
     return cart;
+  }
+
+  // ---- As canoas de guerra ----
+
+  // A igara rema do mar até a praia; na areia, quem vai nela desce e marcha pela
+  // trilha. Vazia, fica encalhada até o ataque acabar, e então volta para o mar
+  // (`back`) e some na beirada.
+  #sail(u, order, dt) {
+    u.foe = null;
+    const arrived = this.#steer(u, order.x, order.y, 4, dt) || Math.hypot(order.x - u.x, order.y - u.y) < 10;
+    if (!arrived) return;
+    if (order.back) {
+      u.gone = true;
+      return;
+    }
+    this.#unload(u);
+    u.order = null;
+    u.post = { x: u.x, y: u.y };
+  }
+
+  // Desembarque: cada um da canoa pula na areia e segue a trilha da praia. Com a
+  // canoa afundada (`swim`), nadam até a areia ("grandes nadadores", Soares, cap. CLX).
+  #unload(boat, swim = false) {
+    const crew = boat.crew ?? [];
+    boat.crew = [];
+    crew.forEach((item, i) => {
+      const side = (i - (crew.length - 1) / 2) * 7;
+      const x = Math.max(14, Math.min(WORLD.width - 14, boat.x - Math.sin(boat.heading) * side));
+      const unit = this.spawnRaider(item.type, boat.road, item.scale);
+      unit.x = x;
+      unit.y = coastY(x) - (swim ? 6 : 4) - Math.abs(side) * .2;
+      unit.heading = -Math.PI / 2;
+    });
+    if (crew.length) this.#events.emit('landing', { x: boat.x, y: boat.y, count: crew.length, swim });
+  }
+
+  // Uma igara com a tripulação `crew` ([{ type, scale }]), saindo da beirada de baixo
+  // na direção da praia da trilha `road`.
+  spawnBoat(road, crew, scale) {
+    const landX = road.mouth.x + (Math.random() - .5) * 150;
+    const unit = this.#factory.create('enemy', 'igara', landX + (Math.random() - .5) * 40, WORLD.height - 12, -Math.PI / 2, scale);
+    unit.crew = crew;
+    unit.road = road;
+    unit.order = { type: 'sail', x: landX, y: coastY(landX) + 2 };
+    this.#state.organisms.push(unit);
+    return unit;
+  }
+
+  // Fim do ataque: as canoas encalhadas voltam para o mar.
+  launchBoats() {
+    for (const u of this.#state.organisms) {
+      if (!u.stats.boat || u.team !== 'enemy' || u.crew?.length) continue;
+      u.order = { type: 'sail', x: u.x + (Math.random() - .5) * 60, y: WORLD.height - 4, back: true };
+    }
   }
 
   // ---- Quem chega ----
@@ -1163,6 +1277,8 @@ export class UnitSystem {
       }
       u.x = Math.max(u.size, Math.min(WORLD.width - u.size, u.x));
       u.y = Math.max(u.size, Math.min(WORLD.height - u.size, u.y));
+      // No mar só a canoa: quem chega na água é posto de volta na areia.
+      if (!u.stats.boat && inSea(u.x, u.y, 1)) u.y = coastY(u.x) - 1;
     }
   }
 
@@ -1179,6 +1295,17 @@ export class UnitSystem {
     for (const u of state.organisms) {
       if (u.life > 0) continue;
       anyDead = true;
+      // A canoa afundada não deixa corpo; quem ia nela nada até a praia.
+      if (u.stats.boat) {
+        this.#unload(u, true);
+        const wood = u.stats.bounty?.wood ?? 0;
+        if (wood && u.team === 'enemy') {
+          this.#deposit('wood', wood);
+          state.floaters.push({ x: u.x, y: Math.min(u.y, coastY(u.x) - 4), wood, time: 0, life: 1.6 });
+        }
+        this.#events.emit('death', { organism: u });
+        continue;
+      }
       if (u.carrying) this.#forest.dropLog(u.x, u.y, u.heading);
       state.corpses.push(new Corpse(u));
       // Soldado derrubado paga a recompensa, que sobe de onde ele caiu, e o fuzil dele
@@ -1188,7 +1315,8 @@ export class UnitSystem {
         this.#deposit('food', bounty.food);
         this.#deposit('wood', bounty.wood);
         state.floaters.push({ x: u.x, y: u.y, food: bounty.food, wood: bounty.wood, time: 0, life: 1.6 });
-        this.#dropRifles(u.x, u.y, (u.disarmed ? 0 : 1) + (bounty.rifles ?? 0));
+        // O fuzil dele (em Canudos, um por soldado) ou as flechas que levava na mão.
+        this.#dropRifles(u.x, u.y, (u.disarmed ? 0 : u.stats.drops ?? 1) + (bounty.rifles ?? 0));
       }
       // Quem morre com fuzil apanhado na mão o deixa cair de novo ali.
       if (u.loot > 0) this.#dropRifles(u.x, u.y, u.loot);

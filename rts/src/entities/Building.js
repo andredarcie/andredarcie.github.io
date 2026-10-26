@@ -46,7 +46,7 @@ export class Building {
 
   // Desenhadas pelo modelo das construções do sertão (SertaoBuildingModel).
   get isHut() {
-    return ['hall', 'lodge', 'house', 'curral', 'igrejanova'].includes(this.kind);
+    return ['hall', 'lodge', 'house', 'curral', 'igrejanova', 'moquem'].includes(this.kind);
   }
 
   // Atira sozinha: a trincheira e as torres da Igreja Nova.
@@ -60,7 +60,8 @@ export class Building {
 
   // Na fogueira e na torre a "porta" é um ponto ao lado.
   placeDoor() {
-    const offset = this.isHut ? hutSize(this.capacity).width / 2 + 7 : this.radius + 6;
+    // As ocas dos tupinambás dizem onde fica a porta (`door`, numa das pontas).
+    const offset = this.stats.door ?? (this.isHut ? hutSize(this.capacity).width / 2 + 7 : this.radius + 6);
     this.doorX = this.x + Math.cos(this.angle) * offset;
     this.doorY = this.y + Math.sin(this.angle) * offset;
   }

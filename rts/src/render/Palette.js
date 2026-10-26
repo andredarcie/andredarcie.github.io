@@ -3,7 +3,9 @@
 // folha (catingueira, favela), o verde-oliva do umbuzeiro e o verde-azulado do
 // mandacaru. Os nomes dizem o papel; os tons foram puxados da caatinga na seca, e não
 // do verde da referência antiga.
-export const PALETTE = Object.freeze({
+import { TUPI } from '../config/mission.js';
+
+const SERTAO = Object.freeze({
   // Céu de sol a pino, quase branco perto do horizonte.
   sky: 0xe9efe6,
   grassDark: 0xa99a5c,
@@ -109,3 +111,77 @@ export const PALETTE = Object.freeze({
   roofMud: 0x8c6a48,
   stick: 0x6b5236
 });
+
+// O litoral da missão dos tupinambás: a mata atlântica úmida e verde-escura, a
+// capoeira das roças mais clara, a areia branca da praia, o rio de água corrente
+// verde-escura e o mar da enseada, raso e claro perto da areia, fundo para fora.
+// O chão de terra é o vermelho do litoral; a pedra, o granito dos costões. Mais as
+// plantas: a pindoba, o pau-brasil, o jequitibá, a embaúba, a pitangueira, a
+// samambaia, o gravatá, a taquara e a moita da restinga.
+const LITORAL = Object.freeze({
+  ...SERTAO,
+  sky: 0xe4eef0,
+  grassDark: 0x5f8a3e,
+  grassShade: 0x4a7232,
+  tile: 0x9a8a72,
+  riverbedGround: [0x4f7d78, 0x5a8a82, 0x46706c],
+  thicketGround: [0x4f6a34, 0x5a7539, 0x445d2d],
+  scrubGround: [0x7d9a4a, 0x89a653, 0x6f8b41],
+  beachGround: [0xe6dcc0, 0xede4cb, 0xd8ccac],
+  seaGround: [0x3f7f8c, 0x4c8e98, 0x356f7d],
+  seaDeep: 0x2a5a6e,
+  foam: 0xf3f1e8,
+  clearing: 0xa77d52,
+  road: 0x8f6a44,
+  roadRut: 0x6e5034,
+  litter: 0x3e4f26,
+  dryGrass: 0x9cb35a,
+  rock: 0x8f8e88,
+  rockLight: 0xaeada6,
+  rockWarm: 0x9a9184,
+  bark: 0x7a6a58,
+  barkLight: 0xa49884,
+  barkDark: 0x4e3e30,
+  leafDark: 0x2f5a2a,
+  leafMid: 0x3d6e32,
+  leafLight: 0x58884a,
+  leafDry: 0x8a8a4a,
+  tilled: 0x7a4a2e,
+  tilledDark: 0x5e3a24,
+  water: 0x5a8a82,
+  waterShine: 0xbcd8cf,
+  soilTop: 0x8a4a2e,
+  soilDeep: 0xa25a36,
+  bedrock: 0x6e6a64,
+  bedrockDark: 0x55524c,
+  hair: 0x17130f,
+  // Plantas da mata.
+  palmTrunk: 0x8a7e6a,
+  palmLeaf: 0x4f7a34,
+  palmLeafDark: 0x3c6228,
+  palmLeafDry: 0x9a8a50,
+  palmFruit: 0xd88a2a,
+  brazilBark: 0x3e2c22,
+  brazilHeart: 0xa8322a,
+  brazilLeaf: 0x3a6a2e,
+  brazilFlower: 0xe8c43a,
+  jequitibaBark: 0x7e7262,
+  jequitibaLeaf: 0x335f2c,
+  jequitibaLeafLight: 0x4a7a38,
+  embaubaBark: 0xcfcbbf,
+  embaubaLeaf: 0x8aa58a,
+  embaubaLeafUnder: 0xc9d4c6,
+  pitangaLeaf: 0x44702e,
+  pitangaFruit: 0xc8301e,
+  fern: 0x4f8a3a,
+  fernDark: 0x3a6e2c,
+  bromelia: 0x6a8a3e,
+  bromeliaRed: 0xc2402a,
+  taquara: 0x8aa04a,
+  taquaraNode: 0x6a7a36,
+  taquaraLeaf: 0x5e8a3a,
+  restinga: 0x5a7a3a,
+  restingaLight: 0x7a9a4a
+});
+
+export const PALETTE = TUPI ? LITORAL : SERTAO;

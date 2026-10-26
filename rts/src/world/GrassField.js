@@ -35,6 +35,7 @@ export class GrassField {
       const y = 26 + Math.random() * Math.max(0, WORLD.height - 52);
       if (!this.#occupancy.isFree(x, y, FOOTPRINT.food)) continue;
       if (hillHeight(x, y) > 0) continue;
+      if (!this.#biomes.allowsCrop(x, y)) continue;
       // O bioma decide; nas últimas tentativas qualquer lugar livre serve.
       if (attempt < 36 && Math.random() > this.#biomes.habitatWeight(this.#biomes.biomeAt(x, y), 'food')) continue;
       return new FoodPatch({

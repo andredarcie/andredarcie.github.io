@@ -2,7 +2,11 @@
 // a cada classe só o que ela usa, põe o mundo, as estradas e a vila de pé e liga o laço.
 import { WORLD, FOOTPRINT, SCHIST_RADIUS } from './config/world.js';
 import { CHOP_HITS } from './config/settlement.js';
-import { TEAMS, START_FOOD, START_WOOD, START_RIFLES, START_WORKERS, DIFFICULTY, HILLS } from './config/rts.js';
+import {
+  TEAMS, START_FOOD, START_WOOD, START_RIFLES, START_WORKERS, DIFFICULTY, HILLS, TEXT, PREACHER_TYPE, RECORD_KEY
+} from './config/rts.js';
+import { TUPI, MISSION } from './config/mission.js';
+import { coastY } from './world/Coast.js';
 import { pseudoRandom } from './core/math.js';
 import { EventBus } from './core/EventBus.js';
 import { Astronomy } from './sky/Astronomy.js';
@@ -61,8 +65,7 @@ import { AudioManager } from './audio/AudioManager.js';
 
 // Clareira em volta da vila, livre de cenário na hora de plantar o mundo.
 const BASE_CLEARING = 72;
-// Recorde de ondas por dificuldade, guardado neste navegador.
-const RECORD_KEY = 'canudos-melhor';
+// O recorde de ondas por dificuldade (RECORD_KEY) vem da missão: cada uma tem o seu.
 // Zoom inicial: quantos pixels de tela por unidade do mundo (o boneco tem 16).
 const START_PIXELS_PER_UNIT = 1.7;
 
@@ -73,6 +76,9 @@ const START_PIXELS_PER_UNIT = 1.7;
 const loading = window.canudosLoading ?? { stage: async () => {}, finish: async () => {}, fail() {} };
 
 const root = document;
+// Os textos fixos da página são de Canudos (index.html); a outra missão troca os seus
+// (TEXT.page) antes de os ícones serem desenhados.
+applyPageText(TEXT.page);
 // Os ícones fixos da página (data-icon) ganham o desenho antes de qualquer coisa.
 paintIcons(root);
 const canvas = root.querySelector('#arena');
@@ -90,7 +96,7 @@ try {
 } catch (error) {
   const warning = document.createElement('p');
   warning.className = 'webgl-missing';
-  warning.textContent = 'Este jogo precisa de WebGL para desenhar o sertão, e o seu navegador não conseguiu ligá-lo. Tente outro navegador ou ative a aceleração de hardware.';
+  warning.textContent = TEXT.webgl;
   document.body.append(warning);
   loading.fail(warning.textContent);
   throw error;
@@ -114,7 +120,7 @@ const locomotion = new Locomotion(state);
 const ledger = new TeamLedger(state);
 ledger.reset({ food: START_FOOD, wood: START_WOOD, rifles: START_RIFLES });
 const factory = new UnitFactory(state);
-const commands = new Commands({ state, ledger, occupancy, events });
+const commands = new Commands({ state, ledger, occupancy, events, biomes });
 const units = new UnitSystem({ state, locomotion, grassField, forest, blood, events, ledger, factory, biomes, skyClock });
 const waves = new WaveDirector({ state, units, ledger, events });
 waves.setDifficulty(level);
@@ -187,18 +193,20 @@ await loading.stage('world');
 const roadSpots = roadReservations();
 state.reserved.push({ x: TEAMS.player.base.x, y: TEAMS.player.base.y, radius: BASE_CLEARING }, ...roadSpots);
 ponds.restore();
-plantQuixabeiras();
+if (TUPI) plantHeadlands();
+else plantQuixabeiras();
 const sceneryItems = new SceneryPlanner(state, biomes, occupancy).plan();
 // Os morros são de pedra: lascas de xisto (perto do arraial) ou matacões na encosta,
-// e mandacaru entre elas.
+// e mandacaru entre elas. No litoral, o granito com gravatá e samambaia.
 for (const [index, hill] of HILLS.entries()) {
-  const schist = Math.hypot(hill.x - WORLD.width / 2, hill.y - WORLD.height / 2) < SCHIST_RADIUS;
+  const schist = !TUPI && Math.hypot(hill.x - WORLD.width / 2, hill.y - WORLD.height / 2) < SCHIST_RADIUS;
   for (let i = 0; i < 26; i++) {
     const seed = index * 977 + i * 13 + 5;
     const angle = pseudoRandom(seed) * Math.PI * 2;
     const distance = Math.sqrt(pseudoRandom(seed + 1)) * hill.radius * .95;
     const x = hill.x + Math.cos(angle) * distance, y = hill.y + Math.sin(angle) * distance;
     const kind = pseudoRandom(seed + 2) < .62 ? (schist ? 'lasca' : 'rock')
+      : TUPI ? (pseudoRandom(seed + 3) < .6 ? 'bromelia' : 'samambaia')
       : pseudoRandom(seed + 3) < .6 ? 'mandacaru' : 'xiquexique';
     if (!occupancy.isFree(x, y, 7)) continue;
     const item = { x, y, seed, kind };
@@ -263,8 +271,8 @@ function foundVillage(team) {
     worker.post = { x: worker.x, y: worker.y };
     state.organisms.push(worker);
   }
-  // Antônio Conselheiro no adro, entre a porta e o cruzeiro.
-  const preacher = factory.create(team.id, 'conselheiro',
+  // Antônio Conselheiro no adro, entre a porta e o cruzeiro (na aldeia, o pajé).
+  const preacher = factory.create(team.id, PREACHER_TYPE,
     hall.doorX + Math.cos(out) * 8, hall.doorY + Math.sin(out) * 8, out + Math.PI);
   preacher.post = { x: preacher.x, y: preacher.y };
   state.organisms.push(preacher);
@@ -274,14 +282,16 @@ function foundVillage(team) {
     const angle = quarter * Math.PI / 4;
     if (index % 2 === 0) {
       const cx = x + Math.cos(angle) * 125, cy = y + Math.sin(angle) * 125;
-      const kind = 'catingueira';
+      // Na aldeia, a capoeira tem pindoba e embaúba.
+      const kinds = TUPI ? ['pindoba', 'embauba'] : ['catingueira'];
       plantCluster(cx, cy, 10, 36, (px, py, seed) => {
-        if (!occupancy.isFree(px, py, 9) || onRoad(px, py, 6)) return;
+        if (!occupancy.isFree(px, py, 9) || onRoad(px, py, 6) || !biomes.buildable(px, py, 4)) return;
+        const kind = kinds[Math.floor(pseudoRandom(seed + 9) * kinds.length)];
         state.trees.push(new Tree({ id: state.trees.length + 1, x: px, y: py, kind, seed, health: CHOP_HITS }));
       });
     } else {
       plantCluster(x + Math.cos(angle) * 105, y + Math.sin(angle) * 105, 7, 26, (px, py) => {
-        if (!occupancy.isFree(px, py, 7) || onRoad(px, py, 6)) return;
+        if (!occupancy.isFree(px, py, 7) || onRoad(px, py, 6) || !biomes.allowsCrop(px, py)) return;
         state.grass.push(new FoodPatch({ x: px, y: py, lean: (Math.random() - .5) * 2, size: 6 + Math.random() * 2 }));
       });
     }
@@ -314,6 +324,33 @@ function plantQuixabeiras() {
   }
 }
 
+// O costão: matacões de granito nas duas pontas da enseada, na areia e entrando no
+// mar, onde a praia acaba (missão dos tupinambás).
+function plantHeadlands() {
+  for (const [from, to] of [[24, 150], [670, 796]]) {
+    for (let i = 0; i < 9; i++) {
+      const seed = 5200 + from + i * 23;
+      const x = from + pseudoRandom(seed) * (to - from);
+      const y = coastY(x) - 4 - pseudoRandom(seed + 1) * 22;
+      if (occupancy.isFree(x, y, FOOTPRINT.costao)) state.scenery.push({ x, y, seed, kind: 'costao' });
+    }
+  }
+}
+
+// Os textos fixos do index.html trocados pelos da missão: `data-text` (texto),
+// `data-html` (marcação), `data-title` (dica), `data-label` (nome acessível) e
+// `data-icon-text` (o ícone), cada um com a chave em TEXT.page.
+function applyPageText(page) {
+  if (!page) return;
+  document.title = page.title;
+  root.querySelector('meta[name="theme-color"]')?.setAttribute('content', page.themeColor);
+  for (const element of root.querySelectorAll('[data-text]')) if (page[element.dataset.text]) element.textContent = page[element.dataset.text];
+  for (const element of root.querySelectorAll('[data-html]')) if (page[element.dataset.html]) element.innerHTML = page[element.dataset.html];
+  for (const element of root.querySelectorAll('[data-title]')) if (page[element.dataset.title]) element.title = page[element.dataset.title];
+  for (const element of root.querySelectorAll('[data-label]')) if (page[element.dataset.label]) element.setAttribute('aria-label', page[element.dataset.label]);
+  for (const element of root.querySelectorAll('[data-icon-text]')) if (page[element.dataset.iconText]) element.dataset.icon = page[element.dataset.iconText];
+}
+
 // Até `count` coisas sorteadas num círculo; quem cai em lugar ocupado é pulado.
 function plantCluster(cx, cy, count, spread, plant) {
   let planted = 0;
@@ -340,12 +377,12 @@ const menu = new GameMenu({
     view.camera.zoomToPixels(START_PIXELS_PER_UNIT);
     const hall = ledger.hall();
     hud.focus(hall.x, hall.y);
-    hud.toast('Corte lenha e cave trincheiras na beira das estradas');
+    hud.toast(TEXT.startToast);
     story.begin();
   },
   onPause: paused => { running = !paused; },
   onRestart: chosen => {
-    location.search = `?level=${chosen}&play=1`;
+    location.search = `?missao=${MISSION}&level=${chosen}&play=1`;
   }
 });
 events.on('gameOver', () => {
@@ -369,7 +406,7 @@ const played = Object.entries(DIFFICULTY).filter(([id]) => records[id] > 0);
 const recordLine = root.querySelector('#start-record');
 recordLine.hidden = !played.length;
 recordLine.textContent = 'Recorde: ' + played
-  .map(([id, item]) => `${records[id]} ${records[id] === 1 ? 'onda' : 'ondas'} no ${item.label.toLowerCase()}`).join(' · ');
+  .map(([id, item]) => `${records[id]} ${records[id] === 1 ? TEXT.waveUnit[0] : TEXT.waveUnit[1]} no ${item.label.toLowerCase()}`).join(' · ');
 
 // Só em localhost: alça para inspecionar e adiantar a partida no console (revisão).
 if (['localhost', '127.0.0.1'].includes(location.hostname)) {

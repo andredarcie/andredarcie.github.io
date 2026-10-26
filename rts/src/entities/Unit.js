@@ -42,6 +42,12 @@ export class Unit {
     this.praying = 0;
     // Fuzis apanhados do chão, levados na mão até a igreja (UnitSystem.#deliverLoot).
     this.loot = 0;
+    // Os nomes que ele tomou matando contrários (missão dos tupinambás; Soares, cap.
+    // CLXX): cada um deixa um risco no corpo e um tanto mais de força.
+    this.names = stats.names ?? 0;
+    // A canoa de guerra: quem vai nela ([{ type, scale }]) e a trilha da praia.
+    this.crew = null;
+    this.road = null;
     // Tocaia: parado na caatinga, some da vista do inimigo; `ambush` multiplica o
     // primeiro golpe de quem saiu dela.
     this.hidden = false;

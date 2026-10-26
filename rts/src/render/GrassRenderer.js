@@ -2,12 +2,17 @@ import * as THREE from 'three';
 import { pseudoRandom } from '../core/math.js';
 import { hutSize } from '../settlement/HutDimensions.js';
 import { hillHeight } from '../world/Hills.js';
+import { TUPI } from '../config/mission.js';
 
 // Tufos por unidade de área, e quanto cada bioma tem do máximo. A praça do meio, de
 // terra batida, fica quase pelada, e a estrada pelada de vez.
 const TUFTS_PER_AREA = 1 / 62;
 // Capim do sertão na seca é ralo: o chão aparece entre os tufos.
-const BIOME_DENSITY = Object.freeze({ riverbed: .12, thicket: .4, scrub: .55 });
+// No litoral o capim é verde e cheio na capoeira, ralo na sombra da mata e na
+// areia, e não nasce na água do rio nem no mar.
+const BIOME_DENSITY = Object.freeze(TUPI
+  ? { riverbed: 0, thicket: .45, scrub: .75, beach: .14, sea: 0 }
+  : { riverbed: .12, thicket: .4, scrub: .55 });
 const CLEARING_RADIUS = .17;
 const CLEARING_DENSITY = .12;
 const BLADES_PER_TUFT = 5;

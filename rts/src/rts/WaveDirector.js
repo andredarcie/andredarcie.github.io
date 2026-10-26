@@ -1,14 +1,14 @@
 import {
-  ROADS, DIFFICULTY, SPAWN_GAP, UNIT_TYPES, CONVOY, CERCO, MATADEIRA, HEROES, ROMEIROS
+  ROADS, DIFFICULTY, SPAWN_GAP, UNIT_TYPES, CONVOY, CERCO, MATADEIRA, HEROES, ROMEIROS, EDGE_ENTRIES, IGARA
 } from '../config/rts.js';
-import { WORLD } from '../config/world.js';
 
-// Pontos da beirada do tabuleiro entre uma estrada e outra: por onde a tropa entra
-// pela caatinga quando fecha o cerco.
-const EDGE_ENTRIES = Object.freeze([
-  { x: 130, y: 6 }, { x: 690, y: 6 }, { x: WORLD.width - 6, y: 130 }, { x: WORLD.width - 6, y: 690 },
-  { x: 690, y: WORLD.height - 6 }, { x: 130, y: WORLD.height - 6 }, { x: 6, y: 690 }, { x: 6, y: 130 }
-]);
+// Os pontos da beirada por onde a tropa entra fora das estradas quando fecha o cerco
+// (EDGE_ENTRIES) vêm da missão: no litoral, só as beiradas de terra.
+//
+// No litoral, quem vem pela praia vem de canoa: a fila daquela trilha vira igaras de
+// IGARA.crew guerreiros cada, que remam do mar até a areia e desembarcam ali. Uma
+// canoa ainda cheia conta como gente da onda; vazia e encalhada, não.
+const crewCount = u => u.stats.boat ? (u.crew?.length ?? 0) : 1;
 
 // As ondas da tropa republicana. Entre uma e outra há uma trégua com relógio; a
 // próxima onda já é sorteada no começo da trégua, para o jogador ver por quais
@@ -58,8 +58,8 @@ export class WaveDirector {
     const wave = this.#state.wave;
     if (!wave) return 0;
     let alive = 0;
-    for (const u of this.#state.organisms) if (u.team === 'enemy') alive++;
-    return alive + wave.queue.length;
+    for (const u of this.#state.organisms) if (u.team === 'enemy') alive += crewCount(u);
+    return alive + wave.queue.reduce((sum, item) => sum + (item.boat ? item.crew.length : 1), 0);
   }
 
   update({ dt }) {
@@ -75,10 +75,11 @@ export class WaveDirector {
     wave.clock += dt;
     while (wave.queue.length && wave.queue[0].at <= wave.clock) {
       const item = wave.queue.shift();
-      if (item.entry) this.#units.spawnFromEdge(item.type, item.entry, item.scale);
+      if (item.boat) this.#units.spawnBoat(item.road, item.crew, item.scale);
+      else if (item.entry) this.#units.spawnFromEdge(item.type, item.entry, item.scale);
       else this.#units.spawnRaider(item.type, item.road, item.scale);
     }
-    if (!wave.queue.length && !this.#state.organisms.some(u => u.team === 'enemy')) this.#clear(wave);
+    if (!wave.queue.length && !this.#state.organisms.some(u => u.team === 'enemy' && crewCount(u) > 0)) this.#clear(wave);
   }
 
   #start(wave) {
@@ -91,17 +92,34 @@ export class WaveDirector {
     // Saída de cada estrada (ou de cada ponto do cerco) em fila, com o intervalo
     // entre um e outro.
     const perSource = new Map();
-    wave.queue = plan.roster.map(item => {
+    // Quem vem pelo mar embarca: de IGARA.crew em IGARA.crew, uma canoa por vez.
+    const roster = [];
+    const boats = new Map();
+    for (const item of plan.roster) {
+      if (!IGARA || !item.road?.sea || item.entry) {
+        roster.push(item);
+        continue;
+      }
+      let boat = boats.get(item.road);
+      if (!boat || boat.crew.length >= IGARA.crew) {
+        boat = { type: 'igara', road: item.road, scale: item.scale, boat: true, crew: [] };
+        boats.set(item.road, boat);
+        roster.push(boat);
+      }
+      boat.crew.push({ type: item.type, scale: item.scale });
+    }
+    wave.queue = roster.map(item => {
       const source = item.entry ?? item.road;
       const index = perSource.get(source) ?? 0;
       perSource.set(source, index + 1);
-      return { ...item, at: index * SPAWN_GAP + Math.random() * .6 };
+      // As canoas saem bem espaçadas: cada uma é uma fila inteira.
+      return { ...item, at: index * SPAWN_GAP * (item.boat ? 3 : 1) + Math.random() * .6 };
     }).sort((a, b) => a.at - b.at);
     const count = type => plan.roster.filter(item => item.type === type).length;
     this.#events.emit('waveStart', {
       number: plan.number, roads: plan.roads, count: plan.roster.length,
       guns: count('gunner'), officers: count('officer'), matadeira: count('matadeira') > 0,
-      cerco: plan.roster.some(item => item.entry)
+      cerco: plan.roster.some(item => item.entry), canoes: roster.filter(item => item.boat).length
     });
   }
 
@@ -115,6 +133,7 @@ export class WaveDirector {
     this.#ledger.deposit('player', 'food', bonus.food);
     this.#ledger.deposit('player', 'wood', bonus.wood);
     this.#events.emit('waveCleared', { number: wave.number, bonus });
+    this.#units.launchBoats();
     this.#pilgrims(wave);
     const n = wave.number;
     if (n >= CONVOY.firstAfter && (n - CONVOY.firstAfter) % CONVOY.every === 0) wave.convoyAt = 8;

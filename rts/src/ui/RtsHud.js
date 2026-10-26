@@ -1,6 +1,6 @@
 import {
-  UNIT_TYPES, BUILDING_TYPES, BUILD_ORDER, ALERT_COOLDOWN, TOWER_UPGRADES, TOWER_UPGRADE_ORDER, EXPEDITIONS,
-  TRADE, THIRST
+  UNIT_TYPES, BUILDING_TYPES, BUILD_ORDER, ALERT_COOLDOWN, TOWER_UPGRADES, TOWER_UPGRADE_ORDER,
+  TRADE, THIRST, CRAFT, TEXT, PREACHER_TYPE, HEROES
 } from '../config/rts.js';
 import { BASE_SIMULATION_SPEED } from '../config/world.js';
 import { TowerSystem } from '../rts/TowerSystem.js';
@@ -79,7 +79,7 @@ export class RtsHud {
       const now = performance.now() / 1000;
       if (now - this.#lastAlert < ALERT_COOLDOWN) return;
       this.#lastAlert = now;
-      this.toast('Belo Monte está sob ataque! Toque para ver', 'alert', { x, y });
+      this.toast(TEXT.underAttack, 'alert', { x, y });
       navigator.vibrate?.([40, 60, 40]);
     });
     events.on('built', ({ building }) => {
@@ -92,12 +92,12 @@ export class RtsHud {
     });
     events.on('upgraded', ({ track }) => this.toast(`${TOWER_UPGRADES[track].label}: feito`));
     events.on('death', ({ organism }) => {
-      if (organism.team === 'player' && (organism.type === 'conselheiro' || organism.stats.hero)) {
+      if (organism.team === 'player' && (organism.type === PREACHER_TYPE || organism.stats.hero)) {
         this.toast(`${organism.stats.label} morreu`, 'alert', { x: organism.x, y: organism.y });
       }
     });
     events.on('debandada', ({ x, y, fled, rifles }) => {
-      this.toast(`Oficial abatido: ${fled} soldados em debandada${rifles ? `, ${rifles} fuzis largados` : ''}`, 'info', { x, y });
+      this.toast(TEXT.rout({ fled, rifles }), 'info', { x, y });
     });
     events.on('convoy', ({ road }) => {
       this.toast(`O comboio de Monte Santo vem pela estrada de ${road.label}. Tome-o!`, 'alert', road.mouth);
@@ -105,36 +105,28 @@ export class RtsHud {
     events.on('convoyTaken', () => this.toast('Comboio tomado! A próxima onda vem desfalcada'));
     events.on('convoyEscaped', () => this.toast('O comboio escapou: a próxima onda vem reforçada', 'warn'));
     events.on('romeiros', ({ count, road, hero }) => {
-      const people = count ? `Chegam ${count} romeiro${count > 1 ? 's' : ''} pela estrada de ${road.label}` : '';
-      if (hero) {
-        const stats = UNIT_TYPES[hero];
-        this.toast(`${stats.label} chega a Belo Monte${count ? ` com ${count} romeiro${count > 1 ? 's' : ''}` : ''}`, 'info', road.mouth);
-      } else if (people) {
-        this.toast(people, 'info', road.mouth);
-      }
+      const text = TEXT.arrival({ count, road, hero });
+      if (text) this.toast(text, 'info', road.mouth);
+    });
+    // O primeiro nome que um guerreiro toma (e cada terceiro) vem anunciado.
+    events.on('newName', ({ unit }) => {
+      if (TEXT.newName && unit.team === 'player') this.toast(TEXT.newName(unit.stats.label), 'info', { x: unit.x, y: unit.y });
     });
     // O primeiro fuzil apanhado ensina o caminho dele.
     events.on('riflePickup', ({ x, y, first }) => {
-      if (first) this.toast('Fuzil tomado da tropa! Quem apanhou leva até a igreja', 'info', { x, y });
+      if (first) this.toast(TEXT.firstPickup, 'info', { x, y });
     });
     events.on('thirst', () => {
       this.toast('A tropa está com sede: longe d\'água, os soldados enfraquecem');
     });
-    events.on('waveStart', ({ number, roads, count, guns, officers, matadeira, cerco }) => {
-      const names = roads.map(road => road.label);
-      const from = names.length > 1 ? `${names.slice(0, -1).join(', ')} e ${names.at(-1)}` : names[0];
-      const expedition = EXPEDITIONS.find(item => number <= item.until);
-      // Canhão e oficial vêm anunciados: são os que pedem resposta (jirau, jagunços).
-      const extras = [matadeira && 'a Matadeira', guns && `${guns} ${guns > 1 ? 'canhões' : 'canhão'} Krupp`,
-        officers && `${officers} ${officers > 1 ? 'oficiais' : 'oficial'}`].filter(Boolean);
-      const list = extras.length > 1 ? `${extras.slice(0, -1).join(', ')} e ${extras.at(-1)}` : extras[0];
-      this.#showBanner(`${expedition.name} · ${expedition.leader}`, `Onda ${number}`,
-        `${count} soldados ${roads.length > 1 ? 'pelas estradas' : 'pela estrada'} de ${from}` +
-        (list ? `, com ${list}` : '') + (cerco ? '. A tropa fecha o cerco pela caatinga' : ''), 'danger');
+    events.on('waveStart', wave => {
+      // O letreiro da missão: a expedição em Canudos; na aldeia, por onde e com quem.
+      const { kicker, sub } = TEXT.waveBanner(wave);
+      this.#showBanner(kicker, `${TEXT.waveWord} ${wave.number}`, sub, 'danger');
       navigator.vibrate?.([60, 40, 60]);
     });
     events.on('waveCleared', ({ number, bonus }) => {
-      this.#showBanner('A tropa recua', `Onda ${number} rechaçada`, `Ficou para trás: ${RtsHud.#costText(bonus, '+')}`, 'calm', true);
+      this.#showBanner(TEXT.waveCleared.kicker, TEXT.waveCleared.title(number), `Ficou para trás: ${RtsHud.#costText(bonus, '+')}`, 'calm', true);
     });
   }
 
@@ -169,9 +161,9 @@ export class RtsHud {
     let text;
     if (wave.phase === 'calm') {
       const roads = wave.next.roads.map(road => road.short).join(' ');
-      text = `Onda ${wave.next.number} em ${RtsHud.#clock(wave.timer)} · ${roads}`;
+      text = `${TEXT.waveWord} ${wave.next.number} em ${RtsHud.#clock(wave.timer)} · ${roads}`;
     } else {
-      text = `Onda ${wave.number} · faltam ${this.#waves.remaining()}`;
+      text = `${TEXT.waveWord} ${wave.number} · faltam ${this.#waves.remaining()}`;
     }
     if (els.waveLabel.textContent !== text) els.waveLabel.textContent = text;
     els.waveStatus.dataset.phase = wave.phase;
@@ -271,6 +263,8 @@ export class RtsHud {
         for (const type of b.stats.trains) list.push(this.#trainButton(b, type));
         if (b.queue.length) list.push({ action: 'cancel-train', icon: 'undo', label: 'Desfazer', sub: 'devolve' });
         if (b.isTower) for (const track of TOWER_UPGRADE_ORDER) list.push(this.#upgradeButton(b, track));
+        // No fogo do conselho se fazem flechas (CRAFT, só na aldeia).
+        if (CRAFT && b.kind === CRAFT.at) list.push(this.#craftButton());
         // Com Antônio Vilanova no arraial, o armazém e a igreja fazem negócio.
         if (b.stats.dropOff && this.#trader()) {
           list.push(this.#tradeButton('food'));
@@ -288,21 +282,31 @@ export class RtsHud {
       const workers = s.units.some(u => u.type === 'worker');
       const soldiers = s.units.some(u => u.type !== 'worker');
       if (workers) for (const kind of BUILD_ORDER) list.push(this.#buildButton(kind));
-      if (soldiers) list.push({ action: 'retreat', icon: 'retreat', label: 'Recuar', sub: 'para a igreja' });
+      if (soldiers) list.push({ action: 'retreat', icon: 'retreat', label: 'Recuar', sub: TEXT.retreatSub });
       list.push({ action: 'stop', icon: 'stop', label: 'Parar' });
       list.push({ action: 'deselect', icon: 'close', label: 'Soltar' });
       return list;
     }
     const idle = this.#idleWorkers().length, army = this.#army().length;
-    list.push({ action: 'idle', icon: 'idle', label: 'À toa', sub: `${idle} sertanejo${idle === 1 ? '' : 's'}`, disabled: !idle });
-    list.push({ action: 'army', icon: 'fighters', label: 'Jagunços', sub: `${army} na luta`, disabled: !army });
-    list.push({ action: 'all-workers', icon: 'sertanejo', label: 'Sertanejos', sub: 'todos' });
+    const worker = UNIT_TYPES.worker, preacherStats = UNIT_TYPES[PREACHER_TYPE], hall = BUILDING_TYPES.hall;
+    list.push({ action: 'idle', icon: 'idle', label: 'À toa', sub: TEXT.idleSub(idle), disabled: !idle });
+    list.push({ action: 'army', icon: 'fighters', label: TEXT.armyLabel, sub: `${army} na luta`, disabled: !army });
+    list.push({ action: 'all-workers', icon: worker.icon, label: TEXT.workersLabel, sub: 'todos' });
     const preacher = this.#preacher();
-    list.push({ action: 'preacher', icon: 'cross', label: 'Conselheiro', sub: preacher ? 'reza e cura' : 'morto', disabled: !preacher });
+    list.push({ action: 'preacher', icon: preacherStats.icon, label: TEXT.preacherLabel, sub: TEXT.preacherSub(Boolean(preacher)), disabled: !preacher });
     const heroes = this.#heroes();
-    if (heroes.length) list.push({ action: 'heroes', icon: 'jagunco', label: 'Chefes', sub: `${heroes.length} no arraial` });
-    list.push({ action: 'base', icon: 'church', label: 'Igreja', sub: 'câmera' });
+    if (heroes.length) list.push({ action: 'heroes', icon: UNIT_TYPES[HEROES[0].type].icon, label: TEXT.heroesLabel, sub: TEXT.heroesSub(heroes.length) });
+    list.push({ action: 'base', icon: hall.icon, label: TEXT.baseLabel, sub: 'câmera' });
     return list;
+  }
+
+  #craftButton() {
+    const missing = this.#ledger.shortage('player', CRAFT.give);
+    return {
+      action: 'craft', icon: CRAFT.icon, label: CRAFT.label,
+      sub: `${RtsHud.#costText(CRAFT.give)} → ${RtsHud.#costText(CRAFT.get)}`,
+      disabled: Boolean(missing), reason: TeamLedger.lack(missing)
+    };
   }
 
   #tradeButton(from) {
@@ -334,7 +338,7 @@ export class RtsHud {
     const pop = this.#ledger.population('player'), cap = this.#ledger.popCap('player');
     const missing = this.#ledger.shortage('player', stats.cost);
     const full = building.queue.length >= 5;
-    const reason = pop >= cap ? 'Sem lugar para morar — construa uma casa de taipa'
+    const reason = pop >= cap ? TEXT.noHousing
       : missing ? RtsHud.#lack(missing) : full ? 'A fila está cheia' : '';
     return {
       action: 'train', arg: type, icon: stats.icon, label: stats.label,
@@ -362,7 +366,7 @@ export class RtsHud {
     const parts = [];
     if (cost.food) parts.push(`<span class="cost">${sign}${cost.food}${icon('food', 'comida')}</span>`);
     if (cost.wood) parts.push(`<span class="cost">${sign}${cost.wood}${icon('wood', 'madeira')}</span>`);
-    if (cost.rifles) parts.push(`<span class="cost">${sign}${cost.rifles}${icon('rifles', 'fuzis tomados')}</span>`);
+    if (cost.rifles) parts.push(`<span class="cost">${sign}${cost.rifles}${icon('rifles', TEXT.thirdLabel)}</span>`);
     return parts.join(' ');
   }
 
@@ -407,11 +411,11 @@ export class RtsHud {
       title = b.stats.label;
       life = b.life / b.maxLife;
       if (!b.built) detail = `Em obra · ${Math.floor(b.progress * 100)}%`;
-      else if (b.stats.herd) detail = `As cabras dão +${b.stats.herd.food} de comida a cada ${b.stats.herd.every} s`;
+      else if (b.stats.herd) detail = TEXT.herdDetail(b.stats.herd);
       else if (b.shoots) {
         const stats = TowerSystem.stats(b);
-        detail = `Dano ${stats.damage} · alcance ${stats.range}${stats.scatter ? ' · bacamarte' : ''}` +
-          (b.life < b.maxLife - .5 ? ' · mande sertanejos consertar' : '');
+        detail = `Dano ${stats.damage} · alcance ${stats.range}${b.levels?.scatter > 0 ? ` · ${TEXT.scatterTag}` : ''}` +
+          (b.life < b.maxLife - .5 ? ` · ${TEXT.repairHint}` : '');
       } else if (b.queue.length) {
         const first = b.queue[0];
         detail = `Preparando ${UNIT_TYPES[first.type].label} · ${Math.floor(first.time / UNIT_TYPES[first.type].time * 100)}%`;
@@ -430,15 +434,18 @@ export class RtsHud {
       title = u.stats.label;
       const states = [];
       if (u.flee > 0) states.push('em debandada');
-      if (u.disarmed) states.push('sem fuzil');
+      if (u.disarmed) states.push(TEXT.disarmed);
+      if (u.stats.boat && u.crew?.length) states.push(`${u.crew.length} guerreiros a bordo`);
       if (u.thirst > THIRST.grace) states.push('com sede');
       if (u.stats.convoy) states.push('tome o comboio antes que ele volte');
-      detail = states.length ? states.join(' · ') : 'Escolha jagunços e toque nele para atacar';
+      detail = states.length ? states.join(' · ') : TEXT.enemyHint;
       life = u.life / u.maxLife;
     } else if (s.units.length === 1) {
       const u = s.units[0];
       title = u.stats.label;
-      detail = (u.hidden ? 'De tocaia · ' : '') + (u.stats.role && !u.order && !u.engage ? u.stats.role : RtsHud.#activity(u));
+      // Os nomes que ele já tomou (missão dos tupinambás).
+      const names = u.names > 0 ? `${u.names} ${u.names === 1 ? 'nome' : 'nomes'} · ` : '';
+      detail = (u.hidden ? `${TEXT.hidden} · ` : '') + names + (u.stats.role && !u.order && !u.engage ? u.stats.role : RtsHud.#activity(u));
       life = u.life / u.maxLife;
     } else if (s.units.length) {
       const counts = {};
@@ -448,7 +455,7 @@ export class RtsHud {
         .map(([type, n]) => `${n} ${n === 1 ? UNIT_TYPES[type].label : UNIT_TYPES[type].plural}`).join(' · ');
       life = s.units.reduce((sum, u) => sum + u.life / u.maxLife, 0) / s.units.length;
     } else {
-      title = 'Belo Monte';
+      title = TEXT.homeTitle;
       detail = 'Toque numa pessoa · segure e arraste para juntar um grupo';
     }
     els.title.textContent = title;
@@ -463,17 +470,17 @@ export class RtsHud {
   static #activity(u) {
     const order = u.order;
     if (u.engage) return 'Lutando';
-    if (u.carrying) return 'Levando lenha';
+    if (u.carrying) return TEXT.carryWood;
     if (u.carryFood) return 'Levando comida';
     switch (order?.type) {
-      case 'gather': return order.resource === 'wood' ? 'Cortando lenha' : 'Trabalhando na roça';
+      case 'gather': return order.resource === 'wood' ? TEXT.chopping : TEXT.farming;
       case 'build': return 'Construindo';
       case 'attack': return 'Atacando';
       case 'attackMove': return 'Avançando';
       case 'move': return 'Andando';
-      default: return u.stats.blessing ? (u.praying > 0 ? 'Rezando pelos feridos' : 'Reza por quem chega ferido perto dele, e a pessoa sara')
+      default: return u.stats.blessing ? (u.praying > 0 ? TEXT.praying : TEXT.preacherIdle)
         : u.stats.passive ? 'De prontidão'
-        : u.type === 'worker' ? 'À toa — toque numa árvore ou numa roça' : 'De guarda';
+        : u.type === 'worker' ? TEXT.workerIdle : 'De guarda';
     }
   }
 
@@ -538,6 +545,12 @@ export class RtsHud {
         this.focus(preacher.x, preacher.y);
         break;
       }
+      case 'craft': {
+        const result = this.#commands.craft(s.building);
+        if (!result.ok) this.toast(result.reason, 'warn');
+        else if (TEXT.crafted) this.toast(TEXT.crafted(CRAFT.get.rifles));
+        break;
+      }
       case 'trade': {
         const result = this.#commands.trade('player', arg);
         if (!result.ok) this.toast(result.reason, 'warn');
@@ -580,6 +593,6 @@ export class RtsHud {
   }
 
   #preacher() {
-    return this.#state.organisms.find(u => u.team === 'player' && u.type === 'conselheiro') ?? null;
+    return this.#state.organisms.find(u => u.team === 'player' && u.type === PREACHER_TYPE) ?? null;
   }
 }

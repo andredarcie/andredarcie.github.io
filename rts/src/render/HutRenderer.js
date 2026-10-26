@@ -46,7 +46,7 @@ export class HutRenderer {
         // A obra fantasma do modo de obra (FrameRenderer): a casa pronta, transparente.
         if (hut.preview) ghostify(parts.group, hut.previewOpen);
         this.#layer.add(parts.group);
-        view = { ...parts, stage, height: hut.kind === 'hall' || hut.kind === 'igrejanova' ? CHURCH_HEIGHT : HOUSE_HEIGHT };
+        view = { ...parts, stage, height: parts.height ?? (hut.kind === 'hall' || hut.kind === 'igrejanova' ? CHURCH_HEIGHT : HOUSE_HEIGHT) };
         this.#views.set(hut, view);
       }
       if (view.windows) view.windows.copy(WINDOW_DARK).lerp(WINDOW_LIT, Math.min(1, dark * 1.4));

@@ -7,7 +7,12 @@
 // volume e ler bem pequeno. Personagens são bustos com o chapéu ou a arma que os
 // distingue; cada unidade tem o seu ícone (nada de um fuzil para três tropas).
 // Comida, madeira e fuzis também saem como Path2D, para a recompensa que sobe no
-// canvas usar o mesmo desenho do topo da tela.
+// canvas usar o mesmo desenho do topo da tela. Na missão dos tupinambás o terceiro
+// recurso são flechas, e o desenho dele (ICON_PATHS.rifles) vira o feixe de flechas.
+import { TUPI } from '../config/mission.js';
+
+// Três flechas de taquara deitadas, com a ponta e as penas.
+const ARROWS = 'M4 20 17.5 6.5M17.5 6.5h-3.2M17.5 6.5v3.2M4 20l-.6-2.6M4 20l2.6.6M8.5 21 20.5 9M20.5 9h-2.8M20.5 9v2.8M8.5 21l-.5-2.2M8.5 21l2.2.5';
 
 // Caminhos de traço reaproveitados no canvas.
 export const ICON_PATHS = Object.freeze({
@@ -16,7 +21,7 @@ export const ICON_PATHS = Object.freeze({
   // Três toras empilhadas, vistas de topo, com o miolo.
   wood: 'M3 16a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM13 16a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM8 8.5a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM5.6 16a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0zM15.6 16a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0zM10.6 8.5a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0z',
   // Mannlicher tomado da tropa, de perfil: coronha, delgado, guarda-mato, ferrolho.
-  rifles: 'M2.5 15.5 7 13h3l1-1h10.5v1.6H12.5l-1.2 1.4H9l-1.8 3.5H3.5zM13 12v-1.4h1.8M9.6 15v1.3c0 .7.9 1 1.4.5'
+  rifles: TUPI ? ARROWS : 'M2.5 15.5 7 13h3l1-1h10.5v1.6H12.5l-1.2 1.4H9l-1.8 3.5H3.5zM13 12v-1.4h1.8M9.6 15v1.3c0 .7.9 1 1.4.5'
 });
 
 const STROKE = 'fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"';
@@ -31,7 +36,7 @@ const ICONS = Object.freeze({
   /* ---------- recursos ---------- */
   food: T('M6.4 12.5C7.2 9.4 9.4 7.5 12 7.5s4.8 1.9 5.6 5z') + S(ICON_PATHS.food),
   wood: T('M3 16a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM13 16a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM8 8.5a4 4 0 1 0 8 0a4 4 0 1 0-8 0z') + S(ICON_PATHS.wood),
-  rifles: T('M2.5 15.5 7 13h3l-1 2H9l-1.8 3.5H3.5z') + S(ICON_PATHS.rifles),
+  rifles: TUPI ? S(ICON_PATHS.rifles) : T('M2.5 15.5 7 13h3l-1 2H9l-1.8 3.5H3.5z') + S(ICON_PATHS.rifles),
   people: T('M3 20.5c0-3.9 2.7-6.2 6-6.2s6 2.3 6 6.2z') + C(9, 8, 3.2) + S('M3 20.5c0-3.9 2.7-6.2 6-6.2s6 2.3 6 6.2') +
     C(17, 9, 2.5) + S('M16.6 14.5c2.7-.3 4.6 1.6 4.6 5'),
 
@@ -135,6 +140,45 @@ const ICONS = Object.freeze({
   alert: T('M12 3 2 20h20z') + S('M12 3 2 20h20zM12 10v4') + DOT(12, 17, 1),
   // Sino da reza do fim da tarde.
   bell: T('M6 17.5c1-2 1-4.2 1-7a5 5 0 0 1 10 0c0 2.8 0 5 1 7z') + S('M6 17.5c1-2 1-4.2 1-7a5 5 0 0 1 10 0c0 2.8 0 5 1 7zM10.3 20a1.8 1.8 0 0 0 3.4 0M12 3.5v2'),
+  /* ---------- a aldeia tupinambá ---------- */
+  arrows: S(ARROWS),
+  // Morador: o cabelo aparado, de testa rapada.
+  morador: T('M8.6 10.6c.3-2.4 1.6-3.6 3.4-3.6s3.1 1.2 3.4 3.6z') + S('M8.6 10.6c.3-2.4 1.6-3.6 3.4-3.6s3.1 1.2 3.4 3.6') + bust(12.4),
+  // Tacape: o pau de guerra de cabeça achatada, com a amarração de algodão.
+  tacape: T('M13 11c-.5-3 1.6-6.4 4.6-7.5 1.6 2.6.9 6.8-1.7 8.6z') + S('M4.5 20.5 13 11M13 11c-.5-3 1.6-6.4 4.6-7.5 1.6 2.6.9 6.8-1.7 8.6zM6.2 17.4l1.4 1.4M7.6 16l1.4 1.4'),
+  // Pavês: a tábua de pau leve e o tacape atrás.
+  paves: T('M4.5 4h9v15h-9z') + S('M4.5 4h9v15h-9zM9 4v15M15.5 20.5 20.5 9'),
+  // Arco armado com a flecha.
+  bow: S('M6.5 3c7 3.5 7 14.5 0 18M6.5 3v18M4 12h15M19 12l-2.6-2M19 12l-2.6 2'),
+  // Maracá: o cabaço de pedrinhas no cabo.
+  maraca: T('M7 9a5 5 0 1 0 10 0a5 5 0 1 0-10 0z') + C(12, 9, 5) + S('M12 14v7.5M10.5 21.5h3') + DOT(10.3, 8.2) + DOT(13.6, 9.6) + DOT(12.2, 6.6),
+  // A pena do principal.
+  feather: T('M19 4c-1 6-5 11-11 13 3-6 6-10 11-13z') + S('M5.5 21c3-7 7-13 13.5-17-1 6-5 11-11 13M8.6 18.2l3.4-4M10.4 15.3h3.4M12.8 12.4h3'),
+  // O matador: os riscos no peito, um por nome.
+  scar: bust(10.2) + S('M9 16.4l2.2 3.4M11.8 16l2.2 3.4M14.6 16.4l1.6 2.6'),
+  // As ervas da curandeira.
+  herb: T('M12 13c-3.5 0-6-2.2-6-5.5 3.3 0 6 2.2 6 5.5zM12 10c3.5 0 6-2.2 6-5.5-3.3 0-6 2.2-6 5.5z') +
+    S('M12 21V9M12 13c-3.5 0-6-2.2-6-5.5 3.3 0 6 2.2 6 5.5zM12 10c3.5 0 6-2.2 6-5.5-3.3 0-6 2.2-6 5.5z'),
+  // O tição em brasa.
+  torch: T('M14.5 12.5c-2.4-.6-3.4-3-2.4-5.2.8-1.6 2.6-2.2 2.6-4.8 2.4 1.3 4.6 3.8 4.2 6.5-.3 2-2 3.7-4.4 3.5z') +
+    S('M6 21 13.5 12.5M14.5 12.5c-2.4-.6-3.4-3-2.4-5.2.8-1.6 2.6-2.2 2.6-4.8 2.4 1.3 4.6 3.8 4.2 6.5-.3 2-2 3.7-4.4 3.5z'),
+  // A igara com os remadores de pé.
+  canoe: T('M2.5 15c3 3 16 3 19 0z') + S('M2.5 15c3 3 16 3 19 0zM8 15v-5M14 15v-5M16.5 9.5l2 9') + C(8, 8, 1.5) + C(14, 8, 1.5),
+  // Oca: a abóbada comprida de palha até o chão, a porta baixa.
+  oca: T('M3 20c0-8 4-12 9-12s9 4 9 12z') + S('M3 20c0-8 4-12 9-12s9 4 9 12zM2 20h20M10.5 20v-3.5h3V20M7 12.5l1 2M12 9.5v2M17 12.5l-1 2'),
+  // Cerca de pau a pique: os troncos de ponta afiada e as travessas.
+  palisade: T('M9 21V6l1.5-3L12 6v15z') + S('M4 21V7l1.5-3L7 7v14M9 21V6l1.5-3L12 6v15M14 21V7l1.5-3L17 7v14M19 21V8l1-2 1 2v13M3 11h19M3 17h19'),
+  // Moquém: o jirau de varas sobre as forquilhas e o fogo baixo.
+  moquem: T('M12 20c-1.6 0-2.4-1.1-2-2.5.3-1 1.1-1.4 1.1-3 1.5.8 2.9 2.2 2.9 3.8 0 1-.8 1.7-2 1.7z') +
+    S('M4 21V9M20 21V9M3 9h18M3 11h18M4 9 2.6 6.6M4 9l1.4-2.4M20 9l-1.4-2.4M20 9l1.4-2.4M8 8.5h3M13 8.5h3M12 20c-1.6 0-2.4-1.1-2-2.5.3-1 1.1-1.4 1.1-3 1.5.8 2.9 2.2 2.9 3.8 0 1-.8 1.7-2 1.7z'),
+  // Tejupar: a choupana de palha aberta dos lados.
+  tejupar: T('M3 11 12 5l9 6z') + S('M2 11.5 12 5l10 6.5M4.5 10.5V20M19.5 10.5V20M2.5 20h19') + C(12, 17.5, 2.2),
+  // Ponta de dente de tubarão.
+  tooth: T('M7 4h10l-5 16z') + S('M7 4h10l-5 16zM9 7.5h6M10 11h4'),
+  // Rede de madeira: a cerca baixa de varas trançadas.
+  rede: S('M3 20V9M8 20V9M13 20V9M18 20V9M2 12h19M2 17h19M3 9l5 3M8 9l5 3M13 9l5 3'),
+  // Buzina: o chamado da guerra.
+  horn: T('M4 15c5 0 10-3 14-8l2 2c-3 6-8 9-15 9z') + S('M4 15c5 0 10-3 14-8l2 2c-3 6-8 9-15 9zM4 15v3M18 7l1.5-1.5'),
   // nomes antigos
   rifle: T('M2.5 15.5 7 13h3l-1 2H9l-1.8 3.5H3.5z') + S(ICON_PATHS.rifles)
 });

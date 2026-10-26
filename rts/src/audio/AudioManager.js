@@ -5,6 +5,7 @@
 // gesto do jogador, como os navegadores exigem; até lá os eventos ficam mudos.
 import { RECIPES } from './SoundRecipes.js';
 import { random, outdoorImpulse } from './Dsp.js';
+import { TUPI } from '../config/mission.js';
 
 const STORAGE_KEY = 'canudos-som';
 const MASTER_VOLUME = .8;
@@ -67,8 +68,42 @@ const SOUNDS = {
   blessing: { level: .22, reverb: .2, pitch: .02, gap: 2.5, group: 'event', reach: .6 },
   'build-open': { level: .24, reverb: .02, gap: .3, group: 'ui', reach: 0 },
   page: { level: .26, reverb: .02, gap: .2, group: 'ui', reach: 0 },
-  'story-new': { level: .18, reverb: .03, gap: 1, group: 'ui', reach: 0 }
+  'story-new': { level: .18, reverb: .03, gap: 1, group: 'ui', reach: 0 },
+
+  // A aldeia tupinambá (TUPI_SOUNDS troca os nomes de Canudos por estes).
+  'tupi-command-move': { level: .3, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'tupi-command-stop': { level: .32, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'tupi-command-gather': { level: .3, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'tupi-command-build': { level: .28, reverb: .05, pitch: .04, gap: .07, group: 'ui', reach: 0 },
+  'tupi-command-train': { level: .26, reverb: .05, gap: .07, group: 'ui', reach: 0 },
+  'shot-bow': { level: .34, reverb: .12, pitch: .06, gap: .03, group: 'gun' },
+  'tupi-chop': { level: .4, reverb: .16, pitch: .04, gap: .07, group: 'work' },
+  'tupi-built': { level: .42, reverb: .14, gap: .3, group: 'event', reach: .3 },
+  'tupi-upgrade': { level: .38, reverb: .14, gap: .3, group: 'event', reach: 0 },
+  'tupi-trained': { level: .3, reverb: .1, pitch: .02, gap: .15, group: 'event', reach: .4 },
+  'tupi-wave-start': { level: .34, reverb: .25, gap: 1, group: 'call', reach: 0 },
+  'tupi-wave-clear': { level: .42, reverb: .14, gap: 1, group: 'call', reach: 0 },
+  'tupi-alarm': { level: .34, reverb: .2, gap: 2.4, group: 'call', reach: .25 },
+  'tupi-rout': { level: .32, reverb: .22, gap: 1, group: 'call', reach: .35 },
+  'tupi-game-over': { level: .45, reverb: .25, gap: 2, group: 'call', reach: 0 },
+  'tupi-romeiros': { level: .38, reverb: .14, gap: 2, group: 'call', reach: 0 },
+  'tupi-blessing': { level: .22, reverb: .12, pitch: .03, gap: 2.5, group: 'event', reach: .6 },
+  'drop-arrows': { level: .3, reverb: .08, pitch: .05, gap: .12, group: 'work' }
 };
+
+// Na aldeia tupinambá cada som de Canudos que não cabe antes de 1500 (viola, sino,
+// corneta, pólvora, prego, aço) dá lugar ao da aldeia: maracá, tamboril, buzina, arco,
+// machado de pedra, flecha de taquara.
+const TUPI_SOUNDS = Object.freeze({
+  'command-move': 'tupi-command-move', 'command-stop': 'tupi-command-stop', 'command-gather': 'tupi-command-gather',
+  'command-build': 'tupi-command-build', 'command-train': 'tupi-command-train',
+  'shot-musket': 'shot-bow', 'shot-blunderbuss': 'shot-bow', 'shot-rifle': 'shot-bow',
+  chop: 'tupi-chop', built: 'tupi-built', upgrade: 'tupi-upgrade', trained: 'tupi-trained',
+  'wave-start': 'tupi-wave-start', 'wave-clear': 'tupi-wave-clear', alarm: 'tupi-alarm', rout: 'tupi-rout',
+  'game-over': 'tupi-game-over', romeiros: 'tupi-romeiros', blessing: 'tupi-blessing',
+  'drop-rifles': 'drop-arrows', 'rifle-pickup': 'drop-arrows'
+});
+const soundName = name => TUPI ? TUPI_SOUNDS[name] ?? name : name;
 
 // Segundos de paz para um ataque novo tocar o sino de novo.
 const ATTACK_QUIET = 30;
@@ -76,7 +111,10 @@ const ATTACK_QUIET = 30;
 // Laços de ambiente, tocando sempre por baixo: o vento do dia, os grilos da noite e
 // a chuva enquanto chove. `level` é o volume cheio; quanto dele soa a cada momento
 // sai da hora do dia e do tempo (AudioManager.update).
-const BEDS = { wind: { level: .045 }, crickets: { level: .08 }, rainfall: { level: .32 } };
+// No litoral, o mar batendo na praia por baixo de tudo.
+const BEDS = TUPI
+  ? { wind: { level: .04 }, crickets: { level: .08 }, rainfall: { level: .32 }, surf: { level: .07 } }
+  : { wind: { level: .045 }, crickets: { level: .08 }, rainfall: { level: .32 } };
 
 // Teto de vozes por grupo: num tiroteio, a décima espingarda não acrescenta nada
 // além de lama no som.
@@ -89,7 +127,7 @@ const WARM_ORDER = [
   'strike-spear', 'strike-bayonet', 'death-player', 'death-enemy', 'shot-blunderbuss', 'alarm', 'wave-clear', 'upgrade',
   'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'shot-matadeira', 'rain', 'game-over',
   'drop-wood', 'drop-food', 'drop-rifles', 'rifle-pickup', 'build-open', 'page', 'story-new', 'blessing', 'romeiros', 'thirst', 'deserted',
-  'wind', 'crickets', 'rainfall'
+  'wind', 'crickets', 'rainfall', ...(TUPI ? ['surf'] : [])
 ];
 
 const MELEE = new Set(['club', 'machete', 'spear', 'bayonet', 'saber']);
@@ -162,7 +200,11 @@ export class AudioManager {
       if (quiet) this.#play('alarm', at(place));
     });
     on('convoyEscaped', () => this.#play('alarm'));
-    on('death', ({ organism }) => this.#play(organism.team === 'enemy' ? 'death-enemy' : 'death-player', at(organism)));
+    on('death', ({ organism }) => {
+      // Canoa afundada não cai como gente.
+      if (organism.stats.boat) return;
+      this.#play(organism.team === 'enemy' ? 'death-enemy' : 'death-player', at(organism));
+    });
     on('chop', place => this.#play('chop', at(place)));
     on('hammer', place => this.#play('hammer', at(place)));
     on('treeFall', place => this.#play('tree-crack', at(place)));
@@ -194,7 +236,8 @@ export class AudioManager {
       if (tx !== undefined) this.#play('shell-burst', { x: tx, y: ty, delay: .32, gap: false });
       return;
     }
-    if (weapon === 'rifle') this.#play('shot-rifle', { x, y });
+    if (weapon === 'bow') this.#play('shot-bow', { x, y });
+    else if (weapon === 'rifle') this.#play('shot-rifle', { x, y });
     else if (weapon === 'blunderbuss') this.#play('shot-musket', { x, y });
     else this.#play(`strike-${MELEE.has(weapon) ? weapon : 'club'}`, { x, y });
   }
@@ -244,7 +287,9 @@ export class AudioManager {
       const back = context.createGain();
       back.gain.value = REVERB_RETURN;
       this.#reverb.connect(back).connect(glue);
-      this.#warmQueue = WARM_ORDER.flatMap(name => Array.from({ length: RECIPES[name].variants }, (_, index) => [name, index]));
+      // Prepara só os sons da missão aberta (cada nome uma vez).
+      const warm = [...new Set(WARM_ORDER.map(soundName))].filter(name => RECIPES[name]);
+      this.#warmQueue = warm.flatMap(name => Array.from({ length: RECIPES[name].variants }, (_, index) => [name, index]));
       this.#warmNext();
     } catch { this.#context = null; }
   }
@@ -304,6 +349,7 @@ export class AudioManager {
   // ---- Tocar ----
 
   #play(name, { x, y, delay = 0, gap = true } = {}) {
+    name = soundName(name);
     const spec = SOUNDS[name];
     if (!spec || !this.#enabled || !this.#context || !this.#bus) return;
     const context = this.#context;
@@ -419,7 +465,8 @@ export class AudioManager {
     const amount = {
       wind: Math.min(1, .55 + .45 * daylight + .5 * rain),
       crickets: night * (1 - rain),
-      rainfall: rain
+      rainfall: rain,
+      surf: 1
     };
     // Só reagenda quando a mistura muda de verdade: um alvo novo por quadro encheria
     // a fila de automação do volume à toa.

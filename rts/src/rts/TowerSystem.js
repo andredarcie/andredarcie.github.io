@@ -1,4 +1,4 @@
-import { TOWER, HILL_REACH } from '../config/rts.js';
+import { TOWER, HILL_REACH, SNARE, TEXT } from '../config/rts.js';
 import { hillAt } from '../world/Hills.js';
 
 // Altura de onde a bala sai (o atirador agachado atrás do parapeito, ou de pé no
@@ -32,7 +32,9 @@ export class TowerSystem {
       range: Math.round(range),
       damage: turret ? turret.damage : TOWER.damage[tower.levels.power],
       interval: turret ? turret.interval : TOWER.interval,
-      scatter: !turret && tower.levels.scatter > 0
+      // Na cerca dos tupinambás o terceiro nível é a rede de madeira (UnitSystem), não carga
+      // que espalha.
+      scatter: !turret && !SNARE && tower.levels.scatter > 0
     };
   }
 
@@ -59,7 +61,8 @@ export class TowerSystem {
 
   // Fica no mesmo alvo enquanto ele estiver ao alcance; senão, o mais adiantado.
   #pick(tower, range, hall) {
-    const inRange = u => u.life > 0 && Math.hypot(u.x - tower.x, u.y - tower.y) <= range;
+    // Canoa vazia encalhada não vale flecha.
+    const inRange = u => u.life > 0 && !(u.stats.boat && !u.crew?.length) && Math.hypot(u.x - tower.x, u.y - tower.y) <= range;
     if (tower.target && this.#state.organisms.includes(tower.target) && inRange(tower.target)) return tower.target;
     let best = null, bestScore = Infinity;
     for (const u of this.#state.organisms) {
@@ -76,10 +79,12 @@ export class TowerSystem {
     this.#state.projectiles.push({
       x: tower.x, y: tower.y, z, px: tower.x, py: tower.y, pz: z,
       target, tx: target.x, ty: target.y,
-      damage: stats.damage, scatter: stats.scatter, team: tower.team, time: 0
+      damage: stats.damage, scatter: stats.scatter, team: tower.team, time: 0,
+      // Da cerca sai flecha: voa em arco (EffectsLayer) e não faz fumaça.
+      arrow: Boolean(SNARE), total: Math.hypot(target.x - tower.x, target.y - tower.y), lift: 0, plift: 0
     });
     // Fumaça da pólvora negra na boca da arma.
-    this.#state.shots.push({ x: tower.x, y: tower.y, z, tx: tower.x, ty: tower.y, tz: z, puffOnly: true, time: 0, life: 1 });
+    if (!SNARE) this.#state.shots.push({ x: tower.x, y: tower.y, z, tx: tower.x, ty: tower.y, tz: z, puffOnly: true, time: 0, life: 1 });
     this.#events.emit('towerShot', { scatter: stats.scatter, x: tower.x, y: tower.y });
   }
 
@@ -94,6 +99,7 @@ export class TowerSystem {
         p.ty = p.target.y;
       }
       p.px = p.x; p.py = p.y; p.pz = p.z;
+      p.plift = p.lift;
       p.time += dt;
       const dx = p.tx - p.x, dy = p.ty - p.y, dz = (alive ? HIT_HEIGHT : 0) - p.z;
       const distance = Math.hypot(dx, dy, dz);
@@ -105,6 +111,11 @@ export class TowerSystem {
       p.x += dx / distance * step;
       p.y += dy / distance * step;
       p.z += dz / distance * step;
+      // A curva da flecha: sobe e desce ao longo do caminho (só no desenho).
+      if (p.arrow && p.total > 0) {
+        const left = Math.hypot(p.tx - p.x, p.ty - p.y);
+        p.lift = Math.sin(Math.PI * Math.max(0, Math.min(1, 1 - left / p.total))) * Math.min(22, p.total * .14);
+      }
       if (p.time > 3) p.done = true;
     }
     state.projectiles = state.projectiles.filter(p => !p.done);
@@ -114,7 +125,7 @@ export class TowerSystem {
     const target = p.target;
     const direction = Math.atan2(target.y - p.py, target.x - p.px);
     const damage = p.damage * (.9 + Math.random() * .2);
-    this.#units.wound(target, damage, direction, { by: 'Tiro da trincheira', weapon: 'bullet' });
+    this.#units.wound(target, damage, direction, { by: TEXT.towerHit, weapon: p.arrow ? 'arrow' : 'bullet' });
     if (!p.scatter) return;
     this.#state.sparks.push({ x: target.x, y: target.y, time: 0, life: .45, radius: TOWER.splash, kind: 'scatter' });
     // A carga espalha: parte do dano em quem está colado no alvo.
@@ -123,7 +134,7 @@ export class TowerSystem {
       const distance = Math.hypot(other.x - target.x, other.y - target.y);
       if (distance > TOWER.splash) continue;
       this.#units.wound(other, damage * TOWER.splashShare, Math.atan2(other.y - target.y, other.x - target.x),
-        { by: 'Carga de bacamarte', weapon: 'bullet' });
+        { by: TEXT.splashHit, weapon: 'bullet' });
     }
   }
 }

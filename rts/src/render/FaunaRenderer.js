@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { hillHeight } from '../world/Hills.js';
+import { TUPI } from '../config/mission.js';
 import { WORLD } from '../config/world.js';
 
 // Os bichos do sertão que Os Sertões põe em volta de Canudos, só de cena (a simulação
@@ -135,6 +136,9 @@ export class FaunaRenderer {
   }
 
   #herd(state, dt, elapsed, animate) {
+    // Na aldeia tupinambá não há bicho de criação: "Nem há aqui boi ou vaca, cabra,
+    // ovelha ou galinha" (Caminha, 1500).
+    if (TUPI) return;
     const home = this.#home(state);
     if (!home) return;
     while (this.#goats.length < GOATS) {

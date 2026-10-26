@@ -986,6 +986,122 @@ function coins(sr, rand) {
   return fade(out, sr, .001, .08);
 }
 
+// ---------------------------------------------------------------- a aldeia tupinambá
+// A paleta da missão de antes de 1500: nada de pólvora, ferro, sino, corneta ou
+// viola. O arco (a corda solta e o pau do arco vibrando, a flecha cortando o ar), o
+// maracá ("um cabaço, com umas pedrinhas dentro", Soares, cap. CLXII), o tamboril
+// "em que não dobra as pancadas" e as buzinas da guerra (cap. CLXVIII), o machado de
+// pedra (sem o tinido do aço) e o mar batendo na praia.
+
+// Arco: a corda solta é uma corda pinçada grave e muito abafada (dura pouco), o pau
+// do arco responde com um toque seco de madeira, e a flecha sai num assobio de ar.
+function bowShot(sr, rand) {
+  const out = empty(sr, .7);
+  mix(out, pluck(sr, between(rand, 95, 125), .3, rand, { bright: .35, damp: .85, decay: .18 }), 0, 1);
+  mix(out, knock(sr, rand, .2, { touch: .0012, base: between(rand, 240, 300), q: 9, count: 6, tilt: .7 }), 0, .5);
+  mix(out, burst(sr, rand, .012, { type: 'highpass', frequency: 2500, envelope: hit(.0001, .002) }), 0, .25);
+  mix(out, whoosh(sr, rand, between(rand, .28, .36), 700, 1900, 1.6), .015 * sr, .3);
+  filter(out, 'highpass', sr, 60, .7);
+  return fade(out, sr, 0, .08);
+}
+
+// Uma sacudida de maracá: as pedrinhas batendo dentro da cabaça (grãos agudos, muitos
+// e espalhados) e o oco da cabaça respondendo grave.
+function shake(sr, rand, target, at, gain, length = .14) {
+  for (let k = 0; k < 46; k++) {
+    const t = at + length * Math.pow(rand(), 1.4);
+    const grain = burst(sr, rand, .004, { type: 'bandpass', frequency: between(rand, 3200, 6500), q: 1.4, envelope: hit(.0001, .0012) });
+    mix(target, grain, t * sr, gain * between(rand, .2, .7) * (rand() < .5 ? -1 : 1));
+  }
+  mix(target, knock(sr, rand, .12, { touch: .002, base: between(rand, 420, 520), q: 4, count: 4, tilt: .7 }), at * sr, gain * .25);
+  return target;
+}
+
+function maraca(sr, rand, seconds, beats) {
+  const out = empty(sr, seconds);
+  for (const [at, gain, length] of beats) shake(sr, rand, out, at, gain, length);
+  filter(out, 'highpass', sr, 200, .7);
+  return fade(out, sr, .001, .08);
+}
+
+// Tamboril: pele pequena, batida de mão.
+function tamboril(sr, rand, target, at, gain) {
+  const base = between(rand, 125, 145);
+  const local = empty(sr, .5);
+  mix(local, thump(sr, .4, base * 1.15, base, .015, hit(.001, .11)), 0, 1);
+  mix(local, knock(sr, rand, .4, { touch: .0025, base, q: 18, ratios: [1.59, 2.14, 2.65, 2.92], tilt: .7 }), 0, .4);
+  mix(local, burst(sr, rand, .02, { frequency: 2600, envelope: hit(.0003, .003) }), 0, .15);
+  return mix(target, local, at * sr, gain);
+}
+
+// Buzina: o sopro grave num tubo largo, de som mais escuro que o da corneta de metal.
+function buzina(sr, rand, seconds, notes) {
+  const out = bugle(sr, rand, seconds, notes);
+  return filter(out, 'lowpass', sr, 1500, .7);
+}
+
+// Machado de pedra: o golpe surdo na madeira e a lasca, sem o tinido do ferro.
+function stoneChop(sr, rand) {
+  const out = empty(sr, .6);
+  mix(out, knock(sr, rand, .5, { touch: .0012, base: between(rand, 300, 420), q: 7, count: 9, tilt: .7 }), 0, 1);
+  mix(out, knock(sr, rand, .5, { touch: .002, base: between(rand, 100, 140), q: 4, count: 4, tilt: .9 }), 0, .6);
+  crackle(out, sr, rand, { count: Math.floor(between(rand, 6, 12)), from: .002, span: .05, gain: .16, cutoff: 2400, spread: 1.5 });
+  terrain(out, sr, rand, { first: between(rand, .13, .2), count: 2, gain: .2, cutoff: 1600 });
+  filter(out, 'highpass', sr, 70, .7);
+  return fade(out, sr, 0, .1);
+}
+
+// Flechas postas no monte: varas de taquara caindo umas sobre as outras.
+function dropArrows(sr, rand) {
+  const out = empty(sr, .6);
+  for (let k = 0; k < 6; k++) {
+    mix(out, knock(sr, rand, .2, { touch: .0006, base: between(rand, 700, 1300), q: 14, count: 5, tilt: .6 }), (k * between(rand, .025, .05)) * sr, between(rand, .4, 1));
+  }
+  filter(out, 'highpass', sr, 180, .7);
+  return fade(out, sr, 0, .08);
+}
+
+// Mar na praia, sem começo nem fim: o rolo da onda crescendo, a arrebentação e a
+// espuma lavando a areia e voltando, uma onda a cada poucos segundos.
+function surf(sr, rand) {
+  const seconds = 16;
+  const channels = [];
+  for (let c = 0; c < 2; c++) {
+    const n = samples(sr, seconds);
+    const roar = burst(sr, rand, seconds, { color: 'brown', frequency: 380, q: .5 });
+    const wash = burst(sr, rand, seconds, { color: 'pink', type: 'bandpass', frequency: between(rand, 1500, 2200), q: .45 });
+    const out = new Float32Array(n);
+    const waves = [];
+    for (let t = between(rand, 0, 2); t < seconds; t += between(rand, 4.6, 6.4)) waves.push(t);
+    for (let i = 0; i < n; i++) {
+      const t = i / sr;
+      let swell = .18, foam = 0;
+      for (const at of waves) {
+        const d = t - at;
+        if (d > -2.2 && d < 0) swell += Math.pow(1 + d / 2.2, 2) * .7;
+        if (d >= 0 && d < 3.5) {
+          swell += Math.exp(-d / .5) * .8;
+          foam += Math.exp(-d / 1.2) * Math.min(1, d / .08);
+        }
+      }
+      out[i] = roar[i] * swell * .6 + wash[i] * foam * .35;
+    }
+    filter(out, 'lowpass', sr, 6000, .7);
+    channels.push(out);
+  }
+  const [l, r] = seamless(channels, sr, 2.5);
+  return { l, r };
+}
+
+// Os comandos da aldeia: maracá no lugar da viola, o tamboril, a batida de pau.
+const TUPI_COMMANDS = {
+  move: (sr, rand) => maraca(sr, rand, .4, [[0, 1, .12]]),
+  stop: (sr, rand) => { const out = empty(sr, .5); tamboril(sr, rand, out, 0, .7); return fade(out, sr, 0, .08); },
+  gather: (sr, rand) => mix(maraca(sr, rand, .7, [[.02, .7, .1]]), gather(sr, rand), 0, .5),
+  build: (sr, rand) => { const out = empty(sr, .5); mallet(sr, rand, out, 0, 1); return fade(out, sr, 0, .08); },
+  train: (sr, rand) => maraca(sr, rand, .6, [[0, 1, .1], [.16, .8, .1]])
+};
+
 const COMMANDS = {
   move: (sr, rand) => viola(sr, rand, .7, [[A3, 0, { damp: .7, decay: .5 }], [E4, .045, { damp: .7, decay: .45, gain: .6 }]]),
   stop: (sr, rand) => viola(sr, rand, .6, [[D3, 0, { damp: .85, decay: .3, octave: true }]]),
@@ -1095,6 +1211,94 @@ export const RECIPES = {
   'build-open': { variants: 2, make: (sr, rand) => paper(sr, rand, .55, 900, 3500, 22) },
   page: { variants: 3, make: (sr, rand) => paper(sr, rand, .4, 1200, 4500, 14) },
   'story-new': { variants: 2, make: (sr, rand) => paper(sr, rand, .28, 1800, 5000, 8) },
+  // ---- A aldeia tupinambá (AudioManager troca os nomes de Canudos por estes) ----
+  ...Object.fromEntries(Object.entries(TUPI_COMMANDS).map(([kind, make]) => [`tupi-command-${kind}`, { variants: 2, make }])),
+  'shot-bow': { variants: 5, make: bowShot },
+  'tupi-chop': { variants: 6, make: stoneChop },
+  'tupi-built': {
+    variants: 2,
+    make: (sr, rand) => {
+      const out = empty(sr, 2.2);
+      mallet(sr, rand, out, 0, .9);
+      mallet(sr, rand, out, .2, .8);
+      tamboril(sr, rand, out, .55, .7);
+      return mix(out, maraca(sr, rand, 2.2, [[.55, 1, .14], [.8, .8, .12], [1.05, .9, .2]]), 0, .7);
+    }
+  },
+  'tupi-upgrade': {
+    variants: 2,
+    make: (sr, rand) => {
+      const out = maraca(sr, rand, 1.6, [[0, .9, .1], [.16, .9, .1], [.32, 1, .3]]);
+      tamboril(sr, rand, out, .32, .6);
+      return out;
+    }
+  },
+  'tupi-trained': { variants: 3, make: (sr, rand) => maraca(sr, rand, 1, [[0, 1, .12], [.2, .9, .12], [.4, 1, .22]]) },
+  // O ataque chegando: as buzinas, o tamboril e os maracás (Soares, cap. CLXVIII).
+  'tupi-wave-start': {
+    variants: 1,
+    make: (sr, rand) => {
+      const seconds = 3.8;
+      const horns = buzina(sr, rand, seconds, [
+        { f: 146, at: .2, length: .9 }, { f: 110, at: 1.25, length: .5, force: .9 }, { f: 146, at: 1.9, length: 1.3 }
+      ]);
+      echo(horns, sr, .38, .25, 1200);
+      echo(horns, sr, .8, .12, 800);
+      const drums = empty(sr, seconds);
+      for (let k = 0; k < 10; k++) tamboril(sr, rand, drums, .2 + k * .33, k % 2 ? .6 : .9);
+      const out = mix(horns, drums, 0, .6);
+      mix(out, maraca(sr, rand, seconds, Array.from({ length: 9 }, (_, k) => [.3 + k * .36, .5, .12])), 0, .4);
+      return widen(fade(out, sr, 0, .4), sr, .3);
+    }
+  },
+  'tupi-wave-clear': {
+    variants: 2,
+    make: (sr, rand) => {
+      const seconds = 2.6;
+      const out = maraca(sr, rand, seconds, Array.from({ length: 7 }, (_, k) => [k * .28, k % 2 ? .7 : 1, .12]));
+      for (let k = 0; k < 7; k++) tamboril(sr, rand, out, k * .28, k % 2 ? .4 : .7);
+      return widen(fade(out, sr, 0, .4), sr, .25);
+    }
+  },
+  'tupi-alarm': {
+    variants: 2,
+    make: (sr, rand) => {
+      const out = buzina(sr, rand, 2.2, [{ f: between(rand, 138, 150), at: 0, length: .8 }, { f: 110, at: .95, length: .6, force: .85 }]);
+      echo(out, sr, .4, .2, 1000);
+      return widen(fade(out, sr, 0, .3), sr, .25);
+    }
+  },
+  'tupi-rout': {
+    variants: 2,
+    make: (sr, rand) => {
+      const seconds = 2.4;
+      const out = mix(empty(sr, seconds), buzina(sr, rand, seconds, [{ f: 146, at: 0, length: .3 }, { f: 110 * .97, at: .35, length: .6, force: .8 }]), 0, .8);
+      for (let k = 0; k < 24; k++) {
+        const at = between(rand, .2, 2);
+        footstep(sr, rand, out, at, between(rand, .12, .3) * (1 - at / 2.4));
+      }
+      return fade(out, sr, 0, .3);
+    }
+  },
+  'tupi-game-over': {
+    variants: 1,
+    make: (sr, rand) => {
+      // A aldeia caiu: a buzina grave e o tamboril cada vez mais devagar.
+      const out = buzina(sr, rand, 7, [{ f: 110, at: 0, length: 2.2 }, { f: 98, at: 2.6, length: 2.6, force: .8 }]);
+      for (let k = 0; k < 6; k++) tamboril(sr, rand, out, .4 + k * (.6 + k * .2), .7 - k * .08);
+      const { l, r } = widen(out, sr, .3);
+      return { l: fade(l, sr, 0, .8), r: fade(r, sr, 0, .8) };
+    }
+  },
+  'tupi-romeiros': { variants: 2, make: (sr, rand) => {
+    const out = maraca(sr, rand, 2, [[0, .7, .12], [.3, .8, .12], [.6, .9, .12], [.9, 1, .2]]);
+    tamboril(sr, rand, out, 0, .5);
+    tamboril(sr, rand, out, .6, .6);
+    return out;
+  } },
+  'tupi-blessing': { variants: 2, make: (sr, rand) => maraca(sr, rand, 1, [[0, .8, .3], [.42, .5, .25]]) },
+  'drop-arrows': { variants: 3, make: dropArrows },
+  surf: { variants: 1, make: surf },
   // Laços de ambiente (AudioManager.#beds).
   wind: { variants: 1, make: wind },
   crickets: { variants: 1, make: crickets },

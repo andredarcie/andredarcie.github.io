@@ -3,6 +3,8 @@ import { WORLD, GROUND_TEXTURE_SIZE, GROUND_DETAIL_STROKES } from '../config/wor
 import { PALETTE } from './Palette.js';
 import { ROADS, HILLS } from '../config/rts.js';
 import { roadPath } from '../world/Roads.js';
+import { TUPI } from '../config/mission.js';
+import { coastY } from '../world/Coast.js';
 
 // Textura de cada lateral do tabuleiro: comprida no sentido da beirada.
 const SIDE_TEXTURE_WIDTH = 1024;
@@ -18,7 +20,8 @@ export class GroundPainter {
   #tones = {
     riverbed: PALETTE.riverbedGround.map(rgb),
     thicket: PALETTE.thicketGround.map(rgb),
-    scrub: PALETTE.scrubGround.map(rgb)
+    scrub: PALETTE.scrubGround.map(rgb),
+    ...(TUPI ? { beach: PALETTE.beachGround.map(rgb), sea: PALETTE.seaGround.map(rgb) } : {})
   };
 
   constructor(biomes) {
@@ -32,6 +35,7 @@ export class GroundPainter {
     const { surface, context } = GroundPainter.#canvas(size);
     this.#paintBiomes(context, size, 0, 0, 1 / scale, 1 / scale);
     this.#paintDetail(context, size);
+    if (TUPI) GroundPainter.#paintSea(context, size);
     GroundPainter.#paintHills(context, size);
     GroundPainter.#paintClearing(context, size);
     GroundPainter.#paintRoads(context, size);
@@ -152,6 +156,14 @@ export class GroundPainter {
       const nx = pseudoRandom(seed), ny = pseudoRandom(seed + 1);
       const biome = this.#biomes.biomeAt(nx * WORLD.width, ny * WORLD.height);
       const x = nx * size, y = ny * size;
+      if (biome === 'sea') continue;
+      if (biome === 'beach') {
+        // Conchinha e grão de areia mais escuro na praia.
+        context.fillStyle = pseudoRandom(seed + 2) > .5 ? hex(PALETTE.foam) : hex(PALETTE.beachGround[2]);
+        context.globalAlpha = .55;
+        context.fillRect(x, y, 1.6 * k, 1.1 * k);
+        continue;
+      }
       if (biome === 'riverbed') {
         context.strokeStyle = hex(PALETTE.riverbedGround[2]);
         context.globalAlpha = .18;
@@ -183,6 +195,7 @@ export class GroundPainter {
       const nx = pseudoRandom(seed), ny = pseudoRandom(seed + 1);
       const biome = this.#biomes.biomeAt(nx * WORLD.width, ny * WORLD.height);
       if (biome === 'thicket' && pseudoRandom(seed + 2) > .4) continue;
+      if (biome === 'sea' || (TUPI && biome === 'riverbed')) continue;
       const x = nx * size, y = ny * size;
       const r = (.7 + pseudoRandom(seed + 3) * 1.3) * k;
       context.globalAlpha = .35;
@@ -222,8 +235,80 @@ export class GroundPainter {
     context.restore();
   }
 
-  // A praça de terra batida no meio, onde a vila fica.
+  // O mar da enseada: escurece para fora (mais fundo), a faixa de areia molhada logo
+  // acima da linha d'água e duas linhas de espuma da arrebentação, interrompidas.
+  static #paintSea(context, size) {
+    const scale = size / WORLD.width;
+    context.save();
+    const line = (offset, from = 0, to = WORLD.width) => {
+      context.beginPath();
+      for (let x = from; x <= to; x += 6) {
+        const y = (coastY(x) + offset) * scale;
+        if (x === from) context.moveTo(x * scale, y);
+        else context.lineTo(x * scale, y);
+      }
+    };
+    // O fundo: um degradê do raso para o fundo, de cima para baixo da faixa de mar.
+    const top = Math.min(...Array.from({ length: 42 }, (_, i) => coastY(i * 20)));
+    const deep = context.createLinearGradient(0, top * scale, 0, size);
+    deep.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    deep.addColorStop(.35, hex(PALETTE.seaGround[0]) + '00');
+    deep.addColorStop(1, hex(PALETTE.seaDeep));
+    line(6);
+    context.lineTo(size, size);
+    context.lineTo(0, size);
+    context.closePath();
+    context.fillStyle = deep;
+    context.fill();
+    // Areia molhada: uma faixa mais escura logo acima da água.
+    context.filter = `blur(${2 * scale}px)`;
+    context.strokeStyle = hex(PALETTE.beachGround[2]);
+    context.globalAlpha = .7;
+    context.lineWidth = 7 * scale;
+    line(-3);
+    context.stroke();
+    // A espuma: na beira e uma onda mais para fora, em pedaços.
+    context.filter = `blur(${.8 * scale}px)`;
+    context.strokeStyle = hex(PALETTE.foam);
+    for (const [offset, width, alpha] of [[1, 2.2, .85], [12, 1.4, .45], [26, 1.1, .3]]) {
+      context.lineWidth = width * scale;
+      context.globalAlpha = alpha;
+      for (let i = 0; i < 26; i++) {
+        const from = pseudoRandom(i * 7 + offset) * WORLD.width;
+        const length = 18 + pseudoRandom(i * 7 + offset + 1) * 46;
+        line(offset + (pseudoRandom(i * 7 + offset + 2) - .5) * 3, from, Math.min(WORLD.width, from + length));
+        context.stroke();
+      }
+    }
+    context.restore();
+  }
+
+  // A praça de terra batida no meio, onde a vila fica. Na aldeia tupinambá é o
+  // "terreiro quadrado" no meio das casas (Soares, cap. CLI), varrido e pelado.
   static #paintClearing(context, size) {
+    if (TUPI) {
+      context.save();
+      context.filter = `blur(${5 * size / 1024}px)`;
+      context.globalAlpha = .85;
+      context.fillStyle = hex(PALETTE.clearing);
+      context.translate(size / 2, size / 2);
+      context.rotate(Math.PI / 4);
+      const half = size * .118;
+      context.beginPath();
+      for (let step = 0; step <= 48; step++) {
+        const t = step / 48 * 4;
+        const side = Math.floor(t) % 4, along = t - Math.floor(t);
+        const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+        const [ax, ay] = corners[side], [bx, by] = corners[(side + 1) % 4];
+        const wobble = 1 + Math.sin(step * 1.7) * .03;
+        const px = (ax + (bx - ax) * along) * half * wobble, py = (ay + (by - ay) * along) * half * wobble;
+        if (step) context.lineTo(px, py); else context.moveTo(px, py);
+      }
+      context.closePath();
+      context.fill();
+      context.restore();
+      return;
+    }
     context.save();
     context.filter = `blur(${6 * size / 1024}px)`;
     context.globalAlpha = .82;
@@ -292,12 +377,13 @@ export class GroundPainter {
     context.restore();
 
     // Marcas de roda de carro de boi e trilho de pé: duas linhas finas, fracas, que
-    // somem e voltam.
+    // somem e voltam. Antes de 1500 não havia roda nem carro: as trilhas da mata são
+    // só de pé, sem marca nenhuma.
     context.save();
     context.lineCap = 'round';
     context.strokeStyle = hex(PALETTE.roadRut);
     context.lineWidth = 1.4 * scale;
-    ROADS.forEach((road, index) => {
+    (TUPI ? [] : ROADS).forEach((road, index) => {
       const points = roadPath(road);
       for (const rut of [-4.5, 4.5]) {
         for (let i = 1; i < points.length; i++) {

@@ -1,4 +1,6 @@
 import { WORLD } from '../config/world.js';
+import { TUPI } from '../config/mission.js';
+import { coastY, BEACH } from './Coast.js';
 
 // O Vaza-Barris como Euclides o descreve: Canudos fica "constrito numa volta do
 // Vaza-Barris, que o limitava do levante ao sul abarcando-o", em leito "escavado e
@@ -7,16 +9,25 @@ import { WORLD } from '../config/world.js';
 // da Favela, onde o esporão do morro "acabava em corte abrupto" no rio —, sobe pelo
 // leste e sai para o leste pelo nordeste. Pontos em unidades do mundo (y cresce para
 // o sul; o arraial está no meio, em 410 × 410).
-const RIVER = Object.freeze([
+//
+// Na missão dos tupinambás é outro rio: de água corrente, que desce da serra ao
+// norte, passa a leste da aldeia ("que tenha a água muito perto", Soares, cap. CLI)
+// e entra no mar no canto da enseada. É raso: dá para passar a vau.
+const RIVER = Object.freeze(TUPI ? [
+  [598, 0], [588, 90], [612, 180], [594, 268], [618, 362], [600, 462], [632, 552], [648, 628], [662, 720]
+] : [
   [0, 655], [110, 640], [215, 618], [300, 590], [410, 612], [505, 590], [575, 520],
   [610, 410], [585, 305], [530, 240], [610, 200], [715, 178], [820, 165]
 ]);
-// Meia largura do leito seco (areal e cascalho), antes da ondulação da margem.
-const RIVER_HALF_WIDTH = 24;
+// Meia largura do leito seco (areal e cascalho), antes da ondulação da margem; o rio
+// do litoral é mais estreito.
+const RIVER_HALF_WIDTH = TUPI ? 13 : 24;
 // Até esta distância do meio, a caatinga é aberta: Euclides descreve o entorno de
 // Canudos como "colinas nuas [...] sem uma nesga de mato", só bromélia e cacto. A
 // caatinga fechada fica para fora, nas estradas, onde estavam as tocaias.
-const OPEN_RADIUS = 300;
+// Em volta da aldeia tupinambá, a capoeira das roças: a mata derrubada e queimada
+// para plantar ("de redor da aldeia fazerem suas roças", Soares, cap. CLI).
+const OPEN_RADIUS = TUPI ? 230 : 300;
 // Grade da distância até o rio, calculada uma vez: pintar o chão pergunta por ela
 // milhões de vezes.
 const GRID_STEP = 4;
@@ -39,6 +50,12 @@ export class BiomeMap {
   // borda com ruído, para nenhuma divisa sair lisa).
   biomeAt(x, y, jitter = 0) {
     const wobble = this.noise(x * .9 + 40, y * .9 - 12) * 9;
+    if (TUPI) {
+      // O mar e a praia vêm primeiro: a linha d'água é a da enseada (Coast).
+      const coast = coastY(x);
+      if (y > coast) return 'sea';
+      if (y > coast - BEACH - wobble * .8 - jitter * .3) return 'beach';
+    }
     if (this.riverDistance(x, y) < RIVER_HALF_WIDTH + wobble + jitter * .5) return 'riverbed';
     const ring = OPEN_RADIUS + this.noise(x * .6, y * .6) * 46 + jitter;
     return Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < ring ? 'scrub' : 'thicket';
@@ -67,8 +84,35 @@ export class BiomeMap {
   // Chance de um recurso vingar no bioma: água só sobra em poça e cacimba no leito do
   // rio; roça e fruta vingam na vazante do rio e na caatinga aberta.
   habitatWeight(biome, resource) {
+    if (TUPI) {
+      // Roça é na capoeira em volta da aldeia; poça de chuva só na mata e na capoeira.
+      if (resource === 'water') return biome === 'thicket' ? .5 : biome === 'scrub' ? .25 : 0;
+      return biome === 'scrub' ? 1 : biome === 'thicket' ? .08 : 0;
+    }
     if (resource === 'water') return biome === 'riverbed' ? 1 : biome === 'thicket' ? .3 : .2;
     return biome === 'riverbed' ? 1 : biome === 'thicket' ? .12 : .25;
+  }
+
+  // Dá para erguer uma construção de raio `radius` aqui? Em Canudos, em qualquer
+  // chão; no litoral, nem no mar, nem dentro do rio.
+  buildable(x, y, radius) {
+    if (!TUPI) return true;
+    if (y + radius > coastY(x) - 4) return false;
+    return this.riverDistance(x, y) > RIVER_HALF_WIDTH + radius * .6;
+  }
+
+  // Roça pode nascer aqui? No litoral, só na capoeira e na mata.
+  allowsCrop(x, y) {
+    if (!TUPI) return true;
+    const biome = this.biomeAt(x, y);
+    return biome === 'scrub' || biome === 'thicket';
+  }
+
+  // Poça de chuva cabe aqui (no litoral, longe do mar, da praia e do rio)?
+  allowsPond(x, y, radius) {
+    if (!TUPI) return true;
+    if (y + radius > coastY(x) - BEACH - 10) return false;
+    return this.riverDistance(x, y) > RIVER_HALF_WIDTH + radius + 6;
   }
 
   // Ruído suave e determinístico: serve tanto para serrilhar a fronteira entre

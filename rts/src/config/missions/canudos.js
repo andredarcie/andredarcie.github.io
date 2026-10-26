@@ -3,7 +3,7 @@
 // do jogador fica no meio do mapa, em volta da igreja; as tropas chegam em ondas
 // pelas quatro estradas do sertão. Tempos em segundos de simulação (o "1×" já roda
 // 2× o tempo real: BASE_SIMULATION_SPEED).
-import { WORLD } from './world.js';
+import { WORLD } from '../world.js';
 
 export const CENTER = Object.freeze({ x: WORLD.width / 2, y: WORLD.height / 2 });
 
@@ -341,3 +341,91 @@ export const FORMATION_SPACING = 15;
 
 // Aviso de "arraial sob ataque": no máximo um a cada tantos segundos reais.
 export const ALERT_COOLDOWN = 8;
+
+// ---- O que muda de uma missão para outra (config/rts.js escolhe a missão) ----
+
+// O pregador da vila: quem nasce no adro e cura os feridos perto dele.
+export const PREACHER_TYPE = 'conselheiro';
+// Recorde de ondas por dificuldade, guardado neste navegador.
+export const RECORD_KEY = 'canudos-melhor';
+// Pontos da beirada do tabuleiro entre uma estrada e outra: por onde a tropa entra
+// pela caatinga quando fecha o cerco.
+export const EDGE_ENTRIES = Object.freeze([
+  { x: 130, y: 6 }, { x: 690, y: 6 }, { x: WORLD.width - 6, y: 130 }, { x: WORLD.width - 6, y: 690 },
+  { x: 690, y: WORLD.height - 6 }, { x: 130, y: WORLD.height - 6 }, { x: 6, y: 690 }, { x: 6, y: 130 }
+]);
+// As ferramentas da gente da vila: machado de ferro na lenha, facão na roça, e o que
+// se leva na mão até a igreja (o fuzil tomado).
+export const TOOLS = Object.freeze({ axe: 'axe', gather: 'machete', loot: 'rifle' });
+// Mecânicas que só a outra missão tem: flecha perdida que se recolhe do chão, flecha
+// feita na fogueira, nome novo de quem mata, a rede de madeira e as canoas de guerra.
+export const RECOVER_ARROWS = false;
+export const CRAFT = null;
+export const NAMES = null;
+export const SNARE = null;
+export const IGARA = null;
+// Latitude de Belo Monte (9°58' S), para o caminho do sol (sky/Astronomy).
+export const LATITUDE = -9.97;
+
+// Os textos da interface que contam a história desta missão (RtsHud, GameMenu,
+// main.js). `page` troca os textos fixos do index.html; aqui é null porque o
+// index.html já vem escrito para Canudos.
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const join = list => list.length > 1 ? `${list.slice(0, -1).join(', ')} e ${list.at(-1)}` : list[0];
+export const TEXT = Object.freeze({
+  page: null,
+  startToast: 'Corte lenha e cave trincheiras na beira das estradas',
+  webgl: 'Este jogo precisa de WebGL para desenhar o sertão, e o seu navegador não conseguiu ligá-lo. Tente outro navegador ou ative a aceleração de hardware.',
+  underAttack: 'Belo Monte está sob ataque! Toque para ver',
+  rout: ({ fled, rifles }) => `Oficial abatido: ${fled} soldados em debandada${rifles ? `, ${rifles} fuzis largados` : ''}`,
+  arrival: ({ count, road, hero }) => hero
+    ? `${UNIT_TYPES[hero].label} chega a Belo Monte${count ? ` com ${plural(count, 'romeiro', 'romeiros')}` : ''}`
+    : count ? `Chegam ${plural(count, 'romeiro', 'romeiros')} pela estrada de ${road.label}` : '',
+  firstPickup: 'Fuzil tomado da tropa! Quem apanhou leva até a igreja',
+  waveBanner: ({ number, roads, count, guns, officers, matadeira, cerco }) => {
+    const expedition = EXPEDITIONS.find(item => number <= item.until);
+    // Canhão e oficial vêm anunciados: são os que pedem resposta (jirau, jagunços).
+    const extras = [matadeira && 'a Matadeira', guns && `${guns} ${guns > 1 ? 'canhões' : 'canhão'} Krupp`,
+      officers && `${officers} ${officers > 1 ? 'oficiais' : 'oficial'}`].filter(Boolean);
+    const list = join(extras);
+    return {
+      kicker: `${expedition.name} · ${expedition.leader}`,
+      sub: `${count} soldados ${roads.length > 1 ? 'pelas estradas' : 'pela estrada'} de ${join(roads.map(road => road.label))}` +
+        (list ? `, com ${list}` : '') + (cerco ? '. A tropa fecha o cerco pela caatinga' : '')
+    };
+  },
+  waveCleared: { kicker: 'A tropa recua', title: number => `Onda ${number} rechaçada` },
+  waveWord: 'Onda',
+  noHousing: 'Sem lugar para morar — construa uma casa de taipa',
+  retreatSub: 'para a igreja',
+  idleSub: n => `${n} sertanejo${n === 1 ? '' : 's'}`,
+  armyLabel: 'Jagunços',
+  workersLabel: 'Sertanejos',
+  preacherLabel: 'Conselheiro',
+  preacherSub: alive => alive ? 'reza e cura' : 'morto',
+  heroesLabel: 'Chefes',
+  heroesSub: n => `${n} no arraial`,
+  baseLabel: 'Igreja',
+  herdDetail: herd => `As cabras dão +${herd.food} de comida a cada ${herd.every} s`,
+  scatterTag: 'bacamarte',
+  repairHint: 'mande sertanejos consertar',
+  disarmed: 'sem fuzil',
+  enemyHint: 'Escolha jagunços e toque nele para atacar',
+  hidden: 'De tocaia',
+  homeTitle: 'Belo Monte',
+  praying: 'Rezando pelos feridos',
+  preacherIdle: 'Reza por quem chega ferido perto dele, e a pessoa sara',
+  carryWood: 'Levando lenha',
+  chopping: 'Cortando lenha',
+  farming: 'Trabalhando na roça',
+  workerIdle: 'À toa — toque numa árvore ou numa roça',
+  lack: { food: 'Falta comida', wood: 'Falta madeira', rifles: 'Faltam fuzis tomados da tropa' },
+  thirdLabel: 'fuzis tomados',
+  resultKicker: 'A igreja caiu',
+  resultHeld: waves => `Belo Monte resistiu a ${plural(waves, 'onda', 'ondas')} do Exército.`,
+  waveUnit: ['onda', 'ondas'],
+  towerHit: 'Tiro da trincheira',
+  splashHit: 'Carga de bacamarte',
+  newName: null,
+  crafted: null
+});

@@ -1,4 +1,5 @@
 import { smoothstep } from '../core/math.js';
+import { LATITUDE as MISSION_LATITUDE } from '../config/rts.js';
 
 // Astronomia de bolso: onde estão o sol e a lua a cada instante da ilha. Nada aqui
 // sabe de three.js; a simulação usa a mesma conta para saber quanto os bichos
@@ -17,7 +18,9 @@ export const NIGHT_SPEEDUP = 3;
 export const YEAR_LENGTH = 16;
 // Canudos (Belo Monte), sertão da Bahia: 9°58' S. Perto do equador o sol do meio-dia
 // passa quase a pino, ao norte, e a lua crescente aparece iluminada do lado esquerdo.
-const LATITUDE = -9.97 * Math.PI / 180;
+// A aldeia tupinambá fica perto de Ubatuba, já no trópico (23°26' S): a latitude vem
+// da missão aberta.
+const LATITUDE = MISSION_LATITUDE * Math.PI / 180;
 const OBLIQUITY = 23.44 * Math.PI / 180;
 const LUNAR_MONTH = 10;
 // A partida abre no meio da manhã, já com o sol alto do sertão.

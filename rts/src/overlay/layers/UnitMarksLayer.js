@@ -1,5 +1,5 @@
 import { CHARACTER_HEIGHT, LIFE_SIZE } from '../../config/organisms.js';
-import { UNIT_TYPES } from '../../config/rts.js';
+import { UNIT_TYPES, PREACHER_TYPE } from '../../config/rts.js';
 import { hutSize } from '../../settlement/HutDimensions.js';
 
 // Em pixels de tela, por cima de cada coisa: barra de vida de quem está ferido ou
@@ -32,7 +32,7 @@ export class UnitMarksLayer {
       }
       if (u.thought > 0 && u.team === 'player' && figure > 9) this.#note(ctx, head, u.message);
       // Os chefes e o Conselheiro levam o nome por cima, para serem achados na roda.
-      else if ((u.stats.hero || u.type === 'conselheiro') && figure > 7) this.#label(ctx, u.stats.label, head.x, head.y - 7, '#ffd36b');
+      else if ((u.stats.hero || u.type === PREACHER_TYPE) && figure > 7) this.#label(ctx, u.stats.label, head.x, head.y - 7, '#ffd36b');
     }
   }
 

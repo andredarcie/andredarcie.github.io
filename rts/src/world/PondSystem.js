@@ -29,6 +29,8 @@ export class PondSystem {
       const x = margin + Math.random() * Math.max(0, WORLD.width - margin * 2);
       const y = margin + Math.random() * Math.max(0, WORLD.height - margin * 2);
       if (!this.#occupancy.isFree(x, y, radius + POND_CLEARANCE)) continue;
+      // No litoral, nada de poça no mar, na praia ou dentro do rio.
+      if (!this.#biomes.allowsPond(x, y, radius)) continue;
       // Cacimba é no baixo, nunca no morro.
       if (hillHeight(x, y) > 0 || hillHeight(x + radius, y) > 0 || hillHeight(x - radius, y) > 0 ||
         hillHeight(x, y + radius) > 0 || hillHeight(x, y - radius) > 0) continue;

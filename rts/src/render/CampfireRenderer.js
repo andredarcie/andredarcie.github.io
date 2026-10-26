@@ -3,6 +3,7 @@ import { ghostify, ghostFade } from './GhostLook.js';
 import { pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
 import { hillHeight } from '../world/Hills.js';
+import { TUPI } from '../config/mission.js';
 
 const FIRE_LIGHT_POOL = 4;
 const STONE_SHAPE = new THREE.BoxGeometry(3.2, 2.2, 2.8);
@@ -12,6 +13,14 @@ const LOG_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x4a3826 });
 const EMBER_MATERIAL = new THREE.MeshBasicMaterial({ color: 0xff5a1e });
 const FLAME_COLORS = [0xff6a1a, 0xffa030, 0xffe070];
 const GLOW_GEOMETRY = new THREE.CircleGeometry(1, 32).rotateX(-Math.PI / 2);
+// O fogo do conselho dos tupinambás: as redes armadas "em estacas que têm para isso
+// metidas no chão [...] de redor da do principal" (Gabriel Soares, cap. CLXIV). Cada
+// rede: duas estacas e o pano de algodão caindo em curva entre elas.
+const STAKE_SHAPE = new THREE.CylinderGeometry(.3, .36, 7, 5).translate(0, 3.5, 0);
+const HAMMOCK_SHAPE = new THREE.BoxGeometry(2.6, .3, 1);
+const STAKE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6b5236 });
+const HAMMOCK_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xe2d8c0 });
+const HAMMOCKS = 5;
 
 // Fogueira: roda de pedras, duas toras cruzadas, chama de blocos sem sombreamento
 // (fogo emite luz, não recebe) e um brilho no chão. A luz de verdade vem de um
@@ -84,16 +93,44 @@ export class CampfireRenderer {
       this.#layer.remove(view);
       view.traverse(node => {
         if (!node.isMesh) return;
-        if (node.material !== this.#stoneMaterial && node.material !== LOG_MATERIAL) node.material.dispose();
+        if (node.material !== this.#stoneMaterial && node.material !== LOG_MATERIAL &&
+          node.material !== STAKE_MATERIAL && node.material !== HAMMOCK_MATERIAL) node.material.dispose();
       });
       view.userData.embers.geometry.dispose();
       this.#views.delete(fire);
     }
   }
 
+  // As redes em volta do fogo, uma estaca em cada ponta e o pano em curva.
+  static #hammocks(group, seed) {
+    for (let i = 0; i < HAMMOCKS; i++) {
+      const angle = i / HAMMOCKS * Math.PI * 2 + pseudoRandom(seed + i) * .3;
+      const holder = new THREE.Group();
+      holder.position.set(Math.cos(angle) * 11.5, 0, Math.sin(angle) * 11.5);
+      holder.rotation.y = -angle + Math.PI / 2;
+      group.add(holder);
+      for (const side of [-1, 1]) {
+        const stake = new THREE.Mesh(STAKE_SHAPE, STAKE_MATERIAL);
+        stake.position.x = side * 5;
+        stake.castShadow = true;
+        holder.add(stake);
+      }
+      for (let k = 0; k < 5; k++) {
+        const t = (k - 2) / 2.5;
+        const piece = new THREE.Mesh(HAMMOCK_SHAPE, HAMMOCK_MATERIAL);
+        piece.position.set(t * 4, 3.4 + t * t * 2.4, 0);
+        piece.rotation.z = Math.atan(t * 2.1) * .9;
+        piece.castShadow = true;
+        holder.add(piece);
+      }
+    }
+  }
+
   #createView(fire) {
     const group = new THREE.Group();
-    for (let i = 0; i < 9; i++) {
+    if (TUPI) CampfireRenderer.#hammocks(group, fire.seed);
+    // (a roda de pedras é do sertão; o fogo da aldeia é aceso direto no chão)
+    for (let i = 0; i < (TUPI ? 0 : 9); i++) {
       const angle = i / 9 * Math.PI * 2;
       const stone = new THREE.Mesh(STONE_SHAPE, this.#stoneMaterial);
       stone.position.set(Math.cos(angle) * 7.5, 1.1, Math.sin(angle) * 7.5);

@@ -3,7 +3,9 @@ import { easeInOut } from '../core/math.js';
 import { PALETTE } from './Palette.js';
 import { WOOD_MATERIALS, LOG_RADIUS } from './WoodMaterials.js';
 import { addVerticalShade } from './Shading.js';
-import { weaponModel, BOLT_Y, BOLT_X } from './WeaponModels.js';
+import { weaponModel, BOLT_Y, BOLT_X, bowModel, bowString, stringTo, BOW } from './WeaponModels.js';
+import { TUPI } from '../config/mission.js';
+import { TOOLS } from '../config/rts.js';
 
 const HIP_HEIGHT = 5.4;
 const SHOULDER_HEIGHT = 11.2;
@@ -207,6 +209,121 @@ const LOOK_SHAPES = {
   horn: new THREE.BoxGeometry(2.8, .6, .6),
   yoke: new THREE.BoxGeometry(9.5, .9, .9)
 };
+// Várias formas fundidas numa geometria só (posição e normal): o diadema de penas, o
+// cabelo aparado, a roda de penas de ema, a canoa — muito pedaço, uma chamada de desenho.
+function fused(geometries) {
+  const parts = geometries.map(g => g.index ? g.toNonIndexed() : g);
+  let n = 0;
+  for (const g of parts) n += g.attributes.position.count;
+  const position = new Float32Array(n * 3), normal = new Float32Array(n * 3);
+  let o = 0;
+  for (const g of parts) {
+    position.set(g.attributes.position.array, o * 3);
+    normal.set(g.attributes.normal.array, o * 3);
+    o += g.attributes.position.count;
+  }
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(position, 3));
+  out.setAttribute('normal', new THREE.BufferAttribute(normal, 3));
+  out.computeBoundingSphere();
+  return out;
+}
+
+// O corpo dos tupinambás (missão de antes de 1500), feito uma vez e compartilhado:
+// as "cascas" de pintura, um tico maiores que cada bloco do corpo, que pintam de
+// jenipapo o tronco, os braços e as pernas conforme o lavor de cada um; o rosto de
+// urucum; o cabelo aparado com a testa rapada; o diadema de penas e a carapuça; a
+// pedra do beiço; o colar de búzios; a roda de penas de ema das ancas; os tapacurás;
+// o maracá; o pavês; os riscos de quem tomou nomes; e a igara.
+const TUPI_SHAPES = TUPI ? (() => {
+  const shell = (w, h, d, y) => new THREE.BoxGeometry(w, h, d).translate(0, y, 0);
+  const diadem = [];
+  for (let i = 0; i < 13; i++) {
+    const a = (i / 13) * Math.PI * 2;
+    diadem.push(new THREE.BoxGeometry(.55, 2.6 - (i % 2) * .5, .14).translate(0, 1.3, 0).rotateX(-.28)
+      .rotateY(a).translate(Math.sin(a) * 2.62, 0, Math.cos(a) * 2.62));
+  }
+  diadem.push(new THREE.TorusGeometry(2.62, .24, 4, 18).rotateX(Math.PI / 2));
+  const rhea = [new THREE.CylinderGeometry(3.6, 3.6, .3, 18).rotateX(Math.PI / 2)];
+  for (let i = 0; i < 16; i++) {
+    const a = i / 16 * Math.PI * 2;
+    rhea.push(new THREE.BoxGeometry(.7, 2.2, .2).translate(0, 4.3, 0).rotateZ(a));
+  }
+  return {
+    torsoShell: taperedTorso().scale(1.03, 1.01, 1.07),
+    band: shell(5.75, .6, 3.4, 0),
+    bandLow: shell(5.05, .6, 3.15, 0),
+    half: shell(2.9, 6.05, 3.4, 0),
+    thigh: shell(2.55, 3.05, 2.55, -1.35),
+    shin: shell(2.35, 2.95, 2.35, -1.3),
+    upperArm: shell(1.95, 3.05, 2.35, -1.4),
+    forearm: shell(1.85, 2.95, 2.15, -1.3),
+    face: new THREE.BoxGeometry(4.7, 1.25, .12),
+    crop: fused([
+      new THREE.BoxGeometry(5.25, 1.3, 3.9).translate(0, 4.95, -.75),
+      new THREE.BoxGeometry(5.3, 2.8, .55).translate(0, 3.7, -2.55),
+      new THREE.BoxGeometry(.45, 1.5, 3.4).translate(-2.62, 4.1, -.8),
+      new THREE.BoxGeometry(.45, 1.5, 3.4).translate(2.62, 4.1, -.8)
+    ]),
+    diadem: fused(diadem),
+    cap: new THREE.SphereGeometry(2.9, 12, 6, 0, Math.PI * 2, 0, Math.PI * .56).scale(1, .95, 1),
+    capBand: new THREE.TorusGeometry(2.78, .32, 4, 18).rotateX(Math.PI / 2),
+    tembeta: new THREE.BoxGeometry(.6, .6, .55),
+    necklace: new THREE.TorusGeometry(2.3, .3, 5, 16).rotateX(Math.PI / 2).scale(1, 1, .78),
+    rhea: fused(rhea),
+    tapacura: shell(2.42, .8, 2.42, -.35),
+    gourd: new THREE.SphereGeometry(1.05, 8, 6).scale(1, 1.15, 1),
+    gourdHandle: new THREE.BoxGeometry(.4, 2.6, .4).translate(0, 1.1, 0),
+    paves: addVerticalShade(new THREE.BoxGeometry(4.8, 7.6, .45), .8, 1.06),
+    scar: new THREE.BoxGeometry(.18, 1.9, .1)
+  };
+})() : null;
+// As cores fixas das peças: o pau leve do pavês, o cabaço do maracá e o risco claro
+// da cicatriz (a pele que fecha por cima do corte fica mais clara).
+const PAVES_COLOR = '#c8b088';
+const GOURD_COLOR = '#a8803e';
+const SCAR_COLOR = '#d6ae86';
+// Os pontos do arco no corpo (em unidades do boneco). Atirando de lado: o corpo vira
+// BOW_YAW para o ombro esquerdo apontar o alvo; a mão esquerda segura o arco quase
+// esticada, e a direita puxa a corda até o queixo (BOW_ANCHOR).
+const BOW_YAW = 1.32;
+const BOW_REACH = 5.25;
+const BOW_ANCHOR = new THREE.Vector3(1.1, 12.7, 1.5);
+const POLE_DRAW = new THREE.Vector3(1, .35, -.7).normalize();
+const _bowHand = new THREE.Vector3(), _bowDir = new THREE.Vector3(), _nock = new THREE.Vector3(), _rest = new THREE.Vector3();
+const _bx = new THREE.Vector3(), _by = new THREE.Vector3(), _bm = new THREE.Matrix4(), _tip = new THREE.Vector3();
+const _arrowDir = new THREE.Vector3(), _bowQ = new THREE.Quaternion();
+const _bowGrip = new THREE.Vector3(), _bowTarget = new THREE.Vector3(), _follow = new THREE.Vector3();
+// Onde a mão direita descansa depois de soltar a corda, na frente do peito.
+const BOW_CHEST = new THREE.Vector3(1.7, 9.6, 2.3);
+const DOWN_Y = new THREE.Vector3(0, -1, 0);
+// A igara: casco cavado num tronco, as pontas afinando e subindo, e os remadores de
+// pé ("que remam em pé vinte e trinta índios", Soares, cap. CLX). Até IGARA_SEATS
+// remadores à mostra, um por guerreiro que ainda vai nela.
+const IGARA_SEATS = 6;
+const IGARA_LENGTH = 30;
+function hullShape(width, height, length, lift) {
+  const g = new THREE.BoxGeometry(width, height, length, 1, 1, 10);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const t = Math.abs(p.getZ(i)) / (length / 2);
+    p.setX(i, p.getX(i) * (1 - .78 * t * t));
+    if (p.getY(i) < 0) p.setY(i, p.getY(i) + lift * t * t);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+const IGARA_SHAPES = TUPI ? {
+  hull: addVerticalShade(hullShape(4.6, 2.4, IGARA_LENGTH, 1.6).translate(0, 1.2, 0), .7, 1.05),
+  hollow: hullShape(3.4, .2, IGARA_LENGTH - 3, 0).translate(0, 2.32, 0),
+  rower: fused([
+    new THREE.BoxGeometry(1.1, 4.2, 1.2).translate(-.7, 2.6, 0), new THREE.BoxGeometry(1.1, 4.2, 1.2).translate(.7, 2.6, 0),
+    new THREE.BoxGeometry(3, 3.6, 1.8).translate(0, 6.4, 0), new THREE.BoxGeometry(2.6, 2.6, 2.6).translate(0, 9.6, 0)
+  ]),
+  hair: new THREE.BoxGeometry(2.7, .8, 2.7).translate(0, 11.1, -.1),
+  paddle: fused([new THREE.BoxGeometry(.3, 8, .3).translate(0, -2, 0), new THREE.BoxGeometry(.2, 2.6, 1.4).translate(0, -6.6, 0)])
+} : null;
+
 const lookMaterials = new Map();
 function lookMaterial(color, shaded = false) {
   const key = `${color}-${shaded}`;
@@ -339,7 +456,8 @@ export class CharacterModel {
       forearmRight.add(built.group);
       return built;
     };
-    const axe = model('axe').group;
+    // O machado da lenha é o da missão: de ferro no sertão, de pedra polida na aldeia.
+    const axe = model(TOOLS.axe).group;
     const mallet = held([[MALLET_HANDLE_SHAPE, AXE_HANDLE_MATERIAL], [MALLET_HEAD_SHAPE, MALLET_HEAD_MATERIAL]]);
     const rifle = model('rifle'), blunderbuss = model('blunderbuss');
     const arms = {
@@ -347,6 +465,8 @@ export class CharacterModel {
       rifle: rifle.group, bayonet: model('bayonet').group, blunderbuss: blunderbuss.group,
       machete: model('machete').group, saber: model('saber').group
     };
+    // Na aldeia: o tacape, a ibirapema, o tição, o pau de cavar e o feixe de flechas.
+    if (TUPI) for (const kind of ['tacape', 'ibirapema', 'torch', 'digger', 'arrows']) arms[kind] = model(kind).group;
     const { club, spear } = arms;
     // O ferrolho do fuzil (alavanca e bolota, do lado direito) e a cápsula que ele cospe.
     const bolt = rifle.bolt;
@@ -418,9 +538,30 @@ export class CharacterModel {
       footLeft: left.foot, footRight: right.foot,
       armLeft, armRight, forearmLeft, forearmRight,
       axe, mallet, shoulderLog, cassava, eyes, club, spear, arms, wounds, headParts, stump, gear: gear.parts,
-      reloadProps
+      reloadProps, bow: null, tupi: null, canoe: null
     };
     return group;
+  }
+
+  // O arco na mão esquerda (com o feixe de flechas junto, "levam na mão esquerda seu
+  // arco e flechas", Soares, cap. CLV), as duas metades da corda e a flecha encaixada.
+  // Feito só para quem usa arco, na hora de vestir.
+  static #buildBow(view) {
+    const data = view.userData;
+    const group = bowModel();
+    const strings = [bowString(), bowString()];
+    for (const string of strings) group.add(string);
+    const spare = weaponModel('arrows').group;
+    spare.position.set(.35, 2, .2);
+    spare.rotation.set(Math.PI, 0, 0);
+    spare.scale.setScalar(.9);
+    group.add(spare);
+    const arrow = weaponModel('arrow').group;
+    arrow.visible = false;
+    data.body.add(arrow);
+    group.visible = false;
+    data.forearmLeft.add(group);
+    data.bow = { group, strings, arrow };
   }
 
   // As peças do traje, todas escondidas; `equip` liga as de cada um. O canhão vai no
@@ -545,6 +686,10 @@ export class CharacterModel {
   equip(view, look) {
     const parts = view.userData.gear;
     if (!look) return;
+    if (look.tupi) {
+      CharacterModel.#equipTupi(view, look);
+      return;
+    }
     // Tropa de botina preta; o sertão de alpercata de couro cru.
     const boots = look.hat === 'kepi' || look.hat === 'officer';
     for (const foot of parts.feet) foot.material = lookMaterial(boots ? BOOT_COLOR : SANDAL_COLOR, true);
@@ -602,10 +747,141 @@ export class CharacterModel {
     if (look.cart) parts.cart.visible = true;
   }
 
+  // O traje de um tupinambá (ou tupiniquim): pintura, penas e enfeites, por cima do
+  // boneco da cor da pele. Uma vez só, na criação, como o equip de Canudos.
+  static #equipTupi(view, look) {
+    const data = view.userData;
+    const S = TUPI_SHAPES;
+    const extra = [];
+    const add = (parent, shape, color, x = 0, y = 0, z = 0, shaded = false) => {
+      const mesh = new THREE.Mesh(shape, lookMaterial(color, shaded));
+      mesh.position.set(x, y, z);
+      mesh.castShadow = true;
+      parent.add(mesh);
+      extra.push(mesh);
+      return mesh;
+    };
+    const ink = look.paintColor, paint = look.paint ?? 'none';
+    // Os pés tingidos de urucum ("tingem os pés de uma tinta vermelha muito fina").
+    for (const foot of data.gear.feet) foot.material = lookMaterial(paint === 'none' ? look.skin : look.red, true);
+    // Os lavores de jenipapo.
+    const limb = (part, shape) => add(part, shape, ink);
+    if (paint === 'stripes') {
+      add(data.torso, S.band, ink, 0, 1.5);
+      add(data.torso, S.band, ink, 0, .5);
+      add(data.torso, S.bandLow, ink, 0, -1.4);
+      limb(data.forearmLeft, S.forearm);
+      limb(data.forearmRight, S.forearm);
+    } else if (paint === 'legs') {
+      limb(data.shinLeft, S.shin);
+      limb(data.shinRight, S.shin);
+      add(data.torso, S.bandLow, ink, 0, -2.2);
+    } else if (paint === 'quartered') {
+      add(data.torso, S.half, ink, -1.45, 0);
+      limb(data.legLeft, S.thigh);
+      limb(data.shinLeft, S.shin);
+      limb(data.armRight, S.upperArm);
+      limb(data.forearmRight, S.forearm);
+    } else if (paint === 'full') {
+      add(data.torso, S.torsoShell, ink);
+      for (const part of [data.legLeft, data.legRight]) limb(part, S.thigh);
+      for (const part of [data.shinLeft, data.shinRight]) limb(part, S.shin);
+      for (const part of [data.armLeft, data.armRight]) limb(part, S.upperArm);
+      for (const part of [data.forearmLeft, data.forearmRight]) limb(part, S.forearm);
+    }
+    if (paint !== 'none') add(data.neck, S.face, look.red, 0, 1.75, 2.57);
+    // Cabelo: o homem aparado, de testa rapada; a mulher comprido e preto.
+    if (look.hair === 'long') {
+      const parts = data.gear;
+      parts.longHair.visible = true;
+      parts.longHair.material = lookMaterial(look.hairColor);
+      for (const side of parts.hairSides) {
+        side.visible = true;
+        side.material = lookMaterial(look.hairColor);
+      }
+    } else {
+      data.headParts.push(add(data.neck, S.crop, look.hairColor));
+    }
+    if (look.tembeta) data.headParts.push(add(data.neck, S.tembeta, look.tembeta, 0, 1.05, 2.62));
+    // Penas na cabeça: o diadema, ou a carapuça "de penas amarelas e vermelhas".
+    if (look.feathers === 'diadem') data.headParts.push(add(data.neck, S.diadem, look.featherColor, 0, 5.05, 0));
+    if (look.feathers === 'cap') {
+      const cap = add(data.neck, S.cap, look.featherColor, 0, 3.3, 0);
+      cap.scale.set(1.26, 1, 1.26);
+      const band = add(data.neck, S.capBand, look.enemy ? '#8a5a34' : '#c0392b', 0, 3.25, 0);
+      band.scale.set(1.26, 1, 1.26);
+      data.headParts.push(cap, band);
+    }
+    if (look.necklace) add(data.body, S.necklace, look.necklace, 0, 11.1, .15);
+    if (look.enduape) add(data.body, S.rhea, look.rheaColor, 0, 7.2, -2.15);
+    if (look.tapacura) for (const shin of [data.shinLeft, data.shinRight]) add(shin, S.tapacura, look.tapacura);
+    if (look.maraca) {
+      const maraca = new THREE.Group();
+      maraca.position.y = HAND_OFFSET;
+      data.forearmRight.add(maraca);
+      add(maraca, S.gourdHandle, '#6b4a2c', 0, -1.2, 0).rotation.x = Math.PI;
+      add(maraca, S.gourd, GOURD_COLOR, 0, -3, 0);
+    }
+    if (look.paves) add(data.forearmLeft, S.paves, PAVES_COLOR, 0, -1.8, 1.35, true);
+    // Os riscos de quem tomou nomes: aparecem um a um (pose, `names`).
+    const scars = [[-1.3, 1.3, .5], [1.1, 1, -.45], [-.2, -.1, .3], [1.5, -.8, .6], [-1.5, -1.1, -.5]].map(([x, y, turn]) => {
+      const scar = add(data.torso, S.scar, SCAR_COLOR, x, y, 1.78);
+      scar.rotation.z = turn;
+      scar.visible = false;
+      scar.castShadow = false;
+      return scar;
+    });
+    data.tupi = { extra, scars, paves: Boolean(look.paves) };
+    if (look.boat) CharacterModel.#buildCanoe(view, look);
+  }
+
+  // A igara: o casco, o vão escavado e os remadores de pé, cada um com o remo.
+  static #buildCanoe(view, look) {
+    const data = view.userData;
+    const canoe = new THREE.Group();
+    const part = (shape, color, shaded = false) => {
+      const mesh = new THREE.Mesh(shape, lookMaterial(color, shaded));
+      mesh.castShadow = true;
+      return mesh;
+    };
+    canoe.add(part(IGARA_SHAPES.hull, '#5a3a22', true), part(IGARA_SHAPES.hollow, '#2a1c12'));
+    const seats = [];
+    for (let i = 0; i < IGARA_SEATS; i++) {
+      const side = i % 2 ? 1 : -1;
+      const seat = new THREE.Group();
+      seat.position.set(side * .5, 1.4, -11 + i * 4.4);
+      seat.add(part(IGARA_SHAPES.rower, look.skin), part(IGARA_SHAPES.hair, look.hairColor));
+      const paddle = part(IGARA_SHAPES.paddle, '#6b4a2c');
+      paddle.position.set(side * 2.1, 7.4, 0);
+      seat.add(paddle);
+      canoe.add(seat);
+      seats.push({ seat, paddle, side, phase: i * .7 });
+    }
+    view.add(canoe);
+    data.body.visible = false;
+    data.canoe = { group: canoe, seats };
+  }
+
+  // A canoa a cada quadro: quantos remadores ainda vão nela (vazia, dois a levam de
+  // volta), as remadas desencontradas e o balanço na água.
+  syncCanoe(view, crew, elapsed, animate) {
+    const canoe = view.userData.canoe;
+    if (!canoe) return;
+    const shown = Math.max(2, Math.min(IGARA_SEATS, crew));
+    canoe.seats.forEach(({ seat, paddle, side, phase }, i) => {
+      seat.visible = i < shown;
+      const stroke = animate ? Math.sin(elapsed * 3.2 + phase) : 0;
+      paddle.rotation.set(.75 * stroke, 0, side * (.35 + .1 * stroke));
+      seat.rotation.x = .1 * stroke;
+    });
+    canoe.group.rotation.z = animate ? Math.sin(elapsed * 1.3 + view.id * .1) * .03 : 0;
+  }
+
   // Peças do traje à mostra (o cadáver as esconde quando a carne desbota).
   gearParts(view) {
     const parts = view.userData.gear;
-    return Object.values(parts).flat().filter(mesh => mesh.visible && mesh !== parts.cannon && mesh !== parts.cart);
+    const own = Object.values(parts).flat().filter(mesh => mesh.visible && mesh !== parts.cannon && mesh !== parts.cart);
+    return view.userData.tupi ? [...own, ...view.userData.tupi.extra.filter(mesh => mesh.visible)] : own;
   }
 
   // Troca de pano: só mexe no material quando o estado muda de fato, porque isso roda
@@ -767,6 +1043,28 @@ export class CharacterModel {
       CharacterModel.#poseReload(view, weapon, reload, reloadMag);
       plant = 1;
     }
+    // O arco: puxar, soltar e encaixar a próxima flecha; de guarda, meio puxado; fora
+    // da briga, na mão esquerda com o feixe de flechas.
+    if (weapon === 'bow' && !data.bow) CharacterModel.#buildBow(view);
+    if (data.bow) {
+      const shooting = weapon === 'bow' && rest < .5 && chop === null;
+      if (shooting && strike > 0 && strikeKind === 'bow') { CharacterModel.#poseBow(view, 'shot', 1 - strike); plant = 1; }
+      else if (shooting && reload >= 0) { CharacterModel.#poseBow(view, 'reload', reload); plant = 1; }
+      else if (shooting && (guard || crouch)) CharacterModel.#poseBow(view, crouch ? 'carry' : 'hold', .35);
+      else CharacterModel.#poseBow(view, 'carry', 0);
+      data.bow.group.visible = weapon === 'bow';
+      if (!data.bow.group.visible) data.bow.arrow.visible = false;
+    }
+    // O pavês: o braço esquerdo baixo, segurando a tábua na frente do corpo.
+    if (data.tupi?.paves && rest < .5 && (guard || strike > 0)) {
+      armLeft.rotation.set(-.5, 0, .3);
+      forearmLeft.rotation.set(-.55, 0, 0);
+    }
+    // Os riscos dos nomes tomados (Soares, cap. CLXX).
+    if (data.tupi) {
+      const { names = 0 } = motion;
+      data.tupi.scars.forEach((scar, i) => { scar.visible = i < names; });
+    }
     // Debandada: corre de braços para o alto, sem olhar para trás.
     if (panic && stride > .2 && !(strike > 0)) CharacterModel.#posePanic(view, gait);
     // O Conselheiro parado reza por um ferido: o bordão erguido balançando sobre ele
@@ -921,9 +1219,11 @@ export class CharacterModel {
     forearmRight.rotation.x = long ? -.4 : -.4;
     armRight.rotation.z = long ? .1 : -.25;
     // Porrete e machado de pé, apontando para cima e para a frente, prontos para descer.
-    const { club, axe } = view.userData;
+    const { club, axe, arms } = view.userData;
     club.rotation.x = -1.15;
     axe.rotation.x = -1.05;
+    // O tacape, a ibirapema e o tição também, de pé e prontos.
+    for (const kind of ['tacape', 'ibirapema', 'torch']) if (arms[kind]) arms[kind].rotation.x = -1.15;
     if (weapon === 'rifle' || weapon === 'blunderbuss') {
       // Fuzil pronto: na mira, coronha no ombro (o mesmo do tiro, parado).
       CharacterModel.#aimRig(view, weapon, 1, 0);
@@ -948,6 +1248,8 @@ export class CharacterModel {
     const phase = (from, to) => Math.max(0, Math.min(1, (p - from) / (to - from)));
     // O canhão dispara sozinho: a guarnição continua agarrada à carreta.
     if (kind === 'cannon') return;
+    // O arco tem pose própria (#poseBow), que vem depois.
+    if (kind === 'bow') return;
     if (kind === 'rifle' || kind === 'blunderbuss') {
       // Tiro, como se faz: da arma baixa até a coronha no ombro e o rosto encostado
       // nela (0–42%); a respiração presa, quase imóvel, apontando (42–58%); o disparo
@@ -979,7 +1281,7 @@ export class CharacterModel {
       shinLeft.rotation.x = .5 * reach;
       legRight.rotation.x = .4 * reach;
       shinRight.rotation.x = .1;
-    } else if (kind === 'axe' || kind === 'saber' || kind === 'machete') {
+    } else if (kind === 'axe' || kind === 'saber' || kind === 'machete' || kind === 'tacape' || kind === 'ibirapema' || kind === 'torch') {
       // Ergue com o cotovelo dobrado atrás da cabeça e desce esticando o braço.
       const lift = easeInOut(phase(0, .5)), chop = phase(.5, .65), back = easeInOut(phase(.7, 1));
       const down = chop * chop;
@@ -1003,6 +1305,104 @@ export class CharacterModel {
       legLeft.rotation.x = -.3 * sweep * (1 - back);
       shinLeft.rotation.x = .3 * sweep * (1 - back);
     }
+  }
+
+  /* ---------- o arco ---------- */
+  // Como se atira de arco: de lado para o alvo (o ombro esquerdo na frente), a mão
+  // esquerda segurando o arco quase esticada na altura do ombro, a direita puxando a
+  // corda até o queixo, a cabeça virada para o alvo. `mode`:
+  //   shot    o tiro, `t` de 0 a 1: a mão direita traz a flecha do feixe e encaixa na
+  //           corda (0–20%), puxa (20–50%), segura (50–58%) e solta (58%, o instante da
+  //           simulação): a corda volta, a flecha some e a mão escapa para trás;
+  //   reload  entre um tiro e outro: a mão volta ao arco, tira outra flecha do feixe,
+  //           encaixa na corda e espera;
+  //   hold    de guarda, a flecha encaixada e meio puxada (`t`);
+  //   carry   fora da briga, o arco pendurado na mão esquerda.
+  static #poseBow(view, mode, t) {
+    const data = view.userData;
+    const { body, neck, armLeft, forearmLeft, armRight, forearmRight } = data;
+    const { group, arrow } = data.bow;
+    if (mode === 'carry') {
+      if (group.parent !== forearmLeft) forearmLeft.add(group);
+      group.position.set(0, HAND_OFFSET, .3);
+      group.quaternion.identity();
+      CharacterModel.#bowString(data, null);
+      arrow.visible = false;
+      return;
+    }
+    // A mira, com um tico de elevação: a flecha vai em arco.
+    _bowDir.set(-Math.sin(BOW_YAW), .12, Math.cos(BOW_YAW)).normalize();
+    _bowHand.copy(armLeft.position).addScaledVector(_bowDir, BOW_REACH);
+    // O arco no corpo, de pé, com a barriga para o alvo.
+    if (group.parent !== body) body.add(group);
+    _by.set(0, 1, 0).addScaledVector(_bowDir, -_bowDir.y).normalize();
+    _bx.crossVectors(_by, _bowDir);
+    _bm.makeBasis(_bx, _by, _bowDir).setPosition(_bowHand);
+    group.position.copy(_bowHand);
+    group.quaternion.setFromRotationMatrix(_bm);
+    // A corda em repouso passa atrás da empunhadura; o feixe fica na mão do arco.
+    _rest.copy(_bowHand).addScaledVector(_bowDir, -BOW.sag);
+    _bowGrip.copy(_bowHand).addScaledVector(_by, 1.2);
+    const nockAt = draw => _nock.copy(_rest).lerp(BOW_ANCHOR, draw);
+    let string = null, nocked = false, inHand = false;
+    if (mode === 'hold') {
+      string = nockAt(t);
+      _bowTarget.copy(string);
+      nocked = true;
+    } else if (mode === 'shot') {
+      if (t < .2) {
+        _bowTarget.copy(_bowGrip).lerp(_rest, span(t, 0, .2));
+        inHand = t < .14;
+        nocked = !inHand;
+        if (nocked) string = _bowTarget;
+      } else if (t < .58) {
+        string = nockAt(span(t, .2, .5));
+        _bowTarget.copy(string);
+        nocked = true;
+      } else {
+        // Soltou: a mão escapa para trás e para fora, e depois desce ao peito.
+        _follow.copy(BOW_ANCHOR).addScaledVector(_bx, -1.1).addScaledVector(_bowDir, -1);
+        _bowTarget.copy(BOW_ANCHOR).lerp(_follow, span(t, .58, .66)).lerp(BOW_CHEST, span(t, .8, 1));
+      }
+    } else {
+      if (t < .35) _bowTarget.copy(BOW_CHEST).lerp(_bowGrip, span(t, 0, .35));
+      else if (t < .55) {
+        _bowTarget.copy(_bowGrip).lerp(_rest, span(t, .35, .55));
+        inHand = true;
+      } else {
+        _bowTarget.copy(_rest);
+        string = _bowTarget;
+        nocked = true;
+      }
+    }
+    CharacterModel.#solveArm(armLeft, forearmLeft, _bowHand, POLE_LEFT);
+    CharacterModel.#solveArm(armRight, forearmRight, _bowTarget, POLE_DRAW);
+    CharacterModel.#bowString(data, string);
+    // A flecha: encaixada na corda, apontando para a empunhadura; ou na mão, deitada.
+    arrow.visible = nocked || inHand;
+    if (arrow.visible) {
+      const from = nocked ? (string ?? _bowTarget) : _bowTarget;
+      if (nocked) _arrowDir.copy(_bowHand).sub(from).normalize();
+      else _arrowDir.copy(_bowDir);
+      arrow.quaternion.setFromUnitVectors(DOWN_Y, _arrowDir);
+      arrow.position.copy(from).addScaledVector(_arrowDir, 1.5);
+    }
+    body.rotation.y = BOW_YAW;
+    neck.rotation.set(.05, -BOW_YAW * .92, 0);
+    CharacterModel.#stance(view, 0);
+  }
+
+  // As duas metades da corda, das pontas do arco até `point` (no corpo); sem ponto, reta.
+  static #bowString(data, point) {
+    const { group, strings } = data.bow;
+    const top = [0, BOW.half, -BOW.sag], bottom = [0, -BOW.half, -BOW.sag];
+    let middle = [0, 0, -BOW.sag];
+    if (point) {
+      _tip.copy(point).sub(group.position).applyQuaternion(_bowQ.copy(group.quaternion).invert());
+      middle = [_tip.x, _tip.y, _tip.z];
+    }
+    stringTo(strings[0], top, middle);
+    stringTo(strings[1], bottom, middle);
   }
 
   /* ---------- armas de fogo: a arma no corpo, as mãos indo até ela ---------- */

@@ -1,5 +1,5 @@
 import { WORLD } from '../config/world.js';
-import { BUILDING_TYPES, UNIT_TYPES, FORMATION_SPACING, TRAIN_QUEUE_MAX, TOWER_UPGRADES, TRADE } from '../config/rts.js';
+import { BUILDING_TYPES, UNIT_TYPES, FORMATION_SPACING, TRAIN_QUEUE_MAX, TOWER_UPGRADES, TRADE, CRAFT, TEXT } from '../config/rts.js';
 import { Building } from '../entities/Building.js';
 import { onRoad, facingRoad } from '../world/Roads.js';
 import { TeamLedger } from './TeamLedger.js';
@@ -12,12 +12,14 @@ export class Commands {
   #ledger;
   #occupancy;
   #events;
+  #biomes;
 
-  constructor({ state, ledger, occupancy, events }) {
+  constructor({ state, ledger, occupancy, events, biomes = null }) {
     this.#state = state;
     this.#ledger = ledger;
     this.#occupancy = occupancy;
     this.#events = events;
+    this.#biomes = biomes;
   }
 
   // Grupo anda em formação: cada um ganha um lugar numa espiral em volta do alvo,
@@ -80,7 +82,7 @@ export class Commands {
     if (!building.stats.trains.includes(type)) return { ok: false, reason: 'Não se treina isso aqui' };
     if (building.queue.length >= TRAIN_QUEUE_MAX) return { ok: false, reason: 'A fila está cheia' };
     if (this.#ledger.population(teamId) >= this.#ledger.popCap(teamId)) {
-      return { ok: false, reason: 'Sem lugar para morar — construa uma casa de taipa' };
+      return { ok: false, reason: TEXT.noHousing };
     }
     const missing = this.#ledger.shortage(teamId, stats.cost);
     if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
@@ -104,6 +106,8 @@ export class Commands {
     const margin = stats.radius + 6;
     if (x < margin || y < margin || x > WORLD.width - margin || y > WORLD.height - margin) return false;
     if (onRoad(x, y, stats.radius * .7)) return false;
+    // No litoral, nem no mar nem dentro do rio.
+    if (this.#biomes && !this.#biomes.buildable(x, y, stats.radius)) return false;
     return this.#occupancy.isFree(x, y, stats.radius + 4, { ignore: ['reserved'] });
   }
 
@@ -143,6 +147,19 @@ export class Commands {
     this.#ledger.spend(teamId, cost);
     this.#ledger.deposit(teamId, to, TRADE.get);
     this.#events.emit('command', { kind: 'trade' });
+    return { ok: true };
+  }
+
+  // Flechas feitas no fogo do conselho (CRAFT): paga a madeira, recebe as flechas na hora.
+  craft(building) {
+    if (!CRAFT || building.kind !== CRAFT.at) return { ok: false, reason: '' };
+    if (!building.built) return { ok: false, reason: 'Ainda não está pronto' };
+    const missing = this.#ledger.shortage(building.team, CRAFT.give);
+    if (missing) return { ok: false, reason: TeamLedger.lack(missing) };
+    this.#ledger.spend(building.team, CRAFT.give);
+    for (const [resource, amount] of Object.entries(CRAFT.get)) this.#ledger.deposit(building.team, resource, amount);
+    this.#state.floaters.push({ x: building.x, y: building.y, ...CRAFT.get, time: 0, life: 1.6 });
+    this.#events.emit('command', { kind: 'train' });
     return { ok: true };
   }
 

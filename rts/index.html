@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
   <meta name="theme-color" content="#2a1f17" />
-  <title>Canudos — a defesa de Belo Monte</title>
+  <title>Eras do Brasil — Canudos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css?v=59" />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&amp;family=Cinzel:wght@700;900&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css?v=63" />
   <!-- Cache-busting centralizado: cada módulo local aponta para a URL com ?v=N. Os .js
        importam SEM query string. A cada alteração em qualquer .js, trocar TODOS os
        ?v=N daqui pelo número novo e atualizar o BUILD N para o mesmo número.
@@ -16,117 +16,125 @@
   <script type="importmap">
   { "imports": {
     "three": "./lib/three.module.min.js",
-    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=59",
-    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=59",
-    "./src/app/Viewport.js": "./src/app/Viewport.js?v=59",
-    "./src/audio/AudioManager.js": "./src/audio/AudioManager.js?v=59",
-    "./src/audio/Dsp.js": "./src/audio/Dsp.js?v=59",
-    "./src/audio/SoundRecipes.js": "./src/audio/SoundRecipes.js?v=59",
-    "./src/config/combat.js": "./src/config/combat.js?v=59",
-    "./src/config/death.js": "./src/config/death.js?v=59",
-    "./src/config/environment.js": "./src/config/environment.js?v=59",
-    "./src/config/flame.js": "./src/config/flame.js?v=59",
-    "./src/config/organisms.js": "./src/config/organisms.js?v=59",
-    "./src/config/reproduction.js": "./src/config/reproduction.js?v=59",
-    "./src/config/story.js": "./src/config/story.js?v=59",
-    "./src/config/rts.js": "./src/config/rts.js?v=59",
-    "./src/config/sertoes.js": "./src/config/sertoes.js?v=59",
-    "./src/config/settlement.js": "./src/config/settlement.js?v=59",
-    "./src/config/social.js": "./src/config/social.js?v=59",
-    "./src/config/ui.js": "./src/config/ui.js?v=59",
-    "./src/config/world.js": "./src/config/world.js?v=59",
-    "./src/core/EventBus.js": "./src/core/EventBus.js?v=59",
-    "./src/core/geometry.js": "./src/core/geometry.js?v=59",
-    "./src/core/math.js": "./src/core/math.js?v=59",
-    "./src/entities/Building.js": "./src/entities/Building.js?v=59",
-    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=59",
-    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=59",
-    "./src/entities/Log.js": "./src/entities/Log.js?v=59",
-    "./src/entities/Pond.js": "./src/entities/Pond.js?v=59",
-    "./src/entities/Tree.js": "./src/entities/Tree.js?v=59",
-    "./src/entities/Unit.js": "./src/entities/Unit.js?v=59",
-    "./src/input/CameraController.js": "./src/input/CameraController.js?v=59",
-    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=59",
-    "./src/main.js": "./src/main.js?v=59",
-    "./src/dev/ModelViewer.js": "./src/dev/ModelViewer.js?v=59",
-    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=59",
-    "./src/overlay/layers/BlessingLayer.js": "./src/overlay/layers/BlessingLayer.js?v=59",
-    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=59",
-    "./src/overlay/layers/EffectsLayer.js": "./src/overlay/layers/EffectsLayer.js?v=59",
-    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=59",
-    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=59",
-    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=59",
-    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=59",
-    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=59",
-    "./src/overlay/layers/RoadWarningLayer.js": "./src/overlay/layers/RoadWarningLayer.js?v=59",
-    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=59",
-    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=59",
-    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=59",
-    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=59",
-    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=59",
-    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=59",
-    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=59",
-    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=59",
-    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=59",
-    "./src/render/WeaponModels.js": "./src/render/WeaponModels.js?v=59",
-    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=59",
-    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=59",
-    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=59",
-    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=59",
-    "./src/render/GhostLook.js": "./src/render/GhostLook.js?v=59",
-    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=59",
-    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=59",
-    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=59",
-    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=59",
-    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=59",
-    "./src/render/Palette.js": "./src/render/Palette.js?v=59",
-    "./src/render/PickupRenderer.js": "./src/render/PickupRenderer.js?v=59",
-    "./src/render/FaunaRenderer.js": "./src/render/FaunaRenderer.js?v=59",
-    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=59",
-    "./src/render/PondShape.js": "./src/render/PondShape.js?v=59",
-    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=59",
-    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=59",
-    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=59",
-    "./src/render/SertaoBuildingModel.js": "./src/render/SertaoBuildingModel.js?v=59",
-    "./src/render/Shading.js": "./src/render/Shading.js?v=59",
-    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=59",
-    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=59",
-    "./src/render/TowerRenderer.js": "./src/render/TowerRenderer.js?v=59",
-    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=59",
-    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=59",
-    "./src/render/WorldView.js": "./src/render/WorldView.js?v=59",
-    "./src/rts/BuildGrid.js": "./src/rts/BuildGrid.js?v=59",
-    "./src/rts/Commands.js": "./src/rts/Commands.js?v=59",
-    "./src/rts/Selection.js": "./src/rts/Selection.js?v=59",
-    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=59",
-    "./src/rts/TowerSystem.js": "./src/rts/TowerSystem.js?v=59",
-    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=59",
-    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=59",
-    "./src/rts/WaveDirector.js": "./src/rts/WaveDirector.js?v=59",
-    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=59",
-    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=59",
-    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=59",
-    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=59",
-    "./src/ui/StoryBook.js": "./src/ui/StoryBook.js?v=59",
-    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=59",
-    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=59",
-    "./src/ui/Icons.js": "./src/ui/Icons.js?v=59",
-    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=59",
-    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=59",
-    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=59",
-    "./src/ui/ResourceGains.js": "./src/ui/ResourceGains.js?v=59",
-    "./src/ui/Theme.js": "./src/ui/Theme.js?v=59",
-    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=59",
-    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=59",
-    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=59",
-    "./src/world/Hills.js": "./src/world/Hills.js?v=59",
-    "./src/world/GrassField.js": "./src/world/GrassField.js?v=59",
-    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=59",
-    "./src/world/Roads.js": "./src/world/Roads.js?v=59",
-    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=59",
-    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=59",
-    "./src/world/Weather.js": "./src/world/Weather.js?v=59",
-    "./src/world/WorldState.js": "./src/world/WorldState.js?v=59"
+    "./src/app/FrameRenderer.js": "./src/app/FrameRenderer.js?v=63",
+    "./src/app/GameLoop.js": "./src/app/GameLoop.js?v=63",
+    "./src/app/Viewport.js": "./src/app/Viewport.js?v=63",
+    "./src/audio/AudioManager.js": "./src/audio/AudioManager.js?v=63",
+    "./src/audio/Dsp.js": "./src/audio/Dsp.js?v=63",
+    "./src/audio/SoundRecipes.js": "./src/audio/SoundRecipes.js?v=63",
+    "./src/config/combat.js": "./src/config/combat.js?v=63",
+    "./src/config/death.js": "./src/config/death.js?v=63",
+    "./src/config/environment.js": "./src/config/environment.js?v=63",
+    "./src/config/mission.js": "./src/config/mission.js?v=63",
+    "./src/config/missions/canudos.js": "./src/config/missions/canudos.js?v=63",
+    "./src/config/missions/canudos-story.js": "./src/config/missions/canudos-story.js?v=63",
+    "./src/config/missions/tupinamba.js": "./src/config/missions/tupinamba.js?v=63",
+    "./src/config/missions/tupinamba-story.js": "./src/config/missions/tupinamba-story.js?v=63",
+    "./src/config/flame.js": "./src/config/flame.js?v=63",
+    "./src/config/organisms.js": "./src/config/organisms.js?v=63",
+    "./src/config/reproduction.js": "./src/config/reproduction.js?v=63",
+    "./src/config/story.js": "./src/config/story.js?v=63",
+    "./src/config/rts.js": "./src/config/rts.js?v=63",
+    "./src/config/sertoes.js": "./src/config/sertoes.js?v=63",
+    "./src/config/settlement.js": "./src/config/settlement.js?v=63",
+    "./src/config/social.js": "./src/config/social.js?v=63",
+    "./src/config/ui.js": "./src/config/ui.js?v=63",
+    "./src/config/world.js": "./src/config/world.js?v=63",
+    "./src/core/EventBus.js": "./src/core/EventBus.js?v=63",
+    "./src/core/geometry.js": "./src/core/geometry.js?v=63",
+    "./src/core/math.js": "./src/core/math.js?v=63",
+    "./src/entities/Building.js": "./src/entities/Building.js?v=63",
+    "./src/entities/Corpse.js": "./src/entities/Corpse.js?v=63",
+    "./src/entities/FoodPatch.js": "./src/entities/FoodPatch.js?v=63",
+    "./src/entities/Log.js": "./src/entities/Log.js?v=63",
+    "./src/entities/Pond.js": "./src/entities/Pond.js?v=63",
+    "./src/entities/Tree.js": "./src/entities/Tree.js?v=63",
+    "./src/entities/Unit.js": "./src/entities/Unit.js?v=63",
+    "./src/input/CameraController.js": "./src/input/CameraController.js?v=63",
+    "./src/input/PlayerInput.js": "./src/input/PlayerInput.js?v=63",
+    "./src/main.js": "./src/main.js?v=63",
+    "./src/dev/ModelViewer.js": "./src/dev/ModelViewer.js?v=63",
+    "./src/organisms/Locomotion.js": "./src/organisms/Locomotion.js?v=63",
+    "./src/overlay/layers/BlessingLayer.js": "./src/overlay/layers/BlessingLayer.js?v=63",
+    "./src/overlay/layers/CloudShadowsLayer.js": "./src/overlay/layers/CloudShadowsLayer.js?v=63",
+    "./src/overlay/layers/EffectsLayer.js": "./src/overlay/layers/EffectsLayer.js?v=63",
+    "./src/overlay/layers/FallDustLayer.js": "./src/overlay/layers/FallDustLayer.js?v=63",
+    "./src/overlay/layers/FightLayer.js": "./src/overlay/layers/FightLayer.js?v=63",
+    "./src/overlay/layers/FirefliesLayer.js": "./src/overlay/layers/FirefliesLayer.js?v=63",
+    "./src/overlay/layers/PondRipplesLayer.js": "./src/overlay/layers/PondRipplesLayer.js?v=63",
+    "./src/overlay/layers/RainLayer.js": "./src/overlay/layers/RainLayer.js?v=63",
+    "./src/overlay/layers/RoadWarningLayer.js": "./src/overlay/layers/RoadWarningLayer.js?v=63",
+    "./src/overlay/layers/SelectionLayer.js": "./src/overlay/layers/SelectionLayer.js?v=63",
+    "./src/overlay/layers/UnitMarksLayer.js": "./src/overlay/layers/UnitMarksLayer.js?v=63",
+    "./src/overlay/layers/WoodChipsLayer.js": "./src/overlay/layers/WoodChipsLayer.js?v=63",
+    "./src/overlay/OverlayRenderer.js": "./src/overlay/OverlayRenderer.js?v=63",
+    "./src/render/BloodRenderer.js": "./src/render/BloodRenderer.js?v=63",
+    "./src/render/BoardFraming.js": "./src/render/BoardFraming.js?v=63",
+    "./src/render/CameraRig.js": "./src/render/CameraRig.js?v=63",
+    "./src/render/CampfireRenderer.js": "./src/render/CampfireRenderer.js?v=63",
+    "./src/render/CharacterModel.js": "./src/render/CharacterModel.js?v=63",
+    "./src/render/WeaponModels.js": "./src/render/WeaponModels.js?v=63",
+    "./src/render/ContactShadow.js": "./src/render/ContactShadow.js?v=63",
+    "./src/render/CorpseRenderer.js": "./src/render/CorpseRenderer.js?v=63",
+    "./src/render/FoodRenderer.js": "./src/render/FoodRenderer.js?v=63",
+    "./src/render/GrassRenderer.js": "./src/render/GrassRenderer.js?v=63",
+    "./src/render/GhostLook.js": "./src/render/GhostLook.js?v=63",
+    "./src/render/GroundPainter.js": "./src/render/GroundPainter.js?v=63",
+    "./src/render/HutRenderer.js": "./src/render/HutRenderer.js?v=63",
+    "./src/render/LogRenderer.js": "./src/render/LogRenderer.js?v=63",
+    "./src/render/OcclusionFader.js": "./src/render/OcclusionFader.js?v=63",
+    "./src/render/OrganismRenderer.js": "./src/render/OrganismRenderer.js?v=63",
+    "./src/render/PalisadeRenderer.js": "./src/render/PalisadeRenderer.js?v=63",
+    "./src/render/Palette.js": "./src/render/Palette.js?v=63",
+    "./src/render/PickupRenderer.js": "./src/render/PickupRenderer.js?v=63",
+    "./src/render/FaunaRenderer.js": "./src/render/FaunaRenderer.js?v=63",
+    "./src/render/PondRenderer.js": "./src/render/PondRenderer.js?v=63",
+    "./src/render/PondShape.js": "./src/render/PondShape.js?v=63",
+    "./src/render/PropFactory.js": "./src/render/PropFactory.js?v=63",
+    "./src/render/SceneryRenderer.js": "./src/render/SceneryRenderer.js?v=63",
+    "./src/render/SceneSpace.js": "./src/render/SceneSpace.js?v=63",
+    "./src/render/SertaoBuildingModel.js": "./src/render/SertaoBuildingModel.js?v=63",
+    "./src/render/Shading.js": "./src/render/Shading.js?v=63",
+    "./src/render/SkyRenderer.js": "./src/render/SkyRenderer.js?v=63",
+    "./src/render/TerrainRenderer.js": "./src/render/TerrainRenderer.js?v=63",
+    "./src/render/TowerRenderer.js": "./src/render/TowerRenderer.js?v=63",
+    "./src/render/TreeRenderer.js": "./src/render/TreeRenderer.js?v=63",
+    "./src/render/TupiBuildingModel.js": "./src/render/TupiBuildingModel.js?v=63",
+    "./src/render/WoodMaterials.js": "./src/render/WoodMaterials.js?v=63",
+    "./src/render/WorldView.js": "./src/render/WorldView.js?v=63",
+    "./src/rts/BuildGrid.js": "./src/rts/BuildGrid.js?v=63",
+    "./src/rts/Commands.js": "./src/rts/Commands.js?v=63",
+    "./src/rts/Selection.js": "./src/rts/Selection.js?v=63",
+    "./src/rts/TeamLedger.js": "./src/rts/TeamLedger.js?v=63",
+    "./src/rts/TowerSystem.js": "./src/rts/TowerSystem.js?v=63",
+    "./src/rts/UnitFactory.js": "./src/rts/UnitFactory.js?v=63",
+    "./src/rts/UnitSystem.js": "./src/rts/UnitSystem.js?v=63",
+    "./src/rts/WaveDirector.js": "./src/rts/WaveDirector.js?v=63",
+    "./src/settlement/HutDimensions.js": "./src/settlement/HutDimensions.js?v=63",
+    "./src/simulation/Simulation.js": "./src/simulation/Simulation.js?v=63",
+    "./src/sky/Astronomy.js": "./src/sky/Astronomy.js?v=63",
+    "./src/sky/SkyClock.js": "./src/sky/SkyClock.js?v=63",
+    "./src/ui/StoryBook.js": "./src/ui/StoryBook.js?v=63",
+    "./src/ui/GameMenu.js": "./src/ui/GameMenu.js?v=63",
+    "./src/ui/HudObstacleTracker.js": "./src/ui/HudObstacleTracker.js?v=63",
+    "./src/ui/Icons.js": "./src/ui/Icons.js?v=63",
+    "./src/ui/Minimap.js": "./src/ui/Minimap.js?v=63",
+    "./src/ui/MotionPreference.js": "./src/ui/MotionPreference.js?v=63",
+    "./src/ui/RtsHud.js": "./src/ui/RtsHud.js?v=63",
+    "./src/ui/ResourceGains.js": "./src/ui/ResourceGains.js?v=63",
+    "./src/ui/Theme.js": "./src/ui/Theme.js?v=63",
+    "./src/world/BiomeMap.js": "./src/world/BiomeMap.js?v=63",
+    "./src/world/Coast.js": "./src/world/Coast.js?v=63",
+    "./src/world/BloodSystem.js": "./src/world/BloodSystem.js?v=63",
+    "./src/world/ForestSystem.js": "./src/world/ForestSystem.js?v=63",
+    "./src/world/Hills.js": "./src/world/Hills.js?v=63",
+    "./src/world/GrassField.js": "./src/world/GrassField.js?v=63",
+    "./src/world/PondSystem.js": "./src/world/PondSystem.js?v=63",
+    "./src/world/Roads.js": "./src/world/Roads.js?v=63",
+    "./src/world/SceneryPlanner.js": "./src/world/SceneryPlanner.js?v=63",
+    "./src/world/SpaceOccupancy.js": "./src/world/SpaceOccupancy.js?v=63",
+    "./src/world/Weather.js": "./src/world/Weather.js?v=63",
+    "./src/world/WorldState.js": "./src/world/WorldState.js?v=63"
   } }
   </script>
   <style>
@@ -439,6 +447,94 @@
     .levels button:active, .speeds button:active { background: var(--paper-2); }
     .levels button[aria-pressed="true"], .speeds button[aria-pressed="true"] { border-color: var(--paper-ink); background: var(--paper-ink); color: var(--paper); }
     .levels button:disabled, .speeds button:disabled { opacity: .45; cursor: default; }
+    /* ---- Eras do Brasil: o menu inicial ----
+       No espírito dos jogos de estratégia de era: tela cheia com uma paisagem pintada
+       (o litoral dos tupinambás à esquerda, o sertão de Canudos à direita, as duas
+       eras na mesma terra), o título em capitulares romanas douradas e as eras como
+       placas de pedra lavrada com moldura de ouro, empilhadas no meio. Tudo em CSS e
+       num SVG em linha: nenhuma imagem para baixar, o menu abre na hora. */
+    .brand { margin: 0 0 2px; color: var(--paper-ink); font-family: var(--font-display); font-size: 13px; font-weight: 900;
+      letter-spacing: .14em; text-transform: uppercase; }
+    #eras-dialog {
+      --gold-hi: #fff1bf; --gold: #e2b24a; --gold-lo: #8a5e18; --gold-deep: #4a3008;
+      --stone-hi: #7a7264; --stone: #57514a; --stone-lo: #35302b; --cream: #f3e4bd; --cream-dim: #d4c39a;
+      position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0;
+      border: 0; background: #14110d; color: var(--cream); box-shadow: none; overflow: auto;
+    }
+    #eras-dialog::backdrop { background: #14110d; }
+    .eras-scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .eras-frame {
+      position: relative; z-index: 1; box-sizing: border-box; min-height: 100%; width: min(540px, 100%); margin: 0 auto;
+      padding: max(28px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+      display: flex; flex-direction: column; justify-content: center; gap: 14px; text-align: center;
+    }
+    .eras-sub {
+      margin: 0; color: var(--cream-dim); font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700;
+      letter-spacing: .32em; text-transform: uppercase; text-shadow: 0 2px 3px rgba(0, 0, 0, .9);
+    }
+    #eras-dialog #eras-title {
+      margin: 0; padding: 0; border: 0; font-family: 'Cinzel', serif; font-size: clamp(42px, 12vw, 82px); font-weight: 900;
+      line-height: .95; letter-spacing: .03em; text-transform: uppercase;
+      background: linear-gradient(180deg, var(--gold-hi) 0%, #f2cf72 34%, var(--gold) 48%, var(--gold-lo) 54%, #d9a640 70%, var(--gold-hi) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 2px 0 var(--gold-deep)) drop-shadow(0 4px 2px rgba(0, 0, 0, .8)) drop-shadow(0 0 22px rgba(0, 0, 0, .55));
+    }
+    /* O filete de ouro com o losango no meio, embaixo do título. */
+    .eras-rule { position: relative; height: 12px; margin: 0 12%; }
+    .eras-rule::before { content: ''; position: absolute; left: 0; right: 0; top: 5px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold-hi) 50%, var(--gold) 80%, transparent);
+      box-shadow: 0 1px 0 var(--gold-deep); }
+    .eras-rule::after { content: ''; position: absolute; left: 50%; top: 0; width: 10px; height: 10px; margin-left: -6px;
+      transform: rotate(45deg); background: linear-gradient(135deg, var(--gold-hi), var(--gold-lo)); border: 1px solid var(--gold-deep); }
+    .eras-intro { margin: 0 auto; max-width: 42ch; color: var(--cream); font-family: var(--font-quote); font-style: italic;
+      font-size: 15px; line-height: 1.45; text-shadow: 0 1px 2px #000, 0 0 12px rgba(0, 0, 0, .8); }
+    .eras { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+    /* A placa de pedra: o degradê de pedra lavrada com veio, a moldura em ouro de dois
+       tons (bisel claro em cima, sombra embaixo), os cravos de ouro nos cantos. */
+    .eras button {
+      position: relative; display: grid; gap: 3px; width: 100%; padding: 14px 22px 13px; cursor: pointer;
+      color: var(--cream); text-align: center; font: inherit;
+      background:
+        radial-gradient(circle at 10px 10px, var(--gold-hi) 0 1.5px, var(--gold-lo) 2.5px 3.5px, transparent 4px),
+        radial-gradient(circle at calc(100% - 10px) 10px, var(--gold-hi) 0 1.5px, var(--gold-lo) 2.5px 3.5px, transparent 4px),
+        radial-gradient(circle at 10px calc(100% - 10px), var(--gold-hi) 0 1.5px, var(--gold-lo) 2.5px 3.5px, transparent 4px),
+        radial-gradient(circle at calc(100% - 10px) calc(100% - 10px), var(--gold-hi) 0 1.5px, var(--gold-lo) 2.5px 3.5px, transparent 4px),
+        repeating-linear-gradient(97deg, rgba(255, 255, 255, .025) 0 2px, transparent 2px 9px),
+        repeating-linear-gradient(8deg, rgba(0, 0, 0, .06) 0 1px, transparent 1px 13px),
+        linear-gradient(180deg, var(--stone-hi), var(--stone) 42%, var(--stone-lo));
+      border: 3px solid var(--gold);
+      border-image: linear-gradient(180deg, var(--gold-hi), var(--gold) 30%, var(--gold-lo) 65%, #c9973c) 1;
+      box-shadow: inset 0 0 0 1px var(--gold-deep), inset 0 0 0 3px rgba(0, 0, 0, .35), inset 0 2px 0 3px rgba(255, 255, 255, .12),
+        inset 0 -14px 24px rgba(0, 0, 0, .35), 0 8px 18px rgba(0, 0, 0, .6), 0 2px 0 #000;
+      transition: filter var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .eras button:active { transform: translateY(2px); filter: brightness(.92); }
+    .eras button:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
+    .era-year { font-family: var(--font-quote); font-style: italic; font-size: 14px; color: var(--cream-dim);
+      text-shadow: 0 1px 1px #000; }
+    .era-name {
+      font-family: 'Cinzel', serif; font-size: clamp(26px, 7vw, 34px); font-weight: 900; line-height: 1; letter-spacing: .06em;
+      text-transform: uppercase; color: #f6d77e;
+      text-shadow: 0 1px 0 var(--gold-deep), 0 2px 0 var(--gold-deep), 0 3px 4px rgba(0, 0, 0, .85);
+    }
+    .era-desc { margin: 2px auto 0; max-width: 40ch; font-size: 13px; line-height: 1.4; color: var(--cream); text-shadow: 0 1px 1px #000; }
+    .era-record { margin-top: 3px; font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--gold-hi); }
+    .era-record:empty { display: none; }
+    .eras-more { margin: 2px 0 0; color: var(--cream-dim); font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase; text-shadow: 0 1px 2px #000; }
+    #eras-dialog .build-badge { margin-top: 0; color: rgba(243, 228, 189, .55); text-shadow: 0 1px 1px #000; }
+    @media (hover: hover) {
+      .eras button:hover { filter: brightness(1.12) saturate(1.05);
+        box-shadow: inset 0 0 0 1px var(--gold-deep), inset 0 0 0 3px rgba(0, 0, 0, .35), inset 0 2px 0 3px rgba(255, 255, 255, .16),
+          inset 0 -14px 24px rgba(0, 0, 0, .3), 0 0 22px rgba(255, 196, 90, .45), 0 8px 18px rgba(0, 0, 0, .6), 0 2px 0 #000; }
+    }
+    @media (prefers-reduced-motion: reduce) { .eras button { transition: none; } }
+    /* No menu das eras o jogo não existe ainda: nada da HUD por trás do menu. */
+    body.eras-menu .topbar, body.eras-menu .command-panel, body.eras-menu #minimap, body.eras-menu .zoom-controls,
+    body.eras-menu .wave-status, body.eras-menu .arena-wrap { display: none; }
+    .back-eras { display: block; margin: 0 0 10px; padding: 0; border: 0; background: none; color: var(--paper-muted);
+      font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    @media (hover: hover) { .back-eras:hover { color: var(--paper-ink); } }
     .primary {
       width: 100%; min-height: 52px; border: 0; border-radius: 2px; background: var(--paper-ink); color: var(--paper);
       font-family: var(--font-display); font-size: 26px; font-weight: 900; letter-spacing: .03em; text-transform: uppercase; cursor: pointer;
@@ -518,24 +614,24 @@
        JavaScript do jogo chegar. src/boot/loading.js move a barra pelo que de fato
        já carregou e a tira quando o mundo está montado. -->
   <div id="loading" class="loading" aria-busy="true">
-    <p class="kicker">Sertão da Bahia · 1896–1897</p>
-    <h1>Canudos</h1>
+    <p class="kicker" data-text="kicker">Sertão da Bahia · 1896–1897</p>
+    <h1>Eras do Brasil</h1>
     <div class="loading-bar" role="progressbar" aria-label="Carregando o jogo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <span class="loading-fill"></span>
     </div>
     <p class="loading-status" aria-live="polite"><span class="loading-label">Baixando o jogo</span><span class="loading-percent">0%</span></p>
   </div>
-  <script src="./src/boot/loading.js?v=59"></script>
+  <script src="./src/boot/loading.js?v=63"></script>
 
   <section class="arena-wrap" aria-label="Campo de batalha">
-    <canvas id="arena" aria-label="O sertão da Bahia com Belo Monte no meio"></canvas>
+    <canvas id="arena" aria-label="O sertão da Bahia com Belo Monte no meio" data-label="arena"></canvas>
     <canvas id="arena-overlay" aria-hidden="true"></canvas>
   </section>
 
   <header id="topbar" class="topbar">
     <span class="res" title="Comida"><span class="res-icon" data-icon="food"></span><b id="res-food">0</b></span>
     <span class="res" title="Madeira"><span class="res-icon" data-icon="wood"></span><b id="res-wood">0</b></span>
-    <span class="res" title="Fuzis tomados da tropa"><span class="res-icon" data-icon="rifles"></span><b id="res-rifles">0</b></span>
+    <span class="res" title="Fuzis tomados da tropa" data-title="thirdTitle"><span class="res-icon" data-icon="rifles"></span><b id="res-rifles">0</b></span>
     <span id="res-pop-box" class="res" title="População"><span class="res-icon" data-icon="people"></span><b id="res-pop">0/0</b></span>
     <button id="sound-toggle" class="icon-button sound-toggle" type="button" role="switch" aria-checked="true"></button>
     <button id="story-button" class="icon-button story-button" type="button" aria-label="História" title="História"><span data-icon="book"></span><span id="story-badge" class="story-badge" aria-hidden="true" hidden>!</span></button>
@@ -545,7 +641,7 @@
   <canvas id="minimap" aria-label="Mapinha: toque para levar a câmera"></canvas>
   <div id="wave-status" class="wave-status" role="status" aria-live="off" hidden>
     <span id="wave-label"></span>
-    <button id="wave-call" class="wave-call" type="button"><span data-icon="bugle"></span>Chamar já</button>
+    <button id="wave-call" class="wave-call" type="button"><span data-icon="bugle" data-icon-text="callIcon"></span>Chamar já</button>
   </div>
   <div id="wave-banner" class="wave-banner" role="status" aria-live="assertive" hidden>
     <span id="wave-banner-kicker" class="wave-banner-kicker"></span>
@@ -573,15 +669,89 @@
   <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
   <div id="box-select" class="box-select" hidden></div>
 
+  <!-- O menu inicial: as eras jogáveis, da mais antiga para a mais nova. Escolher uma
+       recarrega a página com ?missao= (GameMenu); a abertura da era vem depois. -->
+  <dialog id="eras-dialog" aria-labelledby="eras-title">
+    <!-- A paisagem pintada atrás do menu: o céu de fim de tarde, a serra ao longe, à
+         esquerda o mar, as palmeiras e uma oca; à direita o sertão, o mandacaru e a
+         igreja do arraial. Só silhuetas e degradês. -->
+    <svg class="eras-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="eras-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1c2a3a"/><stop offset=".45" stop-color="#6a4a3a"/>
+          <stop offset=".7" stop-color="#d98a4a"/><stop offset="1" stop-color="#f2c27a"/>
+        </linearGradient>
+        <radialGradient id="eras-sun" cx="800" cy="610" r="260" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#fff2c8" stop-opacity=".95"/><stop offset=".25" stop-color="#ffcf7a" stop-opacity=".6"/>
+          <stop offset="1" stop-color="#ffb060" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="eras-sea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c88a58"/><stop offset=".25" stop-color="#3e5a64"/><stop offset="1" stop-color="#14262e"/>
+        </linearGradient>
+        <radialGradient id="eras-vignette" cx="50%" cy="45%" r="75%">
+          <stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".78"/>
+        </radialGradient>
+      </defs>
+      <rect width="1600" height="900" fill="url(#eras-sky)"/>
+      <circle cx="800" cy="610" r="260" fill="url(#eras-sun)"/>
+      <circle cx="800" cy="612" r="46" fill="#ffe7b0" opacity=".9"/>
+      <path d="M0 620 L120 560 L230 590 L360 520 L470 575 L600 540 L720 600 L860 548 L990 590 L1110 530 L1240 585 L1380 540 L1500 575 L1600 548 V900 H0Z" fill="#4a3e4a" opacity=".75"/>
+      <path d="M0 660 L150 618 L300 650 L430 612 L560 655 L700 630 L820 662 L980 628 L1120 664 L1260 630 L1420 662 L1600 636 V900 H0Z" fill="#2f2b30" opacity=".85"/>
+      <path d="M0 700 C200 690 420 692 640 712 L640 900 H0Z" fill="url(#eras-sea)"/>
+      <path d="M40 732 h120 M220 748 h90 M380 738 h140 M120 776 h160 M330 790 h110" stroke="#f2c27a" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>
+      <path d="M560 715 C760 700 980 698 1600 690 V900 H560Z" fill="#3a2a1e"/>
+      <g fill="#100c09">
+        <path d="M0 900 V790 C120 770 260 772 420 800 C520 818 600 846 700 900Z"/>
+        <path d="M120 810 C150 700 160 640 150 560 L162 560 C176 640 168 720 140 812Z"/>
+        <path d="M156 560 C120 540 70 545 30 575 C80 552 120 556 154 566Z M158 558 C190 530 240 525 290 545 C240 538 200 545 160 566Z M156 562 C140 520 110 490 70 480 C112 500 136 530 152 566Z M160 562 C180 518 210 492 255 486 C215 505 186 532 164 566Z M157 560 C150 510 158 480 175 458 C166 488 162 520 162 562Z"/>
+        <path d="M320 806 C335 720 345 680 340 610 L350 610 C358 680 352 740 332 808Z"/>
+        <path d="M344 610 C310 594 270 598 240 622 C280 606 310 608 343 618Z M346 608 C372 586 410 584 448 600 C410 594 380 600 348 618Z M345 612 C334 578 310 556 278 550 C312 566 330 590 342 616Z M348 612 C364 578 390 560 424 558 C392 572 368 594 352 616Z"/>
+        <path d="M430 860 C430 790 480 752 545 752 C610 752 660 790 660 860Z"/>
+        <path d="M900 900 C1000 840 1200 812 1600 800 V900Z"/>
+        <path d="M1180 830 V700 L1188 690 L1196 700 V830 Z M1188 690 V660 M1180 668 H1196"/>
+        <path d="M1150 830 V735 H1240 V830 Z M1150 735 L1195 700 L1240 735Z"/>
+        <rect x="1186" y="652" width="4" height="40"/><rect x="1176" y="664" width="24" height="4"/>
+        <path d="M1380 820 V700 C1380 690 1396 690 1396 700 V820Z M1380 760 H1360 V720 C1360 712 1372 712 1372 720 V748 H1380Z M1396 744 H1414 V706 C1414 698 1426 698 1426 706 V756 H1396Z"/>
+        <path d="M1500 830 V746 C1500 738 1512 738 1512 746 V830Z M1512 780 H1526 V752 C1526 746 1536 746 1536 752 V790 H1512Z"/>
+        <path d="M980 840 C1000 800 1020 790 1040 800 C1030 780 1060 770 1070 790 C1080 770 1110 780 1100 800 C1120 790 1140 800 1150 840Z"/>
+      </g>
+      <rect width="1600" height="900" fill="url(#eras-vignette)"/>
+    </svg>
+    <div class="eras-frame">
+      <p class="eras-sub">A história do Brasil, era por era</p>
+      <h1 id="eras-title">Eras do Brasil</h1>
+      <div class="eras-rule" aria-hidden="true"></div>
+      <p class="eras-intro">Cada era é uma defesa: um lugar, a sua gente e quem veio contra ela — e o seu livro de história, com trechos de quem viveu ou escreveu sobre aquele tempo.</p>
+      <ul class="eras">
+        <li><button type="button" data-mission="tupinamba">
+          <span class="era-year">antes de 1500</span>
+          <span class="era-name">Tupinambás</span>
+          <span class="era-desc">Uma aldeia do litoral se defende dos tupiniquins, pelas trilhas e pelo mar.</span>
+          <span class="era-record" data-record="tupinamba"></span>
+        </button></li>
+        <li><button type="button" data-mission="canudos">
+          <span class="era-year">1896–1897</span>
+          <span class="era-name">Canudos</span>
+          <span class="era-desc">O arraial de Belo Monte resiste às expedições do Exército no sertão da Bahia.</span>
+          <span class="era-record" data-record="canudos"></span>
+        </button></li>
+      </ul>
+      <p class="eras-more">Outras eras virão</p>
+      <small class="build-badge">BUILD 63</small>
+    </div>
+  </dialog>
+
   <dialog id="start-dialog" aria-labelledby="start-title">
-    <p class="kicker">Sertão da Bahia · 1896–1897</p>
-    <h1 id="start-title">Canudos</h1>
+    <button id="start-eras" class="back-eras" type="button">← Escolher outra era</button>
+    <p class="brand">Eras do Brasil</p>
+    <p class="kicker" data-text="kicker">Sertão da Bahia · 1896–1897</p>
+    <h1 id="start-title" data-text="heading">Canudos</h1>
     <figure class="epigraph">
       <blockquote id="start-epigraph"></blockquote>
-      <figcaption>Euclides da Cunha, <cite>Os Sertões</cite></figcaption>
+      <figcaption id="start-epigraph-cite">Euclides da Cunha, <cite>Os Sertões</cite></figcaption>
     </figure>
-    <p>Milhares de sertanejos pobres seguiram Antônio Conselheiro até Belo Monte, à beira do rio Vaza-Barris — o arraial que a República chamou de Canudos. Quatro expedições do Exército marcharam contra ele. Defenda a igreja de Santo Antônio pelo maior número de ondas que conseguir.</p>
-    <ul class="how">
+    <p data-text="intro">Milhares de sertanejos pobres seguiram Antônio Conselheiro até Belo Monte, à beira do rio Vaza-Barris — o arraial que a República chamou de Canudos. Quatro expedições do Exército marcharam contra ele. Defenda a igreja de Santo Antônio pelo maior número de ondas que conseguir.</p>
+    <ul class="how" data-html="how">
       <li><span data-icon="sertanejo"></span><span>Escolha <b>sertanejos</b> e toque numa <b>árvore da caatinga</b> ou numa <b>roça</b> para juntar madeira e comida.</span></li>
       <li><span data-icon="trench"></span><span>Os sertanejos cavam <b>trincheiras</b> na beira das estradas. Toque numa para armá-la com <b>Mannlichers tomados</b>, erguer um <b>jirau</b> de vigia ou carregar o <b>bacamarte</b>.</span></li>
       <li><span data-icon="campfire"></span><span>O <b>acampamento</b> prepara jagunços de facão, de chuço e atiradores. Casas de taipa aumentam a população.</span></li>
@@ -594,15 +764,15 @@
     <p class="field-label">Dificuldade</p>
     <div id="start-levels" class="levels"></div>
     <button id="start-play" class="primary" type="button" autofocus>Jogar</button>
-    <small class="build-badge">BUILD 59</small>
+    <small class="build-badge">BUILD 63</small>
   </dialog>
 
   <!-- Livro de história: os registros que a partida vai abrindo, o mais novo no alto.
        Abrir pausa o jogo (StoryBook + main.js). -->
   <dialog id="story-dialog" class="story-dialog" aria-labelledby="story-title">
-    <p class="kicker">Diário de Belo Monte</p>
+    <p class="kicker" data-text="storyKicker">Diário de Belo Monte</p>
     <h2 id="story-title">História</h2>
-    <p id="story-empty">Ainda não há nada aqui. Os registros chegam conforme a guerra acontece.</p>
+    <p id="story-empty" data-text="storyEmpty">Ainda não há nada aqui. Os registros chegam conforme a guerra acontece.</p>
     <ol id="story-list" class="story-list"></ol>
     <div class="story-actions">
       <button id="story-close" class="primary" type="button">Voltar ao jogo</button>
@@ -619,7 +789,7 @@
     </div>
     <button id="pause-resume" class="primary" type="button">Continuar</button>
     <button id="pause-restart" class="secondary" type="button">Recomeçar a partida</button>
-    <small class="build-badge">BUILD 59</small>
+    <small class="build-badge">BUILD 63</small>
   </dialog>
 
   <dialog id="result-dialog" aria-labelledby="result-title">
@@ -628,14 +798,17 @@
     <p id="result-text"></p>
     <figure class="epigraph epigraph-end">
       <blockquote id="result-quote"></blockquote>
-      <figcaption>Euclides da Cunha, <cite>Os Sertões</cite> (A Luta)</figcaption>
+      <figcaption id="result-quote-cite">Euclides da Cunha, <cite>Os Sertões</cite> (A Luta)</figcaption>
     </figure>
     <p class="field-label">Dificuldade</p>
     <div id="result-levels" class="levels"></div>
     <button id="result-again" class="primary" type="button">Jogar de novo</button>
   </dialog>
 
-  <!-- Todo o JavaScript mora em src/; a raiz de composição é src/main.js. -->
-  <script type="module">import './src/main.js';</script>
+  <!-- O menu das eras (script clássico, leve) abre na hora quando a URL não tem era;
+       só com uma era escolhida (?missao=) o jogo é importado. Todo o JavaScript do jogo
+       mora em src/; a raiz de composição é src/main.js. -->
+  <script src="./src/boot/eras.js?v=63"></script>
+  <script type="module">if (new URLSearchParams(location.search).has('missao')) import('./src/main.js');</script>
 </body>
 </html>

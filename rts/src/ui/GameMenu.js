@@ -1,8 +1,10 @@
-import { DIFFICULTY } from '../config/rts.js';
-import { SERTOES } from '../config/sertoes.js';
+import { DIFFICULTY, TEXT } from '../config/rts.js';
+import { QUOTES } from '../config/story.js';
 
-// As telas fora da partida: a de abertura (dificuldade e como jogar), a pausa
-// (velocidade, recomeçar) e a de fim (quantas ondas a vila aguentou).
+
+// As telas fora da partida (o menu das eras é src/boot/eras.js, que roda antes do
+// jogo existir): a abertura da era (dificuldade e como jogar), a pausa (velocidade, recomeçar) e a de
+// fim (quantas ondas a vila aguentou).
 export class GameMenu {
   #root;
   #simulation;
@@ -54,7 +56,11 @@ export class GameMenu {
     });
     this.#markSpeed();
     this.#markLevels();
-    $('#start-epigraph').textContent = SERTOES.forte.text;
+    $('#start-epigraph').textContent = QUOTES.start.text;
+    $('#start-epigraph-cite').innerHTML = QUOTES.start.cite;
+    $('#result-quote-cite').innerHTML = QUOTES.end.cite;
+    // Voltar às eras é voltar à página sem era: o menu leve, sem o jogo.
+    $('#start-eras').addEventListener('click', () => { location.search = ''; });
   }
 
   // A abertura: chamada só depois do carregamento, para não abrir por cima dele.
@@ -73,16 +79,17 @@ export class GameMenu {
   showResult({ waves, best, record }) {
     const $ = selector => this.#root.querySelector(selector);
     for (const dialog of this.#root.querySelectorAll('dialog[open]')) dialog.close();
-    $('#result-kicker').textContent = 'A igreja caiu';
-    const plural = waves === 1 ? 'onda' : 'ondas';
+    $('#result-kicker').textContent = TEXT.resultKicker;
+    const plural = waves === 1 ? TEXT.waveUnit[0] : TEXT.waveUnit[1];
     $('#result-title').textContent = `${waves} ${plural}`;
-    const held = `Belo Monte resistiu a ${waves} ${plural} do Exército.`;
+    const held = TEXT.resultHeld(waves);
     const level = DIFFICULTY[this.#level].label.toLowerCase();
     $('#result-text').textContent = record && waves > 0
       ? `Recorde novo no ${level}! ${held}`
       : `${held} Recorde no ${level}: ${best}.`;
-    // O fecho do livro: a Canudos de verdade caiu em 5 de outubro de 1897.
-    $('#result-quote').textContent = SERTOES.fim.text;
+    // O fecho: em Canudos, o do livro (a Canudos de verdade caiu em 5 de outubro de
+    // 1897); nos tupinambás, a guerra que não acabava.
+    $('#result-quote').textContent = QUOTES.end.text;
     $('#result-dialog').dataset.victory = String(record && waves > 0);
     this.#markLevels();
     $('#result-dialog').showModal();

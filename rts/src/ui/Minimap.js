@@ -1,6 +1,8 @@
 import { WORLD } from '../config/world.js';
 import { ROADS, HILLS } from '../config/rts.js';
 import { roadPath } from '../world/Roads.js';
+import { TUPI } from '../config/mission.js';
+import { coastY } from '../world/Coast.js';
 
 // Quantas vezes por segundo o mapinha se redesenha.
 const REDRAW_RATE = 6;
@@ -83,11 +85,27 @@ export class Minimap {
     ctx.beginPath();
     corners.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
     ctx.closePath();
-    ctx.fillStyle = '#b8905c';
+    ctx.fillStyle = TUPI ? '#4f6a34' : '#b8905c';
     ctx.fill();
     ctx.strokeStyle = 'rgba(20, 30, 20, .7)';
     ctx.lineWidth = 1;
     ctx.stroke();
+    // No litoral: a areia e o mar da enseada, ao sul.
+    if (TUPI) {
+      for (const [offset, color] of [[-44, '#d8ccac'], [0, '#3f7f8c']]) {
+        ctx.beginPath();
+        for (let x = 0; x <= WORLD.width; x += 20) {
+          const p = this.#toMap(x, Math.min(WORLD.height, coastY(x) + offset));
+          if (x) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
+        }
+        const a = this.#toMap(WORLD.width, WORLD.height), b = this.#toMap(0, WORLD.height);
+        ctx.lineTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+    }
 
     // Os morros, mais claros, com o contorno de pedra.
     for (const hill of HILLS) {
@@ -143,7 +161,7 @@ export class Minimap {
     }
     for (const u of state.organisms) {
       // O comboio e a Matadeira se destacam: são alvo que vale a pena caçar.
-      if (u.stats.convoy || u.type === 'matadeira') dot(u.x, u.y, 3, '#ffb84a');
+      if (u.stats.convoy || u.type === 'matadeira' || (u.stats.boat && u.crew?.length)) dot(u.x, u.y, 3, '#ffb84a');
       else dot(u.x, u.y, 1.5, state.teams[u.team].ring);
     }
     ctx.globalAlpha = 1;

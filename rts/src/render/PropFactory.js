@@ -85,7 +85,18 @@ export class PropFactory {
     canudo: seed => this.canudo(seed),
     cabecafrade: seed => this.cabecafrade(seed),
     palmatoria: seed => this.palmatoria(seed),
-    lasca: seed => this.lasca(seed)
+    lasca: seed => this.lasca(seed),
+    // A mata atlântica do litoral (missão dos tupinambás).
+    pindoba: seed => this.pindoba(seed),
+    ibirapitanga: seed => this.ibirapitanga(seed),
+    jequitiba: seed => this.jequitiba(seed),
+    embauba: seed => this.embauba(seed),
+    pitangueira: seed => this.pitangueira(seed),
+    samambaia: seed => this.samambaia(seed),
+    bromelia: seed => this.bromelia(seed),
+    taquara: seed => this.taquara(seed),
+    restinga: seed => this.restinga(seed),
+    costao: seed => this.costao(seed)
   };
 
   // Geometria que não pode ser descartada junto com um enfeite.
@@ -120,14 +131,17 @@ export class PropFactory {
 
   static #SCALE = Object.freeze({
     umbuzeiro: 1.45, catingueira: 1.6, favela: 1.5, quixabeira: 1.5, juazeiro: 1.45,
-    mandacaru: 1.35, garrancho: 1.3
+    mandacaru: 1.35, garrancho: 1.3,
+    pindoba: 1.5, ibirapitanga: 1.55, jequitiba: 1.7, embauba: 1.5, pitangueira: 1.35, taquara: 1.3
   });
 
   // Raio da mancha de contato de cada espécie, em unidades.
   static footprint(kind) {
     return {
       umbuzeiro: 19, catingueira: 11, favela: 11, quixabeira: 11, juazeiro: 15, mandacaru: 7,
-      xiquexique: 6, rock: 7, lasca: 7, macambira: 5, garrancho: 6, canudo: 4, cabecafrade: 3, palmatoria: 5
+      xiquexique: 6, rock: 7, lasca: 7, macambira: 5, garrancho: 6, canudo: 4, cabecafrade: 3, palmatoria: 5,
+      pindoba: 9, ibirapitanga: 13, jequitiba: 22, embauba: 10, pitangueira: 10, samambaia: 5, bromelia: 4,
+      taquara: 6, restinga: 7, costao: 14
     }[kind] ?? 6;
   }
 
@@ -136,7 +150,9 @@ export class PropFactory {
   static height(kind) {
     return {
       umbuzeiro: 27, catingueira: 36, favela: 28, quixabeira: 36, juazeiro: 30, mandacaru: 40,
-      xiquexique: 8, rock: 7, lasca: 4, macambira: 6, garrancho: 9, canudo: 10, cabecafrade: 4, palmatoria: 8
+      xiquexique: 8, rock: 7, lasca: 4, macambira: 6, garrancho: 9, canudo: 10, cabecafrade: 4, palmatoria: 8,
+      pindoba: 46, ibirapitanga: 40, jequitiba: 58, embauba: 38, pitangueira: 22, samambaia: 6, bromelia: 4,
+      taquara: 20, restinga: 7, costao: 12
     }[kind] ?? 10;
   }
 
@@ -582,6 +598,223 @@ export class PropFactory {
         tones[i % 3], (i - plates / 2) * 1.2, .5 + rand(40 + i) * .8, (rand(50 + i) - .5) * 2.5);
       plate.rotation.set((rand(60 + i) - .5) * .2, heading + (rand(70 + i) - .5) * .3, dip + (rand(80 + i) - .5) * .15, 'YXZ');
       rock.add(plate);
+    }
+    return rock;
+  }
+
+  // ---- A mata atlântica do litoral (missão dos tupinambás) ----
+
+  // Pindoba: a palmeira de cuja folha se cobriam as casas ("coberta da palma, a que
+  // os índios chamam pindoba", Soares, cap. CLI). Tronco único, um tico torto, com os
+  // anéis das folhas que caíram; no alto, o leque de folhas compridas e arqueadas, os
+  // folíolos dos dois lados da ráquis, uma ou outra secando, e o cacho de cocos.
+  pindoba(seed) {
+    const palm = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 3.31);
+    const height = 20 + rand(1) * 8;
+    const lean = rand(2) * Math.PI * 2;
+    const low = this.#limb(palm, 0, 0, 0, lean, .04 + rand(3) * .06, height * .55, 1.5, PALETTE.palmTrunk, .9);
+    const high = this.#limb(low, 0, height * .55, 0, Math.PI, .05 + rand(4) * .05, height * .45, 1.35, PALETTE.palmTrunk, .85);
+    for (let i = 1; i < 6; i++) low.add(this.#block(shadedBox(1.7, .25, 1.7, .8, 1), PALETTE.barkDark, 0, height * .55 * i / 6, 0, false));
+    const crown = new THREE.Group();
+    crown.position.set(0, height * .45, 0);
+    high.add(crown);
+    const fronds = 9 + Math.floor(rand(5) * 4);
+    for (let f = 0; f < fronds; f++) {
+      const angle = f / fronds * Math.PI * 2 + rand(10 + f) * .4;
+      const up = f % 3 === 0;
+      const color = rand(20 + f) < .12 ? PALETTE.palmLeafDry : f % 2 ? PALETTE.palmLeaf : PALETTE.palmLeafDark;
+      const first = this.#limb(crown, 0, 0, 0, angle, up ? .5 : .95, 5.5, .32, color, .8);
+      const second = this.#limb(first, 0, 5.5, 0, 0, up ? .5 : .75, 5.5, .26, color, .6);
+      for (const segment of [first, second]) {
+        for (let k = 1; k <= 4; k++) {
+          for (const side of [-1, 1]) this.#blade(segment, 0, 5.5 * k / 4.4, 0, side * Math.PI / 2, 1.85, 3.2 - k * .25, .5, color);
+        }
+      }
+    }
+    for (let i = 0; i < 6; i++) {
+      const angle = rand(40 + i) * Math.PI * 2;
+      crown.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.75, 0), .8, 1.05), PALETTE.palmFruit,
+        Math.cos(angle) * 1.2, -1.2 - rand(50 + i), Math.sin(angle) * 1.2, false));
+    }
+    return palm;
+  }
+
+  // Ibirapitanga, o pau-brasil ("pau vermelho"): tronco escuro e reto, galhos que
+  // abrem no alto, a copa irregular de folhinhas miúdas verde-escuras e os cachos de
+  // flor amarela. É a árvore que deu nome à terra depois de 1500.
+  ibirapitanga(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 4.13);
+    const bark = PALETTE.brazilBark;
+    const trunkHeight = 11 + rand(1) * 3;
+    const trunk = this.#limb(tree, 0, 0, 0, rand(2) * 6.28, rand(3) * .1, trunkHeight, 1.6, bark, .72);
+    tree.add(this.#block(addVerticalShade(new THREE.CylinderGeometry(1, 1.6, 1, 6), .55, 1), bark, 0, .4, 0));
+    const tones = [PALETTE.brazilLeaf, PALETTE.leafDark, PALETTE.leafMid];
+    tree.add(this.#block(leafBlob(6, .55, 1, seed + 1, .3), tones[1], 0, trunkHeight + 4.5, 0));
+    const branches = 4 + Math.floor(rand(4) * 2);
+    for (let i = 0; i < branches; i++) {
+      const length = 6 + rand(10 + i) * 2.5;
+      const limb = this.#limb(trunk, 0, trunkHeight * (.72 + rand(20 + i) * .2), 0, i / branches * Math.PI * 2 + rand(30 + i),
+        .6 + rand(40 + i) * .35, length, .85, bark);
+      limb.add(this.#block(leafBlob(3.2 + rand(50 + i) * 1.2, .62, 1, seed + 10 + i, .4), tones[i % 3], 0, length + .5, 0));
+      for (let k = 0; k < 3; k++) {
+        limb.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.42, 0), .95, 1.05), PALETTE.brazilFlower,
+          (rand(60 + i * 3 + k) - .5) * 4, length + 1.5 + rand(70 + k) * 1.5, (rand(80 + i * 3 + k) - .5) * 4, false));
+      }
+    }
+    return tree;
+  }
+
+  // Jequitibá: a árvore grande da mata, de tronco alto e claro, com as sapopembas
+  // (raízes em tábua) no pé e a copa larga lá em cima, acima das outras.
+  jequitiba(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 5.71);
+    const bark = PALETTE.jequitibaBark;
+    const trunkHeight = 20 + rand(1) * 6;
+    const trunk = this.#limb(tree, 0, 0, 0, rand(2) * 6.28, rand(3) * .05, trunkHeight, 2.4, bark, .7);
+    for (let i = 0; i < 4; i++) {
+      const angle = i / 4 * Math.PI * 2 + rand(4 + i) * .6;
+      const root = this.#block(shadedBox(.6, 3.2, 4, .6, 1), bark, Math.cos(angle) * 1.6, 1.4, Math.sin(angle) * 1.6);
+      root.rotation.y = -angle + Math.PI / 2;
+      tree.add(root);
+    }
+    const tones = [PALETTE.jequitibaLeaf, PALETTE.jequitibaLeafLight, PALETTE.leafDark];
+    const spread = 9 + rand(5) * 3;
+    tree.add(this.#block(leafBlob(spread * .8, .45, 1, seed + 3, .3), tones[2], 0, trunkHeight + 3, 0));
+    const branches = 5;
+    for (let i = 0; i < branches; i++) {
+      const length = 7 + rand(10 + i) * 3;
+      const limb = this.#limb(trunk, 0, trunkHeight - 1.5 - rand(20 + i) * 3, 0, i / branches * Math.PI * 2 + rand(30 + i) * .6,
+        .85 + rand(40 + i) * .3, length, 1.2, bark);
+      limb.add(this.#block(leafBlob(4 + rand(50 + i) * 1.4, .55, 1, seed + 20 + i, .35), tones[i % 2], 0, length + 1, 0));
+    }
+    tree.add(this.#block(leafBlob(5, .6, 1, seed + 9, .35), tones[1], 0, trunkHeight + 6, 0));
+    return tree;
+  }
+
+  // Embaúba: a árvore que toma a clareira e a capoeira, de tronco fino e branco com os
+  // anéis, poucos galhos subindo em candelabro e, na ponta de cada um, a roda de
+  // folhas grandes e recortadas, verde-acinzentadas, de avesso prateado.
+  embauba(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 2.87);
+    const bark = PALETTE.embaubaBark;
+    const height = 13 + rand(1) * 5;
+    const trunk = this.#limb(tree, 0, 0, 0, rand(2) * 6.28, rand(3) * .12, height, 1.05, bark, .75);
+    for (let i = 1; i < 7; i++) trunk.add(this.#block(shadedBox(1.15, .18, 1.15, .8, 1), PALETTE.bark, 0, height * i / 7, 0, false));
+    const crown = (parent, y) => {
+      const leaves = 7;
+      for (let k = 0; k < leaves; k++) {
+        const color = k % 3 === 0 ? PALETTE.embaubaLeafUnder : PALETTE.embaubaLeaf;
+        this.#blade(parent, 0, y, 0, k / leaves * Math.PI * 2 + rand(60 + k), 1.15 + rand(70 + k) * .3, 4.2, 2, color);
+      }
+    };
+    crown(trunk, height);
+    const arms = 2 + Math.floor(rand(4) * 2);
+    for (let i = 0; i < arms; i++) {
+      const length = 4 + rand(10 + i) * 2;
+      const arm = this.#limb(trunk, 0, height * (.62 + i * .1), 0, i / arms * Math.PI * 2 + rand(20 + i), .5, length, .55, bark);
+      const rise = this.#limb(arm, 0, length, 0, Math.PI, .45, 2.5, .45, bark);
+      crown(rise, 2.5);
+    }
+    return tree;
+  }
+
+  // Pitangueira, da restinga e da capoeira: arvoreta de vários troncos finos e a copa
+  // fechada, verde-escura, salpicada das pitangas vermelhas.
+  pitangueira(seed) {
+    const tree = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 6.07);
+    const stems = 2 + Math.floor(rand(1) * 2);
+    for (let s = 0; s < stems; s++) {
+      this.#limb(tree, 0, 0, 0, s / stems * Math.PI * 2 + rand(10 + s), .2 + rand(20 + s) * .2, 4 + rand(30 + s) * 2, .7, PALETTE.bark, .7);
+    }
+    tree.add(this.#block(leafBlob(5, .7, 1, seed + 2, .3), PALETTE.pitangaLeaf, 0, 7, 0));
+    for (let i = 0; i < 4; i++) {
+      const angle = i / 4 * Math.PI * 2 + rand(40 + i);
+      tree.add(this.#block(leafBlob(2.8, .75, 1, seed + 10 + i, .4), i % 2 ? PALETTE.leafMid : PALETTE.pitangaLeaf,
+        Math.cos(angle) * 3.2, 6 + rand(50 + i) * 2, Math.sin(angle) * 3.2));
+    }
+    for (let i = 0; i < 12; i++) {
+      const angle = rand(60 + i) * Math.PI * 2, up = rand(70 + i);
+      tree.add(this.#block(addVerticalShade(new THREE.IcosahedronGeometry(.38, 0), .9, 1.05), PALETTE.pitangaFruit,
+        Math.cos(angle) * 4.6 * (1 - up * .4), 5 + up * 4, Math.sin(angle) * 4.6 * (1 - up * .4), false));
+    }
+    return tree;
+  }
+
+  // Samambaia: as frondes compridas saindo do meio e arqueando para fora.
+  samambaia(seed) {
+    const plant = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 2.11);
+    const fronds = 8 + Math.floor(rand(1) * 4);
+    for (let i = 0; i < fronds; i++) {
+      const color = i % 2 ? PALETTE.fern : PALETTE.fernDark;
+      const base = this.#blade(plant, 0, .2, 0, i / fronds * Math.PI * 2 + rand(10 + i) * .5, .55 + rand(20 + i) * .25, 2.6, 1.4, color);
+      this.#blade(base, 0, 2.6, 0, 0, .7 + rand(30 + i) * .3, 2.6, 1.2, color);
+    }
+    return plant;
+  }
+
+  // Gravatá (bromélia): a roseta de folhas duras abrindo do chão, o miolo vermelho.
+  bromelia(seed) {
+    const plant = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 1.77);
+    const leaves = 10 + Math.floor(rand(1) * 4);
+    for (let i = 0; i < leaves; i++) {
+      this.#blade(plant, 0, .1, 0, i / leaves * Math.PI * 2 + rand(10 + i) * .3, .6 + rand(20 + i) * .55, 3 + rand(30 + i), .9, PALETTE.bromelia);
+    }
+    for (let i = 0; i < 4; i++) this.#blade(plant, 0, .3, 0, i * 1.6, .25, 1.6, .7, PALETTE.bromeliaRed);
+    return plant;
+  }
+
+  // Taquara: a touceira de canas finas e nodosas, arqueando no alto com as folhinhas;
+  // é dela que se faziam as flechas.
+  taquara(seed) {
+    const clump = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 3.03);
+    const canes = 6 + Math.floor(rand(1) * 4);
+    for (let i = 0; i < canes; i++) {
+      const angle = i / canes * Math.PI * 2 + rand(10 + i);
+      const height = 9 + rand(20 + i) * 6;
+      const low = this.#limb(clump, Math.cos(angle) * .8, 0, Math.sin(angle) * .8, angle, .08 + rand(30 + i) * .15, height, .38, PALETTE.taquara, .85);
+      for (let n = 1; n < 5; n++) low.add(this.#block(shadedBox(.48, .16, .48, .8, 1), PALETTE.taquaraNode, 0, height * n / 5, 0, false));
+      const top = this.#limb(low, 0, height, 0, 0, .45 + rand(40 + i) * .3, height * .45, .28, PALETTE.taquara, .6);
+      for (let k = 0; k < 4; k++) {
+        this.#blade(top, 0, height * .45 * (.3 + k * .2), 0, rand(50 + i * 4 + k) * 6.28, 1.3, 1.8, .34, PALETTE.taquaraLeaf);
+      }
+    }
+    return clump;
+  }
+
+  // Moita da restinga: arbustos baixos e fechados, achatados pelo vento do mar.
+  restinga(seed) {
+    const shrub = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 4.41);
+    const lumps = 3 + Math.floor(rand(1) * 2);
+    for (let i = 0; i < lumps; i++) {
+      const angle = i / lumps * Math.PI * 2 + rand(10 + i);
+      shrub.add(this.#block(leafBlob(2.4 + rand(20 + i) * 1.2, .55, 1, seed + i * 7, .4), i % 2 ? PALETTE.restinga : PALETTE.restingaLight,
+        Math.cos(angle) * 2, 1.4, Math.sin(angle) * 2));
+    }
+    return shrub;
+  }
+
+  // Costão: os matacões de granito nas pontas da enseada, onde o mar bate.
+  costao(seed) {
+    const rock = new THREE.Group();
+    const rand = i => pseudoRandom(seed + i * 9.17);
+    const tones = [PALETTE.rock, PALETTE.rockLight, PALETTE.rockWarm];
+    const stones = 3 + Math.floor(rand(1) * 2);
+    for (let i = 0; i < stones; i++) {
+      const size = 7 + rand(10 + i) * 8;
+      const angle = rand(20 + i) * Math.PI * 2;
+      const stone = this.#block(shadedBox(size, size * .62, size * .85, .65, 1.12), tones[i % 3],
+        Math.cos(angle) * size * .45, size * .26, Math.sin(angle) * size * .45);
+      stone.rotation.set((rand(30 + i) - .5) * .3, rand(40 + i) * 3, (rand(50 + i) - .5) * .3);
+      rock.add(stone);
     }
     return rock;
   }

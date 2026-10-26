@@ -1,4 +1,4 @@
-import { TEAMS, MAX_POPULATION } from '../config/rts.js';
+import { TEAMS, MAX_POPULATION, TEXT } from '../config/rts.js';
 
 // O caixa e o censo: comida, madeira, população e teto da vila. Os invasores não
 // têm economia, só existem na conta para a cor e a armadura.
@@ -72,9 +72,9 @@ export class TeamLedger {
     for (const resource of ['food', 'wood', 'rifles']) team[resource] += cost[resource] || 0;
   }
 
-  // O aviso de falta, em português.
+  // O aviso de falta, em português (o terceiro recurso é o da missão: fuzis ou flechas).
   static lack(missing) {
-    return { food: 'Falta comida', wood: 'Falta madeira', rifles: 'Faltam fuzis tomados da tropa' }[missing] ?? '';
+    return TEXT.lack[missing] ?? '';
   }
 
   deposit(teamId, resource, amount) {

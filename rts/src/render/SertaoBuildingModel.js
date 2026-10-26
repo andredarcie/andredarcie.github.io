@@ -42,7 +42,7 @@ const SHARED_MATERIALS = new Set(Object.values(M));
 // uma fachada, uma cabra, um telhado girado como se estivessem na origem).
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler();
 const _p = new THREE.Vector3(), _s = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
-class Kit {
+export class Kit {
   #items = new Map();
   #state;
   frame = new THREE.Matrix4();

@@ -13,17 +13,36 @@
 // estimativa, corrigida já na próxima.
 (() => {
   const STORAGE_KEY = 'canudos-carga';
+  // A missão dos tupinambás (?missao=tupinamba, como em src/config/mission.js) troca
+  // o letreiro da carga já no primeiro quadro, antes de o jogo chegar.
+  const mission = new URLSearchParams(location.search).get('missao');
+  const tupi = mission === 'tupinamba';
+  const screen = document.getElementById('loading');
+  // Sem era na URL a página é só o menu das eras (src/boot/eras.js): não há o que
+  // carregar, e a tela de carga sai antes de aparecer.
+  if (!mission) {
+    screen.remove();
+    window.canudosLoading = { stage: async () => {}, finish: async () => {}, fail() {} };
+    return;
+  }
   const STAGES = [
     { id: 'code', label: 'Baixando o jogo', weight: 1500 },
     { id: 'view', label: 'Ligando o desenho 3D', weight: 250 },
-    { id: 'world', label: 'Erguendo Belo Monte', weight: 600 },
-    { id: 'ground', label: 'Pintando o chão do sertão', weight: 900 },
-    { id: 'plants', label: 'Plantando a caatinga', weight: 500 },
+    { id: 'world', label: tupi ? 'Erguendo a aldeia' : 'Erguendo Belo Monte', weight: 600 },
+    { id: 'ground', label: tupi ? 'Pintando a mata e o mar' : 'Pintando o chão do sertão', weight: 900 },
+    { id: 'plants', label: tupi ? 'Plantando a mata' : 'Plantando a caatinga', weight: 500 },
     { id: 'frame', label: 'Preparando o primeiro quadro', weight: 700 },
     { id: 'fonts', label: 'Acertando as letras', weight: 100 }
   ];
 
-  const screen = document.getElementById('loading');
+  // O nome do jogo é Eras do Brasil; embaixo, a era que está carregando.
+  const kicker = screen.querySelector('[data-text="kicker"]');
+  if (tupi) {
+    kicker.textContent = 'Tupinambás · antes de 1500';
+    document.title = 'Eras do Brasil — Tupinambás';
+  } else {
+    kicker.textContent = 'Canudos · 1896–1897';
+  }
   const bar = screen.querySelector('.loading-bar');
   const fill = screen.querySelector('.loading-fill');
   const label = screen.querySelector('.loading-label');

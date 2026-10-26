@@ -9,6 +9,9 @@ const RIFLE_ICON = new Path2D(ICON_PATHS.rifles);
 const BULLET_LENGTH = 9;
 // Fração inicial da vida do tiro em que o risco até o alvo aparece.
 const TRACER_SHARE = .07;
+// A flecha desenhada: comprimento no mundo e a altura máxima do arco do voo.
+const ARROW_LENGTH = 10;
+const ARROW_ARC = 18;
 
 // Em pixels de tela: as balas das trincheiras no ar; a fumaça branca da pólvora
 // negra na boca de cada arma que dispara (fuzil, bacamarte, canhão) com o risco
@@ -34,6 +37,13 @@ export class EffectsLayer {
   }
 
   #bullet(ctx, project, p) {
+    if (p.arrow) {
+      // A flecha da cerca: o arco do voo vem da torre (p.lift), e ela aponta para onde vai.
+      const head = { x: p.x, y: p.y, z: p.z + p.lift };
+      const before = { x: p.px, y: p.py, z: p.pz + p.plift };
+      this.#arrow(ctx, project, before, head);
+      return;
+    }
     const dx = p.x - p.px, dy = p.y - p.py, dz = p.z - p.pz;
     const length = Math.hypot(dx, dy, dz) || 1;
     const k = BULLET_LENGTH / length;
@@ -55,6 +65,15 @@ export class EffectsLayer {
   // fazia muita fumaça); no começo, o risco até onde o tiro foi.
   #shot(ctx, project, shot) {
     const t = shot.time / shot.life;
+    if (shot.arrow) {
+      // A flecha do arco: sem fumaça nem clarão, voando em arco até onde cai.
+      const at = k => {
+        const lift = Math.sin(Math.PI * k) * Math.min(ARROW_ARC, Math.hypot(shot.tx - shot.x, shot.ty - shot.y) * .14);
+        return { x: shot.x + (shot.tx - shot.x) * k, y: shot.y + (shot.ty - shot.y) * k, z: shot.z + (shot.tz - shot.z) * k + lift };
+      };
+      this.#arrow(ctx, project, at(Math.max(0, t - .06)), at(t));
+      return;
+    }
     const muzzle = project(shot.x, shot.y, shot.z + t * 8);
     const scale = shot.cannon ? 2.4 : 1;
     if (!shot.puffOnly && t < TRACER_SHARE) {
@@ -85,10 +104,57 @@ export class EffectsLayer {
     ctx.globalAlpha = 1;
   }
 
+  // Uma flecha de `from` para `to` (no mundo): a haste de taquara, a ponta e as penas
+  // da empenagem, com ARROW_LENGTH de comprimento ao longo do rumo.
+  #arrow(ctx, project, from, to) {
+    const dx = to.x - from.x, dy = to.y - from.y, dz = to.z - from.z;
+    const length = Math.hypot(dx, dy, dz) || 1;
+    const k = ARROW_LENGTH / length;
+    const tip = project(to.x, to.y, to.z);
+    const tail = project(to.x - dx * k, to.y - dy * k, to.z - dz * k);
+    const ux = tip.x - tail.x, uy = tip.y - tail.y;
+    const u = Math.hypot(ux, uy) || 1;
+    const nx = -uy / u, ny = ux / u;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(40, 28, 18, .9)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(tail.x, tail.y);
+    ctx.lineTo(tip.x, tip.y);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(236, 228, 210, .9)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (const side of [-1, 1]) {
+      ctx.moveTo(tail.x + ux / u * 3, tail.y + uy / u * 3);
+      ctx.lineTo(tail.x + nx * side * 2, tail.y + ny * side * 2);
+    }
+    ctx.stroke();
+  }
+
   // Estouro no chão: a carga de bacamarte levanta poeira; a granada do Krupp, clarão
-  // e uma nuvem de terra.
+  // e uma nuvem de terra; o tição na palha, fagulha e fumaça escura subindo.
   #burst(ctx, project, spark) {
     const t = spark.time / spark.life;
+    if (spark.kind === 'fire') {
+      const base = project(spark.x, spark.y, 6);
+      ctx.globalAlpha = (1 - t) * .9;
+      ctx.fillStyle = '#ffb040';
+      for (let i = 0; i < 4; i++) {
+        const r = 2.4 * (1 - t) + i * .4;
+        ctx.beginPath();
+        ctx.arc(base.x + Math.sin(i * 2.1 + t * 9) * 5, base.y - t * 14 - i * 3, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = (1 - t) * .5;
+      ctx.fillStyle = '#3a3430';
+      const smoke = project(spark.x, spark.y, 10 + t * 26);
+      ctx.beginPath();
+      ctx.arc(smoke.x, smoke.y, 4 + t * 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      return;
+    }
     const blast = spark.kind === 'blast';
     const center = project(spark.x, spark.y, 2);
     const edge = project(spark.x + spark.radius * (.3 + t * .7), spark.y, 2);
