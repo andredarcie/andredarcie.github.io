@@ -5,121 +5,243 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Carros usados seguros e baratos de manter</title>
 <meta name="description" content="Comparativo de carros usados com airbag e ABS de fábrica: preço FIPE (agosto/2026), preço anunciado, consumo, vão livre, opinião de donos e custo de 5 anos em Divinolândia (SP).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --fundo:#f6f4ef; --papel:#fffdf8; --tinta:#1d1b18; --suave:#5e5850; --linha:#e3ddd1;
-    --destaque:#1f6f5c; --alerta:#9a3b1f;
-    --c-comb:#d08a2e; --c-seg:#4f7cac; --c-ipva:#8a5ca8; --c-dep:#b8483a; --c-lic:#7f8c7a;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{ --fundo:#16150f; --papel:#1f1d17; --tinta:#ece8df; --suave:#a8a194; --linha:#38342b; --destaque:#5fc3a6; --alerta:#e38b6c; }
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--fundo);color:var(--tinta);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-  main{max-width:1180px;margin:0 auto;padding:28px 16px 80px}
-  h1{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:0 0 8px;letter-spacing:-.01em}
-  h2{font-size:24px;margin:48px 0 6px;letter-spacing:-.005em}
-  h3{font-size:18px;margin:28px 0 6px}
-  p{margin:8px 0}
-  a{color:var(--destaque)}
-  .sub{color:var(--suave);max-width:820px}
-  .cartao{background:var(--papel);border:1px solid var(--linha);border-radius:12px;padding:18px 20px;margin:16px 0}
-  .resposta{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:16px}
-  .resposta h3{margin-top:0}
-  .resposta ol{margin:6px 0 0;padding-left:22px}
-  .resposta li{margin:4px 0}
-  .valor{font-variant-numeric:tabular-nums;white-space:nowrap}
-  .legenda{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--suave);margin:10px 0}
-  .legenda i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-  .barras{display:grid;gap:7px;margin-top:6px}
-  .barra{display:grid;grid-template-columns:minmax(150px,280px) 1fr 92px;gap:10px;align-items:center;font-size:14px}
-  .barra .nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .barra .trilho{display:flex;height:20px;border-radius:5px;overflow:hidden;background:var(--linha)}
-  .barra .trilho span{height:100%}
-  .barra .tot{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-  .rank{display:inline-block;min-width:22px;color:var(--suave)}
-  .tabela{overflow-x:auto;border:1px solid var(--linha);border-radius:12px;background:var(--papel);margin-top:14px}
-  table{border-collapse:collapse;width:100%;font-size:14px;min-width:1080px}
-  th,td{padding:9px 10px;border-bottom:1px solid var(--linha);vertical-align:top;text-align:left}
-  th{font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--suave);background:var(--papel);position:sticky;top:0}
-  td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  tr:last-child td{border-bottom:none}
-  .nota{font-size:12.5px;color:var(--suave)}
-  .aviso{color:var(--alerta)}
-  .fonte{font-size:12.5px}
-  .tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:99px;border:1px solid var(--linha);color:var(--suave);margin-left:4px}
-  ul.premissas li{margin:5px 0}
-  details{margin:8px 0}
-  summary{cursor:pointer;font-weight:600}
-  footer{margin-top:56px;color:var(--suave);font-size:14px}
-  td.opiniao{min-width:260px}
-  code{word-break:break-all}
-  .cartao,.sub,td,li{overflow-wrap:anywhere}
-  @media (max-width:640px){ .barra{grid-template-columns:1fr 80px} .barra .trilho{grid-column:1 / -1;grid-row:2} }
-  /* celular: cada linha da tabela vira um cartão, com o nome do campo ao lado do valor */
-  @media (max-width:820px){
-    main{padding:20px 14px 60px}
-    h2{font-size:21px;margin-top:36px}
-    .cartao{padding:14px}
-    .tabela{border:none;background:none;overflow:visible}
-    table{min-width:0;font-size:14.5px}
-    thead{display:none}
-    table,tbody,tr,td{display:block;width:100%}
-    tr{background:var(--papel);border:1px solid var(--linha);border-radius:12px;margin:0 0 14px;padding:4px 14px 8px;position:relative}
-    td{border-bottom:1px solid var(--linha);padding:9px 0;text-align:left!important;white-space:normal!important}
-    tr td:last-child{border-bottom:none}
-    td[data-label]{display:grid;grid-template-columns:minmax(98px,34%) 1fr;gap:10px;align-items:start}
-    td[data-label]::before{content:attr(data-label);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--suave);padding-top:2px}
-    td.pos{position:absolute;top:12px;right:14px;width:auto;border:none;padding:0;font-weight:700;color:var(--suave)}
-    td.carro{padding-right:44px;font-size:16px}
-    td.opiniao{min-width:0}
-    td.total{font-size:16px}
-    .legenda{gap:10px;font-size:13px}
-  }
+/* Hallmark · shape: Long Document · genre: editorial · theme: Ink (deal 3/3, seed relat-rio-comparativo-carros-a4ce·fe3ff22d·2026-10-26·r0) · redesign: full · ink: paper
+ * hero: Settled · nav: edge-aligned wordmark and five section links · footer: a line with the wordmark and the collection date · imagery: none · signature: the ruled list of the cheapest cars to own, the winner of each group in teal
+ * axes: light/grotesk-sans/chromatic-teal · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V3 · weakest: V, long reports converge on the same shape; the hero leads with the answer itself (the ruled list of 5-year totals) instead of describing the report */
+/* Hallmark · waive 22 · ink and greys at zero chroma · the theme is printed in plain black, and the cost chart is a grey ramp so the teal keeps meaning "lowest cost" */
+/* Hallmark · waive 58 · a reference report: the tables, the method and the sources are the page, every word the owner's */
+/* Hallmark · waive sweep-render · the repo's CLAUDE.md forbids opening a browser; checked with node --check and by reading */
+:root {
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px;
+  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem;
+  --text-display: clamp(2.5rem, 4.5vw + 1rem, 4.5rem); --text-section: clamp(1.75rem, 2vw + 1rem, 2.75rem); --text-title: clamp(1.125rem, 0.5vw + 0.95rem, 1.375rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.3rem);
+  --dur-micro: 120ms;
+  --container: 1280px; --gutter: 48px; --gap-columns: 32px; --section-gap: 112px;
+  --color-paper: oklch(99.5% 0.003 100); --color-paper-2: oklch(97% 0.004 100); --color-paper-3: oklch(94% 0.006 100);
+  --color-ink: oklch(16% 0 0); --color-ink-2: oklch(28% 0 0); --color-muted: oklch(44% 0 0);
+  --color-rule: oklch(89% 0.004 100); --color-rule-2: oklch(93.5% 0.003 100);
+  --color-accent: oklch(50% 0.095 188); --color-accent-ink: oklch(99.5% 0.003 100); --color-accent-soft: oklch(93% 0.05 190); --color-accent-soft-ink: oklch(27% 0.045 190);
+  --color-focus: oklch(50% 0.095 188);
+  /* the five parts of the 5-year cost, a grey ramp from ink to rule */
+  --color-seg-comb: oklch(16% 0 0); --color-seg-seg: oklch(38% 0 0); --color-seg-ipva: oklch(56% 0 0); --color-seg-dep: oklch(72% 0 0); --color-seg-lic: oklch(85% 0 0);
+  --font-display: "Epilogue", ui-sans-serif, system-ui, sans-serif; --font-body: var(--font-display);
+  --radius-card: 12px; --radius-control: 10px; --radius-pill: 999px; --rule-hair: 1px;
+  --tracking-display: -0.04em; --display-weight: 700;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scroll-padding-top: var(--space-2xl); }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink-2); font-family: var(--font-body); font-size: var(--text-md); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+a { color: var(--color-ink); font-weight: 600; text-decoration-thickness: 1px; text-underline-offset: 0.16em; transition: text-decoration-color var(--dur-micro); }
+a:hover { text-decoration-color: var(--color-accent); }
+h1, h2, h3 { margin: 0; color: var(--color-ink); font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--tracking-display); line-height: 1.04; overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
+h1 { font-size: var(--text-display); max-width: 13ch; line-height: 1; }
+h2 { font-size: var(--text-section); max-width: 26ch; }
+h3 { font-size: var(--text-title); letter-spacing: -0.02em; line-height: 1.2; }
+p { margin: 0; text-wrap: pretty; }
+b, strong { color: var(--color-ink); font-weight: 600; }
+code { font-size: 0.92em; word-break: break-all; }
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.num { font-variant-numeric: tabular-nums; }
+.lead { font-size: var(--text-lead); line-height: 1.45; max-width: 46ch; color: var(--color-ink-2); }
+.texto { max-width: 68ch; }
+.pequeno { font-size: var(--text-sm); color: var(--color-muted); }
+.atencao { color: var(--color-ink); font-weight: 600; }
+
+/* nav */
+.topo { border-bottom: var(--rule-hair) solid var(--color-ink); }
+.topo .container { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); min-height: 64px; flex-wrap: wrap; padding-block: var(--space-sm); }
+.marca { color: var(--color-ink); font-weight: 700; letter-spacing: -0.02em; text-decoration: none; }
+.topo nav { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); font-size: var(--text-sm); }
+.topo nav a { font-weight: 400; color: var(--color-ink-2); text-decoration: none; }
+.topo nav a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); }
+
+/* hero: the answer on the first screen */
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-2xl); align-items: start; padding-block: var(--space-2xl) var(--space-3xl); }
+.hero-texto { display: grid; gap: var(--space-lg); padding-top: var(--space-xl); }
+.acoes { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: var(--space-sm) var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-control); background: var(--color-paper-2); color: var(--color-ink); font-weight: 600; text-decoration: none; transition: background-color var(--dur-micro), border-color var(--dur-micro); }
+.btn:hover { border-color: var(--color-ink); }
+.btn:active { background: var(--color-paper-3); }
+.btn--primary { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); }
+.btn--primary:hover { background: var(--color-ink-2); }
+.resposta { display: grid; gap: var(--space-xl); }
+.grupo-titulo { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-md); margin-bottom: var(--space-xs); }
+.grupo-titulo span { font-size: var(--text-sm); color: var(--color-muted); }
+.ruled { list-style: none; margin: 0; padding: 0; border-top: var(--rule-hair) solid var(--color-ink); }
+.ruled > li { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.top-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-xs) var(--space-lg); align-items: center; padding: var(--space-sm) 0; }
+.top-item .nome { color: var(--color-ink); font-weight: 600; font-size: var(--text-lg); letter-spacing: -0.01em; }
+.top-item .meta { font-size: var(--text-sm); color: var(--color-muted); grid-column: 1; }
+.top-item .valor { grid-column: 2; grid-row: 1 / span 2; text-align: right; color: var(--color-ink); font-weight: 700; font-size: var(--text-xl); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.tag { display: inline-flex; align-items: center; padding: var(--space-3xs) var(--space-sm); border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 600; vertical-align: 0.15em; margin-left: var(--space-xs); }
+.tag--in { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); }
+
+/* sections */
+.secao { padding-block: var(--section-gap) 0; }
+.secao > .container > h2 { margin-bottom: var(--space-md); }
+.secao .intro { display: grid; gap: var(--space-sm); margin-bottom: var(--space-xl); }
+.banda { background: var(--color-paper-2); border-block: var(--rule-hair) solid var(--color-rule); padding-block: var(--space-2xl); margin-top: var(--section-gap); }
+.banda + .secao { padding-top: var(--space-2xl); }
+.legenda { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); margin-top: var(--space-lg); padding: 0; list-style: none; }
+.legenda i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: var(--space-xs); vertical-align: -2px; box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule); }
+
+/* the 5-year cost chart */
+.grafico { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-lg); margin-bottom: var(--space-xl); }
+.barras { display: grid; gap: var(--space-xs); }
+.barra { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr) 96px; gap: var(--space-sm); align-items: center; font-size: var(--text-sm); }
+.barra .nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-ink); }
+.barra .rank { display: inline-block; min-width: 2.2em; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.barra .trilho { display: flex; height: 18px; border-radius: 4px; overflow: hidden; background: var(--color-paper-3); }
+.barra .trilho span { height: 100%; box-shadow: inset -1px 0 0 var(--color-paper-2); }
+.barra .tot { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--color-ink); }
+.barra--menor .tot { color: var(--color-accent); }
+
+/* tables */
+.tabela { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); min-width: 1080px; border-top: var(--rule-hair) solid var(--color-ink); }
+th, td { padding: var(--space-sm) var(--space-xs); border-bottom: var(--rule-hair) solid var(--color-rule); vertical-align: top; text-align: left; }
+th { font-size: var(--text-xs); font-weight: 400; color: var(--color-muted); background: var(--color-paper); position: sticky; top: 0; }
+td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.opiniao { min-width: 260px; }
+td.carro b { font-size: var(--text-md); }
+.nota { font-size: var(--text-xs); color: var(--color-muted); margin-top: var(--space-3xs); }
+.nota b, .nota .atencao { color: var(--color-ink); }
+.fonte { font-size: var(--text-xs); margin-top: var(--space-3xs); }
+.rodape-tabela { margin-top: var(--space-md); }
+.lista { list-style: none; margin: 0; padding: 0; border-top: var(--rule-hair) solid var(--color-ink); max-width: 80ch; }
+.lista > li { padding: var(--space-md) 0; border-bottom: var(--rule-hair) solid var(--color-rule); overflow-wrap: anywhere; }
+.lista > li > b:first-child { display: block; margin-bottom: var(--space-3xs); }
+.depois { margin-top: var(--space-md); }
+
+/* footer */
+.pe { margin-top: var(--section-gap); border-top: var(--rule-hair) solid var(--color-ink); }
+.pe .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-md); padding-block: var(--space-xl) var(--space-2xl); font-size: var(--text-sm); color: var(--color-muted); }
+.pe .marca { font-size: var(--text-md); }
+
+@media (max-width: 60rem) {
+  :root { --gutter: 24px; --section-gap: 80px; }
+  .hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); padding-block: var(--space-xl) var(--space-2xl); }
+  .hero-texto { padding-top: 0; }
+}
+@media (max-width: 40rem) {
+  :root { --gutter: 16px; --section-gap: 64px; }
+  .barra { grid-template-columns: minmax(0, 1fr) 84px; }
+  .barra .trilho { grid-column: 1 / -1; grid-row: 2; }
+  .grafico { padding: var(--space-md); }
+  .top-item .nome { font-size: var(--text-md); }
+  .top-item .valor { font-size: var(--text-lg); }
+}
+/* phone: each table row becomes a card, the field's name beside its value */
+@media (max-width: 820px) {
+  table { min-width: 0; font-size: var(--text-sm); border-top: none; }
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { border: var(--rule-hair) solid var(--color-rule); border-top: var(--rule-hair) solid var(--color-ink); border-radius: var(--radius-card); margin: 0 0 var(--space-md); padding: var(--space-2xs) var(--space-md) var(--space-xs); position: relative; }
+  td { padding: var(--space-xs) 0; text-align: left !important; white-space: normal !important; overflow-wrap: anywhere; }
+  tr td:last-child { border-bottom: none; }
+  td[data-label] { display: grid; grid-template-columns: minmax(96px, 34%) minmax(0, 1fr); gap: var(--space-sm); align-items: start; }
+  td[data-label]::before { content: attr(data-label); font-size: var(--text-xs); color: var(--color-muted); padding-top: var(--space-3xs); }
+  td.pos { position: absolute; top: var(--space-sm); right: var(--space-md); width: auto; border: none; padding: 0; font-weight: 700; color: var(--color-muted); }
+  td.carro { padding-right: 44px; }
+  td.opiniao { min-width: 0; }
+  td.total { font-size: var(--text-md); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
 </style>
 </head>
 <body>
-<main>
-  <h1>Carros usados com airbag e ABS de fábrica: quais custam menos para ter por 5 anos</h1>
-  <p class="sub">Comparativo para quem mora em Divinolândia (SP) e roda 7 mil km por ano. Dois grupos: carros até 2008 e carros de 2014. Todo número vem de uma fonte citada; onde a fonte não traz o dado, a tabela diz isso em vez de estimar.</p>
-
-  <section class="cartao" id="resposta"></section>
-
-  <h2>Como ler o custo de 5 anos</h2>
-  <p class="sub">É o que sai do bolso de 2027 a 2031, em reais de agosto de 2026 (sem projetar inflação): combustível, seguro, IPVA, licenciamento e a perda de valor do carro (depreciação). <b>Manutenção não está incluída</b>: não há fonte pública confiável por modelo; veja as <a href="#limites">limitações</a>.</p>
-  <div class="legenda">
-    <span><i style="background:var(--c-comb)"></i>Combustível</span>
-    <span><i style="background:var(--c-seg)"></i>Seguro</span>
-    <span><i style="background:var(--c-ipva)"></i>IPVA</span>
-    <span><i style="background:var(--c-dep)"></i>Depreciação</span>
-    <span><i style="background:var(--c-lic)"></i>Licenciamento</span>
+<header class="topo">
+  <div class="container">
+    <a class="marca" href="#topo">Carros usados em Divinolândia</a>
+    <nav aria-label="Seções">
+      <a href="#g2008">Até 2008</a>
+      <a href="#g2014">2014</a>
+      <a href="#metodo">Como foi calculado</a>
+      <a href="#limites">Limitações</a>
+      <a href="#fontes">Fontes</a>
+    </nav>
   </div>
+</header>
 
-  <section id="g2008"></section>
-  <section id="g2014"></section>
+<main id="topo">
+  <section class="hero container" aria-labelledby="titulo">
+    <div class="hero-texto">
+      <h1 id="titulo">Carros seguros mais baratos de manter</h1>
+      <p class="lead">Custo de 5 anos em Divinolândia, com airbag e ABS de fábrica.</p>
+      <div class="acoes">
+        <a class="btn btn--primary" href="#g2008">Ver os comparativos</a>
+        <a class="btn" href="#metodo">Como foi calculado</a>
+      </div>
+    </div>
+    <div id="resposta" aria-label="Resposta curta"></div>
+  </section>
 
-  <h2 id="metodo">Como foi calculado</h2>
-  <div class="cartao" id="premissas"></div>
+  <section class="banda" aria-labelledby="como-ler">
+    <div class="container">
+      <h2 id="como-ler">Como ler o custo de 5 anos</h2>
+      <div class="intro texto" style="margin:var(--space-md) 0 0">
+        <p>Comparativo para quem mora em Divinolândia (SP) e roda 7 mil km por ano. Dois grupos: carros até 2008 e carros de 2014. Todo número vem de uma fonte citada; onde a fonte não traz o dado, a tabela diz isso em vez de estimar.</p>
+        <p>O custo é o que sai do bolso de 2027 a 2031, em reais de agosto de 2026 (sem projetar inflação): combustível, seguro, IPVA, licenciamento e a perda de valor do carro (depreciação). <b>Manutenção não está incluída</b>: não há fonte pública confiável por modelo; veja as <a href="#limites">limitações</a>.</p>
+      </div>
+      <ul class="legenda" aria-label="Legenda do gráfico">
+        <li><i style="background:var(--color-seg-comb)"></i>Combustível</li>
+        <li><i style="background:var(--color-seg-seg)"></i>Seguro</li>
+        <li><i style="background:var(--color-seg-ipva)"></i>IPVA</li>
+        <li><i style="background:var(--color-seg-dep)"></i>Depreciação</li>
+        <li><i style="background:var(--color-seg-lic)"></i>Licenciamento</li>
+      </ul>
+    </div>
+  </section>
 
-  <h2 id="limites">Limitações (leia antes de decidir)</h2>
-  <div class="cartao">
-    <ul class="premissas">
-      <li><b>Manutenção não entra no custo.</b> Não existe base pública e confiável de custo de manutenção por modelo para carros dessa idade. Pneus, freios, suspensão e correias podem somar alguns milhares de reais em 5 anos. As opiniões de donos ajudam a ver onde cada carro costuma dar despesa.</li>
-      <li><b>O seguro é uma estimativa.</b> A SUSEP publica o prêmio médio de seguro por modelo, ano e região, mas a base mais recente para download é do 1º semestre de 2021. Aqui se usa a <i>taxa</i> daquela época (prêmio ÷ valor segurado), aplicada ao valor FIPE de agosto/2026. O preço real depende de quem dirige, da idade, do CEP, da garagem e da franquia. Use o número para comparar carros entre si, e peça cotações antes de comprar.</li>
-      <li><b>A depreciação repete os últimos 5 anos.</b> Ela supõe que o carro vai perder valor real (acima da inflação) no mesmo ritmo de agosto/2021 a agosto/2026. Esse período inclui a alta dos usados de 2021–2022.</li>
-      <li><b>O preço anunciado não é o preço de fechamento.</b> É o que os vendedores pedem na Mobiauto (mediana dos anúncios da versão, no estado de SP; com poucos anúncios em SP, no Brasil todo). Com menos de 3 anúncios, o valor não é mostrado.</li>
-      <li><b>Consumo com etanol só onde a fonte informa.</b> Alguns carros de 2008 eram só a gasolina, ou a fonte só traz a gasolina; para eles o cálculo usa gasolina, mais cara por km, e a tabela marca isso.</li>
-      <li><b class="aviso">A lista de 2008 está incompleta.</b> Entram só as versões em que a Ficha Completa lista airbag frontal e freio ABS como equipamento de série. Mas a Ficha Completa só informa os equipamentos de 57 das 242 versões de 2008 consultadas. Destes 41 modelos ela não traz equipamento de nenhuma versão, então eles <b>não foram avaliados</b> (alguns certamente tinham airbag e ABS em versões mais caras): Chevrolet Celta, Prisma, Corsa, Corsa Sedan, Classic, Astra, Astra Sedan, Meriva e Zafira; Fiat Uno, Palio, Palio Weekend, Siena, Idea e Doblò; Ford Ka, Fiesta, Fiesta Sedan, Focus, Focus Sedan e EcoSport; VW Gol, Fox, Polo, Polo Sedan, Golf, Parati, SpaceFox, Bora e CrossFox; Renault Clio, Clio Sedan, Logan e Sandero; Peugeot 206, 307 e 307 Sedan; Citroën Xsara Picasso; Honda Fit; Toyota Corolla; Kia Cerato. A fonte que separa equipamento de série e opcional para esses carros (Carros na Web) bloqueou o acesso automatizado durante a pesquisa. Em 2014 o Fiat Grand Siena ficou de fora por não ter ficha técnica nessa fonte, e não foi possível confirmar os itens.</li>
-      <li><b>Um modelo, uma versão.</b> Cada modelo entra com a versão mais simples que tem airbag e ABS de série. Edições especiais não contam como versão de entrada, mesmo quando a FIPE as lista mais baratas (em 2014, Voyage Seleção 1.6 a R$ 33.760 e C4 Rock You 1.6 a R$ 31.105, contra R$ 38.570 do Voyage 1.0 e R$ 39.824 do C4 Tendance 1.6). O Fiesta 2014 aparece como o hatch Rocam 1.0; o New Fiesta 1.5, mais caro, conta como o mesmo modelo.</li>
-      <li><b>Opiniões de donos não são amostra estatística.</b> São avaliações voluntárias no CarroClub, de todos os anos da mesma geração do carro. Onde há poucas, isso está dito.</li>
-    </ul>
-  </div>
+  <section class="secao" id="g2008"></section>
+  <section class="secao" id="g2014"></section>
 
-  <h2 id="fontes">Fontes</h2>
-  <div class="cartao" id="lista-fontes"></div>
+  <section class="secao" aria-labelledby="metodo">
+    <div class="container">
+      <h2 id="metodo">Como foi calculado</h2>
+      <div id="premissas"></div>
+    </div>
+  </section>
 
-  <footer id="rodape"></footer>
+  <section class="banda" aria-labelledby="limites">
+    <div class="container">
+      <h2 id="limites">Limitações (leia antes de decidir)</h2>
+      <ul class="lista depois">
+        <li><b>Manutenção não entra no custo.</b> Não existe base pública e confiável de custo de manutenção por modelo para carros dessa idade. Pneus, freios, suspensão e correias podem somar alguns milhares de reais em 5 anos. As opiniões de donos ajudam a ver onde cada carro costuma dar despesa.</li>
+        <li><b>O seguro é uma estimativa.</b> A SUSEP publica o prêmio médio de seguro por modelo, ano e região, mas a base mais recente para download é do 1º semestre de 2021. Aqui se usa a taxa daquela época (prêmio ÷ valor segurado), aplicada ao valor FIPE de agosto/2026. O preço real depende de quem dirige, da idade, do CEP, da garagem e da franquia. Use o número para comparar carros entre si, e peça cotações antes de comprar.</li>
+        <li><b>A depreciação repete os últimos 5 anos.</b> Ela supõe que o carro vai perder valor real (acima da inflação) no mesmo ritmo de agosto/2021 a agosto/2026. Esse período inclui a alta dos usados de 2021–2022.</li>
+        <li><b>O preço anunciado não é o preço de fechamento.</b> É o que os vendedores pedem na Mobiauto (mediana dos anúncios da versão, no estado de SP; com poucos anúncios em SP, no Brasil todo). Com menos de 3 anúncios, o valor não é mostrado.</li>
+        <li><b>Consumo com etanol só onde a fonte informa.</b> Alguns carros de 2008 eram só a gasolina, ou a fonte só traz a gasolina; para eles o cálculo usa gasolina, mais cara por km, e a tabela marca isso.</li>
+        <li><b>A lista de 2008 está incompleta.</b> Entram só as versões em que a Ficha Completa lista airbag frontal e freio ABS como equipamento de série. Mas a Ficha Completa só informa os equipamentos de 57 das 242 versões de 2008 consultadas. Destes 41 modelos ela não traz equipamento de nenhuma versão, então eles não foram avaliados (alguns certamente tinham airbag e ABS em versões mais caras): Chevrolet Celta, Prisma, Corsa, Corsa Sedan, Classic, Astra, Astra Sedan, Meriva e Zafira; Fiat Uno, Palio, Palio Weekend, Siena, Idea e Doblò; Ford Ka, Fiesta, Fiesta Sedan, Focus, Focus Sedan e EcoSport; VW Gol, Fox, Polo, Polo Sedan, Golf, Parati, SpaceFox, Bora e CrossFox; Renault Clio, Clio Sedan, Logan e Sandero; Peugeot 206, 307 e 307 Sedan; Citroën Xsara Picasso; Honda Fit; Toyota Corolla; Kia Cerato. A fonte que separa equipamento de série e opcional para esses carros (Carros na Web) bloqueou o acesso automatizado durante a pesquisa. Em 2014 o Fiat Grand Siena ficou de fora por não ter ficha técnica nessa fonte, e não foi possível confirmar os itens.</li>
+        <li><b>Um modelo, uma versão.</b> Cada modelo entra com a versão mais simples que tem airbag e ABS de série. Edições especiais não contam como versão de entrada, mesmo quando a FIPE as lista mais baratas (em 2014, Voyage Seleção 1.6 a R$&nbsp;33.760 e C4 Rock You 1.6 a R$&nbsp;31.105, contra R$&nbsp;38.570 do Voyage 1.0 e R$&nbsp;39.824 do C4 Tendance 1.6). O Fiesta 2014 aparece como o hatch Rocam 1.0; o New Fiesta 1.5, mais caro, conta como o mesmo modelo.</li>
+        <li><b>Opiniões de donos não são amostra estatística.</b> São avaliações voluntárias no CarroClub, de todos os anos da mesma geração do carro. Onde há poucas, isso está dito.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="fontes">
+    <div class="container">
+      <h2 id="fontes">Fontes</h2>
+      <div id="lista-fontes" class="depois"></div>
+    </div>
+  </section>
 </main>
+
+<footer class="pe">
+  <div class="container">
+    <span class="marca">Carros usados em Divinolândia</span>
+    <span id="rodape"></span>
+  </div>
+</footer>
+
 <script src="dados.js"></script>
 <script>
 (() => {
@@ -132,38 +254,41 @@
   const MIN_ANUNCIOS = 3;
 
   const TITULOS = {
-    2008: ['Comparativo 1: carros até 2008', 'Ano-modelo 2008, o mais novo permitido. Estes 14 modelos têm airbag frontal e freio ABS de série confirmados na ficha técnica; cada um entra com a versão mais simples que tem os dois. <b class="aviso">Atenção:</b> a fonte não informa os equipamentos de 41 outros modelos de 2008 (entre eles Corolla, Fit, Golf, Astra, 307 e Focus), que por isso não foram avaliados — veja as <a href="#limites">limitações</a>. Esta lista não é "todos os carros de 2008 com airbag e ABS".'],
-    2014: ['Comparativo 2: carros de 2008 a 2016 (ano-modelo 2014)', 'Desde 1º/1/2014 todo carro novo fabricado no Brasil precisa ter airbag frontal e ABS (cronogramas das Resoluções CONTRAN 311/2009, do airbag, e 312/2009, do ABS, esta depois substituída pela 380/2011), então a partir do ano-modelo 2014 quase todas as versões têm os dois itens. Ainda assim, um carro ano-modelo 2014 pode ter sido fabricado em 2013, por isso a ficha de cada versão foi conferida. Dos 52 modelos de passeio de 2014 com ficha técnica (318 versões conferidas), 50 têm versão com os dois itens; ficaram os 15 cuja versão mais simples com airbag e ABS de série tem o menor preço FIPE.'],
+    2008: ['Comparativo 1: carros até 2008', 'Ano-modelo 2008, o mais novo permitido. Estes 14 modelos têm airbag frontal e freio ABS de série confirmados na ficha técnica; cada um entra com a versão mais simples que tem os dois.', '<span class="atencao">Atenção:</span> a fonte não informa os equipamentos de 41 outros modelos de 2008 (entre eles Corolla, Fit, Golf, Astra, 307 e Focus), que por isso não foram avaliados; veja as <a href="#limites">limitações</a>. Esta lista não é "todos os carros de 2008 com airbag e ABS".'],
+    2014: ['Comparativo 2: carros de 2008 a 2016 (ano-modelo 2014)', 'Desde 1º/1/2014 todo carro novo fabricado no Brasil precisa ter airbag frontal e ABS (cronogramas das Resoluções CONTRAN 311/2009, do airbag, e 312/2009, do ABS, esta depois substituída pela 380/2011), então a partir do ano-modelo 2014 quase todas as versões têm os dois itens. Ainda assim, um carro ano-modelo 2014 pode ter sido fabricado em 2013, por isso a ficha de cada versão foi conferida.', 'Dos 52 modelos de passeio de 2014 com ficha técnica (318 versões conferidas), 50 têm versão com os dois itens; ficaram os 15 cuja versão mais simples com airbag e ABS de série tem o menor preço FIPE.'],
   };
 
-  // ---- resposta curta
+  // ---- resposta curta: the ruled list of the cheapest to own, in the hero
   const top = (g, n) => D.grupos[g].slice(0, n);
   document.getElementById('resposta').innerHTML = `
-    <h2 style="margin-top:0">Resposta curta</h2>
-    <p class="sub">Os carros com menor custo total em 5 anos (combustível, seguro, IPVA, licenciamento e depreciação), em cada grupo:</p>
     <div class="resposta">
-      ${[2008, 2014].map(g => `<div><h3>${g === 2008 ? 'Até 2008 (entre os 14 modelos que puderam ser avaliados)' : 'De 2008 a 2016 (ano-modelo 2014)'}</h3><ol>${top(g, 3).map(c =>
-        `<li><b>${esc(c.nome)}</b> ${g === 2008 ? c.ano : ''} — <span class="valor">${R(c.custo.total)}</span> em 5 anos <span class="nota">(${R(c.custo.total / 5)}/ano; FIPE ${R(c.fipe[2026])})</span></li>`).join('')}</ol></div>`).join('')}
-    </div>
-    <p class="nota">Diferenças de poucos milhares de reais em 5 anos ficam dentro da incerteza do seguro e da depreciação: trate os primeiros colocados de cada grupo como empatados e decida pelo estado do carro, pelo histórico e pelas opiniões dos donos.</p>`;
+      ${[2008, 2014].map(g => `<div>
+        <div class="grupo-titulo"><h3>${g === 2008 ? 'Até 2008' : 'De 2008 a 2016'}</h3><span>${g === 2008 ? 'entre os 14 modelos que puderam ser avaliados' : 'ano-modelo 2014'}</span></div>
+        <ol class="ruled">${top(g, 3).map((c, i) =>
+          `<li class="top-item"><span class="nome">${esc(c.nome)}${g === 2008 ? ' ' + c.ano : ''}${i === 0 ? '<span class="tag tag--in">menor custo</span>' : ''}</span>
+            <span class="meta">${R(c.custo.total / 5)} por ano; FIPE ${R(c.fipe[2026])}</span>
+            <span class="valor">${R(c.custo.total)}</span></li>`).join('')}</ol>
+      </div>`).join('')}
+      <p class="pequeno">Total em 5 anos: combustível, seguro, IPVA, licenciamento e depreciação. Diferenças de poucos milhares de reais em 5 anos ficam dentro da incerteza do seguro e da depreciação: trate os primeiros colocados de cada grupo como empatados e decida pelo estado do carro, pelo histórico e pelas opiniões dos donos.</p>
+    </div>`;
 
   // ---- grupos
   for (const g of [2008, 2014]) {
     const L = D.grupos[g], max = Math.max(...L.map(c => c.custo.total));
-    const comp = [['combustivel', '--c-comb'], ['seguro', '--c-seg'], ['ipva', '--c-ipva'], ['depreciacao', '--c-dep'], ['licenciamento', '--c-lic']];
-    const barras = L.map((c, i) => `<div class="barra" title="${esc(c.nome)}: combustível ${R(c.custo.combustivel)}, seguro ${R(c.custo.seguro)}, IPVA ${R(c.custo.ipva)}, depreciação ${R(c.custo.depreciacao)}, licenciamento ${R(c.custo.licenciamento)}">
-        <div class="nome"><span class="rank">${i + 1}.</span>${esc(c.nome)}</div>
+    const comp = [['combustivel', '--color-seg-comb'], ['seguro', '--color-seg-seg'], ['ipva', '--color-seg-ipva'], ['depreciacao', '--color-seg-dep'], ['licenciamento', '--color-seg-lic']];
+    const barras = L.map((c, i) => `<div class="barra${i === 0 ? ' barra--menor' : ''}" title="${esc(c.nome)}: combustível ${R(c.custo.combustivel)}, seguro ${R(c.custo.seguro)}, IPVA ${R(c.custo.ipva)}, depreciação ${R(c.custo.depreciacao)}, licenciamento ${R(c.custo.licenciamento)}">
+        <div class="nome"><span class="rank">${i + 1}º</span>${esc(c.nome)}</div>
         <div class="trilho">${comp.map(([k, cor]) => `<span style="width:${Math.max(0, c.custo[k] || 0) / max * 100}%;background:var(${cor})"></span>`).join('')}</div>
         <div class="tot">${R(c.custo.total)}</div></div>`).join('');
     const linhas = L.map((c, i) => {
       const pr = c.precoReal;
       const real = pr && pr.n >= MIN_ANUNCIOS
-        ? `${R(pr.mediana)}<div class="nota">mediana de ${pr.n} anúncios (${pr.regiao})${pr.n < P.mobiMin ? ' <span class="aviso">— poucos</span>' : ''}<br>${link(pr.fonte, 'Mobiauto')}</div>`
-        : `<span class="nota">anúncios insuficientes (${pr ? pr.n : 0})<br>${pr ? link(pr.fonte, 'Mobiauto') : ''}</span>`;
+        ? `${R(pr.mediana)}<div class="nota">mediana de ${pr.n} anúncios (${pr.regiao})${pr.n < P.mobiMin ? ', <span class="atencao">poucos</span>' : ''}</div><div class="fonte">${link(pr.fonte, 'Mobiauto')}</div>`
+        : `<span class="nota">anúncios insuficientes (${pr ? pr.n : 0})</span>${pr ? `<div class="fonte">${link(pr.fonte, 'Mobiauto')}</div>` : ''}`;
       const u = c.consumoUsado, cons = c.ficha.consumo;
       const consumo = cons.etanolUrbano
         ? `<b>Etanol</b> ${N1(cons.etanolUrbano)} / ${N1(cons.etanolRodoviario)}<div class="nota">Gasolina ${N1(cons.gasolinaUrbano)} / ${N1(cons.gasolinaRodoviario)}</div>`
-        : `<b>Gasolina</b> ${N1(cons.gasolinaUrbano)} / ${N1(cons.gasolinaRodoviario)}<div class="nota aviso">${c.combustivelNota ? 'só gasolina no ano 2008' : 'etanol não informado na fonte'}</div>`;
+        : `<b>Gasolina</b> ${N1(cons.gasolinaUrbano)} / ${N1(cons.gasolinaRodoviario)}<div class="nota atencao">${c.combustivelNota ? 'só gasolina no ano 2008' : 'etanol não informado na fonte'}</div>`;
       const solo = c.alturaSolo
         ? `${c.alturaSolo} mm${c.alturaSoloNota ? `<div class="nota">${esc(c.alturaSoloNota)}</div>` : ''}<div class="fonte">${link(c.alturaSoloFonte, 'fonte')}</div>`
         : '<span class="nota">não informado nas fontes</span>';
@@ -174,7 +299,7 @@
       const isento = c.ano === 2008 ? `<div class="nota">isento a partir de ${c.ano + P.ipvaIsencaoIdade}</div>` : '';
       return `<tr>
         <td class="n pos">${i + 1}º</td>
-        <td class="carro"><b>${esc(c.nome)}</b> ${c.ano}<div class="fonte">${link(c.ficha.url, 'ficha técnica')} · FIPE ${esc(c.codigoFipe)}</div>${c.confirmacao ? `<div class="nota">airbag e ABS também em: ${c.confirmacao.map(([t, u]) => link(u, t)).join('; ')}</div>` : ''}${c.alerta ? `<div class="nota aviso">⚠ ${esc(c.alerta)}</div>` : ''}</td>
+        <td class="carro"><b>${esc(c.nome)}</b> ${c.ano}${i === 0 ? '<span class="tag tag--in">menor custo</span>' : ''}<div class="fonte">${link(c.ficha.url, 'ficha técnica')}</div><div class="nota">código FIPE ${esc(c.codigoFipe)}</div>${c.confirmacao ? `<div class="nota">airbag e ABS também em: ${c.confirmacao.map(([t, u]) => link(u, t)).join('; ')}</div>` : ''}${c.alerta ? `<div class="nota"><span class="atencao">Atenção:</span> ${esc(c.alerta)}</div>` : ''}</td>
         <td class="n" data-label="FIPE">${R(c.fipe[2026])}<div class="nota">ago/2026</div></td>
         <td class="n" data-label="Preço anunciado">${real}</td>
         <td data-label="Consumo">${consumo}<div class="nota">km/l cidade / estrada</div><div class="fonte">${u.confirma ? `Ficha Completa; ${link(u.confirma[1], u.confirma[0])}` : u.fonteNome === 'Ficha Completa' ? `${link(u.fonte, 'Ficha Completa')} <span class="nota">(sem medição do Inmetro ${c.ano === 2008 ? 'para 2008' : 'nas tabelas de 2013 a 2015'})</span>` : link(u.fonte, u.fonteNome)}</div></td>
@@ -187,51 +312,54 @@
         <td class="n total" data-label="Total em 5 anos"><b>${R(c.custo.total)}</b><div class="nota">${R(c.custo.total / 5)}/ano</div></td>
       </tr>`;
     }).join('');
-    document.getElementById('g' + g).innerHTML = `
+    document.getElementById('g' + g).innerHTML = `<div class="container">
       <h2>${TITULOS[g][0]}</h2>
-      <p class="sub">${TITULOS[g][1]} Ordem: do menor para o maior custo em 5 anos.</p>
-      <div class="cartao"><div class="barras">${barras}</div></div>
+      <div class="intro texto"><p>${TITULOS[g][1]}</p><p>${TITULOS[g][2]} Ordem: do menor para o maior custo em 5 anos.</p></div>
+      <div class="grafico"><div class="barras">${barras}</div></div>
       <div class="tabela"><table>
-        <thead><tr><th>#</th><th>Carro (versão)</th><th>FIPE</th><th>Preço anunciado</th><th>Consumo</th><th>Vão livre</th><th>Opinião de donos</th>
+        <thead><tr><th>Posição</th><th>Carro (versão)</th><th>FIPE</th><th>Preço anunciado</th><th>Consumo</th><th>Vão livre</th><th>Opinião de donos</th>
           <th>Combustível 5 anos</th><th>Seguro</th><th>IPVA 5 anos</th><th>Depreciação 5 anos</th><th>Total 5 anos</th></tr></thead>
         <tbody>${linhas}</tbody></table></div>
-      <p class="nota">Licenciamento (${R(P.licenciamento)}/ano, ${R(P.licenciamento * 5)} em 5 anos) está somado no total de todos.</p>`;
+      <p class="pequeno rodape-tabela">Licenciamento (${R(P.licenciamento)}/ano, ${R(P.licenciamento * 5)} em 5 anos) está somado no total de todos.</p>
+    </div>`;
   }
 
   // ---- premissas
   const etan = Object.entries(P.etanol).map(([k, v]) => `${k} R$ ${v.toFixed(2).replace('.', ',')}`).join(' e ');
   const gas = Object.entries(P.gasolina).map(([k, v]) => `${k} R$ ${v.toFixed(2).replace('.', ',')}`).join(' e ');
-  document.getElementById('premissas').innerHTML = `<ul class="premissas">
-    <li><b>Período:</b> 5 anos de posse, de 2027 a 2031, comprando o carro agora. Todos os valores em reais de agosto de 2026.</li>
-    <li><b>Quilometragem:</b> ${P.kmAno.toLocaleString('pt-BR')} km por ano, metade na cidade e metade na estrada.</li>
-    <li><b>Combustível:</b> etanol sempre que a ficha técnica traz o consumo com etanol. Preço médio das semanas de agosto/2026 na pesquisa da ANP nas duas cidades paulistas pesquisadas mais próximas de Divinolândia, que não entra na pesquisa (São José do Rio Pardo, Caconde, Vargem Grande do Sul e Espírito Santo do Pinhal também não entram; Poços de Caldas, em MG, foi deixada de fora porque o imposto sobre combustível é de outro estado): ${etan} (média R$ ${P.precoEtanol.toFixed(2).replace('.', ',')}). A gasolina, usada quando não há dado de etanol, custou ${gas} (média R$ ${P.precoGasolina.toFixed(2).replace('.', ',')}). O etanol custou cerca de ${pct(P.precoEtanol / P.precoGasolina)} do preço da gasolina, abaixo da referência de 70% em que ele passa a compensar.</li>
-    <li><b>Consumo:</b> em km/l, cidade e estrada. Para os carros de 2014 foi conferido nas tabelas oficiais do Inmetro (PBE Veicular 2013 a 2015): em 6 carros a Ficha Completa bate com o Inmetro; em 3 (up!, Sandero e Uno) os valores divergem e o cálculo usa os do Inmetro (quando o Inmetro tem duas medições da versão, usa-se a com ar-condicionado); 6 carros (Classic, Celta, Cobalt, Spin, Fiesta 1.0 e Linea) não aparecem nas tabelas desses anos e ficam com o valor da Ficha Completa. Os carros de 2008 não têm medição do Inmetro (a tabela mais antiga publicada é de 2009), então o consumo deles é só o da Ficha Completa.</li>
-    <li><b>IPVA:</b> 4% do valor do carro (Lei estadual 13.296/2008, art. 9º, III). Isenção para veículos com mais de 20 anos de fabricação (art. 13, VIII); a SEFAZ-SP aplica isso a partir do ano em que o carro faz 21 anos (em 2026, isentos os fabricados até 2005), e é essa regra que o cálculo usa. A Emenda Constitucional 137/2025 também isenta veículos com 20 anos ou mais, e já houve decisão judicial isentando um carro de 2006 em 2026; se essa leitura prevalecer, os carros de 2008 ficam isentos um ano antes e o IPVA deles cai. Supõe-se fabricação no mesmo ano do modelo; se o carro foi fabricado no ano anterior, a isenção chega um ano antes. A base usada é o valor FIPE do carro no início de cada ano; a SEFAZ-SP calcula o IPVA sobre uma tabela própria de valores venais, também feita por pesquisa de preços de mercado, então o valor real pode diferir um pouco.</li>
-    <li><b>Licenciamento:</b> taxa do Detran-SP de 2026, R$ ${P.licenciamento.toFixed(2).replace('.', ',')} por ano.</li>
-    <li><b>Seguro:</b> taxa = prêmio médio ÷ valor segurado médio da cobertura casco no AUTOSEG (SUSEP, 1º semestre de 2021), aplicada ao valor do carro em cada ano. Ordem de busca: a versão na região de Divinolândia (região 13, "SP – Ribeirão Preto e demais municípios de Campinas"); se tiver menos de ${P.autosegMinExposicao} veículos-ano, a versão no estado de SP; depois o modelo inteiro na região 13; e por fim o modelo no estado.</li>
-    <li><b>Depreciação:</b> variação do valor FIPE do mesmo carro de agosto/2021 a agosto/2026, descontada a inflação (IPCA/IBGE de agosto a agosto: ${pct(P.ipca[2026] / P.ipca[2021] - 1)} no período), repetida nos próximos 5 anos. Para o Ford Fiesta foi usado o código FIPE da versão S, que é a de entrada do hatch Rocam 2014 e a que aparece nos anúncios.</li>
-    <li><b>Preço anunciado:</b> mediana dos preços pedidos na Mobiauto para a mesma versão e ano-modelo, no estado de SP; com menos de ${P.mobiMin} anúncios em SP, no Brasil todo. Coleta em ${new Date(D.geradoEm).toLocaleDateString('pt-BR')}.</li>
-    <li><b>Opinião de donos:</b> CarroClub, todas as avaliações dos anos da mesma geração do carro. A linha de resumo foi escrita a partir da leitura dessas avaliações, conferida com a contagem dos temas citados.</li>
-    <li><b>Vão livre:</b> altura livre do solo informada na ficha técnica da versão (fonte única: Ficha Completa; não foi possível conferir em uma segunda fonte). Medidas de outros mercados (Europa, EUA) não foram usadas, porque a suspensão dos carros brasileiros costuma ser diferente.</li>
+  document.getElementById('premissas').innerHTML = `<ul class="lista depois">
+    <li><b>Período</b> 5 anos de posse, de 2027 a 2031, comprando o carro agora. Todos os valores em reais de agosto de 2026.</li>
+    <li><b>Quilometragem</b> ${P.kmAno.toLocaleString('pt-BR')} km por ano, metade na cidade e metade na estrada.</li>
+    <li><b>Combustível</b> etanol sempre que a ficha técnica traz o consumo com etanol. Preço médio das semanas de agosto/2026 na pesquisa da ANP nas duas cidades paulistas pesquisadas mais próximas de Divinolândia, que não entra na pesquisa (São José do Rio Pardo, Caconde, Vargem Grande do Sul e Espírito Santo do Pinhal também não entram; Poços de Caldas, em MG, foi deixada de fora porque o imposto sobre combustível é de outro estado): ${etan} (média R$ ${P.precoEtanol.toFixed(2).replace('.', ',')}). A gasolina, usada quando não há dado de etanol, custou ${gas} (média R$ ${P.precoGasolina.toFixed(2).replace('.', ',')}). O etanol custou cerca de ${pct(P.precoEtanol / P.precoGasolina)} do preço da gasolina, abaixo da referência de 70% em que ele passa a compensar.</li>
+    <li><b>Consumo</b> em km/l, cidade e estrada. Para os carros de 2014 foi conferido nas tabelas oficiais do Inmetro (PBE Veicular 2013 a 2015): em 6 carros a Ficha Completa bate com o Inmetro; em 3 (up!, Sandero e Uno) os valores divergem e o cálculo usa os do Inmetro (quando o Inmetro tem duas medições da versão, usa-se a com ar-condicionado); 6 carros (Classic, Celta, Cobalt, Spin, Fiesta 1.0 e Linea) não aparecem nas tabelas desses anos e ficam com o valor da Ficha Completa. Os carros de 2008 não têm medição do Inmetro (a tabela mais antiga publicada é de 2009), então o consumo deles é só o da Ficha Completa.</li>
+    <li><b>IPVA</b> 4% do valor do carro (Lei estadual 13.296/2008, art. 9º, III). Isenção para veículos com mais de 20 anos de fabricação (art. 13, VIII); a SEFAZ-SP aplica isso a partir do ano em que o carro faz 21 anos (em 2026, isentos os fabricados até 2005), e é essa regra que o cálculo usa. A Emenda Constitucional 137/2025 também isenta veículos com 20 anos ou mais, e já houve decisão judicial isentando um carro de 2006 em 2026; se essa leitura prevalecer, os carros de 2008 ficam isentos um ano antes e o IPVA deles cai. Supõe-se fabricação no mesmo ano do modelo; se o carro foi fabricado no ano anterior, a isenção chega um ano antes. A base usada é o valor FIPE do carro no início de cada ano; a SEFAZ-SP calcula o IPVA sobre uma tabela própria de valores venais, também feita por pesquisa de preços de mercado, então o valor real pode diferir um pouco.</li>
+    <li><b>Licenciamento</b> taxa do Detran-SP de 2026, R$ ${P.licenciamento.toFixed(2).replace('.', ',')} por ano.</li>
+    <li><b>Seguro</b> taxa = prêmio médio ÷ valor segurado médio da cobertura casco no AUTOSEG (SUSEP, 1º semestre de 2021), aplicada ao valor do carro em cada ano. Ordem de busca: a versão na região de Divinolândia (região 13, "SP – Ribeirão Preto e demais municípios de Campinas"); se tiver menos de ${P.autosegMinExposicao} veículos-ano, a versão no estado de SP; depois o modelo inteiro na região 13; e por fim o modelo no estado.</li>
+    <li><b>Depreciação</b> variação do valor FIPE do mesmo carro de agosto/2021 a agosto/2026, descontada a inflação (IPCA/IBGE de agosto a agosto: ${pct(P.ipca[2026] / P.ipca[2021] - 1)} no período), repetida nos próximos 5 anos. Para o Ford Fiesta foi usado o código FIPE da versão S, que é a de entrada do hatch Rocam 2014 e a que aparece nos anúncios.</li>
+    <li><b>Preço anunciado</b> mediana dos preços pedidos na Mobiauto para a mesma versão e ano-modelo, no estado de SP; com menos de ${P.mobiMin} anúncios em SP, no Brasil todo. Coleta em ${new Date(D.geradoEm).toLocaleDateString('pt-BR')}.</li>
+    <li><b>Opinião de donos</b> CarroClub, todas as avaliações dos anos da mesma geração do carro. A linha de resumo foi escrita a partir da leitura dessas avaliações, conferida com a contagem dos temas citados.</li>
+    <li><b>Vão livre</b> altura livre do solo informada na ficha técnica da versão (fonte única: Ficha Completa; não foi possível conferir em uma segunda fonte). Medidas de outros mercados (Europa, EUA) não foram usadas, porque a suspensão dos carros brasileiros costuma ser diferente.</li>
   </ul>`;
 
   // ---- fontes
-  document.getElementById('lista-fontes').innerHTML = `<ul class="premissas">
-    <li>Tabela FIPE oficial, agosto de 2021 a 2026 — ${link('https://veiculos.fipe.org.br/', 'veiculos.fipe.org.br')} (consulta pela própria API do site; respostas guardadas em <code>dados/fipe-cache/</code>).</li>
-    <li>Equipamentos de série, consumo e vão livre — ${link('https://www.fichacompleta.com.br/', 'Ficha Completa')}, uma página por versão (link em cada linha das tabelas).</li>
-    <li>Preço anunciado — ${link('https://www.mobiauto.com.br/', 'Mobiauto')}, anúncios de usados (cada anúncio guardado em <code>dados/mobiauto/</code>).</li>
-    <li>Opinião de donos — ${link('https://www.carroclub.com.br/', 'CarroClub')} (avaliações em <code>dados/carroclub/</code>).</li>
-    <li>Seguro — SUSEP, ${link('https://www2.susep.gov.br/menuestatistica/Autoseg/principal.aspx', 'AUTOSEG')}, base do 1º semestre de 2021.</li>
-    <li>Combustível — ANP, ${link('https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/serie-historica-do-levantamento-de-precos', 'série histórica do levantamento de preços')}, semanal por município, 2026.</li>
-    <li>Inflação — IBGE, IPCA número-índice (${link('https://apisidra.ibge.gov.br/values/t/1737/n1/all/v/2266/p/202108,202608', 'SIDRA, tabela 1737')}).</li>
-    <li>IPVA — ${link('https://www.al.sp.gov.br/repositorio/legislacao/lei/2008/lei-13296-23.12.2008.html', 'Lei estadual 13.296/2008')} (arts. 9º e 13), ${link('https://www2.camara.leg.br/legin/fed/emecon/2025/emendaconstitucional-137-9-dezembro-2025-798457-publicacaooriginal-177326-pl.html', 'Emenda Constitucional 137/2025')} e a regra da SEFAZ-SP para 2026 (${link('https://www.vrum.com.br/aceleradas/2026/01/7326470-ipva-2026-veja-como-saber-se-seu-veiculo-ainda-paga-em-sp.html', 'Vrum, jan/2026')}).</li>
-    <li>Licenciamento 2026 — ${link('https://www.autoo.com.br/licenciamento-2026-prazo-comeca-a-vencer-em-julho-veja-datas-e-novos-valores-em-sp/', 'Autoo')}, ${link('https://garagem360.com.br/?p=299826', 'Garagem360')}.</li>
-    <li>Airbag e ABS obrigatórios desde 2014 — Resolução CONTRAN 311/2009 (airbag) e ${link('https://www.legisweb.com.br/legislacao/?id=111218', 'Resolução CONTRAN 312/2009')} (ABS: 100% dos veículos novos a partir de 1º/1/2014; depois revogada pela 380/2011); ${link('https://www.portaldotransito.com.br/noticias/governo-volta-atras-e-obrigatoriedade-de-freios-abs-e-airbag-segue-em-2014-2/amp/', 'Portal do Trânsito')}, ${link('https://idec.org.br/node/21702', 'Idec')}.</li>
-    <li>Tiida 2008 a gasolina (flex só a partir de 2009) — ${link('https://motorshow.com.br/nissan-tiida-2009-agora-e-flex', 'Motor Show')}.</li>
+  document.getElementById('lista-fontes').innerHTML = `<ul class="lista">
+    <li><b>Tabela FIPE oficial, agosto de 2021 a 2026</b> ${link('https://veiculos.fipe.org.br/', 'veiculos.fipe.org.br')} (consulta pela própria API do site; respostas guardadas em <code>dados/fipe-cache/</code>).</li>
+    <li><b>Equipamentos de série, consumo e vão livre</b> ${link('https://www.fichacompleta.com.br/', 'Ficha Completa')}, uma página por versão (link em cada linha das tabelas).</li>
+    <li><b>Preço anunciado</b> ${link('https://www.mobiauto.com.br/', 'Mobiauto')}, anúncios de usados (cada anúncio guardado em <code>dados/mobiauto/</code>).</li>
+    <li><b>Opinião de donos</b> ${link('https://www.carroclub.com.br/', 'CarroClub')} (avaliações em <code>dados/carroclub/</code>).</li>
+    <li><b>Seguro</b> SUSEP, ${link('https://www2.susep.gov.br/menuestatistica/Autoseg/principal.aspx', 'AUTOSEG')}, base do 1º semestre de 2021.</li>
+    <li><b>Combustível</b> ANP, ${link('https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/serie-historica-do-levantamento-de-precos', 'série histórica do levantamento de preços')}, semanal por município, 2026.</li>
+    <li><b>Consumo de 2014</b> Inmetro, ${link('https://www.gov.br/inmetro/pt-br/assuntos/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular', 'tabelas do PBE Veicular')} de 2013, 2014 e 2015 (cópias em <code>dados/inmetro/</code>).</li>
+    <li><b>Inflação</b> IBGE, IPCA número-índice (${link('https://apisidra.ibge.gov.br/values/t/1737/n1/all/v/2266/p/202108,202608', 'SIDRA, tabela 1737')}).</li>
+    <li><b>IPVA</b> ${link('https://www.al.sp.gov.br/repositorio/legislacao/lei/2008/lei-13296-23.12.2008.html', 'Lei estadual 13.296/2008')} (arts. 9º e 13), ${link('https://www2.camara.leg.br/legin/fed/emecon/2025/emendaconstitucional-137-9-dezembro-2025-798457-publicacaooriginal-177326-pl.html', 'Emenda Constitucional 137/2025')} e a regra da SEFAZ-SP para 2026 (${link('https://www.vrum.com.br/aceleradas/2026/01/7326470-ipva-2026-veja-como-saber-se-seu-veiculo-ainda-paga-em-sp.html', 'Vrum, jan/2026')}).</li>
+    <li><b>Licenciamento 2026</b> ${link('https://www.autoo.com.br/licenciamento-2026-prazo-comeca-a-vencer-em-julho-veja-datas-e-novos-valores-em-sp/', 'Autoo')}, ${link('https://garagem360.com.br/?p=299826', 'Garagem360')}.</li>
+    <li><b>Airbag e ABS obrigatórios desde 2014</b> Resolução CONTRAN 311/2009 (airbag) e ${link('https://www.legisweb.com.br/legislacao/?id=111218', 'Resolução CONTRAN 312/2009')} (ABS: 100% dos veículos novos a partir de 1º/1/2014; depois revogada pela 380/2011); ${link('https://www.portaldotransito.com.br/noticias/governo-volta-atras-e-obrigatoriedade-de-freios-abs-e-airbag-segue-em-2014-2/amp/', 'Portal do Trânsito')}, ${link('https://idec.org.br/node/21702', 'Idec')}.</li>
+    <li><b>Tiida 2008 a gasolina (flex só a partir de 2009)</b> ${link('https://motorshow.com.br/nissan-tiida-2009-agora-e-flex', 'Motor Show')}.</li>
   </ul>
-  <p class="nota">Todo o processo é reproduzível: os scripts e as respostas originais de cada fonte estão na pasta <code>dados/</code>.</p>`;
+  <p class="pequeno depois">Todo o processo é reproduzível: os scripts e as respostas originais de cada fonte estão na pasta <code>dados/</code>.</p>`;
   document.getElementById('rodape').textContent = `Dados coletados em ${new Date(D.geradoEm).toLocaleDateString('pt-BR')}. Valores em reais de agosto de 2026.`;
 })();
 </script>
+<noscript><p class="container">Esta página monta as tabelas com JavaScript a partir de dados.js; ative o JavaScript para ver os comparativos.</p></noscript>
 </body>
 </html>
