@@ -1,5 +1,5 @@
 // Mundo: tamanho, biomas e o que cresce em cada um.
-import { TUPI } from './mission.js';
+import { TUPI, FOREST } from './mission.js';
 
 // O mundo é um quadrado fixo. Já foi 900 × 900; depois 636 × 636 (metade da área),
 // 509 × 509 e 407 × 407. Agora 820 × 820 (~4× a área do de 407), para caber 100
@@ -12,13 +12,18 @@ export const WORLD = Object.freeze({ width: 820, height: 820 });
 // Onde fica cada um: BiomeMap.
 // Na missão dos tupinambás os mesmos papéis viram o rio de água corrente, a mata
 // atlântica fechada e a capoeira das roças em volta da aldeia, mais a areia da praia
-// e o mar.
+// e o mar. Em Palmares, a mesma mata, sem o mar: o rio Mundaú, a mata da serra e as
+// roças em volta da cerca.
 export const BIOMES = Object.freeze(TUPI ? [
   { id: 'riverbed', label: 'Rio' },
   { id: 'thicket', label: 'Mata' },
   { id: 'scrub', label: 'Capoeira e roças' },
   { id: 'beach', label: 'Praia e restinga' },
   { id: 'sea', label: 'Mar' }
+] : FOREST ? [
+  { id: 'riverbed', label: 'Rio Mundaú' },
+  { id: 'thicket', label: 'Mata' },
+  { id: 'scrub', label: 'Roças e palmeiras' }
 ] : [
   { id: 'riverbed', label: 'Leito do Vaza-Barris' },
   { id: 'thicket', label: 'Caatinga fechada' },
@@ -48,7 +53,7 @@ export const FOOTPRINT = Object.freeze({
   food: 6, campfire: 9
 });
 // Árvores (dão madeira, viram recurso da simulação); o resto é enfeite.
-export const TREE_KINDS = Object.freeze(TUPI
+export const TREE_KINDS = Object.freeze(FOREST
   ? ['pindoba', 'ibirapitanga', 'jequitiba', 'embauba', 'pitangueira']
   : ['umbuzeiro', 'catingueira', 'favela', 'quixabeira', 'juazeiro']);
 // Folga mínima entre duas coisas vizinhas, além dos raios.
@@ -81,8 +86,19 @@ const TUPI_KINDS = Object.freeze({
   beach: [['restinga', .38], ['bromelia', .6], ['pitangueira', .78], ['pindoba', .86], ['rock', 1]],
   sea: [['rock', 1]]
 });
-export const SCENERY_DENSITY = TUPI ? TUPI_DENSITY : Object.freeze({ riverbed: .5, thicket: .9, scrub: .55 });
-export const SCENERY_KINDS = TUPI ? TUPI_KINDS : Object.freeze({
+// Palmares: a mesma mata, com mais palmeira — "são as árvores principais palmeiras
+// agrestes, que deram ao terreno o nome de Palmares" (Relação das guerras feitas aos
+// Palmares, 1678) — e a taquara (o mocambo "das Tabocas") na beira do rio.
+const PALMARES_KINDS = Object.freeze({
+  riverbed: [['taquara', 1]],
+  thicket: [['jequitiba', .12], ['pindoba', .44], ['ibirapitanga', .52], ['embauba', .6], ['samambaia', .72],
+    ['bromelia', .82], ['taquara', .92], ['rock', 1]],
+  scrub: [['pindoba', .3], ['samambaia', .42], ['taquara', .54], ['embauba', .64], ['bromelia', .76],
+    ['pitangueira', .86], ['rock', 1]]
+});
+export const SCENERY_DENSITY = TUPI ? TUPI_DENSITY : FOREST ? Object.freeze({ riverbed: 0, thicket: .95, scrub: .5 })
+  : Object.freeze({ riverbed: .5, thicket: .9, scrub: .55 });
+export const SCENERY_KINDS = TUPI ? TUPI_KINDS : FOREST ? PALMARES_KINDS : Object.freeze({
   riverbed: [['rock', .12], ['canudo', .44], ['xiquexique', .52], ['quixabeira', .62], ['juazeiro', .7],
     ['umbuzeiro', .77], ['garrancho', .9], ['macambira', 1]],
   thicket: [['catingueira', .3], ['favela', .42], ['garrancho', .58], ['macambira', .68], ['mandacaru', .76],

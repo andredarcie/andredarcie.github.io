@@ -95,6 +95,10 @@ export class OrganismRenderer {
         crouch: Boolean(o.hidden),
         panic: o.flee > 0,
         preach: o.praying > 0,
+        // Falando numa cena (ui/Cutscene.js): força do gesto, relógio e o pulso da sílaba.
+        talking: o.talking ?? 0,
+        talkTime: o.talkTime ?? 0,
+        talkOpen: o.talkOpen ?? 0,
         // Cada um no seu ritmo: respiração, peso e olhar fora de compasso.
         seed: o.id * 1.37,
         crying: o.crying,

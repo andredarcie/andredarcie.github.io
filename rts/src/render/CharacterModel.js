@@ -4,7 +4,7 @@ import { PALETTE } from './Palette.js';
 import { WOOD_MATERIALS, LOG_RADIUS } from './WoodMaterials.js';
 import { addVerticalShade } from './Shading.js';
 import { weaponModel, BOLT_Y, BOLT_X, bowModel, bowString, stringTo, BOW } from './WeaponModels.js';
-import { TUPI } from '../config/mission.js';
+import { TUPI, PALMARES, FOREST } from '../config/mission.js';
 import { TOOLS } from '../config/rts.js';
 
 const HIP_HEIGHT = 5.4;
@@ -161,6 +161,9 @@ const span = (t, a, b) => easeInOut(Math.max(0, Math.min(1, (t - a) / (b - a))))
 const mixTo = (from, to, k) => from + (to - from) * k;
 // Mão na ponta do antebraço (que é manga), da cor da pele.
 const HAND_SHAPE = addVerticalShade(new THREE.BoxGeometry(1.9, 1.5, 2.2).translate(0, -3.3, 0), .85, 1.05);
+// A boca, que só aparece falando (nas cenas): abre e fecha a cada sílaba.
+const MOUTH_SHAPE = new THREE.BoxGeometry(1.5, 1, .3);
+const MOUTH_MATERIAL = new THREE.MeshBasicMaterial({ color: 0x2a1410 });
 
 // O traje, tudo escondido até `equip` ligar o de cada um:
 // chapéu de couro de vaqueiro (aba curta e copa baixa), chapéu de palha de aba larga,
@@ -234,8 +237,9 @@ function fused(geometries) {
 // jenipapo o tronco, os braços e as pernas conforme o lavor de cada um; o rosto de
 // urucum; o cabelo aparado com a testa rapada; o diadema de penas e a carapuça; a
 // pedra do beiço; o colar de búzios; a roda de penas de ema das ancas; os tapacurás;
-// o maracá; o pavês; os riscos de quem tomou nomes; e a igara.
-const TUPI_SHAPES = TUPI ? (() => {
+// o maracá; o pavês; os riscos de quem tomou nomes; e a igara. Em Palmares servem
+// aos índios flecheiros da tropa.
+const TUPI_SHAPES = FOREST ? (() => {
   const shell = (w, h, d, y) => new THREE.BoxGeometry(w, h, d).translate(0, y, 0);
   const diadem = [];
   for (let i = 0; i < 13; i++) {
@@ -426,8 +430,11 @@ export class CharacterModel {
       eye.castShadow = false;
       return eye;
     });
+    const mouth = build(MOUTH_SHAPE, MOUTH_MATERIAL, 0, EYE_HEIGHT - 2.6, 2.72, neck);
+    mouth.castShadow = false;
+    mouth.visible = false;
     // Tudo o que sai junto quando a cabeça é arrancada.
-    const headParts = [head, nose, ...eyes];
+    const headParts = [head, nose, mouth, ...eyes];
     if (hasHair) {
       headParts.push(build(SHAPES.hair, HAIR_MATERIAL, 0, 16.4 - NECK_Y, 0, neck));
       headParts.push(build(SHAPES.braid, HAIR_MATERIAL, 0, 13.4 - NECK_Y, -2.9, neck));
@@ -467,6 +474,8 @@ export class CharacterModel {
     };
     // Na aldeia: o tacape, a ibirapema, o tição, o pau de cavar e o feixe de flechas.
     if (TUPI) for (const kind of ['tacape', 'ibirapema', 'torch', 'digger', 'arrows']) arms[kind] = model(kind).group;
+    // Em Palmares: o tição do soldado que põe fogo nas casas.
+    if (PALMARES) arms.torch = model('torch').group;
     const { club, spear } = arms;
     // O ferrolho do fuzil (alavanca e bolota, do lado direito) e a cápsula que ele cospe.
     const bolt = rifle.bolt;
@@ -537,7 +546,7 @@ export class CharacterModel {
       legLeft: left.thigh, legRight: right.thigh, shinLeft: left.shin, shinRight: right.shin,
       footLeft: left.foot, footRight: right.foot,
       armLeft, armRight, forearmLeft, forearmRight,
-      axe, mallet, shoulderLog, cassava, eyes, club, spear, arms, wounds, headParts, stump, gear: gear.parts,
+      axe, mallet, shoulderLog, cassava, eyes, mouth, club, spear, arms, wounds, headParts, stump, gear: gear.parts,
       reloadProps, bow: null, tupi: null, canoe: null
     };
     return group;
@@ -690,9 +699,10 @@ export class CharacterModel {
       CharacterModel.#equipTupi(view, look);
       return;
     }
-    // Tropa de botina preta; o sertão de alpercata de couro cru.
+    // Tropa de botina preta; o sertão de alpercata de couro cru; os palmarinos
+    // descalços (`barefoot`, com a cor da pele em `skin`).
     const boots = look.hat === 'kepi' || look.hat === 'officer';
-    for (const foot of parts.feet) foot.material = lookMaterial(boots ? BOOT_COLOR : SANDAL_COLOR, true);
+    for (const foot of parts.feet) foot.material = lookMaterial(look.barefoot ? look.skin : boots ? BOOT_COLOR : SANDAL_COLOR, true);
     const show = (mesh, color, shaded = false) => {
       mesh.visible = true;
       mesh.material = lookMaterial(color, shaded);
@@ -1070,6 +1080,10 @@ export class CharacterModel {
     // O Conselheiro parado reza por um ferido: o bordão erguido balançando sobre ele
     // e a outra mão estendida.
     if (preach && idle && !guard) CharacterModel.#posePray(view, elapsed, seed);
+    // Falando nas cenas (ui/Cutscene.js): a boca, a cabeça e as mãos.
+    const { talking = 0 } = motion;
+    data.mouth.visible = talking > 0 && rest < .5;
+    if (data.mouth.visible && !(strike > 0)) CharacterModel.#poseTalk(view, motion, seed);
     if (hurt > 0 && rest < .5) {
       // Recuo: o tronco joga para trás e torce com o tranco, e a cabeça vai junto.
       body.rotation.x -= .38 * hurt;
@@ -1093,6 +1107,29 @@ export class CharacterModel {
     footRight.rotation.x = -(legRight.rotation.x + shinRight.rotation.x) * (plant > .9 ? 1 : .6);
     const drop = Math.min(legDrop(legLeft.rotation.x, shinLeft.rotation.x), legDrop(legRight.rotation.x, shinRight.rotation.x));
     body.position.y -= Math.max(0, drop) * plant * awake;
+  }
+
+  // Falando: a boca abre a cada sílaba (`talkOpen`, o pulso que a cena manda junto
+  // com o som), a cabeça acompanha o ritmo (sobe um tico na sílaba e vira devagar de
+  // um lado para o outro, olhando quem ouve), a mão direita gesticula na frente do
+  // peito e o tronco balança junto. `talking` é a força do gesto: 1 falando, menos
+  // depois de calar. `talkTime` corre em tempo real (o jogo está parado na cena).
+  static #poseTalk(view, { talking = 0, talkTime: t = 0, talkOpen: open = 0 }, seed) {
+    const { neck, body, armRight, forearmRight, armLeft, forearmLeft, mouth } = view.userData;
+    mouth.scale.y = .25 + open * 1.1;
+    neck.rotation.x += (open * .14 - .04) * talking;
+    neck.rotation.y = Math.sin(t * 1.1 + seed) * .22 * talking;
+    body.rotation.z += Math.sin(t * 1.6 + seed) * .025 * talking;
+    body.rotation.x += open * .03 * talking;
+    const wave = Math.sin(t * 2.3 + seed);
+    armRight.rotation.x = -.5 - .35 * Math.max(0, wave) * talking;
+    armRight.rotation.y = 0;
+    armRight.rotation.z = -.3;
+    forearmRight.rotation.x = -1.1 - .35 * Math.sin(t * 3.4 + seed) * talking;
+    if (talking > .6) {
+      armLeft.rotation.x = -.25 - .18 * Math.sin(t * 1.9 + seed + 1);
+      forearmLeft.rotation.x = -.7;
+    }
   }
 
   // Parado: o peso troca de uma perna para a outra devagar, os braços pendem com o

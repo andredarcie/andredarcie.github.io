@@ -1093,6 +1093,53 @@ function surf(sr, rand) {
   return { l, r };
 }
 
+// ---------------------------------------------------------------- as cenas
+
+// Uma sílaba murmurada, para as falas das cenas: não é palavra nem voz robótica, é o
+// som de alguém falando baixo do outro lado da sala. A fonte é a da voz humana — um
+// trem de pulsos na altura de uma voz de homem falando (~120 Hz), caindo um pouco no
+// fim da sílaba, com o pulso amaciado por um passa-baixa — e o que a faz soar como
+// vogal são dois formantes (ressonâncias da boca) sorteados entre a, é, ô, u, i. Na
+// frente, às vezes, o sopro curto de uma consoante. Cada personagem toca com a altura
+// dele (AudioManager.syllable, `rate`).
+const SPEECH_VOWELS = [[730, 1090], [530, 1840], [570, 840], [300, 870], [270, 2290]];
+function syllable(sr, rand) {
+  const seconds = between(rand, .1, .16);
+  const n = samples(sr, seconds);
+  const pulses = new Float32Array(n);
+  const f0 = between(rand, 112, 132);
+  let phase = rand();
+  for (let i = 0; i < n; i++) {
+    const t = i / seconds / sr;
+    phase += f0 * (1 - .14 * t) * (1 + Math.sin(i / sr * 31) * .01) / sr;
+    if (phase >= 1) {
+      phase -= 1;
+      pulses[i] = 1;
+    }
+  }
+  filter(pulses, 'lowpass', sr, 900, .7);
+  const [f1, f2] = SPEECH_VOWELS[Math.floor(rand() * SPEECH_VOWELS.length)];
+  const out = empty(sr, seconds + .03);
+  mix(out, filter(Float32Array.from(pulses), 'bandpass', sr, f1 * between(rand, .92, 1.08), 5), 0, 1);
+  mix(out, filter(Float32Array.from(pulses), 'bandpass', sr, f2 * between(rand, .92, 1.08), 7), 0, .45);
+  shape(out, sr, t => Math.min(1, t / .018) * Math.exp(-Math.max(0, t - seconds * .55) / (seconds * .3)));
+  if (rand() < .6) {
+    const consonant = burst(sr, rand, .03, { type: 'bandpass', frequency: between(rand, 2200, 4200), q: 1.2, envelope: hit(.002, .008) });
+    mix(out, consonant, 0, .12);
+  }
+  filter(out, 'lowpass', sr, 3200, .7);
+  filter(out, 'highpass', sr, 90, .7);
+  return fade(out, sr, .002, .02);
+}
+
+// O risco da pena no papel, para a narração das cenas: um chiado curto e agudo.
+function quill(sr, rand) {
+  const out = burst(sr, rand, between(rand, .05, .09), {
+    type: 'bandpass', frequency: t => 3800 + Math.sin(t * 60) * 900, q: 1.6, envelope: hit(.004, .025)
+  });
+  return fade(out, sr, .001, .01);
+}
+
 // Os comandos da aldeia: maracá no lugar da viola, o tamboril, a batida de pau.
 const TUPI_COMMANDS = {
   move: (sr, rand) => maraca(sr, rand, .4, [[0, 1, .12]]),
@@ -1114,6 +1161,8 @@ const COMMANDS = {
 
 export const RECIPES = {
   ui: { variants: 4, make: uiClick },
+  voice: { variants: 12, make: syllable },
+  quill: { variants: 4, make: quill },
   ...Object.fromEntries(Object.entries(COMMANDS).map(([kind, make]) => [`command-${kind}`, { variants: 2, make }])),
 
   'shot-musket': { variants: 5, make: (sr, rand) => musket(sr, rand, false) },

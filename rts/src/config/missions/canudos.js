@@ -246,6 +246,12 @@ export const BUILDING_TYPES = Object.freeze({
     label: 'Igreja Nova', fem: true, icon: 'newchurch', hp: 2400, radius: 26, capacity: 12, pop: 0, build: 140,
     cost: { food: 220, wood: 600 }, trains: [], dropOff: false, unique: true,
     turret: { range: 190, damage: 13, interval: .8 }
+  },
+  // Só do inimigo (campanha): a barraca de lona dos acampamentos da tropa, em Uauá
+  // e no alto da Favela.
+  barraca: {
+    label: 'Barraca da tropa', fem: true, icon: 'storehouse', hp: 300, radius: 12, capacity: 4, pop: 0, build: 10,
+    cost: { food: 0, wood: 0 }, trains: [], dropOff: false
   }
 });
 export const BUILD_ORDER = Object.freeze(['tower', 'house', 'curral', 'camp', 'lodge', 'igrejanova']);
@@ -346,6 +352,8 @@ export const ALERT_COOLDOWN = 8;
 
 // O pregador da vila: quem nasce no adro e cura os feridos perto dele.
 export const PREACHER_TYPE = 'conselheiro';
+// Chefes que já estão na vila no começo da partida (os outros chegam com HEROES).
+export const START_HEROES = Object.freeze([]);
 // Recorde de ondas por dificuldade, guardado neste navegador.
 export const RECORD_KEY = 'canudos-melhor';
 // Pontos da beirada do tabuleiro entre uma estrada e outra: por onde a tropa entra

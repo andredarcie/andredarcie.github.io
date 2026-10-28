@@ -44,9 +44,10 @@ export class Building {
     this.placeDoor();
   }
 
-  // Desenhadas pelo modelo das construções do sertão (SertaoBuildingModel).
+  // Desenhadas pelo modelo das construções da era (HutRenderer): tudo o que não é
+  // torre nem fogueira — inclusive as do inimigo (barraca, engenho, senzala).
   get isHut() {
-    return ['hall', 'lodge', 'house', 'curral', 'igrejanova', 'moquem'].includes(this.kind);
+    return !this.isTower && this.kind !== 'camp';
   }
 
   // Atira sozinha: a trincheira e as torres da Igreja Nova.

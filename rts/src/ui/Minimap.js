@@ -1,7 +1,7 @@
 import { WORLD } from '../config/world.js';
 import { ROADS, HILLS } from '../config/rts.js';
 import { roadPath } from '../world/Roads.js';
-import { TUPI } from '../config/mission.js';
+import { TUPI, FOREST } from '../config/mission.js';
 import { coastY } from '../world/Coast.js';
 
 // Quantas vezes por segundo o mapinha se redesenha.
@@ -85,7 +85,7 @@ export class Minimap {
     ctx.beginPath();
     corners.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
     ctx.closePath();
-    ctx.fillStyle = TUPI ? '#4f6a34' : '#b8905c';
+    ctx.fillStyle = FOREST ? '#4f6a34' : '#b8905c';
     ctx.fill();
     ctx.strokeStyle = 'rgba(20, 30, 20, .7)';
     ctx.lineWidth = 1;

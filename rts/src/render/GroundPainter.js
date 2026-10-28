@@ -3,7 +3,7 @@ import { WORLD, GROUND_TEXTURE_SIZE, GROUND_DETAIL_STROKES } from '../config/wor
 import { PALETTE } from './Palette.js';
 import { ROADS, HILLS } from '../config/rts.js';
 import { roadPath } from '../world/Roads.js';
-import { TUPI } from '../config/mission.js';
+import { TUPI, FOREST } from '../config/mission.js';
 import { coastY } from '../world/Coast.js';
 
 // Textura de cada lateral do tabuleiro: comprida no sentido da beirada.
@@ -195,7 +195,7 @@ export class GroundPainter {
       const nx = pseudoRandom(seed), ny = pseudoRandom(seed + 1);
       const biome = this.#biomes.biomeAt(nx * WORLD.width, ny * WORLD.height);
       if (biome === 'thicket' && pseudoRandom(seed + 2) > .4) continue;
-      if (biome === 'sea' || (TUPI && biome === 'riverbed')) continue;
+      if (biome === 'sea' || (FOREST && biome === 'riverbed')) continue;
       const x = nx * size, y = ny * size;
       const r = (.7 + pseudoRandom(seed + 3) * 1.3) * k;
       context.globalAlpha = .35;
@@ -378,12 +378,13 @@ export class GroundPainter {
 
     // Marcas de roda de carro de boi e trilho de pé: duas linhas finas, fracas, que
     // somem e voltam. Antes de 1500 não havia roda nem carro: as trilhas da mata são
-    // só de pé, sem marca nenhuma.
+    // só de pé, sem marca nenhuma. Nos Palmares também: as serras eram "incapazes de
+    // carruagens para os mantimentos" (Relação das guerras feitas aos Palmares).
     context.save();
     context.lineCap = 'round';
     context.strokeStyle = hex(PALETTE.roadRut);
     context.lineWidth = 1.4 * scale;
-    (TUPI ? [] : ROADS).forEach((road, index) => {
+    (FOREST ? [] : ROADS).forEach((road, index) => {
       const points = roadPath(road);
       for (const rut of [-4.5, 4.5]) {
         for (let i = 1; i < points.length; i++) {

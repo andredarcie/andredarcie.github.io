@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { PALMARES } from '../config/mission.js';
 
 /* ===================== as armas, peça por peça, como as de verdade ===================== */
 // Cada arma é montada de muitas peças pequenas e depois fundida numa malha por material
@@ -18,6 +19,9 @@ import * as THREE from 'three';
 //   blunderbuss bacamarte de pederneira: cano curto de latão abrindo em boca de sino,
 //               fecho de pederneira (cão com a pedra, bateria, caçoleta), guarnições de
 //               latão e a vareta embaixo do cano; tachas na coronha, enfeite sertanejo.
+//               Em Palmares (séc. XVII) é a espingarda de pederneira: o mesmo fecho e a
+//               mesma coronha, com o cano reto de ferro, sem a boca de sino nem as
+//               tachas (o comprimento fica o mesmo, para a pose e o tiro não mudarem).
 //   machete     facão sertanejo: cabo de chifre com rebites, lâmina larga na ponta.
 //   saber       sabre de oficial: punho de fio enrolado, guarda com arco, lâmina curva.
 //   spear       chuço: haste de pau, ponta de ferro em folha, alvado e amarração.
@@ -185,14 +189,23 @@ function blunderbussParts() {
   const p = [];
   p.push(profile([[4.0, .42], [2.7, .3], [1.3, .12], [.55, .02], [-.25, -.12], [-6.3, -.08], [-6.5, -.32], [-6.3, -.58],
     [-1.4, -.64], [-.2, -.6], [.5, -.58], [1.4, -.88], [4.0, -1.5]], .82, M.woodDark, 0, .06));
-  // o cano de latão: culatra oitavada, corpo, anéis e a boca em sino com a alma escura
-  p.push(tube(.33, .33, 1.1, M.brass, 0, -2.0, .16, 8));
-  p.push(tube(.3, .27, 5.0, M.brass, 0, -4.0, .16, 12));
-  p.push(tube(.28, .6, 2.6, M.brass, 0, -7.8, .16, 14));
-  p.push(tube(.64, .64, .12, M.brass, 0, -9.05, .16, 14));
-  p.push(tube(.33, .33, .14, M.brass, 0, -3.2, .16, 12));
-  p.push(tube(.33, .33, .14, M.brass, 0, -5.4, .16, 12));
-  p.push(part(new THREE.CircleGeometry(.5, 14), M.dark, 0, -9.12, .16, Math.PI / 2));
+  if (PALMARES) {
+    // a espingarda: cano de ferro oitavado na culatra e roliço até a boca, com a mira
+    p.push(tube(.3, .3, 1.4, M.iron, 0, -2.1, .16, 8));
+    p.push(tube(.24, .22, 7.4, M.iron, 0, -5.7, .16, 10));
+    p.push(tube(.25, .25, .14, M.iron, 0, -9.3, .16, 10));
+    p.push(box(.06, .08, .12, M.iron, 0, -9.1, .42));
+    p.push(part(new THREE.CircleGeometry(.14, 10), M.dark, 0, -9.38, .16, Math.PI / 2));
+  } else {
+    // o cano de latão: culatra oitavada, corpo, anéis e a boca em sino com a alma escura
+    p.push(tube(.33, .33, 1.1, M.brass, 0, -2.0, .16, 8));
+    p.push(tube(.3, .27, 5.0, M.brass, 0, -4.0, .16, 12));
+    p.push(tube(.28, .6, 2.6, M.brass, 0, -7.8, .16, 14));
+    p.push(tube(.64, .64, .12, M.brass, 0, -9.05, .16, 14));
+    p.push(tube(.33, .33, .14, M.brass, 0, -3.2, .16, 12));
+    p.push(tube(.33, .33, .14, M.brass, 0, -5.4, .16, 12));
+    p.push(part(new THREE.CircleGeometry(.5, 14), M.dark, 0, -9.12, .16, Math.PI / 2));
+  }
   // o fecho de pederneira, do lado direito: chapa, cão com a pedra, bateria, caçoleta, mola
   p.push(box(.06, 2.0, .62, M.iron, .43, -.35, -.02));
   p.push(box(.1, .28, .3, M.iron, .5, .35, .18));
@@ -212,8 +225,8 @@ function blunderbussParts() {
   // braçadeiras da vareta, embaixo do cano
   p.push(tube(.1, .1, .4, M.brass, 0, -2.6, -.42, 8));
   p.push(tube(.1, .1, .4, M.brass, 0, -4.9, -.42, 8));
-  // tachas de latão na coronha, dos dois lados
-  for (const [y, z] of [[2.6, -.4], [2.95, -.82], [3.35, -.5], [3.65, -1.0], [2.2, -.62]]) {
+  // tachas de latão na coronha, dos dois lados (só no bacamarte sertanejo)
+  if (!PALMARES) for (const [y, z] of [[2.6, -.4], [2.95, -.82], [3.35, -.5], [3.65, -1.0], [2.2, -.62]]) {
     for (const side of [-1, 1]) p.push(sphere(.075, M.brass, side * .44, y, z));
   }
   return p;

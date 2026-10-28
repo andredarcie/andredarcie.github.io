@@ -1,34 +1,45 @@
-import { DIFFICULTY, TEXT } from '../config/rts.js';
+import { DIFFICULTY } from '../config/rts.js';
 import { QUOTES } from '../config/story.js';
+import { STAGES, STAGE, unlockedStage } from '../config/campaign.js';
+import { MISSION } from '../config/mission.js';
 
 
 // As telas fora da partida (o menu das eras é src/boot/eras.js, que roda antes do
-// jogo existir): a abertura da era (dificuldade e como jogar), a pausa (velocidade, recomeçar) e a de
-// fim (quantas ondas a vila aguentou).
+// jogo existir): a abertura da era (as 4 missões da campanha, a dificuldade e como
+// jogar), a pausa (velocidade, recomeçar) e a de derrota. A vitória é a cena de fim
+// da missão (Cutscene), que leva à próxima.
 export class GameMenu {
   #root;
   #simulation;
   #onStart;
   #onPause;
   #onRestart;
+  #onPickStage;
   #level;
+  #stage = STAGE;
   #started = false;
 
-  constructor({ root, level, simulation, onStart, onPause, onRestart }) {
+  constructor({ root, level, simulation, onStart, onPause, onRestart, onPickStage }) {
     this.#root = root;
     this.#level = level;
     this.#simulation = simulation;
     this.#onStart = onStart;
     this.#onPause = onPause;
     this.#onRestart = onRestart;
+    this.#onPickStage = onPickStage;
     const $ = selector => root.querySelector(selector);
     this.#bindLevels($('#start-levels'), chosen => { this.#level = chosen; });
     this.#bindLevels($('#result-levels'), chosen => { this.#level = chosen; });
+    // A missão aberta pelo endereço, se já liberada; senão, a mais adiantada liberada.
+    if (this.#stage > unlockedStage()) this.#stage = unlockedStage();
+    this.#renderStages();
     $('#start-play').addEventListener('click', () => this.start());
     $('#pause-button').addEventListener('click', () => this.#pause());
     $('#pause-resume').addEventListener('click', () => this.#resume());
     $('#pause-restart').addEventListener('click', () => this.#onRestart(this.#level));
     $('#result-again').addEventListener('click', () => this.#onRestart(this.#level));
+    // De volta à abertura da era, com a lista de missões.
+    $('#result-menu').addEventListener('click', () => { location.search = `?missao=${MISSION}&fase=${STAGE}`; });
     $('#pause-dialog').addEventListener('cancel', event => {
       event.preventDefault();
       this.#resume();
@@ -45,14 +56,15 @@ export class GameMenu {
     window.addEventListener('keydown', event => {
       if (event.code !== 'Escape' && event.code !== 'KeyP') return;
       // Com o livro de história aberto o jogo já está parado, e o Esc fecha o livro.
-      if (!this.#started || $('#result-dialog').open || $('#story-dialog').open) return;
+      if (!this.#started || $('#result-dialog').open || $('#story-dialog').open || $('#cutscene').open) return;
       if ($('#pause-dialog').open) this.#resume();
       else this.#pause();
     });
     // Celular bloqueado, aba trocada: a partida pausa sozinha, para ninguém voltar e
     // achar a igreja caída.
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.#started && !$('#result-dialog').open && !$('#pause-dialog').open && !$('#story-dialog').open) this.#pause();
+      if (document.hidden && this.#started && !$('#result-dialog').open && !$('#pause-dialog').open && !$('#story-dialog').open &&
+        !$('#cutscene').open) this.#pause();
     });
     this.#markSpeed();
     this.#markLevels();
@@ -68,31 +80,60 @@ export class GameMenu {
     this.#root.querySelector('#start-dialog').showModal();
   }
 
+  // Jogar: a missão escolhida, se é a que está carregada; senão a página recarrega
+  // com ela (o mundo inteiro é montado para uma missão só).
   start() {
+    if (this.#stage !== STAGE) {
+      this.#onPickStage(this.#stage, this.#level);
+      return;
+    }
     const dialog = this.#root.querySelector('#start-dialog');
     if (dialog.open) dialog.close();
     this.#started = true;
     this.#onStart(this.#level);
   }
 
-  // `waves`: ondas vencidas; `best`: o recorde nesta dificuldade (já contando esta).
-  showResult({ waves, best, record }) {
+  // A derrota: o que caiu e a citação de fecho da era; jogar de novo é a mesma missão.
+  showResult({ title, text }) {
     const $ = selector => this.#root.querySelector(selector);
     for (const dialog of this.#root.querySelectorAll('dialog[open]')) dialog.close();
-    $('#result-kicker').textContent = TEXT.resultKicker;
-    const plural = waves === 1 ? TEXT.waveUnit[0] : TEXT.waveUnit[1];
-    $('#result-title').textContent = `${waves} ${plural}`;
-    const held = TEXT.resultHeld(waves);
-    const level = DIFFICULTY[this.#level].label.toLowerCase();
-    $('#result-text').textContent = record && waves > 0
-      ? `Recorde novo no ${level}! ${held}`
-      : `${held} Recorde no ${level}: ${best}.`;
-    // O fecho: em Canudos, o do livro (a Canudos de verdade caiu em 5 de outubro de
-    // 1897); nos tupinambás, a guerra que não acabava.
+    const mission = STAGES[STAGE - 1];
+    $('#result-kicker').textContent = `Missão ${mission.number} · ${mission.title}`;
+    $('#result-title').textContent = title;
+    $('#result-text').textContent = text;
     $('#result-quote').textContent = QUOTES.end.text;
-    $('#result-dialog').dataset.victory = String(record && waves > 0);
+    $('#result-dialog').dataset.victory = 'false';
     this.#markLevels();
     $('#result-dialog').showModal();
+  }
+
+  // As 4 missões da campanha: número, nome, ano e o resumo da escolhida; as que ainda
+  // não foram liberadas aparecem trancadas.
+  #renderStages() {
+    const list = this.#root.querySelector('#start-missions');
+    const unlocked = unlockedStage();
+    list.replaceChildren(...STAGES.map(mission => {
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'mission';
+      const locked = mission.number > unlocked;
+      button.disabled = locked;
+      button.setAttribute('aria-pressed', String(mission.number === this.#stage));
+      button.innerHTML = `<span class="mission-number">${mission.number}</span><span class="mission-name"></span>` +
+        `<span class="mission-year"></span>${locked ? '<span class="mission-lock">trancada</span>' : ''}`;
+      button.querySelector('.mission-name').textContent = mission.title + (mission.kind === 'defense' ? ' · defesa' : '');
+      button.querySelector('.mission-year').textContent = mission.year;
+      button.addEventListener('click', () => {
+        this.#stage = mission.number;
+        this.#renderStages();
+      });
+      item.append(button);
+      return item;
+    }));
+    const chosen = STAGES[this.#stage - 1];
+    this.#root.querySelector('#start-mission-summary').textContent = chosen.summary;
+    this.#root.querySelector('#start-play').textContent = `Jogar a missão ${chosen.number}`;
   }
 
   #pause() {

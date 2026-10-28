@@ -1,6 +1,13 @@
 import {
   ROADS, DIFFICULTY, SPAWN_GAP, UNIT_TYPES, CONVOY, CERCO, MATADEIRA, HEROES, ROMEIROS, EDGE_ENTRIES, IGARA
 } from '../config/rts.js';
+import { CURRENT } from '../config/campaign.js';
+
+// As ondas só existem na missão de defesa de cada era (CURRENT.waves): `offset`
+// adianta a força e o letreiro (a 1ª onda da missão é a onda 1 + offset da guerra),
+// `matadeira: false` deixa o canhão de sítio de fora.
+const WAVES = CURRENT.waves ?? null;
+const OFFSET = WAVES?.offset ?? 0;
 
 // Os pontos da beirada por onde a tropa entra fora das estradas quando fecha o cerco
 // (EDGE_ENTRIES) vêm da missão: no litoral, só as beiradas de terra.
@@ -37,6 +44,10 @@ export class WaveDirector {
 
   setDifficulty(id) {
     this.#difficulty = DIFFICULTY[id] ?? DIFFICULTY.normal;
+    if (!WAVES) {
+      this.#state.wave = null;
+      return;
+    }
     this.#state.wave = {
       number: 0, cleared: 0, phase: 'calm', timer: this.#difficulty.firstWave, calmClock: 0,
       next: this.#plan(1), queue: [], clock: 0, convoyAt: null
@@ -117,7 +128,7 @@ export class WaveDirector {
     }).sort((a, b) => a.at - b.at);
     const count = type => plan.roster.filter(item => item.type === type).length;
     this.#events.emit('waveStart', {
-      number: plan.number, roads: plan.roads, count: plan.roster.length,
+      number: plan.number, stage: plan.stage, roads: plan.roads, count: plan.roster.length,
       guns: count('gunner'), officers: count('officer'), matadeira: count('matadeira') > 0,
       cerco: plan.roster.some(item => item.entry), canoes: roster.filter(item => item.boat).length
     });
@@ -180,7 +191,9 @@ export class WaveDirector {
   }
 
   // Quem vem na onda `n`: quantidade, tipos, estradas e o quanto estão mais duros.
-  #plan(n) {
+  #plan(number) {
+    // A força é a da onda da guerra (com o adiantamento da missão).
+    const n = number + OFFSET;
     const difficulty = this.#difficulty;
     // Cresce um pouco mais que em linha reta: o exército do jogador também cresce, e
     // sem a curva as ondas finais viravam passeio (visto num teste de 14 ondas).
@@ -208,7 +221,7 @@ export class WaveDirector {
       const officers = 1 + Math.floor((n - 3) / 5);
       for (let i = 0; i < officers; i++) roster.push({ type: 'officer', road: roads[i % roads.length], scale });
     }
-    if (n >= MATADEIRA.from && (n - MATADEIRA.from) % MATADEIRA.every === 0) {
+    if (WAVES?.matadeira !== false && n >= MATADEIRA.from && (n - MATADEIRA.from) % MATADEIRA.every === 0) {
       roster.push({ type: 'matadeira', road: roads[0], scale });
     }
     // Os mais pesados saem por último, atrás da turma rápida; o oficial vai no meio da
@@ -226,6 +239,6 @@ export class WaveDirector {
         roster.push({ type: i % 3 ? 'private' : 'bayonet', road: null, entry: EDGE_ENTRIES[i % EDGE_ENTRIES.length], scale });
       }
     }
-    return { number: n, roads, roster };
+    return { number, stage: n, roads, roster };
   }
 }

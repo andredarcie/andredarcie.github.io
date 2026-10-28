@@ -5,7 +5,7 @@
 // gesto do jogador, como os navegadores exigem; até lá os eventos ficam mudos.
 import { RECIPES } from './SoundRecipes.js';
 import { random, outdoorImpulse } from './Dsp.js';
-import { TUPI } from '../config/mission.js';
+import { TUPI, PALMARES } from '../config/mission.js';
 
 const STORAGE_KEY = 'canudos-som';
 const MASTER_VOLUME = .8;
@@ -17,6 +17,9 @@ const REVERB_RETURN = .45;
 // vozes simultâneas e `reach` quanto a distância da câmera pesa (0 = sempre perto).
 const SOUNDS = {
   ui: { level: .22, reverb: .02, pitch: .03, gap: .03, group: 'ui', reach: 0 },
+  // As cenas: a sílaba murmurada de quem fala e a pena da narração (Cutscene).
+  voice: { level: .3, reverb: .06, pitch: .04, gap: 0, group: 'speech', reach: 0 },
+  quill: { level: .1, reverb: .02, pitch: .08, gap: 0, group: 'speech', reach: 0 },
   'command-move': { level: .3, reverb: .05, gap: .07, group: 'ui', reach: 0 },
   'command-stop': { level: .32, reverb: .05, gap: .07, group: 'ui', reach: 0 },
   'command-attack': { level: .22, reverb: .06, pitch: .03, gap: .07, group: 'ui', reach: 0 },
@@ -118,11 +121,11 @@ const BEDS = TUPI
 
 // Teto de vozes por grupo: num tiroteio, a décima espingarda não acrescenta nada
 // além de lama no som.
-const VOICES = { tree: 4, ui: 3, gun: 9, cannon: 4, melee: 6, death: 4, work: 4, event: 4, call: 3, weather: 1 };
+const VOICES = { tree: 4, ui: 3, gun: 9, cannon: 4, melee: 6, death: 4, work: 4, event: 4, call: 3, weather: 1, speech: 3 };
 
 // Ordem de preparo: o que toca logo nos primeiros segundos vem primeiro.
 const WARM_ORDER = [
-  'ui', 'command-move', 'command-gather', 'command-attack', 'command-build', 'command-train', 'command-stop', 'command-trade',
+  'ui', 'voice', 'quill', 'command-move', 'command-gather', 'command-attack', 'command-build', 'command-train', 'command-stop', 'command-trade',
   'place', 'chop', 'hammer', 'tree-crack', 'tree-land', 'gather', 'built', 'trained', 'wave-start', 'shot-musket', 'shot-rifle', 'strike-club', 'strike-machete',
   'strike-spear', 'strike-bayonet', 'death-player', 'death-enemy', 'shot-blunderbuss', 'alarm', 'wave-clear', 'upgrade',
   'shot-cannon', 'shell-burst', 'strike-saber', 'collapse', 'rout', 'convoy', 'shot-matadeira', 'rain', 'game-over',
@@ -211,10 +214,12 @@ export class AudioManager {
     on('treeLand', place => this.#play('tree-land', at(place)));
     on('gather', place => this.#play('gather', at(place)));
     on('strike', strike => this.#strike(strike));
-    on('towerShot', ({ scatter, x, y }) => this.#play(scatter ? 'shot-blunderbuss' : 'shot-musket', { x, y }));
+    // A cerca dos Palmares atira flecha (os flecheiros atrás dela).
+    on('towerShot', ({ scatter, x, y }) => this.#play(PALMARES ? 'shot-bow' : scatter ? 'shot-blunderbuss' : 'shot-musket', { x, y }));
     on('command', ({ kind }) => this.#play(`command-${kind}`));
     on('destroyed', ({ building }) => this.#play('collapse', at(building)));
     on('gameOver', () => this.#play('game-over'));
+    on('victory', () => this.#play('wave-clear'));
     on('convoy', () => this.#play('convoy'));
     on('debandada', place => this.#play('rout', at(place)));
     on('rainStart', () => this.#play('rain'));
@@ -348,7 +353,22 @@ export class AudioManager {
 
   // ---- Tocar ----
 
-  #play(name, { x, y, delay = 0, gap = true } = {}) {
+  // As cenas (ui/Cutscene.js): uma sílaba na altura da voz de quem fala (`rate`
+  // multiplica a altura: grave abaixo de 1, aguda acima), o risco da pena na
+  // narração e o virar de página entre um plano e outro.
+  syllable(rate = 1) {
+    this.#play('voice', { gap: false, rate });
+  }
+
+  quill() {
+    this.#play('quill', { gap: false });
+  }
+
+  cue() {
+    this.#play('page');
+  }
+
+  #play(name, { x, y, delay = 0, gap = true, rate = 1 } = {}) {
     name = soundName(name);
     const spec = SOUNDS[name];
     if (!spec || !this.#enabled || !this.#context || !this.#bus) return;
@@ -368,7 +388,7 @@ export class AudioManager {
     try {
       const source = context.createBufferSource();
       source.buffer = this.#pick(name);
-      source.playbackRate.value = 1 + (Math.random() * 2 - 1) * (spec.pitch ?? 0);
+      source.playbackRate.value = rate * (1 + (Math.random() * 2 - 1) * (spec.pitch ?? 0));
       let tail = source;
       if (place.cutoff) {
         const air = context.createBiquadFilter();

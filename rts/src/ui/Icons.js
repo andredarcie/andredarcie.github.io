@@ -9,10 +9,12 @@
 // Comida, madeira e fuzis também saem como Path2D, para a recompensa que sobe no
 // canvas usar o mesmo desenho do topo da tela. Na missão dos tupinambás o terceiro
 // recurso são flechas, e o desenho dele (ICON_PATHS.rifles) vira o feixe de flechas.
-import { TUPI } from '../config/mission.js';
+import { TUPI, PALMARES } from '../config/mission.js';
 
 // Três flechas de taquara deitadas, com a ponta e as penas.
 const ARROWS = 'M4 20 17.5 6.5M17.5 6.5h-3.2M17.5 6.5v3.2M4 20l-.6-2.6M4 20l2.6.6M8.5 21 20.5 9M20.5 9h-2.8M20.5 9v2.8M8.5 21l-.5-2.2M8.5 21l2.2.5';
+// A espingarda de pederneira dos Palmares, de perfil: coronha, cano comprido e o cão.
+const ESPINGARDA = 'M2.5 15.5 7 13h3.5l.8-1h10.2v1.7H12l-1 1.3H9l-1.8 3.3H3.5zM10.8 12v-1.6l1.4-.9';
 
 // Caminhos de traço reaproveitados no canvas.
 export const ICON_PATHS = Object.freeze({
@@ -21,7 +23,8 @@ export const ICON_PATHS = Object.freeze({
   // Três toras empilhadas, vistas de topo, com o miolo.
   wood: 'M3 16a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM13 16a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM8 8.5a4 4 0 1 0 8 0a4 4 0 1 0-8 0zM5.6 16a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0zM15.6 16a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0zM10.6 8.5a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0z',
   // Mannlicher tomado da tropa, de perfil: coronha, delgado, guarda-mato, ferrolho.
-  rifles: TUPI ? ARROWS : 'M2.5 15.5 7 13h3l1-1h10.5v1.6H12.5l-1.2 1.4H9l-1.8 3.5H3.5zM13 12v-1.4h1.8M9.6 15v1.3c0 .7.9 1 1.4.5'
+  // Nos Palmares, a espingarda (as armas de fogo tomadas ou compradas).
+  rifles: TUPI ? ARROWS : PALMARES ? ESPINGARDA : 'M2.5 15.5 7 13h3l1-1h10.5v1.6H12.5l-1.2 1.4H9l-1.8 3.5H3.5zM13 12v-1.4h1.8M9.6 15v1.3c0 .7.9 1 1.4.5'
 });
 
 const STROKE = 'fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"';
@@ -179,6 +182,20 @@ const ICONS = Object.freeze({
   rede: S('M3 20V9M8 20V9M13 20V9M18 20V9M2 12h19M2 17h19M3 9l5 3M8 9l5 3M13 9l5 3'),
   // Buzina: o chamado da guerra.
   horn: T('M4 15c5 0 10-3 14-8l2 2c-3 6-8 9-15 9z') + S('M4 15c5 0 10-3 14-8l2 2c-3 6-8 9-15 9zM4 15v3M18 7l1.5-1.5'),
+  /* ---------- Palmares ---------- */
+  espingarda: T('M2.5 15.5 7 13h3l-1 2H9l-1.8 3.5H3.5z') + S(ESPINGARDA),
+  // Casa de palha: o telhado de folha de palmeira descendo baixo, a porta.
+  palha: T('M3 14 12 4l9 10z') + S('M2 14.5 12 4l10 10.5M5 13v7.5h14V13M2.5 20.5h19M10.5 20.5v-4.5h3v4.5M7 9.5l1.5 1.5M17 9.5l-1.5 1.5'),
+  // Casa do Conselho: a casa comprida de palha com o alpendre na frente.
+  conselho: T('M2 12 8 5h8l6 7z') + S('M1.5 12.5 8 5h8l6.5 7.5M3.5 12v8.5h17V12M1.5 20.5h21M7 20.5v-5M17 20.5v-5M10.5 20.5v-4h3v4M9 8h6'),
+  // Espiga de milho na palha.
+  milho: T('M12 3.5c2.2 1.8 3 4.6 3 8s-1 6.5-3 8c-2-1.5-3-4.6-3-8s.8-6.2 3-8z') +
+    S('M12 3.5c2.2 1.8 3 4.6 3 8s-1 6.5-3 8c-2-1.5-3-4.6-3-8s.8-6.2 3-8zM12 19.5v2M12 19.5c-3.5-1.2-6-4.5-6.5-9M12 19.5c3.5-1.2 6-4.5 6.5-9M10.4 8h3.2M9.8 11.5h4.4M10.2 15h3.6'),
+  // Forja: a bigorna no cepo e o martelo.
+  forja: T('M5 9h13c0 2.2-1.8 3.5-4 3.5h-5C7 12.5 5 11.2 5 9z') +
+    S('M3 9h15c0 2.2-1.8 3.5-4 3.5h-5C7 12.5 5 11.2 5 9M10 12.5V16M13.5 12.5V16M7.5 20.5l2.5-4.5h3.5l2.5 4.5zM6 20.5h11M15 6.5l4.5-4 1.5 1.5-4.5 4M19 6l-3-3'),
+  // Estrepes: os paus de ponta fincados no chão.
+  estrepes: T('M2 20h20v1.5H2z') + S('M2 20h20M5 20l1.5-9 1.5 9M10.5 20 12 8l1.5 12M16 20l1.5-8 1.5 8'),
   // nomes antigos
   rifle: T('M2.5 15.5 7 13h3l-1 2H9l-1.8 3.5H3.5z') + S(ICON_PATHS.rifles)
 });

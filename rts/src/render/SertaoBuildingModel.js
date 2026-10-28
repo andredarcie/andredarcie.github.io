@@ -32,7 +32,10 @@ const M = {
   goatWhite: lambert(0xe6e0d2),
   goatBrown: lambert(0x7a5a3c),
   goatBlack: lambert(0x3a3430),
-  horn: lambert(0xcfc4a8)
+  horn: lambert(0xcfc4a8),
+  // A lona das barracas da tropa.
+  canvas: lambert(0xd6cdb4),
+  canvasDark: lambert(0xb4aa90)
 };
 const SHARED_MATERIALS = new Set(Object.values(M));
 
@@ -170,6 +173,7 @@ export class SertaoBuildingModel {
     if (kind === 'hall') this.#church(kit, parts, size);
     else if (kind === 'igrejanova') this.#newChurch(kit, progress, built, size);
     else if (kind === 'curral') this.#pen(kit, progress, built, size);
+    else if (kind === 'barraca') parts.height = this.#tent(kit, parts);
     else this.#house(kit, parts, kind, progress, built, size);
     kit.finish(group);
     return parts;
@@ -182,6 +186,39 @@ export class SertaoBuildingModel {
       node.geometry.dispose();
       if (!SHARED_MATERIALS.has(node.material)) node.material.dispose();
     });
+  }
+
+  /* ===================== barraca da tropa ===================== */
+  // A barraca de campanha dos acampamentos do Exército (Uauá, a Favela): a lona em
+  // duas águas sobre a cumeeira e os dois esteios, a boca escura na frente, as
+  // espias de corda presas nas estacas e as armas ensarilhadas ao lado.
+  #tent(kit, parts) {
+    const L = 13, W = 10, H = 6.5;
+    const half = W / 2, ang = Math.atan2(H, half), slope = Math.hypot(half, H);
+    for (const s of [-1, 1]) {
+      kit.box(slope + .2, .3, L, M.canvas, s * half / 2, H / 2, 0, { rz: -s * ang, tint: kit.range(.92, 1.04), shade: [.78, 1.04] });
+    }
+    kit.stick([0, H + .3, -L / 2 - .6], [0, H + .3, L / 2 + .6], .2, M.stick);
+    for (const z of [-L / 2 - .4, L / 2 + .4]) kit.stick([0, 0, z], [0, H + .6, z], .22, M.stick);
+    // O fundo de lona numa ponta e a boca escura na outra.
+    const back = new THREE.Shape([new THREE.Vector2(-half, 0), new THREE.Vector2(half, 0), new THREE.Vector2(0, H)]);
+    kit.geom(new THREE.ExtrudeGeometry(back, { depth: .2, bevelEnabled: false }), M.canvasDark, 0, 0, -L / 2, { shade: [.8, 1] });
+    const mouth = new THREE.MeshLambertMaterial({ color: WINDOW_DARK, vertexColors: true });
+    parts.windows = mouth.color;
+    const door = new THREE.Shape([new THREE.Vector2(-half * .55, 0), new THREE.Vector2(half * .55, 0), new THREE.Vector2(0, H * .7)]);
+    kit.geom(new THREE.ExtrudeGeometry(door, { depth: .2, bevelEnabled: false }), mouth, 0, 0, L / 2 - .1, { shade: false });
+    for (const s of [-1, 1]) {
+      for (const z of [-L / 3, L / 3]) {
+        kit.stick([s * (half - .3), .4, z], [s * (half + 2.6), 0, z], .06, M.stick);
+        kit.box(.3, .8, .3, M.stick, s * (half + 2.6), .4, z);
+      }
+    }
+    // Os fuzis ensarilhados: três em pirâmide.
+    for (let i = 0; i < 3; i++) {
+      const a = i / 3 * Math.PI * 2;
+      kit.stick([half + 3 + Math.cos(a) * 1.2, 0, Math.sin(a) * 1.2], [half + 3, 4.6, 0], .1, M.iron);
+    }
+    return H + 2;
   }
 
   /* ===================== casa de taipa e armazém ===================== */

@@ -279,8 +279,9 @@ export class UnitSystem {
     }
     if (u.engage) {
       // Soldado de guarda não se afasta demais do posto; trabalhador revida só um
-      // tempo; invasor não persegue para longe da estrada.
-      const loose = order?.type === 'attackMove' || u.type === 'worker' || invader;
+      // tempo; invasor não persegue para longe da estrada. O guarda inimigo de um
+      // acampamento (MissionDirector, `guard`) também tem coleira.
+      const loose = order?.type === 'attackMove' || u.type === 'worker' || (invader && !u.guard);
       const anchor = loose ? null : u.post;
       const tooFar = invader && Math.hypot(u.engage.x - u.x, u.engage.y - u.y) > u.stats.sight * 1.8;
       if ((anchor && Math.hypot(u.x - anchor.x, u.y - anchor.y) > GUARD_LEASH) ||
@@ -293,8 +294,9 @@ export class UnitSystem {
     }
     u.foe = null;
     // Fuzil apanhado do chão: antes de qualquer ordem, leva na mão até a igreja. A
-    // ordem fica guardada e segue sozinha depois da entrega.
-    if (u.loot > 0) {
+    // ordem fica guardada e segue sozinha depois da entrega. Sem casa para levar
+    // (missão sem vila), fica com ele e segue a ordem.
+    if (u.loot > 0 && (this.#ledger.hall() || this.#ledger.nearestDropOff(u.team, u.x, u.y))) {
       this.#deliverLoot(u, dt);
       return;
     }
@@ -323,7 +325,7 @@ export class UnitSystem {
         this.#sail(u, order, dt);
         return;
       default:
-        if (invader) this.#hunt(u, dt);
+        if (invader && !u.guard) this.#hunt(u, dt);
         else this.#idle(u, dt);
     }
   }
@@ -355,7 +357,7 @@ export class UnitSystem {
       if (u.stats.churchHunter) u.engage = this.#churchTarget(u, this.#reach(u));
       else if (u.stats.siege) u.engage = this.#nearestBuilding(u, this.#reach(u));
       else if (type === 'attack') u.engage = this.#nearestEnemy(u, Math.max(u.stats.reach, 12) * 2.5, null, true);
-      else u.engage = this.#nearestEnemy(u, u.stats.sight, null);
+      else u.engage = this.#nearestEnemy(u, u.stats.sight, u.guard ? u.post : null);
       return;
     }
     if (type && type !== 'attackMove') return;
@@ -1332,8 +1334,7 @@ export class UnitSystem {
     }
   }
 
-  // Construção destruída: desaba em poeira, deixa umas toras e some. Caiu o Town
-  // Hall, a vila perdeu.
+  // Construção destruída: desaba em poeira, deixa umas toras e some.
   #demolish() {
     const state = this.#state;
     const fallen = state.buildings.filter(b => b.life <= 0);
@@ -1352,10 +1353,8 @@ export class UnitSystem {
       }
       this.#events.emit('destroyed', { building: b });
     }
+    // Se a queda da casa do meio é derrota, quem decide é a missão (MissionDirector,
+    // que ouve o 'destroyed'): no cerco de 1694, por exemplo, o Macaco pode cair.
     state.buildings = state.buildings.filter(b => b.life > 0);
-    if (!state.winner && fallen.some(b => b.kind === 'hall')) {
-      state.winner = 'enemy';
-      this.#events.emit('gameOver', { winner: state.winner });
-    }
   }
 }

@@ -4,7 +4,7 @@ import {
 } from '../config/world.js';
 import { CHOP_HITS } from '../config/settlement.js';
 import { Tree } from '../entities/Tree.js';
-import { TUPI } from '../config/mission.js';
+import { FOREST } from '../config/mission.js';
 
 // Decide o que nasce onde: pedra, cacto e arbusto viram enfeite; árvore vira recurso
 // da simulação. A cena não sorteia nada — recebe a lista pronta e só decide como cada
@@ -38,7 +38,7 @@ export class SceneryPlanner {
       // Em volta do arraial a caatinga foi rapada (lenha, roça, casas): árvore ali é
       // rara, e as fotos de 1897 mostram o chão pelado até o rio.
       if (TREE_KINDS.includes(kind) && biome !== 'riverbed' && pseudoRandom(seed + 4) < this.#biomes.openness(x, y) * .7) continue;
-      if (!TUPI && kind === 'rock' && Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < SCHIST_RADIUS) kind = 'lasca';
+      if (!FOREST && kind === 'rock' && Math.hypot(x - WORLD.width / 2, y - WORLD.height / 2) < SCHIST_RADIUS) kind = 'lasca';
       // Nem dentro de lago, nem em cima de outra planta ou pedra. A chuva abre lagos
       // novos depois, mas eles também conferem o lugar (PondSystem).
       if (!this.#occupancy.isFree(x, y, FOOTPRINT[kind] ?? 5)) continue;

@@ -3,7 +3,7 @@
 // folha (catingueira, favela), o verde-oliva do umbuzeiro e o verde-azulado do
 // mandacaru. Os nomes dizem o papel; os tons foram puxados da caatinga na seca, e não
 // do verde da referência antiga.
-import { TUPI } from '../config/mission.js';
+import { FOREST } from '../config/mission.js';
 
 const SERTAO = Object.freeze({
   // Céu de sol a pino, quase branco perto do horizonte.
@@ -184,4 +184,5 @@ const LITORAL = Object.freeze({
   restingaLight: 0x7a9a4a
 });
 
-export const PALETTE = TUPI ? LITORAL : SERTAO;
+// A mata de Palmares usa a mesma paleta (o mar fica sem uso).
+export const PALETTE = FOREST ? LITORAL : SERTAO;

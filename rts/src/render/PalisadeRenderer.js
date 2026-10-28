@@ -7,6 +7,7 @@ import { CENTER, TOWER, CLOTH, SKIN_TONES } from '../config/rts.js';
 import { hillHeight } from '../world/Hills.js';
 import { bowModel, bowString, stringTo, BOW } from './WeaponModels.js';
 import { ghostify, disposeGhost } from './GhostLook.js';
+import { PALMARES } from '../config/mission.js';
 
 // A "cerca de seteiras" da aldeia tupinambá, a torre da missão (no lugar da
 // trincheira de Canudos): "uma cerca de pau a pique muito forte, com suas portas e
@@ -16,6 +17,13 @@ import { ghostify, disposeGhost } from './GhostLook.js';
 // os flecheiros (um a mais por nível de "pontas"); com o jirau, um deles atira lá de
 // cima; com a rede de madeira, a cerca baixa de fora, "afastado da cerca vinte e
 // trinta palmos", onde quem chega se embaraça.
+//
+// Nos Palmares é a mesma cerca: o Macaco estava "fortificado com uma cêrca de pau a
+// pique, com torneiras abertas para ofender a seu salvo os combatentes; e pela parte
+// de fora tôda se semêa de estrepes de ferro, e de fojos" (Relação das guerras feitas
+// aos Palmares, 1678). Os defensores atiram "balas, flechas e pedras" (1694): aqui,
+// flecheiros de tanga de entrecasca, sem pena nem pintura. No lugar da rede de
+// madeira, o campo de estrepes (paus de ponta virados para fora) e os fojos.
 
 // Raio do arco de troncos, quantos troncos e a abertura (radianos) do lado da aldeia.
 const RING = 8.6;
@@ -58,6 +66,11 @@ const WOOD = [0x6b5236, 0x5e4630, 0x7a5e3e].map(c => material(c));
 const WOOD_DARK = material(0x4a3826);
 const VINE = material(0x8a7a52, false);
 const PACKED = new THREE.MeshLambertMaterial({ color: 0x8a6440 });
+// O fojo dos Palmares: a boca escura no chão; e a tanga de entrecasca do defensor.
+const PIT = new THREE.CircleGeometry(2.2, 10).rotateX(-Math.PI / 2);
+const PIT_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x2a1e14 });
+const LOINCLOTH = new THREE.BoxGeometry(3.5, 1.6, 2.3);
+const BARK_CLOTH = material(0x7a5a3c);
 const ARROW = new THREE.CylinderGeometry(.08, .08, 9, 4).translate(0, -4.5, 0);
 const DOWN = new THREE.Vector3(0, -1, 0);
 const _dir = new THREE.Vector3(), _local = new THREE.Vector3(), _rest = new THREE.Vector3(), _nock = new THREE.Vector3();
@@ -178,8 +191,30 @@ export class PalisadeRenderer {
     const view = { group, frame, stage, shooters: [], height: LOG_HEIGHT + 6 + range * JIRAU_RISE };
     if (!tower.built) return view;
 
+    // ---------- os estrepes e os fojos (Palmares) ----------
+    if (scatter > 0 && PALMARES) {
+      const spikes = 46;
+      for (let i = 0; i < spikes; i++) {
+        const angle = inward + (i + .5) / spikes * Math.PI * 2;
+        if (inGap(angle)) continue;
+        const k = seed * 13 + i * 5;
+        const [x, z] = at(angle, NET_RING - 2 + rnd(k) * 5);
+        const spike = mesh(STAKE, WOOD[i % 3], x, 0, z);
+        spike.scale.y = 2.2 + rnd(k + 1) * 1.2;
+        // Inclinado para fora, a ponta virada para quem chega.
+        spike.rotation.set(Math.sin(angle) * .55, 0, -Math.cos(angle) * .55);
+        mesh(TIP, WOOD_DARK, x + Math.cos(angle) * spike.scale.y * .5, spike.scale.y * .86, z + Math.sin(angle) * spike.scale.y * .5).scale.setScalar(.35);
+      }
+      // Os fojos: buracos escuros, com a boca meio coberta de rama.
+      for (let i = 0; i < 5; i++) {
+        const angle = inward + Math.PI + (i - 2) * .55;
+        const [x, z] = at(angle, NET_RING + 4);
+        const pit = new THREE.Mesh(PIT, PIT_MATERIAL);
+        pit.position.set(x, .12, z);
+        frame.add(pit);
+      }
+    } else if (scatter > 0) {
     // ---------- a rede de madeira: a cerca baixa de fora, com as entradas ----------
-    if (scatter > 0) {
       const stakes = 40;
       for (let i = 0; i < stakes; i++) {
         const angle = inward + (i + .5) / stakes * Math.PI * 2;
@@ -236,15 +271,19 @@ export class PalisadeRenderer {
     part(BODY.leg, skin, -.8, 5.2, .5, body).rotation.x = -.2;
     part(BODY.leg, skin, .8, 5.2, -.4, body).rotation.x = .15;
     part(BODY.torso, skin, 0, 7.6, 0, body);
-    part(BODY.paint, ink, 0, 8.4, 0, body);
-    part(BODY.paint, ink, 0, 6.8, 0, body);
+    if (PALMARES) {
+      part(LOINCLOTH, BARK_CLOTH, 0, 5.6, 0, body);
+    } else {
+      part(BODY.paint, ink, 0, 8.4, 0, body);
+      part(BODY.paint, ink, 0, 6.8, 0, body);
+    }
     const head = new THREE.Group();
     head.position.set(0, 11.3, 0);
     head.rotation.y = -1.2;
     body.add(head);
     part(BODY.head, skin, 0, 0, 0, head);
     part(BODY.hair, material(new THREE.Color(CLOTH.hair).getHex(), false), 0, 0, 0, head);
-    part(BODY.diadem, material(new THREE.Color(CLOTH.featherYellow).getHex(), false), 0, 1.4, 0, head);
+    if (!PALMARES) part(BODY.diadem, material(new THREE.Color(CLOTH.featherYellow).getHex(), false), 0, 1.4, 0, head);
     // Os braços nos ombros; o arco fica no referencial do flecheiro (não do corpo).
     const left = new THREE.Group(), right = new THREE.Group();
     left.position.set(-1.6 * Math.cos(1.25), 9.6, 1.6 * Math.sin(1.25));

@@ -20,8 +20,10 @@ export class UnitFactory {
     const stats = UNIT_TYPES[type];
     const base = LOOKS[stats.look] ?? LOOKS.villager;
     const sex = base.sex ?? (base.kind === 'villager' && Math.random() < .5 ? 'female' : 'male');
-    const skin = base.skin ?? pick(SKIN_TONES);
-    const { look, outfit, trousers } = base.tupi ? UnitFactory.#paint(base, sex, skin) : UnitFactory.#dress(base, sex, stats);
+    const skin = base.skin ?? pick(base.skins ?? SKIN_TONES);
+    const { look, outfit, trousers } = base.tupi ? UnitFactory.#paint(base, sex, skin)
+      : base.palmares || base.troop ? UnitFactory.#palmares(base, sex, skin, stats)
+      : UnitFactory.#dress(base, sex, stats);
     return new Unit({
       id: this.#state.newId(),
       team: teamId,
@@ -55,6 +57,43 @@ export class UnitFactory {
       tapacura: female && !base.grey ? CLOTH.tapacura : null
     };
     return { outfit: null, trousers: null, look };
+  }
+
+  // Nos Palmares (missão de 1644–1694): "O modo de vestir entre si é o mesmo que
+  // observam entre nós. Mais ou menos enroupados conforme as possibilidades" (Relação
+  // das guerras feitas aos Palmares); "as suas roupas são quase tôdas de entrecasca de
+  // árvores e pouca chita" (diário de Blaer, 1645). O homem de calção de entrecasca e,
+  // às vezes, camisa de chita (sem ela, o tronco nu); a mulher de saia e pano na
+  // cabeça. Descalços: os documentos não falam de calçado, e o jogo não inventa um.
+  // A tropa: camisa e calção de pano, chapéu de feltro, o correame e, nas costas, a
+  // mochila do capote e da rede; o capitão de gibão.
+  static #palmares(base, sex, skin, stats) {
+    if (base.troop) {
+      const officer = Boolean(base.officer);
+      return {
+        outfit: officer ? CLOTH.officerCoat : pick(CLOTH.troopShirts), trousers: pick(CLOTH.troopBreeches),
+        look: {
+          ...base, hat: 'leather', hatColor: CLOTH.felt, belt: CLOTH.belt,
+          gibao: officer ? CLOTH.leather : null, cannon: Boolean(stats.cannon)
+        }
+      };
+    }
+    const female = sex === 'female';
+    const cloth = pick(Math.random() < .3 ? CLOTH.chita : CLOTH.entrecasca);
+    if (base.robe) {
+      return { outfit: CLOTH.linen, trousers: CLOTH.linen, look: { ...base, tunic: true, shirt: CLOTH.linen, barefoot: true, skin } };
+    }
+    if (female) {
+      return {
+        outfit: Math.random() < .4 ? pick(CLOTH.chita) : skin, trousers: cloth,
+        look: { ...base, skirt: cloth, hat: Math.random() < .6 ? 'scarf' : null, hatColor: pick(CLOTH.chita), barefoot: true, skin }
+      };
+    }
+    const shirt = base.shirt || (base.kind === 'villager' && Math.random() < .25);
+    return {
+      outfit: shirt ? pick(CLOTH.chita) : skin, trousers: cloth,
+      look: { ...base, gibao: base.gibao ? CLOTH.leather : null, barefoot: true, skin }
+    };
   }
 
   static #dress(base, sex, stats) {

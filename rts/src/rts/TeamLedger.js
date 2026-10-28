@@ -28,8 +28,9 @@ export class TeamLedger {
     return this.#state.buildings.filter(b => b.team === teamId);
   }
 
+  // A casa do meio do jogador (o inimigo também pode ter uma: a aldeia tupiniquim).
   hall() {
-    return this.#state.buildings.find(b => b.kind === 'hall') ?? null;
+    return this.#state.buildings.find(b => b.kind === 'hall' && b.team === 'player') ?? null;
   }
 
   // Quem existe mais quem está na fila de treino: a vaga é reservada ao pagar.

@@ -3,7 +3,7 @@ import { ghostify, ghostFade } from './GhostLook.js';
 import { pseudoRandom } from '../core/math.js';
 import { PALETTE } from './Palette.js';
 import { hillHeight } from '../world/Hills.js';
-import { TUPI } from '../config/mission.js';
+import { TUPI, PALMARES } from '../config/mission.js';
 
 const FIRE_LIGHT_POOL = 4;
 const STONE_SHAPE = new THREE.BoxGeometry(3.2, 2.2, 2.8);
@@ -21,6 +21,26 @@ const HAMMOCK_SHAPE = new THREE.BoxGeometry(2.6, .3, 1);
 const STAKE_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6b5236 });
 const HAMMOCK_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xe2d8c0 });
 const HAMMOCKS = 5;
+// A forja dos Palmares: "quatro forjas" no meio das casas (diário de João Blaer,
+// 1645); "tendas de ferreiro, e outras oficinas, com que poderão fazer armas"
+// (governador Fernão Coutinho, 1671). O fogo fica na roda de pedras; ao lado, a
+// tenda: quatro esteios e uma água de palha cobrindo a bigorna no cepo, o fole de
+// couro soprando o fogo e as lâminas encostadas num esteio.
+const FORGE_POST_SHAPE = new THREE.CylinderGeometry(.4, .45, 1, 6).translate(0, .5, 0);
+const FORGE_ROOF_SHAPE = new THREE.BoxGeometry(13, .8, 10.5);
+const STUMP_SHAPE = new THREE.CylinderGeometry(1.5, 1.7, 3, 8).translate(0, 1.5, 0);
+const ANVIL_SHAPE = new THREE.BoxGeometry(1.6, 1.4, 3.4);
+const ANVIL_HORN_SHAPE = new THREE.ConeGeometry(.6, 1.6, 6).rotateX(Math.PI / 2);
+const BELLOWS_SHAPE = new THREE.BoxGeometry(3, 1.2, 4.2);
+const NOZZLE_SHAPE = new THREE.CylinderGeometry(.25, .35, 3, 6).rotateZ(Math.PI / 2);
+const BLADE_SHAPE = new THREE.BoxGeometry(.25, 6, .7).translate(0, 3, 0);
+const FORGE_POST_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6b5236 });
+const FORGE_THATCH_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x9a8e58 });
+const STUMP_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x5e4630 });
+const IRON_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x3c3a38 });
+const LEATHER_MATERIAL = new THREE.MeshLambertMaterial({ color: 0x6a4428 });
+const SHARED_MATERIALS = new Set([LOG_MATERIAL, STAKE_MATERIAL, HAMMOCK_MATERIAL, FORGE_POST_MATERIAL,
+  FORGE_THATCH_MATERIAL, STUMP_MATERIAL, IRON_MATERIAL, LEATHER_MATERIAL]);
 
 // Fogueira: roda de pedras, duas toras cruzadas, chama de blocos sem sombreamento
 // (fogo emite luz, não recebe) e um brilho no chão. A luz de verdade vem de um
@@ -93,8 +113,7 @@ export class CampfireRenderer {
       this.#layer.remove(view);
       view.traverse(node => {
         if (!node.isMesh) return;
-        if (node.material !== this.#stoneMaterial && node.material !== LOG_MATERIAL &&
-          node.material !== STAKE_MATERIAL && node.material !== HAMMOCK_MATERIAL) node.material.dispose();
+        if (node.material !== this.#stoneMaterial && !SHARED_MATERIALS.has(node.material)) node.material.dispose();
       });
       view.userData.embers.geometry.dispose();
       this.#views.delete(fire);
@@ -126,9 +145,42 @@ export class CampfireRenderer {
     }
   }
 
+  // A tenda do ferreiro ao lado do fogo (+z local), com a bigorna, o fole e as lâminas.
+  static #forge(group, seed) {
+    const add = (shape, material, x, y, z, ry = 0) => {
+      const mesh = new THREE.Mesh(shape, material);
+      mesh.position.set(x, y, z);
+      mesh.rotation.y = ry;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      group.add(mesh);
+      return mesh;
+    };
+    // A tenda: os esteios de trás mais altos, a água de palha caindo para a frente.
+    for (const [x, z, h] of [[-5.5, 9, 9], [5.5, 9, 9], [-5.5, 17, 11], [5.5, 17, 11]]) {
+      add(FORGE_POST_SHAPE, FORGE_POST_MATERIAL, x, 0, z).scale.y = h;
+    }
+    // (girar em x para trás ergue a ponta de +z: o fundo da tenda, mais alto)
+    const roof = add(FORGE_ROOF_SHAPE, FORGE_THATCH_MATERIAL, 0, 10.4, 13);
+    roof.rotation.x = -.24;
+    // A bigorna de ferro no cepo, com o bico.
+    add(STUMP_SHAPE, STUMP_MATERIAL, 0, 0, 12.5);
+    add(ANVIL_SHAPE, IRON_MATERIAL, 0, 3.7, 12.5);
+    add(ANVIL_HORN_SHAPE, IRON_MATERIAL, 0, 3.9, 14.9);
+    // O fole entre a tenda e o fogo, com o bico virado para as brasas.
+    add(BELLOWS_SHAPE, LEATHER_MATERIAL, -4.5, .8, 7.5, .5);
+    add(NOZZLE_SHAPE, IRON_MATERIAL, -2.8, 1.2, 5.6, .9);
+    // As lâminas encostadas no esteio, esperando o cabo.
+    for (let i = 0; i < 3; i++) {
+      const blade = add(BLADE_SHAPE, IRON_MATERIAL, 5.1 - i * .5, 0, 16.4, pseudoRandom(seed + i) * .3);
+      blade.rotation.z = .12 + i * .05;
+    }
+  }
+
   #createView(fire) {
     const group = new THREE.Group();
     if (TUPI) CampfireRenderer.#hammocks(group, fire.seed);
+    if (PALMARES) CampfireRenderer.#forge(group, fire.seed);
     // (a roda de pedras é do sertão; o fogo da aldeia é aceso direto no chão)
     for (let i = 0; i < (TUPI ? 0 : 9); i++) {
       const angle = i / 9 * Math.PI * 2;

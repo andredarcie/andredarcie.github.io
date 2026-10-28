@@ -37,8 +37,10 @@ export class RtsHud {
   #bannerTimer = 0;
   #heroCursor = 0;
   #gains;
+  // A missão aberta (MissionDirector): o que se pode construir e treinar nela.
+  #mission;
 
-  constructor({ root, state, selection, commands, ledger, camera, events, waves }) {
+  constructor({ root, state, selection, commands, ledger, camera, events, waves, mission }) {
     this.#root = root;
     this.#state = state;
     this.#selection = selection;
@@ -46,6 +48,7 @@ export class RtsHud {
     this.#ledger = ledger;
     this.#camera = camera;
     this.#waves = waves;
+    this.#mission = mission;
     const $ = selector => root.querySelector(selector);
     this.#els = {
       food: $('#res-food'), wood: $('#res-wood'), rifles: $('#res-rifles'), pop: $('#res-pop'), popBox: $('#res-pop-box'),
@@ -102,7 +105,7 @@ export class RtsHud {
     events.on('convoy', ({ road }) => {
       this.toast(`O comboio de Monte Santo vem pela estrada de ${road.label}. Tome-o!`, 'alert', road.mouth);
     });
-    events.on('convoyTaken', () => this.toast('Comboio tomado! A próxima onda vem desfalcada'));
+    events.on('convoyTaken', () => this.toast('Comboio tomado! A tropa fica sem farinha e sem munição'));
     events.on('convoyEscaped', () => this.toast('O comboio escapou: a próxima onda vem reforçada', 'warn'));
     events.on('romeiros', ({ count, road, hero }) => {
       const text = TEXT.arrival({ count, road, hero });
@@ -119,10 +122,17 @@ export class RtsHud {
     events.on('thirst', () => {
       this.toast('A tropa está com sede: longe d\'água, os soldados enfraquecem');
     });
+    // A missão: os avisos e os ataques (os objetivos ficam no painel deles,
+    // ObjectivesPanel, que pisca quando muda).
+    events.on('missionToast', ({ text, at }) => this.toast(text, 'alert', at));
+    events.on('raid', ({ text, at }) => this.toast(text, 'alert', at));
     events.on('waveStart', wave => {
       // O letreiro da missão: a expedição em Canudos; na aldeia, por onde e com quem.
-      const { kicker, sub } = TEXT.waveBanner(wave);
-      this.#showBanner(kicker, `${TEXT.waveWord} ${wave.number}`, sub, 'danger');
+      // A força (e o letreiro) é a da onda da guerra (`stage`); a missão pode fixar o
+      // letreiro de cima (a 3ª expedição inteira, em Canudos).
+      const { kicker, sub } = TEXT.waveBanner({ ...wave, number: wave.stage ?? wave.number });
+      const fixed = this.#mission?.mission.waves?.kicker;
+      this.#showBanner(fixed ?? kicker, `${TEXT.waveWord} ${wave.number}`, sub, 'danger');
       navigator.vibrate?.([60, 40, 60]);
     });
     events.on('waveCleared', ({ number, bonus }) => {
@@ -260,10 +270,11 @@ export class RtsHud {
     if (s.building && s.building.team === 'player') {
       const b = s.building;
       if (b.built) {
-        for (const type of b.stats.trains) list.push(this.#trainButton(b, type));
+        for (const type of b.stats.trains) if (this.#mission.allowsTrain(type)) list.push(this.#trainButton(b, type));
         if (b.queue.length) list.push({ action: 'cancel-train', icon: 'undo', label: 'Desfazer', sub: 'devolve' });
         if (b.isTower) for (const track of TOWER_UPGRADE_ORDER) list.push(this.#upgradeButton(b, track));
-        // No fogo do conselho se fazem flechas (CRAFT, só na aldeia).
+        // No fogo do conselho se fazem flechas (CRAFT, na aldeia); na Casa do Conselho
+        // dos Palmares, o trato com os moradores.
         if (CRAFT && b.kind === CRAFT.at) list.push(this.#craftButton());
         // Com Antônio Vilanova no arraial, o armazém e a igreja fazem negócio.
         if (b.stats.dropOff && this.#trader()) {
@@ -281,7 +292,7 @@ export class RtsHud {
     if (s.units.length) {
       const workers = s.units.some(u => u.type === 'worker');
       const soldiers = s.units.some(u => u.type !== 'worker');
-      if (workers) for (const kind of BUILD_ORDER) list.push(this.#buildButton(kind));
+      if (workers) for (const kind of BUILD_ORDER) if (this.#mission.allowsBuild(kind)) list.push(this.#buildButton(kind));
       if (soldiers) list.push({ action: 'retreat', icon: 'retreat', label: 'Recuar', sub: TEXT.retreatSub });
       list.push({ action: 'stop', icon: 'stop', label: 'Parar' });
       list.push({ action: 'deselect', icon: 'close', label: 'Soltar' });

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { hillHeight } from '../world/Hills.js';
-import { TUPI } from '../config/mission.js';
+import { FOREST } from '../config/mission.js';
 import { WORLD } from '../config/world.js';
 
 // Os bichos do sertão que Os Sertões põe em volta de Canudos, só de cena (a simulação
@@ -137,8 +137,9 @@ export class FaunaRenderer {
 
   #herd(state, dt, elapsed, animate) {
     // Na aldeia tupinambá não há bicho de criação: "Nem há aqui boi ou vaca, cabra,
-    // ovelha ou galinha" (Caminha, 1500).
-    if (TUPI) return;
+    // ovelha ou galinha" (Caminha, 1500). Em Palmares não há curral: o sustento é
+    // a roça e a caça ("as caças os ajudam muito", Relação das guerras, 1678).
+    if (FOREST) return;
     const home = this.#home(state);
     if (!home) return;
     while (this.#goats.length < GOATS) {

@@ -23,7 +23,8 @@ import { PickupRenderer } from './PickupRenderer.js';
 import { FaunaRenderer } from './FaunaRenderer.js';
 import { TupiBuildingModel } from './TupiBuildingModel.js';
 import { PalisadeRenderer } from './PalisadeRenderer.js';
-import { TUPI } from '../config/mission.js';
+import { PalmaresBuildingModel } from './PalmaresBuildingModel.js';
+import { TUPI, PALMARES, FOREST } from '../config/mission.js';
 
 // A cena 3D inteira, vista de fora como uma coisa só: monta o renderer, a câmera e um
 // renderizador por tipo de coisa do mundo, e expõe só o que o resto do jogo usa.
@@ -81,9 +82,10 @@ export class WorldView {
     this.trees = new TreeRenderer(treeLayer, props, space);
     this.logs = new LogRenderer(logLayer, space);
     // As casas e a torre da missão: taipa e trincheira no sertão; ocas e cerca de
-    // seteiras na aldeia tupinambá.
-    this.huts = new HutRenderer(hutLayer, TUPI ? new TupiBuildingModel() : new SertaoBuildingModel(), space);
-    this.towers = TUPI ? new PalisadeRenderer(towerLayer, space) : new TowerRenderer(towerLayer, space);
+    // seteiras na aldeia tupinambá; casas de palha e cerca de pau a pique nos Palmares.
+    const buildings = TUPI ? new TupiBuildingModel() : PALMARES ? new PalmaresBuildingModel() : new SertaoBuildingModel();
+    this.huts = new HutRenderer(hutLayer, buildings, space);
+    this.towers = FOREST ? new PalisadeRenderer(towerLayer, space) : new TowerRenderer(towerLayer, space);
     this.occlusion = new OcclusionFader(this.camera, {
       targets: this.organisms,
       occluders: [this.trees, this.scenery, this.huts, this.towers]
