@@ -1,5 +1,6 @@
 import { TOWER, HILL_REACH, SNARE, TEXT } from '../config/rts.js';
 import { hillAt } from '../world/Hills.js';
+import { garrisonTurret } from './Shelter.js';
 
 // Altura de onde a bala sai (o atirador agachado atrás do parapeito, ou de pé no
 // jirau) e onde ela acerta (o peito de quem leva), em unidades da cena.
@@ -26,7 +27,8 @@ export class TowerSystem {
   // O que a trincheira faz agora, pelos níveis das melhorias (a Igreja Nova tem os
   // números dela). Do alto do morro, o tiro vai mais longe.
   static stats(tower) {
-    const turret = tower.stats.turret;
+    // A casa do meio com gente dentro (o sino) atira como torre.
+    const turret = tower.stats.turret ?? garrisonTurret(tower);
     const range = (turret ? turret.range : TOWER.range[tower.levels.range]) * (hillAt(tower.x, tower.y) ? HILL_REACH : 1);
     return {
       range: Math.round(range),
@@ -62,7 +64,7 @@ export class TowerSystem {
   // Fica no mesmo alvo enquanto ele estiver ao alcance; senão, o mais adiantado.
   #pick(tower, range, hall) {
     // Canoa vazia encalhada não vale flecha.
-    const inRange = u => u.life > 0 && !(u.stats.boat && !u.crew?.length) && Math.hypot(u.x - tower.x, u.y - tower.y) <= range;
+    const inRange = u => u.life > 0 && !u.inHut && !(u.stats.boat && !u.crew?.length) && Math.hypot(u.x - tower.x, u.y - tower.y) <= range;
     if (tower.target && this.#state.organisms.includes(tower.target) && inRange(tower.target)) return tower.target;
     let best = null, bestScore = Infinity;
     for (const u of this.#state.organisms) {

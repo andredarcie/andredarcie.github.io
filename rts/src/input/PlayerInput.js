@@ -4,8 +4,10 @@ import { BUILDING_TYPES } from '../config/rts.js';
 // Raio de toque, em pixels de tela: dedo é grosso, e no celular a unidade tem
 // poucos pixels. Vira unidades do mundo pelo zoom do momento.
 const TOUCH_RADIUS = 22;
-// Dois toques na mesma unidade dentro deste tempo (ms) selecionam o tipo inteiro.
+// Dois toques na mesma unidade dentro deste tempo (ms) selecionam os do mesmo tipo
+// que estão em volta dela, até esta distância (unidades do mundo; o boneco tem 16).
 const DOUBLE_TAP = 320;
+const NEARBY_RADIUS = 120;
 
 // O toque no mundo vira ordem. Com nada selecionado, toque seleciona. Com tropas na
 // mão: tocar no chão anda (soldado ataca o que achar no caminho), na árvore ou na
@@ -150,13 +152,9 @@ export class PlayerInput {
       this.#selection.setUnits([unit]);
       return;
     }
-    // Dois toques: todos os do mesmo tipo que estão na tela.
-    const bounds = this.#canvas.getBoundingClientRect();
-    const same = this.#state.organisms.filter(u => {
-      if (u.team !== 'player' || u.type !== unit.type) return false;
-      const p = this.#view.camera.project(u.x, u.y, 6);
-      return p.x >= 0 && p.y >= 0 && p.x <= bounds.width && p.y <= bounds.height;
-    });
+    // Dois toques: os do mesmo tipo em volta da unidade tocada (pedido do autor).
+    const same = this.#state.organisms.filter(u =>
+      u.team === 'player' && u.life > 0 && u.type === unit.type && Math.hypot(u.x - unit.x, u.y - unit.y) <= NEARBY_RADIUS);
     this.#selection.setUnits(same);
   }
 
@@ -228,6 +226,7 @@ export class PlayerInput {
   // ---- Laço de seleção ----
 
   #boxBegin(x, y) {
+    if (this.#selection.placing) return;
     this.#boxStart = { x, y };
     this.#boxEnd = { x, y };
     this.#drawBox();
@@ -235,6 +234,7 @@ export class PlayerInput {
   }
 
   #boxMove(x, y) {
+    if (!this.#boxStart) return;
     this.#boxEnd = { x, y };
     this.#drawBox();
   }
@@ -255,10 +255,9 @@ export class PlayerInput {
       if (tiny) return Math.hypot(p.x - left, p.y - top) < 60;
       return p.x >= left && p.x <= right && p.y >= top && p.y <= bottom;
     });
-    // Laço com soldados e trabalhadores: fica com os soldados, que é o que se quer
-    // ao laçar um exército.
-    const soldiers = picked.filter(u => u.type !== 'worker');
-    this.#selection.setUnits(soldiers.length && soldiers.length < picked.length && !tiny ? soldiers : picked);
+    // Todo mundo que está dentro do laço, sem limite e sem separar soldado de
+    // trabalhador (pedido do autor).
+    this.#selection.setUnits(picked);
   }
 
   #drawBox() {

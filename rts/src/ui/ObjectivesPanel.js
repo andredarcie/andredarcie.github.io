@@ -1,7 +1,8 @@
 // O painel dos objetivos da missão, embaixo da barra de cima: o nome da missão, a
 // lista (o da vez em destaque, com o andamento; os cumpridos riscados) e a dica do
-// objetivo da vez. Pisca quando um objetivo se abre ou se cumpre. Tocar no título
-// recolhe e abre o painel.
+// objetivo da vez. Pisca quando um objetivo se abre ou se cumpre; com o prazo nos
+// últimos 30 segundos, fica em vermelho pulsando. Tocar no título recolhe e abre o
+// painel.
 const REFRESH = .25;
 
 export class ObjectivesPanel {
@@ -53,12 +54,14 @@ export class ObjectivesPanel {
 
   #render() {
     const items = this.#mission.objectives();
-    const signature = items.map(item => `${item.done}|${item.current}|${item.progress}`).join(';');
+    this.#el.classList.toggle('urgent', items.some(item => item.urgent));
+    const signature = items.map(item => `${item.done}|${item.current}|${item.progress}|${item.urgent}`).join(';');
     if (signature === this.#signature) return;
     this.#signature = signature;
     this.#list.replaceChildren(...items.map(item => {
       const li = document.createElement('li');
       li.dataset.state = item.done ? 'done' : item.current ? 'current' : 'open';
+      if (item.urgent) li.dataset.urgent = 'true';
       const text = document.createElement('span');
       text.textContent = item.text;
       li.append(text);

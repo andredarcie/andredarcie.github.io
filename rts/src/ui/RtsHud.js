@@ -3,6 +3,15 @@ import {
   TRADE, THIRST, CRAFT, TEXT, PREACHER_TYPE, HEROES
 } from '../config/rts.js';
 import { BASE_SIMULATION_SPEED } from '../config/world.js';
+import { MISSION } from '../config/mission.js';
+
+// O sino de cada era (rts/Shelter.js): o sino da igreja em Canudos; a buzina na aldeia
+// ("com suas buzinas e tamboris", Soares, cap. CLXVIII); o alarma no Macaco.
+const BELL = Object.freeze({
+  canudos: { label: 'Sino', icon: 'bell', sub: 'todos à igreja', on: 'O sino toca: os sertanejos correm para a igreja', off: 'Os sertanejos voltam ao trabalho' },
+  palmares: { label: 'Alarma', icon: 'alert', sub: 'todos ao Conselho', on: 'Alarma: os palmarinos correm para a Casa do Conselho', off: 'Os palmarinos voltam ao trabalho' },
+  tupinamba: { label: 'Buzina', icon: 'horn', sub: 'todos à casa', on: 'A buzina soa: os moradores correm para a casa do principal', off: 'Os moradores voltam ao trabalho' }
+})[MISSION] ?? null;
 import { TowerSystem } from '../rts/TowerSystem.js';
 import { icon } from './Icons.js';
 import { TeamLedger } from '../rts/TeamLedger.js';
@@ -302,12 +311,30 @@ export class RtsHud {
     const worker = UNIT_TYPES.worker, preacherStats = UNIT_TYPES[PREACHER_TYPE], hall = BUILDING_TYPES.hall;
     list.push({ action: 'idle', icon: 'idle', label: 'À toa', sub: TEXT.idleSub(idle), disabled: !idle });
     list.push({ action: 'army', icon: 'fighters', label: TEXT.armyLabel, sub: `${army} na luta`, disabled: !army });
-    list.push({ action: 'all-workers', icon: worker.icon, label: TEXT.workersLabel, sub: 'todos' });
+    // Sem trabalhador, sem pregador ou sem casa do meio na missão (uma tropa em marcha),
+    // o botão dele não aparece.
+    const start = this.#mission?.mission.start ?? {};
+    if (this.#ledger.units('player').some(u => u.type === 'worker')) {
+      list.push({ action: 'all-workers', icon: worker.icon, label: TEXT.workersLabel, sub: 'todos' });
+    }
     const preacher = this.#preacher();
-    list.push({ action: 'preacher', icon: preacherStats.icon, label: TEXT.preacherLabel, sub: TEXT.preacherSub(Boolean(preacher)), disabled: !preacher });
+    if (start.hall !== false && start.preacher !== false) {
+      list.push({ action: 'preacher', icon: preacherStats.icon, label: TEXT.preacherLabel, sub: TEXT.preacherSub(Boolean(preacher)), disabled: !preacher });
+    }
     const heroes = this.#heroes();
-    if (heroes.length) list.push({ action: 'heroes', icon: UNIT_TYPES[HEROES[0].type].icon, label: TEXT.heroesLabel, sub: TEXT.heroesSub(heroes.length) });
-    list.push({ action: 'base', icon: hall.icon, label: TEXT.baseLabel, sub: 'câmera' });
+    // Longe da casa da era (Subupira, a procissão), "em campo" em vez de "no Macaco".
+    if (heroes.length) list.push({ action: 'heroes', icon: UNIT_TYPES[HEROES[0].type].icon, label: TEXT.heroesLabel, sub: start.home ? `${heroes.length} em campo` : TEXT.heroesSub(heroes.length) });
+    // O sino: chama os trabalhadores para dentro da casa do meio; com gente lá dentro,
+    // o mesmo botão os manda de volta.
+    const home = this.#ledger.hall();
+    const workers = this.#ledger.units('player').filter(u => u.type === 'worker');
+    if (BELL && home?.built && workers.length) {
+      const called = workers.filter(u => u.inHut || u.order?.type === 'shelter').length;
+      list.push(called
+        ? { action: 'bell', icon: BELL.icon, label: 'Voltar', sub: `${called} ${called === 1 ? 'abrigado' : 'abrigados'}` }
+        : { action: 'bell', icon: BELL.icon, label: BELL.label, sub: BELL.sub });
+    }
+    if (home) list.push({ action: 'base', icon: hall.icon, label: TEXT.baseLabel, sub: 'câmera' });
     return list;
   }
 
@@ -466,7 +493,7 @@ export class RtsHud {
         .map(([type, n]) => `${n} ${n === 1 ? UNIT_TYPES[type].label : UNIT_TYPES[type].plural}`).join(' · ');
       life = s.units.reduce((sum, u) => sum + u.life / u.maxLife, 0) / s.units.length;
     } else {
-      title = TEXT.homeTitle;
+      title = this.#mission?.mission.start.home ?? TEXT.homeTitle;
       detail = 'Toque numa pessoa · segure e arraste para juntar um grupo';
     }
     els.title.textContent = title;
@@ -581,6 +608,11 @@ export class RtsHud {
       case 'base': {
         const home = this.#ledger.hall() ?? this.#ledger.buildings('player')[0];
         if (home) this.focus(home.x, home.y);
+        break;
+      }
+      case 'bell': {
+        const called = this.#commands.ringBell();
+        if (called !== null && BELL) this.toast(called ? BELL.on : BELL.off, called ? 'warn' : 'info');
         break;
       }
     }

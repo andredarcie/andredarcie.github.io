@@ -3,6 +3,7 @@ import { BUILDING_TYPES, UNIT_TYPES, FORMATION_SPACING, TRAIN_QUEUE_MAX, TOWER_U
 import { Building } from '../entities/Building.js';
 import { onRoad, facingRoad } from '../world/Roads.js';
 import { TeamLedger } from './TeamLedger.js';
+import { leaveShelter } from './Shelter.js';
 
 // As ordens do jogo: andar, atacar, colher, construir (ou consertar), treinar,
 // erguer obra e melhorar torre. Quem chama recebe { ok, reason } quando a ordem pode
@@ -64,6 +65,34 @@ export class Commands {
       u.order = { type: 'build', building, resume: previous };
     }
     this.#events.emit('command', { kind: 'build' });
+  }
+
+  // O sino: sem ninguém chamado, os trabalhadores largam o que faziam e correm para a
+  // casa do meio; com gente lá dentro (ou a caminho), todos voltam ao que faziam.
+  // Devolve true se chamou, false se soltou, null sem casa do meio de pé.
+  ringBell(teamId = 'player') {
+    const hall = this.#ledger.hall();
+    if (!hall?.built) return null;
+    const workers = this.#state.organisms.filter(u => u.team === teamId && u.type === 'worker' && u.life > 0);
+    const called = workers.filter(u => u.inHut || u.order?.type === 'shelter');
+    if (called.length) {
+      for (const u of called) {
+        if (u.inHut) leaveShelter(u);
+        else {
+          u.order = u.resume ?? null;
+          u.resume = null;
+        }
+      }
+      this.#events.emit('bell', { x: hall.x, y: hall.y, on: false });
+      return false;
+    }
+    for (const u of workers) {
+      this.#reset(u);
+      u.resume = u.order?.type === 'gather' || u.order?.type === 'build' ? u.order : null;
+      u.order = { type: 'shelter', building: hall };
+    }
+    this.#events.emit('bell', { x: hall.x, y: hall.y, on: true });
+    return true;
   }
 
   stop(units) {

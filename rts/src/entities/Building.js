@@ -51,8 +51,10 @@ export class Building {
   }
 
   // Atira sozinha: a trincheira e as torres da Igreja Nova.
+  // Atira sozinha: a trincheira, as torres da Igreja Nova e a casa do meio com gente
+  // abrigada dentro (o sino, rts/Shelter.js).
   get shoots() {
-    return this.isTower || Boolean(this.stats.turret);
+    return this.isTower || Boolean(this.stats.turret) || (this.garrison ?? 0) > 0;
   }
 
   get isTower() {

@@ -103,7 +103,8 @@ export const LOOKS = Object.freeze({
   pajeu: { hat: 'leather', bandolier: true, skin: '#5a3826' },
   quadrado: { hat: 'straw', satchel: true },
   vilanova: { hat: 'straw', vest: true },
-  macambira: { hat: 'leather' }
+  macambira: { hat: 'leather' },
+  cruzeiro: { hat: 'straw', staff: true }
 });
 
 // `speed` multiplica o passo de caminhada; `reach` é o alcance do golpe (ou do tiro,
@@ -169,6 +170,16 @@ export const UNIT_TYPES = Object.freeze({
     interval: 1.1, swing: .9, speed: 1.35, size: 10, sight: 120, vsBuilding: 1, look: 'macambira', hero: true,
     antiCannon: 5,
     role: '"Pai! quero escangalhar a matadeira!" — arrebenta canhão com a alavanca'
+  },
+  // Uauá, 1896: os sertanejos vinham guiados pela "bandeira do Divino e, ladeando-a,
+  // nos braços fortes de um crente possante, grande cruz de madeira, alta como um
+  // cruzeiro", e lutaram "reunidos sempre em volta da bandeira do Divino" (Os Sertões,
+  // A Luta, II). Só da missão de Uauá; o ânimo de quem luta perto dela é do jogo.
+  cruzeiro: {
+    label: 'Porta-cruz', plural: 'Porta-cruz', icon: 'cross', hp: 220, damage: 0, weapon: null, reach: 0,
+    interval: 1, swing: 1, speed: 1.05, size: 10.6, sight: 0, vsBuilding: 0, look: 'cruzeiro', hero: true, passive: true,
+    aura: { radius: 100, damage: 1.25, heal: 0 },
+    role: 'Leva a grande cruz e a bandeira do Divino: quem luta perto dela luta com mais força'
   },
   private: {
     label: 'Soldado de linha', plural: 'Soldados de linha', icon: 'soldier', hp: 45, damage: 7, weapon: 'rifle', reach: 70,
@@ -358,9 +369,11 @@ export const START_HEROES = Object.freeze([]);
 export const RECORD_KEY = 'canudos-melhor';
 // Pontos da beirada do tabuleiro entre uma estrada e outra: por onde a tropa entra
 // pela caatinga quando fecha o cerco.
+// Em frações do lado, para valer em mapa de qualquer tamanho.
+const NEAR = Math.round(WORLD.width * .16), FAR = Math.round(WORLD.width * .84);
 export const EDGE_ENTRIES = Object.freeze([
-  { x: 130, y: 6 }, { x: 690, y: 6 }, { x: WORLD.width - 6, y: 130 }, { x: WORLD.width - 6, y: 690 },
-  { x: 690, y: WORLD.height - 6 }, { x: 130, y: WORLD.height - 6 }, { x: 6, y: 690 }, { x: 6, y: 130 }
+  { x: NEAR, y: 6 }, { x: FAR, y: 6 }, { x: WORLD.width - 6, y: NEAR }, { x: WORLD.width - 6, y: FAR },
+  { x: FAR, y: WORLD.height - 6 }, { x: NEAR, y: WORLD.height - 6 }, { x: 6, y: FAR }, { x: 6, y: NEAR }
 ]);
 // As ferramentas da gente da vila: machado de ferro na lenha, facão na roça, e o que
 // se leva na mão até a igreja (o fuzil tomado).

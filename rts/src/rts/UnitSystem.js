@@ -15,6 +15,7 @@ import { Corpse } from '../entities/Corpse.js';
 import { Log } from '../entities/Log.js';
 import { marchPath, roadPath } from '../world/Roads.js';
 import { hillAt } from '../world/Hills.js';
+import { leaveShelter } from './Shelter.js';
 
 // Passo da corrida de cada unidade: anda um pouco mais rápido que o bicho da
 // simulação, que passeava.
@@ -250,6 +251,13 @@ export class UnitSystem {
 
   #tick(u, dt) {
     this.#coolDownTimers(u, dt);
+    // Abrigado na casa do meio (o sino, rts/Shelter.js): parado lá dentro, fora do
+    // alcance de todos; se a casa cair, sai correndo pela porta.
+    if (u.inHut) {
+      u.halt();
+      if (!this.#alive(u.shelter)) leaveShelter(u);
+      return;
+    }
     this.#landSwing(u);
     // No meio do golpe o corpo está no movimento da arma: ninguém sai do lugar.
     if (u.strike > 0) {
@@ -257,6 +265,14 @@ export class UnitSystem {
       return;
     }
     if (u.engage && !this.#alive(u.engage)) u.engage = null;
+    // Quem dormia (ou estava tranquilo, de costas) e foi atacado acorda; a sentinela que
+    // vê o inimigo dá o alarma. O MissionDirector ouve o 'alarm' e acorda o resto.
+    if ((u.asleep || u.calm || u.sentry) && (u.engage || u.hurt > 0)) {
+      u.asleep = false;
+      u.calm = false;
+      u.sentry = false;
+      this.#events.emit('alarm', { x: u.x, y: u.y, team: u.team });
+    }
     const invader = u.team === 'enemy';
     if (invader) this.#drink(u, dt);
     else this.#settle(u, dt);
@@ -324,6 +340,12 @@ export class UnitSystem {
       case 'sail':
         this.#sail(u, order, dt);
         return;
+      case 'route':
+        this.#route(u, order, dt);
+        return;
+      case 'shelter':
+        this.#shelter(u, order, dt);
+        return;
       default:
         if (invader && !u.guard) this.#hunt(u, dt);
         else this.#idle(u, dt);
@@ -351,6 +373,9 @@ export class UnitSystem {
     u.scan = SCAN_INTERVAL;
     const type = u.order?.type;
     if (u.type === 'worker' || u.stats.passive) return;
+    // Dormindo (ou tranquilo, sem vigiar) não vê ninguém; a espia a caminho (`evade`)
+    // não para para brigar.
+    if (u.asleep || u.calm || u.order?.evade) return;
     if (u.team === 'enemy') {
       // Na estrada ele pega gente e construção; batendo numa parede, só gente que
       // chegou bem perto o tira dela. Canhão mira construção; a Matadeira, igreja.
@@ -380,7 +405,7 @@ export class UnitSystem {
     let best = null, bestDistance = range;
     const leashed = target => post && Math.hypot(target.x - post.x, target.y - post.y) > GUARD_LEASH;
     for (const other of this.#state.organisms) {
-      if (other.team === u.team || other.life <= 0 || leashed(other)) continue;
+      if (other.team === u.team || other.life <= 0 || other.inHut || leashed(other)) continue;
       // Canoa vazia na areia não chama ninguém para a praia (atacar, só mandando).
       if (other.stats.boat && !other.crew?.length) continue;
       const dx = other.x - u.x, dy = other.y - u.y;
@@ -673,7 +698,8 @@ export class UnitSystem {
   }
 
   #hitBuilding(u, building) {
-    const damage = u.stats.damage * this.#might(u) * u.stats.vsBuilding * (.85 + Math.random() * .3);
+    // `armor` (da missão): a caiçá verde, que "não há coisa que a rompa", quase não sente.
+    const damage = u.stats.damage * this.#might(u) * u.stats.vsBuilding * (.85 + Math.random() * .3) * (building.armor ?? 1);
     building.life -= damage;
     building.hurt = .3;
     // O tição pega fogo na palha: fumaça e fagulha onde ele bateu.
@@ -700,7 +726,7 @@ export class UnitSystem {
       this.#rallyDefenders(victim.team, striker, victim.x, victim.y);
       return;
     }
-    if (!victim.engage && victim.order?.type !== 'move' && victim.order?.type !== 'attack') {
+    if (!victim.engage && victim.order?.type !== 'move' && victim.order?.type !== 'attack' && !victim.order?.evade) {
       if (victim.type !== 'worker' || !victim.order || victim.order.type === 'gather') {
         victim.engage = striker;
         victim.retaliate = WORKER_RETALIATE;
@@ -731,7 +757,7 @@ export class UnitSystem {
   }
 
   #alive(target) {
-    if (!target || target.life <= 0) return false;
+    if (!target || target.life <= 0 || target.inHut) return false;
     return target.queue !== undefined
       ? this.#state.buildings.includes(target)
       : this.#state.organisms.includes(target);
@@ -1126,14 +1152,66 @@ export class UnitSystem {
     }
   }
 
-  spawnConvoy(road, scale) {
+  // Caminho marcado pela missão (MissionDirector): de ponto em ponto, parando onde o
+  // ponto pede (`wait`: a espia que fica olhando a aldeia). No fim, ou sai do mapa
+  // (`exit`: a espia que volta para contar, a tropa que se retira) ou fica ali, de
+  // posto (`hold`: vira guarda).
+  #route(u, order, dt) {
+    u.chop = null;
+    u.eating = 0;
+    const point = order.path[order.step];
+    if (!point) {
+      if (order.exit) {
+        u.gone = true;
+        this.#events.emit('escaped', { unit: u });
+        return;
+      }
+      u.order = null;
+      u.post = { x: u.x, y: u.y };
+      if (order.hold) u.guard = true;
+      return;
+    }
+    const close = Math.hypot(point.x - u.x, point.y - u.y) < 14;
+    if (!this.#steer(u, point.x, point.y, 4, dt) && !close) return;
+    if (point.wait && (order.waited ?? 0) < point.wait) {
+      order.waited = (order.waited ?? 0) + dt;
+      this.#locomotion.move(u, dt, { direction: u.heading, desiredSpeed: 0 });
+      return;
+    }
+    order.waited = 0;
+    order.step++;
+  }
+
+  // O sino tocou: corre até a porta da casa do meio e entra (rts/Shelter.js).
+  #shelter(u, order, dt) {
+    u.chop = null;
+    u.eating = 0;
+    const hall = order.building;
+    if (!this.#alive(hall)) {
+      u.order = u.resume ?? null;
+      u.resume = null;
+      return;
+    }
+    const near = Math.hypot(hall.doorX - u.x, hall.doorY - u.y) < 12;
+    if (!this.#steer(u, hall.doorX, hall.doorY, 6, dt) && !near) return;
+    u.inHut = true;
+    u.shelter = hall;
+    u.engage = null;
+    u.foe = null;
+    u.halt();
+    u.x = hall.x;
+    u.y = hall.y;
+    hall.garrison = (hall.garrison ?? 0) + 1;
+  }
+
+  spawnConvoy(road, scale, escorts = CONVOY.escort) {
     const trail = marchPath(road);
     const stop = trail.slice(0, Math.max(2, Math.round(trail.length * CONVOY.reach)));
     const first = stop[0];
     const cart = this.#factory.create('enemy', 'convoy', first.x, first.y, Math.atan2(first.dy, first.dx), scale);
     cart.order = { type: 'convoy', path: stop.filter((p, i) => i % 2 === 0 || i === stop.length - 1), step: 1, wait: 0, back: false, road };
     this.#state.organisms.push(cart);
-    for (let i = 0; i < CONVOY.escort; i++) {
+    for (let i = 0; i < escorts; i++) {
       const escort = this.#factory.create('enemy', 'private', first.x - first.dx * 10, first.y - first.dy * 10,
         Math.atan2(first.dy, first.dx), scale);
       escort.order = { type: 'escort', target: cart, side: i % 2 ? 1 : -1 };
@@ -1169,6 +1247,7 @@ export class UnitSystem {
       const side = (i - (crew.length - 1) / 2) * 7;
       const x = Math.max(14, Math.min(WORLD.width - 14, boat.x - Math.sin(boat.heading) * side));
       const unit = this.spawnRaider(item.type, boat.road, item.scale);
+      unit.tag = boat.crewTag ?? null;
       unit.x = x;
       unit.y = coastY(x) - (swim ? 6 : 4) - Math.abs(side) * .2;
       unit.heading = -Math.PI / 2;
@@ -1251,8 +1330,10 @@ export class UnitSystem {
     const push = Math.min(1, dt * 8);
     for (let i = 0; i < units.length; i++) {
       const a = units[i];
+      if (a.inHut) continue;
       for (let j = i + 1; j < units.length; j++) {
         const b = units[j];
+        if (b.inHut) continue;
         const dx = b.x - a.x, dy = b.y - a.y;
         if (dx > PERSONAL_SPACE || dx < -PERSONAL_SPACE || dy > PERSONAL_SPACE || dy < -PERSONAL_SPACE) continue;
         const distance = Math.hypot(dx, dy) || .01;
@@ -1268,6 +1349,7 @@ export class UnitSystem {
   // Ninguém atravessa parede: quem entrou no círculo de uma construção é posto na beira.
   #keepOutOfBuildings() {
     for (const u of this.#state.organisms) {
+      if (u.inHut) continue;
       for (const b of this.#state.buildings) {
         const limit = b.radius + 2;
         const dx = u.x - b.x, dy = u.y - b.y;

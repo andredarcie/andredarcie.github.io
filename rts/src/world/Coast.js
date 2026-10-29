@@ -1,14 +1,16 @@
 import { WORLD } from '../config/world.js';
 import { TUPI } from '../config/mission.js';
+import { MAP } from '../config/maps.js';
 
 // O mar da missão dos tupinambás: a costa é uma enseada, com a praia no fundo dela
 // (no sul do mapa, abaixo da aldeia) e as pontas de pedra nos cantos. Abaixo da
 // linha da costa é mar: ninguém anda nele, só as canoas. Em Canudos não há mar, e
 // tudo aqui responde "terra".
 
-// A linha d'água no meio da enseada e o quanto ela sobe nas pontas.
-const BAY = 682;
-const HEADLAND = 58;
+// A linha d'água no meio da enseada e o quanto ela sobe nas pontas. Cada missão pode
+// ter a sua enseada (config/maps.js, `coast`): mais funda, mais aberta, mais estreita.
+const BAY = MAP?.coast?.bay ?? 682;
+const HEADLAND = MAP?.coast?.headland ?? 58;
 // Largura da faixa de areia acima da linha d'água.
 export const BEACH = 46;
 

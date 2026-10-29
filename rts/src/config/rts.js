@@ -3,6 +3,7 @@
 // As estradas e os morros podem vir do cenário próprio da missão (config/maps.js).
 import { TUPI, PALMARES } from './mission.js';
 import { MAP } from './maps.js';
+import { coastY } from '../world/Coast.js';
 import * as canudos from './missions/canudos.js';
 import * as tupinamba from './missions/tupinamba.js';
 import * as palmares from './missions/palmares.js';
@@ -21,7 +22,9 @@ export const {
 
 // As estradas do cenário da missão: da boca na beirada até o meio, com a direção e
 // o ponto onde a estrada chega à praça (como em missions/canudos.js).
+// A estrada do mar (`sea`) desce até a linha d'água da enseada daquela missão.
 export const ROADS = MAP?.roads ? Object.freeze(MAP.roads.map(road => {
+  if (road.sea) road = { ...road, mouth: { x: road.mouth.x, y: coastY(road.mouth.x) - 6 } };
   const length = Math.hypot(M.CENTER.x - road.mouth.x, M.CENTER.y - road.mouth.y);
   const dir = { x: (M.CENTER.x - road.mouth.x) / length, y: (M.CENTER.y - road.mouth.y) / length };
   return Object.freeze({ ...road, dir, end: { x: M.CENTER.x - dir.x * M.PLAZA_RADIUS, y: M.CENTER.y - dir.y * M.PLAZA_RADIUS } });

@@ -42,7 +42,9 @@ export class TeamLedger {
   }
 
   popCap(teamId) {
-    let cap = 0;
+    // `extraCap`: a tropa que a missão já traz além das casas (main.js), para o
+    // contador não abrir no vermelho.
+    let cap = teamId === 'player' ? this.extraCap ?? 0 : 0;
     for (const b of this.#state.buildings) if (b.team === teamId && b.built) cap += b.stats.pop;
     return Math.min(MAX_POPULATION, cap);
   }

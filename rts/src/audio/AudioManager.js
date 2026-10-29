@@ -203,6 +203,10 @@ export class AudioManager {
       if (quiet) this.#play('alarm', at(place));
     });
     on('convoyEscaped', () => this.#play('alarm'));
+    // O sino (na aldeia, o alarma tupi da tabela de cima toca no lugar dele).
+    on('bell', ({ on: calling, x, y }) => { if (calling) this.#play('alarm', { x, y }); });
+    // O prazo de um objetivo apertando (30 e 10 segundos).
+    on('deadlineWarn', () => this.#play('alarm'));
     on('death', ({ organism }) => {
       // Canoa afundada não cai como gente.
       if (organism.stats.boat) return;

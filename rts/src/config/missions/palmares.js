@@ -110,6 +110,7 @@ export const LOOKS = Object.freeze({
   gaspar: { palmares: true, shirt: true, bandolier: true },
   muica: { palmares: true, shirt: true, gibao: true },
   zumbi: { palmares: true, bandolier: true },
+  ganazona: { palmares: true, shirt: true },
   soldado: { troop: true, belts: true, pack: true, skins: TROOP_SKINS },
   incendiario: { troop: true, belts: true, skins: TROOP_SKINS },
   artilheiro: { troop: true, belts: true, skins: TROOP_SKINS },
@@ -187,6 +188,15 @@ export const UNIT_TYPES = Object.freeze({
     interval: 1.05, swing: .9, speed: 1, size: 11, sight: 140, vsBuilding: 1, look: 'zumbi', hero: true,
     aura: { radius: 120, damage: 1.3, heal: 0 },
     role: 'O general das armas: os guerreiros perto dele lutam com mais força, e de mais longe'
+  },
+  // "O presidente do Conselho era o Gana-Zona, irmão do rei e chefe do mocambo de
+  // Subupira, a 'segunda cidade' do quilombo" (Carneiro, "Singularidades dos
+  // quilombos"). Sobreviveu a 1677: depois da paz, o governador o mandou "como
+  // parlamentar" ao Zumbi. Só da missão de Subupira.
+  ganazona: {
+    label: 'Gana-Zona', plural: 'Gana-Zona', icon: 'saber', hp: 260, damage: 14, weapon: 'machete', reach: 13,
+    interval: 1.15, swing: .9, speed: 1.1, size: 10.8, sight: 130, vsBuilding: 1, look: 'ganazona', hero: true,
+    role: 'Irmão do rei, chefe de Subupira e presidente do conselho dos Palmares'
   },
   // ---- A tropa das entradas ----
   // "280 homens brancos, mulatos e índios" (Relação, 1675). A espingarda é de
@@ -363,7 +373,7 @@ export const TEXT = Object.freeze({
       how('espingarda', 'O espingardeiro e as torneiras pedem <b>armas de fogo</b>. Elas vêm das que a tropa larga no chão — passe qualquer um dos seus por cima e leve à Casa do Conselho — e do <b>trato com os moradores</b>, na própria casa.'),
       how('cross', 'Leve os feridos para perto do <b>pároco</b>: ele reza por eles e a vida volta ao máximo.'),
       how('road', 'Setas vermelhas mostram por onde vem a próxima entrada. A tropa sofre com a sede e com a mata; os seus, parados no mato, ficam de tocaia. <b>Chamar já</b> encerra a trégua e dá comida de bônus.'),
-      how('tap', '<b>Toque</b> para escolher, <b>dois toques</b> para todos do mesmo tipo, <b>segure e arraste</b> para juntar um grupo. Mande palmarinos a uma construção danificada para <b>consertar</b>.')
+      how('tap', '<b>Toque</b> para escolher, <b>dois toques</b> para os do mesmo tipo em volta, <b>segure e arraste</b> (no mouse, <b>clique e arraste</b>) para juntar um grupo. Mande palmarinos a uma construção danificada para <b>consertar</b>.')
     ].join(''),
     storyKicker: 'Memória dos Palmares',
     storyEmpty: 'Ainda não há nada aqui. Os registros chegam conforme a guerra acontece.',

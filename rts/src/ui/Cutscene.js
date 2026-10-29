@@ -1,4 +1,4 @@
-import { UNIT_TYPES } from '../config/rts.js';
+import { UNIT_TYPES, CENTER } from '../config/rts.js';
 import { icon } from './Icons.js';
 
 // As cenas rápidas de história no começo e no fim de cada missão: personagens
@@ -15,8 +15,15 @@ import { icon } from './Icons.js';
 // na legenda. Fala registrada na época traz a fonte embaixo; as outras são
 // imaginadas a partir dos documentos, e a legenda avisa.
 //
+// O plano pode trazer o seu elenco (`cast`: quem só existe na cena — o coronel a
+// cavalo no alto do morro, o capitão holandês na trilha, a tropa chegando), que
+// anda até `walk` enquanto o plano dura e sai do mapa quando a cena acaba; e pode
+// passear a câmera (`pan`: de `at` até lá, devagar, enquanto a narração corre).
+//
 // Tocar no botão (ou na legenda, ou Enter, espaço, seta para a direita) com a fala
-// ainda saindo mostra ela inteira; com ela inteira, segue. "Pular" vai direto ao fim.
+// ainda saindo mostra ela inteira; com ela inteira, segue. "Pular cena" (o botão
+// grande no alto, ou Esc no teclado) vai direto ao fim: na abertura começa a missão;
+// no fim, para nas escolhas.
 // No fim da missão, a última fala ganha as escolhas (próxima missão, voltar). É um
 // <dialog> modal: enquanto está aberto o jogo não anda nem recebe toque.
 const FADE_MS = 240;
@@ -35,10 +42,15 @@ const NARRATION_WORD = .045;
 const NARRATION_CHAR = .011;
 // Até onde, em volta de quem fala, a gente se vira para ouvir.
 const LISTEN_RADIUS = 80;
+// O elenco anda no passo de marcha (unidades do mundo por segundo) e a câmera leva
+// este tempo, por padrão, para passear de `at` até `pan`.
+const CAST_PACE = 26;
+const PAN_SECONDS = 9;
 
 // A altura da voz de cada personagem: sai do nome (sempre a mesma para o mesmo
 // nome), grave ou aguda dentro de uma faixa de voz de homem; as mulheres mais agudas.
-function voiceOf(name = '') {
+// Também usada pelas falas durante a partida (ui/MissionTalk.js).
+export function voiceOf(name = '') {
   let hash = 7;
   for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) | 0;
   const female = /velha|mulher|liberta|moça/i.test(name);
@@ -47,7 +59,7 @@ function voiceOf(name = '') {
 }
 
 // Quantas sílabas tem a palavra (grupos de vogal), entre 1 e 5.
-function syllables(word) {
+export function syllables(word) {
   const groups = word.toLowerCase().match(/[aeiouáéíóúâêôãõày]+/g);
   return Math.max(1, Math.min(5, groups?.length ?? 1));
 }
@@ -58,6 +70,10 @@ export class Cutscene {
   #view;
   #state;
   #audio;
+  #factory;
+  #cast = [];
+  #staged = new Set();
+  #pan = null;
   #beats = [];
   #index = -1;
   #shot = null;
@@ -70,10 +86,11 @@ export class Cutscene {
   #typing = null;
   #still = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  constructor({ root, view, state, audio = null }) {
+  constructor({ root, view, state, audio = null, factory = null }) {
     this.#view = view;
     this.#state = state;
     this.#audio = audio;
+    this.#factory = factory;
     this.#dialog = root.querySelector('#cutscene');
     const $ = selector => root.querySelector(selector);
     this.#els = {
@@ -88,6 +105,12 @@ export class Cutscene {
       event.preventDefault();
       this.#skip();
     });
+    // O navegador pode fechar o diálogo sozinho (o Chrome fecha no segundo Esc sem
+    // clique no meio, ignorando o cancelamento): a cena termina do mesmo jeito, em vez
+    // de a missão ficar esperando para sempre.
+    this.#dialog.addEventListener('close', () => {
+      if (this.#resolve) this.#finish(this.#choices?.find(choice => choice.primary)?.id ?? null);
+    });
     // Tocar na legenda também segue (no celular é o lugar natural do dedo).
     this.#els.bottom.addEventListener('click', event => {
       if (event.target.closest('button')) return;
@@ -95,13 +118,21 @@ export class Cutscene {
     });
     window.addEventListener('keydown', event => {
       if (!this.#dialog.open) return;
+      // Esc pula aqui mesmo (antes de virar o "cancel" do diálogo) e para por aqui: a
+      // mesma tecla não chega ao menu, que abriria a pausa logo depois da cena.
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this.#skip();
+        return;
+      }
       // No botão em foco, o Enter e o espaço já viram o clique dele.
       if (event.target.closest?.('button')) return;
       if (['Enter', 'Space', 'ArrowRight'].includes(event.code)) {
         event.preventDefault();
         this.#advance();
       }
-    });
+    }, { capture: true });
   }
 
   get isOpen() {
@@ -143,7 +174,9 @@ export class Cutscene {
     if (!this.#fading) {
       this.#view.camera.zoomBy(1 + PUSH_IN * dt);
       this.#type(dt);
+      this.#glide(dt);
     }
+    this.#walk(dt);
     this.#animate(dt);
     this.#placeTag();
   }
@@ -181,6 +214,7 @@ export class Cutscene {
   #show(beat) {
     const newShot = beat.shot !== this.#shot;
     this.#shot = beat.shot;
+    if (newShot) this.#stage(beat.shot);
     const speaker = beat.line?.unit ? this.#find(beat.line.unit, beat.shot.at) : null;
     const apply = () => {
       const camera = this.#view.camera;
@@ -191,6 +225,8 @@ export class Cutscene {
       }
       this.#speaker = speaker;
       if (speaker) this.#gather(speaker);
+      // O passeio da câmera só corre na narração (com alguém falando, ela fica nele).
+      if (newShot) this.#pan = beat.shot.pan ? { from: beat.shot.at, to: beat.shot.pan, t: 0, span: beat.shot.panTime ?? PAN_SECONDS } : null;
       this.#fill(beat);
     };
     if (!newShot) {
@@ -205,6 +241,63 @@ export class Cutscene {
       this.#dialog.classList.remove('cut-dark');
       this.#fading = false;
     }, FADE_MS);
+  }
+
+  // ---- O elenco e o passeio ----
+
+  // Põe no mapa o elenco do plano (uma vez por plano): cada um no lugar, virado para
+  // onde vai andar (ou para o meio), com a marca que as falas procuram.
+  #stage(shot) {
+    if (!this.#factory || !shot.cast || this.#staged.has(shot)) return;
+    this.#staged.add(shot);
+    for (const actor of shot.cast) {
+      const count = actor.count ?? 1;
+      for (let i = 0; i < count; i++) {
+        const x = actor.x + (count > 1 ? (Math.random() - .5) * (actor.spread ?? 30) : 0);
+        const y = actor.y + (count > 1 ? (Math.random() - .5) * (actor.spread ?? 30) : 0);
+        const toward = actor.walk ?? actor.face ?? CENTER;
+        const unit = this.#factory.create(actor.team ?? 'enemy', actor.type, x, y, Math.atan2(toward.y - y, toward.x - x));
+        unit.tag = actor.tag ?? null;
+        unit.post = { x, y };
+        unit.cast = true;
+        unit.asleep = Boolean(actor.asleep);
+        if (actor.walk) unit.walkTo = { x: actor.walk.x + x - actor.x, y: actor.walk.y + y - actor.y };
+        this.#state.organisms.push(unit);
+        this.#cast.push(unit);
+      }
+    }
+  }
+
+  // O elenco anda até o ponto dele, com a passada de verdade (gait e speed são o que
+  // o boneco lê para mexer as pernas).
+  #walk(dt) {
+    for (const u of this.#cast) {
+      const to = u.walkTo;
+      if (!to) continue;
+      const dx = to.x - u.x, dy = to.y - u.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance < 2) {
+        u.walkTo = null;
+        u.speed = 0;
+        continue;
+      }
+      const step = Math.min(distance, CAST_PACE * dt);
+      u.x += dx / distance * step;
+      u.y += dy / distance * step;
+      u.heading = Math.atan2(dy, dx);
+      u.speed = CAST_PACE;
+      u.gait += CAST_PACE * dt * .17;
+    }
+  }
+
+  // A câmera passeia de `at` até `pan`, com saída e chegada macias.
+  #glide(dt) {
+    const pan = this.#pan;
+    if (!pan || this.#speaker || pan.t >= 1) return;
+    pan.t = Math.min(1, pan.t + dt / pan.span);
+    const k = pan.t * pan.t * (3 - 2 * pan.t);
+    this.#view.camera.centerOn(pan.from.x + (pan.to.x - pan.from.x) * k, pan.from.y + (pan.to.y - pan.from.y) * k,
+      innerWidth / 2, innerHeight * .42);
   }
 
   // Quem fala no mapa: a unidade viva com essa marca ou desse tipo, a mais perto do
@@ -416,6 +509,14 @@ export class Cutscene {
       u.talkOpen = 0;
     }
     this.#actors.clear();
+    // O elenco da cena sai do mapa.
+    if (this.#cast.length) {
+      const cast = new Set(this.#cast);
+      this.#state.organisms = this.#state.organisms.filter(u => !cast.has(u));
+      this.#cast = [];
+    }
+    this.#staged.clear();
+    this.#pan = null;
     this.#els.tag.hidden = true;
     const resolve = this.#resolve;
     this.#resolve = null;

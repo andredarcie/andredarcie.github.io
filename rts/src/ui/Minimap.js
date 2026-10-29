@@ -18,8 +18,10 @@ export class Minimap {
   #hud;
   #timer = 0;
   #size = { width: 1, height: 1 };
+  #mission;
 
-  constructor({ canvas, state, view, hud }) {
+  constructor({ canvas, state, view, hud, mission = null }) {
+    this.#mission = mission;
     this.#canvas = canvas;
     this.#ctx = canvas.getContext('2d');
     this.#state = state;
@@ -160,12 +162,34 @@ export class Minimap {
       ctx.strokeRect(p.x - 3.6, p.y - 2.2, 7.2, 4.4);
     }
     for (const u of state.organisms) {
+      if (u.inHut) continue;
       // O comboio e a Matadeira se destacam: são alvo que vale a pena caçar.
       if (u.stats.convoy || u.type === 'matadeira' || (u.stats.boat && u.crew?.length)) dot(u.x, u.y, 3, '#ffb84a');
       else dot(u.x, u.y, 1.5, state.teams[u.team].ring);
     }
     ctx.globalAlpha = 1;
+    this.#drawObjective(ctx);
     this.#drawView(ctx);
+  }
+
+  // O objetivo da vez (MissionDirector.markers): o lugar aonde chegar num anel dourado,
+  // quem derrubar num anel vermelho.
+  #drawObjective(ctx) {
+    const marks = this.#mission?.markers() ?? [];
+    if (!marks.length) return;
+    const blink = (Math.sin(performance.now() / 260) + 1) / 2;
+    ctx.save();
+    for (const mark of marks) {
+      const p = this.#toMap(mark.x, mark.y);
+      const r = Math.max(mark.kind === 'target' ? 3 : 4, mark.radius * this.#scale());
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, r * 1.4, r * .7, 0, 0, Math.PI * 2);
+      ctx.lineWidth = mark.kind === 'goal' ? 2 : 1.4;
+      ctx.strokeStyle = mark.kind === 'goal' ? '#ffd36b' : '#ff6a55';
+      ctx.globalAlpha = .5 + .5 * blink;
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   #scale() {

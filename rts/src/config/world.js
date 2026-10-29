@@ -1,11 +1,17 @@
 // Mundo: tamanho, biomas e o que cresce em cada um.
 import { TUPI, FOREST } from './mission.js';
+import { MAP } from './maps.js';
 
 // O mundo é um quadrado fixo. Já foi 900 × 900; depois 636 × 636 (metade da área),
 // 509 × 509 e 407 × 407. Agora 820 × 820 (~4× a área do de 407), para caber 100
 // bichos de uma vez. O que é contado (árvores, capim, poças, detalhe do chão)
 // acompanha a área, então a densidade fica a mesma.
-export const WORLD = Object.freeze({ width: 820, height: 820 });
+// Cada missão tem o tamanho do seu lugar (config/maps.js, `size`): o povoado de Uauá
+// é pequeno, a serra da Barriga em 1694 é enorme. Sem tamanho próprio, 820.
+const SIDE = MAP?.size ?? 820;
+export const WORLD = Object.freeze({ width: SIDE, height: SIDE });
+// Quanto da área de 820 × 820 o mundo tem: o que se espalha pelo chão acompanha.
+export const AREA_SHARE = SIDE * SIDE / (820 * 820);
 
 // Os biomas: o leito seco do Vaza-Barris contornando o arraial pelo leste e pelo sul,
 // a caatinga aberta e pelada em volta da vila e a fechada para fora, nas estradas.
@@ -37,7 +43,7 @@ export const GROUND_TEXTURE_SIZE = 2048;
 export const BOARD_THICKNESS = 46;
 // Quantos pontos sorteados para enfeite e árvore dentro do mundo. Nem todo ponto
 // vira planta (clareira, poça, densidade do bioma).
-export const SCENERY_SAMPLES = 760;
+export const SCENERY_SAMPLES = Math.round(760 * AREA_SHARE);
 // Traços de detalhe rasteiro pintados no chão.
 export const GROUND_DETAIL_STROKES = 2600;
 

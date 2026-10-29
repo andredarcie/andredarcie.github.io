@@ -4,6 +4,14 @@
 // Estrada que não existe nesta era (os dados das outras eras também são lidos)
 // devolve o meio do mapa: esses pontos nunca são usados.
 import { ROADS, CENTER } from '../rts.js';
+import { WORLD } from '../world.js';
+
+// Um ponto do mapa em frações do lado (0 a 1): o mesmo lugar em mapa de qualquer
+// tamanho. `HALF`: do meio até a beirada.
+export function spot(u, v) {
+  return { x: Math.round(u * WORLD.width), y: Math.round(v * WORLD.height) };
+}
+export const HALF = WORLD.width / 2;
 
 export function near(roadId, distance, side = 0) {
   const road = ROADS.find(item => item.id === roadId);

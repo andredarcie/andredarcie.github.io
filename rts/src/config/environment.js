@@ -1,4 +1,6 @@
 // Capim, poças e chuva.
+import { AREA_SHARE } from './world.js';
+import { MAP } from './maps.js';
 
 export const GRASS_MIN_COUNT = 6;
 export const GRASS_MAX_COUNT = 240;
@@ -19,7 +21,8 @@ export const GRASS_REGROW_SPREAD = 30;
 
 // Canudos foi atacada na grande seca de 1896–97: só sobram umas cacimbas e poças no
 // leito do Vaza-Barris (BiomeMap.habitatWeight puxa a água para lá).
-export const POND_COUNT = 4;
+// O cenário pode pedir outra conta: a seca de julho em Canudos, as chuvas de março.
+export const POND_COUNT = MAP?.ponds ?? Math.max(2, Math.round(4 * AREA_SHARE));
 export const RAIN_START_RATIO = .3;
 export const RAIN_CRISIS_THIRST = 30;
 export const RAIN_CRISIS_SHARE = .25;

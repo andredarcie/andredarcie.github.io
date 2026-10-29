@@ -6,14 +6,16 @@ import {
   TEAMS, START_FOOD, START_WOOD, START_RIFLES, DIFFICULTY, HILLS, TEXT, PREACHER_TYPE
 } from './config/rts.js';
 import { TUPI, FOREST, MISSION } from './config/mission.js';
+import { MAP } from './config/maps.js';
 import { CURRENT, STAGES, STAGE, STAGE_COUNT, completeStage } from './config/campaign.js';
 import { MissionDirector } from './rts/MissionDirector.js';
 import { Cutscene } from './ui/Cutscene.js';
 import { ObjectivesPanel } from './ui/ObjectivesPanel.js';
+import { MissionTalk } from './ui/MissionTalk.js';
 import { coastY } from './world/Coast.js';
 import { pseudoRandom } from './core/math.js';
 import { EventBus } from './core/EventBus.js';
-import { Astronomy } from './sky/Astronomy.js';
+import { Astronomy, DAY_LENGTH } from './sky/Astronomy.js';
 import { SkyClock } from './sky/SkyClock.js';
 import { WorldState } from './world/WorldState.js';
 import { BiomeMap } from './world/BiomeMap.js';
@@ -26,6 +28,7 @@ import { SceneryPlanner } from './world/SceneryPlanner.js';
 import { BloodSystem } from './world/BloodSystem.js';
 import { onRoad, roadReservations } from './world/Roads.js';
 import { Tree } from './entities/Tree.js';
+import { Log } from './entities/Log.js';
 import { FoodPatch } from './entities/FoodPatch.js';
 import { Locomotion } from './organisms/Locomotion.js';
 import { TeamLedger } from './rts/TeamLedger.js';
@@ -54,6 +57,7 @@ import { PondRipplesLayer } from './overlay/layers/PondRipplesLayer.js';
 import { FirefliesLayer } from './overlay/layers/FirefliesLayer.js';
 import { EffectsLayer } from './overlay/layers/EffectsLayer.js';
 import { RoadWarningLayer } from './overlay/layers/RoadWarningLayer.js';
+import { ObjectiveMarkerLayer } from './overlay/layers/ObjectiveMarkerLayer.js';
 import { RtsHud } from './ui/RtsHud.js';
 import { paintIcons } from './ui/Icons.js';
 import { Minimap } from './ui/Minimap.js';
@@ -112,6 +116,13 @@ const events = new EventBus();
 const audio = new AudioManager({ events, root, camera: view.camera });
 const state = new WorldState();
 const skyClock = new SkyClock(new Astronomy());
+// A hora em que a missão começa (a madrugada de Uauá, a noite da brecha): o céu, a luz
+// e a vista de todo mundo já abrem nela, inclusive na cena de abertura.
+if (CURRENT.start.hour !== undefined) {
+  skyClock.time = ((CURRENT.start.hour - 8 + 24) % 24) / 24 * DAY_LENGTH;
+  skyClock.advance(0);
+}
+skyClock.scale = CURRENT.start.skyScale ?? 1;
 const biomes = new BiomeMap();
 const occupancy = new SpaceOccupancy(state);
 const grassField = new GrassField(state, biomes, occupancy);
@@ -144,7 +155,8 @@ const simulation = new Simulation({
 // ---- Interface ----
 const hud = new RtsHud({ root, state, selection, commands, ledger, camera: view.camera, events, waves, mission });
 const story = new StoryBook({ root, events });
-const cutscene = new Cutscene({ root, view, state, audio });
+const cutscene = new Cutscene({ root, view, state, audio, factory });
+const talk = new MissionTalk({ root, state, events, audio, focus: (x, y) => hud.focus(x, y) });
 const objectives = new ObjectivesPanel({ root, mission, events });
 const overlay = new OverlayRenderer({
   canvas: overlayCanvas,
@@ -162,6 +174,7 @@ const overlay = new OverlayRenderer({
     new FirefliesLayer(state, skyClock, weather, motion),
     new BlessingLayer(state, motion),
     new UnitMarksLayer(state, selection, theme),
+    new ObjectiveMarkerLayer(mission, motion),
     new FightLayer(state, theme),
     new EffectsLayer(state, theme),
     new RainLayer(state, weather, theme, motion)
@@ -178,7 +191,7 @@ const cameraController = new CameraController({
   }
 });
 input.attach(cameraController);
-const minimap = new Minimap({ canvas: root.querySelector('#minimap'), state, view, hud });
+const minimap = new Minimap({ canvas: root.querySelector('#minimap'), state, view, hud, mission });
 const frameRenderer = new FrameRenderer({ state, selection, grid: buildGrid, skyClock, weather, motionPreference: motion, view, overlay });
 const viewport = new Viewport(canvas, view, overlay);
 const hudObstacles = new HudObstacleTracker({
@@ -200,9 +213,11 @@ await loading.stage('world');
 // último, o capim. A clareira sai depois de plantar; as estradas ficam reservadas
 // para sempre (nem capim novo, nem lago de chuva, nem construção nascem nelas).
 const roadSpots = roadReservations();
-// Sem vila (uma tropa só, em marcha), a clareira é onde ela começa.
+// Sem vila (uma tropa só, em marcha), a clareira é onde ela começa. Com a casa do
+// meio ainda em ruína e a gente chegando de longe (`start.at`), as duas clareiras.
 const startSpot = start.hall === false ? (start.at ?? TEAMS.player.base) : TEAMS.player.base;
 state.reserved.push({ x: startSpot.x, y: startSpot.y, radius: start.hall === false ? 50 : BASE_CLEARING }, ...roadSpots);
+if (start.hall !== false && start.at) state.reserved.push({ x: start.at.x, y: start.at.y, radius: 50 });
 ponds.restore();
 if (TUPI) plantHeadlands();
 else if (!FOREST) plantQuixabeiras();
@@ -229,6 +244,8 @@ for (const [index, hill] of HILLS.entries()) {
   }
 }
 foundVillage(TEAMS.player);
+markTime();
+ledger.extraCap = Math.max(0, ledger.population('player') - ledger.popCap('player'));
 state.reserved = roadSpots;
 grassField.seed();
 await loading.stage('ground');
@@ -278,13 +295,24 @@ remeasure();
 // Missão sem vila (uma tropa em marcha): só a tropa, no ponto de partida.
 function foundVillage(team) {
   const { x, y } = team.base;
-  const hall = start.hall === false ? null : commands.spawnBuilding(team.id, 'hall', x, y, true, Math.PI / 4);
+  // `hall: 'ruin'`: a casa do meio está de pé só em parte (a capela velha de Canudos, o
+  // chão da aldeia nova) e a gente tem de erguê-la.
+  const hall = start.hall === false ? null : commands.spawnBuilding(team.id, 'hall', x, y, start.hall !== 'ruin', Math.PI / 4);
+  if (start.hall === 'ruin') hall.advance(start.ruin ?? .3);
+  // A marca da casa do meio e das obras (`tag`), para a missão achar: Subupira, que os
+  // próprios palmarinos queimam antes de a tropa chegar.
+  if (hall) hall.tag = start.hallTag ?? null;
   for (const spot of start.buildings ?? []) {
     const building = commands.spawnBuilding(team.id, spot.kind, spot.x, spot.y, true);
     if (spot.levels) Object.assign(building.levels, spot.levels);
+    building.tag = spot.tag ?? null;
+    // Já castigada (o canhoneio de julho de 1897): começa com parte da vida.
+    if (spot.life) building.life = building.maxLife * spot.life;
   }
-  const out = hall ? hall.angle : -Math.PI / 2;
-  const origin = hall ? { x: hall.doorX, y: hall.doorY } : startSpot;
+  // Quem chega de longe (`start.at`) começa lá, virado para o meio.
+  const away = start.at && hall ? start.at : null;
+  const out = away ? Math.atan2(y - away.y, x - away.x) : hall ? hall.angle : -Math.PI / 2;
+  const origin = away ?? (hall ? { x: hall.doorX, y: hall.doorY } : startSpot);
   const place = (type, px, py, heading) => {
     const unit = factory.create(team.id, type, px, py, heading);
     unit.post = { x: unit.x, y: unit.y };
@@ -294,11 +322,13 @@ function foundVillage(team) {
   const workers = start.workers ?? 0;
   for (let i = 0; i < workers; i++) {
     const angle = out + (i - (workers - 1) / 2) * .4;
-    place('worker', origin.x + Math.cos(angle) * 18, origin.y + Math.sin(angle) * 18, angle);
+    const worker = place('worker', origin.x + Math.cos(angle) * 18, origin.y + Math.sin(angle) * 18, angle);
+    if (start.workersTag) worker.tag = start.workersTag;
   }
   // O pregador (Antônio Conselheiro, o pajé, o pároco) na porta da casa do meio.
   if (hall && start.preacher !== false) {
-    place(PREACHER_TYPE, hall.doorX + Math.cos(out) * 8, hall.doorY + Math.sin(out) * 8, out + Math.PI);
+    if (away) place(PREACHER_TYPE, origin.x - Math.cos(out) * 10, origin.y - Math.sin(out) * 10, out);
+    else place(PREACHER_TYPE, hall.doorX + Math.cos(out) * 8, hall.doorY + Math.sin(out) * 8, out + Math.PI);
   }
   // Os chefes que a missão já traz, do outro lado da porta; marcados, para não
   // chegarem de novo com os romeiros (WaveDirector).
@@ -308,13 +338,15 @@ function foundVillage(team) {
     state.flags[`hero-${type}`] = true;
   });
   // A tropa, em fileiras de seis: na frente da porta, ou em volta do ponto de partida.
-  const army = (start.units ?? []).flatMap(([type, count]) => Array(count).fill(type));
-  army.forEach((type, i) => {
+  // O terceiro campo (`[tipo, quantos, marca]`) marca o grupo para a missão.
+  const army = (start.units ?? []).flatMap(([type, count, tag = null]) => Array(count).fill({ type, tag }));
+  army.forEach(({ type, tag }, i) => {
     const row = Math.floor(i / 6), column = i % 6;
-    const back = (hall ? 44 : 0) + row * 15, side = (column - 2.5) * 15;
+    const back = (hall && !away ? 44 : 0) + row * 15, side = (column - 2.5) * 15;
     const across = out + Math.PI / 2;
-    place(type, origin.x + Math.cos(out) * back + Math.cos(across) * side,
+    const unit = place(type, origin.x + Math.cos(out) * back + Math.cos(across) * side,
       origin.y + Math.sin(out) * back + Math.sin(across) * side, out);
+    unit.tag = tag;
   });
   if (!hall) return;
   const villagers = state.organisms.filter(u => u.type === 'worker');
@@ -338,7 +370,9 @@ function foundVillage(team) {
       });
     }
   });
-  // A vila já abre trabalhando: metade na lenha, metade na roça mais perto.
+  // A vila já abre trabalhando: metade na lenha, metade na roça mais perto (com a casa
+  // do meio de pé: sem ela não há onde guardar).
+  if (!hall.built || away) return;
   villagers.forEach((villager, index) => {
     const pool = index % 2 ? state.grass : state.trees.filter(tree => !tree.stump);
     const nearest = [...pool].sort((a, b) =>
@@ -352,7 +386,11 @@ function foundVillage(team) {
 // rutilantes" — o "jardim agreste" de Os Sertões, onde desceu a infantaria de
 // Moreira César (o "vale das quixabeiras").
 function plantQuixabeiras() {
-  const cx = 482, cy = 668;
+  // No pé da Favela, em frente à praça: o lugar vem do cenário (`quixabeiras`, em
+  // frações do lado) ou fica onde estava no arraial de 820.
+  const spot = MAP && 'quixabeiras' in MAP ? MAP.quixabeiras : [.588, .815];
+  if (!spot) return;
+  const cx = WORLD.width * spot[0], cy = WORLD.height * spot[1];
   plantCluster(cx, cy, 6, 26, (px, py, seed) => {
     if (!occupancy.isFree(px, py, FOOTPRINT.quixabeira) || onRoad(px, py, 6)) return;
     state.trees.push(new Tree({ id: state.trees.length + 1, x: px, y: py, kind: 'quixabeira', seed, health: CHOP_HITS }));
@@ -369,13 +407,59 @@ function plantQuixabeiras() {
 // O costão: matacões de granito nas duas pontas da enseada, na areia e entrando no
 // mar, onde a praia acaba (missão dos tupinambás).
 function plantHeadlands() {
-  for (const [from, to] of [[24, 150], [670, 796]]) {
+  const side = WORLD.width;
+  for (const [from, to] of [[side * .03, side * .18], [side * .82, side * .97]]) {
     for (let i = 0; i < 9; i++) {
       const seed = 5200 + from + i * 23;
       const x = from + pseudoRandom(seed) * (to - from);
       const y = coastY(x) - 4 - pseudoRandom(seed + 1) * 22;
       if (occupancy.isFree(x, y, FOOTPRINT.costao)) state.scenery.push({ x, y, seed, kind: 'costao' });
     }
+  }
+}
+
+// O que o tempo fez ao lugar (config/maps.js): a mata cortada em volta do meio (os
+// tocos não rebrotam durante a missão) e os escombros de casa — toras caídas e pedra
+// solta —, em frações do lado.
+function markTime() {
+  const cut = MAP?.stumps;
+  if (cut) {
+    for (const tree of state.trees) {
+      if (Math.hypot(tree.x - WORLD.width / 2, tree.y - WORLD.height / 2) > cut.radius) continue;
+      if (pseudoRandom(tree.id * 7.3) > cut.share) continue;
+      tree.stump = true;
+      tree.stumpAge = -1e6;
+    }
+  }
+  (MAP?.ruins ?? []).forEach(([u, v], index) => {
+    const cx = u * WORLD.width, cy = v * WORLD.height;
+    for (let i = 0; i < 3; i++) {
+      const seed = 6100 + index * 31 + i * 7;
+      const angle = pseudoRandom(seed) * Math.PI * 2, distance = 4 + pseudoRandom(seed + 1) * 12;
+      state.logs.push(new Log({ x: cx + Math.cos(angle) * distance, y: cy + Math.sin(angle) * distance, angle: pseudoRandom(seed + 2) * Math.PI, seed }));
+    }
+    for (let i = 0; i < 5; i++) {
+      const seed = 6300 + index * 37 + i * 11;
+      const angle = pseudoRandom(seed) * Math.PI * 2, distance = 6 + pseudoRandom(seed + 1) * 16;
+      const x = cx + Math.cos(angle) * distance, y = cy + Math.sin(angle) * distance;
+      if (occupancy.isFree(x, y, 3)) state.scenery.push({ x, y, seed, kind: FOREST ? 'rock' : 'lasca' });
+    }
+  });
+}
+
+// Os escombros que ainda ardem (MAP.fires): fagulha e fumaça subindo sem parar.
+let fireClock = 0;
+function burnRuins(dt) {
+  const fires = MAP?.fires;
+  if (!fires) return;
+  fireClock -= dt;
+  if (fireClock > 0) return;
+  fireClock = .32;
+  for (const [u, v] of fires) {
+    state.sparks.push({
+      x: u * WORLD.width + (Math.random() - .5) * 14, y: v * WORLD.height + (Math.random() - .5) * 14,
+      time: 0, life: 1.4, radius: 14, kind: 'fire'
+    });
   }
 }
 
@@ -419,7 +503,8 @@ const menu = new GameMenu({
     beginMission();
   },
   onPause: paused => { running = !paused; },
-  onRestart: chosen => { location.search = stageUrl(STAGE, chosen); },
+  // De novo a mesma missão: a cena de abertura já foi vista (`repetir`), vai direto.
+  onRestart: chosen => { location.search = `${stageUrl(STAGE, chosen)}&repetir=1`; },
   onPickStage: (stage, chosen) => { location.search = stageUrl(stage, chosen); }
 });
 
@@ -429,9 +514,9 @@ async function beginMission() {
   waves.setDifficulty(level);
   mission.setDifficulty(level);
   mission.placeGuards();
-  await cutscene.play(CURRENT.intro, { lastLabel: 'Começar a missão' });
+  if (params.get('repetir') !== '1') await cutscene.play(CURRENT.intro, { lastLabel: 'Começar a missão' });
   view.camera.zoomToPixels(START_PIXELS_PER_UNIT);
-  const home = ledger.hall() ?? startSpot;
+  const home = start.at ?? ledger.hall() ?? startSpot;
   hud.focus(home.x, home.y);
   running = true;
   mission.begin();
@@ -445,17 +530,22 @@ async function beginMission() {
 events.on('victory', async () => {
   completeStage();
   objectives.hide();
+  talk.clear();
   const last = STAGE >= STAGE_COUNT;
   const choices = last
     ? [{ id: 'eras', label: 'Era concluída · voltar às eras', primary: true }]
     : [{ id: 'next', label: `Próxima missão: ${STAGES[STAGE].title}`, primary: true }, { id: 'eras', label: 'Voltar às eras', primary: false }];
   await new Promise(resolve => setTimeout(resolve, 900));
+  await menu.showSummary({ items: mission.summary() });
   const choice = await cutscene.play(CURRENT.outro, { choices });
   location.search = choice === 'next' ? stageUrl(STAGE + 1, level) : '';
 });
 events.on('gameOver', ({ reason }) => {
+  const tip = mission.currentObjective();
   objectives.hide();
-  setTimeout(() => menu.showResult({ title: 'Derrota', text: reason || TEXT.resultKicker }), 1800);
+  talk.clear();
+  const stats = mission.summary();
+  setTimeout(() => menu.showResult({ title: 'Derrota', text: reason || TEXT.resultKicker, tip, stats }), 1800);
 });
 events.on('missionFocus', ({ x, y }) => hud.focus(x, y));
 
@@ -485,6 +575,8 @@ function updateFrame(dt) {
   if (running && !buildMode && !story.isOpen && !cutscene.isOpen) {
     simulation.advance(dt);
     story.update(dt);
+    talk.update(dt);
+    burnRuins(dt);
   }
   cutscene.update(dt);
   objectives.update(dt);

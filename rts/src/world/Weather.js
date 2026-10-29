@@ -1,6 +1,7 @@
 import {
   POND_COUNT, RAIN_FILL_TIME, RAIN_POND_INTERVAL, RAIN_DURATION, RAIN_MEAN_INTERVAL
 } from '../config/environment.js';
+import { MAP } from '../config/maps.js';
 
 // Chuva: cai de tempos em tempos, enche as poças aos poucos e faz nascer poças novas
 // no lugar das que secaram.
@@ -44,8 +45,8 @@ export class Weather {
       if (state.rain.time >= RAIN_DURATION) state.rain = null;
       return;
     }
-    // No RTS ninguém bebe: a chuva vem de vez em quando, só de enfeite.
-    if (Math.random() < dt / RAIN_MEAN_INTERVAL) {
+    // No RTS ninguém bebe: a chuva vem de vez em quando, só de enfeite (nunca na seca).
+    if (!MAP?.dry && Math.random() < dt / RAIN_MEAN_INTERVAL) {
       state.rain = { time: 0, nextPond: .5 };
       state.rainEvents++;
       this.#events.emit('rainStart');

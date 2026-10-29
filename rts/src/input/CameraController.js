@@ -8,7 +8,9 @@ const LONG_PRESS = 380;
 const CLICK_GRACE = 250;
 
 // Passeio da câmera: setas/WASD (com inércia, como nos jogos de estratégia),
-// arrastar com mouse ou dedo, e roda do mouse para o zoom. A câmera anda em tempo
+// arrastar com o dedo (ou com o botão direito ou do meio do mouse), e roda do mouse
+// para o zoom. Com o botão esquerdo do mouse, arrastar desenha o laço de seleção na
+// hora, como nos jogos de estratégia; no dedo, o laço nasce de segurar parado. A câmera anda em tempo
 // real, não em tempo de simulação: o slider acelera os bichos, não quem olha.
 export class CameraController {
   #camera;
@@ -84,7 +86,19 @@ export class CameraController {
   // mostra o mundo inteiro, então no celular a pinça é o jeito natural de chegar perto.
   #bindPointer(canvas) {
     canvas.addEventListener('pointerdown', event => {
+      const mouse = event.pointerType === 'mouse';
+      // Mouse: o esquerdo laça, o direito e o do meio passeiam a câmera.
+      if (mouse && event.button !== 0) {
+        if (event.button !== 1 && event.button !== 2) return;
+        event.preventDefault();
+        this.#drag = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false, box: false, pan: true };
+        return;
+      }
       if (event.button !== 0) return;
+      if (mouse && this.#box) {
+        this.#drag = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false, box: false, lasso: true };
+        return;
+      }
       this.#touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (this.#touches.size === 2) {
         // Segundo dedo: o arrasto vira pinça, e soltar depois não pode virar clique.
@@ -119,6 +133,16 @@ export class CameraController {
       const drag = this.#drag;
       if (!drag || event.pointerId !== drag.id) return;
       if (drag.box) {
+        this.#box.move(event.clientX, event.clientY);
+        return;
+      }
+      // Botão esquerdo do mouse andando além do limite: começa o laço ali mesmo, do
+      // ponto onde o botão desceu (um clique parado continua sendo clique).
+      if (drag.lasso) {
+        if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) < DRAG_THRESHOLD) return;
+        drag.box = true;
+        canvas.setPointerCapture(event.pointerId);
+        this.#box.start(drag.x, drag.y);
         this.#box.move(event.clientX, event.clientY);
         return;
       }

@@ -267,9 +267,12 @@ export const HILLS = Object.freeze([
 export const PREACHER_TYPE = 'paje';
 export const RECORD_KEY = 'tupinamba-melhor';
 // O cerco pela mata entra pelas beiradas de terra (ao sul é mar).
+// Em frações do lado, para valer em mapa de qualquer tamanho (a de baixo fica acima
+// da enseada).
+const NEAR = Math.round(WORLD.width * .16), FAR = Math.round(WORLD.width * .84), LOW = Math.round(WORLD.height * .6);
 export const EDGE_ENTRIES = Object.freeze([
-  { x: 130, y: 6 }, { x: 690, y: 6 }, { x: WORLD.width - 6, y: 130 }, { x: WORLD.width - 6, y: 520 },
-  { x: 6, y: 520 }, { x: 6, y: 130 }
+  { x: NEAR, y: 6 }, { x: FAR, y: 6 }, { x: WORLD.width - 6, y: NEAR }, { x: WORLD.width - 6, y: LOW },
+  { x: 6, y: LOW }, { x: 6, y: NEAR }
 ]);
 // Antes de 1500 não havia ferro: machado de pedra, pau de cavar na roça e, na mão,
 // o feixe de flechas apanhadas.
@@ -302,7 +305,7 @@ export const TEXT = Object.freeze({
       how('arrows', 'Cada flecheiro e cada cerca levam <b>flechas</b>. Você começa com vinte. As que os contrários erram ficam no chão — passe qualquer um dos seus por cima para apanhar e levar à casa do principal.'),
       how('maraca', 'Leve os feridos para perto do <b>pajé</b>: ele os cura e a vida volta ao máximo.'),
       how('canoe', 'Setas vermelhas mostram por onde vem o próximo ataque: pelas trilhas ou pelo mar, em <b>igaras</b> que desembarcam na praia. <b>Chamar já</b> encerra a trégua e dá comida de bônus.'),
-      how('tap', '<b>Toque</b> para escolher, <b>dois toques</b> para todos do mesmo tipo, <b>segure e arraste</b> para juntar um grupo. Mande moradores a uma construção danificada para <b>consertar</b>.')
+      how('tap', '<b>Toque</b> para escolher, <b>dois toques</b> para os do mesmo tipo em volta, <b>segure e arraste</b> (no mouse, <b>clique e arraste</b>) para juntar um grupo. Mande moradores a uma construção danificada para <b>consertar</b>.')
     ].join(''),
     storyKicker: 'Memória da aldeia',
     storyEmpty: 'Ainda não há nada aqui. Os registros chegam conforme a guerra acontece.',

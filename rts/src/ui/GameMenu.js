@@ -37,6 +37,11 @@ export class GameMenu {
     $('#pause-button').addEventListener('click', () => this.#pause());
     $('#pause-resume').addEventListener('click', () => this.#resume());
     $('#pause-restart').addEventListener('click', () => this.#onRestart(this.#level));
+    // A tela de título é o menu das eras (src/boot/eras.js); o menu da campanha é a
+    // abertura desta era, com as 4 missões.
+    $('#pause-campaign').addEventListener('click', () => { location.search = `?missao=${MISSION}&fase=${STAGE}`; });
+    $('#pause-title-screen').addEventListener('click', () => { location.search = ''; });
+    $('#result-title-screen').addEventListener('click', () => { location.search = ''; });
     $('#result-again').addEventListener('click', () => this.#onRestart(this.#level));
     // De volta à abertura da era, com a lista de missões.
     $('#result-menu').addEventListener('click', () => { location.search = `?missao=${MISSION}&fase=${STAGE}`; });
@@ -94,13 +99,53 @@ export class GameMenu {
   }
 
   // A derrota: o que caiu e a citação de fecho da era; jogar de novo é a mesma missão.
-  showResult({ title, text }) {
+  // O resumo da partida ([{ label, value }]) numa lista de duas colunas.
+  #renderStats(list, items) {
+    list.replaceChildren(...items.flatMap(({ label, value }) => {
+      const dt = document.createElement('dt');
+      dt.textContent = label;
+      const dd = document.createElement('dd');
+      dd.textContent = String(value);
+      return [dt, dd];
+    }));
+    list.hidden = !items.length;
+  }
+
+  // Vitória: o resumo, e o botão leva à cena de fim.
+  showSummary({ items }) {
+    const $ = selector => this.#root.querySelector(selector);
+    const mission = STAGES[STAGE - 1];
+    $('#summary-kicker').textContent = `Missão ${mission.number} · ${mission.title}`;
+    this.#renderStats($('#summary-stats'), items);
+    const dialog = $('#summary-dialog');
+    return new Promise(resolve => {
+      const done = () => {
+        dialog.close();
+        resolve();
+      };
+      $('#summary-continue').onclick = done;
+      dialog.oncancel = event => {
+        event.preventDefault();
+        done();
+      };
+      dialog.showModal();
+    });
+  }
+
+  // `tip`: o objetivo em que a missão caiu e a dica dele; `stats`: o resumo.
+  showResult({ title, text, tip = null, stats = [] }) {
     const $ = selector => this.#root.querySelector(selector);
     for (const dialog of this.#root.querySelectorAll('dialog[open]')) dialog.close();
     const mission = STAGES[STAGE - 1];
     $('#result-kicker').textContent = `Missão ${mission.number} · ${mission.title}`;
     $('#result-title').textContent = title;
     $('#result-text').textContent = text;
+    this.#renderStats($('#result-stats'), stats);
+    $('#result-tip').hidden = !tip;
+    if (tip) {
+      $('#result-tip-goal').textContent = tip.text;
+      $('#result-tip-hint').textContent = tip.hint;
+    }
     $('#result-quote').textContent = QUOTES.end.text;
     $('#result-dialog').dataset.victory = 'false';
     this.#markLevels();
