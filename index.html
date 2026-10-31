@@ -331,6 +331,40 @@
       padding: 0.15rem 0.55rem;
       border-radius: 999px;
     }
+    /* card with a second link: the title stretches over the whole card, the extra link sits on top */
+    .card-stretched { position: relative; }
+    .card-stretched .card-title { text-decoration: none; }
+    .card-stretched .card-title::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+    }
+    .card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.9rem;
+    }
+    .card-foot .card-tag { margin-top: 0; }
+    .card-link {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--display);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      transition: background-color .18s ease, color .18s ease;
+    }
+    .card-link:hover { background: var(--accent); color: var(--accent-ink); }
 
     /* Prototypes: a compact index instead of a wall of cards */
     #prototypes-panel .grid {
@@ -679,12 +713,15 @@
         </div>
 
         <div class="grid" id="games-grid">
-          <a class="card" href="brians/web/index.html" data-cat="horror">
+          <div class="card card-stretched" data-cat="horror">
             <img class="card-shot" src="img/previews/brians-mansion.webp" alt="" width="640" height="400" loading="lazy" decoding="async">
-            <div class="card-title">Brian's Mansion</div>
+            <a class="card-title" href="brians/web/index.html">Brian's Mansion</a>
             <div class="card-desc">My first finished game, made in RPG Maker VX when I was 17: a horror-adventure in a haunted mansion, now playable in the browser.</div>
-            <span class="card-tag">Horror</span>
-          </a>
+            <div class="card-foot">
+              <span class="card-tag">Horror</span>
+              <a class="card-link" href="https://youtube.com/shorts/m29miag89Js" target="_blank" rel="noopener" aria-label="Watch the Brian's Mansion trailer on YouTube"><svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"><path d="M0 0l8 5-8 5z" fill="currentColor"/></svg>Trailer</a>
+            </div>
+          </div>
           <a class="card" href="https://andredarcie.github.io/zero-hero/" target="_blank" rel="noopener" data-cat="adventure">
             <img class="card-shot" src="img/previews/zero-the-hero.webp" alt="" width="640" height="400" loading="lazy" decoding="async">
             <div class="card-title">Zero The Hero</div>
