@@ -105,6 +105,60 @@ a:active { color: var(--color-ink-2); }
 .fact h3 { font-weight: 300; font-stretch: 125%; font-size: var(--text-section); line-height: 1; letter-spacing: var(--tracking-display); }
 .fact p { color: var(--color-ink-2); max-width: 34ch; }
 
+/* ---------- episode 2: the meteor beside the timeline ---------- */
+.ep2 { align-items: start; row-gap: var(--space-xl); }
+.ep2 figure { grid-column: 1 / span 4; margin: 0; display: grid; gap: var(--space-sm); }
+.ep2 .frame-ep2 { aspect-ratio: 1080 / 1240; }
+.ep2 .timeline { grid-column: 6 / span 7; }
+.ep2 .timeline h3 { grid-column: 1 / span 5; }
+.ep2 .timeline p { grid-column: 6 / span 7; }
+
+/* ---------- scenes: a rail that runs off the right edge ---------- */
+.cenas .head { margin-bottom: var(--space-xl); }
+.rail {
+  list-style: none; margin: 0; padding: 0 var(--gutter) var(--space-md);
+  padding-left: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+  display: grid; grid-auto-flow: column; grid-auto-columns: clamp(220px, 24vw, 320px); gap: var(--space-lg);
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+}
+.rail:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.rail li { scroll-snap-align: start; }
+.rail figure { margin: 0; display: grid; gap: var(--space-sm); }
+.rail [data-slot] { aspect-ratio: 720 / 827; }
+
+/* ---------- the map ---------- */
+.mapa__corpo { align-items: start; row-gap: var(--space-xl); }
+.mapa__fig { grid-column: 1 / span 8; margin: 0; display: grid; gap: var(--space-sm); }
+.mapa__quadro { background: var(--color-paper); border: var(--rule-hair) solid var(--color-rule-2); }
+.mapa__svg { display: block; width: 100%; height: auto; }
+.mapa__svg path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.mapa__svg .areas { fill: var(--color-paper-2); stroke: var(--color-rule); stroke-width: 2; }
+.mapa__svg .pracas { fill: var(--color-paper-3); stroke: none; }
+.mapa__svg .rio { stroke: var(--color-accent); stroke-width: 14; opacity: 0.85; }
+.mapa__svg .corregos { stroke: var(--color-accent); stroke-width: 4; opacity: 0.45; }
+.mapa__svg .ruas { stroke: var(--color-rule-2); }
+.mapa__svg .r1 { stroke: var(--color-muted); stroke-width: 12; }
+.mapa__svg .r2 { stroke-width: 9; }
+.mapa__svg .r3 { stroke-width: 6; }
+.mapa__svg .r4 { stroke-width: 3; opacity: 0.7; }
+.mapa__svg .casas { fill: var(--color-ink-2); stroke: none; opacity: 0.55; }
+.mapa__svg text { font-family: var(--font-body); fill: var(--color-ink); }
+.mapa__svg .pin circle { fill: var(--color-accent); stroke: var(--color-paper); stroke-width: 6; }
+.mapa__svg .pin__n { font-size: 26px; font-weight: 500; fill: var(--color-accent-ink); text-anchor: middle; }
+.mapa__svg .pin__nome { font-size: 34px; font-weight: 500; paint-order: stroke; stroke: var(--color-paper); stroke-width: 10px; stroke-linejoin: round; }
+.mapa__svg .escala path, .mapa__svg .norte path { stroke: var(--color-ink-2); stroke-width: 4; }
+.mapa__svg .norte path { fill: var(--color-ink-2); }
+.mapa__svg .escala text, .mapa__svg .norte text { font-size: 26px; fill: var(--color-muted); }
+.lugares { grid-column: 9 / span 4; list-style: none; margin: 0; padding: 0; }
+.lugares li { display: grid; gap: var(--space-2xs); padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule-2); }
+.lugares li:first-child { padding-top: 0; }
+.lugares h3 { display: flex; align-items: center; gap: var(--space-sm); font-size: var(--text-lg); }
+.lugares p { color: var(--color-ink-2); font-size: var(--text-sm); }
+.lugares__n {
+  display: inline-grid; place-items: center; flex: none; width: 1.75rem; height: 1.75rem; border-radius: 50%;
+  background: var(--color-accent); color: var(--color-accent-ink); font-size: var(--text-sm); font-weight: 500; font-variant-numeric: tabular-nums;
+}
+
 /* ---------- nav links ---------- */
 .nav__links { display: flex; gap: var(--space-lg); }
 
@@ -171,6 +225,8 @@ tbody td:last-child { color: var(--color-ink); }
   .index li::before { font-size: var(--text-2xl); }
   .index .links { flex-direction: row; gap: var(--space-lg); }
   .statement p { font-size: var(--text-display-s); }
+  .ep2 .timeline h3, .ep2 .timeline p { grid-column: 1 / -1 !important; }
+  .mapa__svg .pin__nome { display: none; }
   .fact h3 { font-size: var(--text-2xl); }
   .footer .close { font-size: var(--text-2xl); }
 }
