@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Insônia</title>
+<meta name="description" content="Insônia (2014): terror psicológico feito no RPG Maker VX Ace, refeito para o navegador.">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  body {
+    display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+    touch-action: none; overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+  }
+  #tela { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+  #carga { position: fixed; inset: auto 0 20px 0; text-align: center; color: #555; font: 12px "Courier New", monospace; }
+  #build { position: fixed; right: 6px; bottom: 4px; color: #2a2a2a; font: 10px "Courier New", monospace; pointer-events: none; }
+
+  /* ---- toque (celular/tablet) ---- */
+  .pad, #tela-cheia { display: none; }
+  body.toque #build { bottom: auto; right: auto; top: calc(4px + env(safe-area-inset-top)); left: calc(6px + env(safe-area-inset-left)); color: #3a3a3a; }
+  /* em pé: a tela em cima, os controles embaixo, sem sobrepor */
+  body.toque.retrato { padding-bottom: calc(200px + env(safe-area-inset-bottom)); padding-top: env(safe-area-inset-top); }
+  body.toque .pad { display: block; position: fixed; bottom: calc(18px + env(safe-area-inset-bottom)); touch-action: none; }
+  /* deitado: a tela ocupa a altura toda e os controles ficam dos lados */
+  body.toque.paisagem .pad { bottom: auto; top: 50%; transform: translateY(-50%) scale(.9); }
+  body.toque.paisagem #dpad { left: calc(8px + env(safe-area-inset-left)); transform-origin: left center; }
+  body.toque.paisagem #acoes { right: calc(8px + env(safe-area-inset-right)); transform-origin: right center; }
+  #dpad { left: calc(16px + env(safe-area-inset-left)); width: 168px; height: 168px; border-radius: 50%; background: rgba(28,28,28,.5); border: 1px solid #333; }
+  #dpad span { position: absolute; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px; color: #777; font: 18px sans-serif; pointer-events: none; }
+  #dpad span.on { background: rgba(130,130,130,.35); color: #e6e6e6; }
+  #dpad [data-d=cima] { left: 56px; top: 0; } #dpad [data-d=baixo] { left: 56px; top: 112px; }
+  #dpad [data-d=esquerda] { left: 0; top: 56px; } #dpad [data-d=direita] { left: 112px; top: 56px; }
+  #acoes { right: calc(16px + env(safe-area-inset-right)); width: 152px; height: 168px; }
+  .pad button { position: absolute; padding: 0; border-radius: 50%; border: 1px solid #444; background: rgba(40,40,40,.55); color: #aaa; font: 14px "Courier New", monospace; touch-action: none; }
+  .pad button.on { background: rgba(130,130,130,.5); color: #eee; }
+  #acoes [data-k=ok] { right: 0; top: 48px; width: 76px; height: 76px; font-size: 16px; }
+  #acoes [data-k=cancelar] { right: 88px; top: 106px; width: 58px; height: 58px; }
+  #acoes [data-k=inventario] { right: 88px; top: 4px; width: 58px; height: 58px; }
+  body.toque.tela-cheia-ok #tela-cheia { display: block; position: fixed; top: calc(6px + env(safe-area-inset-top)); right: calc(6px + env(safe-area-inset-right));
+    width: 40px; height: 40px; padding: 0; border: 1px solid #333; border-radius: 8px; background: rgba(30,30,30,.5); color: #888; font: 18px sans-serif; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "./main.js": "./main.js?v=22",
+    "./src/base.js": "./src/base.js?v=22",
+    "./src/historia.js": "./src/historia.js?v=22",
+    "./src/itens.js": "./src/itens.js?v=22",
+    "./src/janela.js": "./src/janela.js?v=22",
+    "./src/jogo.js": "./src/jogo.js?v=22",
+    "./src/mapa.js": "./src/mapa.js?v=22",
+    "./src/mensagem.js": "./src/mensagem.js?v=22",
+    "./src/menus.js": "./src/menus.js?v=22",
+    "./src/personagem.js": "./src/personagem.js?v=22",
+    "./src/recursos.js": "./src/recursos.js?v=22",
+    "./src/som.js": "./src/som.js?v=22",
+    "./src/tiles.js": "./src/tiles.js?v=22",
+    "./src/mapas/armadilhas.js": "./src/mapas/armadilhas.js?v=22",
+    "./src/mapas/banheiro.js": "./src/mapas/banheiro.js?v=22",
+    "./src/mapas/cela.js": "./src/mapas/cela.js?v=22",
+    "./src/mapas/celas.js": "./src/mapas/celas.js?v=22",
+    "./src/mapas/corredor.js": "./src/mapas/corredor.js?v=22",
+    "./src/mapas/duto.js": "./src/mapas/duto.js?v=22",
+    "./src/mapas/finais.js": "./src/mapas/finais.js?v=22",
+    "./src/mapas/hospital.js": "./src/mapas/hospital.js?v=22",
+    "./src/mapas/index.js": "./src/mapas/index.js?v=22",
+    "./src/mapas/pilares.js": "./src/mapas/pilares.js?v=22",
+    "./src/mapas/quarto2.js": "./src/mapas/quarto2.js?v=22",
+    "./src/mapas/quarto_caixa.js": "./src/mapas/quarto_caixa.js?v=22",
+    "./src/mapas/quarto_menino.js": "./src/mapas/quarto_menino.js?v=22",
+    "./src/mapas/quarto_rachadura.js": "./src/mapas/quarto_rachadura.js?v=22",
+    "./src/mapas/sala14.js": "./src/mapas/sala14.js?v=22",
+    "./src/mapas/sala_enigma.js": "./src/mapas/sala_enigma.js?v=22",
+    "./src/mapas/sala_lampadas.js": "./src/mapas/sala_lampadas.js?v=22",
+    "./src/mapas/salao.js": "./src/mapas/salao.js?v=22"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="tela" width="544" height="416"></canvas>
+<div id="carga">carregando…</div>
+<div id="build">BUILD 22</div>
+<div class="pad" id="dpad"><span data-d="cima">▲</span><span data-d="esquerda">◀</span><span data-d="direita">▶</span><span data-d="baixo">▼</span></div>
+<div class="pad" id="acoes"><button data-k="inventario">I</button><button data-k="cancelar">Esc</button><button data-k="ok">OK</button></div>
+<button id="tela-cheia" aria-label="Tela cheia">⛶</button>
+<script type="module" src="./main.js?v=22"></script>
+</body>
+</html>
