@@ -122,10 +122,11 @@ export function letreiro(txt, w, h, cor = GLOW, fundo = DARK2) {
 
 /* ---------- prédios ao longe: quarteirões ladeando uma transversal (a cidade continua) ---------- */
 // faces viradas para a rua em z = zc ± 4; de x0 a x1 (lado positivo; espelha para o negativo)
-export function quarteiraoLonge(zc, x0, x1, slots, alturas) {
+// inicioLeste: onde começam os quarteirões do lado leste (a loja do dia 5 ocupa o começo da transversal)
+export function quarteiraoLonge(zc, x0, x1, slots, alturas, inicioLeste = x0) {
   let i = 0;
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-    for (let a = x0; a < x1 - 2; ) {
+    for (let a = sx > 0 ? inicioLeste : x0; a < x1 - 2; ) {
       const wd = 5 + (i * 3.7 % 4), h = alturas[i++ % alturas.length], b = Math.min(x1, a + wd);
       const cx = sx * (a + b) / 2, face = zc + sz * 4;
       box(b - a - .2, h, 8, DARK2, cx, h / 2, face + sz * 4);

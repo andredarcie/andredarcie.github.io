@@ -206,7 +206,9 @@ export function buildRua2(nav = {}) {
     streetFlash: new THREE.Color(0x354a5c).multiplyScalar(nk) },
   (x, z) => (naEscada(x, z) || sobViaduto(z) ? -9 : noAsfalto(x, z) ? .035 : .135),
   // dentro dos vestíbulos (a portinha e o da estação) não chove, nem fora desta rua (a avenida tem a dela)
-  (x, z) => !(Math.abs(x) <= 8.2 && z > -41 && z < 33) || (x > 8.2 && x < 10.4 && Math.abs(z - DZ) < 1.2) || (x > 5.8 && x < 8.2 && z > 10.4 && z < 12.6));
+  (x, z) => !(Math.abs(x) <= 8.2 && z > -41 && z < 33) || (x > 8.2 && x < 10.4 && Math.abs(z - DZ) < 1.2) || (x > 5.8 && x < 8.2 && z > 10.4 && z < 12.6),
+  // o viaduto: a chuva cai no tabuleiro (respinga lá em cima), embaixo dele fica seco
+  [{ x0: -45, x1: 45, z0: VZ0, z1: VZ1, y: VY + 1.1, chao: VY + 1.12 }]);
 
   // subindo do metrô ou saindo da portinha: vindo pelo vestíbulo de cada um
   const spawn = vestMetro.spawn || vestPorta.spawn || { x: 7, z: 9.2, yaw: 0 };

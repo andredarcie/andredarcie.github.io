@@ -6,7 +6,7 @@ import { say } from '../dialog.js';
 import { IS_LOCAL } from '../input.js';
 import { sfxPaddle, sfxStep, sfxSit } from '../audio.js';
 import { pose, applyPose, placeBody, cameraFromHead, makeAction, fadeNearCamera, SOLE } from '../body.js';
-import { scene, inters, freshScene, box, lite, grp, blob, anim, instanciar, at, tag, triggerOf, walkOf, blockOf } from '../kit.js';
+import { scene, inters, freshScene, box, lite, grp, blob, anim, instanciar, at, tag, triggerOf, walkOf, blockOf, mundoParaLugar, lugarParaMundo } from '../kit.js';
 import { transformada } from '../mapa.js';
 import { PARADA_PRAIA } from './aviao.js';
 
@@ -111,7 +111,9 @@ uniform float uTime;
 varying vec3 vWorld;
 varying float vD;
 varying float vH;
+#include <common>
 #include <fog_pars_vertex>
+#include <logdepthbuf_pars_vertex>
 ${WAVE_GLSL}
 void main() {
   vec3 p = position;
@@ -123,6 +125,7 @@ void main() {
   vH = h;
   vec4 mvPosition = viewMatrix * wp;
   gl_Position = projectionMatrix * mvPosition;
+  #include <logdepthbuf_vertex>
   #include <fog_vertex>
 }
 `;
@@ -143,7 +146,9 @@ varying vec3 vWorld;
 varying float vD;
 varying float vH;
 #include <fog_pars_fragment>
+#include <logdepthbuf_pars_fragment>
 void main() {
+  #include <logdepthbuf_fragment>
   float t = uTime;
   // a normal é a da própria faceta: cada triângulo uma cor, como o resto do jogo
   vec3 N = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
@@ -327,7 +332,7 @@ export function buildPraia() {
   });
   const sea = new THREE.Mesh(seaGeo, foraDaCanoa(new THREE.ShaderMaterial({
     uniforms: seaU, vertexShader: SEA_VS, fragmentShader: SEA_FS, fog: true,
-    extensions: { derivatives: true },             // normal da faceta (WebGL1); no WebGL2 já vem
+    extensions: { derivatives: true, fragDepth: true }, // normal da faceta e depth logarítmico (WebGL1); no WebGL2 já vêm
   })));
   sea.position.y = SEA_Y;                        // começa 1.5 m por baixo da areia: sem fresta na beira
   sea.frustumCulled = false;                     // a GPU mexe nos vértices: a caixa da malha não vale
@@ -1098,7 +1103,7 @@ export function buildPraia() {
   // da câmera, o remo inteiro é empurrado para fora — e as mãos, que vêm dele, vão junto
   const CONFORTO = .3, camL = V3(0, 0, 0), pq = V3(0, 0, 0);
   function afastaDoRosto(R) {
-    canoa.worldToLocal(camL.copy(camera.position));
+    canoa.worldToLocal(lugarParaMundo(canoa, camL.copy(camera.position)));   // (a câmera está nas coordenadas da praia)
     const k = Math.min(Math.max(pq.subVectors(camL, R.G).dot(R.D), 0), BLADE + .22);
     pq.copy(R.G).addScaledVector(R.D, k);
     const d = pq.distanceTo(camL);
@@ -1243,7 +1248,7 @@ export function buildPraia() {
 
     // ── ondinhas e o chuá da pá entrando ──
     if (pegou && cv.pl > .5) {
-      canoa.localToWorld(wB.copy(P.G).addScaledVector(P.D, BLADE));
+      mundoParaLugar(canoa, canoa.localToWorld(wB.copy(P.G).addScaledVector(P.D, BLADE)));
       const o = ondas[nOnda]; nOnda = (nOnda + 1) % ondas.length;
       o.age = 0; o.m.position.copy(wB); o.m.visible = true;
       sfxPaddle();
@@ -1269,8 +1274,9 @@ export function buildPraia() {
   };
 
   // ── ações de corpo inteiro ──
-  const naCanoa = v => canoa.localToWorld(v);
-  const daCanoa = w => canoa.worldToLocal(w.clone());
+  // canoa ↔ praia (localToWorld daria o mundo, e a praia fica longe da origem e girada no mapa)
+  const naCanoa = v => mundoParaLugar(canoa, canoa.localToWorld(v));
+  const daCanoa = w => canoa.worldToLocal(lugarParaMundo(canoa, w.clone()));
   const areiaLocal = (lx, lz) => { const w = naCanoa(V3(lx, 0, lz)); return daCanoa(V3(w.x, sandH(w.x, w.z), w.z)).y; };
   const umaVez = fn => { let feito = false; return k => { if (!feito && k > .92) { feito = true; fn(); } }; };
   const pisa = () => umaVez(sfxStep);

@@ -169,7 +169,9 @@ function mapaDeVoo() {
     (1 - k) * (1 - k) * P0[0] + 2 * (1 - k) * k * P1[0] + k * k * P2[0],
     (1 - k) * (1 - k) * P0[1] + 2 * (1 - k) * k * P1[1] + k * k * P2[1],
   ];
-  function draw(k) {
+  const milhar = n => String(Math.max(0, Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  // k: progresso da rota · alt (m), kmh, temp (°C): os dados de voo do rodapé
+  function draw(k, alt = 11278, kmh = 870, temp = -52) {
     c.fillStyle = '#1f3142'; c.fillRect(0, 0, 256, 160);
     c.strokeStyle = 'rgba(166,182,184,.10)'; c.lineWidth = 1;          // meridianos
     for (let x = 16; x < 256; x += 32) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, 132); c.stroke(); }
@@ -191,9 +193,9 @@ function mapaDeVoo() {
     c.restore();
     c.fillStyle = '#263848'; c.fillRect(0, 132, 256, 28);              // dados de voo
     c.fillStyle = '#dde8e9'; c.font = '20px VT323, monospace'; c.textBaseline = 'middle';
-    c.fillText('11 278 m', 8, 147);
-    c.fillText('870 km/h', 94, 147);
-    c.fillText('-52°C', 194, 147);
+    c.fillText(milhar(alt) + ' m', 8, 147);
+    c.fillText(milhar(kmh) + ' km/h', 94, 147);
+    c.fillText(Math.round(temp) + '°C', 194, 147);
     tex.needsUpdate = true;
   }
   draw(.4);
@@ -318,7 +320,9 @@ export function buildAviao() {
   anim(t => {                                                        // o aviãozinho avança na rota com o voo
     if (t - mapLast < .5) return;
     mapLast = t;
-    mapa.draw(progresso());
+    // a altura do jogo (cruzeiro em ALT) lida como a de um voo de verdade; no chão, 0 m e 24 °C
+    const h = Math.max(0, Math.min(1, (AV.y - (AV.z < -3000 ? PARADA_PRAIA.y : 2.6)) / ALT));
+    mapa.draw(progresso(), h * 11278, AV.v * 5.8, 24 + (-52 - 24) * h);
   });
 
   // a poltrona vazia do lado, com a manta dobrada: chegando, interagir aqui é levantar e sair
@@ -425,8 +429,10 @@ export function buildAviao() {
   for (const z of [-6.92, -5.98]) box(.06, 2.0, .06, DARK2, PX0 + .05, 1.0, z); // batentes da porta
   box(.06, .06, 1.0, DARK2, PX0 + .05, 2.0, -6.45);
   lite(.03, .06, .4, BLUE, PX0 + .1, 2.08, -6.45);                   // "EXIT" sobre a porta
-  walkOf(-.3, -5.9, .3, 5.8);                                        // o corredor
-  walkOf(-.34, -6.88, .34, -5.88);                                   // a galley
+  // (o corpo tem raio .3: o chão do corredor passa um pouco das poltronas, senão só se andava
+  // nele com o centro exatamente no meio e quem vinha da porta ficava preso na galley)
+  walkOf(-.45, -5.9, .45, 5.8);                                      // o corredor
+  walkOf(-.46, -6.88, .46, -5.88);                                   // a galley
   walkOf(PX0 - .15, -6.85, -.3, -6.15);                              // até a porta (a escada emenda lá fora)
 
   // ── divisória do fundo: banheiros ────────────────────────────────────────

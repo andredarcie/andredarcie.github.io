@@ -79,6 +79,7 @@
     },
     "speakers": {
       "thought": "Pensamento",
+      "zero": "Zero",
       "boss": "Chefe",
       "clerk": "Atendente",
       "final": "Final"
@@ -243,7 +244,7 @@
     "finishDay2Work": [
       {
         "say": {
-          "speaker": "boss",
+          "speaker": "zero",
           "script": "chefe2b"
         }
       },
@@ -402,9 +403,9 @@
       "Eu achava que a ideia era boa, que muitas pessoas poderiam acessar, mas não foi isso"
     ],
     "atendente": [
-      "Uma passagem de avião, por favor",
+      { "speaker": "zero", "text": "Uma passagem de avião, por favor" },
       "Só de ida?",
-      "Só de ida"
+      { "speaker": "zero", "text": "Só de ida" }
     ],
     "embarque": [
       "O embarque é pelo portão aí nos fundos. Boa viagem"

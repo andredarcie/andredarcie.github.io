@@ -279,7 +279,7 @@ export function animar(t, atual, eu) {
 }
 
 /* ---------- desenho ---------- */
-const _p = new THREE.Vector3(), _lp = new THREE.Vector3(), _cand = [];
+const _p = new THREE.Vector3(), _lp = new THREE.Vector3(), _cand = [], acesas = new Set();
 function visivelAte(o) {
   let p = o.parent;
   while (p && p !== raiz) { if (!p.visible) return false; p = p.parent; }
@@ -293,13 +293,16 @@ function escolherLuzes(atual, cam) {
       l.visible = false;
       if (!L.w.scene.visible || !(l.intensity > 0) || !visivelAte(l)) continue;
       l.getWorldPosition(_lp);
-      _cand.push({ l, s: _lp.distanceTo(cam) - (l.distance || 20) });
+      // a que já estava acesa leva vantagem: duas lâmpadas empatadas na vaga 12 não trocam a cada
+      // passo (o balanço da cabeça mexe na distância), senão as paredes em volta piscavam
+      _cand.push({ l, s: _lp.distanceTo(cam) - (l.distance || 20) - (acesas.has(l) ? 4 : 0) });
     }
   }
   sol2.visible = !(atual.extras.length > 0);
   _cand.sort((a, b) => a.s - b.s);
   const n = Math.min(N_LUZES, _cand.length);
-  for (let i = 0; i < n; i++) _cand[i].l.visible = true;
+  acesas.clear();
+  for (let i = 0; i < n; i++) { _cand[i].l.visible = true; acesas.add(_cand[i].l); }
   for (let i = 0; i < N_LUZES; i++) fantasmas[i].visible = i >= n;
 }
 

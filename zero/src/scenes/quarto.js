@@ -127,6 +127,10 @@ export function buildQuarto(nav = {}) {
     box(.3, .3, .06, DARK2, qx, qy, 0, qs);
     box(.22, .22, .02, NAVY, qx, qy, .04, qs);
   }
+  // alvo invisível cobrindo os quatro quadros: mirando o vão entre eles também vale
+  const qAlvo = new THREE.Mesh(new THREE.BoxGeometry(.78, .74, .1), new THREE.MeshBasicMaterial({ visible: false }));
+  qAlvo.position.z = .03;
+  qs.add(qAlvo);
   if (day === 1) tagDialog(qs, 'photo', 'fotografia');
 
   // porta de saída, na parede oposta à janela (a janela dá para a rua, a porta para o corredor que

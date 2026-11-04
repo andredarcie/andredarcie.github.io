@@ -22,9 +22,10 @@ const COR = { plataforma: LIGHT, plataforma2: mix(LIGHT, LIGHT2, .6) };   // a p
 const outra = e => (e === 'plataforma' ? 'plataforma2' : 'plataforma');
 const FORA = 40;                    // de manhã o trem espera no túnel morto depois da CENTRAL
 
-const TR = { x: FORA, em: 'plataforma', fase: 'fora', k: 0, v: 0, para: null, x0: 0, x1: 0, u: 0, dur: 1, conta: 0, tf: 0, somChegada: false };
+// fora: nesta parada o jogador esteve fora do vagão (na plataforma)
+const TR = { x: FORA, em: 'plataforma', fase: 'fora', k: 0, v: 0, para: null, x0: 0, x1: 0, u: 0, dur: 1, conta: 0, tf: 0, somChegada: false, fora: false };
 export function reiniciarTrem() {
-  Object.assign(TR, { x: FORA, em: 'plataforma', fase: 'fora', k: 0, v: 0, para: null, conta: 0, somChegada: false });
+  Object.assign(TR, { x: FORA, em: 'plataforma', fase: 'fora', k: 0, v: 0, para: null, conta: 0, somChegada: false, fora: false });
   moverTrem();
 }
 function moverTrem() {
@@ -121,7 +122,7 @@ export function buildTrem() {
       TR.v = dt > 0 ? Math.min(1, Math.abs(TR.x - xa) / dt / 18) : TR.v;
       if (!TR.somChegada && (1 - q) * TR.dur < 5.5 && (onde === TR.para || noTrem)) { TR.somChegada = true; trainArrive(0, 5); }
       if (q >= 1) {
-        TR.fase = 'parado'; TR.em = TR.para; TR.tf = t; TR.v = 0;
+        TR.fase = 'parado'; TR.em = TR.para; TR.tf = t; TR.v = 0; TR.fora = false;
         if (onde === TR.em || noTrem) trainStopSfx();
       }
     } else if (TR.fase === 'fora') {
@@ -137,7 +138,10 @@ export function buildTrem() {
         TR.k = Math.min(1, TR.k + dt / .9);
         if (TR.k >= 1) { TR.fase = 'aberto'; TR.conta = 0; }
       } else if (TR.fase === 'aberto') {
-        TR.conta = dentro && !noVao ? TR.conta + dt : 0;   // embarcou: lá dentro por um instante, fecha
+        // embarcou: lá dentro por um instante, fecha. Só vale para quem entrou nesta parada (quem chegou
+        // nele espera a porta aberta o quanto quiser, senão o trem voltava com você antes de descer)
+        if (!dentro) TR.fora = true;
+        TR.conta = dentro && !noVao && TR.fora ? TR.conta + dt : 0;
         if (TR.conta > 1.2 || chamado || !aqui) { TR.fase = 'fechando'; if (aqui) sfxDoorSlide(); }
       } else if (TR.fase === 'fechando') {
         if (noVao) { TR.fase = 'abrindo'; sfxDoorSlide(); } // alguém no vão: a porta volta

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { BLUE } from './config.js';
+import { mundoParaLugar, direcaoNoLugar, giroNoLugar } from './kit.js';
 
 /* ===================== o corpo do Zero (primeira pessoa) ===================== */
 // Caixas azuis como as outras pessoas do jogo, sem cabeça (a câmera mora nela). Cada membro é
@@ -138,8 +139,8 @@ const hw = V(0, 0, 0), hf = V(0, 0, 0);
 // a câmera são os olhos: camF à frente da cabeça na direção do CORPO, não do olhar. Girar a cabeça
 // não leva os olhos para cima do ombro (era o que colava o braço na câmera olhando para o lado).
 export function cameraFromHead(out, lookYaw, camF = CAM_F) {
-  body.localToWorld(headLocal(hw));
-  body.getWorldDirection(hf);                      // +z do corpo; a frente é o contrário
+  mundoParaLugar(body, body.localToWorld(headLocal(hw)));   // (a câmera está nas coordenadas do lugar)
+  direcaoNoLugar(body, body.getWorldDirection(hf)); // +z do corpo; a frente é o contrário
   hf.y = 0;
   if (hf.lengthSq() > 1e-6) hf.normalize();
   return out.copy(hw).addScaledVector(hf, -camF);
@@ -269,7 +270,7 @@ export function makeAction(frame, steps, t0) {
     },
     // câmera na cabeça, olhando para a frente do corpo (+ look) com inclinação pitch
     camera(cam) {
-      const wq = body.getWorldQuaternion(new THREE.Quaternion());
+      const wq = giroNoLugar(body, body.getWorldQuaternion(new THREE.Quaternion()));
       const fwd = lv.set(0, 0, -1).applyQuaternion(wq);
       const lookYaw = Math.atan2(-fwd.x, -fwd.z) + st.look;
       cameraFromHead(cam.position, lookYaw, st.camF);

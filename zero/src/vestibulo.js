@@ -145,7 +145,8 @@ export function vestibulo({ x, y = 0, z, yaw, lado, outro, estilo = 'vidro', arr
     if (!eu.ativo) return;
     const p = game.player(), [lx, lz] = L(p.px, p.pz);
     const dentro = Math.abs(lx) < VW && Math.abs(lz) < VD - .05;
-    const pertoDe = zp => Math.abs(lx) < VW + .6 && Math.abs(lz - zp) < PERTO;
+    // (com o vão comprido, o chão da cena acaba longe da porta: a distância de abrir cresce junto)
+    const pertoDe = zp => Math.abs(lx) < VW + .6 && Math.abs(lz - zp) < Math.max(PERTO, alcance + 1.2);
     // nunca fecha com você em cima do chão do vão: fechada, ele some, e quem estivesse ali ficava preso
     const fora = (lz - zs) * sz;
     const noVao = Math.abs(lx) < DW + .35 && fora > -.6 && fora < alcance + .45;

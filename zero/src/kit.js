@@ -28,6 +28,16 @@ export function usarMundo(w) {
   walks = w.walks; blocks = w.blocks; anims = w.anims; inters = w.inters; triggers = w.triggers;
 }
 export function descartarMundo(w) { disposeScene(w.scene); }
+
+// A cena de cada lugar fica no mundo com a matriz do mapa (mundo.js), então matrixWorld /
+// localToWorld dão coordenadas do MUNDO, e a câmera e o corpo vivem nas do LUGAR. Estas contas
+// levam um ponto (ou direção, ou giro) do mundo para o lugar em que o objeto `o` está, e de volta.
+const _mL = new THREE.Matrix4(), _qL = new THREE.Quaternion();
+const cenaDe = o => { while (o.parent && !o.isScene) o = o.parent; return o; };
+export const mundoParaLugar = (o, v) => v.applyMatrix4(_mL.copy(cenaDe(o).matrixWorld).invert());
+export const lugarParaMundo = (o, v) => v.applyMatrix4(cenaDe(o).matrixWorld);
+export const direcaoNoLugar = (o, d) => d.transformDirection(_mL.copy(cenaDe(o).matrixWorld).invert());
+export const giroNoLugar = (o, q) => q.premultiply(cenaDe(o).getWorldQuaternion(_qL).invert());
 export function saida(s) { mundo.saidas.push(s); return s; }
 export function chegada(fn) { mundo.chegada = fn; }
 export function aoAtivar(fn) { mundo.aoAtivar.push(fn); }

@@ -93,6 +93,7 @@ export function buildRua(nav = {}) {
   let hi = 0;
   const LOJAS = ['PADARIA', 'FARMÁCIA', 'LANCHES', 'LAVANDERIA', 'ÓTICA', 'CHAVEIRO', 'BAR', 'SAPATARIA'];
   let li = 0, num = 112;
+  const tetos = [];                                // o que cobre a calçada: a chuva para nele (chuva())
   const arCond = [];                               // aparelhos de ar-condicionado sob algumas janelas
   // entrada no térreo: emoldurada e recuada, para ler como porta/vitrine e não buraco
   // (xf = face do prédio na rua; nf aponta da parede para a rua)
@@ -125,6 +126,7 @@ export function buildRua(nav = {}) {
       tg.rotation.z = -.28 * nf;
       for (let k = 0; k < 6; k++) box(.9, .04, .5, k % 2 ? LIGHT : mix(NAVY, LIGHT, .25), 0, 0, -1.25 + k * .5, tg);
       box(.03, .2, 3.0, mix(NAVY, LIGHT, .25), .45, -.1, 0, tg);           // babado na ponta
+      tetos.push({ x0: Math.min(xf, xf + nf * .9), x1: Math.max(xf, xf + nf * .9), z0: zc - 1.5, z1: zc + 1.5, y: 2.2 });
       box(.06, .44, 2.3, DARK2, xf + nf * .03, 2.45, zc);
       const nome = letreiro(LOJAS[li++ % LOJAS.length], 2.1, .36, night ? GLOW : mix(GLOW, LIGHT, .3), DARK2);
       nome.position.set(xf + nf * .065, 2.45, zc);
@@ -190,6 +192,7 @@ export function buildRua(nav = {}) {
   // a porta do prédio é um vestíbulo de vidro: o mesmo cômodo está atrás da porta da recepção,
   // e a cena troca lá dentro, com a porta de trás fechada (sem tela escura)
   box(2.0, .3, .9, DARK2, -5.75, 3.0, -32.6);                      // marquise
+  tetos.push({ x0: -6.75, x1: -4.75, z0: -33.05, z1: -32.15, y: 3.15 });
   const vestPredio = vestibulo({
     x: -5.75, y: .12, z: -34, yaw: 0, lado: 'Q', outro: ['recepcao', 'rua'], estilo: 'vidro', alcance: 2.3,
     arrive: nav.entry === 'predio' ? (nav.rel || true) : null,
@@ -209,7 +212,10 @@ export function buildRua(nav = {}) {
 
   // a cidade continua pelas transversais: quarteirões ao longe, atrás dos bloqueios
   quarteiraoLonge(-8, 14.2, 29.8, farSlots, [28, 40, 22, 34, 46]);
-  quarteiraoLonge(20, 14.2, 29.8, farSlots, [36, 24, 42, 30, 26]);
+  // (dia 5: a loja ocupa o começo da transversal 2 a leste; os quarteirões de lá começam depois dela,
+  // senão as fachadas caíam no plano das paredes do salão e as janelas apareciam lá dentro)
+  quarteiraoLonge(20, 14.2, 29.8, farSlots, [36, 24, 42, 30, 26],
+    day === 5 ? caixaDe('loja', -4.2, 4.2, -3.7, 3.7).x1 + .4 : 14.2);
 
   windowGrid(wSlots.concat(eSlots), new THREE.BoxGeometry(.12, .75, .5));
   windowGrid(sSlots.concat(farSlots), new THREE.BoxGeometry(.5, .75, .12));
@@ -442,6 +448,7 @@ export function buildRua(nav = {}) {
     blockOf(cx - .16, 25.5, cx + .16, 25.9);
   }
   box(3.4, .2, 3.7, LIGHT2, 7, 3.5, 26.85);        // telhado da marquise
+  tetos.push({ x0: 5.3, x1: 8.7, z0: 25, z1: 28.7, y: 3.6 });
   lite(3.4, .07, .1, GLOW, 7, 3.43, 25.0);         // brilho na borda da frente
   box(3.4, .62, .12, DARK2, 7, 3.16, 25.02);       // testeira onde vai o letreiro
 
@@ -501,7 +508,7 @@ export function buildRua(nav = {}) {
     || (Math.abs(x) <= 30 && ((z > -12 && z < -4) || (z > 16 && z < 24))));
   const coberto = (x, z) => !ceuAberto(x, z) || (x > -6.95 && x < -4.55 && z < -33 && z > -35.1) || (x > 5.8 && x < 8.2 && z > 35.4 && z < 37.6);
   if (day < 5) chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash },
-    (x, z) => (coberto(x, z) ? -9 : chaoRua(x, z)), coberto); // no dia 5 o tempo abriu
+    (x, z) => (coberto(x, z) ? -9 : chaoRua(x, z)), coberto, tetos); // no dia 5 o tempo abriu
 
   // saindo do prédio (padrão), subindo do metrô ou saindo da loja: vindo pelo vestíbulo de cada um
   const spawn = (vestMetro && vestMetro.spawn) || vestPredio.spawn || (vestLoja && vestLoja.spawn)
@@ -559,7 +566,13 @@ function baleia() {
 // chao(x, z): altura onde o respingo abre (abaixo de -5 = não respinga ali, ex.: escada coberta)
 const chaoRua = (x, z) => (naEscada(x, z) ? -9 : noAsfalto(x, z) ? .035 : .135);
 // coberto(x, z): a câmera está sob um teto (vestíbulo): ali a chuva some
-export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash }, chao = chaoRua, coberto = () => false) {
+// tetos: [{ x0, x1, z0, z1, y, chao? }] coisas por cima da rua (viaduto, marquise, toldo): na coluna
+// delas a gota para em y (não atravessa) e o respingo abre em chao (sem chao, não respinga ali)
+export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetStormFog, streetFlash }, chao = chaoRua, coberto = () => false, tetos = []) {
+  const tetoEm = (x, z) => {
+    for (const c of tetos) if (x > c.x0 && x < c.x1 && z > c.z0 && z < c.z1) return c;
+    return null;
+  };
   const NRAIN = 1600, RS = 26, RH = 20;
   const dropGeo = new THREE.BoxGeometry(.02, 1, .02);
   dropGeo.rotateZ(.09); dropGeo.rotateX(.07); // inclinação do vento nos dois eixos
@@ -600,7 +613,7 @@ export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetS
 
   const rm4 = new THREE.Matrix4(), rP = new THREE.Vector3(), rSc = new THREE.Vector3();
   const rQ = new THREE.Quaternion();
-  let rt0 = null, flashT = null, boomAt = 0, nextStorm = 0;
+  let rt0 = null, flashT = null, boomAt = 0, nextStorm = 0, fora = 1;
   anim(t => {
     if (rt0 === null) rt0 = t;
     const e = t - rt0 - 3;                        // espera um pouco antes de cair
@@ -621,8 +634,10 @@ export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetS
         RH - ((d.y + d.v * e) % RH),
         pz + (((d.z - pz) % RS) + RS) % RS - RS / 2
       );
-      // sob um teto (vestíbulo) a gota some; de dentro dele se vê a rua chovendo pela porta aberta
-      if (coberto(rP.x, rP.z)) rSc.set(0, 0, 0);
+      // sob um teto (vestíbulo) a gota some; de dentro dele se vê a rua chovendo pela porta aberta.
+      // debaixo de um viaduto/marquise/toldo ela some ao chegar nele (cai por cima, não atravessa)
+      const tt = tetoEm(rP.x, rP.z);
+      if (coberto(rP.x, rP.z) || (tt && rP.y - d.len / 2 < tt.y)) rSc.set(0, 0, 0);
       else rSc.set(1, d.len, 1);
       rm4.compose(rP, rQ, rSc);
       rain.setMatrixAt(i, rm4);
@@ -637,8 +652,9 @@ export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetS
         sd.x = px + (Math.random() - .5) * 15.8; // em volta de quem olha; dentro dos prédios não molha (coberto)
         sd.z = pz + (Math.random() - .5) * 22;
       }
-      const k = a >= 0 && a <= 1 && !coberto(sd.x, sd.z) ? a : 0;
-      rP.set(sd.x, chao(sd.x, sd.z), sd.z);
+      const st = tetoEm(sd.x, sd.z);
+      const k = a >= 0 && a <= 1 && !coberto(sd.x, sd.z) && !(st && st.chao === undefined) ? a : 0;
+      rP.set(sd.x, st ? st.chao : chao(sd.x, sd.z), sd.z);
       rSc.setScalar(k * .34);
       rm4.compose(rP, rQ, rSc);
       spl.setMatrixAt(i, rm4);
@@ -653,12 +669,17 @@ export function chuva({ matRua, matCal, cRua, cCal, streetBg, streetFog, streetS
         nextStorm = t + 28 + Math.random() * 35;
       }
     }
+    // sob um teto (dentro de prédio, vestíbulo, fora desta rua) o clarão não entra: a luz é ambiente e
+    // acenderia o interior inteiro; o trovão continua, abafado pelas paredes é o que se ouviria
+    fora += ((coberto(px, pz) ? 0 : 1) - fora) * .15;
     if (flashT !== null) {
       const a = t - flashT;
-      const k = Math.max(0, Math.sin(a * 26)) * Math.exp(-a * 5.5); // tremeluz e morre
+      const k = Math.max(0, Math.sin(a * 26)) * Math.exp(-a * 5.5) * fora; // tremeluz e morre
       flashL.intensity = k * .7;
-      scene.background.lerpColors(bgDry, bgFlash, Math.min(1, k));
-      scene.fog.color.lerpColors(fogWet, fogFlash, Math.min(1, k));
+      if (fora > .01) {
+        scene.background.lerpColors(bgDry, bgFlash, Math.min(1, k));
+        scene.fog.color.lerpColors(fogWet, fogFlash, Math.min(1, k));
+      }
       if (a > 2.5) { flashT = null; flashL.intensity = 0; }
     }
     if (boomAt && t > boomAt) { boomAt = 0; thunder(); }

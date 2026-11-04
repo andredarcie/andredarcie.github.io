@@ -1,13 +1,15 @@
 import { UI_TEXT } from './config.js';
 import { tbEl, tbName, tbText, tbHint } from './ui.js';
 import { sfxBlip } from './audio.js';
+import { speakerName } from './story.js';
 
 /* ===================== diálogo em páginas (E avança) ===================== */
 export let textOpen = false;
 let queue = [], after = null;
 
+// uma linha é um texto (fala de quem é `name`) ou { speaker, text } quando outro fala no meio da conversa
 export function say(name, lines, cb) {
-  queue = lines.map(l => ({ name, l }));
+  queue = lines.map(l => (typeof l === 'string' ? { name, l } : { name: speakerName(l.speaker), l: l.text }));
   after = cb || null;
   nextPage();
 }

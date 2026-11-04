@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 
 /* ===================== renderer + câmera ===================== */
-export const renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true }); // stencil: a água não entra na canoa
+// stencil: a água não entra na canoa. logarithmicDepthBuffer: com o mundo inteiro montado junto (perto de
+// .05 m, longe até a névoa do avião) o depth linear não separava faces vizinhas a meia distância e elas
+// piscavam (z-fighting); shader próprio precisa dos chunks logdepthbuf (o mar da praia tem)
+export const renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true, logarithmicDepthBuffer: true });
 document.body.prepend(renderer.domElement);
 
 export const camera = new THREE.PerspectiveCamera(72, innerWidth / innerHeight, .05, 80);
