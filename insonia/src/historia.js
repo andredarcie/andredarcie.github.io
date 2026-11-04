@@ -149,22 +149,21 @@ export const HISTORIA = {
   duto: {
     eventos: [
       {
-        id: 'grade', x: 8, y: 6, prioridade: 0,
-        async rodar(j) { await j.fala('Uma grade no chão.'); },
+        // a grade solta no chão, onde ele cai: aparece no piso e responde ao OK em cima ou de frente
+        id: 'grade', x: 8, y: 6, prioridade: 0, alcance: true, grafico: { tile: 'xA', x: 6, y: 1 },
+        async rodar(j) {
+          if (!j.temItem('cano')) { await j.fala('Uma grade no chão.'); return; }
+          await quebrarGradeDuto(j);
+        },
         async usar(j, item) {
           if (item !== 'cano') return false;
-          await j.fala('Eu posso utilizar o cano para quebrar\na grade forçando ela.');
-          const s = await j.escolha('<> Deseja quebrar?', ['Sim', '\\c[2]Não']);
-          if (s !== 0) return true;
-          som.metal(); j.tremor = 10; await quadros(30); som.quebrar(); j.tremor = 20;
-          await j.apagar(30);
-          som.batida();
-          await quadros(40);
-          await j.transferir('quarto2', 9, 5, 'baixo', { fade: false });
-          await j.acender(30);
+          await quebrarGradeDuto(j);
           return true;
         },
       },
+      // as duas pontas do duto não dão em nada: o herói lembra da grade
+      { x: 0, y: 6, gatilho: 'toque', prioridade: 0, async rodar(j) { await becoDuto(j); } },
+      { x: 29, y: 6, gatilho: 'toque', prioridade: 0, async rodar(j) { await becoDuto(j); } },
     ],
   },
 
@@ -659,6 +658,23 @@ async function respiroDepoisDoGrito(j) {
   await j.acender(30);
 }
 
+// ---------------- duto ----------------
+async function quebrarGradeDuto(j) {
+  await j.fala('Eu posso utilizar o cano para quebrar\na grade forçando ela.');
+  const s = await j.escolha('<> Deseja quebrar?', ['Sim', '\\c[2]Não']);
+  if (s !== 0) return;
+  som.metal(); j.tremor = 10; await quadros(30); som.quebrar(); j.tremor = 20;
+  await j.apagar(30);
+  som.batida();
+  await quadros(40);
+  await j.transferir('quarto2', 9, 5, 'baixo', { fade: false });
+  await j.acender(30);
+}
+async function becoDuto(j) {
+  await j.fala('Não tem saída por aqui.');
+  if (j.temItem('cano')) await j.fala('Talvez eu consiga forçar aquela grade no\nchão com o cano.');
+}
+
 // ---------------- sala 14: a voz, o esconderijo, o monstro, o flashback ----------------
 async function cenaMonstro(j) {
   const h = j.heroi;
@@ -680,16 +696,18 @@ async function cenaMonstro(j) {
   j.amb = 0.05; j.brilho = 0.35; j.alvoBrilho = 0.35;
   // o monstro entra e anda pela sala no escuro
   som.porta();
-  const ev = new Evento({ x: 7, y: 5, grafico: SOMBRA, dir: 'baixo', id: 'monstro', vel: 2 });
+  const ev = new Evento({ x: 7, y: 5, grafico: SOMBRA, dir: 'baixo', id: 'monstro', vel: 2, pesado: true });
   ev.opac = 0.35; j.eventos.push(ev);
+  som.tensao(1);
   for (const [x, y] of [[7, 7], [5, 7], [5, 8], [8, 8], [8, 10], [7, 10], [7, 5]]) {
     while (ev.x !== x || ev.y !== y) {
       const d = ev.x !== x ? (ev.x < x ? 'direita' : 'esquerda') : (ev.y < y ? 'baixo' : 'cima');
-      som.passo(); await ev.andar(d, j, 1); await quadros(10);
+      await ev.andar(d, j, 1); await quadros(10);   // os passos (pesados) saem sozinhos
     }
   }
   som.porta();
   j.eventos = j.eventos.filter((e) => e !== ev);
+  som.tensao(0);
   await quadros(120);
   await j.fadeAte(1, 40);
   j.amb = j.def.amb;
@@ -815,7 +833,7 @@ function apagoes(j) {
     t++;
     const f = t % ciclo;
     if (f === 0) { ciclo = 170 + Math.floor(Math.random() * 60); j.alvoBrilho = 1; j.passoBrilho = 0.1; }
-    if (f === ciclo - 90) { j.alvoBrilho = 0; j.passoBrilho = 0.1; }
+    if (f === ciclo - 90) { j.alvoBrilho = 0; j.passoBrilho = 0.1; som.apagao(); }
   };
 }
 
@@ -849,6 +867,7 @@ async function cenaVoz(j) {
   await j.fala('Encontrei uma chave dentro de uma caixa,\ntalvez ela sirva.');
   await j.fala('Alguém me trancou eu não pude fazer nada,\nespere... Foi você que trancou a porta?');
   await j.fala(`${V}Oque? Corredor?`);
+  som.tensao(0.6);
   await j.fala(`${V}Não! Não vá por lá! Não vá por lá!`);
   await j.fala(`${V}O mal em forma física o esta esperando no\nfinal do corredor!`);
   await j.fala(`${V}Ele está lá!`);
@@ -860,6 +879,7 @@ async function cenaVoz(j) {
   await quadros(40);
   await j.fala('Ei? Você está ai?');
   await quadros(40);
+  som.tensao(0);
   await j.fala('Acho que ele se foi...');
 }
 
@@ -961,6 +981,7 @@ function tabuleiro(j) {
 // ---------------- o fim do trailer ----------------
 async function finalTrailer(j) {
   som.porta();
+  som.tensao(1);
   await quadros(30);
   await j.apagar(30);
   await quadros(30);
@@ -974,6 +995,7 @@ async function finalTrailer(j) {
   await quadros(90);
   await j.apagar(60);
   j.eventos = j.eventos.filter((e) => e !== ev);
+  som.silencio(3);
   await quadros(60);
   await j.narrar('Insônia', 240);
   try { localStorage.removeItem('insonia.save'); } catch { /* */ }

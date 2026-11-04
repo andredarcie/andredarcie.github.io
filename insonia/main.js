@@ -63,10 +63,12 @@ async function iniciar() {
   // Tela de título
   const temSave = Jogo.temSave();
   const opcoes = temSave ? ['Continuar', 'Novo jogo'] : ['Novo jogo'];
-  let sel = 0, t = 0, escolhido = null;
+  let sel = 0, t = 0, escolhido = null, somTitulo = false;
   rodarLaco(() => {
     if (escolhido === null) {
       t++;
+      // o ambiente do título começa no primeiro gesto (antes disso o navegador não deixa tocar)
+      if (!somTitulo && som.pronto()) { somTitulo = true; som.mapa('titulo'); }
       if (entrada.repetiu('baixo') || entrada.repetiu('cima')) { sel = (sel + 1) % opcoes.length; som.destravar(); som.cursor(); }
       if (entrada.disparou('ok')) {
         som.destravar(); som.ok();

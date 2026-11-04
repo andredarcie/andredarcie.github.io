@@ -35,7 +35,18 @@ O jogo salva sozinho a cada troca de mapa. Os mapas que só existem dentro de um
   - *Recortes próprios*: o que não existe em nenhum pacote foi recortado das capturas de 2014 ou desenhado em `tools/extras.py`. Isso inclui os canos, o biombo, os números do banheiro, os nichos iluminados e a porta arredondada.
 - **Luz**: cada mapa tem tom (escurece tudo), luz ambiente, lâmpadas com halo e lanterna em volta do herói. Os valores foram calibrados comparando com as capturas.
 - **Texto**: as falas foram transcritas do vídeo por OCR e conferidas quadro a quadro, mantendo a grafia original ("Mais" por "mas" etc.). Em vermelho ficam as vozes, a carta e os avisos.
-- **Som**: o trailer não tem áudio. Os efeitos são sintetizados em `src/som.js` e ficam baixos de propósito.
+- **Som**: o trailer não tem áudio. Tudo é sintetizado por código em `src/audio/`, sem nenhum arquivo gravado, num clima de terror em primeira pessoa no espírito de Amnesia: silêncio pesado, coisas acontecendo longe.
+  - `motor.js`: cadeia mestre (passa-alta, compressor e limitador), reverberação gerada para cada tipo de sala (cela, corredor, salão, banheiro de ladrilho, duto) e ruídos branco, rosa e marrom.
+  - `efeitos.js`: efeitos por modelo físico.
+    - Dobradiça e madeira rangendo: atrito "gruda-escorrega".
+    - Metal, fechadura e grade: modos de barra.
+    - Passos que mudam com o piso: madeira, pedra, ladrilho, metal, tapete.
+    - Também trovão, susto, sala girando e armadilha.
+  - `ambiente.js`: um perfil por mapa.
+    - Camadas contínuas: ar do porão, zumbido grave de pavor, vento, chuva no flashback, lâmpada fluorescente no hospital, chama dos lampiões.
+    - Eventos distantes sorteados: gota, viga rangendo, baque, corrente, cano gemendo, gemido e passos longe.
+    - Coração que acelera com a tensão (cena do monstro, a voz das celas, o fim).
+  - Os níveis foram medidos renderizando tudo offline. O ambiente fica abaixo dos passos, e o grave vai para harmônicos que o alto-falante do celular consegue tocar.
 
 ## Gráficos da era VX
 
@@ -57,7 +68,10 @@ Vêm do próprio repo, em `brians/projeto/Graphics/Characters`, e são os mesmos
   - quantos giros abrem a sala que gira.
 - **Acrescentados para dar para jogar**:
   - as dicas "Perdido" (papéis) e "0011" (jarro);
-  - as frases "Uma grade no chão." e "Não posso usar isso aqui.".
+  - as frases "Uma grade no chão." e "Não posso usar isso aqui.";
+  - no duto, a grade solta desenhada no chão;
+  - OK na grade com o cano já oferece quebrá-la;
+  - nas pontas do túnel o herói diz que não tem saída e lembra da grade.
 - **Desenhados** por não existirem em nenhum pacote:
   - a moldura das janelas;
   - os canos, os números do banheiro, os nichos, a porta arredondada;
@@ -74,6 +88,7 @@ Vêm do próprio repo, em `brians/projeto/Graphics/Characters`, e são os mesmos
 | `src/mapas/` | os 20 mapas |
 | `src/historia.js` | roteiro: eventos, falas, quebra-cabeças, cenas |
 | `src/mensagem.js`, `src/menus.js`, `src/janela.js` | mensagem com fundo escuro, escolhas, números, inventário, teclado de nome |
+| `src/som.js`, `src/audio/` | fachada do som; motor, efeitos e ambiente sintetizados |
 | `tools/assets.py` | gera `assets/` a partir do RTP e do pacote do Mack (que não ficam no repo) |
 | `tools/extras.py` | gera `assets/tiles/xA.png` (recortes e desenhos próprios) |
 | `tools/build.py` | reescreve o import map e sobe o BUILD (rodar a cada mudança de `.js`) |

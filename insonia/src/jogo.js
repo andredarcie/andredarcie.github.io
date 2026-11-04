@@ -89,6 +89,8 @@ export class Jogo {
     this.amb = def.amb ?? 1;
     this.vinheta = def.vinheta || 0;
     this.extra = h;
+    this.heroi._movia = false;
+    som.mapa(id);
     this.salvar();
     if (h.aoEntrar) this.executar(() => h.aoEntrar(this));
   }
@@ -182,9 +184,29 @@ export class Jogo {
     if (this.mapa) {
       this.heroi.atualizar();
       for (const e of this.eventos) e.atualizar();
+      this.sonsDePasso();
       if (!this.rodando && !this.msg.aberta && !this.aviso.atual) this.controlarHeroi();
     }
     entrada.fimDoQuadro();
+  }
+
+  // Um passo por tile, no piso de destino. Os dos outros personagens soam do lado em que
+  // estão na tela e mais abafados quanto mais longe (pesado: o monstro arrastando os pés).
+  sonsDePasso() {
+    const h = this.heroi;
+    const piso = (x, y) => som.superficie(this.mapa.specChao(x, y)?.nome, this.mapaId);
+    if (h.movendo && !h._movia && h.visivel) som.passo(piso(h.x, h.y), { vol: 0.5 });
+    h._movia = h.movendo;
+    let ox = null, oy = null;
+    for (const e of this.eventos) {
+      const m = e.movendo;
+      if (m && !e._movia && e.visivel && e.opac > 0 && e.grafico && !e.grafico.tile && !e.grafico.objeto && e.def.passos !== false) {
+        if (ox === null) { const [cx, cy] = this.camera(); ox = (cx + LARG / 2) / T; oy = (cy + ALT / 2) / T; }
+        const dx = e.x + 0.5 - ox, dy = e.y + 0.5 - oy;
+        som.passo(piso(e.x, e.y), { pan: Math.max(-0.9, Math.min(0.9, dx / 8)), dist: Math.min(0.75, Math.hypot(dx, dy) / 12), vol: 0.45, pesado: !!e.def.pesado });
+      }
+      e._movia = m;
+    }
   }
 
   controlarHeroi() {
