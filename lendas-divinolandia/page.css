@@ -1,0 +1,179 @@
+/* Hallmark · shape: Episode Index (manual, no draw) · genre: atmospheric · theme: Midnight (deal 2/3, seed lendas-divinol-ndia-mini-s-b7cd·de8dcec3·2026-11-04·r0) · job: listen (watch the series) · draw: none
+ * hero: Stage · nav: edge-aligned, wordmark and one link · footer: mast, the closing line over the links · imagery: the episodes' own frames, duotone · signature: the found-footage frame of Leobaldo, two blue points in the dark
+ * axes: dark/grotesk-sans/cool · posture: committed · contrast: theme tokens · fold: not rendered (the repo forbids running a browser) · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: P and V, an index of three episodes is the category default; the stories are told in three different compositions (split, timeline rows, showcase) instead of three equal cards */
+@import url("./tokens.css");
+@import url("./base.css");
+
+/* ---------- page tokens (derived from the theme's) ---------- */
+:root {
+  --nav-h: 72px;
+  --hero-visual-h: min(72dvh, 680px);
+}
+
+h1, h2 { font-weight: var(--display-weight); font-stretch: var(--display-stretch); line-height: 1.04; }
+h3 { font-weight: 500; font-stretch: 100%; letter-spacing: 0; }
+.display-s { font-size: var(--text-display-s); }
+.muted { color: var(--color-muted); }
+small, figcaption, .label { font-size: var(--text-sm); font-weight: 500; color: var(--color-muted); }
+
+/* ---------- the twelve columns ---------- */
+.cols { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap-columns); }
+
+/* ---------- controls ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; white-space: nowrap;
+  border: var(--rule-hair) solid transparent; background: none; border-radius: var(--radius-pill);
+  padding: var(--space-sm) var(--space-lg); font-weight: 500; color: var(--color-ink); text-decoration: none;
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); }
+.btn--primary:hover { background: var(--color-focus); }
+.btn--secondary { border-color: var(--color-rule-2); }
+.btn--secondary:hover { background: var(--color-paper-2); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+
+a { text-decoration-color: var(--color-rule-2); }
+a:hover { text-decoration-color: var(--color-accent); }
+a:active { color: var(--color-ink-2); }
+
+/* ---------- nav ---------- */
+.nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.nav .container { display: flex; align-items: center; justify-content: space-between; min-height: var(--nav-h); }
+.wordmark { font-weight: 300; font-stretch: 125%; font-size: var(--text-lg); text-decoration: none; letter-spacing: var(--tracking-display); }
+.nav a:not(.wordmark) { font-weight: 500; }
+
+/* ---------- hero: Stage, text on five columns, the frame on seven ---------- */
+.hero .container { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-3xl); align-items: center; min-height: calc(100dvh - var(--nav-h)); padding-block: var(--space-2xl); }
+.hero__text { display: grid; gap: var(--space-lg); }
+.hero__text .lead { color: var(--color-ink-2); }
+.hero__text .actions { margin-top: var(--space-sm); }
+.settle { animation: settle var(--dur-long) var(--ease-out) both; }
+@keyframes settle { from { opacity: 0.6; } }
+.hero figure { margin: 0; display: grid; gap: var(--space-sm); justify-items: end; }
+.frame { width: min(100%, calc(var(--hero-visual-h) * 0.745)); aspect-ratio: 1080 / 1450; }
+.hero figcaption { width: min(100%, calc(var(--hero-visual-h) * 0.745)); }
+
+/* ---------- episodes: the index ---------- */
+.section { padding-block: var(--section-gap-s) var(--section-gap); }
+.head { display: grid; gap: var(--space-md); margin-bottom: var(--space-2xl); }
+.index { list-style: none; margin: 0; padding: 0; border-top: var(--rule-hair) solid var(--color-rule); counter-reset: ep; }
+.index li { counter-increment: ep; padding-block: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
+.index li::before { content: counter(ep); grid-column: 1 / span 1; font-weight: 300; font-stretch: 125%; font-size: var(--text-display-s); line-height: 0.9; font-variant-numeric: tabular-nums; color: var(--color-muted); }
+.index h3 { grid-column: 2 / span 4; font-size: var(--text-title); }
+.index .dur { grid-column: 6 / span 1; font-variant-numeric: tabular-nums; }
+.index p { grid-column: 7 / span 4; color: var(--color-ink-2); }
+.index .links { grid-column: 11 / span 2; display: flex; flex-direction: column; gap: var(--space-2xs); }
+.index li:first-child h3 { font-size: var(--text-2xl); }
+
+/* ---------- statement ---------- */
+.statement { padding-block: var(--section-gap-s); }
+.statement blockquote { margin: 0; grid-column: 1 / span 10; display: grid; gap: var(--space-lg); }
+.statement p { font-weight: 300; font-stretch: 125%; font-size: var(--text-display); line-height: 1.05; letter-spacing: var(--tracking-display); max-width: none; overflow-wrap: break-word; min-width: 0; }
+
+/* ---------- episode 1: split, text on five, the frame on seven ---------- */
+.split .container { align-items: center; }
+.split__text { grid-column: 1 / span 5; display: grid; gap: var(--space-lg); }
+.split__text p { color: var(--color-ink-2); }
+.split figure { grid-column: 7 / span 6; margin: 0; display: grid; gap: var(--space-sm); }
+.split .frame-ep1 { aspect-ratio: 1080 / 1240; max-height: 760px; }
+
+/* ---------- episode 2: the timeline, rows on a paper-2 band ---------- */
+.band { background: var(--color-paper-2); padding-block: var(--section-gap-s); }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { padding-block: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule-2); align-items: baseline; }
+.timeline li:last-child { border-bottom: var(--rule-hair) solid var(--color-rule-2); }
+.timeline h3 { grid-column: 1 / span 4; font-weight: 300; font-stretch: 125%; font-size: var(--text-2xl); letter-spacing: var(--tracking-display); }
+.timeline p { grid-column: 6 / span 6; color: var(--color-ink-2); }
+.timeline .now h3 { color: var(--color-ink); }
+.timeline li:not(.now) h3 { color: var(--color-muted); }
+
+/* ---------- episode 3: showcase, the wide frame, then the cell and the night ---------- */
+.wide { margin: 0 0 var(--space-2xl); display: grid; gap: var(--space-sm); }
+.wide .frame-wide { aspect-ratio: 1080 / 608; }
+.under { align-items: center; row-gap: var(--space-xl); }
+.under figure { grid-column: 1 / span 5; margin: 0; display: grid; gap: var(--space-sm); }
+.under .frame-ep3 { aspect-ratio: 1080 / 1350; max-height: 640px; }
+.under__text { grid-column: 7 / span 6; display: grid; gap: var(--space-lg); }
+.under__text p { color: var(--color-ink-2); }
+
+/* ---------- curiosities: a grid of six ---------- */
+.grid { row-gap: var(--space-2xl); }
+.fact { grid-column: span 4; display: grid; gap: var(--space-sm); align-content: start; padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.fact h3 { font-weight: 300; font-stretch: 125%; font-size: var(--text-section); line-height: 1; letter-spacing: var(--tracking-display); }
+.fact p { color: var(--color-ink-2); max-width: 34ch; }
+
+/* ---------- nav links ---------- */
+.nav__links { display: flex; gap: var(--space-lg); }
+
+/* ---------- the dossier: a table on the deepest band ---------- */
+.band--deep { background: var(--color-paper-3); }
+.tabela { overflow-x: auto; }
+.tabela:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+table { width: 100%; border-collapse: collapse; min-width: 720px; }
+th, td { text-align: left; vertical-align: top; padding: var(--space-md) var(--space-lg) var(--space-md) 0; border-bottom: var(--rule-hair) solid var(--color-rule-2); }
+thead th { font-size: var(--text-sm); font-weight: 500; color: var(--color-muted); }
+tbody th { font-weight: 500; font-size: var(--text-lg); color: var(--color-ink); width: 20%; }
+tbody td { color: var(--color-ink-2); }
+tbody td:last-child { color: var(--color-ink); }
+
+/* ---------- the witnesses: head beside rows ---------- */
+.gente { align-items: start; }
+.gente__head { grid-column: 1 / span 4; margin-bottom: 0; }
+.pessoas { grid-column: 6 / span 7; list-style: none; margin: 0; padding: 0; }
+.pessoas li { display: grid; gap: var(--space-xs); padding-block: var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.pessoas li:first-child { border-top: var(--rule-hair) solid var(--color-rule); }
+.pessoas p { color: var(--color-ink-2); }
+
+/* ---------- the scripts: a spoiler per episode ---------- */
+.roteiro { border-top: var(--rule-hair) solid var(--color-rule-2); }
+.roteiro:last-of-type { border-bottom: var(--rule-hair) solid var(--color-rule-2); }
+.roteiro summary {
+  list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md);
+  padding-block: var(--space-lg); min-height: 48px;
+}
+.roteiro summary::-webkit-details-marker { display: none; }
+.roteiro__titulo { font-weight: 300; font-stretch: 125%; font-size: var(--text-2xl); letter-spacing: var(--tracking-display); }
+.roteiro__acao {
+  display: inline-flex; align-items: center; min-height: 48px; padding: var(--space-sm) var(--space-lg); white-space: nowrap;
+  border: var(--rule-hair) solid var(--color-rule-2); font-weight: 500; color: var(--color-ink);
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+.roteiro summary:hover .roteiro__acao { background: var(--color-paper-2); }
+.roteiro summary:active .roteiro__acao { background: var(--color-paper-3); }
+.roteiro summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.roteiro[open] .roteiro__acao { background: var(--color-accent); color: var(--color-accent-ink); border-color: transparent; }
+.roteiro .se-aberto, .roteiro[open] .se-fechado { display: none; }
+.roteiro[open] .se-aberto { display: inline; }
+.falas { list-style: none; margin: 0; padding: 0 0 var(--space-2xl); display: grid; gap: var(--space-md); }
+.falas li { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: var(--space-lg); align-items: baseline; }
+.falas time { font-size: var(--text-sm); font-weight: 500; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.falas p { color: var(--color-ink-2); max-width: 65ch; }
+.quem { display: block; font-size: var(--text-sm); font-weight: 500; color: var(--color-accent); }
+
+/* ---------- footer: the mast ---------- */
+.footer { background: var(--color-paper-3); padding-block: var(--section-gap-s) var(--space-2xl); }
+.footer .close { grid-column: 1 / span 9; font-weight: 300; font-stretch: 125%; font-size: var(--text-section); line-height: 1.08; letter-spacing: var(--tracking-display); max-width: none; overflow-wrap: break-word; min-width: 0; }
+.footer nav { grid-column: 1 / span 12; display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); margin-top: var(--space-2xl); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule-2); }
+.footer nav a { font-weight: 500; white-space: nowrap; }
+.footer small { grid-column: 1 / span 12; margin-top: var(--space-lg); display: block; }
+
+/* ---------- under 60rem everything stacks in reading order ---------- */
+@media (max-width: 60rem) {
+  .nav .container { flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); padding-block: var(--space-sm); }
+  .hero .container { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); min-height: 0; }
+  .hero figure { justify-items: start; }
+  .frame, .hero figcaption { width: 100%; }
+  .cols > * { grid-column: 1 / -1 !important; }
+  .index li { row-gap: var(--space-xs); }
+  .index li::before { font-size: var(--text-2xl); }
+  .index .links { flex-direction: row; gap: var(--space-lg); }
+  .statement p { font-size: var(--text-display-s); }
+  .fact h3 { font-size: var(--text-2xl); }
+  .footer .close { font-size: var(--text-2xl); }
+}
+@media (min-width: 60.01rem) and (max-width: 80rem) {
+  .fact { grid-column: span 6; }
+}
