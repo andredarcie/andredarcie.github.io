@@ -1,9 +1,9 @@
 // Roteiro de cada mapa: eventos, falas e quebra-cabeças, na ordem do trailer de 2014.
 // Falas do jogo de 2014, com a ortografia revisada (acentos, vírgulas, "mas"/"mais", "o que" etc.).
-import { quadros, entrada } from './base.js';
+import { quadros, entrada, TELA } from './base.js';
 import { som } from './som.js';
 import { HEROI, Evento } from './jogo.js';
-import { janela, texto, cursor, fonteTexto, fonteSerif, pxCaixa } from './janela.js';
+import { janela, texto, cursor, fonteTexto, fonteSerif, pxCaixa, textoDica } from './janela.js';
 
 const V = '\\c[2]', B = '\\c[0]'; // vermelho / normal
 
@@ -653,7 +653,7 @@ export const HISTORIA = {
           await j.fala('A porta foi destrancada.');
           j.perder('chave');
           await j.fala('A chave quebrou ao abrir a porta.');
-          // (aqui acabava o trailer; o capítulo segue pelas salas das capturas de 2014)
+          // (aqui acabava o trailer; o jogo segue pelas salas das capturas de 2014 até o fim)
           j.flags.portaFinal = true;
           som.porta();
           await j.transferir('sala_piano', 14, 8, 'esquerda');
@@ -664,7 +664,7 @@ export const HISTORIA = {
   },
 
   // ======================================================================
-  // Fim do capítulo 1 (capturas 14, 15 e 21 de 2014; o roteiro destas salas é novo)
+  // O fim do jogo (capturas 14, 15 e 21 de 2014; o roteiro destas salas é novo)
   sala_piano: {
     async aoEntrar(j) {
       if (j.flags.salaPiano) return;
@@ -816,6 +816,11 @@ export const CENAS_DEV = {
   flashback: async (j) => { j.brilho = 0; j.alvoBrilho = 0; await flashback(j); },
   hospital: (j) => flashbackHospital(j),
   fim: (j) => finalGuilhotina(j),
+  // telas soltas, para conferir o layout em cada tamanho de tela
+  teclado: (j) => tecladoPiano(j),
+  canos: (j) => puzzleCanos(j),
+  tabuleiro: (j) => tabuleiro(j),
+  telaFim: (j) => telaFim(j),
 };
 
 async function flashbackMenino(j) {
@@ -1099,6 +1104,7 @@ function tabuleiro(j) {
     const X0 = 192, Y0 = 128, C = 32;
     j.brilho = 1; j.alvoBrilho = 1;
     j.overlay = {
+      regiao: [150, 88, 276, 296],   // a moldura (160..416) e a dica embaixo (o resto do 544x416 é preto)
       atualizar() {
         t++;
         if (errou) errou--;
@@ -1166,13 +1172,13 @@ function tabuleiro(j) {
         const dica = document.body.classList.contains('toque')
           ? 'Direcional: mover · OK: acender/apagar · Esc: sair'
           : 'Setas: mover · Enter: acender/apagar · Esc: sair';
-        texto(g, dica, 272, Y0 + C * 6 + 48, '#7a7a7a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
+        textoDica(g, dica, X0 + C * 3, Y0 + C * 6 + 48);   // no centro do tabuleiro (que fica em 160..416)
       },
     };
   });
 }
 
-// ---------------- fim do capítulo 1: a caixinha, o piano e a guilhotina ----------------
+// ---------------- o fim do jogo: a caixinha, o piano e a guilhotina ----------------
 // A melodia tem 8 notas. Cada traço do teclado (captura 15) escolhe entre duas notas daquela
 // posição: em pé = a mais aguda, deitado = a mais grave. A caixinha de música toca a melodia
 // certa; o jogador ouve, volta ao piano, acerta os traços e toca (▶).
@@ -1228,12 +1234,16 @@ function tecladoPiano(j) {
     if (j.vars.teclas === undefined) j.vars.teclas = INICIAL.reduce((m, v, i) => m | (v ? 1 << i : 0), 0);
     const pe = (i) => !!(j.vars.teclas & (1 << i));
     let sel = 0, t = 0, mexe = new Array(8).fill(0), tocando = null;
-    // medidas da captura 15 levadas ao 544x416: moldura (22,179)-(524,269), traços a cada ~64 px
-    const PX = 22, PY = 179, PW = 502, PH = 90, cxDe = (i) => 46 + i * 64.1;
+    // medidas da captura 15 levadas ao 544x416: moldura (22,179)-(524,269), traços a cada ~64 px.
+    // No celular em pé, a mesma moldura em 2 fileiras de 4 (senão os traços ficam minúsculos).
+    const L = () => (TELA.h > TELA.w
+      ? { PX: 144, PY: 160, PW: 256, PH: 158, x: (i) => 176 + (i % 4) * 64, y: (i) => 194 + Math.floor(i / 4) * 54, by: 272, duas: true }
+      : { PX: 22, PY: 179, PW: 502, PH: 90, x: (i) => 46 + i * 64.1, y: () => 204, by: 220, duas: false });
     const SAIR = 8, PLAY = 9;
     j.brilho = 1; j.alvoBrilho = 1;
     const sair = (ok) => { j.overlay = null; fim(ok); };
     j.overlay = {
+      regiao: () => { const l = L(); return [l.PX - 8, l.PY - 8, l.PW + 16, l.PH + 16]; },
       atualizar() {
         t++;
         mexe = mexe.map((v) => Math.max(0, v - 1));
@@ -1244,20 +1254,23 @@ function tecladoPiano(j) {
           if (tocando.i >= 8) {
             const certo = ALVO.every((v, i) => pe(i) === v);
             tocando = null;
-            if (certo) sair(true);
+            // marca já aqui (e não no desfecho, 15 quadros depois): a presença para na mesma hora
+            if (certo) { j.flags.piano = true; sair(true); }
             return;
           }
           som.piano(notaDe(tocando.i, pe(tocando.i)));
           tocando.espera = tocando.i === 7 ? QUADROS_ULTIMA : QUADROS_NOTA;
           return;
         }
+        const duas = L().duas;
         if (sel < 8) {
           if (entrada.repetiu('direita')) { sel = (sel + 1) % 8; som.cursor(); }
           if (entrada.repetiu('esquerda')) { sel = (sel + 7) % 8; som.cursor(); }
-          if (entrada.disparou('baixo')) { sel = PLAY; som.cursor(); }
+          if (entrada.disparou('baixo')) { sel = duas && sel < 4 ? sel + 4 : PLAY; som.cursor(); }
+          else if (entrada.disparou('cima') && duas && sel >= 4) { sel -= 4; som.cursor(); }
         } else {
           if (entrada.disparou('direita') || entrada.disparou('esquerda')) { sel = sel === SAIR ? PLAY : SAIR; som.cursor(); }
-          if (entrada.disparou('cima')) { sel = 0; som.cursor(); }
+          if (entrada.disparou('cima')) { sel = duas ? 4 : 0; som.cursor(); }
         }
         if (entrada.disparou('ok')) {
           if (sel === SAIR) { som.cancelar(); sair(false); return; }
@@ -1270,10 +1283,11 @@ function tecladoPiano(j) {
       },
       desenhar(g) {
         // a moldura arredondada clara sobre o preto, como na captura 15
+        const l = L();
         g.strokeStyle = '#c8c8c8'; g.lineWidth = 2;
-        g.beginPath(); g.roundRect(PX, PY, PW, PH, 11); g.stroke();
+        g.beginPath(); g.roundRect(l.PX, l.PY, l.PW, l.PH, 11); g.stroke();
         for (let i = 0; i < 8; i++) {
-          const x = cxDe(i), y = 204, d = mexe[i] ? ((mexe[i] * 3) % 3) - 1 : 0;
+          const x = l.x(i), y = l.y(i), d = mexe[i] ? ((mexe[i] * 3) % 3) - 1 : 0;
           const vez = tocando && tocando.i === i;
           if (vez) {
             const gr = g.createRadialGradient(x, y, 0, x, y, 24);
@@ -1286,7 +1300,7 @@ function tecladoPiano(j) {
           if (sel === i && !tocando) cursor(g, x - 17, y - 17, 34, 34, t);
         }
         // "Sair" e o botão ▶ (tocar)
-        const bx = 257, by = 220, bw = 30, bh = 31;
+        const bx = 257, by = l.by, bw = 30, bh = 31;
         const fonte = `${Math.max(12, Math.round(pxCaixa(0.72)))}px Arial, Helvetica, sans-serif`;
         g.font = fonte;
         const ws = g.measureText('Sair').width;
@@ -1334,8 +1348,12 @@ async function desfechoPiano(j) {
   await finalGuilhotina(j);
 }
 
-// a cena do fim: a sala da guilhotina; ele sobe até ela e pensa
+// A cena do fim: a sala da guilhotina; ele sobe até ela e pensa. No escuro, a lâmina desce. E ele
+// acorda de novo na cela, como no começo: ele já se matou, e este lugar é o castigo, onde ele vive
+// tudo de novo para sempre. Isso fecha a carta ("Bem-vindo ao seu novo lar"), o espelho sem
+// reflexo e o túmulo do bilhete da filha.
 async function finalGuilhotina(j) {
+  j.semSalvar = true;              // daqui até o fim nada salva (o "Continuar" não pode cair no ciclo)
   j.brilho = 0; j.alvoBrilho = 0;
   j.flags.salaGuilhotina = true;
   j.carregar('guilhotina', 7, 10, 'cima');
@@ -1349,12 +1367,34 @@ async function finalGuilhotina(j) {
   await quadros(120);
   await j.fala('Eu acho que só existe uma solução.');
   await quadros(60);
-  som.silencio(3);
+  som.silencio(2);
   await j.apagar(120);
+  await quadros(70);
+  som.guilhotina();                // no escuro: só o som da lâmina
+  await quadros(200);
+  await cicloCela(j);
   await quadros(60);
-  await telaFimCapitulo(j);
+  await telaFim(j);
   try { localStorage.removeItem('insonia.save'); } catch { /* */ }
   location.reload();
+}
+
+// O ciclo: a cela do começo, com a lâmpada piscando e a carta no chão, e as mesmas primeiras
+// falas e o mesmo olhar em volta do despertar (cela.aoEntrar), até a tela apagar de novo.
+async function cicloCela(j) {
+  j.brilho = 0; j.alvoBrilho = 0;
+  j.carregar('cela', 9, 7, 'cima');   // flags.intro já existe: a cela só liga a lâmpada
+  const h = j.heroi;
+  await quadros(90);
+  await j.acender(90);
+  await quadros(30);
+  await j.fala('Meu Deus, que dor de cabeça.');
+  h.virar('esquerda'); await quadros(80); h.virar('direita'); await quadros(80); h.virar('baixo'); await quadros(40);
+  await j.fala('Mas que lugar é esse?');
+  await j.fala('Eu não me lembro de nada, está tudo\nmuito confuso agora.');
+  await quadros(120);
+  som.silencio(3);
+  await j.apagar(150);
 }
 
 // ---------------- o portão dos canos (porta do salão; visual da captura 20) ----------------
@@ -1406,6 +1446,7 @@ function puzzleCanos(j) {
     j.brilho = 1; j.alvoBrilho = 1;
     const sair = (ok) => { j.overlay = null; fim(ok); };
     j.overlay = {
+      regiao: [150, 14, 244, 376],   // registro, tábuas, ralo e a dica
       atualizar() {
         t++;
         if (enchendo) {
@@ -1457,7 +1498,7 @@ function puzzleCanos(j) {
         }
         if (!enchendo) { const [x, y] = centro(cr, cc); cursor(g, x - C / 2 + 2, y - C / 2 + 2, C - 4, C - 4, t); }
         const dica = document.body.classList.contains('toque') ? 'Direcional: escolher · OK: girar · Esc: sair' : 'Setas: escolher · Enter: girar · Esc: sair';
-        texto(g, dica, 272, fy + fh + 26, '#7a7a7a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
+        textoDica(g, dica, 272, fy + fh + 26);
       },
     };
   });
@@ -1473,11 +1514,10 @@ function tubo(g, x0, y0, x1, y1, agua) {
   if (agua) { g.fillStyle = 'rgba(255,255,255,0.95)'; if (v) g.fillRect(x + 3, y, 4, hh); else g.fillRect(x, y + 3, ww, 4); }
 }
 
-// Tela de fim do primeiro capítulo: deixa claro que o jogador chegou a um final e que a história
-// continua. As linhas entram uma de cada vez; OK (ou toque) antes da hora mostra tudo, o próximo
+// Tela de fim do jogo: "The End" e o nome do jogo (é o final de verdade, não há continuação). As linhas entram uma de cada vez; OK (ou toque) antes da hora mostra tudo, o próximo
 // OK volta ao título.
-function telaFimCapitulo(j) {
-  const TUDO = 330, SAIDA = 50;
+function telaFim(j) {
+  const TUDO = 240, SAIDA = 50;
   return new Promise((fim) => {
     let t = 0, saindo = -1;
     const surgir = (ini, dur = 60) => Math.max(0, Math.min(1, (t - ini) / dur));
@@ -1500,17 +1540,13 @@ function telaFimCapitulo(j) {
         g.globalAlpha = surgir(0, 90) * sai;
         const pxG = pxCaixa(2.6);
         texto(g, 'The End', cx, 120, '#d0d0d0', fonteSerif(pxG), 'center');
-        // filete e "Fim do primeiro capítulo"
-        const a2 = surgir(110) * sai;
-        g.globalAlpha = a2;
+        // filete e o nome do jogo, embaixo: é o fim da história
+        g.globalAlpha = surgir(110) * sai;
         const yF = 120 + pxG * 1.35;
         const meia = 70 * surgir(110, 50);
         g.fillStyle = '#6a6a6a'; g.fillRect(cx - meia, yF, meia * 2, 1);
         const pxM = pxCaixa(1.15);
-        texto(g, 'Fim do primeiro capítulo', cx, yF + pxM * 0.8, '#a8a8a8', fonteSerif(pxM), 'center');
-        // "A história continua..." em vermelho, como as vozes do jogo
-        g.globalAlpha = surgir(220, 80) * sai;
-        texto(g, 'A história continua...', cx, yF + pxM * 3.2, '#a04848', `italic ${fonteSerif(pxM)}`, 'center');
+        texto(g, 'Insônia', cx, yF + pxM * 0.8, '#8a8a8a', `italic ${fonteSerif(pxM)}`, 'center');
         // dica para voltar ao título, piscando devagar
         if (t >= TUDO) {
           g.globalAlpha = (0.35 + 0.25 * Math.sin(t / 22)) * surgir(TUDO, 40) * sai;

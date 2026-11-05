@@ -74,6 +74,26 @@ export class Mapa {
     }
     this.passa = new Uint8Array(this.w * this.h);
     this.construir();
+    this.lim = this.limites();
+  }
+
+  // Onde a sala existe de fato (chão e paredes, sem as bordas vazias em volta), com 1 tile de
+  // margem; def.limites = [x0, y0, x1, y1] (tiles) quando o desenho vem de outro lugar (os fundos
+  // tirados das capturas). A câmera usa isto quando o mapa não cabe inteiro na tela.
+  limites() {
+    let x0, y0, x1, y1;
+    if (this.def.limites) [x0, y0, x1, y1] = this.def.limites;
+    else {
+      x0 = this.w; y0 = this.h; x1 = -1; y1 = -1;
+      for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) {
+        const s = this.specChao(x, y);
+        if (!s || s.top || s.vazio) continue;
+        x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y);
+      }
+      if (x1 < 0) return { x0: 0, y0: 0, x1: this.w * T, y1: this.h * T };
+      x0 = Math.max(0, x0 - 1); y0 = Math.max(0, y0 - 1); x1 = Math.min(this.w - 1, x1 + 1); y1 = Math.min(this.h - 1, y1 + 1);
+    }
+    return { x0: x0 * T, y0: y0 * T, x1: (x1 + 1) * T, y1: (y1 + 1) * T };
   }
 
   specChao(x, y) {

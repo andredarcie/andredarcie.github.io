@@ -10,6 +10,7 @@ import { ITENS } from './itens.js';
 import { MAPAS } from './mapas/index.js';
 import { HISTORIA, ligarHistoria } from './historia.js';
 import { som } from './som.js';
+import { presenca } from './presenca.js';
 import { img } from './recursos.js';
 
 export const HEROI = { folha: 'chars/m03a', tipo: 'mack', idx: 2 };
@@ -184,6 +185,7 @@ export class Jogo {
     this.msg.atualizar();
     this.aviso.atualizar();
     for (const p of this.paralelos) p(this);
+    presenca(this);   // sons que reagem ao jogador (presenca.js)
     this.extra?.porQuadro?.(this);
     if (this.mapa) {
       this.heroi.atualizar();
@@ -284,8 +286,13 @@ export class Jogo {
   camera() {
     const W = this.mapa.w * T, H = this.mapa.h * T;
     let cx, cy;
-    if (W <= LARG) cx = (W - LARG) / 2; else cx = Math.max(0, Math.min(W - LARG, this.heroi.rx + T / 2 - LARG / 2));
-    if (H <= ALT) cy = (H - ALT) / 2; else cy = Math.max(0, Math.min(H - ALT, this.heroi.ry + T / 2 - ALT / 2));
+    // mapa que cabe inteiro: centralizado como sempre. Senão (corredores longos, ou o celular em pé
+    // com 11 tiles de largura), a câmera fica dentro da parte da sala que existe (mapa.lim) e
+    // centraliza a sala quando ela couber, em vez de correr pelas bordas vazias do mapa.
+    const L = this.mapa.lim, lw = L.x1 - L.x0, lh = L.y1 - L.y0;
+    const segue = (a0, tam, vista, p) => (tam <= vista ? a0 + (tam - vista) / 2 : Math.max(a0, Math.min(a0 + tam - vista, p - vista / 2)));
+    if (W <= LARG) cx = (W - LARG) / 2; else cx = segue(L.x0, lw, LARG, this.heroi.rx + T / 2);
+    if (H <= ALT) cy = (H - ALT) / 2; else cy = segue(L.y0, lh, ALT, this.heroi.ry + T / 2);
     if (this.def.camera) { const c = this.def.camera(this, cx, cy); cx = c[0]; cy = c[1]; }
     return [Math.round(cx), Math.round(cy)];
   }
@@ -335,7 +342,7 @@ export class Jogo {
     if (menu) {
       // fundo: a tela do jogo borrada, esticada na tela toda
       if (menu.fundo) { g.imageSmoothingEnabled = true; g.drawImage(menu.fundo, 0, 0, this.canvas.width, this.canvas.height); }
-      caixaDesign(g);
+      caixaDesign(g, menu.regiao?.() ?? null);
       menu.desenhar(g);
       this.emCss(g);
       this.desenharRecado(g);
@@ -369,7 +376,7 @@ export class Jogo {
     this.emCss(g);
     if (this.overlay) {
       g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
-      caixaDesign(g);
+      caixaDesign(g, typeof this.overlay.regiao === 'function' ? this.overlay.regiao() : this.overlay.regiao ?? null);
       this.overlay.desenhar(g, this);
       this.emCss(g);
     }

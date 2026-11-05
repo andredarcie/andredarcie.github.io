@@ -39,7 +39,7 @@ const PASSOS = [
   { nome: 'Quarto do urso', mapa: 'quarto_urso', x: 12, y: 6, dir: 'baixo', v: { giro: 3 } },
   { nome: 'Corredor final', mapa: 'corredor_final', x: 8, y: 52, dir: 'cima', f: ['urso'] },
   { nome: 'Corredor final: na porta, com a chave', mapa: 'corredor_final', x: 8, y: 5, dir: 'cima', f: ['chaveFim'], i: ['chave'] },
-  { cap: 'Fim do capítulo 1' },
+  { cap: 'O fim' },
   { nome: 'Sala do piano', mapa: 'sala_piano', x: 14, y: 8, dir: 'esquerda', f: ['portaFinal'], tira: ['chave'] },
   { nome: 'Sala do piano: na caixinha de música', mapa: 'sala_piano', x: 5, y: 9, dir: 'baixo', f: ['salaPiano', 'carta'] },
   { nome: 'Sala do piano: um passo antes do teclado', mapa: 'sala_piano', x: 9, y: 9, dir: 'cima', f: ['caixinha'] },

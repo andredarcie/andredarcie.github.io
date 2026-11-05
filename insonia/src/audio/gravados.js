@@ -102,6 +102,20 @@ export const gravado = {
     toca('grito', t, saida({ rev: 0.9, vol: 0.4, dist: 0.62, pan: op.pan ?? R(-0.3, 0.3) }), { varia: 0.02 });
     return true;
   },
+  // alguém arrastando algo pesado do outro lado da parede (pé ou móvel), longe
+  arrastoLonge(t, op = {}) {
+    if (!pronto('arrasto')) return false;
+    const out = saida({ rev: 0.7, vol: op.vol ?? 0.3, dist: op.dist ?? 0.6, pan: op.pan ?? R(-0.6, 0.6) });
+    toca('arrasto', t, out, { rate: R(0.6, 0.75), vol: 0.9, fade: 0.35 });
+    if (Math.random() < 0.6) toca('arrasto', t + R(0.7, 1.1), out, { rate: R(0.55, 0.7), vol: 0.7, fade: 0.4 });
+    return true;
+  },
+  // madeira do assoalho rangendo sob um peso, perto (a dobradiça gravada, lenta e abafada)
+  rangidoPerto(t, op = {}) {
+    if (!pronto('rangido')) return false;
+    toca('rangido', t, saida({ rev: 0.35, vol: op.vol ?? 0.25, dist: op.dist ?? 0.35, pan: op.pan ?? 0 }), { rate: R(0.55, 0.7), vol: 0.8, dur: 0.9, fade: 0.3 });
+    return true;
+  },
   // grito de criança: o grito feminino (grito_5) tocado mais agudo e mais longe
   gritoCrianca(t, op = {}) {
     if (!temAmostra('grito_5')) return false;
@@ -123,6 +137,18 @@ export const gravado = {
     rajada(t, 1.6, out, { tipo: 'marrom', filtro: 'lowpass', f: 150, vol: 0.35, a: 0.3 });   // o peso da sala
     toca('pancada', t + 1.6, out, { rate: 0.7, vol: 1 });
     if (pronto('pedra_queda')) toca('pedra_queda', t + 1.7, out, { vol: 0.45 });
+    return true;
+  },
+  // a guilhotina no escuro: a lâmina descendo pelo trilho (o raspar da faca, lento e grave),
+  // o baque do ferro no fim do curso e a madeira do cepo. Só gravações reais.
+  guilhotina(t, op = {}) {
+    if (!pronto('lamina') || !pronto('metal_golpe') || !pronto('pancada')) return false;
+    const out = saida({ rev: 0.5, vol: op.vol ?? 0.8, ...op });   // ~-22 LUFS: o golpe do fim, no silêncio
+    toca('lamina', t, out, { vol: 0.8, rate: 0.62, varia: 0 });
+    toca('lamina', t + 0.18, out, { vol: 0.5, rate: 0.55, varia: 0 });
+    toca('metal_golpe', t + 0.62, out, { vol: 1, rate: 0.7, varia: 0 });
+    toca('pancada', t + 0.63, out, { vol: 0.9, rate: 0.8, varia: 0 });
+    if (pronto('metal_queda')) toca('metal_queda', t + 0.75, out, { vol: 0.35, rate: 0.8, varia: 0 });
     return true;
   },
   armadilha(t, op = {}) {

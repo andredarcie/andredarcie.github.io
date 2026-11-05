@@ -3,7 +3,7 @@
 // "caixa de desenho" (544x416 escalada na tela) com o texto no tamanho legível da tela.
 import { entrada, TELA, BASE_L } from './base.js';
 import { img, tela } from './recursos.js';
-import { janela, cursor, texto, largura, quebrar, fonteTexto, pxCaixa, CORES } from './janela.js';
+import { janela, cursor, texto, largura, quebrar, fonteTexto, pxCaixa, CORES, textoDica } from './janela.js';
 import { ITENS } from './itens.js';
 import { som } from './som.js';
 
@@ -81,18 +81,23 @@ export class Inventario {
     }
   }
 
+  // em pé (celular), o quadro que se ajusta à tela é só a coluna do inventário
+  regiao() { return TELA.h > TELA.w ? [INV.x - 14, 0, INV.w + 28, INV.y + INV.h + 40] : null; }
+
   // (desenhado dentro da caixa de desenho; o fundo borrado o jogo já pôs na tela inteira)
   desenhar(g) {
     if (!this.ativo) return;
     const L = this.lista();
+    const estreito = TELA.h > TELA.w;
+    const hx = estreito ? INV.x - 12 : 0, hw = estreito ? INV.w + 24 : BASE_L;
     const fs = pxCaixa(1), fonte = fonteTexto(fs), lh = Math.round(fs * 1.35);
     // ajuda (topo): nome e descrição do item, quebrando a linha se precisar
     const it = L[this.sel];
     const ajuda = it ? `${ITENS[it.id].nome}: ${ITENS[it.id].desc}` : 'Nenhum item.';
-    const linhas = quebrar(g, ajuda, BASE_L - 42, fonte);
+    const linhas = quebrar(g, ajuda, hw - 42, fonte);
     const hAj = Math.round(linhas.length * lh + 26);
-    janela(g, 0, 0, BASE_L, hAj);
-    linhas.forEach((l, i) => texto(g, l, 21, 13 + i * lh, CORES[0], fonte));
+    janela(g, hx, 0, hw, hAj);
+    linhas.forEach((l, i) => texto(g, l, hx + 21, 13 + i * lh, CORES[0], fonte));
     // itens
     const dy = Math.max(0, hAj + 22 - INV.y);
     janela(g, INV.x, INV.y + dy, INV.w, INV.h);
@@ -217,6 +222,9 @@ export class TecladoNome {
     }
   }
   // (desenhado dentro da caixa de desenho; o fundo borrado o jogo já pôs na tela inteira)
+  // em pé (celular), o quadro que se ajusta à tela é só o das letras
+  regiao() { return TELA.h > TELA.w ? [NE.x - 6, NE.y - 6, NE.w + 12, NI.y + NI.h + 26 - NE.y] : null; }
+
   desenhar(g) {
     if (!this.ativo) return;
     const fs = Math.min(pxCaixa(1), 24), fonte = fonteTexto(fs);
@@ -241,7 +249,7 @@ export class TecladoNome {
     });
     if (T[this.idx] === undefined) this.idx = 0;
     if (!document.body.classList.contains('toque')) {
-      texto(g, 'Dica: você pode digitar no teclado.', BASE_L / 2, NI.y + NI.h + 6, '#9a9a9a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
+      textoDica(g, 'Dica: você pode digitar no teclado.', BASE_L / 2, NI.y + NI.h + 6, '#9a9a9a');
     }
   }
 }

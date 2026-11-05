@@ -75,9 +75,15 @@ export class Mensagem {
     this.t++;
     if (!m.pronto) {
       if (entrada.disparou('ok') || entrada.disparou('cancelar')) { this.completar(m); return; }
-      if (m.espera > 0) { m.espera--; return; }
-      this.avancar(m);
-      return;
+      // no código de números, digitar um dígito (ou mexer nas setas) durante a escrita mostra o
+      // texto todo e já vale: antes os dígitos digitados cedo eram ignorados sem aviso
+      if (m.tipo === 'numero' && (entrada.letras.some((c) => c >= '0' && c <= '9') ||
+          ['cima', 'baixo', 'esquerda', 'direita'].some((d) => entrada.disparou(d)))) this.completar(m);
+      else {
+        if (m.espera > 0) { m.espera--; return; }
+        this.avancar(m);
+        return;
+      }
     }
     if (m.tipo === 'msg') {
       if (entrada.disparou('ok') || entrada.disparou('cancelar')) { this.ativo = null; m.fim(); }

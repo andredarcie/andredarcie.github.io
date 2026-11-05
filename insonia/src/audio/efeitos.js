@@ -276,7 +276,7 @@ export function piano(f, op = {}) {
 // lâmina (2,76 e 5,40) bem baixos, e o clique do pino. Mais curta e mais baixa que o piano.
 export function caixinha(f, op = {}) {
   const t = inicio(op); if (t == null) return;
-  const out = saida({ rev: 0.4, vol: op.vol ?? 0.21, dist: 0.15 });   // ~-24 LUFS
+  const out = saida({ rev: 0.4, vol: op.vol ?? 0.21, dist: op.dist ?? 0.15, pan: op.pan ?? 0 });   // ~-24 LUFS
   const g = f * 2;
   modos(t, [[g, 0.2, 0.55], [g * 2.756, 0.035, 0.12], [g * 5.404, 0.01, 0.05]], out, { varia: 0.002 });
   rajada(t, 0.006, out, { f: 2400, q: 1.2, vol: 0.05, tau: 0.002 });
@@ -287,3 +287,10 @@ export function gritoCrianca(op = {}) {
   if (G.gritoCrianca(t, op)) return;
   grito(op);
 }
+
+// ---------------- presença (sons que reagem ao jogador; ver presenca.js) ----------------
+// Só gravações reais; sem elas carregadas, não toca nada (um sintetizado aqui soaria falso).
+export function arrastoLonge(op = {}) { const t = inicio(op); if (t == null) return; G.arrastoLonge(t, op); }
+export function rangidoPerto(op = {}) { const t = inicio(op); if (t == null) return; G.rangidoPerto(t, op); }
+// a lâmina da guilhotina descendo, no escuro (fim do jogo); só a gravação (sintetizado soaria falso)
+export function guilhotina(op = {}) { const t = inicio(op); if (t == null) return; G.guilhotina(t, op); }

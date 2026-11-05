@@ -14,9 +14,20 @@ export const fonteSerif = (px) => `${px}px "Palatino Linotype", "Book Antiqua", 
 // "Caixa de desenho": os menus e o tabuleiro foram desenhados num quadro de 544x416; aqui esse quadro
 // é centralizado e escalado na tela, e o texto dentro dele continua no tamanho legível TELA.f.
 export const ESC = { s: 1, ox: 0, oy: 0 };
-export function caixaDesign(g) {
-  const s = Math.min((TELA.w - 2 * TELA.mx) / BASE_L, TELA.h / BASE_A, (TELA.f * 1.1) / 17);
-  ESC.s = s; ESC.ox = (TELA.w - BASE_L * s) / 2; ESC.oy = (TELA.h - BASE_A * s) / 2;
+// regiao = [x, y, w, h] do quadro que a tela realmente usa (o tabuleiro, os canos, o teclado...):
+// é ela que se ajusta à tela, e não o quadro inteiro. Assim, no celular em pé, um enigma estreito
+// ocupa a largura toda em vez de ficar encolhido no meio de um 544x416 achatado.
+export function caixaDesign(g, regiao = null) {
+  let s, cx, cy;
+  if (regiao) {
+    const [rx, ry, rw, rh] = regiao;
+    s = Math.min(((TELA.w - 2 * TELA.mx) * 0.94) / rw, (TELA.h * 0.94) / rh, 3.2);
+    cx = rx + rw / 2; cy = ry + rh / 2;
+  } else {
+    s = Math.min((TELA.w - 2 * TELA.mx) / BASE_L, TELA.h / BASE_A, (TELA.f * 1.1) / 17);
+    cx = BASE_L / 2; cy = BASE_A / 2;
+  }
+  ESC.s = s; ESC.ox = TELA.w / 2 - cx * s; ESC.oy = TELA.h / 2 - cy * s;
   g.setTransform(TELA.dpr * s, 0, 0, TELA.dpr * s, TELA.dpr * ESC.ox, TELA.dpr * ESC.oy);
   g.imageSmoothingEnabled = false;
   return s;
@@ -175,4 +186,21 @@ export function setaPausa(g, x, y, t, tam = 3) {
   const a = 0.45 + 0.4 * Math.sin(t / 8);
   g.fillStyle = `rgba(200,200,200,${a})`;
   g.beginPath(); g.moveTo(x - tam, y); g.lineTo(x + tam, y); g.lineTo(x, y + tam * 1.2); g.closePath(); g.fill();
+}
+
+// Dica de controles embaixo de um enigma/menu (na caixa de desenho): tamanho que acompanha a tela
+// e quebra entre os itens (" · ") quando não cabe na largura da tela (celular em pé).
+export function textoDica(g, s, cx, y, cor = '#7a7a7a') {
+  const fonte = fonteTexto(pxCaixa(0.62));
+  g.font = fonte;
+  const maxW = Math.min(BASE_L * 1.4, (TELA.w - 2 * TELA.mx) / ESC.s) * 0.94;
+  const linhas = [];
+  let linha = '';
+  for (const p of s.split(' · ')) {
+    const t = linha ? linha + ' · ' + p : p;
+    if (linha && g.measureText(t).width > maxW) { linhas.push(linha); linha = p; } else linha = t;
+  }
+  linhas.push(linha);
+  const lh = pxCaixa(0.62) * 1.35;
+  linhas.forEach((l, i) => texto(g, l, cx, y + i * lh, cor, fonte, 'center'));
 }

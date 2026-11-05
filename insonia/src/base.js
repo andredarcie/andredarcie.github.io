@@ -8,16 +8,21 @@ export let LARG = BASE_L;
 export let ALT = BASE_A;
 // Tela real: w,h em px CSS; dpr do aparelho; zoom = px do aparelho por px do jogo; f = tamanho do texto (px CSS);
 // mx = faixa de cada lado que os textos e menus evitam (os controles de toque com o celular deitado).
+export const MIN_L_EM_PE = 352;   // 11 tiles
 export const TELA = { w: BASE_L, h: BASE_A, dpr: 1, zoom: 1, f: 18, mx: 0 };
 export function definirTela(wCss, hCss, dpr, mx = 0) {
   TELA.w = Math.max(160, wCss); TELA.h = Math.max(120, hCss); TELA.dpr = dpr;
   TELA.mx = Math.min(mx, TELA.w * 0.25);
   const wd = Math.round(TELA.w * dpr), hd = Math.round(TELA.h * dpr);
-  TELA.zoom = Math.min(wd / BASE_L, hd / BASE_A);
+  // celular em pé: 17 tiles de largura deixavam tudo minúsculo; em pé o mundo mostra no mínimo
+  // 11 tiles (a câmera segue o herói nas salas mais largas que isso)
+  const minL = TELA.h > TELA.w ? MIN_L_EM_PE : BASE_L;
+  TELA.zoom = Math.min(wd / minL, hd / BASE_A);
   LARG = Math.ceil(wd / TELA.zoom);
   ALT = Math.ceil(hd / TELA.zoom);
   // texto legível: 18 px no celular (antes saía com ~12 px na tela em pé), até 28 px no computador
-  TELA.f = Math.max(18, Math.min(28, Math.round(Math.min(TELA.w, TELA.h * 1.3) / 30)));
+  // (até 44 px nas telas grandes: com o teto antigo de 28, Full HD e ultrawide ficavam com o texto pequeno)
+  TELA.f = Math.max(18, Math.min(44, Math.round(Math.min(TELA.w, TELA.h * 1.3) / 30)));
 }
 
 export const espera = (ms) => new Promise((r) => setTimeout(r, ms));
