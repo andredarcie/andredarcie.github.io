@@ -46,7 +46,7 @@ Em ordem do tempo. Os "em pesquisa" mostram onde cada um vai entrar.
 | — | O tempo dos coronéis | antes de 1932 | em pesquisa |
 | — | Os primeiros tempos: comércio, saúde, rádio e cinema | antes de 1932 | em pesquisa |
 | 4 | Quando a guerra chegou: Sapecado na Revolução de 1932 | 1932 | escrito (14 notas) |
-| — | O sanatório e o Hospital Regional | depois de 1932 | em pesquisa |
+| 5 | O clima que curava: o sanatório de Sapecado e o Hospital Regional | 1935–1987 | escrito (2 notas) |
 | — | A capital da batata | depois de 1932 | em pesquisa |
 | — | De Sapecado a Divinolândia: a emancipação | 1938–1953 | em pesquisa |
 | — | A fé: a matriz e o Padre Ladislau | 1958–1962 | em pesquisa |
