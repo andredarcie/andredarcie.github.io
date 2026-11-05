@@ -1,11 +1,14 @@
 // Som do jogo: fachada usada pelo resto do código.
-// O trailer de 2014 não tem áudio; tudo aqui é sintetizado (src/audio/):
-//   motor.js    contexto, cadeia mestre (compressor + limitador), reverberação por sala, ruídos
-//   efeitos.js  efeitos por modelo físico (portas, metal, passos por piso, trovão, susto...)
-//   ambiente.js ambiente por mapa (ar, pavor, vento, chuva, eventos distantes, coração)
+// O trailer de 2014 não tem áudio. Em src/audio/:
+//   motor.js    contexto, cadeia mestre (compressor + limitador), reverberação por sala, amostras
+//   gravados.js efeitos com gravação real CC0 (passos, portas, fechadura, metal, grito, trovão...)
+//   efeitos.js  versão sintetizada de cada efeito (usada se a gravação não carregou) + interface
+//   ambiente.js ambiente sintetizado por mapa (ar, pavor, vento, chuva, eventos distantes, coração)
 import { ac, contexto, M } from './audio/motor.js';
 import * as fx from './audio/efeitos.js';
 import { ambiente as amb, superficie } from './audio/ambiente.js';
+import { carregarGravados } from './audio/gravados.js';
+import { gravacao } from './base.js';
 
 let pendente = null, intens = 1, silenciado = false, timer = null;
 
@@ -22,7 +25,8 @@ function ligar() { if (!timer) timer = setInterval(tick, 250); }
 
 export const som = {
   // o navegador só libera o áudio depois de um gesto (tecla/toque)
-  destravar() { if (ac()) { ligar(); tick(); } },
+  // (e começa a baixar as gravações dos efeitos, ~600 KB, no primeiro gesto)
+  destravar() { if (ac()) { carregarGravados(); ligar(); tick(); } },
   // app em segundo plano (celular): silencia tudo; volta ao reabrir
   pausar(p) { const c = contexto(); if (!c) return; if (p) c.suspend?.(); else c.resume?.(); },
   pronto() { const c = contexto(); return !!c && c.state === 'running'; },
@@ -64,3 +68,17 @@ export const som = {
   armadilha: () => fx.armadilha(),
   apagao: () => fx.apagao(),
 };
+
+// Gravação de vídeo (?gravar): não toca nada; anota cada som com o quadro em que aconteceu,
+// para o áudio ser renderizado depois, offline, com o mesmo motor.
+if (gravacao.ativa) {
+  window.__sons = [];
+  for (const k of Object.keys(som)) {
+    if (k === 'superficie' || typeof som[k] !== 'function') continue;
+    const silencioso = k === 'pronto' || k === 'destravar' || k === 'pausar';
+    som[k] = (...a) => {
+      if (!silencioso) window.__sons.push({ q: gravacao.quadro, f: k, a });
+      return k === 'pronto' ? false : undefined;
+    };
+  }
+}

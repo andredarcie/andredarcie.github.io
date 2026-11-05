@@ -70,12 +70,12 @@ export const HISTORIA = {
       j.flags.intro = true;
       const h = j.heroi;
       j.brilho = 0; j.alvoBrilho = 0;
-      h.x = 9; h.y = 6; h.rx = 9 * 32; h.ry = 6 * 32; h.dir = 'cima';
+      h.x = 9; h.y = 7; h.rx = 9 * 32; h.ry = 7 * 32; h.dir = 'cima';   // (9,7): onde ele acorda no trailer
       await quadros(30);
       await j.acender(60);
       await quadros(20);
       await j.fala('Meu Deus que dor de cabeça.');
-      h.virar('esquerda'); await quadros(20); h.virar('direita'); await quadros(20); h.virar('baixo');
+      h.virar('esquerda'); await quadros(80); h.virar('direita'); await quadros(80); h.virar('baixo'); await quadros(40);
       await j.fala('Mais que lugar é esse?');
       await j.fala('Eu não me lembro de nada, esta tudo\n muito confuso agora.');
       h.virar('cima'); await quadros(16);
@@ -116,15 +116,20 @@ export const HISTORIA = {
           await forcarGrade(j);
           await j.fala('Droga! Não consigo quebrar a grade.');
           j.flags.tentouGrade = true;
+          // (ritmo e passos conferidos com o trailer, 1:08–1:32)
           await h.andar('baixo', j, 2);
-          await quadros(30);
+          await quadros(120);
+          await h.andar('esquerda', j, 1);
+          await quadros(40); h.virar('cima'); await quadros(60); h.virar('baixo');
+          await quadros(150);
           await j.fala('Quando eu abrir os olhos, vou ver que isso\nnão passava de um pesadelo.');
           await j.apagar(40); await quadros(50); await j.acender(40);
-          h.virar('esquerda'); await quadros(30); h.virar('direita'); await quadros(30);
-          await h.andar('baixo', j, 1);
+          await quadros(290);
+          h.virar('esquerda'); await quadros(60); h.virar('direita'); await quadros(60); h.virar('baixo'); await quadros(10);
           await j.fala('Isso é real.');
+          await h.andar('direita', j, 1);
           await j.fala('Oque esta acontecendo?');
-          await h.andar('esquerda', j, 1);
+          await h.andar('esquerda', j, 2);
           await j.fala('Droga! Isso tudo é real.');
           h.virar('baixo');
           await falas(j, ['Não estou em um sonho.', 'Deus por favor me tire daqui.', 'Por favor!']);
@@ -607,7 +612,8 @@ export const HISTORIA = {
     eventos: [
       seta(8, 53),
       {
-        x: 8, y: 14, prioridade: 0, brilha: true, grafico: { tile: 'xA', x: 7, y: 0 }, cond: () => !estado().chaveFim,
+        // a chave fica logo antes da porta: no trailer ele a pega em (8,6) e destranca 2 s depois
+        x: 8, y: 6, prioridade: 0, brilha: true, grafico: { tile: 'xA', x: 7, y: 0 }, cond: () => !estado().chaveFim,
         async rodar(j) { j.flags.chaveFim = true; await j.fala('Uma chave.'); await j.ganhar('chave'); },
       },
       {
@@ -645,7 +651,9 @@ async function forcarGrade(j) {
 async function respiroDepoisDoGrito(j) {
   if (!j.flags.grito) { await j.fala('Não tem nada aqui.'); return; }
   if (!j.flags.viuRachadura) {
-    await falas(j, ['O grito veio daqui.', 'Uma rachadura no cano de ferro.', 'Mais... Como eu não tinha visto isso antes?', 'Tenho que sair daqui.']);
+    await j.fala('O grito veio daqui.');
+    await quadros(320);      // no trailer ele fica olhando a grade uns 5 s antes de ver a rachadura (1:50–1:56)
+    await falas(j, ['Uma rachadura no cano de ferro.', 'Mais... Como eu não tinha visto isso antes?', 'Tenho que sair daqui.']);
     j.flags.viuRachadura = true;
   }
   const s = await j.escolha('<> Quebrar grade?', ['Sim', '\\c[2]Não']);
@@ -683,18 +691,20 @@ async function cenaMonstro(j) {
   h.virar('cima'); await quadros(20);
   await j.fala('O que foi isso?');
   await j.fala(`${V}Oque você esta fazendo saia\ndaqui`);
-  som.batida(); j.tremor = 8; await quadros(20); som.batida(); j.tremor = 8;
+  await quadros(30);
+  som.batida(); j.tremor = 8; await quadros(50); som.batida(); j.tremor = 8; await quadros(50); som.batida(); j.tremor = 8; await quadros(30);
   await j.fala('Alguem esta tentando entrar aqui.');
   await j.fala('Sinto que tem algo de errado tenho que me\nesconder.');
   j.flags.monstro = true;
-  // esconde-se atrás da cadeira, junto da prateleira (como no trailer, 4:06)
-  await rota(j, h, [[9, h.y], [9, 7], [10, 7], [10, 6]]);
+  // esconde-se atrás da cadeira, junto da prateleira: o caminho e o ritmo do trailer (4:06–4:57)
+  await rota(j, h, [[6, h.y], [6, 10], [8, 10], [8, 8], [10, 8], [10, 7]]);
   h.virar('cima');
   await quadros(10);
   await j.apagar(30);
   h.visivel = false;
   j.amb = 0.05; j.brilho = 0.35; j.alvoBrilho = 0.35;
-  // o monstro entra e anda pela sala no escuro
+  await quadros(60);
+  // o monstro entra e anda devagar pela sala no escuro (quase não se vê nada, uns 48 s)
   som.porta();
   const ev = new Evento({ x: 7, y: 5, grafico: SOMBRA, dir: 'baixo', id: 'monstro', vel: 2, pesado: true });
   ev.opac = 0.35; j.eventos.push(ev);
@@ -702,20 +712,24 @@ async function cenaMonstro(j) {
   for (const [x, y] of [[7, 7], [5, 7], [5, 8], [8, 8], [8, 10], [7, 10], [7, 5]]) {
     while (ev.x !== x || ev.y !== y) {
       const d = ev.x !== x ? (ev.x < x ? 'direita' : 'esquerda') : (ev.y < y ? 'baixo' : 'cima');
-      await ev.andar(d, j, 1); await quadros(10);   // os passos (pesados) saem sozinhos
+      await ev.andar(d, j, 1); await quadros(60);   // os passos (pesados) saem sozinhos
     }
   }
   som.porta();
   j.eventos = j.eventos.filter((e) => e !== ev);
   som.tensao(0);
-  await quadros(120);
+  await quadros(1030);
   await j.fadeAte(1, 40);
   j.amb = j.def.amb;
   h.visivel = true;
-  await rota(j, h, [[10, 7], [7, 7]]);
-  h.virar('baixo');
+  // olha em volta e sai do esconderijo
+  h.virar('baixo'); await quadros(60); h.virar('direita'); await quadros(60); h.virar('esquerda'); await quadros(80);
+  await rota(j, h, [[7, 7]]);
+  h.virar('cima');
+  await quadros(300);
   await falas(j, ['Mais oque era aquilo?', 'Não pude ver.', 'Um monstro ele estava atrás de mim.', 'Eu sei o que ele queria, estava me\ncaçando.',
     'É melhor eu tomar cuidado.', 'Sorte que ele não me viu.', 'Isso esta parecendo um pesadelo que\nnão posso acordar.']);
+  await rota(j, h, [[7, 5]]);
   await j.apagar(40);
   await flashback(j);
 }
@@ -726,7 +740,7 @@ async function flashback(j) {
   j.heroi.visivel = false;
   const kid = j.evento('kid'), pai = j.evento('pai');
   await j.acender(40);
-  await quadros(30);
+  await quadros(200);
   pai.visivel = true;
   som.porta();
   await pai.andar('cima', j, 3);
@@ -737,19 +751,20 @@ async function flashback(j) {
   await quadros(20);
   await j.fala(`${V}Deixa-me ver.`);
   await rota(j, pai, [[9, 8], [9, 7], [7, 7]]);
-  pai.virar('cima'); await quadros(40); pai.virar('esquerda'); await quadros(30); pai.virar('direita'); await quadros(20);
+  pai.virar('cima'); await quadros(180); pai.virar('esquerda'); await quadros(200); pai.virar('direita'); await quadros(210);
   await j.fala(`${V}Não tem nada aqui filho.`);
   await rota(j, pai, [[10, 7]]);
   await j.fala(`${V}Não tem nada aqui, não fique imaginando\ncoisas.`);
   await j.fala(`${V}Isso é fruto de sua imaginação.`);
   await j.fala('Mais pai.');
   await j.fala(`${V}Não tenha medo de nada vou sempre\nlhe proteger.`);
+  await quadros(380);
   await j.fala(`${V}Durma tranquilo.`);
   // o pai sai pela porta de baixo (12,11)
   await rota(j, pai, [[11, 7], [11, 10], [12, 10], [12, 11]]);
   som.porta();
   pai.visivel = false;
-  await quadros(60);
+  await quadros(290);
   await rota(j, kid, [[9, 7], [9, 6]]);
   await j.fala('Isso esta acontecendo cada vez mais.');
   await j.fala('Eu sei oque eu vi.');
@@ -761,9 +776,9 @@ async function flashback(j) {
   await j.fala('As coisas estão fugindo de controle.');
   await j.fala('Será que eu fui o escolhido por ele?');
   j.flash = 0.9; som.trovao();
-  await quadros(80);
+  await quadros(400);
   await j.apagar(40);
-  await quadros(30);
+  await quadros(280);
   // tela preta
   j.mapa = null;
   j.brilho = 1; j.alvoBrilho = 1;
@@ -779,6 +794,7 @@ async function flashback(j) {
   await med.andar('baixo', j, 3);
   await med.andar('direita', j, 3);
   med.virar('baixo');
+  await quadros(120);
   await j.fala('Médico.');
   await j.fala('Me de noticias de minha esposa.');
   await j.fala(`${V}Vou lhe dar um conselho meu amigo, volte\npara casa tome um bom banho e durma, você\ntem a filha para cuidar.`);
@@ -792,6 +808,7 @@ async function flashback(j) {
   await j.fala(`${V}Mas, infelizmente os dias dela estão\ncontados.`);
   await j.fala('Não acredito.');
   await j.fala(`${V}Acalme-se.`);
+  await quadros(200);
   await j.fala(`${V}Você é católico?`);
   await j.fala('Eu sou sim, mais não sou praticante.');
   await j.fala(`${V}A unica coisa que digo a você é reze\nmuito porque para salvar sua mulher só\num milagre.`);
@@ -809,12 +826,14 @@ async function flashback(j) {
 }
 
 function relampagos(j) {
-  let n = 200;
+  let n = 200, trovao = 0;
   return () => {
+    // o trovão chega ~0,4 s depois do clarão (contado em quadros: igual na gravação de vídeo)
+    if (trovao > 0 && --trovao === 0) som.trovao();
     if (--n > 0) return;
     n = 360 + Math.floor(Math.random() * 400);
     j.flash = 0.35 + Math.random() * 0.3;
-    setTimeout(() => som.trovao(), 400);
+    trovao = 24;
   };
 }
 
@@ -854,6 +873,7 @@ function luzesSoltas(j) {
 // ---------------- sala das grades: a voz ----------------
 async function cenaVoz(j) {
   const h = j.heroi;
+  await quadros(220);
   // vai até o meio da sala, de frente para as grades (12:02 do trailer)
   await rota(j, h, [[8, h.y], [8, 7]]);
   h.virar('cima');
@@ -866,6 +886,7 @@ async function cenaVoz(j) {
   await j.fala('Estou tentando fugir daqui, estou indo\npelo corredor.');
   await j.fala('Encontrei uma chave dentro de uma caixa,\ntalvez ela sirva.');
   await j.fala('Alguém me trancou eu não pude fazer nada,\nespere... Foi você que trancou a porta?');
+  await quadros(170);
   await j.fala(`${V}Oque? Corredor?`);
   som.tensao(0.6);
   await j.fala(`${V}Não! Não vá por lá! Não vá por lá!`);
@@ -878,17 +899,31 @@ async function cenaVoz(j) {
   await j.fala('Você está falando do monstro?');
   await quadros(40);
   await j.fala('Ei? Você está ai?');
-  await quadros(40);
+  await quadros(210);
   som.tensao(0);
   await j.fala('Acho que ele se foi...');
 }
 
 // ---------------- armadilhas ----------------
-function ehArmadilha(x, y) {
-  if (y >= 5 && y <= 8 && x >= 4 && x <= 13) return true;
-  if (y === 4 && x >= 9 && x <= 13) return true;
-  return false;
-}
+// Armadilhas escondidas (x). O trailer (10:40–11:33) mostra o caminho em zigue-zague que o jogador
+// fez sem cair nenhuma vez; o resto do chão é armadilha. Os rabiscos no chão ficam todos em cima de
+// armadilhas: são a pista do caminho.
+const SALA_ARMADILHAS = [
+  '#################',
+  '#################',
+  '#################',
+  '#x.#xx#x.x#x.xx##',
+  '#x..xxx..xxx.xx##',
+  '#x..xx...xxx.x#x#',
+  '#x..x..xxx#..xxx#',
+  '#..#..xx#...x...#',
+  '#..x.xxx#.xxx..##',
+  '#....xxxx.....x##',
+  '#xxx......xxxx###',
+  '#xx#xxxxxxxx#xx##',
+  '#################',
+];
+function ehArmadilha(x, y) { return SALA_ARMADILHAS[y]?.[x] === 'x'; }
 async function cairArmadilha(j) {
   som.armadilha();
   j.flash = 0.6; j.tremor = 20;

@@ -1,5 +1,5 @@
 // Personagens e objetos de evento, com o movimento e a animação do VX Ace.
-import { T, DIRS, LINHA_DIR, quadros } from './base.js';
+import { T, DIRS, LINHA_DIR, quadros, agoraMs } from './base.js';
 import { img, tela } from './recursos.js';
 
 // Cópias "tonalizadas" das folhas (tom do mapa: subtrai brilho, como o Tint Screen negativo).
@@ -114,7 +114,7 @@ export class Personagem {
     else { fw = 32; fh = 32; bx = (gr.idx % 4) * 96; byy = Math.floor(gr.idx / 4) * 128; }
     // objetos animados parados (lampião): ciclo 0-1-2-1 como o "animação parada" do RPG Maker
     const quadro = gr.quadro !== undefined ? gr.quadro
-      : gr.anima ? [0, 1, 2, 1][Math.floor(performance.now() / 160) % 4]
+      : gr.anima ? [0, 1, 2, 1][Math.floor(agoraMs() / 160) % 4]
       : (this.padrao < 3 ? this.padrao : 1);
     const linha = gr.linha !== undefined ? gr.linha : LINHA_DIR[this.dir];
     const desloc = gr.objeto ? 0 : 4; // shift_y do VX Ace

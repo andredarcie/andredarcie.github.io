@@ -3,7 +3,7 @@
 // em quando, algo longe (madeira rangendo, gota, baque, corrente, cano gemendo, passos).
 // Cada mapa tem um perfil. Os eventos são sorteados com antecedência no relógio do áudio
 // (agendarAte), o que funciona igual em tempo real e na renderização offline da revisão.
-import { contexto, M, sala, saida, percussivo, asr, modos, rajada, rangido, fonteRuido } from './motor.js';
+import { contexto, M, sala, saida, percussivo, asr, modos, rajada, rangido, fonteRuido, limparDepois } from './motor.js';
 import { passo } from './efeitos.js';
 
 const R = (a, b) => a + Math.random() * (b - a);
@@ -285,7 +285,7 @@ class Ambiente {
       cam.s.gain.cancelScheduledValues(t);
       cam.s.gain.setTargetAtTime(0, t, 0.6);
       for (const f of cam.fontes) { try { f.stop(t + 4); } catch { /* */ } }
-      setTimeout(() => { try { cam.s.disconnect(); } catch { /* */ } }, 6000);
+      limparDepois(() => { try { cam.s.disconnect(); } catch { /* */ } }, 6000);
     }
     this.camadas = [];
     const novas = [];

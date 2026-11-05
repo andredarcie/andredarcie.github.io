@@ -4,6 +4,7 @@
 // - trovão, pedra arrastando, poeira e chuva por ruído esculpido no tempo.
 // Toda função aceita { t } para tocar num instante exato (usado na revisão offline).
 import { ac, contexto, saida, percussivo, asr, modos, rajada, rangido, fonteRuido } from './motor.js';
+import { gravado as G } from './gravados.js';
 
 const R = (a, b) => a + Math.random() * (b - a);
 const V = (x, p = 0.06) => x * (1 + (Math.random() * 2 - 1) * p);
@@ -67,6 +68,7 @@ export function item(op = {}) {
 // ---------------- portas e fechaduras ----------------
 export function porta(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.porta(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.32, vol: 0.4, ...op });
   trinco(t, out);
   rangido(t + 0.06, out, { dur: R(0.5, 0.75), r0: R(14, 22), r1: R(42, 65), forma: 'arco', freqs: [R(470, 560), R(950, 1100), R(1700, 1950)], q: 16, vol: 1.1 });
@@ -76,6 +78,7 @@ export function porta(op = {}) {
 }
 export function trancada(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.trancada(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.28, vol: 0.4, ...op });
   let tt = t;
   for (let i = 0; i < 3; i++) {
@@ -87,6 +90,7 @@ export function trancada(op = {}) {
 }
 export function destrancar(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.destrancar(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.25, vol: 0.33, ...op });
   rajada(t, 0.14, out, { f: 3200, q: 3, vol: 0.1, a: 0.03 });                       // a chave entrando
   modos(t + 0.15, [[1900, 0.1, 0.02], [3100, 0.06, 0.014]], out);                    // encaixa
@@ -99,6 +103,7 @@ export function destrancar(op = {}) {
 // grade enferrujada sendo forçada ou atingida
 export function metal(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.metal(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.38, vol: 0.45, ...op });
   barra(t, out, R(300, 370), 1, 1);
   for (let k = 1; k < 5; k++) { const f = R(600, 1100); modos(t + k * R(0.03, 0.07), [[f, 0.07, 0.06], [f * 2.756, 0.04, 0.03]], out); }
@@ -107,6 +112,7 @@ export function metal(op = {}) {
 // a grade cede e cai
 export function quebrar(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.quebrar(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.45, vol: 0.55, ...op });
   rangido(t, out, { dur: 0.35, r0: 30, r1: 95, forma: 'sobe', freqs: [900, 1800, 2900], q: 26, vol: 1.1 });
   rajada(t + 0.35, 0.02, out, { f: 2300, q: 0.6, vol: 0.42, a: 0.003, tau: 0.006 });           // estalo
@@ -123,6 +129,7 @@ export function quebrar(op = {}) {
 // pancada pesada numa porta de madeira (alguém tentando entrar)
 export function batida(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.batida(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.4, vol: 0.55, ...op });
   baqueMadeira(t, out, 1.25);
   rajada(t, 0.14, out, { tipo: 'marrom', filtro: 'lowpass', f: 230, vol: 0.9, tau: 0.05 });
@@ -134,6 +141,7 @@ export function batida(op = {}) {
 // sup: madeira | pedra | ladrilho | metal | tapete. pesado: passo arrastado (o monstro).
 export function passo(sup = 'madeira', op = {}) {
   const t0 = inicio(op); if (t0 == null) return;
+  if (G.passo(sup, t0, op)) return;
   const out = saida({ bus: op.bus ?? 'fx', rev: 0.16, vol: op.vol ?? 0.55, pan: op.pan ?? R(-0.05, 0.05), dist: op.dist ?? 0 });
   const k = op.pesado ? 1.4 : 1;
   const t = t0 + R(0, 0.012);
@@ -162,6 +170,7 @@ export function passo(sup = 'madeira', op = {}) {
 // ---------------- grito longe, atrás das paredes ----------------
 export function grito(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.grito(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const c = contexto();
   const out = saida({ rev: 0.9, vol: 0.27, dist: 0.5, pan: op.pan ?? R(-0.3, 0.3) });
   const dur = 1.6;
@@ -184,6 +193,7 @@ export function grito(op = {}) {
 // ---------------- natureza e estrutura ----------------
 export function trovao(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.trovao(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.3, vol: 0.5, pan: op.pan ?? R(-0.4, 0.4) });
   const t0 = t + R(0.05, 0.5);
   rajada(t0, 0.3, out, { filtro: 'lowpass', f: 2400, f2: 450, q: 0.3, vol: 0.32, tau: 0.09 }); // estalo (pela janela)
@@ -213,6 +223,7 @@ export function susto(op = {}) {
 // a sala gira: pedra arrastando, catraca do mecanismo e a trava no fim
 export function girar(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.girar(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const c = contexto();
   const out = saida({ rev: 0.45, vol: 0.5 });
   const dur = 1.6;
@@ -232,6 +243,7 @@ export function girar(op = {}) {
 }
 export function armadilha(op = {}) {
   const t = inicio(op); if (t == null) return;
+  if (G.armadilha(t, op)) return;                 // gravação real; senão, o sintetizado abaixo
   const out = saida({ rev: 0.32, vol: 0.5 });
   trinco(t, out, 1);                                                                  // gatilho
   rajada(t + 0.04, 0.14, out, { f: 3500, q: 1.2, f2: 900, vol: 0.35, a: 0.01 });     // lâmina cortando o ar

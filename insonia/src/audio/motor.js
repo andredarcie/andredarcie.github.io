@@ -32,6 +32,9 @@ export function usarContexto(c) {
 }
 
 export const agora = () => ctx.currentTime;
+// Limpeza de nós com setTimeout (tempo real) só no jogo: na renderização offline ela dispararia
+// antes/durante o render e cortaria camadas inteiras.
+export function limparDepois(fn, ms) { if (!offline) setTimeout(fn, ms); }
 export const pronto = () => !!ctx && (offline || ctx.state === 'running');
 
 function montar() {
@@ -158,9 +161,38 @@ export function sala(tipo) {
   const velho = M.conv;
   if (velho) {
     velho.g.gain.setTargetAtTime(0, t, 0.12);
-    setTimeout(() => { try { M.rev.disconnect(velho.conv); velho.conv.disconnect(); velho.g.disconnect(); } catch { /* */ } }, 5000);
+    limparDepois(() => { try { M.rev.disconnect(velho.conv); velho.conv.disconnect(); velho.g.disconnect(); } catch { /* */ } }, 5000);
   }
   M.conv = { conv, g };
+}
+
+// ---------------- amostras gravadas (CC0, em assets/sfx) ----------------
+// Decodificadas uma vez; o AudioBuffer serve para qualquer contexto (inclusive o offline da revisão).
+const amostras = {};
+let pedidoAmostras = null;
+const BASE_SFX = new URL('../../assets/sfx/', import.meta.url);
+export function carregarAmostras(nomes) {
+  if (pedidoAmostras || !ctx) return pedidoAmostras;
+  const c = ctx;
+  const decodifica = (ab) => new Promise((ok, erro) => { const p = c.decodeAudioData(ab, ok, erro); if (p && p.then) p.then(ok, erro); });
+  pedidoAmostras = Promise.all(nomes.map(async (n) => {
+    try {
+      const r = await fetch(new URL(n + '.mp3', BASE_SFX));
+      if (r.ok) amostras[n] = await decodifica(await r.arrayBuffer());
+    } catch { /* fica no som sintetizado */ }
+  }));
+  return pedidoAmostras;
+}
+export const temAmostra = (n) => !!amostras[n];
+// Toca uma amostra; dur corta com fade (para usar só um pedaço, como o arrastar do pé).
+export function tocarAmostra(nome, t, out, { rate = 1, vol = 1, ini = 0, dur = null, fade = 0.08 } = {}) {
+  const b = amostras[nome]; if (!b || !ctx) return false;
+  const s = ctx.createBufferSource(); s.buffer = b; s.playbackRate.value = rate;
+  const g = ctx.createGain(); g.gain.value = vol;
+  if (dur) { g.gain.setValueAtTime(vol, t + Math.max(0, dur - fade)); g.gain.linearRampToValueAtTime(0, t + dur); }
+  s.connect(g); g.connect(out);
+  if (dur) s.start(t, ini, dur + 0.02); else s.start(t, ini);
+  return true;
 }
 
 // ---------------- roteamento ----------------

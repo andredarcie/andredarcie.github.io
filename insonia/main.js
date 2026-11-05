@@ -1,5 +1,5 @@
 // Boot: carrega as imagens, mostra a tela de título e começa o jogo.
-import { LARG, ALT, entrada, rodarLaco } from './src/base.js';
+import { LARG, ALT, entrada, rodarLaco, gravacao } from './src/base.js';
 import { carregar } from './src/recursos.js';
 import { Jogo } from './src/jogo.js';
 import { som } from './src/som.js';
@@ -49,6 +49,7 @@ async function iniciar() {
   document.getElementById('carga')?.remove();
   const jogo = new Jogo(canvas);
   window.__insonia = jogo;
+  if (gravacao.ativa) window.__entrada = entrada;   // o gravador de vídeo aperta as teclas por aqui
 
   // Atalho de desenvolvimento: ?mapa=id&x=..&y=.. pula para um mapa.
   if (params.get('mapa')) {
@@ -75,7 +76,7 @@ async function iniciar() {
         escolhido = opcoes[sel];
         naTitulo = false;
         if (escolhido === 'Continuar') jogo.continuar();
-        else { try { localStorage.removeItem('insonia.save'); } catch { /* */ } jogo.carregar('cela', 9, 6, 'cima'); }
+        else { try { localStorage.removeItem('insonia.save'); } catch { /* */ } jogo.carregar('cela', 9, 7, 'cima'); }
         som.ambiente(1);
       }
       entrada.fimDoQuadro();

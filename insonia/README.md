@@ -35,9 +35,13 @@ O jogo salva sozinho a cada troca de mapa. Os mapas que só existem dentro de um
   - *Recortes próprios*: o que não existe em nenhum pacote foi recortado das capturas de 2014 ou desenhado em `tools/extras.py`. Isso inclui os canos, o biombo, os números do banheiro, os nichos iluminados e a porta arredondada.
 - **Luz**: cada mapa tem tom (escurece tudo), luz ambiente, lâmpadas com halo e lanterna em volta do herói. Os valores foram calibrados comparando com as capturas.
 - **Texto**: as falas foram transcritas do vídeo por OCR e conferidas quadro a quadro, mantendo a grafia original ("Mais" por "mas" etc.). Em vermelho ficam as vozes, a carta e os avisos.
-- **Som**: o trailer não tem áudio. Tudo é sintetizado por código em `src/audio/`, sem nenhum arquivo gravado, num clima de terror em primeira pessoa no espírito de Amnesia: silêncio pesado, coisas acontecendo longe.
+- **Som**: o trailer não tem áudio. O som foi feito num clima de terror em primeira pessoa no espírito de Amnesia: silêncio pesado, coisas acontecendo longe.
+  - `gravados.js` + `assets/sfx/`: os efeitos usam gravações reais em CC0 (domínio público). Origem de cada arquivo em `assets/sfx/CREDITOS.md`.
+    - Passos por piso, porta, maçaneta trancada, fechadura, grade de metal, pancadas na porta, gritos, pé arrastando, trovão, lâmina.
+    - O jogo sorteia a variação sem repetir a anterior e varia um pouco a altura.
+    - Cada gravação passou por limitador, para o trinco não estalar.
   - `motor.js`: cadeia mestre (passa-alta, compressor e limitador), reverberação gerada para cada tipo de sala (cela, corredor, salão, banheiro de ladrilho, duto) e ruídos branco, rosa e marrom.
-  - `efeitos.js`: efeitos por modelo físico.
+  - `efeitos.js`: a versão sintetizada de cada efeito, tocada se a gravação ainda não carregou, e os sons da interface.
     - Dobradiça e madeira rangendo: atrito "gruda-escorrega".
     - Metal, fechadura e grade: modos de barra.
     - Passos que mudam com o piso: madeira, pedra, ladrilho, metal, tapete.
@@ -64,8 +68,12 @@ Vêm do próprio repo, em `brians/projeto/Graphics/Characters`, e são os mesmos
   parece cortar para outros mapas porque a luz apaga enquanto ele anda.
 - **Deduzidos do vídeo** (o trailer não mostra a regra):
   - a solução do tabuleiro;
-  - onde ficam as armadilhas;
   - quantos giros abrem a sala que gira.
+- **Tirados do rastreio do trailer**: o herói foi localizado tile a tile em cada segundo do vídeo.
+  - As armadilhas são os tiles fora do zigue-zague que o jogador do trailer percorreu sem nunca cair. Os rabiscos no chão ficam todos em cima delas.
+  - A posição inicial na cela é (9,7).
+  - A chave final fica em (8,6), logo antes da porta.
+  - As pausas e os passos das cenas roteirizadas seguem o trailer: a cela, a escuridão do monstro (uns 44 s) e o flashback.
 - **Acrescentados para dar para jogar**:
   - as dicas "Perdido" (papéis) e "0011" (jarro);
   - as frases "Uma grade no chão." e "Não posso usar isso aqui.";
@@ -97,9 +105,21 @@ Vêm do próprio repo, em `brians/projeto/Graphics/Characters`, e são os mesmos
 
 `index.html?mapa=corredor&x=8&y=7&semsalvar&flags=intro&itens=cano` abre direto num mapa, sem salvar.
 
+Acrescentando `&gravar`, o jogo entra em modo de gravação de vídeo:
+
+- o relógio para e anda quadro a quadro por `window.__passo(n)`;
+- as teclas entram por `window.__entrada`;
+- nenhum som toca; cada um é anotado em `window.__sons` com o quadro, para o áudio ser renderizado depois, offline.
+
+Foi assim que o vídeo de gameplay imitando o trailer foi gravado.
+
 ## Soluções (spoiler)
 
 1. A caixa abre com `Perdido` e depois `0011`.
 2. A escada da sala das lâmpadas abre com `1264`, os números riscados nas cabines do banheiro.
 3. O tabuleiro se resolve acendendo o triângulo de cima, o hexágono e o triângulo da esquerda e o quadrado do canto.
-4. Na sala que gira, um giro para a esquerda abre a saída de baixo.
+4. Na sala que gira, um giro para a esquerda (ou três para a direita, como no trailer) abre a saída de baixo.
+5. Na sala das armadilhas, o caminho seguro foge dos rabiscos:
+   - desce pela direita até a fileira de baixo e atravessa para a esquerda;
+   - sobe colado na parede esquerda;
+   - corta pelo meio até a chave de bronze.

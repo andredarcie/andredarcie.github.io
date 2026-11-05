@@ -73,7 +73,20 @@ export function tickEsperas() {
   for (const w of [...esperando]) { if (--w.n <= 0) { esperando.delete(w); w.r(); } }
 }
 
+// ---------- Gravação de vídeo (?gravar): o relógio anda quadro a quadro pelo gravador ----------
+// Assim o vídeo sai igual em qualquer máquina: nada depende do tempo real.
+export const gravacao = { ativa: new URLSearchParams(location.search).has('gravar'), quadro: 0 };
+export const agoraMs = () => (gravacao.ativa ? gravacao.quadro * (1000 / 60) : performance.now());
+
 export function rodarLaco(atualizar, desenhar) {
+  if (gravacao.ativa) {
+    window.__passo = (n = 1, desenha = true) => {
+      for (let i = 0; i < n; i++) { atualizar(); gravacao.quadro++; }
+      if (desenha) desenhar();
+      return gravacao.quadro;
+    };
+    return;
+  }
   let ultimo = performance.now(), acc = 0;
   const passo = 1000 / 60;
   function f(agora) {
