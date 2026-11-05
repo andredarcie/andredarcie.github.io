@@ -118,9 +118,17 @@
   }
   .barra button:hover { background: #45494f; }
   .barra .contador { min-width: 70px; text-align: center; font-variant-numeric: tabular-nums; color: #bfbab0; }
+  /* Telas muito estreitas: os botões e o contador não cabem junto com o nome, que é o que pode sair. */
+  @media (max-width: 360px) {
+    .barra { gap: 6px; padding: 7px 8px; }
+    .barra .nome { font-size: 13px; }
+    .barra .contador { min-width: 54px; }
+    .barra button { padding: 6px 8px; }
+  }
+  @media (max-width: 300px) { .barra .nome { display: none; } .barra { justify-content: flex-end; } }
 
   /* ── as páginas ── */
-  #livro { padding: 28px 10px 60px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  #livro { padding: 28px 8px 60px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
   .pagina {
     position: relative;
     width: var(--pw); height: var(--ph);
@@ -131,9 +139,14 @@
   }
   .cabeca {
     position: absolute; top: 26px; left: var(--margem-x); right: var(--margem-x);
-    display: flex; justify-content: space-between;
+    display: flex; justify-content: space-between; gap: 14px;
     font-size: 12.5px; font-style: italic; color: var(--tinta-suave); letter-spacing: .03em;
   }
+  /* Uma linha só: em página estreita o título longo do capítulo encurta com reticências em vez de quebrar
+     e cair em cima do texto. */
+  .cabeca span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cabeca span:first-child { flex: 0 1 auto; }
+  .cabeca span:last-child { flex: 0 1 auto; text-align: right; }
   .rodape {
     position: absolute; bottom: 26px; left: 0; right: 0; text-align: center;
     font-size: 13px; color: var(--tinta-suave); font-variant-numeric: oldstyle-nums;
@@ -162,7 +175,7 @@
   }
 
   /* abertura de capítulo */
-  .abertura { padding-top: 120px; margin-bottom: 2.2em; text-align: center; }
+  .abertura { padding-top: calc(var(--ph) * .14); margin-bottom: 2.2em; text-align: center; }
   .abertura .num { font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: var(--ocre); }
   .abertura h2 { font-size: 2.05em; font-weight: 500; line-height: 1.12; margin: .35em 0 .25em; }
   .abertura .sub { font-style: italic; color: var(--tinta-suave); font-size: 1.05em; }
@@ -193,27 +206,40 @@
     background: #1b2620; border: 1px solid rgba(232, 205, 150, .7); transform: rotate(45deg);
   }
   .capa .moldura::before { top: -6px; } .capa .moldura::after { bottom: -6px; background: #222c23; }
-  .capa .alto { position: absolute; top: 11%; left: 8%; right: 8%; z-index: 1; }
-  .capa .alto .sobre { font-size: 12px; letter-spacing: .32em; text-transform: uppercase; color: #d9bd7e; }
+  /* A capa é uma coluna: título em cima, arte no meio, créditos embaixo. Nada é posicionado por cima de
+     nada, e os tamanhos acompanham a largura da página. Se faltar altura (celular estreito), a arte
+     encolhe cortando o céu (preserveAspectRatio xMidYMax slice), nunca o texto. */
+  .capa { display: flex; flex-direction: column; }
+  .capa .alto { flex: none; padding: calc(var(--ph) * .1) 9% 0; position: relative; z-index: 1; }
+  .capa .alto .sobre {
+    font-size: max(10px, calc(var(--pw) * .02)); letter-spacing: .28em; text-transform: uppercase; color: #d9bd7e;
+  }
   .capa h1 {
     font-weight: 500; font-size: calc(var(--pw) * .108); line-height: 1; margin: .32em 0 0; letter-spacing: .005em;
     text-shadow: 0 2px 18px rgba(0, 0, 0, .35);
   }
   .capa h1 span { display: block; font-size: .46em; font-style: italic; letter-spacing: .02em; margin-bottom: .12em; color: #e7d6ae; }
-  .capa .ornamento { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1.1em; }
-  .capa .ornamento i { width: 46px; height: 1px; background: rgba(232, 205, 150, .7); }
+  .capa .ornamento { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1em; }
+  .capa .ornamento i { width: calc(var(--pw) * .077); height: 1px; background: rgba(232, 205, 150, .7); }
   .capa .ornamento b { width: 6px; height: 6px; background: #d9bd7e; transform: rotate(45deg); }
-  .capa svg.arte { position: absolute; left: 0; width: 100%; top: 40%; display: block; }
+  .capa svg.arte { flex: 0 1 auto; min-height: 0; width: 100%; margin-top: auto; display: block; }
   .capa .baixo {
-    position: absolute; bottom: 8%; left: 8%; right: 8%; z-index: 1;
-    font-size: 15px; letter-spacing: .08em; color: #e7d6ae;
+    flex: none; position: relative; z-index: 1; background: #222c23;
+    padding: .2em 9% calc(var(--ph) * .075);
+    font-size: max(12.5px, calc(var(--pw) * .025)); letter-spacing: .06em; color: #e7d6ae;
   }
-  .capa .baixo em { display: block; font-size: 15.5px; letter-spacing: .02em; color: #efe0bb; margin-bottom: .55em; }
-  .capa .baixo small { display: block; margin-top: .55em; font-size: 11.5px; letter-spacing: .3em; text-transform: uppercase; color: #bfa774; }
+  .capa .baixo em {
+    display: block; font-size: max(13px, calc(var(--pw) * .026)); letter-spacing: .01em; color: #efe0bb; margin-bottom: .5em;
+  }
+  .capa .baixo small {
+    display: block; margin-top: .5em; font-size: max(9.5px, calc(var(--pw) * .019)); letter-spacing: .24em;
+    text-transform: uppercase; color: #bfa774;
+  }
 
   /* páginas de abertura do livro */
-  .rosto .corpo { display: flex; flex-direction: column; justify-content: center; }
-  .rosto h2 { font-weight: 500; font-size: 1.6em; text-align: center; margin: 0 0 1em; }
+  /* Sem centralizar na vertical: quando o texto não cabe, a centralização cortaria o começo dele. */
+  .rosto h2 { font-weight: 500; font-size: 1.6em; text-align: center; margin: 1.4em 0 1em; }
+  .sumario.cont .corpo { padding-top: .6em; }
   .rosto p { text-indent: 0 !important; margin-bottom: .8em !important; }
   .rosto .colofao { margin-top: 2em; font-size: .82em; color: var(--tinta-suave); text-align: center; }
   .sumario h2 { font-weight: 500; font-size: 1.6em; text-align: center; margin: 1.6em 0 1.2em; }
@@ -1008,9 +1034,10 @@
       root.setProperty('--margem-topo', '64px'); root.setProperty('--margem-base', '70px');
       return 'grande';
     }
-    const pw = Math.max(300, Math.min(w - 20, 520));
+    // Nunca mais larga que a tela (o mínimo antigo de 300 px vazava nas telas de 280 px).
+    const pw = Math.max(240, Math.min(w - 16, 520));
     root.setProperty('--pw', `${pw}px`); root.setProperty('--ph', `${Math.round(pw * 1.5)}px`);
-    root.setProperty('--corpo', pw < 360 ? '15.5px' : '16px');
+    root.setProperty('--corpo', pw < 300 ? '15px' : pw < 360 ? '15.5px' : '16px');
     root.setProperty('--margem-x', `${Math.round(pw * .08)}px`);
     root.setProperty('--margem-topo', '52px'); root.setProperty('--margem-base', '56px');
     return `bolso-${pw}`;
@@ -1038,6 +1065,27 @@
   };
 
   const transborda = (corpo) => corpo.scrollHeight > corpo.clientHeight + 1;
+
+  // Páginas de abertura do livro (apresentação, sumário): os blocos entram um a um e, quando não cabem
+  // mais, seguem numa página nova da mesma classe. Devolve a primeira página.
+  let paginaSumario = null;
+  const fluir = (classe, html) => {
+    const molde = document.createElement('div');
+    molde.innerHTML = html;
+    let pg = novaPagina(classe);
+    let corpo = comCorpo(pg);
+    const primeira = pg;
+    for (const bloco of [...molde.children]) {
+      corpo.appendChild(bloco);
+      if (transborda(corpo) && corpo.children.length > 1) {
+        bloco.remove();
+        pg = novaPagina(`${classe} cont`);
+        corpo = comCorpo(pg);
+        corpo.appendChild(bloco);
+      }
+    }
+    return primeira;
+  };
   // Quanto da página já está ocupado (o scrollHeight nunca é menor que a página, então não serve aqui).
   const ocupado = (corpo) => {
     const ultimo = corpo.lastElementChild;
@@ -1163,38 +1211,40 @@
       <div class="alto"><div class="sobre">Do Sapecado à terra do Divino</div>
         <h1><span>Histórias de</span>Divinolândia</h1>
         <div class="ornamento" aria-hidden="true"><i></i><b></b><i></i></div></div>
-      <svg class="arte" viewBox="0 0 400 230" aria-hidden="true">${ARTE_CAPA}</svg>
+      <svg class="arte" viewBox="0 0 400 230" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${ARTE_CAPA}</svg>
       <div class="baixo"><em>Doze capítulos, do século XVIII aos dias de hoje</em>Reunido por André N. Darcie<small>Divinolândia · São Paulo · 2026</small></div>`;
 
-    // Apresentação
-    const rosto = novaPagina('rosto');
-    comCorpo(rosto).innerHTML = `
+    // Apresentação (corre por quantas páginas precisar: no celular estreito não cabe numa só)
+    fluir('rosto', `
       <h2>Sobre este livro</h2>
       <p>Este é um livro aberto sobre a história de Divinolândia, a antiga Sapecado, no interior de São Paulo. Ele é escrito aos poucos, um capítulo de cada vez, a partir do que se consegue encontrar em fontes públicas: documentos oficiais, revistas de história e genealogia, jornais, sites das cidades vizinhas e a memória que os moradores publicam.</p>
       <p>Os capítulos seguem a ordem do tempo, do sertão do século XVIII aos dias de hoje. Toda afirmação tem uma nota com a sua fonte, e as fontes ficam no fim de cada capítulo, com o endereço para quem quiser conferir. Onde as fontes se calam, o texto diz que não sabe.</p>
       <p>Os temas seguem, de perto, o índice de <em>Divinolândia... Nos Caminhos do Tempo</em>, o livro que Válter Roberto Lopes e Orlanda Maria Grespan de Faria publicaram em 1991, e que hoje não se encontra para ler.</p>
-      <div class="colofao">Primeira edição, em construção · novembro de 2026</div>`;
+      <div class="colofao">Primeira edição, em construção · novembro de 2026</div>`);
 
-    // Sumário (preenchido depois de paginar, com as páginas de verdade)
-    const sumario = novaPagina('sumario');
-    const corpoSumario = comCorpo(sumario);
-
-    const inicios = [];
-    for (const sec of fonte.querySelectorAll('section.capitulo')) {
-      inicios.push({ sec, pagina: paginarCapitulo(sec) });
-    }
-    numerar();
-
-    corpoSumario.innerHTML = '<h2>Sumário</h2>'
-      + inicios.map(({ sec, pagina }) => `
-        <a class="linha" href="#${pagina.id}">
+    // Sumário: as linhas entram antes dos capítulos (com "000" no lugar do número, que ocupa a mesma
+    // largura), para que o sumário possa ocupar mais de uma página; os números de verdade vêm depois.
+    const secoes = [...fonte.querySelectorAll('section.capitulo')];
+    paginaSumario = fluir('sumario', '<h2>Sumário</h2>'
+      + secoes.map((sec) => `
+        <a class="linha" href="#" data-cap="${sec.dataset.num}">
           <span class="t">${sec.dataset.num}. ${sec.dataset.titulo}${sec.dataset.sub ? `<small>${sec.dataset.sub}</small>` : ''}</span>
-          <span class="pontos"></span><span class="p">${pagina.id.replace('pagina-', '')}</span>
+          <span class="pontos"></span><span class="p">000</span>
         </a>`).join('')
       + (proximos.length
         ? '<h4>Próximos capítulos, em pesquisa, a entrar na ordem do tempo</h4><ul class="futuros">'
           + proximos.map((t) => `<li>${t}</li>`).join('') + '</ul>'
-        : '');
+        : ''));
+
+    const inicios = secoes.map((sec) => ({ sec, pagina: paginarCapitulo(sec) }));
+    numerar();
+
+    for (const { sec, pagina } of inicios) {
+      const linha = livro.querySelector(`.sumario .linha[data-cap="${sec.dataset.num}"]`);
+      if (!linha) continue;
+      linha.href = `#${pagina.id}`;
+      linha.querySelector('.p').textContent = pagina.id.replace('pagina-', '');
+    }
     atualizarContador();
 
     // Link direto para um capítulo (#capitulo-6): vai à página em que ele começa.
@@ -1224,7 +1274,7 @@
   };
   document.getElementById('anterior').onclick = () => irPara(atual - 1);
   document.getElementById('proxima').onclick = () => irPara(atual + 1);
-  document.getElementById('ir-sumario').onclick = () => irPara(3);
+  document.getElementById('ir-sumario').onclick = () => irPara(paginaSumario ? paginas.indexOf(paginaSumario) + 1 : 3);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); irPara(atual + 1); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); irPara(atual - 1); }
