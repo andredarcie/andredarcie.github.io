@@ -31,7 +31,8 @@ A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma p
 2. Ajuste `data-num`, `data-titulo` e `data-sub`. Se ele entrar no meio, renumere os seguintes: o `data-num` e o prefixo das notas (`c4-n…` vira `c5-n…`).
 3. Escreva em `<p>`, com intertítulos em `<h3>`. O primeiro parágrafo pode levar `class="capitular"`, para ter a letra grande.
 4. Toda afirmação leva nota: `<sup><a href="#c2-n1">1</a></sup>`. As notas vão no `<ol class="notas">` do fim do capítulo, com `id` iguais (`c2-n1`, `c2-n2`…) e o endereço da fonte.
-5. Tire o título da lista `#proximos` (os capítulos em pesquisa, que aparecem no sumário sem página).
+5. Figuras: `<figure class="figura">` com `<img>` (sempre com `width` e `height` do arquivo, para a página ser medida antes de a imagem chegar) e `<figcaption>` com a fonte, a licença e a nota. Os arquivos ficam em `imagens/`. Só entra imagem em domínio público, com licença aberta (CC BY, ODbL) ou feita para o livro; a tese de 2022 não tem licença de reuso, por isso o mapa do largo foi refeito com dados do OpenStreetMap.
+6. Tire o título da lista `#proximos` (os capítulos em pesquisa, que aparecem no sumário sem página).
 
 ## Regras do texto
 

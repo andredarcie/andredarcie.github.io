@@ -174,6 +174,17 @@
     margin: .6em 1.6em; font-size: .95em; font-style: italic; color: #3c362d;
   }
 
+  /* figuras: a altura sai dos atributos width/height, então a página é medida antes de a imagem chegar */
+  .figura { margin: .9em 0 1em; }
+  .figura img {
+    display: block; width: 100%; height: auto; margin: 0 auto;
+    max-height: calc(var(--ph) * .42); object-fit: contain; background: #f1ebdc;
+  }
+  .figura figcaption {
+    margin-top: .45em; font-size: .8em; line-height: 1.38; color: var(--tinta-suave);
+    text-align: left; hyphens: auto; -webkit-hyphens: auto;
+  }
+
   /* abertura de capítulo */
   .abertura { padding-top: calc(var(--ph) * .14); margin-bottom: 2.2em; text-align: center; }
   .abertura .num { font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: var(--ocre); }
@@ -268,6 +279,9 @@
   #fonte sup a { color: #6d5222; text-decoration: none; }
   #fonte ol.notas { font-size: .85em; overflow-wrap: anywhere; }
   #fonte .notas-titulo { font-weight: 600; font-variant: small-caps; margin-top: 1.4em; }
+  #fonte .figura { margin: 1.4em 0; }
+  #fonte .figura img { display: block; max-width: 100%; height: auto; }
+  #fonte .figura figcaption { font-size: .85em; color: var(--tinta-suave); margin-top: .4em; }
 
   @media print {
     body { background: none; }
@@ -400,11 +414,21 @@
 
     <p>O registro paroquial de terras de 1856 mostra quem declarou terras no lugar; das 271 unidades familiares que os pesquisadores contaram na relação de moradores (descrita logo abaixo), apenas 83 aparecem nele como proprietárias. O capitão Tomás aparece como senhor de grande quantidade de terras, nas fazendas Santo Antônio do Rio do Peixe, Cachoeira do Rio do Peixe, Barra do Rio do Peixe, Limoeiro e Salto. Outros declarantes foram Flávio de Salles e Joaquim Alves Moreira, ligados às fazendas São Miguel, São Gonçalo e Cocais (o texto do registro não deixa claro qual era de quem), este último escrivão, juiz de paz e membro da primeira Câmara Municipal de Caconde, em 1864; Manoel Cardozo da Silva, da Cachoeira do Rio do Peixe e de São Domingos; Joaquim Gomes Nogueira Freire, da Boa Vista; e Manoel Ferreira Pinto, das Três Barras<sup><a href="#c2-n5">5</a></sup>.</p>
 
+    <figure class="figura">
+      <a href="imagens/mapa-aplicacao-1855.jpg"><img src="imagens/mapa-aplicacao-1855.jpg" width="658" height="649" loading="lazy" decoding="async" alt="Mapa em relevo da região entre Caconde e Casa Branca, com círculos brancos nas fazendas da aplicação da capela em 1855, os rios, os caminhos e a Capela do Espírito Santo no centro."></a>
+      <figcaption>As fazendas da aplicação da capela do Espírito Santo do Rio do Peixe em 1855, em mapa feito por Rafael A. S. Ferreira e Renata B. Pereira a partir do registro de terras e dos mapas de 1905; a capela está no centro. Reproduzido do artigo na <em>Almanack</em> (2023), licença CC BY 4.0<sup><a href="#c2-n10">10</a></sup>.</figcaption>
+    </figure>
+
     <h3>Quem trabalhava a terra</h3>
 
     <p>Nessas fazendas trabalhavam pessoas escravizadas, e os números estão nos censos. Em 1850, o recenseamento de Caconde registrou o capitão Tomás José de Andrade com 62 escravizados. Na mesma família, o casal de um dos filhos, José Tomás de Andrade, aparece com 24, e outros casais aparentados, com 15<sup><a href="#c2-n4">4</a></sup>.</p>
 
-    <p>Em 1855, quando os moradores pediram que a capela do Rio do Peixe ganhasse padre próprio, fez-se uma relação dos habitantes da capela (o manuscrito não traz data). Ela lista 2.043 pessoas, em 271 unidades familiares na contagem dos pesquisadores, e não está completa: o próprio cabeçalho cita famílias que ficaram de fora. Das pessoas listadas, 626 eram escravizadas, cerca de 30%: quase uma em cada três. O ofício que acompanha a relação, assinado por Flávio Secundo de Salles e Joaquim Alves Moreira e endereçado ao capitão Tomás José de Andrade, dá outro número: diz que a população "alcançou a 1573", enumera as famílias que faltavam e conta que, com elas, se chegaria aos dois mil; o pesquisador transcreve o ofício e não explica a diferença entre os dois números<sup><a href="#c2-n10">10</a></sup>. Quatro fazendas tinham mais de cinquenta cativos cada uma (Pinhal do Rio Pardo, Fartura, Santo Antônio do Rio do Peixe e Limoeiro); nas outras, o número regulava em torno de quinze a vinte, e havia grande quantidade de agregados, gente livre e pobre que vivia em terra alheia<sup><a href="#c2-n5">5</a></sup>.</p>
+    <p>Em 1855, quando os moradores pediram que a capela do Rio do Peixe ganhasse padre próprio, fez-se uma relação dos habitantes da capela (o manuscrito não traz data). Ela lista 2.043 pessoas, em 271 unidades familiares na contagem dos pesquisadores, e não está completa: o próprio cabeçalho cita famílias que ficaram de fora. Das pessoas listadas, 626 eram escravizadas, cerca de 30%: quase uma em cada três. O ofício que acompanha a relação, assinado por Flávio Secundo de Salles e Joaquim Alves Moreira e endereçado ao capitão Tomás José de Andrade, dá outro número: diz que a população "alcançou a 1573", enumera as famílias que faltavam e conta que, com elas, se chegaria aos dois mil; o pesquisador transcreve o ofício e não explica a diferença entre os dois números<sup><a href="#c2-n11">11</a></sup>. Quatro fazendas tinham mais de cinquenta cativos cada uma (Pinhal do Rio Pardo, Fartura, Santo Antônio do Rio do Peixe e Limoeiro); nas outras, o número regulava em torno de quinze a vinte, e havia grande quantidade de agregados, gente livre e pobre que vivia em terra alheia<sup><a href="#c2-n5">5</a></sup>.</p>
+
+    <figure class="figura">
+      <a href="imagens/relacao-habitantes-1855.jpg"><img src="imagens/relacao-habitantes-1855.jpg" width="656" height="607" loading="lazy" decoding="async" alt="Página manuscrita com nomes numerados de 199 a 219, separados por traços em grupos familiares."></a>
+      <figcaption>Um trecho da "Relação dos habitantes na aplicação da Capella do Divino Espírito Santo do Rio do Peixe": os nomes numerados, separados por traços em grupos de família. Arquivo da Cúria Metropolitana de São Paulo, em reprodução de Ferreira e Pereira na <em>Almanack</em> (2023), licença CC BY 4.0<sup><a href="#c2-n10">10</a></sup>.</figcaption>
+    </figure>
 
     <p>O mesmo pedido descreve o que se produzia: lavoura, criação de gado, cavalos e porcos, fumo, engenhos de açúcar e plantações de café, que, segundo o documento, aumentavam a cada ano<sup><a href="#c2-n5">5</a></sup>.</p>
 
@@ -439,7 +463,8 @@
       <li id="c2-n7">BRASIL. Lei n.º 2.040, de 28 de setembro de 1871 (Lei do Ventre Livre), <a href="https://www.planalto.gov.br/ccivil_03/leis/lim/lim2040.htm">planalto.gov.br/ccivil_03/leis/lim/lim2040.htm</a>; e Lei n.º 3.353, de 13 de maio de 1888 (Lei Áurea), <a href="https://www.planalto.gov.br/ccivil_03/leis/lim/lim3353.htm">planalto.gov.br/ccivil_03/leis/lim/lim3353.htm</a></li>
       <li id="c2-n8">Campo e Trilha. <em>Almanaque do Caminho da Fé</em>, p. 223 (Espírito Santo do Pinhal), com base na prefeitura de Pinhal. <a href="https://campoetrilha.com.br/downloads/almanaque-do-caminho-da-fe.pdf">campoetrilha.com.br/downloads/almanaque-do-caminho-da-fe.pdf</a></li>
       <li id="c2-n9">Revista Espresso. <em>Produtores de café de Divinolândia apresentam a região</em>: a cafeicultura local tomou corpo com a imigração europeia, sobretudo italiana, entre o fim do século XIX e o começo do XX. <a href="https://revistaespresso.com.br/produtores-de-cafe-de-divinolandia-apresentam-a-regiao/">revistaespresso.com.br/produtores-de-cafe-de-divinolandia-apresentam-a-regiao</a></li>
-      <li id="c2-n10">FERREIRA, Rafael Augusto Silva. <em>À sombra da capela</em>. Tese (doutorado em Arquitetura e Urbanismo), PUC-Campinas, 2022, p. 232–234: transcrição do ofício que abre a "Relação dos habitantes na aplicação da Capella do Divino Espírito Santo do Rio do Peixe, nº 2" ("do número que alcançou a 1573, faltando as seguintes famílias"; "com ellas completará o nº. de 2$000"), Arquivo da Cúria Metropolitana de São Paulo, fl. 1. <a href="https://repositorio.sis.puc-campinas.edu.br/handle/123456789/4169">repositorio.sis.puc-campinas.edu.br/handle/123456789/4169</a></li>
+      <li id="c2-n10">FERREIRA, Rafael Augusto Silva; PEREIRA, Renata Baesso. Uma sociedade de capelas. <em>Almanack</em>, n.º 34, 2023, Figura 3 (recorte da "Relação dos habitantes…", reprodução dos autores, Arquivo da Cúria Metropolitana de São Paulo) e Figura 4 ("Mapa SIG das fazendas da aplicação da Capela do Esp. Santo do Rio do Peixe (1855)", elaboração dos autores em QGIS, 2022). Reproduzidas sem alteração, sob a licença Creative Commons Atribuição 4.0 (<a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br">CC BY 4.0</a>). <a href="https://www.scielo.br/j/alm/a/bH5cms5rcJjwgVzYtctYKSF/?lang=pt">scielo.br/j/alm/a/bH5cms5rcJjwgVzYtctYKSF</a></li>
+      <li id="c2-n11">FERREIRA, Rafael Augusto Silva. <em>À sombra da capela</em>. Tese (doutorado em Arquitetura e Urbanismo), PUC-Campinas, 2022, p. 232–234: transcrição do ofício que abre a "Relação dos habitantes na aplicação da Capella do Divino Espírito Santo do Rio do Peixe, nº 2" ("do número que alcançou a 1573, faltando as seguintes famílias"; "com ellas completará o nº. de 2$000"), Arquivo da Cúria Metropolitana de São Paulo, fl. 1. <a href="https://repositorio.sis.puc-campinas.edu.br/handle/123456789/4169">repositorio.sis.puc-campinas.edu.br/handle/123456789/4169</a></li>
     </ol>
   </section>
 
@@ -816,7 +841,27 @@
 
     <p>A capela de 1843 ficava onde está a matriz de hoje. Na tese de doutorado em que estudou as capelas da região, o arquiteto Rafael Augusto Silva Ferreira redesenhou, com coordenadas, o traçado da vila em 1905, a partir da folha topográfica daquele ano, de um mapa de Divinolândia de 1940 e de um relatório dos bens do patrimônio. A vila era então, nas palavras dele, "um incipiente arraial em torno do único largo, da igreja matriz", e o largo ficava "à meia encosta, no centro da forquilha formada pela hidrografia", junto ao córrego que os documentos chamam de Caçonunga; o ponto mais alto ficou para o cemitério<sup><a href="#c10-n11">11</a></sup>. Posto sobre o mapa atual, o ponto que ele marca como capela e adro fica a cerca de sessenta metros da matriz de hoje, distância menor que a precisão do desenho<sup><a href="#c10-n11">11</a></sup><sup><a href="#c10-n12">12</a></sup>.</p>
 
+    <figure class="figura">
+      <a href="imagens/mapa-largo-1905.svg"><img src="imagens/mapa-largo-1905.svg" width="1000" height="662" loading="lazy" decoding="async" alt="Mapa do centro de Divinolândia com o Rio do Peixe, o Córrego das Contentas, o cemitério e a matriz; um círculo marca o ponto do largo e da igreja matriz de 1905, junto da matriz atual."></a>
+      <figcaption>O centro da cidade hoje e, no círculo, o ponto em que o mapa de 1905 da tese de Rafael A. S. Ferreira situa o largo e a igreja matriz. Mapa feito para este livro com dados do OpenStreetMap (© colaboradores do OpenStreetMap, licença ODbL)<sup><a href="#c10-n12">12</a></sup>.</figcaption>
+    </figure>
+
     <p>A folha topográfica original, a "Folha de Casa Branca" da Comissão Geográfica e Geológica do Estado, na edição preliminar de 1905, confirma a posição: ela mostra o "Esp. S.to do R. do Peixe" como uma pequena grade de ruas a cerca de mil metros de altitude, a oeste da barra do Ribeirão das Contendas no Rio do Peixe, que é onde fica hoje o centro da cidade<sup><a href="#c10-n13">13</a></sup>. A mesma tese reproduz uma vista da vila em 1929, do <em>Almanaque de São José do Rio Pardo e Grama</em>, e uma fotografia aérea de 1939, ambas com a igreja matriz no largo<sup><a href="#c10-n11">11</a></sup>.</p>
+
+    <figure class="figura">
+      <a href="imagens/folha-casa-branca-1905.jpg"><img src="imagens/folha-casa-branca-1905.jpg" width="960" height="620" loading="lazy" decoding="async" alt="Recorte de mapa topográfico antigo, com curvas de nível em vermelho e rios em azul; no centro, a pequena grade de ruas da vila e o nome Esp. S.to do R. do Peixe."></a>
+      <figcaption>A vila na <em>Folha de Casa Branca</em> da Comissão Geográfica e Geológica do Estado, edição preliminar de 1905: a pequena grade de ruas logo acima do nome "Esp. S.to do R. do Peixe", a oeste da barra do Ribeirão das Contendas no Rio do Peixe. Recorte. Acervo do Museu Paulista da USP, domínio público<sup><a href="#c10-n13">13</a></sup>.</figcaption>
+    </figure>
+
+    <figure class="figura">
+      <a href="imagens/vila-1929.jpg"><img src="imagens/vila-1929.jpg" width="1200" height="622" loading="lazy" decoding="async" alt="Fotografia antiga em preto e branco da vila vista de longe, com casas baixas entre árvores e a igreja matriz ao fundo, marcada por uma seta."></a>
+      <figcaption>A vila em 1929, no <em>Almanaque de São José do Rio Pardo e Grama</em> (acervo da Hemeroteca Paschoal Artese). A seta, posta na tese de Ferreira, marca a igreja matriz. Fotografia em domínio público pela data (Lei n.º 9.610/1998, art. 44)<sup><a href="#c10-n11">11</a></sup>.</figcaption>
+    </figure>
+
+    <figure class="figura">
+      <a href="imagens/aerea-1939.jpg"><img src="imagens/aerea-1939.jpg" width="1200" height="888" loading="lazy" decoding="async" alt="Fotografia aérea antiga em preto e branco da vila, com ruas retas, casas e pastos em volta; uma seta marca a igreja matriz."></a>
+      <figcaption>A vila vista do alto em 1939, em fotografia aérea da ENFA (acervo do Instituto Geográfico e Cartográfico). A seta, posta na tese de Ferreira, marca a igreja matriz. Fotografia em domínio público pela data (Lei n.º 9.610/1998, art. 44)<sup><a href="#c10-n11">11</a></sup>.</figcaption>
+    </figure>
 
     <p>O que nenhuma fonte encontrada diz é se o prédio era sempre o mesmo. Em março de 1844, o vigário de Caconde dava a capela-mor por pronta e o corpo da igreja por fazer; a resenha do livro de 1991 diz que a capela foi benta em 1854<sup><a href="#c10-n11">11</a></sup><sup><a href="#c10-n4">4</a></sup>. E a igreja inaugurada em 1961 foi construída como uma "nova matriz"<sup><a href="#c10-n2">2</a></sup>, sem que as fontes digam se a antiga foi reformada, reconstruída ou demolida naquele largo.</p>
 
@@ -857,7 +902,7 @@
       <li id="c10-n9">Secretaria de Turismo do Estado de São Paulo. <em>Conheça o Município Turístico de Divinolândia</em>. <a href="https://plataforma.turismo.sp.gov.br/conheca-o-municipio-turistico-de-divinolandia">plataforma.turismo.sp.gov.br</a></li>
       <li id="c10-n10">Prefeitura de Divinolândia. <em>Logradouros de Divinolândia</em> (lista de ruas e CEPs, 2024). <a href="https://www.divinolandia.sp.gov.br/public/admin/globalarq/uploads/files/logradouros-SP-Divinol%C3%A2ndia-21_11_2024-08_55_16%20(2).pdf">divinolandia.sp.gov.br (PDF)</a></li>
       <li id="c10-n11">FERREIRA, Rafael Augusto Silva. <em>À sombra da capela: os patrimônios religiosos na constituição dos espaços urbanos e na formação do território polarizado pelas vilas de Casa Branca e Caconde no século XIX</em>. Tese (doutorado em Arquitetura e Urbanismo), PUC-Campinas, 2022, p. 227–228 (ofício do vigário de 27/3/1844) e p. 356–358: Figura 59, "Traçado urbano de Espírito Santo do Rio do Peixe em 1905", escala 1:10.000, coordenadas UTM (SIRGAS 2000, fuso 23S), com o "Largo e Igreja Matriz", o cemitério e o Córrego Caçonunga; Figura 60, vista de 1929 (<em>Almanaque de São José do Rio Pardo e Grama</em>, Hemeroteca Paschoal Artese); Figura 61, foto aérea de 1939 (ENFA, acervo do IGC). <a href="https://repositorio.sis.puc-campinas.edu.br/handle/123456789/4169">repositorio.sis.puc-campinas.edu.br/handle/123456789/4169</a></li>
-      <li id="c10-n12">Comparação feita para este livro: o ponto da capela na Figura 59 da tese (cerca de E 319.970, N 7.603.560, UTM 23S) convertido em latitude e longitude (21,6621° S, 46,7399° O) e medido até a Paróquia do Divino Espírito Santo no OpenStreetMap (21,6621° S, 46,7393° O). <a href="https://www.openstreetmap.org/way/542649940">openstreetmap.org/way/542649940</a></li>
+      <li id="c10-n12">Comparação feita para este livro: o ponto da capela na Figura 59 da tese (cerca de E 319.970, N 7.603.560, UTM 23S) convertido em latitude e longitude (21,6621° S, 46,7399° O) e medido até a Paróquia do Divino Espírito Santo no OpenStreetMap (21,6621° S, 46,7393° O). O mapa da figura usa as ruas, os rios, as praças, o cemitério e a matriz do OpenStreetMap (© colaboradores do OpenStreetMap, licença ODbL, dados de novembro de 2026), com esse ponto marcado. <a href="https://www.openstreetmap.org/way/542649940">openstreetmap.org/way/542649940</a></li>
       <li id="c10-n13">COMISSÃO GEOGRÁFICA E GEOLÓGICA DO ESTADO DE S. PAULO. <em>Folha de Casa Branca</em>, escala 1:100.000, edição preliminar, 1905. Litografia Hartmann &amp; Reichenbach. Acervo do Museu Paulista da USP, Coleção João Baptista de Campos Aguirra. <a href="https://commons.wikimedia.org/wiki/File:Mapa_da_Comiss%C3%A3o_Geogr%C3%A1fica_e_Geol%C3%B3gica_do_Estado_de_S%C3%A3o_Paulo_-_Folha_de_Casa_Branca_-_1,_Acervo_do_Museu_Paulista_da_USP.jpg">Wikimedia Commons</a></li>
     </ol>
   </section>
