@@ -34,20 +34,21 @@ A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma p
 
 ## Capítulos
 
-| Nº | Título | Estado |
-|---|---|---|
-Em ordem do tempo. Os "em pesquisa" mostram onde cada um vai entrar.
+Em ordem do tempo.
 
-| Nº | Título | Período | Estado |
-|---|---|---|---|
-| 1 | Antes de Sapecado: o sertão, o quilombo, o ouro e o pouso dos tropeiros | séc. XVIII–1865 | escrito (11 notas) |
-| 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | 1830–1896 | escrito (9 notas) |
-| 3 | Os imigrantes: mascates, colonos e padeiros no Rio do Peixe | 1880–1940 | escrito (6 notas) |
-| — | O tempo dos coronéis | antes de 1932 | em pesquisa |
-| — | Os primeiros tempos: comércio, saúde, rádio e cinema | antes de 1932 | em pesquisa |
-| 4 | Quando a guerra chegou: Sapecado na Revolução de 1932 | 1932 | escrito (14 notas) |
-| 5 | O clima que curava: o sanatório de Sapecado e o Hospital Regional | 1935–1987 | escrito (2 notas) |
-| — | A capital da batata | depois de 1932 | em pesquisa |
-| — | De Sapecado a Divinolândia: a emancipação | 1938–1953 | em pesquisa |
-| — | A fé: a matriz e o Padre Ladislau | 1958–1962 | em pesquisa |
-| — | Os bairros | — | em pesquisa |
+| Nº | Título | Período |
+|---|---|---|
+| 1 | Antes de Sapecado: o sertão, o quilombo, o ouro e o pouso dos tropeiros | séc. XVIII–1865 |
+| 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | 1830–1896 |
+| 3 | Os imigrantes: mascates, colonos e padeiros no Rio do Peixe | 1880–1940 |
+| 4 | O tempo dos coronéis: as famílias que mandavam na freguesia | 1840–1918 |
+| 5 | A vida na vila: caminhos, comércio, festa e futebol | 1890–1950 |
+| 6 | Quando a guerra chegou: Sapecado na Revolução de 1932 | 1932 |
+| 7 | O clima que curava: o sanatório de Sapecado e o Hospital Regional | 1935–1987 |
+| 8 | A batata e o café: da capital da batata ao café de montanha | 1930–2025 |
+| 9 | De Sapecado a Divinolândia: a emancipação e os primeiros prefeitos | 1898–1992 |
+| 10 | A matriz e o padre Ladislau: a fé do Divino Espírito Santo | 1843–1990 |
+| 11 | Os bairros: Campestrinho, Três Barras, Pontal e os nomes da serra | — |
+| 12 | Divinolândia hoje: a cidade que a história deixou | 2022–2026 |
+
+O que ainda falta (e cada capítulo lista no fim): os nomes das pessoas escravizadas, os colonos das fazendas, os combatentes de 1932, o primeiro cinema, a campanha da emancipação, as igrejas evangélicas e o centro espírita, e a origem do nome Quebra-Machado.
