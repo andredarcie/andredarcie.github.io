@@ -615,10 +615,10 @@ export const HISTORIA = {
           await falas(j, ['Um urso de pelúcia em um lugar como\nesse?', 'Será que há alguma criança por aqui?',
             'Tem um buraco na barriga do urso,\num corte de faca.', 'Espere!', 'Tem um bilhete aqui.']);
           await falas(j, [`${V}Meu querido papai.`, `${V}Eu estou rezando por você.`, `${V}Mas eu acho que não vai resolver.`,
-            `${V}Eles, os homens do mal, estão atrás de\nvocê.`, `${V}Eu tenho uma amiga.`, `${V}Todos falam que é minha imaginação.`,
-            `${V}Porque ela não existe.`, `${V}Mas ela é única para mim, só que ela diz\ncoisas ruins sobre você.`,
-            `${V}Desde que você desapareceu, só tenho\na companhia dela.`, `${V}Hoje fui visitar seu túmulo.`,
-            `${V}Eu deixei um presente para ela.`, `${V}Um ursinho de pelúcia.`]);
+            `${V}Eles, os homens do mal, estão atrás de\nvocê.`, `${V}Eu tenho um amigo.`, `${V}Todos falam que é minha imaginação.`,
+            `${V}Porque ele não existe.`, `${V}Ele fica na janela do meu quarto, me\nolhando.`, `${V}E ele diz coisas ruins sobre você.`,
+            `${V}Desde que você desapareceu, só tenho\na companhia dele.`, `${V}Hoje fui visitar seu túmulo.`,
+            `${V}Eu deixei um presente para você.`, `${V}Um ursinho de pelúcia.`]);
           await quadros(30);
           await j.fala('Parece que eu já vi esse urso de pelúcia\nem algum lugar.');
           await j.apagar(50);
@@ -841,7 +841,7 @@ async function flashbackMenino(j) {
   await j.fala(`${V}Deixe-me ver.`);
   await rota(j, pai, [[9, 8], [9, 7], [7, 7]]);
   pai.virar('cima'); await quadros(180); pai.virar('esquerda'); await quadros(200); pai.virar('direita'); await quadros(210);
-  await j.fala(`${V}Não tem nada aqui, filho.`);
+  await j.fala(`${V}Não tem nada aqui, filha.`);
   await rota(j, pai, [[10, 7]]);
   await j.fala(`${V}Não tem nada aqui, não fique imaginando\ncoisas.`);
   await j.fala(`${V}Isso é fruto de sua imaginação.`);
@@ -863,7 +863,7 @@ async function flashbackMenino(j) {
   await j.fala('Ele aparece nessa janela sempre me olhando.');
   await j.fala('O que ele quer de mim?');
   await j.fala('As coisas estão fugindo do controle.');
-  await j.fala('Será que eu fui o escolhido por ele?');
+  await j.fala('Será que eu fui a escolhida por ele?');
   j.flash = 0.9; som.trovao();
   await quadros(400);
   await j.apagar(40);
@@ -987,6 +987,9 @@ async function cenaVoz(j) {
   await j.fala(`${V}Você encontrará algo pior que o sofrimento!`);
   await j.fala('Mas... não tem para onde eu ir!');
   await j.fala('O corredor é o único caminho!');
+  await quadros(60);
+  await j.fala(`${V}Eu também achei isso.`);
+  await j.fala(`${V}Todas as vezes.`);
   await j.fala('Você está falando do monstro?');
   await quadros(40);
   await j.fala('Ei? Você está aí?');
@@ -1342,6 +1345,11 @@ async function desfechoPiano(j) {
   await quadros(40);
   await j.fala('Eu não consigo me perdoar.');
   await j.fala('Eu carrego uma culpa imensa no meu coração.');
+  await quadros(40);
+  // o amigo da janela, do bilhete do urso, é o monstro daqui: e ela ficou com ele
+  await j.fala('Aquilo que me caça aqui...');
+  await j.fala('É o mesmo que olhava pela janela dela.');
+  await j.fala('E eu a deixei sozinha com ele.');
   await quadros(30);
   await j.apagar(70);
   await quadros(40);
@@ -1365,6 +1373,9 @@ async function finalGuilhotina(j) {
   await rota(j, h, [[7, 7]]);
   h.virar('cima');
   await quadros(120);
+  // a frase dele na sala das grades: a voz que respondeu "todas as vezes" era ele mesmo, de outra volta
+  await j.fala('O corredor era o único caminho.');
+  await quadros(40);
   await j.fala('Eu acho que só existe uma solução.');
   await quadros(60);
   som.silencio(2);
