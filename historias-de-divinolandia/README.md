@@ -49,7 +49,7 @@ Em ordem do tempo.
 | 1 | Antes de Sapecado: o sertão, o quilombo, o ouro e o pouso dos tropeiros | séc. XVIII–1865 |
 | 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | 1830–1896 |
 | 3 | Os imigrantes: mascates, colonos e padeiros no Rio do Peixe | 1880–1940 |
-| 4 | O tempo dos coronéis: as famílias que mandavam na freguesia | 1840–1918 |
+| 4 | O tempo dos coronéis: as famílias da política da freguesia | 1840–1918 |
 | 5 | A vida na vila: caminhos, comércio, festa e futebol | 1890–1950 |
 | 6 | Quando a guerra chegou: Sapecado na Revolução de 1932 | 1932 |
 | 7 | O clima que curava: o sanatório de Sapecado e o Hospital Regional | 1935–1987 |
