@@ -38,10 +38,10 @@ A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma p
 |---|---|---|
 | 1 | Quando a guerra chegou: Sapecado na Revolução de 1932 | escrito (14 notas) |
 | 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | escrito (9 notas) |
+| 3 | Os imigrantes: mascates, colonos e padeiros no Rio do Peixe | escrito (6 notas) |
 | — | O pouso que pegou fogo: as origens de Sapecado | em pesquisa |
 | — | Capela, freguesia e patrimônio | em pesquisa |
 | — | O tempo dos coronéis | em pesquisa |
-| — | Os imigrantes | em pesquisa |
 | — | Os primeiros tempos: comércio, saúde, rádio e cinema | em pesquisa |
 | — | A capital da batata | em pesquisa |
 | — | A fé: a matriz e o Padre Ladislau | em pesquisa |
