@@ -34,11 +34,17 @@ Com o jogo pronto, a tela deixou de ser presa ao 544×416 do VX Ace:
 - **Máquina de escrever**: as falas aparecem letra a letra no ritmo de fala (~30 letras/s; o VX Ace fazia 60), com pausa curta depois de vírgula e maior no fim de cada frase. OK (ou toque/clique) durante a digitação mostra o texto inteiro; o próximo OK fecha. Ajuste em `LETRAS_POR_QUADRO` e `PAUSA` (`mensagem.js`).
 - **Hospital do flashback** revisto contra o trailer: janelas em arco inteiras (antes só o arco aparecia), porta de almofadas, abajur de pé e lixeira branca desenhados em `tools/extras.py`, vaso de folhas, soleira embaixo da porta, recuo da direita com a parede mais alta e névoa que engrossa para as bordas (`nevoa.borda`).
 
+**As salas das capturas de 2014** (depois da porta do corredor final, onde o trailer acaba): o roteiro delas é novo, porque as capturas só mostram o visual. Para ficarem 1 para 1, o visual de cada sala é a própria captura, alinhada à grade de tiles e sem o herói (`tools/salas_finais.py` gera `assets/tiles/xC.png`). Os mapas em `src/mapas/capitulo1_fim.js` só dão a passagem, medida tile a tile na captura, e os eventos.
+
+1. **Sala do piano** (captura 14): piano de cauda sobre um fosso em cruz. No chão está a carta da esposa: *"toque para ela a nossa música, para ela dormir"*. No piano, a partitura "Para a nossa filha dormir" tem 8 notas, longas (semibreves deitadas) e curtas (semínimas em pé).
+2. **Sala dos canos** (captura 20): os canos ficam no chão e dá para passar por cima deles, porque as fileiras de canos cortam a sala inteira. A caixa destacada junto da parede é o painel de 8 alavancas (captura 15), que começa como na captura (`– | | – | | | |`). Ele destranca a porta do alto quando as alavancas imitam a partitura: nota longa = alavanca deitada, curta = em pé (`RITMO`). A posição das alavancas fica guardada (`vars.alavancas`).
+3. **Sala da guilhotina** (captura 21): guilhotina, macas atrás de cortinas, mictórios e sangue. Atrás da cortina da maca de baixo está um corpo queimado com uma foto dele, da esposa e da filha no bolso: *"Sou eu."* A voz repete a carta do começo ("Nascido do fogo. Bem-vindo ao seu novo lar."), e então vem o final.
+
 **Fim do capítulo 1**: depois da sombra e do título "Insônia", aparece uma tela de encerramento com "The End", "Fim do primeiro capítulo" e "A história continua..." (`telaFimCapitulo` em `historia.js`). OK ou toque mostra tudo, e o próximo OK volta ao título.
 
 **Enigma do espelho**: no original a solução do tabuleiro (captura 16) não tinha lógica. Agora o tabuleiro tem uma linha de espelho no meio, e 4 peças vêm acesas em vermelho, travadas: são o "enigma já resolvido". Imitar as outras peças é acender, do outro lado do espelho, a mesma forma na casa espelhada (mesma linha, coluna 5 − c). Formas iguais perto das certas e pares espelhados que não são vermelhos confundem. As vermelhas recusam o OK, e com 4 acesas fora do reflexo o tabuleiro estremece (`FORMAS`, `FIXAS` e `tabuleiro` em `historia.js`).
 
-**Seletor de fases (só em localhost)**: a tecla I abre um modal com todas as fases em ordem (`src/dev.js`). Escolher uma recarrega no atalho `?mapa=` com o herói no ponto de chegada e com as flags, itens e variáveis de quem fez tudo antes; as cenas roteirizadas (flashback, hospital, final) rodam sozinhas (`CENAS_DEV` em `historia.js`). Usa `semsalvar`, então o save de verdade fica intacto. Em localhost o inventário fica na tecla C.
+**Seletor de fases (só em localhost)**: a tecla M abre um modal com todas as fases em ordem (`src/dev.js`). Escolher uma recarrega no atalho `?mapa=` com o herói no ponto de chegada e com as flags, itens e variáveis de quem fez tudo antes; as cenas roteirizadas (flashback, hospital, final) rodam sozinhas (`CENAS_DEV` em `historia.js`). Usa `semsalvar`, então o save de verdade fica intacto. Em localhost o som (M) passa para a tecla N.
 
 O jogo salva sozinho a cada troca de mapa. Os mapas que só existem dentro de uma cena (os flashbacks) não viram ponto de "Continuar".
 
@@ -49,7 +55,7 @@ O jogo salva sozinho a cada troca de mapa. Os mapas que só existem dentro de um
   - *Tiles*: Mack (REFMAP, `fsmvx_map.zip` de refmap-l.blog.jp) para paredes, pisos e móveis, e o RTP do VX Ace (Inside e Dungeon) para camas, grades e rachaduras.
   - *Personagens*: do Mack, com dois tiles de altura.
     - Protagonista: ficha キャラ03, personagem 2.
-    - Menino: 03b #6.
+    - Filha: 03b #7 (no começo era o menino 03b #6, mas o roteiro inteiro fala da "nossa filha").
     - Pai: 04a #2.
     - Médico: 03d #4.
     - Sombra: 06a #7.
@@ -120,6 +126,7 @@ Vêm do próprio repo, em `brians/projeto/Graphics/Characters`, e são os mesmos
 | `src/som.js`, `src/audio/` | fachada do som; motor, efeitos e ambiente sintetizados |
 | `tools/assets.py` | gera `assets/` a partir do RTP e do pacote do Mack (que não ficam no repo) |
 | `tools/extras.py` | gera `assets/tiles/xA.png` (recortes e desenhos próprios) |
+| `tools/salas_finais.py` | gera `assets/tiles/xC.png` (fundo das 3 salas do fim do capítulo 1, das capturas 14, 20 e 21) |
 | `tools/build.py` | reescreve o import map e sobe o BUILD (rodar a cada mudança de `.js`) |
 
 ## Atalho de desenvolvimento

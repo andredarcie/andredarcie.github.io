@@ -1,8 +1,8 @@
-// Seletor de fases, só para desenvolvimento: em localhost, a tecla I abre um modal com cada fase do
+// Seletor de fases, só para desenvolvimento: em localhost, a tecla M abre um modal com cada fase do
 // jogo, em ordem. Escolher uma recarrega a página no atalho ?mapa=... com o herói no ponto em que o
 // jogador chega ali e com as flags, itens e variáveis de quem fez tudo o que vem antes (?semsalvar:
-// não mexe no save de verdade). Em localhost o inventário passa para a tecla C (o botão I da tela de
-// toque continua sendo o inventário). Fora de localhost nada disto existe.
+// não mexe no save de verdade). Em localhost o som (que é a M) passa para a tecla N. Fora de
+// localhost nada disto existe.
 import { entrada } from './base.js';
 
 const LOCAL = ['localhost', '127.0.0.1', '::1', '[::1]'].includes(location.hostname);
@@ -18,7 +18,7 @@ const PASSOS = [
   { nome: 'Quarto da caixa', mapa: 'quarto_caixa', x: 7, y: 6, dir: 'baixo' },
   { nome: 'Sala 14: o esconderijo', mapa: 'sala14', x: 7, y: 5, dir: 'baixo', f: ['caixa1', 'caixa2', 'ladrao', 'porta14'], i: ['chave14', 'ladrao'] },
   { cap: 'Flashback' },
-  { nome: 'Quarto do menino', mapa: 'quarto_menino', x: 12, y: 11, dir: 'cima', cena: 'flashback', f: ['armario', 'monstro'], i: ['chave14'] },
+  { nome: 'Quarto da filha', mapa: 'quarto_menino', x: 12, y: 11, dir: 'cima', cena: 'flashback', f: ['armario', 'monstro'], i: ['chave14'] },
   { nome: 'Hospital', mapa: 'hospital', x: 10, y: 9, dir: 'cima', cena: 'hospital' },
   { cap: 'De volta ao porão' },
   { nome: 'Corredor, depois do flashback', mapa: 'corredor', x: 41, y: 10, dir: 'cima', f: ['flashback'] },
@@ -38,7 +38,12 @@ const PASSOS = [
   { nome: 'Quarto do urso', mapa: 'quarto_urso', x: 12, y: 6, dir: 'baixo', v: { giro: 3 } },
   { nome: 'Corredor final', mapa: 'corredor_final', x: 8, y: 52, dir: 'cima', f: ['urso'] },
   { nome: 'Corredor final: na porta, com a chave', mapa: 'corredor_final', x: 8, y: 5, dir: 'cima', f: ['chaveFim'], i: ['chave'] },
-  { nome: 'Final: a sombra e "The End"', mapa: 'corredor_final', x: 8, y: 5, dir: 'cima', cena: 'fim' },
+  { cap: 'Fim do capítulo 1' },
+  { nome: 'Sala do piano', mapa: 'sala_piano', x: 14, y: 8, dir: 'esquerda', f: ['portaFinal'], tira: ['chave'] },
+  { nome: 'Sala dos canos', mapa: 'canos', x: 5, y: 9, dir: 'cima', f: ['salaPiano', 'carta', 'partitura'] },
+  { nome: 'Sala dos canos: no painel', mapa: 'canos', x: 9, y: 4, dir: 'cima', f: ['canos'] },
+  { nome: 'Sala da guilhotina', mapa: 'guilhotina', x: 15, y: 10, dir: 'esquerda', f: ['viuPainel', 'dicaPainel', 'painel'] },
+  { nome: 'Final: a maca, a sombra e "The End"', mapa: 'guilhotina', x: 6, y: 9, dir: 'esquerda', f: ['salaGuilhotina'], cena: 'fim' },
 ];
 
 // Acumula o estado e monta a URL de cada fase.
@@ -101,7 +106,7 @@ export function ligarSeletorDeFases(mapaAtual) {
       html += `<li class="fase${f.mapa === atual ? ' aqui' : ''}" data-i="${n}"><span class="n">${String(n + 1).padStart(2, '0')}</span>${f.nome}</li>`;
       n++;
     }
-    html += '</ol><p>↑↓ escolher · Enter ir · Esc ou I fechar · C: inventário (localhost)</p></div>';
+    html += '</ol><p>↑↓ escolher · Enter ir · Esc ou M fechar · N: som (localhost)</p></div>';
     el.innerHTML = html;
     // começa na última fase do mapa atual (ou na primeira)
     const aqui = itensFase.map((f, i) => (f.mapa === atual ? i : -1)).filter((i) => i >= 0);
@@ -130,18 +135,18 @@ export function ligarSeletorDeFases(mapaAtual) {
   addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (!el) {
-      if (e.code === 'KeyI') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) abrir(); return; }
-      if (e.code === 'KeyC') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) entrada.pressionar('inventario'); }
+      if (e.code === 'KeyM') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) abrir(); return; }
+      if (e.code === 'KeyN') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) entrada.pressionar('mudo'); }
       return;
     }
     e.preventDefault(); e.stopImmediatePropagation();
     if (e.code === 'ArrowDown' || e.code === 'KeyS') { sel = (sel + 1) % itensFase.length; marcar(true); }
     else if (e.code === 'ArrowUp' || e.code === 'KeyW') { sel = (sel + itensFase.length - 1) % itensFase.length; marcar(true); }
     else if (e.code === 'Enter' || e.code === 'NumpadEnter' || e.code === 'Space') ir(sel);
-    else if (e.code === 'Escape' || (e.code === 'KeyI' && !e.repeat)) fechar();
+    else if (e.code === 'Escape' || (e.code === 'KeyM' && !e.repeat)) fechar();
   }, { capture: true });
   addEventListener('keyup', (e) => {
-    if (e.code === 'KeyC') entrada.soltar('inventario');
+    if (e.code === 'KeyN') entrada.soltar('mudo');
     if (el) e.stopImmediatePropagation();
   }, { capture: true });
 }

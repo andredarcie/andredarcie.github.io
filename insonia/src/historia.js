@@ -7,7 +7,8 @@ import { janela, texto, cursor, fonteTexto, fonteSerif, pxCaixa } from './janela
 
 const V = '\\c[2]', B = '\\c[0]'; // vermelho / normal
 
-const KID = { folha: 'chars/m03b', tipo: 'mack', idx: 6 };
+// a filha (o roteiro inteiro fala da "nossa filha"; o sprite antes era o menino 03b #6)
+const KID = { folha: 'chars/m03b', tipo: 'mack', idx: 7 };
 const PAI = { folha: 'chars/m04a', tipo: 'mack', idx: 2 };
 const MEDICO = { folha: 'chars/m03d', tipo: 'mack', idx: 4 };
 const SOMBRA = { folha: 'chars/m06a', tipo: 'mack', idx: 7 };
@@ -547,7 +548,7 @@ export const HISTORIA = {
       await quadros(40);
       await falas(j, ['Estou com muita dor de cabeça.', 'Vou parar um pouco.', 'Não sei como estou aguentando.',
         'Esse lugar passa uma energia negativa.', 'Parece que outras pessoas estiveram\naqui antes de mim.', 'E elas sentiam medo.',
-        'Como vou saber se isso tudo é real? Pode ser\ntudo um simples pesadelo.', 'A libertação seria suicídio?', 'Mais...',
+        'Como vou saber se isso tudo é real? Pode ser\ntudo um simples pesadelo.', 'A libertação seria suicídio?', 'Mas...',
         'Não tenho coragem.', 'Eu creio que estar aqui tem algum\nsentido.', 'Vou seguir até o fim.']);
       await j.apagar(40);
       await j.narrar('Após caminhar por esse lugar em busca de uma\nforma de sair, encontro algo que eu não poderia\nimaginar.', 300, 170);
@@ -629,17 +630,128 @@ export const HISTORIA = {
       },
       {
         x: 8, y: 4, gatilho: 'toque', prioridade: 1, solido: true,
-        async rodar(j) { som.trancada(); await j.fala('A porta está trancada.'); },
+        async rodar(j) {
+          if (j.flags.portaFinal) { som.porta(); await j.transferir('sala_piano', 14, 8, 'esquerda'); return; }
+          som.trancada(); await j.fala('A porta está trancada.');
+        },
         async usar(j, item) {
           if (item !== 'chave') return false;
           som.destrancar();
           await j.fala('A porta foi destrancada.');
           j.perder('chave');
           await j.fala('A chave quebrou ao abrir a porta.');
-          await finalTrailer(j);
+          // (aqui acabava o trailer; o capítulo segue pelas salas das capturas de 2014)
+          j.flags.portaFinal = true;
+          som.porta();
+          await j.transferir('sala_piano', 14, 8, 'esquerda');
           return true;
         },
       },
+    ],
+  },
+
+  // ======================================================================
+  // Fim do capítulo 1 (capturas 14, 15, 20 e 21 de 2014; o roteiro destas salas é novo)
+  sala_piano: {
+    async aoEntrar(j) {
+      if (j.flags.salaPiano) return;
+      j.flags.salaPiano = true;
+      await quadros(30);
+      await j.fala('Um piano... aqui embaixo?');
+      await j.fala('Essa sala é diferente das outras. Parece que\nalguém cuidava dela.');
+    },
+    eventos: [
+      // ▷ em (15,8) já está no fundo (captura 14): volta para o corredor final
+      { ...saida(16, 8, 'corredor_final', 8, 5, 'baixo', { parede: true }) },
+      // a porta clara da parede da esquerda leva à sala dos canos
+      { ...saida(4, 7, 'canos', 5, 9, 'cima', { parede: true }) },
+      fala(4, 6, ['Uma porta velha, pintada de branco.']),
+      {
+        // a carta, no chão perto da parede (o envelope da captura 14)
+        x: 12, y: 6, prioridade: 0, brilha: true, grafico: { tile: 'xA', x: 7, y: 0 }, cond: () => !estado().carta,
+        async rodar(j) {
+          j.flags.carta = true;
+          await j.fala('Um envelope. Tem uma carta dentro.');
+          await falas(j, [`${V}Meu amor,`, `${V}os médicos dizem que não há mais nada\na fazer.`, `${V}Não fique triste. Prometa que vai cuidar\nda nossa filha.`,
+            `${V}E toque para ela a nossa música, para ela\ndormir, como você tocava para mim.`, `${V}Eu sempre vou estar com vocês.`]);
+          await quadros(30);
+          await j.fala('É a letra dela...');
+          await j.fala('Como essa carta veio parar aqui?');
+        },
+      },
+      ...[8, 9, 10].map((x) => ({ x, y: 7, prioridade: 1, solido: true, async rodar(j) { await verPiano(j); } })),
+      fala(6, 6, ['Uma caixa velha. Está vazia.']),
+      fala(5, 10, ['Um caixote pregado. Não abre.']),
+      ...[11, 12, 13].map((x) => fala(x, 10, ['Um banco comprido, de madeira.', 'Alguém se sentava aqui para ouvir o piano?'])),
+      ...fossoEventos(),
+    ],
+  },
+
+  canos: {
+    async aoEntrar(j) {
+      if (j.flags.canos) return;
+      j.flags.canos = true;
+      await quadros(30);
+      await j.fala('Canos por todo lado.');
+      await j.fala('Para onde vai tudo isso?');
+    },
+    eventos: [
+      // a porta escura de baixo volta para a sala do piano
+      { ...saida(5, 10, 'sala_piano', 5, 7, 'direita', { parede: true }) },
+      {
+        // a porta escura do alto: abre pelo painel
+        x: 11, y: 2, gatilho: 'toque', prioridade: 1, solido: true,
+        async rodar(j) {
+          if (j.flags.painel) { som.porta(); await j.transferir('guilhotina', 15, 10, 'esquerda'); return; }
+          som.trancada();
+          await j.fala('A porta está trancada.');
+          if (!j.flags.viuPainel) await j.fala('Não tem fechadura. Deve abrir de outro\njeito.');
+        },
+      },
+      {
+        // a caixa destacada junto da parede (captura 20): o painel das alavancas (captura 15)
+        id: 'painel', x: 9, y: 3, prioridade: 1, solido: true,
+        async rodar(j) {
+          if (j.flags.painel) { await j.fala('As alavancas não se mexem mais.'); return; }
+          if (!j.flags.viuPainel) {
+            j.flags.viuPainel = true;
+            await j.fala('Um painel com oito alavancas.\nUmas deitadas, outras em pé.');
+          }
+          if (j.flags.partitura && !j.flags.dicaPainel) {
+            j.flags.dicaPainel = true;
+            await j.fala('Deitadas e em pé... como as notas longas e\ncurtas daquela partitura.');
+          }
+          await j.apagar(15);
+          const ok = await painelAlavancas(j);
+          await j.acender(15);
+          if (ok) {
+            j.flags.painel = true;
+            await quadros(20);
+            await j.fala('Alguma coisa destrancou.');
+          }
+        },
+      },
+    ],
+  },
+
+  guilhotina: {
+    async aoEntrar(j) {
+      if (j.flags.salaGuilhotina) return;
+      j.flags.salaGuilhotina = true;
+      await quadros(30);
+      await j.fala('Que cheiro é esse?');
+      await j.fala('Sangue...');
+      await j.fala('O que faziam com as pessoas aqui?');
+    },
+    eventos: [
+      seta(15, 10, 'direita'),
+      { ...saida(16, 10, 'canos', 11, 3, 'baixo', { parede: true }) },
+      { ...saida(16, 9, 'canos', 11, 3, 'baixo', { parede: true }) },
+      ...[6, 7].flatMap((x) => [4, 5, 6].map((y) => fala(x, y, ['Uma guilhotina.', 'A lâmina está suja... o sangue ainda\nestá fresco.']))),
+      ...[8, 9].map((x) => fala(x, 4, ['Tem alguém deitado atrás da cortina.', 'Não... não quero ver.'])),
+      ...[10, 11].map((x) => fala(x, 4, ['Um lençol manchado de sangue aparece por\nbaixo da cortina.', 'Melhor não mexer nisso.'])),
+      // a maca de baixo, sozinha: a do capítulo
+      ...[4, 5].flatMap((x) => [8, 9].map((y) => ({ x, y, prioridade: 1, solido: true, async rodar(j) { await macaFinal(j); } }))),
     ],
   },
 };
@@ -754,11 +866,11 @@ async function flashback(j) {
 export const CENAS_DEV = {
   flashback: async (j) => { j.brilho = 0; j.alvoBrilho = 0; await flashback(j); },
   hospital: (j) => flashbackHospital(j),
-  fim: (j) => finalTrailer(j),
+  fim: (j) => revelacao(j),
 };
 
 async function flashbackMenino(j) {
-  // quarto do menino
+  // quarto da filha (o mapa continua se chamando quarto_menino)
   j.carregar('quarto_menino', 12, 11, 'cima');
   j.heroi.visivel = false;
   const kid = j.evento('kid'), pai = j.evento('pai');
@@ -1111,15 +1223,188 @@ function tabuleiro(j) {
   });
 }
 
-// ---------------- o fim do trailer ----------------
-async function finalTrailer(j) {
-  som.porta();
+// ---------------- fim do capítulo 1: piano, painel e a maca ----------------
+// O fosso em cruz da sala do piano (as casas 'F' do mapa): olhar para ele dá uma fala.
+function fossoEventos() {
+  const casas = [];
+  // medido na captura 14: barra de cima e de baixo com 3 casas, braço do meio com 5
+  for (let x = 7; x <= 9; x++) casas.push([x, 8], [x, 10]);
+  for (let x = 6; x <= 10; x++) casas.push([x, 9]);
+  return casas.map(([x, y]) => fala(x, y, ['Um buraco fundo. Não dá para ver o fundo.', 'Acho que ouvi alguma coisa lá embaixo.']));
+}
+
+async function verPiano(j) {
+  if (!j.flags.partitura) {
+    await j.fala('Um piano de cauda, coberto de poeira.');
+    await j.fala('Tem uma partitura aberta em cima dele.');
+  }
+  await j.apagar(15);
+  await partitura(j);
+  if (!j.flags.partitura) {
+    j.flags.partitura = true;
+    await j.fala('"Para a nossa filha dormir."');
+    await j.fala('Notas longas e curtas... eu conheço essa\nmúsica.');
+    await j.fala('Mas não consigo lembrar como ela soa.');
+  }
+  await j.acender(15);
+}
+
+// A partitura: oito notas numa pauta. Semibreve (oval aberto, deitado) = nota longa; semínima
+// (cheia, com haste em pé) = curta. A sequência é a mesma das alavancas do painel (deitada/em pé).
+const RITMO = [true, false, false, true, true, false, true, true];   // true = curta (em pé)
+function partitura(j) {
+  return new Promise((fim) => {
+    let t = 0;
+    j.brilho = 1; j.alvoBrilho = 1;
+    j.overlay = {
+      toque: true,
+      atualizar() {
+        t++;
+        if (t > 30 && (entrada.disparou('ok') || entrada.disparou('cancelar'))) { som.ok(); j.overlay = null; j.brilho = 0; j.alvoBrilho = 0; fim(); }
+      },
+      desenhar(g) {
+        g.globalAlpha = Math.min(1, t / 20);
+        // o papel, amarelado (em cinza), com as bordas mais escuras
+        const px = 112, py = 60, pw = 320, ph = 260;
+        g.fillStyle = '#a9a69e'; g.fillRect(px, py, pw, ph);
+        const gr = g.createRadialGradient(272, 190, 60, 272, 190, 220);
+        gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.45)');
+        g.fillStyle = gr; g.fillRect(px, py, pw, ph);
+        g.fillStyle = 'rgba(40,36,30,0.18)'; g.beginPath(); g.ellipse(380, 290, 26, 14, 0.4, 0, Math.PI * 2); g.fill();
+        // título à mão
+        texto(g, 'Para a nossa filha dormir', 272, py + 26, '#2a2824', `italic ${fonteSerif(Math.max(15, pxCaixa(1.05)))}`, 'center');
+        // pauta
+        const x0 = px + 26, x1 = px + pw - 26, yM = 190, e = 9;
+        g.strokeStyle = '#3a3732'; g.lineWidth = 1;
+        for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(x0, yM + i * e + 0.5); g.lineTo(x1, yM + i * e + 0.5); g.stroke(); }
+        g.lineWidth = 1.5;
+        for (const bx of [x0, x0 + (x1 - x0) / 2, x1 - 4]) { g.beginPath(); g.moveTo(bx + 0.5, yM - 2 * e); g.lineTo(bx + 0.5, yM + 2 * e); g.stroke(); }
+        g.lineWidth = 3; g.beginPath(); g.moveTo(x1 - 0.5, yM - 2 * e); g.lineTo(x1 - 0.5, yM + 2 * e); g.stroke();
+        texto(g, '4', x0 + 12, yM - 2 * e - 1, '#2a2824', `bold ${fonteSerif(17)}`, 'center');
+        texto(g, '4', x0 + 12, yM - 1, '#2a2824', `bold ${fonteSerif(17)}`, 'center');
+        // as oito notas (a altura é a melodia; o que importa para o painel é longa/curta)
+        const alturas = [0, -2, -3, -1, 1, 2, 1, 0];
+        const passo = (x1 - x0 - 50) / 8;
+        RITMO.forEach((curta, i) => {
+          const nx = x0 + 38 + i * passo + (i >= 4 ? 8 : 0), ny = yM - alturas[i] * (e / 2);
+          g.save(); g.translate(nx, ny); g.rotate(-0.35);
+          g.beginPath(); g.ellipse(0, 0, curta ? 6 : 7.5, curta ? 4.4 : 5, 0, 0, Math.PI * 2);
+          if (curta) { g.fillStyle = '#1e1c19'; g.fill(); }
+          else { g.strokeStyle = '#1e1c19'; g.lineWidth = 2.4; g.stroke(); }
+          g.restore();
+          if (curta) { g.fillStyle = '#1e1c19'; g.fillRect(nx + 4.6, ny - 30, 1.6, 30); }
+        });
+        // uma frase escrita embaixo, apagada
+        texto(g, '(devagar, como quem embala)', 272, yM + 52, '#4a4740', `italic ${fonteSerif(Math.max(13, pxCaixa(0.8)))}`, 'center');
+        g.globalAlpha = Math.min(1, Math.max(0, (t - 30) / 20)) * (0.55 + 0.25 * Math.sin(t / 20));
+        texto(g, 'OK: continuar', 272, py + ph + 18, '#7a7a7a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
+        g.globalAlpha = 1;
+      },
+    };
+  });
+}
+
+// O painel de alavancas (captura 15): oito alavancas, deitadas ou em pé, e o botão "Sair".
+// Abre quando elas imitam a partitura: longa = deitada, curta = em pé. A posição fica guardada.
+function painelAlavancas(j) {
+  return new Promise((fim) => {
+    // começa como na captura 15 (– | | – | | | |)
+    const INICIAL = [false, true, true, false, true, true, true, true];   // true = em pé
+    if (j.vars.alavancas === undefined) j.vars.alavancas = INICIAL.reduce((m, v, i) => m | (v ? 1 << i : 0), 0);
+    const pe = (i) => !!(j.vars.alavancas & (1 << i));
+    let sel = 0, t = 0, mexe = new Array(8).fill(0);
+    // medidas da captura 15 levadas ao 544x416: moldura (22,179)-(524,269), alavancas a cada ~64 px
+    const PX = 22, PY = 179, PW = 502, PH = 90, cxDe = (i) => 46 + i * 64.1;
+    j.brilho = 1; j.alvoBrilho = 1;
+    const sair = (ok) => { j.overlay = null; fim(ok); };
+    j.overlay = {
+      atualizar() {
+        t++;
+        mexe = mexe.map((v) => Math.max(0, v - 1));
+        if (sel < 8) {
+          if (entrada.repetiu('direita')) { sel = (sel + 1) % 8; som.cursor(); }
+          if (entrada.repetiu('esquerda')) { sel = (sel + 7) % 8; som.cursor(); }
+          if (entrada.disparou('baixo')) { sel = 8; som.cursor(); }
+        } else if (entrada.disparou('cima')) { sel = 3; som.cursor(); }
+        if (entrada.disparou('ok')) {
+          if (sel === 8) { som.cursor(); sair(false); return; }
+          j.vars.alavancas ^= 1 << sel;
+          mexe[sel] = 10;
+          som.metal();
+          if (RITMO.every((curta, i) => pe(i) === curta)) {
+            som.destrancar();
+            sair(true);
+          }
+        }
+        if (entrada.disparou('cancelar')) sair(false);
+      },
+      desenhar(g) {
+        // a moldura arredondada clara sobre o preto, como na captura 15
+        g.strokeStyle = '#c8c8c8'; g.lineWidth = 2;
+        g.beginPath(); g.roundRect(PX, PY, PW, PH, 11); g.stroke();
+        for (let i = 0; i < 8; i++) {
+          const x = cxDe(i), y = 204, d = mexe[i] ? ((mexe[i] * 3) % 3) - 1 : 0;
+          g.fillStyle = '#d2d2d2';
+          if (pe(i)) g.fillRect(x - 3 + d, y - 12, 5, 25);
+          else g.fillRect(x - 12 + d, y - 3, 25, 5);
+          if (sel === i) cursor(g, x - 17, y - 17, 34, 34, t);
+        }
+        // "Sair" e o botão com o triângulo
+        const bx = 257, by = 220, bw = 30, bh = 31;
+        texto(g, 'Sair', bx - 6, by + 9, '#bdbdbd', `${Math.max(12, Math.round(pxCaixa(0.72)))}px Arial, Helvetica, sans-serif`, 'right');
+        g.fillStyle = '#0c0c0c'; g.fillRect(bx, by, bw, bh);
+        g.strokeStyle = '#3a3a3a'; g.lineWidth = 1; g.strokeRect(bx + 0.5, by + 0.5, bw - 1, bh - 1);
+        g.fillStyle = '#d6d6d6'; g.beginPath(); g.moveTo(bx + 7, by + 6); g.lineTo(bx + 24, by + 15.5); g.lineTo(bx + 7, by + 25); g.closePath(); g.fill();
+        if (sel === 8) cursor(g, bx - 3, by - 3, bw + 6, bh + 6, t);
+      },
+    };
+  });
+}
+
+// A maca de baixo: atrás da cortina está o fim do capítulo.
+async function macaFinal(j) {
+  await j.fala('Uma maca com a cortina fechada.');
+  const s = await j.escolha('Abrir a cortina?', ['Sim', '\\c[2]Não']);
+  if (s !== 0) return;
+  await revelacao(j);
+}
+
+async function revelacao(j) {
+  som.tensao(0.6);
+  await j.apagar(25);
+  await quadros(40);
+  await j.acender(25);
+  await j.fala('Um corpo coberto por um lençol.');
+  await j.fala('Está todo queimado.');
+  await quadros(40);
+  await j.fala('Tem alguma coisa no bolso...');
+  await j.fala('Uma foto. Eu, ela e a nossa filha.');
+  await quadros(50);
+  await j.fala('Não... não pode ser.');
+  await quadros(80);
+  await j.fala('Sou eu.');
+  som.tensao(1);
+  await quadros(40);
+  await j.fala(`${V}Nascido do fogo.`);
+  await j.fala(`${V}Bem-vindo ao seu novo lar.`);
+  await finalTrailer(j, { porta: false });
+}
+
+// ---------------- o fim do capítulo ----------------
+// A sombra aparece atrás do herói (2 casas às costas, ou 1 se não couber), o título, e o "The End".
+const PASSO_DIR = { cima: [0, -1], baixo: [0, 1], esquerda: [-1, 0], direita: [1, 0] };
+async function finalTrailer(j, { porta = true } = {}) {
+  if (porta) som.porta();
   som.tensao(1);
   await quadros(30);
   await j.apagar(30);
   await quadros(30);
   const h = j.heroi;
-  const s = { x: h.x, y: h.y + 2, grafico: SOMBRA, dir: 'cima', id: 'sombra' };
+  const [dx, dy] = PASSO_DIR[h.dir] || [0, -1];
+  const cand = [[h.x - dx * 2, h.y - dy * 2], [h.x - dx, h.y - dy], [h.x, h.y + 2], [h.x, h.y + 1]];
+  const [sx, sy] = cand.find(([x, y]) => j.livre(x, y, null)) || [h.x, h.y + 2];
+  const virada = Object.keys(PASSO_DIR).find((k) => PASSO_DIR[k][0] === Math.sign(h.x - sx) && PASSO_DIR[k][1] === Math.sign(h.y - sy)) || 'cima';
+  const s = { x: sx, y: sy, grafico: SOMBRA, dir: virada, id: 'sombra' };
   const ev = new Evento(s);
   ev.opac = 0.6;
   j.eventos.push(ev);

@@ -11,7 +11,7 @@ import { ligarSeletorDeFases } from './src/dev.js';
 const IMAGENS = [
   'tiles/iA2', 'tiles/iA4', 'tiles/iA5', 'tiles/iB', 'tiles/iC',
   'tiles/dA2', 'tiles/dA4', 'tiles/dA5', 'tiles/dB', 'tiles/dC',
-  'tiles/mA2', 'tiles/mA4', 'tiles/mA5', 'tiles/mD', 'tiles/mE', 'tiles/xA',
+  'tiles/mA2', 'tiles/mA4', 'tiles/mA5', 'tiles/mD', 'tiles/mE', 'tiles/xA', 'tiles/xC',
   'pics/iconset', 'pics/carta',
   'chars/m03a', 'chars/m03b', 'chars/m03d', 'chars/m04a', 'chars/m06a', 'chars/r0281', 'chars/vOther3', 'chars/vDoor3',
 ];
