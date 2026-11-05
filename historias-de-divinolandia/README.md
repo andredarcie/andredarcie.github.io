@@ -19,8 +19,8 @@ A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma p
 
 ## Como escrever um capítulo novo
 
-1. Dentro de `<div id="fonte">`, copie um `<section class="capitulo">` inteiro.
-2. Ajuste `data-num`, `data-titulo` e `data-sub`.
+1. Dentro de `<div id="fonte">`, copie um `<section class="capitulo">` inteiro e ponha no **lugar cronológico** dele: o livro segue a ordem do tempo.
+2. Ajuste `data-num`, `data-titulo` e `data-sub`. Se ele entrar no meio, renumere os seguintes: o `data-num` e o prefixo das notas (`c4-n…` vira `c5-n…`).
 3. Escreva em `<p>`, com intertítulos em `<h3>`. O primeiro parágrafo pode levar `class="capitular"`, para ter a letra grande.
 4. Toda afirmação leva nota: `<sup><a href="#c2-n1">1</a></sup>`. As notas vão no `<ol class="notas">` do fim do capítulo, com `id` iguais (`c2-n1`, `c2-n2`…) e o endereço da fonte.
 5. Tire o título da lista `#proximos` (os capítulos em pesquisa, que aparecem no sumário sem página).
@@ -36,15 +36,18 @@ A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma p
 
 | Nº | Título | Estado |
 |---|---|---|
-| 1 | Quando a guerra chegou: Sapecado na Revolução de 1932 | escrito (14 notas) |
-| 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | escrito (9 notas) |
-| 3 | Os imigrantes: mascates, colonos e padeiros no Rio do Peixe | escrito (6 notas) |
-| — | O pouso que pegou fogo: as origens de Sapecado | em pesquisa |
-| — | Capela, freguesia e patrimônio | em pesquisa |
-| — | O tempo dos coronéis | em pesquisa |
-| — | Os primeiros tempos: comércio, saúde, rádio e cinema | em pesquisa |
-| — | A capital da batata | em pesquisa |
-| — | A fé: a matriz e o Padre Ladislau | em pesquisa |
-| — | O sanatório e o Hospital Regional | em pesquisa |
-| — | Os bairros | em pesquisa |
-| — | De Sapecado a Divinolândia | em pesquisa |
+Em ordem do tempo. Os "em pesquisa" mostram onde cada um vai entrar.
+
+| Nº | Título | Período | Estado |
+|---|---|---|---|
+| 1 | Antes de Sapecado: o sertão, o quilombo, o ouro e o pouso dos tropeiros | séc. XVIII–1865 | escrito (11 notas) |
+| 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | 1830–1896 | escrito (9 notas) |
+| 3 | Os imigrantes: mascates, colonos e padeiros no Rio do Peixe | 1880–1940 | escrito (6 notas) |
+| — | O tempo dos coronéis | antes de 1932 | em pesquisa |
+| — | Os primeiros tempos: comércio, saúde, rádio e cinema | antes de 1932 | em pesquisa |
+| 4 | Quando a guerra chegou: Sapecado na Revolução de 1932 | 1932 | escrito (14 notas) |
+| — | O sanatório e o Hospital Regional | depois de 1932 | em pesquisa |
+| — | A capital da batata | depois de 1932 | em pesquisa |
+| — | De Sapecado a Divinolândia: a emancipação | 1938–1953 | em pesquisa |
+| — | A fé: a matriz e o Padre Ladislau | 1958–1962 | em pesquisa |
+| — | Os bairros | — | em pesquisa |
