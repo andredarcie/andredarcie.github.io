@@ -3,7 +3,7 @@
 import { quadros, entrada } from './base.js';
 import { som } from './som.js';
 import { HEROI, Evento } from './jogo.js';
-import { janela, texto, cursor, fonteTexto, pxCaixa } from './janela.js';
+import { janela, texto, cursor, fonteTexto, fonteSerif, pxCaixa } from './janela.js';
 
 const V = '\\c[2]', B = '\\c[0]'; // vermelho / normal
 
@@ -478,6 +478,7 @@ export const HISTORIA = {
       j._ultTrap = k;
       if (ehArmadilha(h.x, h.y)) j.executar(() => cairArmadilha(j));
     },
+    desenharChao: desenharPlacas,
     eventos: [
       seta(15, 7, 'direita'), saida(15, 7, 'celas', 3, 7, 'direita', { som: false }),
       {
@@ -940,6 +941,42 @@ async function cairArmadilha(j) {
   j._ultTrap = '14,7';
   await quadros(20);
   await j.acender(20);
+  // na primeira queda, o herói entende a regra (a dica visual são as placas)
+  if (!j.flags.dicaPlacas) {
+    j.flags.dicaPlacas = true;
+    await j.fala('Alguma coisa afundou no chão quando eu pisei...\nPreciso olhar melhor onde piso.');
+  }
+}
+
+// Dica visual das armadilhas, sutil de propósito: cada uma é uma placa de pressão no assoalho.
+// Fase 0 (antes da luz): só a junta da placa, quase invisível; perto da lanterna, quem reparar vê.
+// Fase 1 (depois da luz): nas quatro casas vizinhas do herói, de vez em quando a borda de metal da
+// placa pega um lampejo da lanterna (curto, e cada placa no seu tempo). Nada na diagonal nem longe.
+function desenharPlacas(j, c, cx, cy, fase) {
+  const h = j.heroi, hx = h.rx + 16, hy = h.ry + 16;
+  for (let y = 0; y < SALA_ARMADILHAS.length; y++) {
+    for (let x = 0; x < SALA_ARMADILHAS[y].length; x++) {
+      if (SALA_ARMADILHAS[y][x] !== 'x') continue;
+      const px = x * 32 - cx, py = y * 32 - cy;
+      if (fase === 0) {
+        c.strokeStyle = 'rgba(0,0,0,0.26)'; c.lineWidth = 1; c.strokeRect(px + 4.5, py + 4.5, 23, 23);
+        continue;
+      }
+      const d = Math.hypot(x * 32 + 16 - hx, y * 32 + 16 - hy) / 32;
+      const perto = Math.max(0, Math.min(1, (1.25 - d) / 0.25));
+      if (!perto) continue;
+      // lampejo intermitente: sobe e some em ~1/3 de segundo, a cada ~3 s
+      const lampejo = Math.pow(Math.max(0, Math.sin(j.t / 28 + x * 1.7 + y * 2.3)), 8);
+      const a = 0.34 * perto * lampejo;
+      if (a < 0.02) continue;
+      const g = c.createLinearGradient(px + 6, 0, px + 22, 0);
+      g.addColorStop(0, 'rgba(220,220,220,0)');
+      g.addColorStop(0.5, `rgba(220,220,220,${a})`);
+      g.addColorStop(1, 'rgba(220,220,220,0)');
+      c.fillStyle = g; c.fillRect(px + 6, py + 4, 16, 1);
+      c.fillStyle = `rgba(230,230,230,${a * 0.7})`; c.fillRect(px + 13, py + 5, 1, 1);
+    }
+  }
 }
 
 // ---------------- o tabuleiro do enigma ----------------
@@ -1043,6 +1080,59 @@ async function finalTrailer(j) {
   som.silencio(3);
   await quadros(60);
   await j.narrar('Insônia', 240);
+  await telaFimCapitulo(j);
   try { localStorage.removeItem('insonia.save'); } catch { /* */ }
   location.reload();
+}
+
+// Tela de fim do primeiro capítulo: deixa claro que o jogador chegou a um final e que a história
+// continua. As linhas entram uma de cada vez; OK (ou toque) antes da hora mostra tudo, o próximo
+// OK volta ao título.
+function telaFimCapitulo(j) {
+  const TUDO = 330, SAIDA = 50;
+  return new Promise((fim) => {
+    let t = 0, saindo = -1;
+    const surgir = (ini, dur = 60) => Math.max(0, Math.min(1, (t - ini) / dur));
+    j.overlay = {
+      toque: true, // tocar na tela vale OK aqui (main.js)
+      atualizar() {
+        if (saindo >= 0) {
+          if (++saindo >= SAIDA) { j.overlay = null; fim(); }
+          return;
+        }
+        t++;
+        if (t > 40 && entrada.disparou('ok')) {
+          if (t < TUDO) t = TUDO; else { som.ok(); saindo = 0; }
+        }
+      },
+      desenhar(g) {
+        const sai = saindo >= 0 ? 1 - saindo / SAIDA : 1;
+        const cx = 272;
+        // "The End"
+        g.globalAlpha = surgir(0, 90) * sai;
+        const pxG = pxCaixa(2.6);
+        texto(g, 'The End', cx, 120, '#d0d0d0', fonteSerif(pxG), 'center');
+        // filete e "Fim do primeiro capítulo"
+        const a2 = surgir(110) * sai;
+        g.globalAlpha = a2;
+        const yF = 120 + pxG * 1.35;
+        const meia = 70 * surgir(110, 50);
+        g.fillStyle = '#6a6a6a'; g.fillRect(cx - meia, yF, meia * 2, 1);
+        const pxM = pxCaixa(1.15);
+        texto(g, 'Fim do primeiro capítulo', cx, yF + pxM * 0.8, '#a8a8a8', fonteSerif(pxM), 'center');
+        // "A história continua..." em vermelho, como as vozes do jogo
+        g.globalAlpha = surgir(220, 80) * sai;
+        texto(g, 'A história continua...', cx, yF + pxM * 3.2, '#a04848', `italic ${fonteSerif(pxM)}`, 'center');
+        // dica para voltar ao título, piscando devagar
+        if (t >= TUDO) {
+          g.globalAlpha = (0.35 + 0.25 * Math.sin(t / 22)) * surgir(TUDO, 40) * sai;
+          const pxP = pxCaixa(0.8);
+          texto(g, 'Pressione OK para voltar ao título', cx, 416 - pxP * 3, '#8a8a8a', fonteTexto(pxP), 'center');
+        }
+        g.globalAlpha = 1;
+      },
+    };
+    // a narração deixou a tela apagada; a própria tela de fim cuida dos seus fades sobre o preto
+    j.brilho = j.alvoBrilho = 1;
+  });
 }

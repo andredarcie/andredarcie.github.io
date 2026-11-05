@@ -34,6 +34,8 @@ Com o jogo pronto, a tela deixou de ser presa ao 544×416 do VX Ace:
 - **Máquina de escrever**: as falas aparecem letra a letra no ritmo de fala (~30 letras/s; o VX Ace fazia 60), com pausa curta depois de vírgula e maior no fim de cada frase. OK (ou toque/clique) durante a digitação mostra o texto inteiro; o próximo OK fecha. Ajuste em `LETRAS_POR_QUADRO` e `PAUSA` (`mensagem.js`).
 - **Hospital do flashback** revisto contra o trailer: janelas em arco inteiras (antes só o arco aparecia), porta de almofadas, abajur de pé e lixeira branca desenhados em `tools/extras.py`, vaso de folhas, soleira embaixo da porta, recuo da direita com a parede mais alta e névoa que engrossa para as bordas (`nevoa.borda`).
 
+**Fim do capítulo 1**: depois da sombra e do título "Insônia", aparece uma tela de encerramento com "The End", "Fim do primeiro capítulo" e "A história continua..." (`telaFimCapitulo` em `historia.js`). OK ou toque mostra tudo, e o próximo OK volta ao título.
+
 O jogo salva sozinho a cada troca de mapa. Os mapas que só existem dentro de uma cena (os flashbacks) não viram ponto de "Continuar".
 
 ## Como foi refeito

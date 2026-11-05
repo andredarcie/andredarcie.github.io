@@ -190,7 +190,7 @@ for (const b of document.querySelectorAll('.pad [data-k]')) {
 canvas.addEventListener('pointerdown', (e) => {
   if (e.pointerType === 'mouse' && e.button !== 0) return;
   const j = window.__insonia;
-  const temTexto = naTitulo || (j && (j.msg.aberta || j.aviso.atual || j.narracao));
+  const temTexto = naTitulo || (j && (j.msg.aberta || j.aviso.atual || j.narracao || j.overlay?.toque));
   if (!temTexto) return;
   e.preventDefault(); som.destravar();
   entrada.pressionar('ok');

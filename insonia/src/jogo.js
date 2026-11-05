@@ -351,7 +351,10 @@ export class Jogo {
       c.drawImage(this.mapa.baixo, -cx, -cy);
       // objetos de evento abaixo do herói fazem parte do cenário (recebem a luz do mapa)
       for (const e of this.eventos) if (e.ativo && e.prioridade === 0 && !e.def.brilha) e.desenhar(c, cx, cy, this.tom);
+      // desenho extra no chão do mapa (ex.: as placas das armadilhas): fase 0 recebe a luz, fase 1 não
+      this.extra?.desenharChao?.(this, c, cx, cy, 0);
       this.aplicarLuz(c, cx, cy, false);
+      this.extra?.desenharChao?.(this, c, cx, cy, 1);
       // personagens: no jogo original eles ficam bem mais visíveis que o cenário
       const tc = this.def.tomPersonagem ?? this.tom;
       const ps = [...this.eventos.filter((e) => e.ativo && e.prioridade === 1), this.heroi].sort((a, b) => a.ry - b.ry || (a === this.heroi ? 1 : -1));
