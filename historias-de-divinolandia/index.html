@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Histórias de Divinolândia</title>
+<meta name="description" content="Um livro aberto sobre a história de Divinolândia, a antiga Sapecado, escrito capítulo a capítulo a partir de fontes públicas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --papel: #fbf8f1;
+    --tinta: #27231d;
+    --tinta-suave: #6b6253;
+    --mata: #2e3b2f;
+    --ocre: #b88a35;
+    --mesa: #4a4d52;
+    --pw: 600px;            /* largura da página (o JS ajusta no celular) */
+    --ph: 860px;            /* altura da página */
+    --corpo: 16.5px;        /* tamanho da letra do texto */
+    --margem-x: 64px;
+    --margem-topo: 64px;
+    --margem-base: 70px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--mesa);
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    color: var(--tinta);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── a barra do leitor, como a de um visualizador de PDF ── */
+  .barra {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 14px;
+    background: #2b2d31; color: #e9e6df;
+    font: 500 14px/1 system-ui, -apple-system, 'Segoe UI', sans-serif;
+    box-shadow: 0 1px 0 rgba(0,0,0,.4);
+  }
+  .barra .nome { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .02em; }
+  .barra button {
+    font: inherit; color: inherit; background: #3a3d42; border: 1px solid #50545a;
+    border-radius: 4px; padding: 6px 10px; cursor: pointer;
+  }
+  .barra button:hover { background: #45494f; }
+  .barra .contador { min-width: 70px; text-align: center; font-variant-numeric: tabular-nums; color: #bfbab0; }
+
+  /* ── as páginas ── */
+  #livro { padding: 28px 10px 60px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .pagina {
+    position: relative;
+    width: var(--pw); height: var(--ph);
+    background: var(--papel);
+    box-shadow: 0 2px 4px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.28);
+    overflow: hidden;
+    flex: none;
+  }
+  .cabeca {
+    position: absolute; top: 26px; left: var(--margem-x); right: var(--margem-x);
+    display: flex; justify-content: space-between;
+    font-size: 12.5px; font-style: italic; color: var(--tinta-suave); letter-spacing: .03em;
+  }
+  .rodape {
+    position: absolute; bottom: 26px; left: 0; right: 0; text-align: center;
+    font-size: 13px; color: var(--tinta-suave); font-variant-numeric: oldstyle-nums;
+  }
+  .corpo {
+    position: absolute;
+    top: var(--margem-topo); bottom: var(--margem-base);
+    left: var(--margem-x); right: var(--margem-x);
+    overflow: hidden;
+    font-size: var(--corpo); line-height: 1.52;
+    hyphens: auto; -webkit-hyphens: auto;
+  }
+  .corpo p { margin: 0; text-align: justify; text-indent: 1.5em; }
+  .corpo p.sem-recuo, .corpo p.cont, .corpo h3 + p, .corpo .abertura + p { text-indent: 0; }
+  .corpo p.partido { text-align-last: justify; }
+  .corpo h3 {
+    font-size: 1.02em; font-weight: 600; letter-spacing: .04em; font-variant: small-caps;
+    margin: 1.1em 0 .45em; text-align: left;
+  }
+  .corpo h3:first-child { margin-top: 0; }
+  .corpo sup { font-size: .68em; line-height: 0; }
+  .corpo sup a { color: var(--ocre); text-decoration: none; font-weight: 600; }
+  .corpo a { color: inherit; }
+  .corpo blockquote {
+    margin: .6em 1.6em; font-size: .95em; font-style: italic; color: #3c362d;
+  }
+
+  /* abertura de capítulo */
+  .abertura { padding-top: 120px; margin-bottom: 2.2em; text-align: center; }
+  .abertura .num { font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: var(--ocre); }
+  .abertura h2 { font-size: 2.05em; font-weight: 500; line-height: 1.12; margin: .35em 0 .25em; }
+  .abertura .sub { font-style: italic; color: var(--tinta-suave); font-size: 1.05em; }
+  .abertura .fio { width: 54px; height: 1px; background: var(--ocre); margin: 1.4em auto 0; }
+  .capitular::first-letter {
+    float: left; font-size: 3.6em; line-height: .82; padding: .06em .08em 0 0; color: var(--mata); font-weight: 500;
+  }
+
+  /* notas e fontes */
+  .notas-titulo { font-size: 1.15em; font-weight: 600; font-variant: small-caps; letter-spacing: .05em; margin: 0 0 .8em; }
+  .corpo ol.notas { margin: 0; padding-left: 1.6em; font-size: .86em; line-height: 1.42; }
+  .corpo ol.notas li { margin-bottom: .55em; text-align: left; overflow-wrap: anywhere; }
+  .corpo ol.notas a { color: #6d5222; }
+
+  /* capa */
+  .capa {
+    background: radial-gradient(ellipse at 50% 35%, #3a4a3a 0%, var(--mata) 62%, #222c23 100%);
+    color: #efe6d2; text-align: center;
+  }
+  .capa .moldura {
+    position: absolute; inset: 22px; border: 1px solid rgba(232, 205, 150, .55);
+    outline: 1px solid rgba(232, 205, 150, .25); outline-offset: 5px;
+  }
+  .capa .alto { position: absolute; top: 15%; left: 0; right: 0; }
+  .capa .alto .sobre { font-size: 13px; letter-spacing: .38em; text-transform: uppercase; color: #d9bd7e; }
+  .capa h1 {
+    font-weight: 500; font-size: calc(var(--pw) * .1); line-height: 1.02; margin: .35em 0 0; letter-spacing: .01em;
+  }
+  .capa h1 span { display: block; font-size: .5em; font-style: italic; letter-spacing: .02em; margin-bottom: .1em; color: #e7d6ae; }
+  .capa svg { position: absolute; left: 12%; right: 12%; width: 76%; top: 52%; }
+  .capa .baixo { position: absolute; bottom: 9%; left: 0; right: 0; font-size: 15px; letter-spacing: .08em; color: #e7d6ae; }
+  .capa .baixo small { display: block; margin-top: .5em; font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: #bfa774; }
+
+  /* páginas de abertura do livro */
+  .rosto .corpo { display: flex; flex-direction: column; justify-content: center; }
+  .rosto h2 { font-weight: 500; font-size: 1.6em; text-align: center; margin: 0 0 1em; }
+  .rosto p { text-indent: 0 !important; margin-bottom: .8em !important; }
+  .rosto .colofao { margin-top: 2em; font-size: .82em; color: var(--tinta-suave); text-align: center; }
+  .sumario h2 { font-weight: 500; font-size: 1.6em; text-align: center; margin: 1.6em 0 1.2em; }
+  .sumario .linha { display: flex; align-items: baseline; gap: 6px; margin-bottom: .7em; text-decoration: none; color: inherit; }
+  .sumario .linha .t { flex: none; max-width: 78%; }
+  .sumario .linha .t small { display: block; font-style: italic; color: var(--tinta-suave); font-size: .86em; }
+  .sumario .linha .pontos { flex: 1; border-bottom: 1px dotted #a99d86; transform: translateY(-4px); }
+  .sumario .linha .p { flex: none; font-variant-numeric: oldstyle-nums; }
+  .sumario h4 { font-weight: 600; font-variant: small-caps; letter-spacing: .05em; margin: 1.8em 0 .6em; font-size: 1em; color: var(--tinta-suave); }
+  .sumario .futuros { margin: 0; padding: 0; list-style: none; font-size: .92em; color: var(--tinta-suave); }
+  .sumario .futuros li { margin-bottom: .3em; }
+  .sumario .futuros li::before { content: '· '; color: var(--ocre); }
+
+  #fonte { display: none; }
+
+  @media print {
+    body { background: none; }
+    .barra { display: none; }
+    #livro { padding: 0; gap: 0; }
+    .pagina { box-shadow: none; break-after: page; }
+  }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <span class="nome">Histórias de Divinolândia</span>
+  <button type="button" id="ir-sumario" title="Ir para o sumário">Sumário</button>
+  <button type="button" id="anterior" title="Página anterior" aria-label="Página anterior">‹</button>
+  <span class="contador" id="contador">1 / 1</span>
+  <button type="button" id="proxima" title="Próxima página" aria-label="Próxima página">›</button>
+</div>
+
+<main id="livro" aria-label="Livro"></main>
+
+<!--
+  O TEXTO DO LIVRO. Cada <section class="capitulo"> vira um capítulo: o script corta o texto em páginas
+  do tamanho da tela (como um livro de verdade), põe cabeçalho, número de página e monta o sumário.
+  Capítulo novo: copie uma <section> inteira, mude data-num/data-titulo/data-sub e escreva.
+  Toda afirmação leva nota: <sup><a href="#c1-n3">3</a></sup>, e a nota vai na lista do fim do capítulo.
+-->
+<div id="fonte">
+
+  <section class="capitulo" data-num="1" data-titulo="Quando a guerra chegou" data-sub="Sapecado na Revolução de 1932">
+
+    <p class="capitular">Em julho de 1932, o lugar que hoje se chama Divinolândia ainda não era município. Era um distrito pequeno, no alto da serra, colado à divisa com Minas Gerais. Nos papéis oficiais o nome era Espírito Santo do Rio do Peixe; o nome Sapecado só seria oficial em 1938, e o de Divinolândia em 1953, quando o distrito se emancipou<sup><a href="#c1-n1">1</a></sup>. Mas o povo já chamava o lugar de Sapecado havia muito tempo, por causa do rancho de tropeiros que pegou fogo às margens do Rio do Peixe, por volta de 1850<sup><a href="#c1-n2">2</a></sup>. É com esse nome que ele aparece nos relatos da guerra.</p>
+
+    <p>Nas divisões administrativas do Estado, o distrito figura ligado ao município de Caconde em 1911 e ainda em 1937<sup><a href="#c1-n1">1</a></sup>. Era, portanto, uma ponta de São Paulo encostada em Minas. Quando a guerra começou, essa posição na divisa decidiu tudo.</p>
+
+    <h3>A revolta de São Paulo</h3>
+
+    <p>No dia 9 de julho de 1932, São Paulo pegou em armas contra o Governo Provisório de Getúlio Vargas. Os paulistas exigiam uma nova Constituição e o fim dos interventores nomeados pelo governo federal. Era o movimento que ficou conhecido como Revolução Constitucionalista. Esperava-se que Minas Gerais e o Rio Grande do Sul se juntassem a São Paulo; não se juntaram. Minas ficou ao lado de Vargas, e a sua Força Pública passou a lutar contra os paulistas na divisa entre os dois estados<sup><a href="#c1-n3">3</a></sup>.</p>
+
+    <p>Com isso, toda a fronteira de São Paulo com Minas virou frente de batalha. Na região que vai de Mococa a Espírito Santo do Pinhal, as cidades da Mogiana guardam até hoje as marcas daquele inverno. Mococa ficou na chamada Frente Leste, teve combates e perdeu três combatentes, lembrados por um monumento na praça 9 de Julho. Em Águas da Prata houve combate, e as trincheiras, segundo a prefeitura, continuam nos morros. A estação de Casa Branca serviu de base para as tropas do governo federal<sup><a href="#c1-n4">4</a></sup>.</p>
+
+    <p>O livro <em>Divinolândia... Nos Caminhos do Tempo</em>, escrito em 1991 por Válter Roberto Lopes e Orlanda Maria Grespan de Faria, dedica um capítulo a esse período. Segundo a resenha da obra, os autores contam que, por estar na divisa com Minas, o lugar se transformou num campo de guerra, e que muitos episódios daqueles meses são lembrados até hoje pela população<sup><a href="#c1-n5">5</a></sup>. O livro não está disponível na internet. Este capítulo tenta reconstruir, com o que está publicado, o que aconteceu em volta de Sapecado.</p>
+
+    <h3>O batalhão de Romão Gomes</h3>
+
+    <p>O setor da Mogiana ficou a cargo de um oficial da Força Pública paulista chamado Romão Gomes. Sob o seu comando lutou o 1.º Batalhão da Milícia Civil, formado por voluntários, muitos deles estudantes e rapazes de famílias da capital. O quartel-general do setor ficava em Águas da Prata<sup><a href="#c1-n6">6</a></sup><sup><a href="#c1-n7">7</a></sup>.</p>
+
+    <p>Um desses voluntários, Hermann Moraes Barros, deixou um relato da campanha, publicado em 1984 na revista do Instituto Histórico e Geográfico de São Paulo. Ele conta que o batalhão estreou do lado mineiro da divisa, em Guaxupé. Atacados de manhã cedo numa posição chamada Manoel Joaquim, os paulistas resistiram; à noite veio a notícia de um acordo, a troca de prisioneiros e a ordem de deixar Guaxupé. O batalhão seguiu então por São José do Rio Pardo até São João da Boa Vista, e dali ocupou a frente de Águas da Prata, onde cavou e melhorou trincheiras<sup><a href="#c1-n8">8</a></sup>.</p>
+
+    <p>Depois de muitos dias de espera, veio o ataque. Segundo Hermann, forças mais numerosas e mais bem armadas, entre elas o 5.º Batalhão de Belo Horizonte, investiram contra as linhas paulistas por mais de uma semana, sem conseguir atravessá-las. O que obrigou o recuo foi a queda de Espírito Santo do Pinhal, à direita, sob outro comando. O batalhão recuou às pressas até Casa Branca, onde Romão Gomes, promovido a major dias antes, assumiu o comando de todo o setor e deixou um posto avançado em Lagoa<sup><a href="#c1-n8">8</a></sup>.</p>
+
+    <h3>Sapecado nas mãos do governo</h3>
+
+    <p>É nesse momento que Sapecado aparece no relato. Com a retirada, uma série de lugares da região tinha ficado para trás, nas mãos das tropas do governo. Hermann lista as áreas de São José do Rio Pardo, Grama, Sapecado, Caconde, Itaiquara e Vargem Grande, além de algumas estações de trem, e diz que todas tinham sido abandonadas ao inimigo sem combate<sup><a href="#c1-n9">9</a></sup>.</p>
+
+    <p>Para retomar o setor, Romão Gomes promoveu a capitão um rapaz de vinte anos, o segundo-tenente Herbert Levy, e pôs à disposição dele cerca de dez soldados do batalhão, promovidos ali mesmo a segundos-tenentes. Com o subcomandante, capitão Homero da Silveira, e outros oficiais, eles retomaram todo o setor, até São João da Boa Vista e Águas da Prata. Segundo o relato, a ação rendeu numerosos prisioneiros, inclusive oficiais, além de metralhadoras, muita munição e alguns fuzis-metralhadores tchecos da fábrica Skoda, recém-comprados pelo governo federal<sup><a href="#c1-n9">9</a></sup>.</p>
+
+    <p>Um outro texto, sobre Caconde em 1932, registra que um homem de Sapecado acabou, mais tarde, preso pelas forças do governo<sup><a href="#c1-n10">10</a></sup>. O documento, publicado na internet, só pôde ser lido no trecho que os buscadores mostram; o nome do homem e as circunstâncias da prisão ainda precisam ser conferidos.</p>
+
+    <h3>As forças de Sapecado</h3>
+
+    <p>A menção mais direta aos combatentes do distrito está na história de Maria Sguassábia, uma professora rural de São João da Boa Vista que se alistou disfarçada de homem, com o nome de Mário, na 4.ª Companhia do mesmo 1.º Batalhão. Sua trajetória foi reconstituída a partir do relatório do tenente Mário dos Santos Meira, de 1935, e de outras fontes reunidas pelo projeto Mulheres de São João<sup><a href="#c1-n11">11</a></sup>.</p>
+
+    <p>Segundo esse relato, depois de tomar Vargem Grande numa marcha noturna, com cerca de cem soldados presos, a tropa avançou sobre São Sebastião da Grama. Ali, as forças do governo resistiam aos ataques das forças de São José do Rio Pardo e de Sapecado. Centenas de soldados chegaram de trem e outros tantos de caminhão. Em quatro dias, a 4.ª Companhia travou dez combates<sup><a href="#c1-n11">11</a></sup>. É o registro mais claro, entre os que estão publicados, de que havia gente de Sapecado pegando em armas, e não apenas tropas de passagem pelo distrito.</p>
+
+    <h3>O fim</h3>
+
+    <p>Na terceira semana de setembro, a resistência paulista ruiu em Eleutério, perto de Itapira, e Campinas ficou exposta. Hermann conta que Romão Gomes propôs atacar o flanco das tropas do governo com a sua coluna, então com cerca de dois mil e quinhentos homens, e que a proposta foi recusada pelo comandante da Força Pública, que já negociava o armistício<sup><a href="#c1-n12">12</a></sup>.</p>
+
+    <p>Na noite de 30 de setembro, com o armistício já acertado, a coluna seguiu para Campinas. Para não entregar as armas, o 1.º Batalhão da Milícia Civil tomou um trem para São Paulo sem autorização, desceu na porteira da Barra Funda e se dispersou<sup><a href="#c1-n12">12</a></sup>. A Força Pública paulista assinou a rendição no começo de outubro, e a guerra acabou<sup><a href="#c1-n3">3</a></sup>. Maria Sguassábia voltou a pé para São João da Boa Vista<sup><a href="#c1-n11">11</a></sup>.</p>
+
+    <h3>O que a terra guardou</h3>
+
+    <p>A guerra deixou mais do que lembranças. Na Rua Pio de Andrade, em Divinolândia, um funcionário que trabalhava com uma máquina encontrou um objeto de metal estranho enterrado. Era um morteiro da Revolução de 1932. A Polícia Militar foi chamada, e o GATE detonou o artefato<sup><a href="#c1-n13">13</a></sup>.</p>
+
+    <p>Todo 9 de julho, a cidade relembra aqueles meses. Uma publicação de 2026 diz que Sapecado esteve no centro dos confrontos e que muitos dos que lutaram nunca voltaram para casa<sup><a href="#c1-n14">14</a></sup>. É a memória que ficou, mas sem nomes.</p>
+
+    <h3>O que ainda falta saber</h3>
+
+    <p>As fontes publicadas contam a guerra em volta de Sapecado, mas quase nunca dentro dele. Não se encontraram as datas exatas em que o distrito foi ocupado e retomado, quantos moradores pegaram em armas, os nomes de quem morreu, nem o lugar das trincheiras que eventualmente tenham sido cavadas nos morros da cidade. Os episódios que o livro de 1991 diz que a população ainda lembra também não estão em nenhuma página aberta.</p>
+
+    <p>Quem tiver em casa fotografias, cartas, documentos ou histórias contadas pelos avós sobre 1932 em Sapecado tem nas mãos justamente o que falta a este capítulo.</p>
+
+    <div class="notas-titulo">Notas e fontes</div>
+    <ol class="notas">
+      <li id="c1-n1">IBGE. <em>Divinolândia (SP): histórico e formação administrativa</em>. Biblioteca do IBGE. Freguesia criada em 1865 como Espírito Santo do Rio do Peixe; distrito de Caconde nas divisões de 1911 e 1937; nome Sapecado pelo Decreto 9.775, de 30/12/1938; município de Divinolândia pela Lei 2.456, de 30/12/1953. <a href="https://biblioteca.ibge.gov.br/visualizacao/dtb/saopaulo/divinolandia.pdf">biblioteca.ibge.gov.br/visualizacao/dtb/saopaulo/divinolandia.pdf</a></li>
+      <li id="c1-n2">Câmara Municipal de Divinolândia. <em>História</em>. O rancho à margem do Rio do Peixe, por volta de 1850, e o incêndio que deu nome ao Pouso do Sapecado. <a href="https://camaradivinolandia.sp.gov.br/pagina/1/historia">camaradivinolandia.sp.gov.br/pagina/1/historia</a></li>
+      <li id="c1-n3">Wikipédia. <em>Revolução Constitucionalista de 1932</em>. Início em 9 de julho, posição de Minas Gerais ao lado do governo federal e rendição paulista no começo de outubro. <a href="https://pt.wikipedia.org/wiki/Revolu%C3%A7%C3%A3o_Constitucionalista_de_1932">pt.wikipedia.org/wiki/Revolução_Constitucionalista_de_1932</a></li>
+      <li id="c1-n4">Campo e Trilha. <em>Almanaque do Caminho da Fé</em>, p. 157 (Águas da Prata), 203 (Mococa) e 206 (Casa Branca), com base nas prefeituras de cada cidade. <a href="https://campoetrilha.com.br/downloads/almanaque-do-caminho-da-fe.pdf">campoetrilha.com.br/downloads/almanaque-do-caminho-da-fe.pdf</a></li>
+      <li id="c1-n5">Plataforma Verri. Resenha de LOPES, Válter Roberto; GRESPAN DE FARIA, Orlanda Maria. <em>Divinolândia... Nos Caminhos do Tempo</em>. Divinolândia: edição dos autores, 1991, 100 p. <a href="https://plataformaverri.com.br/index.php?bib=1&amp;idBook=2556&amp;idCategory=1&amp;idCity=236&amp;letter=D&amp;local=book">plataformaverri.com.br (livro 2556)</a></li>
+      <li id="c1-n6">Mulheres de São João. <em>Maria Sguassábia</em>. Romão Gomes, comandante do setor, com quartel-general em Águas da Prata; a 4.ª Companhia do 1.º Batalhão da Milícia Civil. <a href="https://mulheresdesaojoao.com.br/paginas/maria-sguassabia.html">mulheresdesaojoao.com.br/paginas/maria-sguassabia.html</a></li>
+      <li id="c1-n7">CUNHA FILHO, Aguinaldo Ribeiro da. A família Ribeiro da Cunha. <em>Revista da ASBRAP</em>, n.º 9, p. 264–265. O pai do autor lutou em 1932 no Batalhão Romão Gomes, sediado em Águas da Prata, ao lado de Herbert Lévy e Hermann de Moraes Barros. <a href="https://www.asbrap.org.br/artigos/rev9_art10.pdf">asbrap.org.br/artigos/rev9_art10.pdf</a></li>
+      <li id="c1-n8">BARROS, Hermann Moraes. O ideal sagrado de 1932. <em>Revista do Instituto Histórico e Geográfico de São Paulo</em>, v. LXXIX, 1984, p. 171–177; aqui, p. 175. <a href="http://ihgsp.org.br/wp-content/uploads/2018/03/Vol-79.pdf">ihgsp.org.br/wp-content/uploads/2018/03/Vol-79.pdf</a></li>
+      <li id="c1-n9">BARROS, Hermann Moraes, op. cit., p. 175–176. A lista dos lugares abandonados sem combate e a retomada do setor por Herbert Levy.</li>
+      <li id="c1-n10">Basílica Santuário Nossa Senhora da Conceição de Caconde (imaculada.org). Documento sobre Caconde em 1932, publicado no Yumpu. Lido apenas no trecho indexado pelos buscadores. <a href="https://www.yumpu.com/pt/document/view/12902081/p-basilica-santuario-nossa-senhora-da-conceicao-em-caconde">yumpu.com/pt/document/view/12902081</a></li>
+      <li id="c1-n11">Mulheres de São João, <em>Maria Sguassábia</em>, op. cit. A página se apoia no relatório do tenente Mário dos Santos Meira (1935) e no artigo “Uma professora em campo de guerra: a construção do personagem Soldado Mário na Revolução Constitucionalista de 1932” (UNISAGRADO, 2020).</li>
+      <li id="c1-n12">BARROS, Hermann Moraes, op. cit., p. 176. A queda de Eleutério, a proposta de Romão Gomes, a noite de 30 de setembro e a viagem do batalhão até a Barra Funda.</li>
+      <li id="c1-n13">Se Liga Tapiratiba (Facebook). <em>GATE detona morteiro da Revolução de 32 encontrado em Divinolândia</em>. Publicação de cerca de 2025. <a href="https://www.facebook.com/seligatap/posts/-gate-detona-morteiro-da-revolu%C3%A7%C3%A3o-de-32-encontrado-em-divinol%C3%A2ndia-na-noite-des/1287075396760756/">facebook.com/seligatap (publicação 1287075396760756)</a></li>
+      <li id="c1-n14">diqbem (Instagram). Publicação de 9 de julho de 2026 sobre Divinolândia na Revolução Constitucionalista. <a href="https://www.instagram.com/p/Dak-fg3n9Kq/">instagram.com/p/Dak-fg3n9Kq</a></li>
+    </ol>
+  </section>
+
+</div>
+
+<!-- Os capítulos ainda em pesquisa: aparecem no sumário, sem página. -->
+<script type="application/json" id="proximos">
+[
+  "O pouso que pegou fogo: as origens de Sapecado",
+  "Capela, freguesia e patrimônio",
+  "As fazendas e a escravidão",
+  "O tempo dos coronéis",
+  "Os imigrantes",
+  "Os primeiros tempos: comércio, saúde, rádio e cinema",
+  "A capital da batata",
+  "A fé: a matriz e o Padre Ladislau",
+  "O sanatório e o Hospital Regional",
+  "Os bairros",
+  "De Sapecado a Divinolândia"
+]
+</script>
+
+<script>
+(() => {
+  'use strict';
+  const TITULO = 'Histórias de Divinolândia';
+  const livro = document.getElementById('livro');
+  const fonte = document.getElementById('fonte');
+  const proximos = JSON.parse(document.getElementById('proximos').textContent);
+  let paginas = [];
+
+  // ── o tamanho da página: de livro no computador, de bolso no celular ──
+  const medidas = () => {
+    const w = window.innerWidth;
+    const root = document.documentElement.style;
+    if (w >= 680) {
+      root.setProperty('--pw', '600px'); root.setProperty('--ph', '860px');
+      root.setProperty('--corpo', '16.5px'); root.setProperty('--margem-x', '64px');
+      root.setProperty('--margem-topo', '64px'); root.setProperty('--margem-base', '70px');
+      return 'grande';
+    }
+    const pw = Math.max(300, Math.min(w - 20, 520));
+    root.setProperty('--pw', `${pw}px`); root.setProperty('--ph', `${Math.round(pw * 1.5)}px`);
+    root.setProperty('--corpo', pw < 360 ? '15.5px' : '16px');
+    root.setProperty('--margem-x', `${Math.round(pw * .08)}px`);
+    root.setProperty('--margem-topo', '52px'); root.setProperty('--margem-base', '56px');
+    return `bolso-${pw}`;
+  };
+
+  const novaPagina = (classe = '') => {
+    const pg = document.createElement('section');
+    pg.className = `pagina ${classe}`.trim();
+    livro.appendChild(pg);
+    paginas.push(pg);
+    return pg;
+  };
+
+  const comCorpo = (pg, cabeca) => {
+    if (cabeca) {
+      const c = document.createElement('div');
+      c.className = 'cabeca';
+      c.innerHTML = `<span>${TITULO}</span><span>${cabeca}</span>`;
+      pg.appendChild(c);
+    }
+    const corpo = document.createElement('div');
+    corpo.className = 'corpo';
+    pg.appendChild(corpo);
+    return corpo;
+  };
+
+  const transborda = (corpo) => corpo.scrollHeight > corpo.clientHeight + 1;
+  // Quanto da página já está ocupado (o scrollHeight nunca é menor que a página, então não serve aqui).
+  const ocupado = (corpo) => {
+    const ultimo = corpo.lastElementChild;
+    return ultimo ? ultimo.offsetTop + ultimo.offsetHeight : 0;
+  };
+
+  // Corta um parágrafo em palavras, preservando as notas e o itálico: o começo fica, ou o resto fica.
+  const cortar = (el, k, comeco) => {
+    const c = el.cloneNode(true);
+    const textos = [];
+    const w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) textos.push(w.currentNode);
+    let n = 0;
+    for (const t of textos) {
+      let saida = '';
+      for (const parte of t.data.split(/(\s+)/)) {
+        if (!parte) continue;
+        if (/^\s+$/.test(parte)) { if (comeco ? n < k : n > k) saida += parte; continue; }
+        if (comeco ? n < k : n >= k) saida += parte;
+        n += 1;
+      }
+      t.data = saida;
+    }
+    c.querySelectorAll('sup').forEach((s) => { if (!s.textContent.trim()) s.remove(); });
+    return c;
+  };
+
+  const contarPalavras = (el) => el.textContent.split(/\s+/).filter(Boolean).length;
+
+  // ── o capítulo corre de página em página ──
+  const paginarCapitulo = (sec, inicioNum) => {
+    const curto = sec.dataset.titulo;
+    let pg = novaPagina();
+    let corpo = comCorpo(pg);
+    const primeira = pg;
+    const virar = () => { pg = novaPagina(); corpo = comCorpo(pg, curto); };
+
+    const ab = document.createElement('div');
+    ab.className = 'abertura';
+    ab.innerHTML = `<div class="num">Capítulo ${sec.dataset.num}</div><h2>${sec.dataset.titulo}</h2>`
+      + (sec.dataset.sub ? `<div class="sub">${sec.dataset.sub}</div>` : '') + '<div class="fio"></div>';
+    corpo.appendChild(ab);
+
+    const blocos = [...sec.children];
+    for (const original of blocos) {
+      // Lista de notas: cada nota é um bloco; a numeração continua na página seguinte.
+      if (original.matches('ol.notas')) {
+        let ol = null;
+        [...original.children].forEach((li, i) => {
+          const item = li.cloneNode(true);
+          item.value = i + 1;
+          if (!ol) { ol = document.createElement('ol'); ol.className = 'notas'; corpo.appendChild(ol); }
+          ol.appendChild(item);
+          if (transborda(corpo)) {
+            item.remove();
+            if (!ol.children.length) ol.remove();
+            virar();
+            ol = document.createElement('ol'); ol.className = 'notas'; corpo.appendChild(ol);
+            ol.appendChild(item);
+          }
+        });
+        continue;
+      }
+      let bloco = original.cloneNode(true);
+      const titulo = bloco.matches('h3, .notas-titulo');
+      // Título não fica sozinho no pé da página.
+      if (titulo && corpo.children.length && ocupado(corpo) + 110 > corpo.clientHeight) virar();
+      corpo.appendChild(bloco);
+      if (!transborda(corpo)) continue;
+      if (!bloco.matches('p')) { bloco.remove(); virar(); corpo.appendChild(bloco); continue; }
+      // Parágrafo: o que cabe fica, o resto segue na próxima página.
+      for (;;) {
+        bloco.remove();
+        const total = contarPalavras(bloco);
+        let lo = 0; let hi = total;
+        while (lo < hi) {
+          const mid = Math.ceil((lo + hi) / 2);
+          const teste = cortar(bloco, mid, true);
+          corpo.appendChild(teste);
+          const cabe = !transborda(corpo);
+          teste.remove();
+          if (cabe) lo = mid; else hi = mid - 1;
+        }
+        // Numa página vazia em que nada cabe (não deveria acontecer), o parágrafo fica inteiro e corta.
+        if (lo < 3 && !corpo.children.length) { corpo.appendChild(bloco); break; }
+        if (lo >= 3 && lo < total) {
+          const parte = cortar(bloco, lo, true);
+          parte.classList.add('partido');
+          corpo.appendChild(parte);
+          bloco = cortar(bloco, lo, false);
+          bloco.classList.add('cont');
+          bloco.classList.remove('capitular');
+        }
+        virar();
+        corpo.appendChild(bloco);
+        if (!transborda(corpo)) break;
+      }
+    }
+    return primeira;
+  };
+
+  const numerar = () => {
+    paginas.forEach((pg, i) => {
+      pg.id = `pagina-${i + 1}`;
+      if (pg.classList.contains('capa')) return;
+      const r = document.createElement('div');
+      r.className = 'rodape';
+      r.textContent = String(i + 1);
+      pg.appendChild(r);
+    });
+  };
+
+  const montar = () => {
+    livro.innerHTML = '';
+    paginas = [];
+
+    // Capa
+    const capa = novaPagina('capa');
+    capa.innerHTML = `
+      <div class="moldura"></div>
+      <div class="alto"><div class="sobre">Livro aberto</div>
+        <h1><span>Histórias de</span>Divinolândia</h1></div>
+      <svg viewBox="0 0 400 150" aria-hidden="true">
+        <g fill="none" stroke="#d9bd7e" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M0 120 C60 70 110 80 160 98 S260 60 310 74 S380 95 400 86"/>
+          <path d="M0 136 C80 108 150 120 220 112 S330 100 400 112" opacity=".6"/>
+          <path d="M172 112 L172 96 L200 80 L228 96 L228 112"/>
+          <path d="M166 99 L200 74 L234 99"/>
+          <path d="M193 112 L193 100 L207 100 L207 112"/>
+          <path d="M214 82 C220 70 210 62 218 50 C224 42 216 36 222 28" opacity=".7"/>
+          <path d="M60 140 C120 132 170 138 230 134" stroke-dasharray="2 6" opacity=".6"/>
+        </g>
+      </svg>
+      <div class="baixo">Reunido por André N. Darcie<small>A antiga Sapecado · 2026</small></div>`;
+
+    // Apresentação
+    const rosto = novaPagina('rosto');
+    comCorpo(rosto).innerHTML = `
+      <h2>Sobre este livro</h2>
+      <p>Este é um livro aberto sobre a história de Divinolândia, a antiga Sapecado, no interior de São Paulo. Ele é escrito aos poucos, um capítulo de cada vez, a partir do que se consegue encontrar em fontes públicas: documentos oficiais, revistas de história e genealogia, jornais, sites das cidades vizinhas e a memória que os moradores publicam.</p>
+      <p>Toda afirmação tem uma nota com a sua fonte, e as fontes ficam no fim de cada capítulo, com o endereço para quem quiser conferir. Onde as fontes se calam, o texto diz que não sabe.</p>
+      <p>Os temas seguem, de perto, o índice de <em>Divinolândia... Nos Caminhos do Tempo</em>, o livro que Válter Roberto Lopes e Orlanda Maria Grespan de Faria publicaram em 1991, e que hoje não se encontra para ler.</p>
+      <div class="colofao">Primeira edição, em construção · novembro de 2026</div>`;
+
+    // Sumário (preenchido depois de paginar, com as páginas de verdade)
+    const sumario = novaPagina('sumario');
+    const corpoSumario = comCorpo(sumario);
+
+    const inicios = [];
+    for (const sec of fonte.querySelectorAll('section.capitulo')) {
+      inicios.push({ sec, pagina: paginarCapitulo(sec) });
+    }
+    numerar();
+
+    corpoSumario.innerHTML = '<h2>Sumário</h2>'
+      + inicios.map(({ sec, pagina }) => `
+        <a class="linha" href="#${pagina.id}">
+          <span class="t">${sec.dataset.num}. ${sec.dataset.titulo}${sec.dataset.sub ? `<small>${sec.dataset.sub}</small>` : ''}</span>
+          <span class="pontos"></span><span class="p">${pagina.id.replace('pagina-', '')}</span>
+        </a>`).join('')
+      + '<h4>Próximos capítulos, em pesquisa</h4><ul class="futuros">'
+      + proximos.map((t) => `<li>${t}</li>`).join('') + '</ul>';
+    atualizarContador();
+  };
+
+  // ── a barra: página atual, anterior e próxima ──
+  const contador = document.getElementById('contador');
+  let atual = 1;
+  const atualizarContador = () => { contador.textContent = `${atual} / ${paginas.length}`; };
+  const paginaAtual = () => {
+    const meio = window.innerHeight * 0.4;
+    let melhor = 1;
+    paginas.forEach((pg, i) => { if (pg.getBoundingClientRect().top <= meio) melhor = i + 1; });
+    return melhor;
+  };
+  window.addEventListener('scroll', () => {
+    const n = paginaAtual();
+    if (n !== atual) { atual = n; atualizarContador(); }
+  }, { passive: true });
+  const irPara = (n) => {
+    const pg = paginas[Math.max(1, Math.min(paginas.length, n)) - 1];
+    if (!pg) return;
+    window.scrollTo({ top: pg.offsetTop - 60, behavior: 'smooth' });
+  };
+  document.getElementById('anterior').onclick = () => irPara(atual - 1);
+  document.getElementById('proxima').onclick = () => irPara(atual + 1);
+  document.getElementById('ir-sumario').onclick = () => irPara(3);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); irPara(atual + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); irPara(atual - 1); }
+  });
+  livro.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const alvo = document.getElementById(a.getAttribute('href').slice(1));
+    if (!alvo) return;
+    e.preventDefault();
+    window.scrollTo({ top: alvo.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+  });
+
+  // Paginar só depois da fonte carregar, senão a medida das linhas muda depois. A fonte só baixa quando
+  // alguém a usa, e o texto ainda está escondido: por isso o pedido explícito de cada variante.
+  let formato = medidas();
+  const iniciar = () => { formato = medidas(); montar(); };
+  const variantes = ['400 16px "EB Garamond"', 'italic 400 16px "EB Garamond"', '500 16px "EB Garamond"', '600 16px "EB Garamond"'];
+  (document.fonts ? Promise.all(variantes.map((v) => document.fonts.load(v))) : Promise.resolve())
+    .catch(() => {})
+    .then(iniciar);
+  let espera;
+  window.addEventListener('resize', () => {
+    clearTimeout(espera);
+    espera = setTimeout(() => {
+      const novo = medidas();
+      if (novo !== formato) { formato = novo; const pg = atual; montar(); irPara(pg); }
+    }, 250);
+  });
+})();
+</script>
+</body>
+</html>
