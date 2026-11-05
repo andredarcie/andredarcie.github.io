@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2620"/><stop offset=".55" stop-color="#2b3c30"/><stop offset="1" stop-color="#222c23"/>
+    </linearGradient>
+    <radialGradient id="lua" cx=".8" cy=".12" r=".55">
+      <stop offset="0" stop-color="#ecd6a0" stop-opacity=".16"/><stop offset="1" stop-color="#ecd6a0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="esmaece" gradientUnits="userSpaceOnUse" x1="590" y1="0" x2="790" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="mascara"><rect x="0" y="0" width="1200" height="630" fill="url(#esmaece)"/></mask>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ceu)"/>
+  <rect width="1200" height="630" fill="url(#lua)"/>
+  <g mask="url(#mascara)">
+    <g transform="translate(590 112) scale(1.52)">
+    <g fill="#ecd6a0">
+      <circle cx="40" cy="22" r=".9" opacity=".7"/><circle cx="88" cy="40" r=".7" opacity=".5"/>
+      <circle cx="132" cy="16" r="1" opacity=".8"/><circle cx="178" cy="34" r=".6" opacity=".5"/>
+      <circle cx="232" cy="12" r=".8" opacity=".6"/><circle cx="268" cy="44" r=".7" opacity=".5"/>
+      <circle cx="372" cy="20" r=".9" opacity=".7"/><circle cx="16" cy="58" r=".6" opacity=".4"/>
+      <circle cx="390" cy="62" r=".6" opacity=".4"/><circle cx="210" cy="50" r=".5" opacity=".4"/>
+      <path d="M318 18 a15 15 0 0 0 0 30 a10 15 0 0 1 0 -30z" opacity=".92"/>
+    </g>
+    <path d="M0 112 C18 104 30 98 48 101 C66 104 76 88 96 84 C116 80 126 94 146 92 C168 90 178 72 200 70 C222 68 236 86 256 84 C278 82 290 70 312 72 C334 74 348 90 368 88 C382 87 392 82 400 84 L400 230 L0 230Z"
+      fill="#475b47" opacity=".6"/>
+    <path d="M0 112 C18 104 30 98 48 101 C66 104 76 88 96 84 C116 80 126 94 146 92 C168 90 178 72 200 70 C222 68 236 86 256 84 C278 82 290 70 312 72 C334 74 348 90 368 88 C382 87 392 82 400 84"
+      fill="none" stroke="#e3c98c" stroke-width=".9" opacity=".45"/>
+    <path d="M0 150 C40 130 86 128 130 136 C160 141 176 130 200 128 C230 126 262 122 300 130 C336 138 368 132 400 126 L400 230 L0 230Z" fill="#30422f"/>
+    <path d="M0 150 C40 130 86 128 130 136 C160 141 176 130 200 128 C230 126 262 122 300 130 C336 138 368 132 400 126"
+      fill="none" stroke="#e3c98c" stroke-width="1.1" opacity=".7"/>
+    <g fill="none" stroke="#d9bd7e" stroke-width="2" stroke-linecap="round" stroke-dasharray=".1 4.6" opacity=".55">
+      <path d="M244 137 C290 132 336 142 398 134"/><path d="M238 146 C286 141 336 152 400 143"/>
+      <path d="M232 155 C282 150 334 162 400 152"/><path d="M228 164 C278 159 334 171 400 161"/>
+      <path d="M8 160 C40 150 74 148 104 152"/><path d="M4 169 C38 159 72 157 100 161"/>
+    </g>
+    
+    <g transform="translate(34 141) scale(1)" stroke="#e3c98c" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0 V-27 M0 -15 Q-7 -16 -10 -22 M0 -15 Q7 -16 10 -22 M0 -21 Q-5 -22 -8 -27 M0 -21 Q5 -22 8 -27" fill="none"/>
+      <path d="M-15 -23 Q-8 -27 0 -27 Q8 -27 15 -23 Q8 -25 0 -24.5 Q-8 -25 -15 -23Z" fill="#1d281f"/>
+      <path d="M-11 -29 Q-5 -33 0 -33 Q5 -33 11 -29 Q5 -31 0 -30.5 Q-5 -31 -11 -29Z" fill="#1d281f"/>
+    </g>
+    <g transform="translate(60 137) scale(1.25)" stroke="#e3c98c" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0 V-27 M0 -15 Q-7 -16 -10 -22 M0 -15 Q7 -16 10 -22 M0 -21 Q-5 -22 -8 -27 M0 -21 Q5 -22 8 -27" fill="none"/>
+      <path d="M-15 -23 Q-8 -27 0 -27 Q8 -27 15 -23 Q8 -25 0 -24.5 Q-8 -25 -15 -23Z" fill="#1d281f"/>
+      <path d="M-11 -29 Q-5 -33 0 -33 Q5 -33 11 -29 Q5 -31 0 -30.5 Q-5 -31 -11 -29Z" fill="#1d281f"/>
+    </g>
+    <g transform="translate(362 133) scale(0.95)" stroke="#e3c98c" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0 V-27 M0 -15 Q-7 -16 -10 -22 M0 -15 Q7 -16 10 -22 M0 -21 Q-5 -22 -8 -27 M0 -21 Q5 -22 8 -27" fill="none"/>
+      <path d="M-15 -23 Q-8 -27 0 -27 Q8 -27 15 -23 Q8 -25 0 -24.5 Q-8 -25 -15 -23Z" fill="#1d281f"/>
+      <path d="M-11 -29 Q-5 -33 0 -33 Q5 -33 11 -29 Q5 -31 0 -30.5 Q-5 -31 -11 -29Z" fill="#1d281f"/>
+    </g>
+    <g stroke="#e3c98c" stroke-width="1.1" stroke-linejoin="round">
+      <path d="M180 132 V110 L200 98 L220 110 V132Z" fill="#232e25"/>
+      <path d="M193 110 V74 L200 58 L207 74 V110Z" fill="#232e25"/>
+      <path d="M200 58 V48 M196 52 H204" fill="none" stroke-linecap="round"/>
+      <path d="M197 92 V86 Q200 82 203 86 V92Z" fill="#f0bf62" stroke="none"/>
+      <path d="M196 132 V122 Q200 116 204 122 V132Z" fill="#f0bf62" stroke="none"/>
+      <path d="M185 120 V115 Q187 112 189 115 V120Z M211 120 V115 Q213 112 215 115 V120Z" fill="#f0bf62" stroke="none" opacity=".85"/>
+    </g>
+    <path d="M146 140 C160 150 132 160 150 170 C172 182 148 194 178 204 C206 213 222 222 236 230"
+      fill="none" stroke="#e9d39c" stroke-width="1.8" stroke-linecap="round" opacity=".6"/>
+    <path d="M0 196 C60 178 120 180 176 190 C236 200 300 182 400 184 L400 230 L0 230Z" fill="#222c23"/>
+    <path d="M0 196 C60 178 120 180 176 190 C236 200 300 182 400 184" fill="none" stroke="#e3c98c" stroke-width="1" opacity=".5"/>
+    <path d="M14 214 C70 204 130 212 196 207 C250 203 300 212 380 206" fill="none" stroke="#e3c98c" stroke-width="1"
+      stroke-dasharray="2 6" stroke-linecap="round" opacity=".55"/>
+    <g stroke="#e3c98c" stroke-width="1.1" stroke-linejoin="round">
+      <path d="M78 199 V187 H104 V199Z" fill="#2b241b"/>
+      <path d="M73 188 L91 175 L109 188Z" fill="#3a2d1d"/>
+      <path d="M88 199 V191 H94 V199Z" fill="#f0a24a" stroke="none" opacity=".9"/>
+    </g>
+    <path d="M100 176 C95 166 106 160 99 150 C93 142 103 134 97 124 C93 117 100 110 96 102"
+      fill="none" stroke="#d9bd7e" stroke-width="1.2" stroke-linecap="round" opacity=".45"/>
+    <g fill="#f09a3e">
+      <circle cx="103" cy="170" r="1.3"/><circle cx="95" cy="162" r="1"/><circle cx="105" cy="155" r=".8" opacity=".8"/>
+      <circle cx="98" cy="146" r=".7" opacity=".6"/><circle cx="102" cy="137" r=".5" opacity=".45"/>
+    </g></g>
+    <rect x="590" y="461" width="610" height="169" fill="#222c23"/>
+  </g>
+  <rect x="24" y="24" width="1152" height="582" fill="none" stroke="#e8cd96" stroke-opacity=".55"/>
+  <rect x="31" y="31" width="1138" height="568" fill="none" stroke="#e8cd96" stroke-opacity=".22"/>
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#efe6d2">
+    <text x="84" y="150" font-size="21" letter-spacing="6" fill="#d9bd7e">DO SAPECADO À TERRA DO DIVINO</text>
+    <text x="80" y="232" font-size="54" font-style="italic" fill="#e7d6ae">Histórias de</text>
+    <text x="76" y="330" font-size="104">Divinolândia</text>
+    <rect x="84" y="372" width="70" height="1.5" fill="#d9bd7e"/>
+    <text x="84" y="420" font-size="27" fill="#efe0bb">A história da antiga Sapecado, São Paulo,</text>
+    <text x="84" y="456" font-size="27" fill="#efe0bb">do quilombo do Careca aos dias de hoje</text>
+    <text x="84" y="548" font-size="19" letter-spacing="4" fill="#bfa774">LIVRO ABERTO · 12 CAPÍTULOS COM FONTES</text>
+  </g>
+</svg>

@@ -17,6 +17,14 @@ O sumário é montado depois da paginação, com os números de página de verda
 
 A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma página do livro por folha.
 
+## Busca e compartilhamento (SEO)
+
+- Sem JavaScript, `#fonte` aparece como um artigo comum: `<h1>`, apresentação, sumário com links e os doze capítulos, cada um com `<header class="cab-cap">` (`<h2>`) e `id="capitulo-N"`. Com JavaScript (a classe `js` no `<html>`), o texto vira as páginas do livro e `#fonte` some.
+- O `<head>` tem título e descrição para a busca, `canonical`, Open Graph/Twitter e dados estruturados `Book` (JSON-LD) com os capítulos em `hasPart`. **Ao mudar um capítulo de número ou de título, atualize também o `cab-cap` e o `hasPart`.**
+- `og-imagem.png` (1200 × 630) é a imagem de compartilhamento, gerada de `og-imagem.svg`, que usa a mesma arte da capa (`ARTE_CAPA` no script). Se a arte mudar, gere as duas de novo.
+- Links diretos para capítulos funcionam: `index.html#capitulo-6` abre na página em que o capítulo começa.
+- O livro está no `sitemap.xml` da raiz do site e tem link na página inicial e na página de história do Divinolândia Transparente.
+
 ## Como escrever um capítulo novo
 
 1. Dentro de `<div id="fonte">`, copie um `<section class="capitulo">` inteiro e ponha no **lugar cronológico** dele: o livro segue a ordem do tempo.
@@ -51,4 +59,4 @@ Em ordem do tempo.
 | 11 | Os bairros: Campestrinho, Três Barras, Pontal e os nomes da serra | — |
 | 12 | Divinolândia hoje: a cidade que a história deixou | 2022–2026 |
 
-O que ainda falta (e cada capítulo lista no fim): os nomes das pessoas escravizadas, os colonos das fazendas, os combatentes de 1932, o primeiro cinema, a campanha da emancipação, as igrejas evangélicas e o centro espírita, e a origem do nome Quebra-Machado.
+O que ainda falta (e cada capítulo lista no fim): os nomes das pessoas escravizadas, os colonos das fazendas, os combatentes de 1932, o primeiro cinema, a campanha da emancipação, a escola antes de 1957, a festa do padroeiro, os prefeitos de 1993 a 2020, as igrejas evangélicas e o centro espírita, e a origem do nome Quebra-Machado.
