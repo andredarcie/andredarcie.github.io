@@ -36,6 +36,10 @@ Com o jogo pronto, a tela deixou de ser presa ao 544×416 do VX Ace:
 
 **Fim do capítulo 1**: depois da sombra e do título "Insônia", aparece uma tela de encerramento com "The End", "Fim do primeiro capítulo" e "A história continua..." (`telaFimCapitulo` em `historia.js`). OK ou toque mostra tudo, e o próximo OK volta ao título.
 
+**Enigma do espelho**: no original a solução do tabuleiro (captura 16) não tinha lógica. Agora o tabuleiro tem uma linha de espelho no meio, e 4 peças vêm acesas em vermelho, travadas: são o "enigma já resolvido". Imitar as outras peças é acender, do outro lado do espelho, a mesma forma na casa espelhada (mesma linha, coluna 5 − c). Formas iguais perto das certas e pares espelhados que não são vermelhos confundem. As vermelhas recusam o OK, e com 4 acesas fora do reflexo o tabuleiro estremece (`FORMAS`, `FIXAS` e `tabuleiro` em `historia.js`).
+
+**Seletor de fases (só em localhost)**: a tecla I abre um modal com todas as fases em ordem (`src/dev.js`). Escolher uma recarrega no atalho `?mapa=` com o herói no ponto de chegada e com as flags, itens e variáveis de quem fez tudo antes; as cenas roteirizadas (flashback, hospital, final) rodam sozinhas (`CENAS_DEV` em `historia.js`). Usa `semsalvar`, então o save de verdade fica intacto. Em localhost o inventário fica na tecla C.
+
 O jogo salva sozinho a cada troca de mapa. Os mapas que só existem dentro de uma cena (os flashbacks) não viram ponto de "Continuar".
 
 ## Como foi refeito

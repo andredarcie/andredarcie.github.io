@@ -4,6 +4,9 @@ import { carregar } from './src/recursos.js';
 import { Jogo } from './src/jogo.js';
 import { som } from './src/som.js';
 import { texto, fonteTexto, fonteSerif } from './src/janela.js';
+import { ITENS } from './src/itens.js';
+import { CENAS_DEV } from './src/historia.js';
+import { ligarSeletorDeFases } from './src/dev.js';
 
 const IMAGENS = [
   'tiles/iA2', 'tiles/iA4', 'tiles/iA5', 'tiles/iB', 'tiles/iC',
@@ -59,12 +62,24 @@ async function iniciar() {
   window.__insonia = jogo;
   if (gravacao.ativa) window.__entrada = entrada;   // o gravador de vídeo aperta as teclas por aqui
 
+  // Seletor de fases (tecla I, só em localhost): monta a URL de atalho abaixo e recarrega
+  ligarSeletorDeFases(() => window.__insonia?.mapaId ?? null);
+
   // Atalho de desenvolvimento: ?mapa=id&x=..&y=.. pula para um mapa.
+  // itens=id ou id:n (quantidade), vars=nome:valor, cena=nome roda uma cena de CENAS_DEV ao chegar.
   if (params.get('mapa')) {
+    naTitulo = false;
     jogo.semSalvar = params.has('semsalvar');
     if (params.get('flags')) for (const f of params.get('flags').split(',')) jogo.flags[f] = true;
-    if (params.get('itens')) for (const i of params.get('itens').split(',')) jogo.itens.push({ id: i, n: 1 });
+    if (params.get('itens')) {
+      for (const i of params.get('itens').split(',')) { const [id, n] = i.split(':'); jogo.itens.push({ id, n: +(n || 1) }); }
+      const ordem = Object.keys(ITENS);
+      jogo.itens.sort((a, b) => ordem.indexOf(a.id) - ordem.indexOf(b.id));
+    }
+    if (params.get('vars')) for (const v of params.get('vars').split(',')) { const [k, n] = v.split(':'); jogo.vars[k] = +n; }
     jogo.carregar(params.get('mapa'), +(params.get('x') || 8), +(params.get('y') || 6), params.get('dir') || 'baixo');
+    const cena = CENAS_DEV[params.get('cena')];
+    if (cena) jogo.executar(() => cena(jogo));
     rodarLaco(() => jogo.atualizar(), () => jogo.desenhar());
     return;
   }

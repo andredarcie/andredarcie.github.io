@@ -519,6 +519,10 @@ export const HISTORIA = {
         x: 7, y: 5, prioridade: 1, solido: true,
         async rodar(j) {
           await j.fala(`Tem algo escrito:\n${V}"O enigma já está resolvido, agora só\nfalta imitar as outras peças."`);
+          if (!j.flags.viuTabuleiro) {
+            j.flags.viuTabuleiro = true;
+            await j.fala('Algumas peças já brilham em vermelho... e tem\numa linha no meio do tabuleiro, como um espelho.');
+          }
           await j.apagar(20);
           const ok = await tabuleiro(j);
           if (!ok) { await j.acender(20); return; }
@@ -742,6 +746,18 @@ async function cenaMonstro(j) {
 }
 
 async function flashback(j) {
+  await flashbackMenino(j);
+  await flashbackHospital(j);
+}
+
+// Cenas que o seletor de fases (dev.js, só em localhost) roda direto, sem passar pelo caminho.
+export const CENAS_DEV = {
+  flashback: async (j) => { j.brilho = 0; j.alvoBrilho = 0; await flashback(j); },
+  hospital: (j) => flashbackHospital(j),
+  fim: (j) => finalTrailer(j),
+};
+
+async function flashbackMenino(j) {
   // quarto do menino
   j.carregar('quarto_menino', 12, 11, 'cima');
   j.heroi.visivel = false;
@@ -793,7 +809,9 @@ async function flashback(j) {
   await quadros(40);
   await j.fala('Eu tinha uma família.');
   await quadros(30);
-  // hospital
+}
+
+async function flashbackHospital(j) {
   j.brilho = 0; j.alvoBrilho = 0;
   j.carregar('hospital', 10, 9, 'cima');
   const med = j.evento('medico');
@@ -980,17 +998,22 @@ function desenharPlacas(j, c, cx, cy, fase) {
 }
 
 // ---------------- o tabuleiro do enigma ----------------
-// Formas apagadas em uma grade 6x6; as acesas formam o desenho que "imita" a inscrição.
+// Grade 6x6 de formas com uma linha de espelho no meio (entre as colunas 2 e 3). As peças vermelhas
+// vêm acesas e travadas: são o "enigma já resolvido". O jogador só tem que "imitar" cada uma do outro
+// lado do espelho: acender a forma igual na casa espelhada (mesma linha, coluna 5 - c). Formas iguais
+// perto das certas (e pares espelhados que não são vermelhos) estão lá para confundir.
 const FORMAS = [
-  ['q', 'q', 't', '', '', 't'],
-  ['', 't', '', '', '', 'h'],
-  ['', 'p', '', 'q', 't', ''],
-  ['q', '', 'q', 't', '', ''],
-  ['h', 'h', '', '', 't', ''],
-  ['t', 'h', '', 'p', '', 'q'],
+  ['q', 't', '', 't', 't', ''],
+  ['', 'h', 'q', '', 'h', 'q'],
+  ['q', '', 't', 'p', '', 'q'],
+  ['h', '', 'p', 'p', 't', ''],
+  ['t', 'p', '', '', 'q', 't'],
+  ['h', '', 'q', 't', '', 'h'],
 ];
-// (conferido com a captura 16 de 2014, que mostra o tabuleiro resolvido)
-const SOLUCAO = new Set(['3,3', '0,2', '4,0', '5,0', '5,5']);
+// peças vermelhas, fixas (linha,coluna)
+const FIXAS = new Set(['0,1', '2,5', '3,2', '5,0']);
+// a resposta é o espelho de cada peça vermelha (a forma do outro lado é sempre a mesma)
+const SOLUCAO = new Set([...FIXAS].map((k) => { const [y, x] = k.split(',').map(Number); return `${y},${5 - x}`; }));
 
 function desenharForma(g, f, cx, cy, r, cor, larg) {
   g.strokeStyle = cor; g.lineWidth = larg;
@@ -1009,14 +1032,16 @@ function desenharForma(g, f, cx, cy, r, cor, larg) {
 
 function tabuleiro(j) {
   return new Promise((fim) => {
-    const acesas = new Set(['3,3']);
-    let cx = 3, cy = 3, t = 0;
+    const acesas = new Set();      // só as do jogador; as vermelhas ficam à parte
+    let cx = 1, cy = 1, t = 0, errou = 0, travada = null;
     // casas de 32 px a partir de (192,128); moldura de ripas de 1 tile em volta (captura 16)
     const X0 = 192, Y0 = 128, C = 32;
     j.brilho = 1; j.alvoBrilho = 1;
     j.overlay = {
       atualizar() {
         t++;
+        if (errou) errou--;
+        if (travada && --travada.t <= 0) travada = null;
         if (entrada.repetiu('direita')) { cx = (cx + 1) % 6; som.cursor(); }
         if (entrada.repetiu('esquerda')) { cx = (cx + 5) % 6; som.cursor(); }
         if (entrada.repetiu('baixo')) { cy = (cy + 1) % 6; som.cursor(); }
@@ -1024,16 +1049,23 @@ function tabuleiro(j) {
         if (entrada.disparou('ok')) {
           const k = `${cy},${cx}`;
           if (!FORMAS[cy][cx]) { som.erro(); return; }
+          // as vermelhas não mudam de jeito nenhum: só um tranco de recusa
+          if (FIXAS.has(k)) { som.erro(); travada = { k, t: 16 }; return; }
           if (acesas.has(k)) acesas.delete(k); else acesas.add(k);
           som.ok();
           if (acesas.size === SOLUCAO.size && [...SOLUCAO].every((s) => acesas.has(s))) {
             j.overlay = null; som.destrancar(); fim(true);
+          } else if (acesas.size === SOLUCAO.size) {
+            // tantas acesas quanto vermelhas, mas o reflexo não bate: o tabuleiro estremece
+            som.erro(); errou = 24;
           }
         }
         if (entrada.disparou('cancelar')) { j.overlay = null; fim(false); }
       },
       // (desenhado na caixa de desenho 544x416; o jogo já pintou a tela de preto)
       desenhar(g) {
+        const sx = errou ? ((errou * 7) % 5) - 2 : 0;
+        g.save(); g.translate(sx, 0);
         // moldura de ripas verticais (1 tile) em volta das 6x6 casas
         const fx = X0 - 32, fy = Y0 - 32, fw = C * 6 + 64, fh = C * 6 + 64;
         g.fillStyle = '#161616'; g.fillRect(fx, fy, fw, fh);
@@ -1042,15 +1074,34 @@ function tabuleiro(j) {
           g.fillStyle = '#1d1d1d'; g.fillRect(fx + i + 3, fy, 1, fh);
         }
         g.fillStyle = '#000'; g.fillRect(X0 - 4, Y0 - 4, C * 6 + 8, C * 6 + 8);
+        // a linha do espelho: um vidro fino no meio, com um brilho que corre devagar
+        const mx = X0 + C * 3;
+        g.fillStyle = '#2c2c2c'; g.fillRect(mx - 1, Y0 - 4, 2, C * 6 + 8);
+        const by = Y0 - 4 + (((t * 0.6) % (C * 6 + 40)) - 20);
+        const gr = g.createLinearGradient(0, by - 20, 0, by + 20);
+        gr.addColorStop(0, 'rgba(200,200,200,0)'); gr.addColorStop(0.5, 'rgba(200,200,200,0.35)'); gr.addColorStop(1, 'rgba(200,200,200,0)');
+        g.fillStyle = gr; g.fillRect(mx - 1, Math.max(Y0 - 4, by - 20), 2, 40);
         for (let y = 0; y < 6; y++) for (let x = 0; x < 6; x++) {
-          const f = FORMAS[y][x];
-          const px = X0 + x * C + C / 2, py = Y0 + y * C + C / 2;
+          const f = FORMAS[y][x], k = `${y},${x}`;
+          let px = X0 + x * C + C / 2;
+          const py = Y0 + y * C + C / 2;
           if (f) {
-            const on = acesas.has(`${y},${x}`);
-            desenharForma(g, f, px, py, 11, on ? '#e0e0e0' : '#3c3c3c', on ? 2 : 1.4);
+            if (FIXAS.has(k)) {
+              if (travada?.k === k) px += ((travada.t * 5) % 3) - 1;
+              // luz vermelha fixa, pulsando de leve
+              const p = 0.75 + 0.25 * Math.sin(t / 30 + x + y);
+              const halo = g.createRadialGradient(px, py, 0, px, py, 16);
+              halo.addColorStop(0, `rgba(170,30,30,${0.35 * p})`); halo.addColorStop(1, 'rgba(170,30,30,0)');
+              g.fillStyle = halo; g.fillRect(px - 16, py - 16, 32, 32);
+              desenharForma(g, f, px, py, 11, `rgba(220,60,60,${0.8 + 0.2 * p})`, 2.2);
+            } else {
+              const on = acesas.has(k);
+              desenharForma(g, f, px, py, 11, on ? '#e0e0e0' : '#3c3c3c', on ? 2 : 1.4);
+            }
           }
           if (x === cx && y === cy) cursor(g, px - 15, py - 15, 30, 30, t);
         }
+        g.restore();
         const dica = document.body.classList.contains('toque')
           ? 'Direcional: mover · OK: acender/apagar · Esc: sair'
           : 'Setas: mover · Enter: acender/apagar · Esc: sair';
