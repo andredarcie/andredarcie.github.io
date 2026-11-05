@@ -69,9 +69,13 @@ export const TILES = {
   borda_branca: { top: 'mA4', bx: 4, by: 1 },
   parede_branca: { wall: 'mA4', bx: 4, by: 1 },
   piso_azulejo: { a5: 'iA5', x: 0, y: 4 },
-  janela_arco: { b: 'mD', x: 7, y: 8, solido: false },
-  luminaria: { b: 'iC', x: 11, y: 13, w: 1, h: 2 },
-  lixeira: { b: 'mD', x: 14, y: 7 },
+  // a janela em arco tem 2 tiles na folha (arco + vidraças com o peitoril); antes só o arco aparecia
+  janela_arco: { b: 'mD', x: 7, y: 8, w: 1, h: 2, solido: false },
+  vaso_folhas: { b: 'mD', x: 7, y: 10, w: 1, h: 2 },
+  porta_hospital: { b: 'xA', x: 2, y: 5, w: 1, h: 2 },
+  luminaria: { b: 'xA', x: 4, y: 5, w: 1, h: 2 },
+  lixeira_branca: { b: 'xA', x: 7, y: 5 },
+  lixeira: { b: 'mD', x: 14, y: 7 },   // (a do quarto da rachadura)
 
   // banheiro
   parede_tijolo_escuro: { wall: 'dA4', bx: 2, by: 0 },

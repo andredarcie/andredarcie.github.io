@@ -127,7 +127,65 @@ def main():
         x0, y0 = 32 + gx, 96 + gy
         d.ellipse([x0, y0 + 2, x0 + 3, y0 + 6], fill=(235, 235, 235, 255))
         d.point((x0 + 1, y0 + 1), fill=(235, 235, 235, 255))
+    # hospital do flashback (conferido com o trailer, 7:10): porta de duas almofadas com verga
+    # e maçaneta à esquerda (2,5)-(2,6), abajur de pé (4,5)-(4,6) e lixeira branca (7,5)
+    porta_hospital(d, 64, 160)
+    abajur(d, 128, 160)
+    lixeira(d, 224, 160)
     S.save(OUT, optimize=True)
+
+
+def almofada(d, x0, y0, x1, y1):
+    """Almofada rebaixada de porta: sombra em cima/à esquerda, luz embaixo/à direita."""
+    d.rectangle([x0, y0, x1, y1], fill=(70, 70, 70, 255))
+    d.line([(x0, y0), (x1, y0)], fill=(42, 42, 42, 255)); d.line([(x0, y0), (x0, y1)], fill=(42, 42, 42, 255))
+    d.line([(x0, y1), (x1, y1)], fill=(112, 112, 112, 255)); d.line([(x1, y0), (x1, y1)], fill=(112, 112, 112, 255))
+    d.rectangle([x0 + 3, y0 + 3, x1 - 3, y1 - 3], outline=(86, 86, 86, 255))
+
+
+def porta_hospital(d, ox, oy):
+    # verga clara no alto
+    d.rectangle([ox + 1, oy, ox + 30, oy + 6], fill=(150, 150, 150, 255))
+    d.line([(ox + 1, oy + 1), (ox + 30, oy + 1)], fill=(190, 190, 190, 255))
+    d.line([(ox + 1, oy + 6), (ox + 30, oy + 6)], fill=(88, 88, 88, 255))
+    # batente escuro e folha da porta
+    d.rectangle([ox + 3, oy + 7, ox + 28, oy + 63], fill=(52, 52, 52, 255))
+    d.rectangle([ox + 5, oy + 9, ox + 26, oy + 63], fill=(82, 82, 82, 255))
+    d.line([(ox + 5, oy + 9), (ox + 26, oy + 9)], fill=(104, 104, 104, 255))
+    almofada(d, ox + 8, oy + 12, ox + 23, oy + 33)
+    almofada(d, ox + 8, oy + 40, ox + 23, oy + 60)
+    # maçaneta (à esquerda, na altura da travessa)
+    d.rectangle([ox + 6, oy + 35, ox + 8, oy + 38], fill=(205, 205, 205, 255))
+    d.point((ox + 8, oy + 38), fill=(120, 120, 120, 255))
+
+
+def abajur(d, ox, oy):
+    # cúpula: tigela clara com a boca escura em cima e uma faixa de brilho
+    d.ellipse([ox + 7, oy + 3, ox + 24, oy + 21], fill=(206, 206, 206, 255), outline=(92, 92, 92, 255))
+    d.ellipse([ox + 9, oy + 2, ox + 22, oy + 8], fill=(74, 74, 74, 255), outline=(150, 150, 150, 255))
+    d.line([(ox + 10, oy + 12), (ox + 21, oy + 12)], fill=(240, 240, 240, 255))
+    d.line([(ox + 11, oy + 17), (ox + 20, oy + 17)], fill=(170, 170, 170, 255))
+    # haste
+    d.rectangle([ox + 14, oy + 21, ox + 17, oy + 24], fill=(140, 140, 140, 255))
+    d.rectangle([ox + 15, oy + 24, ox + 16, oy + 56], fill=(190, 190, 190, 255))
+    d.line([(ox + 14, oy + 24), (ox + 14, oy + 56)], fill=(96, 96, 96, 255))
+    d.line([(ox + 17, oy + 24), (ox + 17, oy + 56)], fill=(130, 130, 130, 255))
+    # base redonda
+    d.ellipse([ox + 8, oy + 53, ox + 23, oy + 62], fill=(118, 118, 118, 255), outline=(58, 58, 58, 255))
+    d.arc([ox + 9, oy + 54, ox + 22, oy + 60], 190, 350, fill=(196, 196, 196, 255))
+
+
+def lixeira(d, ox, oy):
+    # cilindro branco com a tampa clara (canto de baixo à esquerda do hospital)
+    d.ellipse([ox + 7, oy + 26, ox + 25, oy + 31], fill=(120, 120, 120, 255))
+    for x in range(ox + 7, ox + 26):
+        t = (x - ox - 7) / 18
+        v = int(150 + 85 * (1 - abs(t - 0.4) / 0.6))
+        d.line([(x, oy + 13), (x, oy + 28)], fill=(v, v, v, 255))
+    d.line([(ox + 7, oy + 13), (ox + 7, oy + 28)], fill=(100, 100, 100, 255))
+    d.line([(ox + 25, oy + 13), (ox + 25, oy + 28)], fill=(120, 120, 120, 255))
+    d.ellipse([ox + 6, oy + 7, ox + 26, oy + 17], fill=(246, 246, 246, 255), outline=(130, 130, 130, 255))
+    d.ellipse([ox + 10, oy + 9, ox + 22, oy + 14], outline=(205, 205, 205, 255))
 
 
 def decalque_alto(src, x, y, h, limiar, ganho):

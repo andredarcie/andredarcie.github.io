@@ -1,7 +1,24 @@
-// Constantes e utilidades do motor (resolução do RPG Maker VX Ace: 544x416, tiles de 32).
-export const LARG = 544;
-export const ALT = 416;
+// Constantes e utilidades do motor. Tiles de 32 px, como no RPG Maker VX Ace.
+// A área do mundo (LARG x ALT, em pixels do jogo) se adapta à tela: no mínimo 544x416 (17x13 tiles,
+// a tela do jogo original) e o resto da tela mostra mais mapa em vez de faixas pretas.
 export const T = 32;
+export const BASE_L = 544;
+export const BASE_A = 416;
+export let LARG = BASE_L;
+export let ALT = BASE_A;
+// Tela real: w,h em px CSS; dpr do aparelho; zoom = px do aparelho por px do jogo; f = tamanho do texto (px CSS);
+// mx = faixa de cada lado que os textos e menus evitam (os controles de toque com o celular deitado).
+export const TELA = { w: BASE_L, h: BASE_A, dpr: 1, zoom: 1, f: 18, mx: 0 };
+export function definirTela(wCss, hCss, dpr, mx = 0) {
+  TELA.w = Math.max(160, wCss); TELA.h = Math.max(120, hCss); TELA.dpr = dpr;
+  TELA.mx = Math.min(mx, TELA.w * 0.25);
+  const wd = Math.round(TELA.w * dpr), hd = Math.round(TELA.h * dpr);
+  TELA.zoom = Math.min(wd / BASE_L, hd / BASE_A);
+  LARG = Math.ceil(wd / TELA.zoom);
+  ALT = Math.ceil(hd / TELA.zoom);
+  // texto legível: 18 px no celular (antes saía com ~12 px na tela em pé), até 28 px no computador
+  TELA.f = Math.max(18, Math.min(28, Math.round(Math.min(TELA.w, TELA.h * 1.3) / 30)));
+}
 
 export const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -13,6 +30,8 @@ const MAPA_TECLAS = {
   Enter: 'ok', NumpadEnter: 'ok', Space: 'ok', KeyZ: 'ok',
   Escape: 'cancelar', KeyX: 'cancelar', Backspace: 'cancelar',
   KeyI: 'inventario',
+  ShiftLeft: 'correr', ShiftRight: 'correr',
+  KeyM: 'mudo',
 };
 
 class Entrada {
@@ -21,7 +40,11 @@ class Entrada {
     this.apertou = new Set();
     this.repete = new Map();
     this.ultimaDir = null;
+    this.letras = [];          // caracteres digitados neste quadro (senha da caixa, código)
+    this.ultimaTecla = null;   // e.code da última tecla (Enter confirma o que foi digitado)
     addEventListener('keydown', (e) => {
+      if (e.key && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) this.letras.push(e.key);
+      this.ultimaTecla = e.code;
       const k = MAPA_TECLAS[e.code];
       if (!k) return;
       e.preventDefault();
@@ -42,6 +65,7 @@ class Entrada {
   // Chamado uma vez por quadro, depois da lógica.
   fimDoQuadro() {
     this.apertou.clear();
+    this.letras.length = 0;
     for (const [k, n] of this.repete) this.repete.set(k, n + 1);
   }
   disparou(k) { return this.apertou.has(k); }

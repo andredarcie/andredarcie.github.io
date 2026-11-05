@@ -1,9 +1,9 @@
 // Roteiro de cada mapa: eventos, falas e quebra-cabeças, na ordem do trailer de 2014.
-// Falas copiadas do jogo (inclusive a grafia original: "Mais" por "mas", "esta" sem acento etc.).
-import { quadros, entrada, LARG, ALT } from './base.js';
+// Falas do jogo de 2014, com a ortografia revisada (acentos, vírgulas, "mas"/"mais", "o que" etc.).
+import { quadros, entrada } from './base.js';
 import { som } from './som.js';
 import { HEROI, Evento } from './jogo.js';
-import { janela, texto, cursor } from './janela.js';
+import { janela, texto, cursor, fonteTexto, pxCaixa } from './janela.js';
 
 const V = '\\c[2]', B = '\\c[0]'; // vermelho / normal
 
@@ -41,7 +41,7 @@ const saida = (x, y, mapa, tx, ty, dir, extra = {}) => ({
   },
 });
 
-const trancada = (x, y, msgs = ['A porta esta trancada.'], extra = {}) => ({
+const trancada = (x, y, msgs = ['A porta está trancada.'], extra = {}) => ({
   x, y, gatilho: 'toque', prioridade: 1, solido: true, ...extra,
   async rodar(j) { som.trancada(); for (const m of msgs) await j.fala(m); },
 });
@@ -74,17 +74,23 @@ export const HISTORIA = {
       await quadros(30);
       await j.acender(60);
       await quadros(20);
-      await j.fala('Meu Deus que dor de cabeça.');
+      await j.fala('Meu Deus, que dor de cabeça.');
       h.virar('esquerda'); await quadros(80); h.virar('direita'); await quadros(80); h.virar('baixo'); await quadros(40);
-      await j.fala('Mais que lugar é esse?');
-      await j.fala('Eu não me lembro de nada, esta tudo\n muito confuso agora.');
+      await j.fala('Mas que lugar é esse?');
+      await j.fala('Eu não me lembro de nada, está tudo\nmuito confuso agora.');
       h.virar('cima'); await quadros(16);
       await j.fala('Que lugar sombrio.');
       h.virar('baixo'); await quadros(10);
-      await j.fala('Sim... , deve ser um sonho.');
-      await j.fala('Para mover o personagem principal pressione as setas\n"Acima", "abaixo", "direita", "esquerda".', 'alto');
-      await j.fala('Para fazer alguma ação no jogo pressione\n"Enter" e para cancelar pressione "Esc".', 'alto');
-      await j.fala('Para abrir o inventário pressione "i"', 'alto');
+      await j.fala('Sim... deve ser um sonho.');
+      if (document.body.classList.contains('toque')) {
+        await j.fala('Para mover o personagem, use o direcional.', 'alto');
+        await j.fala('Para interagir com algo, toque em "OK"; para cancelar, toque em "Esc". Tocar na tela também passa as mensagens.', 'alto');
+        await j.fala('Para abrir o inventário, toque em "I".', 'alto');
+      } else {
+        await j.fala('Para mover o personagem, use as setas (ou W, A, S, D). Segure Shift para correr.', 'alto');
+        await j.fala('Para interagir com algo, pressione Enter (ou Espaço); para cancelar, pressione Esc.', 'alto');
+        await j.fala('Para abrir o inventário, pressione I. A tecla M liga e desliga o som.', 'alto');
+      }
     },
     eventos: [
       lampiao(8, 3),
@@ -94,10 +100,10 @@ export const HISTORIA = {
         id: 'carta', x: 7, y: 9, prioridade: 0, brilha: true, grafico: { tile: 'xA', x: 7, y: 0 },
         async rodar(j) {
           await j.mostrarFigura('carta', 24);
-          await j.fala(`${V}Nascido do fogo.\nBem vindo ao seu novo lar.`);
-          await j.fala(`${V}Agora que você esta sozinho não\npoderá pedir ajuda.`);
+          await j.fala(`${V}Nascido do fogo.\nBem-vindo ao seu novo lar.`);
+          await j.fala(`${V}Agora que você está sozinho, não\npoderá pedir ajuda.`);
           await j.tirarFigura(24);
-          await j.fala('Mais que tipo de carta é essa?');
+          await j.fala('Mas que tipo de carta é essa?');
         },
       },
       {
@@ -106,8 +112,8 @@ export const HISTORIA = {
           const h = j.heroi;
           if (j.flags.grito) return respiroDepoisDoGrito(j);
           if (j.flags.tentouGrade) { await j.fala('Droga! Não consigo quebrar a grade.'); return; }
-          await falas(j, ['Uma entrada de ar.', 'Um cheiro estranho vem daqui.', 'Um cheiro de carne podre.', 'Oque será que tem lá?',
-            'A grade esta um pouco enferrujada,\ntalvez eu possa quebra-la.']);
+          await falas(j, ['Uma entrada de ar.', 'Um cheiro estranho vem daqui.', 'Um cheiro de carne podre.', 'O que será que tem lá?',
+            'A grade está um pouco enferrujada,\ntalvez eu possa quebrá-la.']);
           await forcarGrade(j);
           await j.fala('O único modo de eu sair é por aqui.');
           await quadros(20);
@@ -128,11 +134,11 @@ export const HISTORIA = {
           h.virar('esquerda'); await quadros(60); h.virar('direita'); await quadros(60); h.virar('baixo'); await quadros(10);
           await j.fala('Isso é real.');
           await h.andar('direita', j, 1);
-          await j.fala('Oque esta acontecendo?');
+          await j.fala('O que está acontecendo?');
           await h.andar('esquerda', j, 2);
           await j.fala('Droga! Isso tudo é real.');
           h.virar('baixo');
-          await falas(j, ['Não estou em um sonho.', 'Deus por favor me tire daqui.', 'Por favor!']);
+          await falas(j, ['Não estou em um sonho.', 'Deus, por favor, me tire daqui.', 'Por favor!']);
           await quadros(30);
           await j.fala('Socorro!');
           await quadros(60);
@@ -202,7 +208,7 @@ export const HISTORIA = {
       saida(21, 5, 'quarto2', 7, 9, 'cima', { parede: true }),
       saida(27, 5, 'pilares', 48, 8, 'esquerda', {
         parede: true,
-        async antes(j) { if (!j.flags.bronzeUsada) { som.trancada(); await j.fala('A porta esta trancada.'); return false; } },
+        async antes(j) { if (!j.flags.bronzeUsada) { som.trancada(); await j.fala('A porta está trancada.'); return false; } },
       }),
       trancada(14, 5),
       // vão de porta do banheiro
@@ -210,7 +216,7 @@ export const HISTORIA = {
       // saídas de baixo
       seta(6, 9), saida(6, 9, 'quarto_caixa', 7, 6, 'baixo'),
       seta(14, 9), saida(14, 9, 'quarto_rachadura', 7, 9, 'cima', {
-        async antes(j) { if (!j.flags.bronzeUsada) { som.trancada(); await j.fala('A porta esta trancada.'); return false; } },
+        async antes(j) { if (!j.flags.bronzeUsada) { som.trancada(); await j.fala('A porta está trancada.'); return false; } },
       }),
       seta(21, 9), trancada(21, 10),
       seta(41, 10),
@@ -219,12 +225,12 @@ export const HISTORIA = {
         async rodar(j) {
           if (j.flags.porta14) { som.porta(); await j.transferir('sala14', 7, 5, 'baixo'); return; }
           som.trancada();
-          await j.fala('A porta esta trancada.');
+          await j.fala('A porta está trancada.');
           await j.fala(`Um aviso na porta:\n${V}"Essa porta tem que estar sempre trancada."`);
         },
         async usar(j, item) {
           if (item !== 'chave14') return false;
-          await j.fala('Esta porta esta trancada deve ter algo\nde alguma importância aqui dentro.');
+          await j.fala('Esta porta está trancada. Deve ter algo\nde alguma importância aqui dentro.');
           som.destrancar();
           await j.fala('Destrancou.');
           j.flags.porta14 = true;
@@ -247,13 +253,13 @@ export const HISTORIA = {
         async rodar(j) {
           if (j.flags.caixa2) { await j.fala('Não tem mais nada aqui.'); return; }
           if (!j.flags.caixa1) {
-            await j.fala('Para abrir essa caixa é preciso um código.', 'baixo');
+            await j.fala('Para abrir esta caixa, é preciso um código.', 'baixo');
             const s = await j.digitarNome(12);
             if (s.trim().toLowerCase() !== 'perdido') { som.erro(); await j.fala('Não deu certo.', 'baixo'); return; }
             j.flags.caixa1 = true;
             await j.fala('Deu certo.', 'baixo');
           }
-          const n = await j.numero('Tem mais um código agora é com números.', 4, 0, 'baixo');
+          const n = await j.numero('Tem mais um código. Agora é com números.', 4, 0, 'baixo');
           if (n !== 11) { som.erro(); await j.fala('Não abriu.', 'baixo'); return; }
           som.destrancar();
           await j.fala('Abriu.', 'baixo');
@@ -269,7 +275,7 @@ export const HISTORIA = {
         x: 5, y: 6, prioridade: 1, solido: true,
         async rodar(j) {
           if (j.flags.ladrao) { await j.fala('Não tem mais nada aqui.'); return; }
-          await j.fala('Um armario trancado.');
+          await j.fala('Um armário trancado.');
         },
         async usar(j, item) {
           if (item !== 'pequena' || j.flags.ladrao) return false;
@@ -304,7 +310,7 @@ export const HISTORIA = {
           await j.fala('Uma chave.');
           // no jogo original esta chave entra no inventário como uma segunda "Chave 14"
           await j.ganhar('chave14', false);
-          await j.fala(`${V}Chave de armario${B} adicionada.`, 'baixo');
+          await j.fala(`${V}Chave de armário${B} adicionada.`, 'baixo');
           await cenaMonstro(j);
         },
       },
@@ -336,7 +342,7 @@ export const HISTORIA = {
       if (j.flags.banheiro) return;
       j.flags.banheiro = true;
       await quadros(20);
-      await j.fala('Ei tem alguém ai?');
+      await j.fala('Ei, tem alguém aí?');
       await quadros(20);
       await j.fala('Parece que eu estava enganado.');
       await j.fala(`${V}Olhe no espelho.`);
@@ -347,8 +353,8 @@ export const HISTORIA = {
         x: 15, y: 6, prioridade: 1, solido: true,
         async rodar(j) {
           await j.fala('Não consigo ver meu reflexo.');
-          await j.fala('Mais... O espelho parece estar limpo.');
-          await j.fala('Mais oque tem de errado.');
+          await j.fala('Mas... o espelho parece estar limpo.');
+          await j.fala('Mas o que tem de errado?');
         },
       },
       fala(3, 3, ['Tem um número riscado na parede.']), fala(6, 3, ['Tem um número riscado na parede.']),
@@ -366,7 +372,7 @@ export const HISTORIA = {
         x: 7, y: 4, gatilho: 'toque', prioridade: 1, solido: true,
         async rodar(j) {
           if (!j.flags.escada) {
-            const n = await j.numero('Esta porta esta trancada com código.', 4, 1320, 'meio');
+            const n = await j.numero('Esta porta está trancada com um código.', 4, 1320, 'meio');
             if (n !== 1264) { som.trancada(); return; }
             som.destrancar();
             j.flags.escada = true;
@@ -385,7 +391,7 @@ export const HISTORIA = {
       {
         x: 8, y: 8, gatilho: 'toque', prioridade: 1, solido: true,
         async rodar(j) {
-          await j.fala(`A um aviso na porta:\n${V}"Não entre aqui, por favor!"`);
+          await j.fala(`Há um aviso na porta:\n${V}"Não entre aqui, por favor!"`);
           const s = await j.escolha('Entrar?', ['Sim', '\\c[2]Não']);
           if (s !== 0) return;
           som.porta();
@@ -405,11 +411,11 @@ export const HISTORIA = {
       await quadros(20);
       som.batida(); j.tremor = 10;
       await quadros(30);
-      await j.fala('Oque foi isso?');
+      await j.fala('O que foi isso?');
       j.heroi.virar('direita');
       await quadros(20);
-      await j.fala('Droga a porta esta trancada.');
-      await j.fala('Ei quem é você?');
+      await j.fala('Droga, a porta está trancada.');
+      await j.fala('Ei, quem é você?');
       await j.fala('Abra a porta agora!');
       await quadros(30);
       await j.fala('Parece que ele se foi...');
@@ -422,14 +428,14 @@ export const HISTORIA = {
         x: 50, y: 8, gatilho: 'toque', prioridade: 1, solido: true,
         async rodar(j) {
           if (j.flags.bronzeUsada) { som.porta(); await j.transferir('corredor', 27, 6, 'baixo'); return; }
-          som.trancada(); await j.fala('Droga a porta esta trancada.');
+          som.trancada(); await j.fala('Droga, a porta está trancada.');
         },
         async usar(j, item) {
           if (item !== 'bronze') return false;
           som.destrancar();
-          await j.fala('Abriu porta.');
+          await j.fala('A porta abriu.');
           j.flags.bronzeUsada = true;
-          const s = await j.escolha('Deseja descartar chave?', ['Sim', '\\c[2]Não'], 'meio');
+          const s = await j.escolha('Deseja descartar a chave?', ['Sim', '\\c[2]Não'], 'meio');
           if (s === 0) j.perder('bronze');
           return true;
         },
@@ -461,7 +467,7 @@ export const HISTORIA = {
       j.flags.armadilhas = true;
       await quadros(20);
       await j.fala('Sala sem saída.\nVou procurar algo que possa me ajudar.');
-      await j.fala('Esse lugar esta cheio de armadilhas.');
+      await j.fala('Esse lugar está cheio de armadilhas.');
       await j.fala('Tenho que tomar cuidado.');
     },
     porQuadro(j) {
@@ -481,9 +487,9 @@ export const HISTORIA = {
           j.flags.bronze = true;
           await j.ganhar('bronze');
           await j.fala('Talvez essa chave sirva para abrir a porta no\nfim do corredor.');
-          await j.fala('Porque alguém está fazendo isso?');
+          await j.fala('Por que alguém está fazendo isso?');
           await j.fala('É algum tipo de teste para dificultar a saída\ndesse lugar?');
-          await j.fala('Pesadelo ou realidade eu tenho que sair daqui.');
+          await j.fala('Pesadelo ou realidade, eu tenho que sair daqui.');
         },
       },
     ],
@@ -511,7 +517,7 @@ export const HISTORIA = {
       {
         x: 7, y: 5, prioridade: 1, solido: true,
         async rodar(j) {
-          await j.fala(`Tem algo escrito:\n${V}"O enigma já esta resolvido, agora só\nfalta imitar as outras peças."`);
+          await j.fala(`Tem algo escrito:\n${V}"O enigma já está resolvido, agora só\nfalta imitar as outras peças."`);
           await j.apagar(20);
           const ok = await tabuleiro(j);
           if (!ok) { await j.acender(20); return; }
@@ -534,12 +540,12 @@ export const HISTORIA = {
       if (j.flags.descanso) return;
       j.flags.descanso = true;
       await quadros(40);
-      await falas(j, ['Estou com muita dor de cabeça.', 'Vou parar um pouco.', 'Não sei como estou aguentado.',
+      await falas(j, ['Estou com muita dor de cabeça.', 'Vou parar um pouco.', 'Não sei como estou aguentando.',
         'Esse lugar passa uma energia negativa.', 'Parece que outras pessoas estiveram\naqui antes de mim.', 'E elas sentiam medo.',
-        'Como vou saber se isso tudo é real, pode ser\ntudo um simples pesadelo.', 'A libertação seria suicidio?', 'Mais...',
+        'Como vou saber se isso tudo é real? Pode ser\ntudo um simples pesadelo.', 'A libertação seria suicídio?', 'Mais...',
         'Não tenho coragem.', 'Eu creio que estar aqui tem algum\nsentido.', 'Vou seguir até o fim.']);
       await j.apagar(40);
-      await j.narrar('Apos caminhar por esse lugar, em busca de uma\nforma de sair, encontro algo que não poderia\nimaginar', 300, 170);
+      await j.narrar('Após caminhar por esse lugar em busca de uma\nforma de sair, encontro algo que eu não poderia\nimaginar.', 300, 170);
       await j.transferir('giratoria', 9, 7, 'cima', { fade: false });
       await j.acender(40);
     },
@@ -587,12 +593,12 @@ export const HISTORIA = {
         id: 'urso', x: 6, y: 6, prioridade: 1, solido: true, dy: 14, cond: () => !estado().urso,
         grafico: { folha: 'chars/vOther3', tipo: 'alto', idx: 3, linha: 3, quadro: 0, objeto: true },
         async rodar(j) {
-          await falas(j, ['Um urso de pelúcia, em um lugar como\nesse?', 'Será que a alguma criança por aqui?',
+          await falas(j, ['Um urso de pelúcia em um lugar como\nesse?', 'Será que há alguma criança por aqui?',
             'Tem um buraco na barriga do urso,\num corte de faca.', 'Espere!', 'Tem um bilhete aqui.']);
-          await falas(j, [`${V}Meu querido papai.`, `${V}Eu estou rezando por você.`, `${V}Mais eu acho que não vai resolver.`,
-            `${V}Eles, os homens do mal estão atrás de\nvocê.`, `${V}Eu tenho uma amiga.`, `${V}Todos falam que é minha imaginação.`,
-            `${V}Porque ela não existe.`, `${V}Mais ela é única para mim, mais ela diz\ncoisas ruins sobre você.`,
-            `${V}Deste que você desapareceu só tenho\na companhia dela.`, `${V}Hoje foi visitar seu tumulo.`,
+          await falas(j, [`${V}Meu querido papai.`, `${V}Eu estou rezando por você.`, `${V}Mas eu acho que não vai resolver.`,
+            `${V}Eles, os homens do mal, estão atrás de\nvocê.`, `${V}Eu tenho uma amiga.`, `${V}Todos falam que é minha imaginação.`,
+            `${V}Porque ela não existe.`, `${V}Mas ela é única para mim, só que ela diz\ncoisas ruins sobre você.`,
+            `${V}Desde que você desapareceu, só tenho\na companhia dela.`, `${V}Hoje fui visitar seu túmulo.`,
             `${V}Eu deixei um presente para ela.`, `${V}Um ursinho de pelúcia.`]);
           await quadros(30);
           await j.fala('Parece que eu já vi esse urso de pelúcia\nem algum lugar.');
@@ -601,7 +607,7 @@ export const HISTORIA = {
           som.susto();
           await quadros(60);
           await j.acender(50);
-          await j.fala('Mais oque aconteceu?\nAonde esta o urso de pelúcia?');
+          await j.fala('Mas o que aconteceu?\nOnde está o urso de pelúcia?');
         },
       },
     ],
@@ -618,11 +624,11 @@ export const HISTORIA = {
       },
       {
         x: 8, y: 4, gatilho: 'toque', prioridade: 1, solido: true,
-        async rodar(j) { som.trancada(); await j.fala('A porta esta trancada.'); },
+        async rodar(j) { som.trancada(); await j.fala('A porta está trancada.'); },
         async usar(j, item) {
           if (item !== 'chave') return false;
           som.destrancar();
-          await j.fala('Destrancou porta.');
+          await j.fala('A porta foi destrancada.');
           j.perder('chave');
           await j.fala('A chave quebrou ao abrir a porta.');
           await finalTrailer(j);
@@ -653,10 +659,10 @@ async function respiroDepoisDoGrito(j) {
   if (!j.flags.viuRachadura) {
     await j.fala('O grito veio daqui.');
     await quadros(320);      // no trailer ele fica olhando a grade uns 5 s antes de ver a rachadura (1:50–1:56)
-    await falas(j, ['Uma rachadura no cano de ferro.', 'Mais... Como eu não tinha visto isso antes?', 'Tenho que sair daqui.']);
+    await falas(j, ['Uma rachadura no cano de ferro.', 'Mas... como eu não tinha visto isso antes?', 'Tenho que sair daqui.']);
     j.flags.viuRachadura = true;
   }
-  const s = await j.escolha('<> Quebrar grade?', ['Sim', '\\c[2]Não']);
+  const s = await j.escolha('<> Quebrar a grade?', ['Sim', '\\c[2]Não']);
   if (s !== 0) return;
   await j.apagar(30);
   som.metal(); await quadros(20); som.quebrar(); await quadros(30);
@@ -668,7 +674,7 @@ async function respiroDepoisDoGrito(j) {
 
 // ---------------- duto ----------------
 async function quebrarGradeDuto(j) {
-  await j.fala('Eu posso utilizar o cano para quebrar\na grade forçando ela.');
+  await j.fala('Eu posso usar o cano para forçar\na grade e quebrá-la.');
   const s = await j.escolha('<> Deseja quebrar?', ['Sim', '\\c[2]Não']);
   if (s !== 0) return;
   som.metal(); j.tremor = 10; await quadros(30); som.quebrar(); j.tremor = 20;
@@ -687,14 +693,14 @@ async function becoDuto(j) {
 async function cenaMonstro(j) {
   const h = j.heroi;
   await quadros(20);
-  await j.fala(`${V}Ei saia daqui.`);
+  await j.fala(`${V}Ei, saia daqui.`);
   h.virar('cima'); await quadros(20);
   await j.fala('O que foi isso?');
-  await j.fala(`${V}Oque você esta fazendo saia\ndaqui`);
+  await j.fala(`${V}O que você está fazendo? Saia\ndaqui!`);
   await quadros(30);
   som.batida(); j.tremor = 8; await quadros(50); som.batida(); j.tremor = 8; await quadros(50); som.batida(); j.tremor = 8; await quadros(30);
-  await j.fala('Alguem esta tentando entrar aqui.');
-  await j.fala('Sinto que tem algo de errado tenho que me\nesconder.');
+  await j.fala('Alguém está tentando entrar aqui.');
+  await j.fala('Sinto que tem algo de errado. Tenho que me\nesconder.');
   j.flags.monstro = true;
   // esconde-se atrás da cadeira, junto da prateleira: o caminho e o ritmo do trailer (4:06–4:57)
   await rota(j, h, [[6, h.y], [6, 10], [8, 10], [8, 8], [10, 8], [10, 7]]);
@@ -727,8 +733,8 @@ async function cenaMonstro(j) {
   await rota(j, h, [[7, 7]]);
   h.virar('cima');
   await quadros(300);
-  await falas(j, ['Mais oque era aquilo?', 'Não pude ver.', 'Um monstro ele estava atrás de mim.', 'Eu sei o que ele queria, estava me\ncaçando.',
-    'É melhor eu tomar cuidado.', 'Sorte que ele não me viu.', 'Isso esta parecendo um pesadelo que\nnão posso acordar.']);
+  await falas(j, ['Mas o que era aquilo?', 'Não pude ver.', 'Um monstro... ele estava atrás de mim.', 'Eu sei o que ele queria, estava me\ncaçando.',
+    'É melhor eu tomar cuidado.', 'Sorte que ele não me viu.', 'Isso está parecendo um pesadelo do qual\nnão consigo acordar.']);
   await rota(j, h, [[7, 5]]);
   await j.apagar(40);
   await flashback(j);
@@ -744,20 +750,20 @@ async function flashback(j) {
   pai.visivel = true;
   som.porta();
   await pai.andar('cima', j, 3);
-  await j.fala(`${V}Ei você esta bem?`);
+  await j.fala(`${V}Ei, você está bem?`);
   kid.virar('baixo');
-  await j.fala('Pai eu vi algo escondido nas sombras.');
-  await j.fala(`${V}Você de novo com essa historia.`);
+  await j.fala('Pai, eu vi algo escondido nas sombras.');
+  await j.fala(`${V}Você de novo com essa história?`);
   await quadros(20);
-  await j.fala(`${V}Deixa-me ver.`);
+  await j.fala(`${V}Deixe-me ver.`);
   await rota(j, pai, [[9, 8], [9, 7], [7, 7]]);
   pai.virar('cima'); await quadros(180); pai.virar('esquerda'); await quadros(200); pai.virar('direita'); await quadros(210);
-  await j.fala(`${V}Não tem nada aqui filho.`);
+  await j.fala(`${V}Não tem nada aqui, filho.`);
   await rota(j, pai, [[10, 7]]);
   await j.fala(`${V}Não tem nada aqui, não fique imaginando\ncoisas.`);
   await j.fala(`${V}Isso é fruto de sua imaginação.`);
-  await j.fala('Mais pai.');
-  await j.fala(`${V}Não tenha medo de nada vou sempre\nlhe proteger.`);
+  await j.fala('Mas, pai...');
+  await j.fala(`${V}Não tenha medo de nada, eu vou sempre\nproteger você.`);
   await quadros(380);
   await j.fala(`${V}Durma tranquilo.`);
   // o pai sai pela porta de baixo (12,11)
@@ -766,14 +772,14 @@ async function flashback(j) {
   pai.visivel = false;
   await quadros(290);
   await rota(j, kid, [[9, 7], [9, 6]]);
-  await j.fala('Isso esta acontecendo cada vez mais.');
-  await j.fala('Eu sei oque eu vi.');
+  await j.fala('Isso está acontecendo cada vez mais.');
+  await j.fala('Eu sei o que eu vi.');
   // vai até a janela
   await rota(j, kid, [[7, 6], [7, 5]]);
   kid.virar('cima');
   await j.fala('Ele aparece nessa janela sempre me olhando.');
   await j.fala('O que ele quer de mim?');
-  await j.fala('As coisas estão fugindo de controle.');
+  await j.fala('As coisas estão fugindo do controle.');
   await j.fala('Será que eu fui o escolhido por ele?');
   j.flash = 0.9; som.trovao();
   await quadros(400);
@@ -782,7 +788,7 @@ async function flashback(j) {
   // tela preta
   j.mapa = null;
   j.brilho = 1; j.alvoBrilho = 1;
-  await j.fala('Só eu posso ver eles.');
+  await j.fala('Só eu posso vê-los.');
   await quadros(40);
   await j.fala('Eu tinha uma família.');
   await quadros(30);
@@ -796,26 +802,26 @@ async function flashback(j) {
   med.virar('baixo');
   await quadros(120);
   await j.fala('Médico.');
-  await j.fala('Me de noticias de minha esposa.');
-  await j.fala(`${V}Vou lhe dar um conselho meu amigo, volte\npara casa tome um bom banho e durma, você\ntem a filha para cuidar.`);
-  await j.fala('Eu não posso deixa-la aqui do jeito em\nque esta.');
+  await j.fala('Me dê notícias da minha esposa.');
+  await j.fala(`${V}Vou lhe dar um conselho, meu amigo: volte\npara casa, tome um bom banho e durma. Você\ntem uma filha para cuidar.`);
+  await j.fala('Eu não posso deixá-la aqui do jeito\nque está.');
   await j.fala(`${V}Nós estamos cuidando, tenha calma.`);
-  await j.fala(`${V}Além do mais você não pode ajudar\nem nada.`);
-  await j.fala('Pelo menos me diga oque ela tem.');
-  await j.fala(`${V}Esta bem eu vou falar.`);
-  await j.fala(`${V}Sua mulher tem uma doença muito grave\ne que não tem cura.`);
-  await j.fala(`${V}Nos aqui do hospital tentamos de\ntudo mais...`);
-  await j.fala(`${V}Mas, infelizmente os dias dela estão\ncontados.`);
+  await j.fala(`${V}Além do mais, você não pode ajudar\nem nada.`);
+  await j.fala('Pelo menos me diga o que ela tem.');
+  await j.fala(`${V}Está bem, eu vou falar.`);
+  await j.fala(`${V}Sua mulher tem uma doença muito grave,\nque não tem cura.`);
+  await j.fala(`${V}Nós aqui do hospital tentamos de\ntudo, mas...`);
+  await j.fala(`${V}Infelizmente, os dias dela estão\ncontados.`);
   await j.fala('Não acredito.');
   await j.fala(`${V}Acalme-se.`);
   await quadros(200);
   await j.fala(`${V}Você é católico?`);
-  await j.fala('Eu sou sim, mais não sou praticante.');
-  await j.fala(`${V}A unica coisa que digo a você é reze\nmuito porque para salvar sua mulher só\num milagre.`);
-  await j.fala('Isso não pode estar acontecendo ela\nnão pode nos deixar assim.');
-  await j.fala('Nós temos uma bela filha, eu ia casar\ncom ela, agora isso acontece.');
+  await j.fala('Sou, sim, mas não sou praticante.');
+  await j.fala(`${V}A única coisa que digo a você é: reze\nmuito, porque, para salvar sua mulher, só\num milagre.`);
+  await j.fala('Isso não pode estar acontecendo. Ela\nnão pode nos deixar assim.');
+  await j.fala('Nós temos uma bela filha, eu ia me casar\ncom ela, e agora isso acontece.');
   await j.fala('Não estou acreditando.');
-  await j.fala(`${V}Você mais do que nunca tem que ter fé.`);
+  await j.fala(`${V}Você, mais do que nunca, tem que ter fé.`);
   await quadros(30);
   await j.apagar(50);
   j.flags.flashback = true;
@@ -877,28 +883,28 @@ async function cenaVoz(j) {
   // vai até o meio da sala, de frente para as grades (12:02 do trailer)
   await rota(j, h, [[8, h.y], [8, 7]]);
   h.virar('cima');
-  await j.fala(`${V}Para aonde você vai?`);
-  await j.fala('Ei quem é você?');
-  await j.fala('Você me prendeu aqui nesse lugar?\nOque você quer de mim?');
+  await j.fala(`${V}Para onde você vai?`);
+  await j.fala('Ei, quem é você?');
+  await j.fala('Você me prendeu aqui nesse lugar?\nO que você quer de mim?');
   await quadros(30);
-  await j.fala('Você esta preso aqui também?');
+  await j.fala('Você está preso aqui também?');
   await j.fala('Por favor, me ajude a sair desse lugar.');
   await j.fala('Estou tentando fugir daqui, estou indo\npelo corredor.');
   await j.fala('Encontrei uma chave dentro de uma caixa,\ntalvez ela sirva.');
-  await j.fala('Alguém me trancou eu não pude fazer nada,\nespere... Foi você que trancou a porta?');
+  await j.fala('Alguém me trancou, eu não pude fazer nada.\nEspere... Foi você que trancou a porta?');
   await quadros(170);
-  await j.fala(`${V}Oque? Corredor?`);
+  await j.fala(`${V}O quê? Corredor?`);
   som.tensao(0.6);
   await j.fala(`${V}Não! Não vá por lá! Não vá por lá!`);
-  await j.fala(`${V}O mal em forma física o esta esperando no\nfinal do corredor!`);
+  await j.fala(`${V}O mal em forma física está esperando você no\nfinal do corredor!`);
   await j.fala(`${V}Ele está lá!`);
-  await j.fala(`${V}É algo além que possa imaginar você não\npode fazer isso!`);
-  await j.fala(`${V}Você encontrara algo pior que o sofrimento!`);
-  await j.fala('Mais... Não tem para onde eu ir!');
+  await j.fala(`${V}É algo além do que você possa imaginar!\nVocê não pode fazer isso!`);
+  await j.fala(`${V}Você encontrará algo pior que o sofrimento!`);
+  await j.fala('Mas... não tem para onde eu ir!');
   await j.fala('O corredor é o único caminho!');
   await j.fala('Você está falando do monstro?');
   await quadros(40);
-  await j.fala('Ei? Você está ai?');
+  await j.fala('Ei? Você está aí?');
   await quadros(210);
   som.tensao(0);
   await j.fala('Acho que ele se foi...');
@@ -989,8 +995,8 @@ function tabuleiro(j) {
         }
         if (entrada.disparou('cancelar')) { j.overlay = null; fim(false); }
       },
+      // (desenhado na caixa de desenho 544x416; o jogo já pintou a tela de preto)
       desenhar(g) {
-        g.fillStyle = '#000'; g.fillRect(0, 0, LARG, ALT);
         // moldura de ripas verticais (1 tile) em volta das 6x6 casas
         const fx = X0 - 32, fy = Y0 - 32, fw = C * 6 + 64, fh = C * 6 + 64;
         g.fillStyle = '#161616'; g.fillRect(fx, fy, fw, fh);
@@ -1008,6 +1014,10 @@ function tabuleiro(j) {
           }
           if (x === cx && y === cy) cursor(g, px - 15, py - 15, 30, 30, t);
         }
+        const dica = document.body.classList.contains('toque')
+          ? 'Direcional: mover · OK: acender/apagar · Esc: sair'
+          : 'Setas: mover · Enter: acender/apagar · Esc: sair';
+        texto(g, dica, 272, Y0 + C * 6 + 48, '#7a7a7a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
       },
     };
   });

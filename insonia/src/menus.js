@@ -1,47 +1,48 @@
-// Menus: inventário (Usar / Analizar / Descartar), teclado de nome (Scene_Name do VX Ace,
-// tabela traduzida) e o aviso "X Adicionado." quando um item entra.
-import { entrada, LARG, ALT } from './base.js';
+// Menus: inventário (Usar / Analisar / Descartar), teclado de nome (Scene_Name do VX Ace,
+// tabela traduzida) e o aviso "Novo item" quando um item entra. Os menus são desenhados na
+// "caixa de desenho" (544x416 escalada na tela) com o texto no tamanho legível da tela.
+import { entrada, TELA, BASE_L } from './base.js';
 import { img, tela } from './recursos.js';
-import { janela, cursor, texto, largura, FONTE, ALTURA_LINHA } from './janela.js';
+import { janela, cursor, texto, largura, quebrar, fonteTexto, pxCaixa, CORES } from './janela.js';
 import { ITENS } from './itens.js';
 import { som } from './som.js';
 
-export function icone(g, idx, x, y) {
+export function icone(g, idx, x, y, tam = 24) {
   if (idx === 'cano') {
     // o pedaço de cano do jogo: um traço fino e claro na diagonal
+    const k = tam / 24;
     g.save();
     g.lineCap = 'round';
-    g.strokeStyle = '#2a2a2a'; g.lineWidth = 4;
-    g.beginPath(); g.moveTo(x + 3, y + 3); g.lineTo(x + 21, y + 21); g.stroke();
-    g.strokeStyle = '#a8a8a8'; g.lineWidth = 2;
-    g.beginPath(); g.moveTo(x + 3, y + 3); g.lineTo(x + 21, y + 21); g.stroke();
+    g.strokeStyle = '#2a2a2a'; g.lineWidth = 4 * k;
+    g.beginPath(); g.moveTo(x + 3 * k, y + 3 * k); g.lineTo(x + 21 * k, y + 21 * k); g.stroke();
+    g.strokeStyle = '#a8a8a8'; g.lineWidth = 2 * k;
+    g.beginPath(); g.moveTo(x + 3 * k, y + 3 * k); g.lineTo(x + 21 * k, y + 21 * k); g.stroke();
     g.restore();
     return;
   }
   const s = img('pics/iconset');
-  g.drawImage(s, (idx % 16) * 24, Math.floor(idx / 16) * 24, 24, 24, x, y, 24, 24);
+  const liso = g.imageSmoothingEnabled; g.imageSmoothingEnabled = false;
+  g.drawImage(s, (idx % 16) * 24, Math.floor(idx / 16) * 24, 24, 24, x, y, tam, tam);
+  g.imageSmoothingEnabled = liso;
 }
 
-// Fundo dos menus: a tela do mapa borrada e escurecida (como o SceneManager.background_bitmap).
+// Fundo dos menus: a tela borrada e escurecida (como o SceneManager.background_bitmap). Fica
+// pequena de propósito: desenhada esticada, sai desfocada.
 export function fundoBorrado(origem) {
-  const p = tela(LARG / 4, ALT / 4);
+  const p = tela(Math.max(2, Math.round(origem.width / 8)), Math.max(2, Math.round(origem.height / 8)));
   const gp = p.getContext('2d');
   gp.imageSmoothingEnabled = true;
   gp.drawImage(origem, 0, 0, p.width, p.height);
-  const c = tela(LARG, ALT);
-  const g = c.getContext('2d');
-  g.imageSmoothingEnabled = true;
-  g.drawImage(p, 0, 0, LARG, ALT);
-  g.fillStyle = 'rgba(16,16,16,0.55)';
-  g.fillRect(0, 0, LARG, ALT);
-  return c;
+  gp.fillStyle = 'rgba(16,16,16,0.55)';
+  gp.fillRect(0, 0, p.width, p.height);
+  return p;
 }
 
 // ---------------- Inventário ----------------
 // Medidas tiradas do trailer (espaço 544x416).
 const INV = { x: 136, y: 84, w: 274, h: 248, cel: 40, cx: 149, cy: 99 };
 const CMD = { x: 214, y: 152, w: 120, h: 106 };
-const COMANDOS = ['Usar', 'Analizar', 'Descartar'];
+const COMANDOS = ['Usar', 'Analisar', 'Descartar'];
 
 export class Inventario {
   constructor(jogo) { this.jogo = jogo; this.ativo = false; }
@@ -80,35 +81,40 @@ export class Inventario {
     }
   }
 
+  // (desenhado dentro da caixa de desenho; o fundo borrado o jogo já pôs na tela inteira)
   desenhar(g) {
     if (!this.ativo) return;
-    g.drawImage(this.fundo, 0, 0);
     const L = this.lista();
-    // ajuda (topo)
-    janela(g, 0, 0, LARG, 52);
+    const fs = pxCaixa(1), fonte = fonteTexto(fs), lh = Math.round(fs * 1.35);
+    // ajuda (topo): nome e descrição do item, quebrando a linha se precisar
     const it = L[this.sel];
-    if (it) texto(g, `${ITENS[it.id].nome} - ${ITENS[it.id].desc}`, 21, 19);
+    const ajuda = it ? `${ITENS[it.id].nome}: ${ITENS[it.id].desc}` : 'Nenhum item.';
+    const linhas = quebrar(g, ajuda, BASE_L - 42, fonte);
+    const hAj = Math.round(linhas.length * lh + 26);
+    janela(g, 0, 0, BASE_L, hAj);
+    linhas.forEach((l, i) => texto(g, l, 21, 13 + i * lh, CORES[0], fonte));
     // itens
-    janela(g, INV.x, INV.y, INV.w, INV.h);
+    const dy = Math.max(0, hAj + 22 - INV.y);
+    janela(g, INV.x, INV.y + dy, INV.w, INV.h);
+    const fn = fonteTexto(pxCaixa(0.6));
     L.forEach((e, i) => {
-      const cx = INV.cx + (i % 6) * INV.cel, cy = INV.cy + Math.floor(i / 6) * 42;
+      const cx = INV.cx + (i % 6) * INV.cel, cy = INV.cy + dy + Math.floor(i / 6) * 42;
       if (i === this.sel) cursor(g, cx, cy, 39, 37, this.modo === 'lista' ? this.t : 0);
-      icone(g, ITENS[e.id].icone, cx + 8, cy + 3);
-      g.font = '10px "Times New Roman", serif'; g.textAlign = 'center'; g.textBaseline = 'top';
-      g.fillStyle = '#000'; g.fillText(String(e.n), cx + 21, cy + 27);
-      g.fillStyle = '#e0e0e0'; g.fillText(String(e.n), cx + 20, cy + 26);
-      g.textAlign = 'left';
+      icone(g, ITENS[e.id].icone, cx + 8, cy + 2);
+      if (e.n > 1) texto(g, String(e.n), cx + 33, cy + 22, CORES[0], fn, 'right');
     });
     if (this.modo === 'cmd') {
-      janela(g, CMD.x, CMD.y, CMD.w, CMD.h);
-      g.save();
-      g.beginPath(); g.rect(CMD.x + 8, CMD.y, 93, CMD.h); g.clip(); // "Descartar" sai cortado, como no jogo
+      // a janela de comandos se ajusta ao texto (antes "Descartar" saía cortado)
+      const lhc = Math.round(fs * 1.5);
+      const w = Math.max(...COMANDOS.map((c) => largura(g, c, fonte))) + 44;
+      const h = COMANDOS.length * lhc + 28;
+      const x = Math.round(INV.x + (INV.w - w) / 2), y = Math.round(INV.y + dy + 56);
+      janela(g, x, y, w, h);
       COMANDOS.forEach((c, i) => {
-        const y = CMD.y + 20 + i * ALTURA_LINHA;
-        if (i === this.cmd) cursor(g, CMD.x + 13, y, 88, ALTURA_LINHA, this.t);
-        texto(g, c, CMD.x + 18, y + 4);
+        const yy = y + 14 + i * lhc;
+        if (i === this.cmd) cursor(g, x + 10, yy, w - 20, lhc, this.t);
+        texto(g, c, x + 22, yy + (lhc - fs) / 2, CORES[0], fonte);
       });
-      g.restore();
     }
   }
 }
@@ -122,15 +128,18 @@ export class Aviso {
     a.t++;
     if (a.t > 90 || (a.t > 20 && (entrada.disparou('ok') || entrada.disparou('cancelar')))) { this.atual = null; a.fim(); }
   }
+  // (desenhado no espaço da tela, em px CSS)
   desenhar(g) {
     const a = this.atual; if (!a) return;
     const op = a.t < 8 ? a.t / 8 : 1;
-    janela(g, 0, 84, LARG, 56, op);
+    const f = TELA.f, fonte = fonteTexto(f), ic = a.ic != null ? Math.round(f * 1.4) : 0;
+    const w = Math.min(TELA.w - 2 * Math.max(8, TELA.mx), largura(g, a.s, fonte) + (ic ? ic + f * 0.6 : 0) + f * 2.4);
+    const h = Math.round(f * 2.9), x = Math.round((TELA.w - w) / 2), y = Math.round(TELA.h * 0.2);
+    janela(g, x, y, w, h, op);
     g.save(); g.globalAlpha = op;
-    const w = largura(g, a.s) + (a.ic != null ? 28 : 0);
-    let x = (LARG - w) / 2;
-    if (a.ic != null) { icone(g, a.ic, x, 100); x += 28; }
-    texto(g, a.s, x, 104);
+    let tx = x + f * 1.2;
+    if (ic) { icone(g, a.ic, tx, y + (h - ic) / 2, ic); tx += ic + f * 0.6; }
+    texto(g, a.s, tx, y + (h - f) / 2, CORES[0], fonte);
     g.restore();
   }
 }
@@ -165,7 +174,7 @@ export class TecladoNome {
   constructor() { this.ativo = false; }
   abrir(fundo, max = 12) {
     return new Promise((ok) => {
-      this.fundo = fundo; this.ativo = true; this.max = max; this.nome = ''; this.idx = 0; this.pag = 0; this.t = 0;
+      this.fundo = fundo; this.ativo = true; this.max = max; this.nome = ''; this.idx = 0; this.pag = 0; this.t = 0; this.digitou = false;
       this.fim = (s) => { this.ativo = false; ok(s); };
     });
   }
@@ -185,6 +194,17 @@ export class TecladoNome {
       }
       this.idx = i; som.cursor();
     };
+    // no computador dá para digitar a palavra direto (e Enter confirma)
+    const letras = entrada.letras.filter((ch) => /^[\p{L}\p{N}.,!?-]$/u.test(ch));
+    if (letras.length) {
+      for (const ch of letras) {
+        if (this.nome.length < this.max) { this.nome += ch; this.digitou = true; som.cursor(); }
+        else som.erro();
+      }
+      if (this.nome.length === this.max) this.idx = 89;
+      return;   // W, A, S, D, Z, X e I também são letras: não mexem na grade neste quadro
+    }
+    if (entrada.disparou('ok') && this.digitou && entrada.ultimaTecla === 'Enter') { som.ok(); this.fim(this.nome); return; }
     for (const d of ['direita', 'esquerda', 'baixo', 'cima']) if (entrada.repetiu(d)) mv(d);
     if (entrada.disparou('ok')) {
       const c = T[this.idx];
@@ -196,16 +216,17 @@ export class TecladoNome {
       if (this.nome.length) { som.cancelar(); this.nome = this.nome.slice(0, -1); } else som.erro();
     }
   }
+  // (desenhado dentro da caixa de desenho; o fundo borrado o jogo já pôs na tela inteira)
   desenhar(g) {
     if (!this.ativo) return;
-    g.drawImage(this.fundo, 0, 0);
+    const fs = Math.min(pxCaixa(1), 24), fonte = fonteTexto(fs);
     janela(g, NE.x, NE.y, NE.w, NE.h);
     // 12 casas de ~22,7 px a partir de x=180 (medido no trailer)
     const cw = 250 / 11;
     for (let i = 0; i < this.max; i++) {
       const x = Math.round(180 + i * cw), y = 70;
-      if (i < this.nome.length) texto(g, this.nome[i], x + 12, y + 3, undefined, undefined, 'center');
-      else texto(g, '_', x + 12, y + 4, undefined, undefined, 'center');
+      if (i < this.nome.length) texto(g, this.nome[i], x + 12, y + 12 - fs / 2, CORES[0], fonte, 'center');
+      else texto(g, '_', x + 12, y + 12 - fs / 2, CORES[0], fonte, 'center');
       if (i === this.nome.length) cursor(g, x, y, 24, 25, this.t);
     }
     janela(g, NI.x, NI.y, NI.w, NI.h);
@@ -216,8 +237,11 @@ export class TecladoNome {
       const x = 120 + col * 32 + (col >= 5 ? 16 : 0);
       const y = 164 + lin * 24;
       if (i === this.idx) cursor(g, x - 16, y, 32, 24, this.t);
-      texto(g, c, x, y + 4, undefined, undefined, 'center');
+      texto(g, c, x, y + 12 - fs / 2, CORES[0], c === 'OK' ? fonteTexto(fs * 0.8) : fonte, 'center');
     });
     if (T[this.idx] === undefined) this.idx = 0;
+    if (!document.body.classList.contains('toque')) {
+      texto(g, 'Dica: você pode digitar no teclado.', BASE_L / 2, NI.y + NI.h + 6, '#9a9a9a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
+    }
   }
 }

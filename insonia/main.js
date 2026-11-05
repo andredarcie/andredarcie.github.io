@@ -1,9 +1,9 @@
 // Boot: carrega as imagens, mostra a tela de título e começa o jogo.
-import { LARG, ALT, entrada, rodarLaco, gravacao } from './src/base.js';
+import { TELA, definirTela, entrada, rodarLaco, gravacao } from './src/base.js';
 import { carregar } from './src/recursos.js';
 import { Jogo } from './src/jogo.js';
 import { som } from './src/som.js';
-import { texto, FONTE, FONTE_NARRACAO } from './src/janela.js';
+import { texto, fonteTexto, fonteSerif } from './src/janela.js';
 
 const IMAGENS = [
   'tiles/iA2', 'tiles/iA4', 'tiles/iA5', 'tiles/iB', 'tiles/iC',
@@ -14,11 +14,12 @@ const IMAGENS = [
 ];
 
 const canvas = document.getElementById('tela');
-canvas.width = LARG; canvas.height = ALT;
 const g = canvas.getContext('2d');
 
-// Escala a tela no maior tamanho que cabe. No toque, em pé, desconta a faixa dos controles
-// (o padding do body); deitado, a tela usa a altura toda e os controles ficam dos lados.
+// O canvas ocupa a tela toda, na resolução real do aparelho (até 2x, para não pesar no celular).
+// O mundo mostra no mínimo a área do jogo original (17x13 tiles) e usa o resto da tela para mostrar
+// mais mapa. No toque, em pé, desconta a faixa dos controles (o padding do body); deitado, a tela
+// usa tudo e os controles ficam por cima, dos lados (e os textos desviam deles).
 function ajustar() {
   const b = document.body;
   const toque = b.classList.contains('toque');
@@ -26,12 +27,17 @@ function ajustar() {
   b.classList.toggle('retrato', toque && !deitado);
   b.classList.toggle('paisagem', toque && deitado);
   const cs = getComputedStyle(b);
-  const w = innerWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-  const h = innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-  const s = Math.max(0.2, Math.min(w / LARG, h / ALT));
-  const k = s >= 1 && !toque ? Math.floor(s * 4) / 4 : s;
-  canvas.style.width = `${Math.floor(LARG * k)}px`;
-  canvas.style.height = `${Math.floor(ALT * k)}px`;
+  const w = Math.floor(innerWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+  const h = Math.floor(innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom));
+  const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+  // a gravação de vídeo (?gravar) usa sempre a tela original, para sair igual em qualquer máquina
+  if (gravacao.ativa) definirTela(544, 416, 1, 0);
+  else definirTela(w, h, dpr, toque && deitado ? 172 : 0);
+  canvas.style.width = `${TELA.w}px`;
+  canvas.style.height = `${TELA.h}px`;
+  const bw = Math.round(TELA.w * dpr), bh = Math.round(TELA.h * dpr);
+  if (canvas.width !== bw || canvas.height !== bh) { canvas.width = bw; canvas.height = bh; }
+  g.imageSmoothingEnabled = false;
 }
 addEventListener('resize', ajustar);
 addEventListener('orientationchange', () => setTimeout(ajustar, 200));
@@ -42,9 +48,11 @@ const params = new URLSearchParams(location.search);
 
 async function iniciar() {
   await carregar(IMAGENS, (p) => {
-    g.fillStyle = '#000'; g.fillRect(0, 0, LARG, ALT);
-    g.fillStyle = '#444'; g.fillRect(172, 300, 200, 2);
-    g.fillStyle = '#bbb'; g.fillRect(172, 300, 200 * p, 2);
+    g.setTransform(TELA.dpr, 0, 0, TELA.dpr, 0, 0);
+    const w = Math.min(320, TELA.w * 0.6), x = (TELA.w - w) / 2, y = Math.round(TELA.h * 0.72);
+    g.fillStyle = '#000'; g.fillRect(0, 0, TELA.w, TELA.h);
+    g.fillStyle = '#444'; g.fillRect(x, y, w, 2);
+    g.fillStyle = '#bbb'; g.fillRect(x, y, w * p, 2);
   });
   document.getElementById('carga')?.remove();
   const jogo = new Jogo(canvas);
@@ -70,6 +78,8 @@ async function iniciar() {
       t++;
       // o ambiente do título começa no primeiro gesto (antes disso o navegador não deixa tocar)
       if (!somTitulo && som.pronto()) { somTitulo = true; som.mapa('titulo'); }
+      if (entrada.disparou('mudo')) jogo.avisarMudo();
+      if (jogo.recado && --jogo.recado.t <= 0) jogo.recado = null;
       if (entrada.repetiu('baixo') || entrada.repetiu('cima')) { sel = (sel + 1) % opcoes.length; som.destravar(); som.cursor(); }
       if (entrada.disparou('ok')) {
         som.destravar(); som.ok();
@@ -85,18 +95,44 @@ async function iniciar() {
     jogo.atualizar();
   }, () => {
     if (escolhido !== null) { jogo.desenhar(); return; }
-    g.fillStyle = '#000'; g.fillRect(0, 0, LARG, ALT);
-    const a = Math.min(1, t / 90);
-    g.globalAlpha = a;
-    texto(g, 'Insônia', LARG / 2, 140, '#cfcfcf', '40px Georgia, "Times New Roman", serif', 'center');
-    texto(g, 'O medo do desconhecido', LARG / 2, 194, '#7a7a7a', FONTE_NARRACAO.replace('23px', '16px'), 'center');
-    opcoes.forEach((o, i) => texto(g, (i === sel ? '> ' : '  ') + o, LARG / 2 - 50, 270 + i * 26, i === sel ? '#e6e6e6' : '#777', FONTE));
-    const dica = document.body.classList.contains('toque')
-      ? 'Direcional: andar   OK: ação   Esc: cancelar   I: inventário'
-      : 'Setas: andar   Enter: ação   Esc: cancelar   I: inventário';
-    texto(g, dica, LARG / 2, 384, '#4a4a4a', '12px "Courier New", monospace', 'center');
+    // tela de título em px CSS: tudo escala com o tamanho do texto da tela (TELA.f)
+    const W = TELA.w, H = TELA.h, f = TELA.f;
+    g.setTransform(TELA.dpr, 0, 0, TELA.dpr, 0, 0);
+    g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+    g.globalAlpha = Math.min(1, t / 90);
+    const ft = Math.round(Math.min(f * 3.4, (W - 2 * TELA.mx) / 6));
+    const yT = Math.round(H * 0.3);
+    texto(g, 'Insônia', W / 2, yT, '#cfcfcf', `${ft}px Georgia, "Times New Roman", serif`, 'center');
+    texto(g, 'O medo do desconhecido', W / 2, yT + ft * 1.3, '#8a8a8a', fonteSerif(Math.round(f * 1.05)), 'center');
+    const fo = fonteTexto(Math.round(f * 1.1)), lo = Math.round(f * 1.9);
+    g.font = fo;
+    const wo = Math.max(...opcoes.map((o) => g.measureText('> ' + o).width));
+    const yO = Math.round(Math.max(yT + ft * 1.3 + f * 3, H * 0.6));
+    opcoes.forEach((o, i) => texto(g, (i === sel ? '> ' : '  ') + o, (W - wo) / 2, yO + i * lo, i === sel ? '#e6e6e6' : '#7a7a7a', fo));
+    const toque = document.body.classList.contains('toque');
+    const dica = toque
+      ? 'Direcional: andar · OK: ação · Esc: cancelar · I: inventário'
+      : 'Setas ou WASD: andar · Shift: correr · Enter: ação · Esc: cancelar · I: inventário · M: som';
+    const fd = fonteTexto(Math.max(12, Math.round(f * 0.62)));
+    const ld = quebrarDica(dica, W - 2 * Math.max(16, TELA.mx), fd);
+    ld.forEach((l, i) => texto(g, l, W / 2, H - f * 1.4 - (ld.length - 1 - i) * f, '#5a5a5a', fd, 'center'));
     g.globalAlpha = 1;
+    jogo.desenharRecado(g);
+    g.setTransform(1, 0, 0, 1, 0, 0);
   });
+}
+
+// A dica dos controles quebra entre os itens (" · "), nunca no meio de um.
+function quebrarDica(s, maxW, fonte) {
+  g.font = fonte;
+  const out = [];
+  let linha = '';
+  for (const p of s.split(' · ')) {
+    const t = linha ? linha + ' · ' + p : p;
+    if (linha && g.measureText(t).width > maxW) { out.push(linha); linha = p; } else linha = t;
+  }
+  out.push(linha);
+  return out;
 }
 
 iniciar().catch((e) => {
@@ -149,10 +185,10 @@ for (const b of document.querySelectorAll('.pad [data-k]')) {
   for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) b.addEventListener(ev, off);
 }
 
-// Tocar na tela vale OK enquanto há texto aberto (falas, escolhas, avisos, título),
-// para não interagir com o cenário sem querer.
+// Tocar na tela (ou clicar com o mouse) vale OK enquanto há texto aberto (falas, escolhas,
+// avisos, narração, título), para não interagir com o cenário sem querer.
 canvas.addEventListener('pointerdown', (e) => {
-  if (e.pointerType === 'mouse') return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
   const j = window.__insonia;
   const temTexto = naTitulo || (j && (j.msg.aberta || j.aviso.atual || j.narracao));
   if (!temTexto) return;

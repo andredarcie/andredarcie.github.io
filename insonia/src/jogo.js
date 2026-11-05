@@ -1,11 +1,11 @@
 // O jogo: mapa atual, herói, eventos, câmera, luz e efeitos de tela, e a camada de interface.
-import { LARG, ALT, T, DIRS, OPOSTA, entrada, quadros, tickEsperas } from './base.js';
+import { LARG, ALT, T, TELA, BASE_L, BASE_A, OPOSTA, entrada, quadros, tickEsperas } from './base.js';
 import { tela } from './recursos.js';
 import { Mapa } from './mapa.js';
 import { Personagem, aplicarTom } from './personagem.js';
 import { Mensagem } from './mensagem.js';
 import { Inventario, Aviso, TecladoNome, fundoBorrado } from './menus.js';
-import { texto, FONTE_NARRACAO } from './janela.js';
+import { texto, quebrar, fonteSerif, fonteTexto, caixaDesign } from './janela.js';
 import { ITENS } from './itens.js';
 import { MAPAS } from './mapas/index.js';
 import { HISTORIA, ligarHistoria } from './historia.js';
@@ -34,8 +34,9 @@ export class Jogo {
     this.canvas = canvas;
     this.g = canvas.getContext('2d');
     this.g.imageSmoothingEnabled = false;
-    this.cena = tela(LARG, ALT);       // mapa + personagens (antes da luz)
+    this.cena = tela(LARG, ALT);       // mapa + personagens (antes da luz), em pixels do jogo
     this.luzC = tela(LARG, ALT);       // mapa de luz
+    this.nitida = null;                // a cena ampliada em escala inteira (ver mostrarCena)
     this.flags = {};
     this.vars = {};
     this.itens = [];
@@ -62,7 +63,7 @@ export class Jogo {
     if (e) e.n++; else this.itens.push({ id, n: 1 });
     const ordem = Object.keys(ITENS);
     this.itens.sort((a, b) => ordem.indexOf(a.id) - ordem.indexOf(b.id));
-    if (aviso) await this.aviso.mostrar(`${ITENS[id].nome} Adicionado.`.replace('. Adicionado', ' Adicionado'), ITENS[id].icone);
+    if (aviso) await this.aviso.mostrar(`${ITENS[id].nome} adicionad${ITENS[id].genero || 'o'}.`, ITENS[id].icone);
   }
   perder(id) { const e = this.itens.find((i) => i.id === id); if (e) e.n = Math.max(0, e.n - 1); this.itens = this.itens.filter((i) => i.n > 0); }
 
@@ -116,6 +117,7 @@ export class Jogo {
   // ---------------- roteiro ----------------
   async executar(fn) {
     this.rodando++;
+    this.heroi.vel = 4;   // as cenas andam no passo normal, mesmo se o jogador vinha correndo
     try { await fn(); } catch (e) { console.error(e); }
     this.rodando--;
   }
@@ -174,6 +176,8 @@ export class Jogo {
     }
     if (this.flash > 0) this.flash = Math.max(0, this.flash - 0.04);
     if (this.tremor > 0) this.tremor--;
+    if (this.recado) { this.recado.t--; if (this.recado.t <= 0) this.recado = null; }
+    if (entrada.disparou('mudo') && !this.teclado.ativo) this.avisarMudo();
     if (this.inv.ativo) { this.inv.atualizar(); entrada.fimDoQuadro(); return; }
     if (this.teclado.ativo) { this.teclado.atualizar(); entrada.fimDoQuadro(); return; }
     if (this.overlay && !this.msg.aberta) { this.overlay.atualizar(this); entrada.fimDoQuadro(); return; }
@@ -188,6 +192,12 @@ export class Jogo {
       if (!this.rodando && !this.msg.aberta && !this.aviso.atual) this.controlarHeroi();
     }
     entrada.fimDoQuadro();
+  }
+
+  // Tecla M: liga/desliga o som, com um recado discreto no canto da tela.
+  avisarMudo() {
+    const m = som.alternarMudo();
+    this.recado = { s: m ? 'Som desligado (M)' : 'Som ligado (M)', t: 120 };
   }
 
   // Um passo por tile, no piso de destino. Os dos outros personagens soam do lado em que
@@ -229,6 +239,8 @@ export class Jogo {
     }
     const d = entrada.dir4();
     if (d) {
+      // Shift segurado: anda mais rápido (a "corrida" do VX Ace, velocidade 5)
+      h.vel = entrada.segurando('correr') ? 5 : 4;
       const ok = h.passo(d, this);
       if (!ok) {
         // encostar num evento de toque (ex.: porta): dispara ao apertar a direção ou ao chegar
@@ -255,9 +267,9 @@ export class Jogo {
     const r = await this.abrirInventario();
     if (!r) return;
     const nome = ITENS[r.item].nome;
-    if (r.acao === 'analisar') { await this.fala(`${nome} - ${ITENS[r.item].desc}`); return; }
+    if (r.acao === 'analisar') { await this.fala(`${nome}: ${ITENS[r.item].desc}`); return; }
     if (r.acao === 'descartar') {
-      const s = await this.escolha(`Deseja descartar ${nome.toLowerCase().replace(/\.$/, '')}?`, ['Sim', '\\c[2]Não'], 'meio');
+      const s = await this.escolha(`Deseja descartar ${ITENS[r.item].genero || 'o'} ${nome.toLowerCase()}?`, ['Sim', '\\c[2]Não'], 'meio');
       if (s === 0) this.perder(r.item);
       return;
     }
@@ -279,12 +291,57 @@ export class Jogo {
   }
 
   // ---------------- desenho ----------------
+  // Três camadas no mesmo canvas (que ocupa a tela toda, na resolução real do aparelho):
+  //  1. o mundo, desenhado em pixels do jogo (LARG x ALT) e ampliado sem borrar;
+  //  2. menus e tabuleiro, na "caixa de desenho" 544x416 escalada e centralizada;
+  //  3. textos (falas, avisos, narração) em px CSS, nítidos e no tamanho TELA.f.
+  redimensionar() {
+    if (this.cena.width === LARG && this.cena.height === ALT) return;
+    this.cena = tela(LARG, ALT);
+    this.luzC = tela(LARG, ALT);
+    this.nitida = null;
+  }
+
+  // Põe a cena (pixels do jogo) na tela. Ampliar direto por um fator quebrado (2,6x) deixa os
+  // pixels desiguais, e suavizar direto borra; então amplia primeiro sem suavizar até o inteiro
+  // acima (3x) e reduz com suavização até o tamanho certo: fica nítido e com pixels iguais.
+  mostrarCena(g) {
+    const z = TELA.zoom, inteiro = Math.round(z);
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    if (Math.abs(z - inteiro) < 0.01 && inteiro >= 1) {
+      g.imageSmoothingEnabled = false;
+      g.drawImage(this.cena, 0, 0, LARG * inteiro, ALT * inteiro);
+      return;
+    }
+    const k = Math.max(1, Math.ceil(z));
+    if (!this.nitida || this.nitida.width !== LARG * k || this.nitida.height !== ALT * k) this.nitida = tela(LARG * k, ALT * k);
+    const n = this.nitida.getContext('2d');
+    n.imageSmoothingEnabled = false;
+    n.drawImage(this.cena, 0, 0, LARG * k, ALT * k);
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'low';
+    g.drawImage(this.nitida, 0, 0, LARG * z, ALT * z);
+    g.imageSmoothingEnabled = false;
+  }
+
+  emCss(g) { g.setTransform(TELA.dpr, 0, 0, TELA.dpr, 0, 0); g.imageSmoothingEnabled = false; }
+
   desenhar() {
     const g = this.g;
+    this.redimensionar();
+    g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = '#000';
-    g.fillRect(0, 0, LARG, ALT);
-    if (this.inv.ativo) { this.inv.desenhar(g); return; }
-    if (this.teclado.ativo) { this.teclado.desenhar(g); return; }
+    g.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    const menu = this.inv.ativo ? this.inv : this.teclado.ativo ? this.teclado : null;
+    if (menu) {
+      // fundo: a tela do jogo borrada, esticada na tela toda
+      if (menu.fundo) { g.imageSmoothingEnabled = true; g.drawImage(menu.fundo, 0, 0, this.canvas.width, this.canvas.height); }
+      caixaDesign(g);
+      menu.desenhar(g);
+      this.emCss(g);
+      this.desenharRecado(g);
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      return;
+    }
     if (this.mapa) {
       let [cx, cy] = this.camera();
       if (this.tremor) cx += ((this.t * 7) % 5) - 2;
@@ -303,22 +360,56 @@ export class Jogo {
       c.drawImage(cimaT, -cx, -cy);
       for (const e of this.eventos) if (e.ativo && (e.prioridade === 2 || e.def.brilha)) e.desenhar(c, cx, cy, e.def.brilha ? 0 : this.tom);
       this.aplicarLuz(c, cx, cy, true);
-      g.drawImage(this.cena, 0, 0);
+      this.mostrarCena(g);
     }
-    if (this.overlay) this.overlay.desenhar(g, this);
-    if (this.figura) { g.globalAlpha = this.figura.op; g.drawImage(img('pics/' + this.figura.nome), 0, 0, LARG, ALT); g.globalAlpha = 1; }
-    if (this.brilho < 1) { g.fillStyle = `rgba(0,0,0,${1 - this.brilho})`; g.fillRect(0, 0, LARG, ALT); }
-    if (this.flash > 0) { g.fillStyle = `rgba(255,255,255,${this.flash})`; g.fillRect(0, 0, LARG, ALT); }
+    const W = TELA.w, H = TELA.h;
+    this.emCss(g);
+    if (this.overlay) {
+      g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+      caixaDesign(g);
+      this.overlay.desenhar(g, this);
+      this.emCss(g);
+    }
+    if (this.figura) {
+      // a carta (544x416) inteira na tela, centralizada, com preto em volta
+      const im = img('pics/' + this.figura.nome);
+      const s = Math.min(W / BASE_L, H / BASE_A), w = BASE_L * s, h = BASE_A * s;
+      g.globalAlpha = this.figura.op;
+      g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+      g.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+      g.imageSmoothingEnabled = false;
+      g.globalAlpha = 1;
+    }
+    if (this.brilho < 1) { g.fillStyle = `rgba(0,0,0,${1 - this.brilho})`; g.fillRect(0, 0, W, H); }
+    if (this.flash > 0) { g.fillStyle = `rgba(255,255,255,${this.flash})`; g.fillRect(0, 0, W, H); }
     if (this.narracao) {
+      // texto centralizado em serifa, maior que o das falas; a palavra "Insônia" do fim sai grande
+      const so = this.narracao.s.trim().indexOf(' ') < 0 && this.narracao.s.indexOf('\n') < 0;
+      const px = Math.round(TELA.f * (so ? 2.6 : 1.45)), fonte = fonteSerif(px), lh = Math.round(px * 1.45);
+      const linhas = quebrar(g, this.narracao.s.replace(/\n/g, ' '), Math.min(W - 2 * Math.max(TELA.mx, W * 0.07), px * 26), fonte);
+      const y0 = Math.round(H / 2 - (linhas.length * lh) / 2 + (lh - px) / 2);
       g.globalAlpha = this.narracao.op;
-      const linhas = this.narracao.s.split('\n');
-      const y0 = this.narracao.y ?? (ALT / 2 - linhas.length * 12);
-      linhas.forEach((l, i) => texto(g, l, LARG / 2, y0 + i * 24, '#bdbdbd', FONTE_NARRACAO, 'center'));
+      linhas.forEach((l, i) => texto(g, l, W / 2, y0 + i * lh, '#c8c8c8', fonte, 'center'));
       g.globalAlpha = 1;
     }
     this.extra?.desenharTopo?.(this, g);
     this.msg.desenhar(g);
     this.aviso.desenhar(g);
+    this.desenharRecado(g);
+    g.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  desenharRecado(g) {
+    if (!this.recado) return;
+    const f = Math.round(TELA.f * 0.8), fonte = fonteTexto(f);
+    g.globalAlpha = Math.min(1, this.recado.t / 20);
+    g.font = fonte;
+    const w = g.measureText(this.recado.s).width + f * 1.4, h = f * 2;
+    const x = TELA.w - w - f * 0.8, y = f * 0.8;
+    g.fillStyle = 'rgba(0,0,0,0.7)'; g.fillRect(x, y, w, h);
+    texto(g, this.recado.s, x + f * 0.7, y + f * 0.5, '#bdbdbd', fonte);
+    g.globalAlpha = 1;
   }
 
   aplicarLuz(c, cx, cy, fase) {
@@ -371,14 +462,27 @@ export class Jogo {
       c.restore();
     }
     c.globalCompositeOperation = 'source-over';
-    if (this.def.nevoa) {
-      c.fillStyle = `rgba(${this.def.nevoa.cor},${this.def.nevoa.a})`;
+    const nev = this.def.nevoa;
+    if (nev && nev.borda === undefined) {
+      c.fillStyle = `rgba(${nev.cor},${nev.a})`;
       c.fillRect(0, 0, LARG, ALT);
     }
     if (this.vinheta) {
-      const gr = c.createRadialGradient(LARG / 2, ALT / 2, ALT * 0.3, LARG / 2, ALT / 2, LARG * 0.62);
+      // raios da tela original (544x416); numa tela maior, a área a mais fica na penumbra
+      const r1 = Math.max(BASE_L * 0.62, Math.hypot(LARG, ALT) * 0.36);
+      const gr = c.createRadialGradient(LARG / 2, ALT / 2, BASE_A * 0.3, LARG / 2, ALT / 2, r1);
       gr.addColorStop(0, 'rgba(0,0,0,0)');
       gr.addColorStop(1, `rgba(0,0,0,${this.vinheta})`);
+      c.fillStyle = gr; c.fillRect(0, 0, LARG, ALT);
+    }
+    if (nev && nev.borda !== undefined) {
+      // névoa que engrossa para as bordas (depois da vinheta): a volta da sala fica escura e os
+      // cantos da tela clareiam, como o "fog" do hospital no trailer
+      const R = Math.hypot(BASE_L, BASE_A) / 2;
+      const gr = c.createRadialGradient(LARG / 2, ALT / 2, 0, LARG / 2, ALT / 2, R);
+      gr.addColorStop(0, `rgba(${nev.cor},${nev.a})`);
+      gr.addColorStop(0.62, `rgba(${nev.cor},${nev.a})`);
+      gr.addColorStop(1, `rgba(${nev.cor},${nev.borda})`);
       c.fillStyle = gr; c.fillRect(0, 0, LARG, ALT);
     }
   }
