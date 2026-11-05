@@ -37,9 +37,9 @@ A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma p
 | Nº | Título | Estado |
 |---|---|---|
 | 1 | Quando a guerra chegou: Sapecado na Revolução de 1932 | escrito (14 notas) |
+| 2 | As fazendas e a escravidão: do quilombo do Careca aos colonos do café | escrito (9 notas) |
 | — | O pouso que pegou fogo: as origens de Sapecado | em pesquisa |
 | — | Capela, freguesia e patrimônio | em pesquisa |
-| — | As fazendas e a escravidão | em pesquisa |
 | — | O tempo dos coronéis | em pesquisa |
 | — | Os imigrantes | em pesquisa |
 | — | Os primeiros tempos: comércio, saúde, rádio e cinema | em pesquisa |
