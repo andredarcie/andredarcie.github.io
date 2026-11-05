@@ -102,6 +102,12 @@ export const gravado = {
     toca('grito', t, saida({ rev: 0.9, vol: 0.4, dist: 0.62, pan: op.pan ?? R(-0.3, 0.3) }), { varia: 0.02 });
     return true;
   },
+  // grito de criança: o grito feminino (grito_5) tocado mais agudo e mais longe
+  gritoCrianca(t, op = {}) {
+    if (!temAmostra('grito_5')) return false;
+    tocarAmostra('grito_5', t, saida({ rev: 0.9, vol: 0.25, dist: 0.5, pan: op.pan ?? R(-0.25, 0.25) }), { rate: 1.32 });
+    return true;
+  },
   trovao(t, op = {}) {
     if (!pronto('trovao')) return false;
     const out = saida({ rev: 0.25, vol: 0.55, pan: op.pan ?? R(-0.4, 0.4) });

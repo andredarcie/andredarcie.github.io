@@ -132,8 +132,7 @@ export const TILES = {
   // fim do capítulo 1: o fundo inteiro de cada sala, tirado das capturas 14, 20 e 21 de 2014
   // (folha xC, tools/salas_finais.py); o mapa por baixo só dá a passagem
   fundo_piano: { b: 'xC', x: 0, y: 0, w: 17, h: 13, solido: false },
-  fundo_canos: { b: 'xC', x: 0, y: 13, w: 17, h: 13, solido: false },
-  fundo_guilhotina: { b: 'xC', x: 0, y: 26, w: 17, h: 13, solido: false },
+  fundo_guilhotina: { b: 'xC', x: 0, y: 13, w: 17, h: 13, solido: false },
 
   // duto de ventilação
   pedra_clara: { a5: 'iA5', x: 5, y: 3, passa: false },

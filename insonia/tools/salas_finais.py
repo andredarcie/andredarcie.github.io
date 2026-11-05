@@ -1,5 +1,5 @@
-"""Gera assets/tiles/xC.png: o fundo das três salas do fim do capítulo 1, tirado direto das
-capturas de 2014 (14 = sala do piano, 20 = sala dos canos, 21 = sala da guilhotina), para ficarem
+"""Gera assets/tiles/xC.png: o fundo das duas salas do fim do capítulo 1, tirado direto das
+capturas de 2014 (14 = sala do piano, 21 = sala da guilhotina), para ficarem
 1 para 1 com o jogo original. As capturas estão alinhadas à grade de tiles do mapa (17x13, câmera
 parada), então cada uma vira um objeto de 17x13 tiles por cima do mapa; o mapa só cuida da
 passagem e dos eventos.
@@ -8,8 +8,7 @@ O que não pode ficar gravado no fundo é apagado com remendos de piso tirados d
 (nas capturas 14 e 21) e o envelope do chão (vira evento, some quando o herói pega).
 
 Uso: python tools/salas_finais.py
-Folha: 544 x 1248 = três fundos de 17x13 tiles empilhados (piano em y=0, canos em y=13,
-guilhotina em y=26).
+Folha: 544 x 832 = dois fundos de 17x13 tiles empilhados (piano em y=0, guilhotina em y=13).
 """
 import os
 import numpy as np
@@ -31,13 +30,11 @@ def fundo(n, remendos=()):
 
 
 def main():
-    S = Image.new('RGBA', (544, 416 * 3), (0, 0, 0, 255))
+    S = Image.new('RGBA', (544, 416 * 2), (0, 0, 0, 255))
     # sala do piano: herói em (14,7)-(14,8), envelope em (12,6)
     S.paste(fundo(14, [((14, 7), (12, 7)), ((14, 8), (12, 8)), ((12, 6), (10, 6))]), (0, 0))
-    # sala dos canos: ninguém na captura
-    S.paste(fundo(20), (0, 416))
     # sala da guilhotina: herói em (10,7)-(10,8)
-    S.paste(fundo(21, [((10, 7), (12, 7)), ((10, 8), (12, 8))]), (0, 832))
+    S.paste(fundo(21, [((10, 7), (12, 7)), ((10, 8), (12, 8))]), (0, 416))
     S.save(OUT, optimize=True)
     print('ok', OUT)
 

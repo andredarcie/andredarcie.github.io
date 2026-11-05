@@ -393,6 +393,19 @@ export const HISTORIA = {
         x: 8, y: 8, gatilho: 'toque', prioridade: 1, solido: true,
         async rodar(j) {
           await j.fala(`Há um aviso na porta:\n${V}"Não entre aqui, por favor!"`);
+          if (!j.flags.portaoCanos) {
+            // a porta é trancada por água: um painel de canos do lado (puzzleCanos)
+            som.trancada();
+            await j.fala('A porta não abre. Do lado tem um painel de\ncanos, com um registro em cima.');
+            const m = await j.escolha('Mexer nos canos?', ['Sim', '\\c[2]Não']);
+            if (m !== 0) return;
+            await j.apagar(15);
+            const ok = await puzzleCanos(j);
+            await j.acender(15);
+            if (!ok) return;
+            j.flags.portaoCanos = true;
+            await j.fala('A água desceu pelos canos... e alguma coisa\nse soltou do outro lado da porta.');
+          }
           const s = await j.escolha('Entrar?', ['Sim', '\\c[2]Não']);
           if (s !== 0) return;
           som.porta();
@@ -651,7 +664,7 @@ export const HISTORIA = {
   },
 
   // ======================================================================
-  // Fim do capítulo 1 (capturas 14, 15, 20 e 21 de 2014; o roteiro destas salas é novo)
+  // Fim do capítulo 1 (capturas 14, 15 e 21 de 2014; o roteiro destas salas é novo)
   sala_piano: {
     async aoEntrar(j) {
       if (j.flags.salaPiano) return;
@@ -663,8 +676,7 @@ export const HISTORIA = {
     eventos: [
       // ▷ em (15,8) já está no fundo (captura 14): volta para o corredor final
       { ...saida(16, 8, 'corredor_final', 8, 5, 'baixo', { parede: true }) },
-      // a porta clara da parede da esquerda leva à sala dos canos
-      { ...saida(4, 7, 'canos', 5, 9, 'cima', { parede: true }) },
+      trancada(4, 7),
       fala(4, 6, ['Uma porta velha, pintada de branco.']),
       {
         // a carta, no chão perto da parede (o envelope da captura 14)
@@ -679,81 +691,18 @@ export const HISTORIA = {
           await j.fala('Como essa carta veio parar aqui?');
         },
       },
+      // de frente para o teclado (9,8): chegar ali abre o teclado; OK no piano também
+      { x: 9, y: 8, gatilho: 'toque', prioridade: 0, cond: () => !estado().piano, async rodar(j) { await verPiano(j); } },
       ...[8, 9, 10].map((x) => ({ x, y: 7, prioridade: 1, solido: true, async rodar(j) { await verPiano(j); } })),
+      // a caixinha de música pequenininha, embaixo à esquerda
+      { x: 5, y: 10, prioridade: 1, solido: true, async rodar(j) { await caixinhaMusica(j); } },
       fala(6, 6, ['Uma caixa velha. Está vazia.']),
-      fala(5, 10, ['Um caixote pregado. Não abre.']),
       ...[11, 12, 13].map((x) => fala(x, 10, ['Um banco comprido, de madeira.', 'Alguém se sentava aqui para ouvir o piano?'])),
-      ...fossoEventos(),
     ],
   },
 
-  canos: {
-    async aoEntrar(j) {
-      if (j.flags.canos) return;
-      j.flags.canos = true;
-      await quadros(30);
-      await j.fala('Canos por todo lado.');
-      await j.fala('Para onde vai tudo isso?');
-    },
-    eventos: [
-      // a porta escura de baixo volta para a sala do piano
-      { ...saida(5, 10, 'sala_piano', 5, 7, 'direita', { parede: true }) },
-      {
-        // a porta escura do alto: abre pelo painel
-        x: 11, y: 2, gatilho: 'toque', prioridade: 1, solido: true,
-        async rodar(j) {
-          if (j.flags.painel) { som.porta(); await j.transferir('guilhotina', 15, 10, 'esquerda'); return; }
-          som.trancada();
-          await j.fala('A porta está trancada.');
-          if (!j.flags.viuPainel) await j.fala('Não tem fechadura. Deve abrir de outro\njeito.');
-        },
-      },
-      {
-        // a caixa destacada junto da parede (captura 20): o painel das alavancas (captura 15)
-        id: 'painel', x: 9, y: 3, prioridade: 1, solido: true,
-        async rodar(j) {
-          if (j.flags.painel) { await j.fala('As alavancas não se mexem mais.'); return; }
-          if (!j.flags.viuPainel) {
-            j.flags.viuPainel = true;
-            await j.fala('Um painel com oito alavancas.\nUmas deitadas, outras em pé.');
-          }
-          if (j.flags.partitura && !j.flags.dicaPainel) {
-            j.flags.dicaPainel = true;
-            await j.fala('Deitadas e em pé... como as notas longas e\ncurtas daquela partitura.');
-          }
-          await j.apagar(15);
-          const ok = await painelAlavancas(j);
-          await j.acender(15);
-          if (ok) {
-            j.flags.painel = true;
-            await quadros(20);
-            await j.fala('Alguma coisa destrancou.');
-          }
-        },
-      },
-    ],
-  },
-
-  guilhotina: {
-    async aoEntrar(j) {
-      if (j.flags.salaGuilhotina) return;
-      j.flags.salaGuilhotina = true;
-      await quadros(30);
-      await j.fala('Que cheiro é esse?');
-      await j.fala('Sangue...');
-      await j.fala('O que faziam com as pessoas aqui?');
-    },
-    eventos: [
-      seta(15, 10, 'direita'),
-      { ...saida(16, 10, 'canos', 11, 3, 'baixo', { parede: true }) },
-      { ...saida(16, 9, 'canos', 11, 3, 'baixo', { parede: true }) },
-      ...[6, 7].flatMap((x) => [4, 5, 6].map((y) => fala(x, y, ['Uma guilhotina.', 'A lâmina está suja... o sangue ainda\nestá fresco.']))),
-      ...[8, 9].map((x) => fala(x, 4, ['Tem alguém deitado atrás da cortina.', 'Não... não quero ver.'])),
-      ...[10, 11].map((x) => fala(x, 4, ['Um lençol manchado de sangue aparece por\nbaixo da cortina.', 'Melhor não mexer nisso.'])),
-      // a maca de baixo, sozinha: a do capítulo
-      ...[4, 5].flatMap((x) => [8, 9].map((y) => ({ x, y, prioridade: 1, solido: true, async rodar(j) { await macaFinal(j); } }))),
-    ],
-  },
+  // a sala da guilhotina só aparece na cena do fim (finalGuilhotina)
+  guilhotina: { eventos: [] },
 };
 
 // ---------------- estado global usado pelas condições ----------------
@@ -866,7 +815,7 @@ async function flashback(j) {
 export const CENAS_DEV = {
   flashback: async (j) => { j.brilho = 0; j.alvoBrilho = 0; await flashback(j); },
   hospital: (j) => flashbackHospital(j),
-  fim: (j) => revelacao(j),
+  fim: (j) => finalGuilhotina(j),
 };
 
 async function flashbackMenino(j) {
@@ -1223,118 +1172,99 @@ function tabuleiro(j) {
   });
 }
 
-// ---------------- fim do capítulo 1: piano, painel e a maca ----------------
-// O fosso em cruz da sala do piano (as casas 'F' do mapa): olhar para ele dá uma fala.
-function fossoEventos() {
-  const casas = [];
-  // medido na captura 14: barra de cima e de baixo com 3 casas, braço do meio com 5
-  for (let x = 7; x <= 9; x++) casas.push([x, 8], [x, 10]);
-  for (let x = 6; x <= 10; x++) casas.push([x, 9]);
-  return casas.map(([x, y]) => fala(x, y, ['Um buraco fundo. Não dá para ver o fundo.', 'Acho que ouvi alguma coisa lá embaixo.']));
+// ---------------- fim do capítulo 1: a caixinha, o piano e a guilhotina ----------------
+// A melodia tem 8 notas. Cada traço do teclado (captura 15) escolhe entre duas notas daquela
+// posição: em pé = a mais aguda, deitado = a mais grave. A caixinha de música toca a melodia
+// certa; o jogador ouve, volta ao piano, acerta os traços e toca (▶).
+const NOTA = { C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.0, A4: 440.0 };
+const PARES = [['E4', 'G4'], ['D4', 'F4'], ['C4', 'E4'], ['D4', 'G4'], ['E4', 'A4'], ['D4', 'F4'], ['C4', 'E4'], ['C4', 'E4']];
+const ALVO = [true, false, true, true, false, false, true, false];      // em pé? → sol ré mi sol mi ré mi dó
+const INICIAL = [false, true, true, false, true, true, true, true];     // como na captura 15: – | | – | | | |
+const notaDe = (i, emPe) => NOTA[PARES[i][emPe ? 1 : 0]];
+const QUADROS_NOTA = 30, QUADROS_ULTIMA = 70;
+
+async function tocarMelodia(j, timbre, emPe) {
+  for (let i = 0; i < 8; i++) {
+    som[timbre](notaDe(i, emPe(i)));
+    await quadros(i === 7 ? QUADROS_ULTIMA : QUADROS_NOTA);
+  }
 }
 
+// a caixinha de música pequenininha, no canto de baixo à esquerda (5,10)
+async function caixinhaMusica(j) {
+  if (!j.flags.caixinha) {
+    await j.fala('Uma caixinha de música, pequenininha.');
+    await j.fala('Tem uma manivela do lado.');
+  }
+  const s = await j.escolha('Girar a manivela?', ['Sim', '\\c[2]Não']);
+  if (s !== 0) return;
+  som.ambiente(0.35);
+  await quadros(20);
+  await tocarMelodia(j, 'caixinha', (i) => ALVO[i]);
+  som.ambiente(1);
+  if (!j.flags.caixinha) {
+    j.flags.caixinha = true;
+    await j.fala('Essa música... eu conheço essa música.');
+    await j.fala('Será que eu consigo tocar ela no piano?');
+  }
+}
+
+// o piano: só de frente para o teclado, em (9,8) olhando para cima
 async function verPiano(j) {
-  if (!j.flags.partitura) {
-    await j.fala('Um piano de cauda, coberto de poeira.');
-    await j.fala('Tem uma partitura aberta em cima dele.');
-  }
+  const h = j.heroi;
+  if (j.flags.piano) { await j.fala('O piano está em silêncio.'); return; }
+  if (h.x !== 9 || h.y !== 8) { await j.fala('Preciso ficar de frente para o teclado.'); return; }
+  h.virar('cima');
   await j.apagar(15);
-  await partitura(j);
-  if (!j.flags.partitura) {
-    j.flags.partitura = true;
-    await j.fala('"Para a nossa filha dormir."');
-    await j.fala('Notas longas e curtas... eu conheço essa\nmúsica.');
-    await j.fala('Mas não consigo lembrar como ela soa.');
-  }
+  const ok = await tecladoPiano(j);
   await j.acender(15);
+  if (ok) await desfechoPiano(j);
 }
 
-// A partitura: oito notas numa pauta. Semibreve (oval aberto, deitado) = nota longa; semínima
-// (cheia, com haste em pé) = curta. A sequência é a mesma das alavancas do painel (deitada/em pé).
-const RITMO = [true, false, false, true, true, false, true, true];   // true = curta (em pé)
-function partitura(j) {
+// O teclado (captura 15): oito traços, deitados ou em pé, e embaixo "Sair" e o ▶ que toca.
+// A posição dos traços fica guardada (vars.teclas).
+function tecladoPiano(j) {
   return new Promise((fim) => {
-    let t = 0;
-    j.brilho = 1; j.alvoBrilho = 1;
-    j.overlay = {
-      toque: true,
-      atualizar() {
-        t++;
-        if (t > 30 && (entrada.disparou('ok') || entrada.disparou('cancelar'))) { som.ok(); j.overlay = null; j.brilho = 0; j.alvoBrilho = 0; fim(); }
-      },
-      desenhar(g) {
-        g.globalAlpha = Math.min(1, t / 20);
-        // o papel, amarelado (em cinza), com as bordas mais escuras
-        const px = 112, py = 60, pw = 320, ph = 260;
-        g.fillStyle = '#a9a69e'; g.fillRect(px, py, pw, ph);
-        const gr = g.createRadialGradient(272, 190, 60, 272, 190, 220);
-        gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.45)');
-        g.fillStyle = gr; g.fillRect(px, py, pw, ph);
-        g.fillStyle = 'rgba(40,36,30,0.18)'; g.beginPath(); g.ellipse(380, 290, 26, 14, 0.4, 0, Math.PI * 2); g.fill();
-        // título à mão
-        texto(g, 'Para a nossa filha dormir', 272, py + 26, '#2a2824', `italic ${fonteSerif(Math.max(15, pxCaixa(1.05)))}`, 'center');
-        // pauta
-        const x0 = px + 26, x1 = px + pw - 26, yM = 190, e = 9;
-        g.strokeStyle = '#3a3732'; g.lineWidth = 1;
-        for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(x0, yM + i * e + 0.5); g.lineTo(x1, yM + i * e + 0.5); g.stroke(); }
-        g.lineWidth = 1.5;
-        for (const bx of [x0, x0 + (x1 - x0) / 2, x1 - 4]) { g.beginPath(); g.moveTo(bx + 0.5, yM - 2 * e); g.lineTo(bx + 0.5, yM + 2 * e); g.stroke(); }
-        g.lineWidth = 3; g.beginPath(); g.moveTo(x1 - 0.5, yM - 2 * e); g.lineTo(x1 - 0.5, yM + 2 * e); g.stroke();
-        texto(g, '4', x0 + 12, yM - 2 * e - 1, '#2a2824', `bold ${fonteSerif(17)}`, 'center');
-        texto(g, '4', x0 + 12, yM - 1, '#2a2824', `bold ${fonteSerif(17)}`, 'center');
-        // as oito notas (a altura é a melodia; o que importa para o painel é longa/curta)
-        const alturas = [0, -2, -3, -1, 1, 2, 1, 0];
-        const passo = (x1 - x0 - 50) / 8;
-        RITMO.forEach((curta, i) => {
-          const nx = x0 + 38 + i * passo + (i >= 4 ? 8 : 0), ny = yM - alturas[i] * (e / 2);
-          g.save(); g.translate(nx, ny); g.rotate(-0.35);
-          g.beginPath(); g.ellipse(0, 0, curta ? 6 : 7.5, curta ? 4.4 : 5, 0, 0, Math.PI * 2);
-          if (curta) { g.fillStyle = '#1e1c19'; g.fill(); }
-          else { g.strokeStyle = '#1e1c19'; g.lineWidth = 2.4; g.stroke(); }
-          g.restore();
-          if (curta) { g.fillStyle = '#1e1c19'; g.fillRect(nx + 4.6, ny - 30, 1.6, 30); }
-        });
-        // uma frase escrita embaixo, apagada
-        texto(g, '(devagar, como quem embala)', 272, yM + 52, '#4a4740', `italic ${fonteSerif(Math.max(13, pxCaixa(0.8)))}`, 'center');
-        g.globalAlpha = Math.min(1, Math.max(0, (t - 30) / 20)) * (0.55 + 0.25 * Math.sin(t / 20));
-        texto(g, 'OK: continuar', 272, py + ph + 18, '#7a7a7a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
-        g.globalAlpha = 1;
-      },
-    };
-  });
-}
-
-// O painel de alavancas (captura 15): oito alavancas, deitadas ou em pé, e o botão "Sair".
-// Abre quando elas imitam a partitura: longa = deitada, curta = em pé. A posição fica guardada.
-function painelAlavancas(j) {
-  return new Promise((fim) => {
-    // começa como na captura 15 (– | | – | | | |)
-    const INICIAL = [false, true, true, false, true, true, true, true];   // true = em pé
-    if (j.vars.alavancas === undefined) j.vars.alavancas = INICIAL.reduce((m, v, i) => m | (v ? 1 << i : 0), 0);
-    const pe = (i) => !!(j.vars.alavancas & (1 << i));
-    let sel = 0, t = 0, mexe = new Array(8).fill(0);
-    // medidas da captura 15 levadas ao 544x416: moldura (22,179)-(524,269), alavancas a cada ~64 px
+    if (j.vars.teclas === undefined) j.vars.teclas = INICIAL.reduce((m, v, i) => m | (v ? 1 << i : 0), 0);
+    const pe = (i) => !!(j.vars.teclas & (1 << i));
+    let sel = 0, t = 0, mexe = new Array(8).fill(0), tocando = null;
+    // medidas da captura 15 levadas ao 544x416: moldura (22,179)-(524,269), traços a cada ~64 px
     const PX = 22, PY = 179, PW = 502, PH = 90, cxDe = (i) => 46 + i * 64.1;
+    const SAIR = 8, PLAY = 9;
     j.brilho = 1; j.alvoBrilho = 1;
     const sair = (ok) => { j.overlay = null; fim(ok); };
     j.overlay = {
       atualizar() {
         t++;
         mexe = mexe.map((v) => Math.max(0, v - 1));
+        if (tocando) {
+          // toca nota por nota, acendendo o traço da vez
+          if (--tocando.espera > 0) return;
+          tocando.i++;
+          if (tocando.i >= 8) {
+            const certo = ALVO.every((v, i) => pe(i) === v);
+            tocando = null;
+            if (certo) sair(true);
+            return;
+          }
+          som.piano(notaDe(tocando.i, pe(tocando.i)));
+          tocando.espera = tocando.i === 7 ? QUADROS_ULTIMA : QUADROS_NOTA;
+          return;
+        }
         if (sel < 8) {
           if (entrada.repetiu('direita')) { sel = (sel + 1) % 8; som.cursor(); }
           if (entrada.repetiu('esquerda')) { sel = (sel + 7) % 8; som.cursor(); }
-          if (entrada.disparou('baixo')) { sel = 8; som.cursor(); }
-        } else if (entrada.disparou('cima')) { sel = 3; som.cursor(); }
+          if (entrada.disparou('baixo')) { sel = PLAY; som.cursor(); }
+        } else {
+          if (entrada.disparou('direita') || entrada.disparou('esquerda')) { sel = sel === SAIR ? PLAY : SAIR; som.cursor(); }
+          if (entrada.disparou('cima')) { sel = 0; som.cursor(); }
+        }
         if (entrada.disparou('ok')) {
-          if (sel === 8) { som.cursor(); sair(false); return; }
-          j.vars.alavancas ^= 1 << sel;
+          if (sel === SAIR) { som.cancelar(); sair(false); return; }
+          if (sel === PLAY) { tocando = { i: -1, espera: 12 }; return; }
+          j.vars.teclas ^= 1 << sel;
           mexe[sel] = 10;
-          som.metal();
-          if (RITMO.every((curta, i) => pe(i) === curta)) {
-            som.destrancar();
-            sair(true);
-          }
+          som.piano(notaDe(sel, pe(sel)), { vol: 0.16 });   // ao mexer, ouve a nota nova daquele traço
         }
         if (entrada.disparou('cancelar')) sair(false);
       },
@@ -1344,81 +1274,203 @@ function painelAlavancas(j) {
         g.beginPath(); g.roundRect(PX, PY, PW, PH, 11); g.stroke();
         for (let i = 0; i < 8; i++) {
           const x = cxDe(i), y = 204, d = mexe[i] ? ((mexe[i] * 3) % 3) - 1 : 0;
-          g.fillStyle = '#d2d2d2';
+          const vez = tocando && tocando.i === i;
+          if (vez) {
+            const gr = g.createRadialGradient(x, y, 0, x, y, 24);
+            gr.addColorStop(0, 'rgba(255,255,255,0.28)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+            g.fillStyle = gr; g.fillRect(x - 24, y - 24, 48, 48);
+          }
+          g.fillStyle = vez ? '#ffffff' : '#d2d2d2';
           if (pe(i)) g.fillRect(x - 3 + d, y - 12, 5, 25);
           else g.fillRect(x - 12 + d, y - 3, 25, 5);
-          if (sel === i) cursor(g, x - 17, y - 17, 34, 34, t);
+          if (sel === i && !tocando) cursor(g, x - 17, y - 17, 34, 34, t);
         }
-        // "Sair" e o botão com o triângulo
+        // "Sair" e o botão ▶ (tocar)
         const bx = 257, by = 220, bw = 30, bh = 31;
-        texto(g, 'Sair', bx - 6, by + 9, '#bdbdbd', `${Math.max(12, Math.round(pxCaixa(0.72)))}px Arial, Helvetica, sans-serif`, 'right');
+        const fonte = `${Math.max(12, Math.round(pxCaixa(0.72)))}px Arial, Helvetica, sans-serif`;
+        g.font = fonte;
+        const ws = g.measureText('Sair').width;
+        texto(g, 'Sair', bx - 6, by + 9, '#bdbdbd', fonte, 'right');
         g.fillStyle = '#0c0c0c'; g.fillRect(bx, by, bw, bh);
         g.strokeStyle = '#3a3a3a'; g.lineWidth = 1; g.strokeRect(bx + 0.5, by + 0.5, bw - 1, bh - 1);
-        g.fillStyle = '#d6d6d6'; g.beginPath(); g.moveTo(bx + 7, by + 6); g.lineTo(bx + 24, by + 15.5); g.lineTo(bx + 7, by + 25); g.closePath(); g.fill();
-        if (sel === 8) cursor(g, bx - 3, by - 3, bw + 6, bh + 6, t);
+        g.fillStyle = tocando ? '#ffffff' : '#d6d6d6';
+        g.beginPath(); g.moveTo(bx + 7, by + 6); g.lineTo(bx + 24, by + 15.5); g.lineTo(bx + 7, by + 25); g.closePath(); g.fill();
+        if (!tocando && sel === SAIR) cursor(g, bx - 12 - ws, by + 1, ws + 12, bh - 2, t);
+        if (!tocando && sel === PLAY) cursor(g, bx - 3, by - 3, bw + 6, bh + 6, t);
       },
     };
   });
 }
 
-// A maca de baixo: atrás da cortina está o fim do capítulo.
-async function macaFinal(j) {
-  await j.fala('Uma maca com a cortina fechada.');
-  const s = await j.escolha('Abrir a cortina?', ['Sim', '\\c[2]Não']);
-  if (s !== 0) return;
-  await revelacao(j);
+// a luz da sala pisca (a sala não tem lâmpada: a tela inteira falha)
+async function piscarLuz(j, n) {
+  som.apagao();
+  for (let i = 0; i < n; i++) {
+    j.brilho = j.alvoBrilho = Math.random() < 0.55 ? 0.2 + Math.random() * 0.15 : 1;
+    await quadros(2 + Math.floor(Math.random() * 6));
+  }
+  j.brilho = j.alvoBrilho = 1;
 }
 
-async function revelacao(j) {
-  som.tensao(0.6);
-  await j.apagar(25);
+// tocou a música certa: a luz falha, uma criança grita, ele lembra da promessa
+async function desfechoPiano(j) {
+  j.flags.piano = true;
   await quadros(40);
-  await j.acender(25);
-  await j.fala('Um corpo coberto por um lençol.');
-  await j.fala('Está todo queimado.');
-  await quadros(40);
-  await j.fala('Tem alguma coisa no bolso...');
-  await j.fala('Uma foto. Eu, ela e a nossa filha.');
-  await quadros(50);
-  await j.fala('Não... não pode ser.');
+  som.tensao(1);
+  await piscarLuz(j, 14);
+  som.gritoCrianca(); j.tremor = 30;
+  await piscarLuz(j, 22);
   await quadros(80);
-  await j.fala('Sou eu.');
-  som.tensao(1);
+  await j.fala('Nossa...');
+  await j.fala('Eu prometi para ela que ia cuidar da nossa\nfilha.');
+  await j.fala('Eu prometi para ela... e eu me lembro.');
+  await j.fala('Infelizmente, eu não consegui.');
   await quadros(40);
-  await j.fala(`${V}Nascido do fogo.`);
-  await j.fala(`${V}Bem-vindo ao seu novo lar.`);
-  await finalTrailer(j, { porta: false });
+  await j.fala('Eu não consigo me perdoar.');
+  await j.fala('Eu carrego uma culpa imensa no meu coração.');
+  await quadros(30);
+  await j.apagar(70);
+  await quadros(40);
+  await finalGuilhotina(j);
 }
 
-// ---------------- o fim do capítulo ----------------
-// A sombra aparece atrás do herói (2 casas às costas, ou 1 se não couber), o título, e o "The End".
-const PASSO_DIR = { cima: [0, -1], baixo: [0, 1], esquerda: [-1, 0], direita: [1, 0] };
-async function finalTrailer(j, { porta = true } = {}) {
-  if (porta) som.porta();
-  som.tensao(1);
-  await quadros(30);
-  await j.apagar(30);
-  await quadros(30);
+// a cena do fim: a sala da guilhotina; ele sobe até ela e pensa
+async function finalGuilhotina(j) {
+  j.brilho = 0; j.alvoBrilho = 0;
+  j.flags.salaGuilhotina = true;
+  j.carregar('guilhotina', 7, 10, 'cima');
   const h = j.heroi;
-  const [dx, dy] = PASSO_DIR[h.dir] || [0, -1];
-  const cand = [[h.x - dx * 2, h.y - dy * 2], [h.x - dx, h.y - dy], [h.x, h.y + 2], [h.x, h.y + 1]];
-  const [sx, sy] = cand.find(([x, y]) => j.livre(x, y, null)) || [h.x, h.y + 2];
-  const virada = Object.keys(PASSO_DIR).find((k) => PASSO_DIR[k][0] === Math.sign(h.x - sx) && PASSO_DIR[k][1] === Math.sign(h.y - sy)) || 'cima';
-  const s = { x: sx, y: sy, grafico: SOMBRA, dir: virada, id: 'sombra' };
-  const ev = new Evento(s);
-  ev.opac = 0.6;
-  j.eventos.push(ev);
-  await j.fadeAte(0.6, 30);
-  som.susto();
+  await quadros(30);
+  await j.acender(80);
   await quadros(90);
-  await j.apagar(60);
-  j.eventos = j.eventos.filter((e) => e !== ev);
-  som.silencio(3);
+  h.vel = 3;                       // passo lento
+  await rota(j, h, [[7, 7]]);
+  h.virar('cima');
+  await quadros(120);
+  await j.fala('Eu acho que só existe uma solução.');
   await quadros(60);
-  await j.narrar('Insônia', 240);
+  som.silencio(3);
+  await j.apagar(120);
+  await quadros(60);
   await telaFimCapitulo(j);
   try { localStorage.removeItem('insonia.save'); } catch { /* */ }
   location.reload();
+}
+
+// ---------------- o portão dos canos (porta do salão; visual da captura 20) ----------------
+// Só a tela: um cursor escolhe o cano e o OK gira (90° no sentido do relógio). A água entra no
+// alto e tem que descer até o ralo embaixo passando por todos os canos; aí o portão abre.
+// Os canos estão só no caminho (não há cano sobrando): o enigma é achar a posição de cada um.
+const CANOS_COLS = 3, CANOS_LINHAS = 5;
+const CANOS_CAMINHO = [[0, 0], [1, 0], [1, 1], [1, 2], [2, 2], [3, 2], [3, 1], [3, 0], [4, 0], [4, 1], [4, 2]];   // [linha, coluna]
+const CANOS_GIRO_INICIAL = [1, 2, 1, 1, 3, 1, 2, 1, 1, 3, 2];   // quanto cada cano começa fora do lugar
+const LADOS = { N: [-1, 0], L: [0, 1], S: [1, 0], O: [0, -1] };
+const OPOSTO = { N: 'S', S: 'N', L: 'O', O: 'L' };
+// aberturas de cada peça por rotação: reto (2 posições) e curva (4)
+const ABERTURAS = { reto: [['N', 'S'], ['L', 'O']], curva: [['N', 'L'], ['L', 'S'], ['S', 'O'], ['O', 'N']] };
+function montarCanos() {
+  const pecas = new Map();
+  const lado = (a, b) => Object.keys(LADOS).find((k) => LADOS[k][0] === b[0] - a[0] && LADOS[k][1] === b[1] - a[1]);
+  CANOS_CAMINHO.forEach(([r, c], i) => {
+    const ent = i === 0 ? 'N' : lado([r, c], CANOS_CAMINHO[i - 1]);
+    const sai = i === CANOS_CAMINHO.length - 1 ? 'S' : lado([r, c], CANOS_CAMINHO[i + 1]);
+    const tipo = OPOSTO[ent] === sai ? 'reto' : 'curva';
+    const n = ABERTURAS[tipo].length;
+    const certo = ABERTURAS[tipo].findIndex((ab) => ab.includes(ent) && ab.includes(sai));
+    pecas.set(`${r},${c}`, { tipo, rot: (certo + CANOS_GIRO_INICIAL[i]) % n });
+  });
+  return pecas;
+}
+const abre = (p) => ABERTURAS[p.tipo][p.rot];
+// segue a água a partir do alto; chegou = desceu até o ralo passando por todos os canos
+function seguirAgua(pecas) {
+  const molhadas = [];
+  let [r, c] = CANOS_CAMINHO[0], vem = 'N';
+  const [fr, fc] = CANOS_CAMINHO[CANOS_CAMINHO.length - 1];
+  for (let n = 0; n < 40; n++) {
+    const p = pecas.get(`${r},${c}`);
+    if (!p || !abre(p).includes(vem)) return { molhadas, chegou: false };
+    molhadas.push(`${r},${c}`);
+    const sai = abre(p).find((l) => l !== vem);
+    if (r === fr && c === fc && sai === 'S') return { molhadas, chegou: molhadas.length === CANOS_CAMINHO.length };
+    r += LADOS[sai][0]; c += LADOS[sai][1]; vem = OPOSTO[sai];
+  }
+  return { molhadas, chegou: false };
+}
+
+function puzzleCanos(j) {
+  return new Promise((fim) => {
+    const pecas = montarCanos();
+    let cr = 0, cc = 0, t = 0, enchendo = null;
+    const C = 52, X0 = 272 - (CANOS_COLS * C) / 2, Y0 = 62;
+    j.brilho = 1; j.alvoBrilho = 1;
+    const sair = (ok) => { j.overlay = null; fim(ok); };
+    j.overlay = {
+      atualizar() {
+        t++;
+        if (enchendo) {
+          // a água desce casa por casa; no fim, o portão
+          if (--enchendo.espera > 0) return;
+          enchendo.n++;
+          if (enchendo.n > CANOS_CAMINHO.length + 1) { sair(true); return; }
+          if (enchendo.n === CANOS_CAMINHO.length + 1) { som.destrancar(); enchendo.espera = 60; return; }
+          enchendo.espera = 9;
+          return;
+        }
+        if (entrada.repetiu('direita')) { cc = (cc + 1) % CANOS_COLS; som.cursor(); }
+        if (entrada.repetiu('esquerda')) { cc = (cc + CANOS_COLS - 1) % CANOS_COLS; som.cursor(); }
+        if (entrada.repetiu('baixo')) { cr = (cr + 1) % CANOS_LINHAS; som.cursor(); }
+        if (entrada.repetiu('cima')) { cr = (cr + CANOS_LINHAS - 1) % CANOS_LINHAS; som.cursor(); }
+        if (entrada.disparou('ok')) {
+          const p = pecas.get(`${cr},${cc}`);
+          if (!p) { som.erro(); return; }
+          p.rot = (p.rot + 1) % ABERTURAS[p.tipo].length;
+          som.metal();
+          if (seguirAgua(pecas).chegou) enchendo = { n: 0, espera: 20 };
+        }
+        if (entrada.disparou('cancelar')) sair(false);
+      },
+      desenhar(g) {
+        // tábuas escuras atrás, como o chão da captura 20
+        const fx = X0 - 26, fy = Y0 - 26, fw = CANOS_COLS * C + 52, fh = CANOS_LINHAS * C + 52;
+        g.fillStyle = '#1a1a1a'; g.fillRect(fx, fy, fw, fh);
+        for (let x = fx; x < fx + fw; x += 9) { g.fillStyle = '#121212'; g.fillRect(x, fy, 1, fh); g.fillStyle = '#222'; g.fillRect(x + 4, fy, 1, fh); }
+        g.strokeStyle = '#555'; g.lineWidth = 2; g.strokeRect(fx + 1, fy + 1, fw - 2, fh - 2);
+        const molhadas = enchendo ? CANOS_CAMINHO.slice(0, enchendo.n).map(([r, c]) => `${r},${c}`) : [];
+        const centro = (r, c) => [X0 + c * C + C / 2, Y0 + r * C + C / 2];
+        // entrada da água no alto (registro) e o ralo embaixo
+        const [ex, ey] = centro(...CANOS_CAMINHO[0]);
+        const [sx, sy] = centro(...CANOS_CAMINHO[CANOS_CAMINHO.length - 1]);
+        tubo(g, ex, fy - 4, ex, ey - C / 2, !!enchendo && enchendo.n > 0);
+        tubo(g, sx, sy + C / 2, sx, fy + fh + 4, !!enchendo && enchendo.n > CANOS_CAMINHO.length);
+        g.fillStyle = '#cfcfcf'; g.fillRect(ex - 9, fy - 14, 18, 10);
+        g.fillStyle = '#0a0a0a'; g.fillRect(sx - 10, fy + fh + 4, 20, 8);
+        g.strokeStyle = '#777'; g.lineWidth = 1; g.strokeRect(sx - 10.5, fy + fh + 3.5, 21, 9);
+        for (const [k, p] of pecas) {
+          const [r, c] = k.split(',').map(Number), [x, y] = centro(r, c);
+          const agua = molhadas.includes(k);
+          for (const l of abre(p)) tubo(g, x, y, x + LADOS[l][1] * C / 2, y + LADOS[l][0] * C / 2, agua);
+          // a caixa da junta no meio, como na captura
+          g.fillStyle = '#bdbdbd'; g.fillRect(x - 8, y - 8, 16, 16);
+          g.strokeStyle = '#2a2a2a'; g.lineWidth = 1; g.strokeRect(x - 7.5, y - 7.5, 15, 15);
+          g.fillStyle = agua ? '#ffffff' : '#7a7a7a'; g.fillRect(x - 4, y - 4, 8, 8);
+        }
+        if (!enchendo) { const [x, y] = centro(cr, cc); cursor(g, x - C / 2 + 2, y - C / 2 + 2, C - 4, C - 4, t); }
+        const dica = document.body.classList.contains('toque') ? 'Direcional: escolher · OK: girar · Esc: sair' : 'Setas: escolher · Enter: girar · Esc: sair';
+        texto(g, dica, 272, fy + fh + 26, '#7a7a7a', fonteTexto(Math.min(pxCaixa(0.7), 15)), 'center');
+      },
+    };
+  });
+}
+// um trecho de cano claro (com a água, se passou por ali)
+function tubo(g, x0, y0, x1, y1, agua) {
+  const v = x0 === x1, w = 10;
+  const x = Math.min(x0, x1) - (v ? w / 2 : 0), y = Math.min(y0, y1) - (v ? 0 : w / 2);
+  const ww = v ? w : Math.abs(x1 - x0), hh = v ? Math.abs(y1 - y0) : w;
+  g.fillStyle = '#2a2a2a'; g.fillRect(x - 1, y - 1, ww + 2, hh + 2);
+  g.fillStyle = '#c4c4c4'; g.fillRect(x, y, ww, hh);
+  g.fillStyle = '#e8e8e8'; if (v) g.fillRect(x + 2, y, 2, hh); else g.fillRect(x, y + 2, ww, 2);
+  if (agua) { g.fillStyle = 'rgba(255,255,255,0.95)'; if (v) g.fillRect(x + 3, y, 4, hh); else g.fillRect(x, y + 3, ww, 4); }
 }
 
 // Tela de fim do primeiro capítulo: deixa claro que o jogador chegou a um final e que a história

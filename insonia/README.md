@@ -34,13 +34,19 @@ Com o jogo pronto, a tela deixou de ser presa ao 544×416 do VX Ace:
 - **Máquina de escrever**: as falas aparecem letra a letra no ritmo de fala (~30 letras/s; o VX Ace fazia 60), com pausa curta depois de vírgula e maior no fim de cada frase. OK (ou toque/clique) durante a digitação mostra o texto inteiro; o próximo OK fecha. Ajuste em `LETRAS_POR_QUADRO` e `PAUSA` (`mensagem.js`).
 - **Hospital do flashback** revisto contra o trailer: janelas em arco inteiras (antes só o arco aparecia), porta de almofadas, abajur de pé e lixeira branca desenhados em `tools/extras.py`, vaso de folhas, soleira embaixo da porta, recuo da direita com a parede mais alta e névoa que engrossa para as bordas (`nevoa.borda`).
 
-**As salas das capturas de 2014** (depois da porta do corredor final, onde o trailer acaba): o roteiro delas é novo, porque as capturas só mostram o visual. Para ficarem 1 para 1, o visual de cada sala é a própria captura, alinhada à grade de tiles e sem o herói (`tools/salas_finais.py` gera `assets/tiles/xC.png`). Os mapas em `src/mapas/capitulo1_fim.js` só dão a passagem, medida tile a tile na captura, e os eventos.
+**O fim do capítulo 1** (depois da porta do corredor final, onde o trailer acaba) usa as capturas de 2014. O roteiro é do André, de 2026. A sala do piano e a da guilhotina usam a própria captura como fundo, alinhada à grade de tiles e sem o herói, para ficarem 1 para 1 (`tools/salas_finais.py` gera `assets/tiles/xC.png`). Os mapas em `src/mapas/capitulo1_fim.js` só dão a passagem, medida tile a tile, e os eventos.
 
-1. **Sala do piano** (captura 14): piano de cauda sobre um fosso em cruz. No chão está a carta da esposa: *"toque para ela a nossa música, para ela dormir"*. No piano, a partitura "Para a nossa filha dormir" tem 8 notas, longas (semibreves deitadas) e curtas (semínimas em pé).
-2. **Sala dos canos** (captura 20): os canos ficam no chão e dá para passar por cima deles, porque as fileiras de canos cortam a sala inteira. A caixa destacada junto da parede é o painel de 8 alavancas (captura 15), que começa como na captura (`– | | – | | | |`). Ele destranca a porta do alto quando as alavancas imitam a partitura: nota longa = alavanca deitada, curta = em pé (`RITMO`). A posição das alavancas fica guardada (`vars.alavancas`).
-3. **Sala da guilhotina** (captura 21): guilhotina, macas atrás de cortinas, mictórios e sangue. Atrás da cortina da maca de baixo está um corpo queimado com uma foto dele, da esposa e da filha no bolso: *"Sou eu."* A voz repete a carta do começo ("Nascido do fogo. Bem-vindo ao seu novo lar."), e então vem o final.
+1. **Sala do piano** (captura 14): o "fosso" em cruz da captura é um tapete, e o herói anda por cima dele. No chão está a carta da esposa (*"Prometa que vai cuidar da nossa filha. E toque para ela a nossa música"*).
+   - A caixinha de música pequenininha, embaixo à esquerda, toca a melodia certa.
+   - De frente para o teclado, em (9,8), abre o teclado da captura 15: oito traços, em pé ou deitados, mais "Sair" e o ▶. Cada traço é uma nota: em pé = a mais aguda daquela posição, deitado = a mais grave (`PARES`). O ▶ toca a melodia acendendo um traço por vez. Os traços começam como na captura (`– | | – | | | |`) e a posição fica guardada (`vars.teclas`).
+   - Tocando igual à caixinha (`ALVO`: sol ré mi sol mi ré mi dó), a luz pisca, uma criança grita (o grito feminino CC0 mais agudo) e ele lembra da promessa: *"Eu prometi para ela que ia cuidar da nossa filha... Eu carrego uma culpa imensa no meu coração."*
+2. **Sala da guilhotina** (captura 21): só existe na cena do fim (`finalGuilhotina`). Ele sobe devagar até a guilhotina e pensa: *"Eu acho que só existe uma solução."* Então vem o "The End".
 
-**Fim do capítulo 1**: depois da sombra e do título "Insônia", aparece uma tela de encerramento com "The End", "Fim do primeiro capítulo" e "A história continua..." (`telaFimCapitulo` em `historia.js`). OK ou toque mostra tudo, e o próximo OK volta ao título.
+**O portão dos canos** (visual da captura 20): a porta do salão com o aviso *"Não entre aqui, por favor!"* antes abria só com o "Entrar?". Agora ela é trancada por água (`puzzleCanos`). É só a tela: o cursor escolhe um cano e o OK gira. A água entra no alto e tem que descer até o ralo passando por todos os 11 canos. Quando desce, o portão solta.
+
+**Som**: o piano e a caixinha de música são sintetizados em `efeitos.js` (síntese modal). O piano tem corda com parciais quase harmônicos e martelo macio. A caixinha tem dente de metal uma oitava acima, com parciais 2,76 e 5,40. Os níveis foram medidos renderizando offline: piano ~-21 LUFS, caixinha ~-24 e grito ~-22, contra a porta a -27 e os passos a -28. A revisão de áudio saiu sem problemas.
+
+**Tela de fim do capítulo 1**: depois do pensamento na guilhotina, aparece uma tela de encerramento com "The End", "Fim do primeiro capítulo" e "A história continua..." (`telaFimCapitulo` em `historia.js`). OK ou toque mostra tudo, e o próximo OK volta ao título.
 
 **Enigma do espelho**: no original a solução do tabuleiro (captura 16) não tinha lógica. Agora o tabuleiro tem uma linha de espelho no meio, e 4 peças vêm acesas em vermelho, travadas: são o "enigma já resolvido". Imitar as outras peças é acender, do outro lado do espelho, a mesma forma na casa espelhada (mesma linha, coluna 5 − c). Formas iguais perto das certas e pares espelhados que não são vermelhos confundem. As vermelhas recusam o OK, e com 4 acesas fora do reflexo o tabuleiro estremece (`FORMAS`, `FIXAS` e `tabuleiro` em `historia.js`).
 
@@ -126,7 +132,7 @@ Vêm do próprio repo, em `brians/projeto/Graphics/Characters`, e são os mesmos
 | `src/som.js`, `src/audio/` | fachada do som; motor, efeitos e ambiente sintetizados |
 | `tools/assets.py` | gera `assets/` a partir do RTP e do pacote do Mack (que não ficam no repo) |
 | `tools/extras.py` | gera `assets/tiles/xA.png` (recortes e desenhos próprios) |
-| `tools/salas_finais.py` | gera `assets/tiles/xC.png` (fundo das 3 salas do fim do capítulo 1, das capturas 14, 20 e 21) |
+| `tools/salas_finais.py` | gera `assets/tiles/xC.png` (fundo da sala do piano e da guilhotina, das capturas 14 e 21) |
 | `tools/build.py` | reescreve o import map e sobe o BUILD (rodar a cada mudança de `.js`) |
 
 ## Atalho de desenvolvimento

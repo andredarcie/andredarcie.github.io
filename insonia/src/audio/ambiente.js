@@ -36,7 +36,6 @@ export const PERFIS = {
   corredor_final: { sala: 'corredor', ar: 0.8, pavor: { f: 39, nivel: 0.8 },  vento: 0.8, tensao: 0.3, ev: { baque: 1.5, gemido: 1.2, rangido: 2, passos: 0.8, gota: 1 } },
   // fim do capítulo 1 (salas das capturas de 2014): perfis no mesmo nível dos vizinhos
   sala_piano:     { sala: 'media',    ar: 0.6, pavor: { f: 44, nivel: 0.55 }, ev: { rangido: 1.5, gota: 1.5, gemido: 0.5, poeira: 1 } },
-  canos:          { sala: 'media',    ar: 0.6, pavor: { f: 46, nivel: 0.55 }, vento: 0.5, ev: { cano: 2.5, metal: 1.5, gota: 2.5, rangido: 0.8 } },
   guilhotina:     { sala: 'ladrilho', ar: 0.6, pavor: { f: 39, nivel: 0.7 },  tensao: 0.3, ev: { gota: 4, corrente: 1.2, metal: 1, gemido: 0.8, baque: 0.6 } },
 };
 // passo do herói conforme o piso

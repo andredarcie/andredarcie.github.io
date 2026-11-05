@@ -25,7 +25,8 @@ const PASSOS = [
   { nome: 'Banheiro: o espelho', mapa: 'banheiro', x: 7, y: 9, dir: 'cima' },
   { nome: 'Sala das lâmpadas: o código', mapa: 'sala_lampadas', x: 10, y: 6, dir: 'esquerda', f: ['banheiro'] },
   { nome: 'Salão', mapa: 'salao', x: 33, y: 13, dir: 'cima', f: ['escada'] },
-  { nome: 'Corredor dos pilares', mapa: 'pilares', x: 48, y: 8, dir: 'esquerda' },
+  { nome: 'Salão: o portão dos canos', mapa: 'salao', x: 8, y: 9, dir: 'cima' },
+  { nome: 'Corredor dos pilares', mapa: 'pilares', x: 48, y: 8, dir: 'esquerda', f: ['portaoCanos'] },
   { nome: 'Celas', mapa: 'celas', x: 13, y: 7, dir: 'esquerda', f: ['pilares'] },
   { nome: 'Sala das armadilhas', mapa: 'armadilhas', x: 14, y: 7, dir: 'esquerda' },
   { nome: 'Celas: a voz', mapa: 'celas', x: 3, y: 7, dir: 'direita', f: ['armadilhas', 'bronze'], i: ['bronze'] },
@@ -40,10 +41,9 @@ const PASSOS = [
   { nome: 'Corredor final: na porta, com a chave', mapa: 'corredor_final', x: 8, y: 5, dir: 'cima', f: ['chaveFim'], i: ['chave'] },
   { cap: 'Fim do capítulo 1' },
   { nome: 'Sala do piano', mapa: 'sala_piano', x: 14, y: 8, dir: 'esquerda', f: ['portaFinal'], tira: ['chave'] },
-  { nome: 'Sala dos canos', mapa: 'canos', x: 5, y: 9, dir: 'cima', f: ['salaPiano', 'carta', 'partitura'] },
-  { nome: 'Sala dos canos: no painel', mapa: 'canos', x: 9, y: 4, dir: 'cima', f: ['canos'] },
-  { nome: 'Sala da guilhotina', mapa: 'guilhotina', x: 15, y: 10, dir: 'esquerda', f: ['viuPainel', 'dicaPainel', 'painel'] },
-  { nome: 'Final: a maca, a sombra e "The End"', mapa: 'guilhotina', x: 6, y: 9, dir: 'esquerda', f: ['salaGuilhotina'], cena: 'fim' },
+  { nome: 'Sala do piano: na caixinha de música', mapa: 'sala_piano', x: 5, y: 9, dir: 'baixo', f: ['salaPiano', 'carta'] },
+  { nome: 'Sala do piano: um passo antes do teclado', mapa: 'sala_piano', x: 9, y: 9, dir: 'cima', f: ['caixinha'] },
+  { nome: 'Final: a guilhotina e "The End"', mapa: 'guilhotina', x: 7, y: 10, dir: 'cima', f: ['piano'], cena: 'fim' },
 ];
 
 // Acumula o estado e monta a URL de cada fase.

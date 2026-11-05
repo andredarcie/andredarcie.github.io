@@ -260,3 +260,30 @@ export function apagao(op = {}) {
   const o = c.createOscillator(); o.frequency.setValueAtTime(58, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.8);
   const g = c.createGain(); percussivo(g.gain, t, 0.45, 0.01, 0.25); o.connect(g); g.connect(out); o.start(t); o.stop(t + 2);
 }
+
+// ---------------- música (fim do capítulo 1) ----------------
+// Nota de piano: corda por síntese modal (parciais quase harmônicos, um pouco esticados como numa
+// corda real, os agudos morrem antes) e o martelo como um sopro grave e curto. Macia de propósito.
+export function piano(f, op = {}) {
+  const t = inicio(op); if (t == null) return;
+  const out = saida({ rev: 0.45, vol: op.vol ?? 0.16 });   // ~-22 LUFS: um pouco acima dos passos
+  const k = 1.0004;                       // inarmonicidade leve
+  modos(t, [[f, 0.26, 0.9], [f * 2 * k, 0.11, 0.55], [f * 3 * k * k, 0.05, 0.34], [f * 4 * k ** 3, 0.022, 0.22], [f * 0.5, 0.03, 0.5]], out, { varia: 0.001 });
+  modos(t + 0.002, [[f * 1.0015, 0.08, 1.1]], out, { varia: 0 });   // segunda corda do mesmo tom: batimento lento
+  rajada(t, 0.03, out, { tipo: 'rosa', filtro: 'lowpass', f: 900, vol: 0.05, a: 0.002, tau: 0.01 });
+}
+// Nota de caixinha de música: dente de metal, uma oitava acima, com os parciais inarmônicos da
+// lâmina (2,76 e 5,40) bem baixos, e o clique do pino. Mais curta e mais baixa que o piano.
+export function caixinha(f, op = {}) {
+  const t = inicio(op); if (t == null) return;
+  const out = saida({ rev: 0.4, vol: op.vol ?? 0.21, dist: 0.15 });   // ~-24 LUFS
+  const g = f * 2;
+  modos(t, [[g, 0.2, 0.55], [g * 2.756, 0.035, 0.12], [g * 5.404, 0.01, 0.05]], out, { varia: 0.002 });
+  rajada(t, 0.006, out, { f: 2400, q: 1.2, vol: 0.05, tau: 0.002 });
+}
+// Grito de criança, longe: a gravação do grito feminino (CC0) mais aguda; sem ela, o sintetizado.
+export function gritoCrianca(op = {}) {
+  const t = inicio(op); if (t == null) return;
+  if (G.gritoCrianca(t, op)) return;
+  grito(op);
+}

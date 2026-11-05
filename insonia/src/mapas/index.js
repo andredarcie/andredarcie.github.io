@@ -15,10 +15,10 @@ import celas from './celas.js';
 import quarto_rachadura from './quarto_rachadura.js';
 import sala_enigma from './sala_enigma.js';
 import { descanso, giratoria, quarto_urso, corredor_final } from './finais.js';
-import { sala_piano, canos, guilhotina } from './capitulo1_fim.js';
+import { sala_piano, guilhotina } from './capitulo1_fim.js';
 
 export const MAPAS = {
   cela, duto, quarto2, corredor, quarto_caixa, sala14, quarto_menino, hospital, banheiro,
   sala_lampadas, salao, pilares, armadilhas, celas, quarto_rachadura, sala_enigma,
-  descanso, giratoria, quarto_urso, corredor_final, sala_piano, canos, guilhotina,
+  descanso, giratoria, quarto_urso, corredor_final, sala_piano, guilhotina,
 };
