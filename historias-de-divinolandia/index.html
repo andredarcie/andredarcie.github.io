@@ -1324,7 +1324,15 @@
     return c;
   };
 
-  const contarPalavras = (el) => el.textContent.split(/\s+/).filter(Boolean).length;
+  // Conta do mesmo jeito que cortar() (pedaço a pedaço de cada nó de texto: em "<em>X</em>," a vírgula
+  // conta à parte). Contar pelo textContent dava menos palavras que cortar() e, num parágrafo quase do
+  // tamanho da página, o laço de paginação virava páginas sem fim e a página travava.
+  const contarPalavras = (el) => {
+    let n = 0;
+    const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) for (const parte of w.currentNode.data.split(/\s+/)) if (parte) n += 1;
+    return n;
+  };
 
   // ── o capítulo corre de página em página ──
   const paginarCapitulo = (sec, inicioNum) => {
@@ -1384,6 +1392,8 @@
         }
         // Numa página vazia em que nada cabe (não deveria acontecer), o parágrafo fica inteiro e corta.
         if (lo < 3 && !corpo.children.length) { corpo.appendChild(bloco); break; }
+        // Trava: numa página vazia, se "cabe tudo" e mesmo assim transborda, fica como está e segue.
+        if (lo >= total && !corpo.children.length) { corpo.appendChild(bloco); break; }
         if (lo >= 3 && lo < total) {
           const parte = cortar(bloco, lo, true);
           parte.classList.add('partido');
