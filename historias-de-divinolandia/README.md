@@ -17,6 +17,29 @@ O sumário é montado depois da paginação, com os números de página de verda
 
 A fonte é a EB Garamond, do Google Fonts. Imprimir a página (Ctrl+P) sai uma página do livro por folha.
 
+## Facilitadores de leitura
+
+Na barra do topo:
+
+- **Capítulos**: lista para pular para a capa, o sumário ou qualquer capítulo.
+- **Aa**: tamanho da letra (85% a 145%; o livro é repaginado) e cor da página (clara, sépia, noite).
+- **PDF**: baixa `historias-de-divinolandia.pdf`.
+- ‹ › e as setas do teclado viram a página; a faixa fina embaixo da barra mostra quanto do livro já foi lido.
+
+Ao tocar no número de uma nota, aparece o botão "Voltar ao texto". Na volta ao site, um aviso oferece continuar da página em que a pessoa parou. Letra, cor e ponto de leitura ficam no `localStorage` do navegador (chaves `hd-letra`, `hd-tema`, `hd-onde`); sem armazenamento, tudo funciona, só não é lembrado.
+
+## O PDF
+
+`historias-de-divinolandia.pdf` (A5, com sumário paginado, marcadores dos capítulos, notas clicáveis e imagens) é gerado do próprio `index.html` por `pdf/gerar-pdf.mjs`:
+
+```
+cd historias-de-divinolandia/pdf
+npm install
+npm run gerar
+```
+
+**Ele não se atualiza sozinho: a cada mudança no texto, gere o PDF de novo e faça o commit junto.** A apresentação vem do texto do `fluir('rosto', …)` no script; os capítulos, de `#fonte`. As fontes EB Garamond estáticas (licença OFL) ficam em `pdf/fontes/`.
+
 ## Busca e compartilhamento (SEO)
 
 - Sem JavaScript, `#fonte` aparece como um artigo comum: `<h1>`, apresentação, sumário com links e os doze capítulos, cada um com `<header class="cab-cap">` (`<h2>`) e `id="capitulo-N"`. Com JavaScript (a classe `js` no `<html>`), o texto vira as páginas do livro e `#fonte` some.

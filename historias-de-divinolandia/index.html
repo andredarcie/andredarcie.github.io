@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add('js');</script>
+<script>document.documentElement.classList.add('js');
+try { var t = localStorage.getItem('hd-tema'); if (t === 'sepia' || t === 'noite') document.documentElement.dataset.tema = t; } catch (e) {}</script>
 <title>Histórias de Divinolândia: a história da antiga Sapecado (SP)</title>
 <meta name="description" content="Livro aberto e gratuito com a história de Divinolândia (SP), a antiga Sapecado: quilombo do Careca, fazendas, imigrantes, Revolução de 1932, sanatório, batata e café.">
 <meta name="keywords" content="história de Divinolândia, Divinolândia SP, Sapecado, Espírito Santo do Rio do Peixe, quilombo do Careca, Revolução de 1932, sanatório Adhemar de Barros, capital da batata, padre Ladislau, Campestrinho">
@@ -126,6 +127,53 @@
     .barra button { padding: 6px 8px; }
   }
   @media (max-width: 300px) { .barra .nome { display: none; } .barra { justify-content: flex-end; } }
+
+  /* ── facilitadores de leitura: capítulos, letra, cor da página, PDF, progresso ── */
+  .barra select, .barra .botao {
+    font: inherit; color: inherit; background: #3a3d42; border: 1px solid #50545a;
+    border-radius: 4px; padding: 6px 8px; cursor: pointer; text-decoration: none; max-width: 150px;
+  }
+  .barra .botao:hover, .barra select:hover { background: #45494f; }
+  .barra button:focus-visible, .barra select:focus-visible, .barra .botao:focus-visible,
+  .painel button:focus-visible, .aviso button:focus-visible { outline: 2px solid #e2c27a; outline-offset: 2px; }
+  .barra .progresso { position: absolute; left: 0; right: 0; bottom: -3px; height: 3px; background: rgba(0,0,0,.25); }
+  .barra .progresso i { display: block; height: 100%; width: 0; background: var(--ocre); transition: width .2s; }
+  @media (max-width: 560px) { .barra .nome { display: none; } .barra { justify-content: flex-end; } .barra select { max-width: 112px; } }
+  @media (max-width: 380px) { .barra select { max-width: 92px; } .barra .botao, .barra select { padding: 6px 6px; } }
+  .painel {
+    position: fixed; z-index: 11; top: 50px; right: 10px; width: min(330px, calc(100vw - 20px));
+    background: #2b2d31; color: #e9e6df; border: 1px solid #50545a; border-radius: 8px;
+    padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    font: 500 14px/1.3 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  .painel[hidden], .aviso[hidden] { display: none; }
+  .painel .grupo { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .painel .grupo > span:first-child { width: 52px; color: #bfbab0; }
+  .painel button, .aviso button {
+    font: inherit; color: inherit; background: #3a3d42; border: 1px solid #50545a; border-radius: 4px;
+    padding: 6px 10px; cursor: pointer;
+  }
+  .painel button[aria-pressed="true"] { background: #6b5527; border-color: #b88a35; }
+  .painel .valor { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
+  .painel .dica { margin: 4px 0 0; font-size: 12.5px; color: #bfbab0; font-weight: 400; }
+  .aviso {
+    position: fixed; z-index: 11; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 24px);
+    background: #2b2d31; color: #e9e6df; border: 1px solid #50545a; border-radius: 8px;
+    padding: 8px 10px 8px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    font: 500 14px/1.3 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  .aviso.voltar { padding: 10px 16px; cursor: pointer; }
+  .aviso.voltar:hover { background: #3a3d42; }
+
+  /* cores da página: sépia e noite (a capa mantém as cores dela) */
+  html[data-tema="sepia"] { --papel: #f3e9d2; --tinta: #3a2f22; --tinta-suave: #76654c; --mesa: #5b5246; }
+  html[data-tema="noite"] { --papel: #1e2024; --tinta: #d9d3c6; --tinta-suave: #9d978b; --mesa: #0f1012; --ocre: #d0a557; --mata: #a9c3a2; }
+  html[data-tema="noite"] .corpo blockquote { color: #cfc8ba; }
+  html[data-tema="noite"] .corpo ol.notas a, html[data-tema="noite"] #fonte sup a { color: #d0a557; }
+  html[data-tema="noite"] .figura img { filter: brightness(.88); }
+  html[data-tema="noite"] .sumario .linha .pontos { border-bottom-color: #5d5850; }
+  html[data-tema="noite"] .pagina { box-shadow: 0 2px 6px rgba(0,0,0,.6); }
 
   /* ── as páginas ── */
   #livro { padding: 28px 8px 60px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
@@ -285,7 +333,7 @@
 
   @media print {
     body { background: none; }
-    .barra { display: none; }
+    .barra, .painel, .aviso { display: none !important; }
     #livro { padding: 0; gap: 0; }
     .pagina { box-shadow: none; break-after: page; }
   }
@@ -295,11 +343,39 @@
 
 <div class="barra">
   <span class="nome">Histórias de Divinolândia</span>
-  <button type="button" id="ir-sumario" title="Ir para o sumário">Sumário</button>
-  <button type="button" id="anterior" title="Página anterior" aria-label="Página anterior">‹</button>
+  <select id="ir-capitulo" title="Ir para um capítulo" aria-label="Ir para um capítulo">
+    <option value="">Capítulos</option>
+  </select>
+  <button type="button" id="ajustes" title="Tamanho da letra e cor da página" aria-label="Tamanho da letra e cor da página" aria-expanded="false" aria-controls="painel">Aa</button>
+  <a class="botao" id="baixar-pdf" href="historias-de-divinolandia.pdf" download title="Baixar o livro em PDF">PDF</a>
+  <button type="button" id="anterior" title="Página anterior (seta para a esquerda)" aria-label="Página anterior">‹</button>
   <span class="contador" id="contador">1 / 1</span>
-  <button type="button" id="proxima" title="Próxima página" aria-label="Próxima página">›</button>
+  <button type="button" id="proxima" title="Próxima página (seta para a direita)" aria-label="Próxima página">›</button>
+  <div class="progresso" aria-hidden="true"><i id="progresso"></i></div>
 </div>
+
+<div class="painel" id="painel" hidden>
+  <div class="grupo">
+    <span>Letra</span>
+    <button type="button" id="letra-menos" aria-label="Diminuir a letra">A−</button>
+    <span id="letra-valor" class="valor">100%</span>
+    <button type="button" id="letra-mais" aria-label="Aumentar a letra">A+</button>
+  </div>
+  <div class="grupo" role="group" aria-label="Cor da página">
+    <span>Página</span>
+    <button type="button" data-tema="claro" aria-pressed="true">Clara</button>
+    <button type="button" data-tema="sepia" aria-pressed="false">Sépia</button>
+    <button type="button" data-tema="noite" aria-pressed="false">Noite</button>
+  </div>
+  <p class="dica">Setas do teclado viram a página. Toque no número de uma nota para ver a fonte; o botão "Voltar ao texto" traz você de volta.</p>
+</div>
+
+<div class="aviso" id="continuar" hidden>
+  <span id="continuar-texto">Continuar de onde parou?</span>
+  <button type="button" id="continuar-sim">Continuar</button>
+  <button type="button" id="continuar-nao" aria-label="Fechar">×</button>
+</div>
+<button type="button" class="aviso voltar" id="voltar-texto" hidden>↩ Voltar ao texto</button>
 
 <main id="livro" aria-label="Livro"></main>
 
@@ -1364,23 +1440,30 @@
   const proximos = JSON.parse(document.getElementById('proximos').textContent);
   let paginas = [];
 
+  // Preferências do leitor (letra e cor da página) ficam no navegador; sem armazenamento, valem só na visita.
+  const guardado = (k, padrao) => { try { const v = localStorage.getItem(k); return v === null ? padrao : v; } catch (e) { return padrao; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* sem armazenamento */ } };
+  const ESCALAS = [0.85, 0.92, 1, 1.1, 1.2, 1.32, 1.45];
+  let escala = ESCALAS.includes(+guardado('hd-letra', 1)) ? +guardado('hd-letra', 1) : 1;
+
   // ── o tamanho da página: de livro no computador, de bolso no celular ──
   const medidas = () => {
     const w = window.innerWidth;
     const root = document.documentElement.style;
     if (w >= 680) {
       root.setProperty('--pw', '600px'); root.setProperty('--ph', '860px');
-      root.setProperty('--corpo', '16.5px'); root.setProperty('--margem-x', '64px');
+      root.setProperty('--corpo', `${(16.5 * escala).toFixed(2)}px`); root.setProperty('--margem-x', '64px');
       root.setProperty('--margem-topo', '64px'); root.setProperty('--margem-base', '70px');
-      return 'grande';
+      return `grande-${escala}`;
     }
     // Nunca mais larga que a tela (o mínimo antigo de 300 px vazava nas telas de 280 px).
     const pw = Math.max(240, Math.min(w - 16, 520));
     root.setProperty('--pw', `${pw}px`); root.setProperty('--ph', `${Math.round(pw * 1.5)}px`);
-    root.setProperty('--corpo', pw < 300 ? '15px' : pw < 360 ? '15.5px' : '16px');
+    const base = pw < 300 ? 15 : pw < 360 ? 15.5 : 16;
+    root.setProperty('--corpo', `${(base * escala).toFixed(2)}px`);
     root.setProperty('--margem-x', `${Math.round(pw * .08)}px`);
     root.setProperty('--margem-topo', '52px'); root.setProperty('--margem-base', '56px');
-    return `bolso-${pw}`;
+    return `bolso-${pw}-${escala}`;
   };
 
   const novaPagina = (classe = '') => {
@@ -1602,6 +1685,8 @@
       linha.href = `#${pagina.id}`;
       linha.querySelector('.p').textContent = pagina.id.replace('pagina-', '');
     }
+    capitulos = inicios;
+    montarSeletor();
     atualizarContador();
 
     // Link direto para um capítulo (#capitulo-6): vai à página em que ele começa.
@@ -1612,8 +1697,28 @@
 
   // ── a barra: página atual, anterior e próxima ──
   const contador = document.getElementById('contador');
+  const progresso = document.getElementById('progresso');
+  const seletor = document.getElementById('ir-capitulo');
   let atual = 1;
-  const atualizarContador = () => { contador.textContent = `${atual} / ${paginas.length}`; };
+  let capitulos = [];
+  let salvar;
+  const atualizarContador = () => {
+    contador.textContent = `${atual} / ${paginas.length}`;
+    progresso.style.width = `${paginas.length > 1 ? ((atual - 1) / (paginas.length - 1)) * 100 : 0}%`;
+    // Onde parou: a fração do livro (vale mesmo se a paginação mudar de tamanho).
+    clearTimeout(salvar);
+    salvar = setTimeout(() => { if (paginas.length > 3) guardar('hd-onde', String(atual / paginas.length)); }, 600);
+  };
+  function montarSeletor() {
+    seletor.innerHTML = '<option value="">Capítulos</option><option value="1">Capa</option>'
+      + (paginaSumario ? `<option value="${paginas.indexOf(paginaSumario) + 1}">Sumário</option>` : '')
+      + capitulos.map(({ sec, pagina }) => `<option value="${paginas.indexOf(pagina) + 1}">${sec.dataset.num}. ${sec.dataset.titulo}</option>`).join('');
+  }
+  seletor.addEventListener('change', () => {
+    const n = +seletor.value;
+    seletor.value = '';
+    if (n) irPara(n);
+  });
   const paginaAtual = () => {
     const meio = window.innerHeight * 0.4;
     let melhor = 1;
@@ -1631,24 +1736,85 @@
   };
   document.getElementById('anterior').onclick = () => irPara(atual - 1);
   document.getElementById('proxima').onclick = () => irPara(atual + 1);
-  document.getElementById('ir-sumario').onclick = () => irPara(paginaSumario ? paginas.indexOf(paginaSumario) + 1 : 3);
   document.addEventListener('keydown', (e) => {
+    if (e.target.closest('select, input, textarea')) return;
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); irPara(atual + 1); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); irPara(atual - 1); }
+    if (e.key === 'Escape') fecharPainel();
   });
+
+  // Notas: o número leva à fonte; um botão traz de volta ao ponto do texto.
+  const voltar = document.getElementById('voltar-texto');
+  let deOnde = null;
   livro.addEventListener('click', (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const alvo = document.getElementById(a.getAttribute('href').slice(1));
     if (!alvo) return;
     e.preventDefault();
+    if (a.closest('sup')) { deOnde = window.scrollY; voltar.hidden = false; }
     window.scrollTo({ top: alvo.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
   });
+  voltar.addEventListener('click', () => {
+    if (deOnde !== null) window.scrollTo({ top: deOnde, behavior: 'smooth' });
+    deOnde = null; voltar.hidden = true;
+  });
+
+  // Painel "Aa": tamanho da letra e cor da página.
+  const painel = document.getElementById('painel');
+  const botaoAjustes = document.getElementById('ajustes');
+  const letraValor = document.getElementById('letra-valor');
+  function fecharPainel() { painel.hidden = true; botaoAjustes.setAttribute('aria-expanded', 'false'); }
+  botaoAjustes.addEventListener('click', () => {
+    painel.hidden = !painel.hidden;
+    botaoAjustes.setAttribute('aria-expanded', String(!painel.hidden));
+  });
+  document.addEventListener('click', (e) => {
+    if (!painel.hidden && !e.target.closest('#painel, #ajustes')) fecharPainel();
+  });
+  const mostrarLetra = () => {
+    letraValor.textContent = `${Math.round(escala * 100)}%`;
+    document.getElementById('letra-menos').disabled = escala === ESCALAS[0];
+    document.getElementById('letra-mais').disabled = escala === ESCALAS[ESCALAS.length - 1];
+  };
+  const mudarLetra = (passo) => {
+    const i = Math.max(0, Math.min(ESCALAS.length - 1, ESCALAS.indexOf(escala) + passo));
+    if (ESCALAS[i] === escala) return;
+    const fracao = atual / paginas.length;
+    escala = ESCALAS[i]; guardar('hd-letra', String(escala)); mostrarLetra();
+    formato = medidas(); montar();
+    irPara(Math.max(1, Math.round(fracao * paginas.length)));
+  };
+  document.getElementById('letra-menos').onclick = () => mudarLetra(-1);
+  document.getElementById('letra-mais').onclick = () => mudarLetra(1);
+  const botoesTema = [...painel.querySelectorAll('[data-tema]')];
+  const aplicarTema = (t) => {
+    if (t === 'claro') delete document.documentElement.dataset.tema; else document.documentElement.dataset.tema = t;
+    botoesTema.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === t)));
+    guardar('hd-tema', t);
+  };
+  botoesTema.forEach((b) => b.addEventListener('click', () => aplicarTema(b.dataset.tema)));
+  aplicarTema(document.documentElement.dataset.tema || 'claro');
+  mostrarLetra();
+
+  // Continuar de onde parou (só quando a visita não veio com um link para um capítulo).
+  const oferecerContinuar = () => {
+    const f = parseFloat(guardado('hd-onde', ''));
+    if (location.hash || !(f > 0) || f >= 0.98) return;
+    const n = Math.max(1, Math.round(f * paginas.length));
+    if (n <= 3) return;
+    const aviso = document.getElementById('continuar');
+    document.getElementById('continuar-texto').textContent = `Continuar de onde parou (página ${n})?`;
+    aviso.hidden = false;
+    document.getElementById('continuar-sim').onclick = () => { aviso.hidden = true; irPara(n); };
+    document.getElementById('continuar-nao').onclick = () => { aviso.hidden = true; };
+    setTimeout(() => { aviso.hidden = true; }, 15000);
+  };
 
   // Paginar só depois da fonte carregar, senão a medida das linhas muda depois. A fonte só baixa quando
   // alguém a usa, e o texto ainda está escondido: por isso o pedido explícito de cada variante.
   let formato = medidas();
-  const iniciar = () => { formato = medidas(); montar(); };
+  const iniciar = () => { formato = medidas(); montar(); oferecerContinuar(); };
   const variantes = ['400 16px "EB Garamond"', 'italic 400 16px "EB Garamond"', '500 16px "EB Garamond"', '600 16px "EB Garamond"'];
   (document.fonts ? Promise.all(variantes.map((v) => document.fonts.load(v))) : Promise.resolve())
     .catch(() => {})

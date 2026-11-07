@@ -1,0 +1,1 @@
+{"name":"historias-pdf","private":true,"type":"module","scripts":{"gerar":"node gerar-pdf.mjs"},"dependencies":{"@resvg/resvg-js":"^2.6.2","node-html-parser":"^6.1.13","pdfkit":"^0.15.2"}}
