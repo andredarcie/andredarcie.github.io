@@ -195,7 +195,7 @@ function gerar(paginasCap) {
   doc.fillColor('#e7d6ae').font(F.i).fontSize(20).text('Histórias de', 0, 158, { width: PW, align: 'center' });
   doc.fillColor('#efe6d2').font(F.m).fontSize(40).text('Divinolândia', 0, 182, { width: PW, align: 'center' });
   doc.moveTo(PW / 2 - 50, 250).lineTo(PW / 2 + 50, 250).lineWidth(0.6).strokeColor(COR.ouro).stroke();
-  doc.fillColor('#efe0bb').font(F.i).fontSize(12).text('Doze capítulos, do século XVIII aos dias de hoje', 0, 410, { width: PW, align: 'center' });
+  doc.fillColor('#efe0bb').font(F.i).fontSize(12).text('Treze capítulos, do século XVIII aos dias de hoje', 0, 410, { width: PW, align: 'center' });
   doc.fillColor('#e7d6ae').font(F.r).fontSize(11).text('Reunido por André N. Darcie', 0, 432, { width: PW, align: 'center' });
   doc.fillColor('#bfa774').fontSize(8).text('DIVINOLÂNDIA · SÃO PAULO · 2026', 0, 456, { width: PW, align: 'center', characterSpacing: 2 });
   const hoje = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
