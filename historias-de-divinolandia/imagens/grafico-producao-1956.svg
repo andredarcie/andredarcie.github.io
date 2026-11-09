@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" font-family="EB Garamond, Georgia, serif">
+<rect width="1000" height="560" fill="#efe9da"/>
+<text x="60" y="70" font-size="34" fill="#3b3226" font-weight="600">O que Divinolândia produziu em 1956</text>
+<text x="60" y="108" font-size="22" fill="#7a6a52" font-style="italic">Os cinco principais produtos, pelo valor, em milhares de cruzeiros</text>
+<text x="264" y="181" font-size="24" text-anchor="end" fill="#3b3226">Café</text>
+<rect x="280" y="150" width="570.0" height="46" rx="4" fill="#8b5a2b"/>
+<text x="862" y="181" font-size="24" fill="#3b3226">45.000</text>
+<text x="264" y="245" font-size="24" text-anchor="end" fill="#3b3226">Batata</text>
+<rect x="280" y="214" width="403.7" height="46" rx="4" fill="#8b5a2b"/>
+<text x="695.712" y="245" font-size="24" fill="#3b3226">31.872</text>
+<text x="264" y="309" font-size="24" text-anchor="end" fill="#3b3226">Milho</text>
+<rect x="280" y="278" width="126.7" height="46" rx="4" fill="#8b5a2b"/>
+<text x="418.6666666666667" y="309" font-size="24" fill="#3b3226">10.000</text>
+<text x="264" y="373" font-size="24" text-anchor="end" fill="#3b3226">Arroz</text>
+<rect x="280" y="342" width="58.3" height="46" rx="4" fill="#8b5a2b"/>
+<text x="350.26666666666665" y="373" font-size="24" fill="#3b3226">4.600</text>
+<text x="264" y="437" font-size="24" text-anchor="end" fill="#3b3226">Feijão</text>
+<rect x="280" y="406" width="47.5" height="46" rx="4" fill="#8b5a2b"/>
+<text x="339.5" y="437" font-size="24" fill="#3b3226">3.750</text>
+<line x1="280" y1="138" x2="280" y2="464" stroke="#7a6a52" stroke-width="1.5"/>
+<text x="60" y="526" font-size="19" fill="#7a6a52">Fonte: IBGE, Enciclopédia dos Municípios Brasileiros, v. XXVIII, 1957, p. 289.</text>
+</svg>

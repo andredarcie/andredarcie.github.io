@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" font-family="EB Garamond, Georgia, serif">
+<rect width="1000" height="620" fill="#efe9da"/>
+<text x="60" y="70" font-size="34" fill="#3b3226" font-weight="600">A população de Divinolândia nos censos</text>
+<text x="60" y="108" font-size="22" fill="#7a6a52" font-style="italic">Habitantes do território do município, de 1950 a 2022</text>
+<line x1="110" y1="510" x2="940" y2="510" stroke="#7a6a52" stroke-width="1.5"/>
+<text x="98" y="517" font-size="19" text-anchor="end" fill="#7a6a52">0</text>
+<line x1="110" y1="458.57142857142856" x2="940" y2="458.57142857142856" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="465.57142857142856" font-size="19" text-anchor="end" fill="#7a6a52">2.000</text>
+<line x1="110" y1="407.14285714285717" x2="940" y2="407.14285714285717" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="414.14285714285717" font-size="19" text-anchor="end" fill="#7a6a52">4.000</text>
+<line x1="110" y1="355.7142857142857" x2="940" y2="355.7142857142857" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="362.7142857142857" font-size="19" text-anchor="end" fill="#7a6a52">6.000</text>
+<line x1="110" y1="304.28571428571433" x2="940" y2="304.28571428571433" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="311.28571428571433" font-size="19" text-anchor="end" fill="#7a6a52">8.000</text>
+<line x1="110" y1="252.85714285714283" x2="940" y2="252.85714285714283" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="259.85714285714283" font-size="19" text-anchor="end" fill="#7a6a52">10.000</text>
+<line x1="110" y1="201.42857142857144" x2="940" y2="201.42857142857144" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="208.42857142857144" font-size="19" text-anchor="end" fill="#7a6a52">12.000</text>
+<line x1="110" y1="150" x2="940" y2="150" stroke="#ddd3bd" stroke-width="1"/>
+<text x="98" y="157" font-size="19" text-anchor="end" fill="#7a6a52">14.000</text>
+<text x="161.875" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">1950</text>
+<text x="265.625" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">1960</text>
+<text x="369.375" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">1970</text>
+<text x="473.125" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">1980</text>
+<text x="587.25" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">1991</text>
+<text x="680.625" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">2000</text>
+<text x="784.375" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">2010</text>
+<text x="908.875" y="542" font-size="20" text-anchor="middle" fill="#7a6a52">2022</text>
+<polyline fill="none" stroke="#8b5a2b" stroke-width="3" stroke-linejoin="round" points="161.9,335.2 265.6,212.0 369.4,192.1 473.1,246.0 587.3,206.3 680.6,201.0 784.4,221.8 908.9,223.1"/>
+<circle cx="161.9" cy="335.2" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="161.9" y="319.2" font-size="20" text-anchor="middle" fill="#3b3226">6.797</text>
+<circle cx="265.6" cy="212.0" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="265.6" y="196.0" font-size="20" text-anchor="middle" fill="#3b3226">11.590</text>
+<circle cx="369.4" cy="192.1" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="369.4" y="176.1" font-size="20" text-anchor="middle" fill="#3b3226">12.363</text>
+<circle cx="473.1" cy="246.0" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="473.1" y="230.0" font-size="20" text-anchor="middle" fill="#3b3226">10.266</text>
+<circle cx="587.3" cy="206.3" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="587.3" y="190.3" font-size="20" text-anchor="middle" fill="#3b3226">11.811</text>
+<circle cx="680.6" cy="201.0" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="680.6" y="185.0" font-size="20" text-anchor="middle" fill="#3b3226">12.016</text>
+<circle cx="784.4" cy="221.8" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="784.4" y="205.8" font-size="20" text-anchor="middle" fill="#3b3226">11.208</text>
+<circle cx="908.9" cy="223.1" r="6" fill="#8b5a2b" stroke="#efe9da" stroke-width="2"/>
+<text x="908.9" y="207.1" font-size="20" text-anchor="middle" fill="#3b3226">11.158</text>
+<text x="60" y="590" font-size="19" fill="#7a6a52">Fontes: IBGE, Enciclopédia de 1957 (1950); Wikipédia, com base no IBGE e na Seade (1960 a 2022).</text>
+</svg>
