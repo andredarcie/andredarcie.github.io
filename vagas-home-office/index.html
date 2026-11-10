@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f4ef" />
+    <meta name="description" content="Vagas home office em português do Brasil, sem exigência declarada de ensino superior ou outro idioma e sem programação ou desenvolvimento." />
+    <title>Vagas de qualquer lugar — home office em português</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="vagas.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#busca">Pular para a busca</a>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a class="brand" href="./" aria-label="Vagas de qualquer lugar, início">
+          <span class="brand-mark" aria-hidden="true"><span></span></span>
+          <span>de qualquer lugar<span class="brand-dot">.</span></span>
+        </a>
+        <nav class="main-nav" aria-label="Navegação principal">
+          <a href="#busca">Buscar</a>
+          <a href="#vagas">Vagas</a>
+          <a href="#como-usar">Como usar</a>
+        </nav>
+        <span class="header-label">VAGAS REMOTAS · BRASIL</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro wrap" id="busca" aria-labelledby="titulo">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Remoto · em português · sem programação</p>
+          <h1 id="titulo">Vagas home office <span>por todo o Brasil.</span></h1>
+          <p class="intro-lede">Explore vagas home office anunciadas em português para candidatos no Brasil. Excluímos programação, desenvolvimento e anúncios que pedem ensino superior ou outro idioma.</p>
+        </div>
+        <div class="intro-aside" aria-label="Escopo da busca">
+          <span class="aside-number" id="vacancy-count">—</span>
+          <p>Vagas no recorte atual, reunidas de sites nacionais e páginas de carreiras.</p>
+          <span class="aside-rule" aria-hidden="true"></span>
+          <span class="aside-small">OPORTUNIDADES REMOTAS · BRASIL</span>
+        </div>
+
+        <form class="search-panel" id="search-form" action="./" method="get" role="search">
+          <label for="job-query">O que você procura?</label>
+          <div class="search-row">
+            <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/><path d="m15.6 15.6 4.7 4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <input id="job-query" name="q" type="search" placeholder="Cargo ou área de interesse" autocomplete="off" />
+            <button class="search-button" type="submit">Buscar vagas <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="search-hint">Filtros fixos: home office no Brasil, anúncio em português, sem superior, outro idioma, programação ou desenvolvimento.</p>
+        </form>
+
+        <div class="quick-searches" aria-label="Sugestões de busca">
+          <span>BUSCAS RÁPIDAS</span>
+          <div class="quick-list">
+            <button type="button" data-query="Atendimento">Atendimento <span aria-hidden="true">↗</span></button>
+            <button type="button" data-query="Administrativo">Administrativo <span aria-hidden="true">↗</span></button>
+            <button type="button" data-query="Marketing">Marketing <span aria-hidden="true">↗</span></button>
+            <button type="button" data-query="Suporte">Suporte <span aria-hidden="true">↗</span></button>
+            <button type="button" data-query="Vendas">Vendas <span aria-hidden="true">↗</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="sources-section" id="vagas" aria-labelledby="vagas-titulo">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">VAGAS FILTRADAS</p>
+              <h2 id="vagas-titulo">Oportunidades para explorar.</h2>
+            </div>
+            <p id="search-status" class="section-note" aria-live="polite">Carregando vagas filtradas…</p>
+          </div>
+          <div class="filter-band"><span>FILTROS ATIVOS</span><strong>100% remoto</strong><strong>Brasil</strong><strong>Português (BR)</strong><strong>Sem superior exigido</strong><strong>Sem outro idioma exigido</strong><strong>Sem programação</strong><span id="updated-at">Atualização: —</span></div>
+          <div class="jobs-list" id="jobs-list"></div>
+          <button class="load-more" id="load-more" type="button" hidden>Mostrar mais vagas ↓</button>
+          <noscript><p class="empty-state">Ative o JavaScript para ver as vagas filtradas.</p></noscript>
+          <p class="source-disclaimer">O filtro analisa o texto dos anúncios e elimina vagas de programação ou desenvolvimento, além das que exigem ensino superior, outro idioma ou trabalho presencial. Requisitos opcionais e benefícios não contam como exigência. Confirme as condições na página original antes de se candidatar. Fontes: <a href="https://vagas.solides.com.br/" target="_blank" rel="noopener noreferrer">Sólides Vagas</a>, <a href="https://remotar.com.br/" target="_blank" rel="noopener noreferrer">Remotar</a> e páginas de carreiras de empresas brasileiras.</p>
+        </div>
+      </section>
+
+      <section class="how-section wrap" id="como-usar" aria-labelledby="como-titulo">
+        <div class="how-heading"><p class="section-kicker">COMO FUNCIONA</p><h2 id="como-titulo">Menos anúncios.<br />Mais foco.</h2></div>
+        <div class="how-steps">
+          <div><span>01 / COLETA</span><p>O site reúne anúncios de portais nacionais e páginas de carreiras.</p></div>
+          <div><span>02 / FILTRO</span><p>Mantém vagas remotas em português e elimina programação, desenvolvimento e exigências de superior ou outro idioma.</p></div>
+          <div><span>03 / CANDIDATURA</span><p>Você confere os detalhes e se candidata na página da fonte.</p></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="wrap footer-inner"><span>de qualquer lugar<span class="brand-dot">.</span></span><p>Vagas remotas em português para o Brasil.</p><a href="#busca">Voltar à busca ↑</a></div></footer>
+  </body>
+</html>

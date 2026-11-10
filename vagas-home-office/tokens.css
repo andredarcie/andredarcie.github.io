@@ -1,0 +1,27 @@
+:root {
+  --color-paper: #f5f4ef;
+  --color-surface: #eeeee8;
+  --color-surface-strong: #e5e7de;
+  --color-ink: #202923;
+  --color-ink-soft: #4d5850;
+  --color-muted: #526457;
+  --color-rule: #cbd0c7;
+  --color-accent: #416b48;
+  --color-accent-ink: #f5f4ef;
+  --color-accent-dark: #2c5034;
+  --color-accent-light: #dce8d7;
+  --color-focus: #215cba;
+  --color-ink-inverse-soft: #d4ded3;
+  --font-display: "Newsreader", Georgia, serif;
+  --font-body: "DM Sans", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --space-1: .5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --space-7: 7rem;
+  --radius-small: .35rem;
+  --rule-thin: 1px;
+}
