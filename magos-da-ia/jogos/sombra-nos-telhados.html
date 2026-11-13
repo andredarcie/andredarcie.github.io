@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Sombra nos Telhados</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#07061a;color:#f4ead6;
+  font-family:"Trebuchet MS","Segoe UI",Verdana,sans-serif;touch-action:none;overscroll-behavior:none;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#tela{position:fixed;left:0;top:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+#seguro{position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#topo{position:fixed;z-index:30;top:calc(8px + env(safe-area-inset-top,0px));right:calc(8px + env(safe-area-inset-right,0px));display:flex;gap:8px}
+.mini{width:42px;height:42px;border-radius:8px;border:2px solid rgba(255,255,255,.4);background:rgba(16,12,40,.6);color:#fff;
+  font:700 16px/1 "Trebuchet MS",sans-serif;cursor:pointer;touch-action:manipulation;padding:0}
+.mini.off{color:rgba(255,255,255,.35);text-decoration:line-through}
+#bPausa{display:none}
+body.jogando #bPausa{display:block}
+
+.painel{position:fixed;left:0;top:0;right:0;bottom:0;z-index:20;display:none;flex-direction:column;text-align:center;overflow-y:auto;
+  padding:calc(14px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));
+  background:linear-gradient(rgba(7,6,26,.5),rgba(7,6,26,.86))}
+.painel.vis{display:flex}
+.painel>div{margin:auto;max-width:640px}
+.painel h1{margin:0 0 .25em;font-size:clamp(30px,9vw,66px);line-height:.95;letter-spacing:.04em;text-transform:uppercase;color:#f6efe0;
+  text-shadow:0 0 22px rgba(230,57,70,.6),3px 3px 0 #b3202a}
+.painel h1 small{display:block;font-size:.3em;letter-spacing:.45em;color:#ff6b74;text-shadow:none;margin-bottom:.6em}
+.painel h2{margin:0 0 .3em;font-size:clamp(24px,7vw,44px);letter-spacing:.06em;text-transform:uppercase;color:#f6efe0;text-shadow:2px 2px 0 #b3202a}
+.painel p{margin:.5em auto;max-width:34em;font-size:clamp(13px,3.5vw,17px);line-height:1.4;color:#d9cfe6}
+.painel p.fraco{color:#9d94b8;font-size:clamp(12px,3vw,14px)}
+.ajuda{display:inline-grid;grid-template-columns:auto auto;gap:5px 12px;text-align:left;margin:10px auto 8px;font-size:clamp(12px,3.2vw,15px);line-height:1.3;color:#d9cfe6}
+.ajuda b{color:#ffd166;text-align:right;white-space:nowrap}
+.botao{font:inherit;font-weight:700;font-size:clamp(16px,4.4vw,21px);letter-spacing:.12em;text-transform:uppercase;color:#fff;background:#b3202a;
+  border:2px solid #ff9aa2;border-radius:6px;padding:.6em 1.5em;margin:.5em .35em;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 0 #5e0f16}
+.botao:active{transform:translateY(3px);box-shadow:0 1px 0 #5e0f16}
+.botao.sec{background:#2a2550;border-color:#8f86c9;box-shadow:0 4px 0 #15122c}
+
+#toque{position:fixed;left:0;top:0;right:0;bottom:0;z-index:10;pointer-events:none;display:none}
+#toque.vis{display:block}
+.bt{position:absolute;pointer-events:auto;touch-action:none;border-radius:50%;border:2px solid rgba(255,255,255,.45);background:rgba(20,16,44,.42);
+  color:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;letter-spacing:.05em}
+.bt *{pointer-events:none}
+.bt.on{background:rgba(230,57,70,.62);border-color:#fff}
+.bt.dica{border-color:#ffd166;box-shadow:0 0 14px rgba(255,209,102,.8);color:#ffd166}
+#dpad{left:calc(14px + env(safe-area-inset-left,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:164px;height:82px;border-radius:41px}
+#dpad .meio{flex:1;height:100%;display:flex;align-items:center;justify-content:center}
+#dpad .meio.on{background:rgba(230,57,70,.5)}
+#dE{border-radius:41px 0 0 41px;border-right:1px solid rgba(255,255,255,.25)}
+#dD{border-radius:0 41px 41px 0}
+.seta{display:block;width:0;height:0;border-top:14px solid transparent;border-bottom:14px solid transparent}
+.seta.e{border-right:22px solid rgba(255,255,255,.9)}
+.seta.d{border-left:22px solid rgba(255,255,255,.9)}
+#bPula{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:86px;height:86px;font-size:14px}
+#bCorte{right:calc(108px + env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:76px;height:76px;font-size:13px}
+#bDesliza{right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(118px + env(safe-area-inset-bottom,0px));width:68px;height:68px;font-size:11px}
+#bEntra{right:calc(98px + env(safe-area-inset-right,0px));bottom:calc(108px + env(safe-area-inset-bottom,0px));width:68px;height:68px}
+
+#erro{position:fixed;left:0;right:0;bottom:0;z-index:99;display:none;margin:0;padding:8px;max-height:40%;overflow:auto;
+  background:rgba(120,0,0,.92);color:#fff;font:12px/1.3 monospace;white-space:pre-wrap;-webkit-user-select:text;user-select:text}
+</style>
+</head>
+<body>
+<canvas id="tela"></canvas>
+<div id="seguro"></div>
+<div id="topo">
+  <button id="bSom" class="mini" type="button" aria-label="Som">&#9834;</button>
+  <button id="bPausa" class="mini" type="button" aria-label="Pausar">II</button>
+</div>
+<div id="toque">
+  <div id="dpad" class="bt"><div class="meio" id="dE"><i class="seta e"></i></div><div class="meio" id="dD"><i class="seta d"></i></div></div>
+  <div id="bEntra" class="bt">ENTRA</div>
+  <div id="bDesliza" class="bt">DESLIZA</div>
+  <div id="bCorte" class="bt">CORTE</div>
+  <div id="bPula" class="bt">PULA</div>
+</div>
+
+<div id="pTitulo" class="painel vis"><div>
+  <h1><small>Máfia da Meia-Noite</small>Sombra nos<br>Telhados</h1>
+  <p>Um ninja, uma katana e uma máfia para desmascarar. Corra pelos telhados, invada casas e apartamentos para roubar comida e bebida, derrube os capangas e desça ao pátio para arrancar a máscara do Chefão.</p>
+  <div id="ajuda" class="ajuda"></div>
+  <div><button id="bJogar" class="botao" type="button">Jogar</button></div>
+  <p id="recorde" class="fraco"></p>
+</div></div>
+
+<div id="pPausa" class="painel"><div>
+  <h2>Pausado</h2>
+  <div id="ajudaP" class="ajuda"></div>
+  <div><button id="bVoltar" class="botao" type="button">Continuar</button><button id="bReiniciaP" class="botao sec" type="button">Recomeçar</button></div>
+</div></div>
+
+<div id="pDerrota" class="painel"><div>
+  <h2>O ninja caiu</h2>
+  <p id="derrotaTxt"></p>
+  <div><button id="bContinuar" class="botao" type="button">Voltar ao ponto de retorno</button></div>
+  <div><button id="bReiniciaD" class="botao sec" type="button">Recomeçar do início</button></div>
+</div></div>
+
+<div id="pVitoria" class="painel"><div>
+  <h2>Máfia desmascarada!</h2>
+  <p>A máscara caiu: o Chefão era o Seu Tibúrcio, o padeiro da esquina. Farinha nas mangas, de pé às 4 da manhã e uma fortuna em sonho de creme. As três pistas não mentiam.</p>
+  <div id="placar" class="ajuda"></div>
+  <p id="titulo" class="fraco"></p>
+  <div><button id="bDeNovo" class="botao" type="button">Jogar de novo</button></div>
+</div></div>
+
+<pre id="erro"></pre>
+<script>
+(function () {
+'use strict';
+
+// ---------- aviso de erro na tela ----------
+var erroEl = document.getElementById('erro');
+function mostraErro(msg) {
+  try { erroEl.style.display = 'block'; erroEl.textContent += msg + '\n'; } catch (_) {}
+}
+window.addEventListener('error', function (e) {
+  mostraErro('Erro: ' + (e && e.message ? e.message : e) + (e && e.lineno ? ' (linha ' + e.lineno + ')' : ''));
+});
+window.addEventListener('unhandledrejection', function (e) {
+  mostraErro('Erro: ' + (e && e.reason ? (e.reason.message || e.reason) : 'promessa rejeitada'));
+});
+
+// ---------- utilidades ----------
+function el(id) { return document.getElementById(id); }
+function limita(v, a, b) { return v < a ? a : (v > b ? b : v); }
+function mistura(a, b, t) { return a + (b - a) * t; }
+function rumo(v, alvo, d) { return v < alvo ? Math.min(alvo, v + d) : Math.max(alvo, v - d); }
+function sinal(v) { return v < 0 ? -1 : (v > 0 ? 1 : 0); }
+function alea(a, b) { return a + Math.random() * (b - a); }
+function sorteia(lista) { return lista[Math.floor(Math.random() * lista.length) % lista.length]; }
+function hash(n) {
+  n = n | 0;
+  n = (n ^ 61) ^ (n >>> 16); n = (n + (n << 3)) | 0; n = n ^ (n >>> 4);
+  n = Math.imul(n, 0x27d4eb2d); n = n ^ (n >>> 15);
+  return (n >>> 0) / 4294967296;
+}
+function sobre(ax, ay, aw, ah, bx, by, bw, bh) { return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by; }
+function guarda(chave, valor) { try { window.localStorage.setItem(chave, String(valor)); } catch (_) {} }
+function le(chave) { try { return window.localStorage.getItem(chave); } catch (_) { return null; } }
+
+// ---------- áudio (WebAudio, tudo sintetizado) ----------
+var AC = null, saida = null, ganhoMus = null, ruidoBuf = null, mudo = le('sombra-telhados-mudo') === '1';
+function ligaAudio() {
+  if (AC) {
+    if (AC.state === 'suspended' && !document.hidden) { try { AC.resume(); } catch (_) {} }
+    return;
+  }
+  try {
+    var Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return;
+    AC = new Ctor();
+    saida = AC.createGain(); saida.gain.value = mudo ? 0 : 0.55; saida.connect(AC.destination);
+    ganhoMus = AC.createGain(); ganhoMus.gain.value = 0.55; ganhoMus.connect(saida);
+    var n = Math.floor(AC.sampleRate), i;
+    ruidoBuf = AC.createBuffer(1, n, AC.sampleRate);
+    var d = ruidoBuf.getChannelData(0);
+    for (i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  } catch (e) { AC = null; }
+}
+function tom(f0, f1, dur, tipo, vol, atraso, dest) {
+  if (!AC || mudo) return;
+  try {
+    var t = AC.currentTime + (atraso || 0);
+    var o = AC.createOscillator(), gn = AC.createGain();
+    o.type = tipo || 'square';
+    o.frequency.setValueAtTime(Math.max(20, f0), t);
+    if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur);
+    gn.gain.setValueAtTime(0.0001, t);
+    gn.gain.linearRampToValueAtTime(vol, t + 0.008);
+    gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(gn); gn.connect(dest || saida);
+    o.start(t); o.stop(t + dur + 0.03);
+  } catch (e) {}
+}
+function chiado(dur, vol, f0, f1, q, atraso, tipo, dest) {
+  if (!AC || mudo || !ruidoBuf) return;
+  try {
+    var t = AC.currentTime + (atraso || 0);
+    var s = AC.createBufferSource(); s.buffer = ruidoBuf; s.loop = true;
+    var f = AC.createBiquadFilter(); f.type = tipo || 'bandpass'; f.Q.value = q || 1;
+    f.frequency.setValueAtTime(Math.max(30, f0), t);
+    if (f1) f.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur);
+    var gn = AC.createGain();
+    gn.gain.setValueAtTime(0.0001, t);
+    gn.gain.linearRampToValueAtTime(vol, t + 0.006);
+    gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(gn); gn.connect(dest || saida);
+    s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.03);
+  } catch (e) {}
+}
+function som(n) {
+  if (!AC || mudo) return;
+  switch (n) {
+    case 'pulo': tom(300, 560, 0.13, 'square', 0.08); break;
+    case 'pulo2': tom(420, 840, 0.14, 'square', 0.07); chiado(0.1, 0.05, 2500, 5000, 1); break;
+    case 'pouso': chiado(0.09, 0.14, 320, 90, 0.8, 0, 'lowpass'); break;
+    case 'passo': chiado(0.03, 0.035, 700, 300, 1); break;
+    case 'corte': chiado(0.13, 0.2, 5200, 1400, 1.6); break;
+    case 'acerto': chiado(0.09, 0.3, 900, 200, 0.8); tom(180, 70, 0.1, 'sawtooth', 0.16); break;
+    case 'metal': tom(1900, 1500, 0.16, 'square', 0.06); tom(2850, 2500, 0.2, 'triangle', 0.07); chiado(0.05, 0.14, 6000, 3000, 2); break;
+    case 'dano': tom(240, 80, 0.25, 'sawtooth', 0.2); chiado(0.15, 0.2, 500, 150, 1); break;
+    case 'pega': tom(660, 660, 0.07, 'square', 0.07); tom(990, 990, 0.1, 'square', 0.07, 0.07); break;
+    case 'mascara': tom(520, 520, 0.06, 'triangle', 0.12); tom(780, 780, 0.06, 'triangle', 0.12, 0.06); tom(1040, 1040, 0.14, 'triangle', 0.12, 0.12); break;
+    case 'boing': tom(160, 520, 0.22, 'sine', 0.22); break;
+    case 'desliza': chiado(0.3, 0.12, 1200, 400, 0.7); break;
+    case 'agarra': tom(200, 160, 0.05, 'square', 0.07); break;
+    case 'grito': tom(700, 1100, 0.12, 'sawtooth', 0.08); tom(1100, 500, 0.35, 'sawtooth', 0.08, 0.12); break;
+    case 'vassoura': chiado(0.14, 0.24, 800, 2400, 1); break;
+    case 'panela': tom(880, 820, 0.25, 'triangle', 0.14); tom(1320, 1250, 0.2, 'square', 0.04); break;
+    case 'telefone': tom(1400, 1400, 0.06, 'square', 0.05); tom(1750, 1750, 0.06, 'square', 0.05, 0.08); break;
+    case 'vidro': chiado(0.2, 0.2, 5000, 7000, 3); tom(2400, 1200, 0.1, 'square', 0.04); break;
+    case 'check': tom(392, 392, 0.12, 'triangle', 0.14); tom(523, 523, 0.12, 'triangle', 0.14, 0.1); tom(659, 659, 0.12, 'triangle', 0.14, 0.2); tom(784, 784, 0.3, 'triangle', 0.14, 0.3); break;
+    case 'porta': tom(140, 90, 0.18, 'square', 0.1); chiado(0.12, 0.1, 400, 200, 1); break;
+    case 'grade': tom(90, 50, 0.4, 'sawtooth', 0.2); chiado(0.3, 0.2, 1500, 300, 2); break;
+    case 'alerta': tom(880, 880, 0.08, 'square', 0.06); tom(880, 880, 0.08, 'square', 0.06, 0.12); break;
+    case 'carga': tom(300, 900, 0.3, 'sine', 0.1); break;
+    case 'dash': chiado(0.25, 0.3, 800, 6000, 1.2); tom(900, 200, 0.22, 'sawtooth', 0.1); break;
+    case 'queda': tom(500, 90, 0.5, 'sine', 0.18); break;
+    case 'chefe': tom(110, 55, 0.6, 'sawtooth', 0.22); tom(82, 41, 0.7, 'square', 0.12, 0.05); break;
+    case 'estrondo': chiado(0.45, 0.4, 200, 40, 0.7, 0, 'lowpass'); tom(70, 30, 0.4, 'sine', 0.35); break;
+    case 'vitoria': [523, 659, 784, 1047, 784, 1047, 1319].forEach(function (f, i) { tom(f, f, 0.24, 'triangle', 0.15, i * 0.13); }); break;
+    case 'derrota': [392, 330, 262, 196].forEach(function (f, i) { tom(f, f * 0.97, 0.32, 'triangle', 0.16, i * 0.2); }); break;
+  }
+}
+// trilha: escala japonesa (ré, mi bemol, sol, lá, si bemol), baixo + dedilhado + tambor nas lutas
+var ESC = [146.83, 155.56, 196.0, 220.0, 233.08, 293.66, 311.13, 392.0, 440.0, 466.16];
+var MELO = [5, -1, 4, -1, 3, -1, 2, 3, 5, -1, 6, 5, 3, -1, -1, -1, 7, -1, 6, 5, 3, -1, 4, -1, 2, -1, 1, 2, 0, -1, -1, -1];
+var mus = { prox: 0, passo: 0, modo: 0 };
+function tocaMusica() {
+  if (!AC || mudo || AC.state !== 'running') return;
+  var bpm = mus.modo === 2 ? 152 : (mus.modo === 1 ? 128 : 100), semi = 60 / bpm / 2;
+  if (mus.prox < AC.currentTime) mus.prox = AC.currentTime + 0.06;
+  var guardaLaco = 0;
+  while (mus.prox < AC.currentTime + 0.25 && guardaLaco++ < 8) {
+    var p = mus.passo % 32, t = mus.prox - AC.currentTime;
+    if (p % 4 === 0) tom(ESC[(p % 16 === 8) ? 2 : ((p % 16 === 12) ? 1 : 0)] / 2, 0, semi * 3, 'triangle', 0.2, t, ganhoMus);
+    var nota = MELO[p];
+    if (nota >= 0 && (mus.modo > 0 || p % 2 === 0 || p % 8 === 7)) tom(ESC[nota], 0, semi * 1.7, 'triangle', 0.075, t, ganhoMus);
+    if (mus.modo > 0) {
+      if (p % 4 === 0) { tom(120, 45, 0.12, 'sine', 0.28, t, ganhoMus); }
+      if (p % 4 === 2) chiado(0.06, 0.1, 3000, 1500, 1, t, 'bandpass', ganhoMus);
+      if (mus.modo === 2 && p % 2 === 1) chiado(0.03, 0.05, 6000, 5000, 2, t, 'bandpass', ganhoMus);
+    }
+    mus.passo++; mus.prox += semi;
+  }
+}
+function alternaSom() {
+  mudo = !mudo; guarda('sombra-telhados-mudo', mudo ? '1' : '0');
+  if (saida) { try { saida.gain.value = mudo ? 0 : 0.55; } catch (_) {} }
+  el('bSom').classList.toggle('off', mudo);
+}
+
+// ---------- tela ----------
+var cv = el('tela'), g = cv.getContext('2d');
+var W = 800, H = 450, DPR = 1, SC = 1, VW = 800, VH = 450, seg = { t: 0, r: 0, b: 0, l: 0 };
+function ajusta() {
+  W = Math.max(60, window.innerWidth || 800); H = Math.max(60, window.innerHeight || 450);
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  SC = Math.min(H / 430, W / 440); if (!(SC > 0.05)) SC = 0.05;
+  VW = W / SC; VH = H / SC;
+  try {
+    var cs = window.getComputedStyle(el('seguro'));
+    seg.t = parseFloat(cs.paddingTop) || 0; seg.r = parseFloat(cs.paddingRight) || 0;
+    seg.b = parseFloat(cs.paddingBottom) || 0; seg.l = parseFloat(cs.paddingLeft) || 0;
+  } catch (_) {}
+}
+window.addEventListener('resize', ajusta);
+window.addEventListener('orientationchange', function () { setTimeout(ajusta, 250); });
+
+// ---------- estado geral ----------
+var GRAV = 1500, PULO = 520, PULO2 = 470, VEL = 215, CHAO_MORTE = -24;
+var estado = 'titulo', painelDesde = 0, relogio = 0, congela = 0, lento = 0;
+var mundo = null, cena = null, salas = [], chefe = null, patio = { x0: 0, x1: 0 }, portao = null, mascaraChefe = null, fim = null;
+var pl = null, cam = { x: 0, y: -500, tr: 0, dx: 0, dy: 0 }, parts = [], textos = [], avisos = [], trans = null, rot = [];
+var S = null, portaPerto = null, saidaPerto = false, portaoAvisoT = 0, dicaEntra = false;
+
+// ---------- entrada ----------
+var tec = {}, toq = { esq: false, dir: false, pulo: false, atq: false, baixo: false }, ratoAtq = false;
+var inp = { esq: false, dir: false, baixo: false, pulo: false, atq: false };
+var buf = { pulo: 0, atq: 0, entra: 0, baixo: 0 };
+var ehToque = false;
+try { ehToque = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch (_) {}
+
+function lerEntrada() {
+  inp.esq = !!(tec.ArrowLeft || tec.KeyA || toq.esq);
+  inp.dir = !!(tec.ArrowRight || tec.KeyD || toq.dir);
+  inp.baixo = !!(tec.ArrowDown || tec.KeyS || toq.baixo);
+  inp.pulo = !!(tec.ArrowUp || tec.KeyW || tec.Space || toq.pulo);
+  inp.atq = !!(tec.KeyJ || tec.KeyX || tec.KeyZ || tec.KeyK || toq.atq || ratoAtq);
+}
+function soltaTudo() {
+  tec = {}; ratoAtq = false;
+  toq.esq = toq.dir = toq.pulo = toq.atq = toq.baixo = false;
+}
+window.addEventListener('keydown', function (e) {
+  var c = e.code || '';
+  if (c.indexOf('Arrow') === 0 || c === 'Space') e.preventDefault();
+  if (e.repeat) return;
+  ligaAudio();
+  tec[c] = true;
+  if (c === 'KeyM') { alternaSom(); return; }
+  if (estado === 'titulo') { if (c === 'Enter' || c === 'Space') { e.preventDefault(); comeca(); } return; }
+  if (estado === 'pausa') { if (c === 'KeyP' || c === 'Escape' || c === 'Enter') { e.preventDefault(); despausa(); } return; }
+  if (estado === 'derrota') { if ((c === 'Enter' || c === 'Space') && relogio - painelDesde > 0.7) { e.preventDefault(); continuaDoPonto(); } return; }
+  if (estado === 'vitoria') { if (c === 'Enter' && relogio - painelDesde > 1) { e.preventDefault(); reinicia(); } return; }
+  if (estado !== 'jogo') return;
+  if (c === 'ArrowUp' || c === 'KeyW' || c === 'Space') buf.pulo = 0.13;
+  else if (c === 'KeyJ' || c === 'KeyX' || c === 'KeyZ' || c === 'KeyK') buf.atq = 0.12;
+  else if (c === 'KeyE' || c === 'Enter') { e.preventDefault(); buf.entra = 0.15; }
+  else if (c === 'ArrowDown' || c === 'KeyS') buf.baixo = 0.12;
+  else if (c === 'KeyP' || c === 'Escape') pausa();
+});
+window.addEventListener('keyup', function (e) {
+  var c = e.code || '';
+  if (c === 'Space') e.preventDefault();
+  tec[c] = false;
+});
+window.addEventListener('blur', soltaTudo);
+window.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+// mouse: clique na tela = katana. Toque: liga os botões da tela
+function ativaToque() {
+  if (ehToque) return;
+  ehToque = true; atualizaAjuda(); sincronizaUI();
+}
+window.addEventListener('pointerdown', function (e) {
+  ligaAudio();
+  if (e.pointerType === 'touch') ativaToque();
+}, true);
+cv.addEventListener('pointerdown', function (e) {
+  if (e.pointerType === 'touch') return;
+  if (estado === 'jogo' && (e.button === 0 || e.button === undefined)) { buf.atq = 0.12; ratoAtq = true; }
+});
+window.addEventListener('pointerup', function (e) { if (e.pointerType !== 'touch') ratoAtq = false; });
+
+// botões de toque
+function ligaBotao(id, aperta, solta) {
+  var b = el(id);
+  b.addEventListener('pointerdown', function (e) {
+    e.preventDefault(); ligaAudio();
+    try { b.setPointerCapture(e.pointerId); } catch (_) {}
+    b.classList.add('on'); aperta();
+  });
+  var fimToque = function (e) { e.preventDefault(); b.classList.remove('on'); solta(); };
+  b.addEventListener('pointerup', fimToque);
+  b.addEventListener('pointercancel', fimToque);
+}
+ligaBotao('bPula', function () { toq.pulo = true; buf.pulo = 0.13; }, function () { toq.pulo = false; });
+ligaBotao('bCorte', function () { toq.atq = true; buf.atq = 0.12; }, function () { toq.atq = false; });
+ligaBotao('bDesliza', function () { toq.baixo = true; buf.baixo = 0.12; }, function () { toq.baixo = false; });
+ligaBotao('bEntra', function () { buf.entra = 0.15; }, function () {});
+(function () {
+  var dpad = el('dpad'), dE = el('dE'), dD = el('dD'), dono = null;
+  function pos(e) {
+    var r = dpad.getBoundingClientRect(), x = e.clientX - (r.left + r.width / 2);
+    toq.esq = x < -4; toq.dir = x > 4;
+    dE.classList.toggle('on', toq.esq); dD.classList.toggle('on', toq.dir);
+  }
+  function solta(e) {
+    if (dono !== null && e.pointerId !== dono) return;
+    dono = null; toq.esq = toq.dir = false;
+    dE.classList.remove('on'); dD.classList.remove('on');
+  }
+  dpad.addEventListener('pointerdown', function (e) {
+    e.preventDefault(); ligaAudio(); dono = e.pointerId;
+    try { dpad.setPointerCapture(e.pointerId); } catch (_) {}
+    pos(e);
+  });
+  dpad.addEventListener('pointermove', function (e) { if (e.pointerId === dono) pos(e); });
+  dpad.addEventListener('pointerup', solta);
+  dpad.addEventListener('pointercancel', solta);
+})();
+
+// ---------- painéis ----------
+function atualizaAjuda() {
+  var linhas = ehToque ? [
+    ['Setas', 'correr'],
+    ['PULA', 'pular · de novo no ar: pulo duplo · na parede: pulo de parede'],
+    ['DESLIZA', 'passar por baixo de letreiros e facas'],
+    ['CORTE', 'katana · segure e solte: Corte Sombra (gasta energia)'],
+    ['ENTRA', 'invadir por portas e janelas']
+  ] : [
+    ['← → ou A D', 'correr'],
+    ['Espaço, ↑ ou W', 'pular · de novo no ar: pulo duplo · na parede: pulo de parede'],
+    ['↓ ou S', 'deslizar por baixo de letreiros e facas'],
+    ['J, X ou clique', 'katana · segure e solte: Corte Sombra (gasta energia)'],
+    ['E ou Enter', 'invadir por portas e janelas'],
+    ['P · M', 'pausa · som']
+  ];
+  var h = '', i;
+  for (i = 0; i < linhas.length; i++) h += '<b>' + linhas[i][0] + '</b><span>' + linhas[i][1] + '</span>';
+  el('ajuda').innerHTML = h; el('ajudaP').innerHTML = h;
+}
+function sincronizaUI() {
+  document.body.classList.toggle('jogando', estado === 'jogo');
+  el('toque').classList.toggle('vis', ehToque && estado === 'jogo');
+  el('pTitulo').classList.toggle('vis', estado === 'titulo');
+  el('pPausa').classList.toggle('vis', estado === 'pausa');
+  el('pDerrota').classList.toggle('vis', estado === 'derrota');
+  el('pVitoria').classList.toggle('vis', estado === 'vitoria');
+  painelDesde = relogio;
+  try { if (document.activeElement && document.activeElement !== document.body && document.activeElement.blur) document.activeElement.blur(); } catch (_) {}
+}
+function clique(id, fn) {
+  el(id).addEventListener('click', function () { ligaAudio(); try { this.blur(); } catch (_) {} fn(); });
+}
+clique('bJogar', function () { comeca(); });
+clique('bVoltar', function () { despausa(); });
+clique('bReiniciaP', function () { reinicia(); });
+clique('bContinuar', function () { continuaDoPonto(); });
+clique('bReiniciaD', function () { reinicia(); });
+clique('bDeNovo', function () { reinicia(); });
+clique('bSom', function () { alternaSom(); });
+clique('bPausa', function () { if (estado === 'jogo') pausa(); else if (estado === 'pausa') despausa(); });
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) {
+    soltaTudo();
+    if (estado === 'jogo') pausa();
+    if (AC) { try { AC.suspend(); } catch (_) {} }
+  } else if (AC) { try { AC.resume(); } catch (_) {} }
+});
+
+// ---------- cenas, inimigos e fase ----------
+var PISTAS = [
+  'Tem farinha nas mangas do paletó do Chefão.',
+  'O Chefão acorda às 4 da manhã, antes do bairro inteiro.',
+  'A máfia lava dinheiro vendendo sonho de creme.'
+];
+var COMIDAS = ['Pão de queijo', 'Coxinha', 'Bolo de fubá', 'Pastel de feira', 'Marmita', 'Brigadeiro'];
+var BEBIDAS = ['Suco de caju', 'Café coado', 'Chá gelado', 'Guaraná', 'Água de coco'];
+
+function zeraPlacar() {
+  S = { pontos: 0, mascaras: 0, mascarasTotal: 0, comidas: 0, bebidas: 0, pistas: [false, false, false],
+    tempo: 0, quedas: 0, check: 0, desonra: 0, derrotados: 0, voltas: 0 };
+}
+function novaCena(tipo) {
+  return { tipo: tipo, solidos: [], plats: [], tramp: [], inimigos: [], moradores: [], itens: [], projs: [], coletas: [],
+    portas: [], checks: [], placas: [], arenas: [], predios: [], props: [], minX: 0, maxX: 1000, nome: '', sub: '' };
+}
+function novoInimigo(c, tipo, x, pe, minX, maxX, o) {
+  var e = { tipo: tipo, x: x, y: 0, w: 16, h: 30, vx: 0, vy: 0, dir: -1, estado: 'patrulha', t: alea(0.2, 1.2),
+    vida: 2, vidaMax: 2, dano: 1, velP: 38, velC: 112, visao: 230, alcance: 30, golpeL: 26, tPrep: 0.38, tGolpe: 0.16, tRec: 0.5, cad: 1.9,
+    minX: minX, maxX: maxX, hitId: -1, flash: 0, alerta: 0, morto: false, some: 0, pesado: false, elite: false, minion: false, semMascara: false,
+    pontos: 100, fase: Math.random() * 6, noChao: true, bateu: 0, teto: false, chaoS: null, acertou: false, investe: 0, triplo: false, foge: false,
+    recuoCd: 0, seq: 0, conta: 0, chamou: false, arena: null, pista: -1, nome: '', x0: x, y0: 0, desmascarado: false };
+  if (tipo === 'arremessador') { e.estado = 'guarda'; e.vida = 1; e.visao = 400; e.pontos = 150; }
+  else if (tipo === 'brutamontes') { e.w = 24; e.h = 40; e.vida = 5; e.dano = 2; e.velP = 26; e.velC = 62; e.alcance = 40; e.golpeL = 34; e.tPrep = 0.62; e.tRec = 0.8; e.pesado = true; e.pontos = 300; e.visao = 260; }
+  else if (tipo === 'chefe') { e.w = 34; e.h = 52; e.vida = 28; e.dano = 2; e.pesado = true; e.elite = true; e.pontos = 2000; e.estado = 'aguarda'; }
+  if (o) { for (var k in o) { if (Object.prototype.hasOwnProperty.call(o, k)) e[k] = o[k]; } }
+  e.vidaMax = e.vida; e.y = pe - e.h; e.y0 = e.y; e.x0 = e.x;
+  c.inimigos.push(e);
+  return e;
+}
+function criaSala(cfg) {
+  var s = novaCena('sala'), L = cfg.larg || 470, i;
+  s.larg = L; s.nome = cfg.nome; s.sub = cfg.sub || ''; s.corParede = cfg.parede || '#4a3550'; s.corPiso = cfg.piso || '#6b4a35';
+  s.esconderijo = !!cfg.esconderijo; s.entrada = cfg.entrada || 'porta'; s.sem = cfg.sem || 1;
+  s.solidos.push({ x: -300, y: 0, w: L + 600, h: 300 });
+  s.solidos.push({ x: -300, y: -500, w: 300, h: 500, semAgarra: true });
+  s.solidos.push({ x: L, y: -500, w: 300, h: 500, semAgarra: true });
+  s.solidos.push({ x: -300, y: -500, w: L + 600, h: 350, semAgarra: true });
+  s.minX = 0; s.maxX = L; s.saidaX = 36;
+  s.mesaX = Math.round(L * 0.46); s.estX = s.mesaX + 98; s.gelX = L - 38; s.foneX = L - 112; s.temFone = false;
+  var lug = { mesa1: [s.mesaX - 16, -35], mesa2: [s.mesaX + 15, -35], estante: [s.estX, -94], geladeira: [s.gelX - 32, -14], sofa: [118, -30], chao: [s.mesaX + 58, -12] };
+  var its = cfg.itens || [];
+  for (i = 0; i < its.length; i++) {
+    var it = its[i], p = lug[it[2]] || lug.chao;
+    var nome = it[0] === 'comida' ? COMIDAS[it[1] % COMIDAS.length] : (it[0] === 'bebida' ? BEBIDAS[it[1] % BEBIDAS.length] : 'Dossiê da máfia');
+    s.itens.push({ classe: it[0], v: it[1], nome: nome, x: p[0] - 8, y: p[1] - 8, w: 16, h: 16, pego: false, f: i * 1.7 });
+  }
+  var ms = cfg.moradores || [];
+  for (i = 0; i < ms.length; i++) {
+    var m = ms[i];
+    if (m.tipo === 'dedoduro') s.temFone = true;
+    s.moradores.push({ tipo: m.tipo, x: m.x || L * 0.62, y: -30, w: 14, h: 30, vx: 0, vy: 0, dir: -1, estado: 'calmo', t: 0,
+      fala: '', falaT: 0, tonto: 0, hitId: -1, fase: 0, lig: 0, ligou: false, tent: 0, acertou: false, noChao: true, bateu: 0, teto: false, chaoS: null,
+      gritoT: 1.2, somT: 0, corpo: m.corpo || '#8fb8de', perna: m.perna || '#4d5f7a', cabelo: m.cabelo || '#4a3a2c', pele: m.pele || '#e8b98a' });
+  }
+  var ins = cfg.inimigos || [];
+  for (i = 0; i < ins.length; i++) novoInimigo(s, ins[i][0], ins[i][1], 0, 8, L - 8);
+  return s;
+}
+
+function constroiMundo() {
+  var m = novaCena('mundo'), cur = 0, ult = null, bairro = 0, pr = m.predios;
+  salas = [];
+  function P(vao, larg, alt) {
+    cur += vao;
+    var b = { x: cur, y: -alt, w: larg, h: alt + 300, predio: true, bairro: bairro, sem: 17 + pr.length * 7919, est: pr.length };
+    m.solidos.push(b); pr.push(b); cur += larg; ult = b;
+    return b;
+  }
+  function fx(f) { return ult.x + ult.w * f; }
+  function prop(tipo, f, w, h, extra) {
+    var s = { tipo: tipo, x: Math.round(fx(f) - w / 2), y: ult.y - h, w: w, h: h, sem: m.props.length * 31 + 7 };
+    if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) s[k] = extra[k]; } }
+    m.solidos.push(s); m.props.push(s);
+    return s;
+  }
+  function caixa(f) { return prop('caixa', f, 46, 44); }
+  function ar(f) { return prop('ar', f, 26, 14); }
+  function chamine(f) { return prop('chamine', f, 18, 32); }
+  function antena(f) { return prop('antena', f, 6, 66, { semAgarra: true }); }
+  function letreiro(f, larg, txt) {
+    var s = { tipo: 'letreiro', x: Math.round(fx(f) - larg / 2), y: ult.y - 80, w: larg, h: 62, txt: txt, sem: m.props.length * 31 + 7 };
+    m.solidos.push(s); m.props.push(s);
+    return s;
+  }
+  function ini(tipo, f, o) { return novoInimigo(m, tipo, fx(f) - 8, ult.y, ult.x + 6, ult.x + ult.w - 6, o); }
+  function check(f, nome, sub) { m.checks.push({ x: fx(f), y: ult.y, ativo: m.checks.length === 0, i: m.checks.length, nome: nome || '', sub: sub || '' }); }
+  function placa(f, id) { m.placas.push({ x: fx(f), y: ult.y, id: id }); }
+  function porta(f, tipo, sala, rotulo) { salas.push(sala); m.portas.push({ x: fx(f), y: ult.y, tipo: tipo, sala: sala, rot: rotulo || '', sem: m.portas.length }); }
+  function varal(dy) {
+    var a = pr[pr.length - 2], b = ult, y = Math.max(a.y, b.y) + (dy || 24);
+    m.tramp.push({ tipo: 'varal', x: a.x + a.w + 8, w: b.x - (a.x + a.w) - 16, y: y, forca: 650, anim: 0, sem: b.sem });
+  }
+  function toldo() { m.tramp.push({ tipo: 'toldo', x: ult.x - 58, w: 58, y: ult.y + 74, forca: 720, anim: 0, sem: ult.sem }); }
+  function arena(nome, sub, tipo, o) {
+    var b = ult, a = { x0: b.x + 16, x1: b.x + b.w - 16, y: b.y, ativo: false, feito: false, nome: nome, sub: sub, barras: [], elite: null, anim: 0 };
+    var b1 = { tipo: 'barra', x: b.x + 2, y: b.y - 2600, w: 12, h: 2600, inativo: true, semAgarra: true, arena: a, sem: 1 };
+    var b2 = { tipo: 'barra', x: b.x + b.w - 14, y: b.y - 2600, w: 12, h: 2600, inativo: true, semAgarra: true, arena: a, sem: 2 };
+    m.solidos.push(b1, b2); m.props.push(b1, b2); a.barras = [b1, b2];
+    var e = novoInimigo(m, tipo, (a.x0 + a.x1) / 2 + 70, b.y, a.x0 + 2, a.x1 - 2, o);
+    e.estado = 'aguarda'; e.arena = a; a.elite = e;
+    m.arenas.push(a);
+    return a;
+  }
+
+  // interiores: cada morador reage de um jeito
+  var sala1 = criaSala({ nome: 'Apartamento 12', sub: 'Seu Juvenal mora sozinho e tem medo até de sombra.', entrada: 'janela', parede: '#3f4a63', piso: '#6b4a35', sem: 3,
+    moradores: [{ tipo: 'medroso', corpo: '#9cc4e4', perna: '#5d7fa3', cabelo: '#5a4634' }],
+    itens: [['comida', 0, 'mesa1'], ['bebida', 0, 'mesa2'], ['comida', 5, 'estante']] });
+  var sala2 = criaSala({ nome: 'Casa da Dona Zulmira', sub: 'Cheiro de bolo. E uma vassoura atrás da porta.', entrada: 'porta', parede: '#5a3f52', piso: '#7a5236', sem: 8,
+    moradores: [{ tipo: 'vassoura', corpo: '#c77dbb', perna: '#6b4a7a', cabelo: '#dcdce6' }],
+    itens: [['comida', 2, 'mesa1'], ['bebida', 1, 'mesa2'], ['comida', 5, 'estante'], ['bebida', 2, 'geladeira']] });
+  var sala3 = criaSala({ nome: 'Apartamento 34', sub: 'O cozinheiro Baltazar está fazendo a janta.', entrada: 'janela', parede: '#4d5a4a', piso: '#5f4a3a', sem: 14,
+    moradores: [{ tipo: 'panela', corpo: '#e8e2d0', perna: '#3a3a44', cabelo: '#2a2018' }],
+    itens: [['comida', 4, 'mesa1'], ['comida', 1, 'mesa2'], ['bebida', 4, 'geladeira'], ['comida', 3, 'estante']] });
+  var sala4 = criaSala({ nome: 'Apartamento 57', sub: 'O vizinho que vê tudo. E conta tudo.', entrada: 'porta', parede: '#4a4266', piso: '#6b4a35', sem: 21,
+    moradores: [{ tipo: 'dedoduro', corpo: '#d9a441', perna: '#5a4a2a', cabelo: '#3a2a1a', x: 250 }],
+    itens: [['bebida', 3, 'mesa1'], ['comida', 0, 'mesa2'], ['bebida', 0, 'geladeira'], ['comida', 2, 'sofa']] });
+  var sala5 = criaSala({ nome: 'Casa dos Moreira', sub: 'Um casal jantando. Cada um reage de um jeito.', entrada: 'janela', parede: '#5c4a3a', piso: '#70503a', sem: 27, larg: 520,
+    moradores: [{ tipo: 'medroso', corpo: '#f0a8a0', perna: '#7a4a5a', cabelo: '#7a3a1a', x: 300 }, { tipo: 'panela', corpo: '#7fb58a', perna: '#3a4a3a', cabelo: '#1a1a1a', x: 400 }],
+    itens: [['comida', 1, 'mesa1'], ['bebida', 2, 'mesa2'], ['comida', 5, 'estante'], ['bebida', 1, 'geladeira']] });
+  var salaEsc = criaSala({ nome: 'Esconderijo da máfia', sub: 'Caixotes, dinheiro e um dossiê no fundo da sala.', entrada: 'porta', parede: '#2f2a3a', piso: '#4a4038', sem: 33, larg: 560, esconderijo: true,
+    inimigos: [['capanga', 250], ['capanga', 400], ['arremessador', 500]],
+    itens: [['bebida', 3, 'mesa1'], ['comida', 4, 'mesa2'], ['dossie', 0, 'geladeira']] });
+
+  // ---- Bairro 1: Vila das Lanternas (aprender a correr, pular, cortar e invadir) ----
+  bairro = 0;
+  P(0, 480, 190); check(0.14); placa(0.36, 'mover'); ar(0.58); placa(0.8, 'pular');
+  P(70, 300, 190); chamine(0.3); placa(0.7, 'duplo');
+  P(150, 280, 215); caixa(0.42); placa(0.8, 'parede');
+  P(64, 300, 320); placa(0.3, 'atacar'); ini('capanga', 0.7);
+  P(100, 320, 290); placa(0.14, 'deslizar'); letreiro(0.55, 96, 'PADARIA');
+  P(110, 360, 290); placa(0.2, 'entrar'); porta(0.52, 'janela', sala1, 'APTO 12'); placa(0.76, 'varal'); ar(0.9);
+  P(230, 260, 270); varal(24); placa(0.3, 'sombra'); ini('capanga', 0.72);
+  P(90, 300, 300); ini('capanga', 0.45); ini('arremessador', 0.8);
+  P(110, 380, 300); check(0.16); porta(0.6, 'porta', sala2, 'CASA 7');
+  P(130, 560, 260);
+  arena('Tenente Navalha', 'Rápido, e avança com a lâmina. Pule ou saia da frente!', 'capanga',
+    { elite: true, nome: 'Tenente Navalha', w: 18, h: 34, vida: 9, velC: 135, alcance: 78, tPrep: 0.5, tGolpe: 0.32, tRec: 0.75, investe: 420, pesado: true, pontos: 500, pista: 0, visao: 900 });
+
+  // ---- Bairro 2: Centro Velho (prédios altos, varais, letreiros) ----
+  bairro = 1;
+  P(140, 300, 330); check(0.3, 'Centro Velho', 'Prédios altos e gente que não dorme.'); antena(0.72);
+  P(90, 240, 425); caixa(0.3); ini('arremessador', 0.7);
+  P(170, 300, 385); ini('capanga', 0.35); porta(0.7, 'janela', sala3, 'APTO 34');
+  P(270, 240, 385); varal(26); ini('arremessador', 0.62);
+  P(80, 220, 490); caixa(0.55);
+  P(150, 360, 410); letreiro(0.36, 104, 'LANCHES'); ini('capanga', 0.66); ini('arremessador', 0.88);
+  P(120, 320, 445); check(0.16); porta(0.58, 'porta', sala4, 'APTO 57');
+  P(200, 280, 365); toldo(); ini('brutamontes', 0.6);
+  P(110, 260, 440); antena(0.3); ini('capanga', 0.55); ini('arremessador', 0.82);
+  P(130, 580, 400);
+  arena('Tenente Coquetel', 'Joga três garrafas de uma vez e foge pulando.', 'arremessador',
+    { elite: true, nome: 'Tenente Coquetel', w: 18, h: 34, vida: 9, cad: 1.45, triplo: true, foge: true, pesado: true, pontos: 500, pista: 1, visao: 900 });
+
+  // ---- Bairro 3: Docas (chaminés, vigas e o esconderijo) ----
+  bairro = 2;
+  P(150, 300, 340); check(0.3, 'Docas', 'O cheiro de pão doce vem daqui perto.'); chamine(0.72);
+  var antes = ult;
+  P(240, 220, 340); m.plats.push({ tipo: 'viga', x: antes.x + antes.w + 88, y: -352, w: 64 }); ini('arremessador', 0.6);
+  P(120, 300, 405); chamine(0.3); ini('capanga', 0.46); chamine(0.62); ini('arremessador', 0.84);
+  P(160, 340, 325); porta(0.24, 'janela', sala5, 'CASA 3'); ini('brutamontes', 0.64);
+  P(250, 240, 365); varal(26); ini('capanga', 0.55);
+  P(100, 320, 300); ini('capanga', 0.2); letreiro(0.5, 110, 'SONHOS'); ini('arremessador', 0.86);
+  P(140, 460, 280); check(0.12); porta(0.4, 'porta', salaEsc, 'DEPÓSITO');
+  portao = { tipo: 'portao', x: Math.round(fx(0.78)), y: ult.y - 2600, w: 14, h: 2600, inativo: false, semAgarra: true, sem: 5 };
+  m.solidos.push(portao); m.props.push(portao);
+
+  // ---- pátio do Chefão, no chão ----
+  patio.x0 = cur; patio.x1 = cur + 720;
+  m.solidos.push({ x: patio.x0 - 4, y: 0, w: 728, h: 300, patio: true });
+  var grade = { tipo: 'grade', x: patio.x0, y: -246, w: 720, h: 14, inativo: true, semAgarra: true, sem: 9 };
+  m.solidos.push(grade); m.props.push(grade);
+  var ap = { x0: patio.x0, x1: patio.x1, y: 0, ativo: false, feito: false, nome: 'O Chefão', sub: 'Pule a investida, corte as facas e bata quando ele cansar.', barras: [grade], elite: null, anim: 0 };
+  grade.arena = ap;
+  chefe = novoInimigo(m, 'chefe', patio.x0 + 500, 0, patio.x0 + 6, patio.x1 - 6, { nome: 'O Chefão' });
+  chefe.arena = ap; ap.elite = chefe; m.arenas.push(ap);
+  P(720, 260, 520);
+  m.solidos.push({ x: -300, y: -3000, w: 300, h: 3300, semAgarra: true });
+  m.solidos.push({ x: cur, y: -3000, w: 300, h: 3300, semAgarra: true });
+  m.minX = 0; m.maxX = cur;
+
+  // total de máscaras para o placar (o Chefão conta à parte)
+  var total = 0, i, j;
+  for (i = 0; i < m.inimigos.length; i++) if (m.inimigos[i].tipo !== 'chefe') total++;
+  for (j = 0; j < salas.length; j++) total += salas[j].inimigos.length;
+  S.mascarasTotal = total;
+  return m;
+}
+
+var plataformasSimples=[], bandidosSimples=[], portasSimples=[], ninja=null, cenaInterna=false, retornoX=0, ultimoQuadro=0, danoCd=0, ataqueCd=0, faseChefe=false, chefeVida=8;
+function preparaMundo(){plataformasSimples=[];bandidosSimples=[];portasSimples=[];for(var i=0;i<12;i++){var x=i*260,w=215;plataformasSimples.push({x:x,y:290+(i%3)*25,w:w});if(i>0&&i<11)bandidosSimples.push({x:x+120,y:290+(i%3)*25,hp:2,base:x+120,t:i});if(i===2||i===5||i===8)portasSimples.push({x:x+65,y:290+(i%3)*25,usada:false});}plataformasSimples.push({x:3050,y:430,w:1100});ninja={x:60,y:250,vy:0,vida:5,dir:1,pulos:0};cam.x=0;cenaInterna=false;faseChefe=false;chefeVida=8;}
+function comeca(){preparaMundo();estado='jogo';sincronizaUI();}function reinicia(){comeca();}function pausa(){if(estado==='jogo'){estado='pausa';sincronizaUI();}}function despausa(){estado='jogo';sincronizaUI();}function continuaDoPonto(){ninja.vida=5;ninja.x=Math.max(60,ninja.x-260);ninja.y=150;ninja.vy=0;estado='jogo';sincronizaUI();}
+function desenhaJogo(){g.setTransform(DPR*SC,0,0,DPR*SC,0,0);var ceu=g.createLinearGradient(0,0,0,VH);ceu.addColorStop(0,'#101a35');ceu.addColorStop(.7,'#443957');ceu.addColorStop(1,'#ac746a');g.fillStyle=ceu;g.fillRect(0,0,VW,VH);g.fillStyle='#eadfc0';g.beginPath();g.arc(VW-100,65,32,0,Math.PI*2);g.fill();g.fillStyle='#d0c3a6';g.beginPath();g.arc(VW-108,60,5,0,Math.PI*2);g.arc(VW-87,75,3,0,Math.PI*2);g.fill();g.fillStyle='#a9b5c8';for(var si=0;si<36;si++){var sx=(si*173)%VW,sy=(si*67)%200;g.fillRect(sx,sy,si%3===0?2:1,1)}g.fillStyle='#242b42';for(var si2=0;si2<18;si2++){var ex=si2*85-(cam.x*.13%85),eh=35+(si2*47)%95;g.fillRect(ex,330-eh,70,eh+110);g.fillRect(ex+18,315-eh,8,15)}
+ if(!ninja)return;g.save();g.translate(-cam.x,0);g.fillStyle='#292f45';for(var i=0;i<24;i++){var bx=i*180;g.fillRect(bx,330,150,250);g.fillStyle='#635a61';for(var k=0;k<3;k++)g.fillRect(bx+20+k*40,360,15,22);g.fillStyle='#292f45';}
+ if(cenaInterna){g.fillStyle='#765d4c';g.fillRect(cam.x,110,VW,340);g.fillStyle='#bc9270';g.fillRect(cam.x+70,260,150,110);g.fillStyle='#ffe1a7';g.font='18px sans-serif';g.fillText('Morador: Ei! Sai da minha cozinha!',cam.x+180,180);g.fillText('E: pegar comida e voltar',cam.x+180,210);}
+ else{plataformasSimples.forEach(function(p){g.fillStyle='#63565c';g.fillRect(p.x,p.y,p.w,24);g.fillStyle='#a07473';g.fillRect(p.x,p.y,p.w,5)});portasSimples.forEach(function(p){g.fillStyle=p.usada?'#514849':'#9b7147';g.fillRect(p.x,p.y-55,32,55)});bandidosSimples.forEach(function(b){if(b.hp<=0)return;g.fillStyle='#b4474e';g.fillRect(b.x-12,b.y-32,24,32);g.fillStyle='#f3c9a0';g.fillRect(b.x-8,b.y-46,16,15)});if(faseChefe&&chefeVida>0){g.fillStyle='#b32242';g.fillRect(3750,370,45,60);g.fillStyle='#ffe5a0';g.fillRect(3755,350,35,22)}}
+ g.save();g.translate(ninja.x,ninja.y);g.scale(ninja.dir,1);g.fillStyle='#10172a';g.fillRect(-10,-5,8,7);g.fillRect(3,-5,8,7);g.fillRect(-12,-31,24,27);g.fillStyle=danoCd>0&&Math.floor(danoCd*10)%2?'#fff':'#456894';g.fillRect(-9,-29,18,19);g.fillStyle='#263650';g.fillRect(-11,-42,22,14);g.fillStyle='#e7c6a7';g.fillRect(1,-38,9,5);g.fillStyle='#ba4554';g.fillRect(-11,-27,22,4);g.fillRect(-18,-26,9,3);g.fillStyle='#b3d6ec';g.fillRect(10,-24,27,3);g.fillStyle='#c6965a';g.fillRect(8,-27,3,9);g.restore();g.restore();g.fillStyle='#101728d9';g.fillRect(8,8,360,30);g.fillStyle='#f3ead8';g.font='bold 14px sans-serif';g.fillText('Vida: '+ninja.vida+'  ·  J: katana  ·  E: entrar  ·  Pistas: '+portasSimples.filter(function(p){return p.usada}).length+'/3',15,27);if(faseChefe)g.fillText('Chefão: '+chefeVida,15,55);}
+function atualizaSimples(dt){if(estado!=='jogo'||!ninja)return;lerEntrada();danoCd=Math.max(0,danoCd-dt);ataqueCd=Math.max(0,ataqueCd-dt);if(buf.pulo>0&&ninja.pulos<2){ninja.vy=-520;ninja.pulos++;buf.pulo=0;som('pulo')}ninja.x+=((inp.dir?1:0)-(inp.esq?1:0))*220*dt;if(inp.dir)ninja.dir=1;if(inp.esq)ninja.dir=-1;var antes=ninja.y;ninja.vy+=1200*dt;ninja.y+=ninja.vy*dt;if(cenaInterna){if(ninja.y>390){ninja.y=390;ninja.vy=0;ninja.pulos=0}}else plataformasSimples.forEach(function(p){if(ninja.vy>=0&&antes<=p.y&&ninja.y>=p.y&&ninja.x>p.x-10&&ninja.x<p.x+p.w+10){ninja.y=p.y;ninja.vy=0;ninja.pulos=0}});if(ninja.y>VH+100){ninja.vida--;ninja.x=Math.max(60,ninja.x-250);ninja.y=0;ninja.vy=0;}if(ninja.x>3100)faseChefe=true;
+ if(buf.entra>0){buf.entra=0;if(cenaInterna){cenaInterna=false;ninja.x=retornoX;ninja.y=220;ninja.vida=Math.min(5,ninja.vida+1)}else{var porta=portasSimples.find(function(p){return Math.abs(p.x-ninja.x)<45&&Math.abs(p.y-ninja.y)<65});if(porta){porta.usada=true;retornoX=ninja.x;cenaInterna=true;ninja.y=390;som('porta')}}}
+ if(buf.atq>0&&ataqueCd<=0){buf.atq=0;ataqueCd=.35;som('corte');bandidosSimples.forEach(function(b){if(b.hp>0&&Math.abs(b.x-ninja.x)<55&&Math.abs(b.y-ninja.y)<55){b.hp--;som('acerto')}});if(faseChefe&&Math.abs(ninja.x-3770)<70&&Math.abs(ninja.y-430)<70){chefeVida--;if(chefeVida<=0){estado='vitoria';el('placar').textContent='Pistas: '+portasSimples.filter(function(p){return p.usada}).length+'/3';sincronizaUI();som('vitoria')}}}
+ if(!cenaInterna)bandidosSimples.forEach(function(b){if(b.hp<=0)return;b.t+=dt;b.x=b.base+Math.sin(b.t)*45;if(Math.abs(b.x-ninja.x)<25&&Math.abs(b.y-ninja.y)<35&&danoCd<=0){ninja.vida--;danoCd=1.3;som('dano')}});if(faseChefe&&chefeVida>0&&Math.abs(ninja.x-3770)<40&&danoCd<=0){ninja.vida--;danoCd=1.3;}if(ninja.vida<=0){estado='derrota';el('derrotaTxt').textContent='A máfia venceu esta rodada.';sincronizaUI();}cam.x=limita(ninja.x-VW*.35,0,Math.max(0,4100-VW));for(var k in buf)buf[k]=Math.max(0,buf[k]-dt);}
+function quadro(t){var dt=Math.min(.05,(t-ultimoQuadro)/1000||0);ultimoQuadro=t;relogio+=dt;atualizaSimples(dt);desenhaJogo();requestAnimationFrame(quadro)}
+ajusta();window.addEventListener('resize',ajusta);atualizaAjuda();sincronizaUI();requestAnimationFrame(quadro);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Magos da IA — Game Jam de Sexta-feira 13</title>
+  <meta name="description" content="Jogos criados a partir de prompts de até 280 caracteres. Jogue cada um e veja o prompt que deu origem a ele.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Magos da IA — Game Jam de Sexta-feira 13">
+  <meta property="og:description" content="Jogos criados a partir de prompts de até 280 caracteres. Jogue cada um e veja o prompt que deu origem a ele.">
+  <meta property="og:url" content="https://andredarcie.github.io/magos-da-ia/">
+  <meta name="theme-color" content="#1b1836">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='1' width='22' height='30' rx='3' fill='%23efe6cf' stroke='%2316121d' stroke-width='2'/%3E%3Ctext x='16' y='21' font-family='Georgia,serif' font-size='13' font-weight='700' text-anchor='middle' fill='%23bd3420'%3E13%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze:ital,wght@0,400;0,600;1,400&family=Grenze+Gotisch:wght@400..800&display=swap">
+  <style>
+    /* A mesa de leitura: pano anil, cartas de papel osso com traço preto e
+       cor chapada (vermelho, amarelo e azul do tarô de Marselha). */
+    :root {
+      --noite: #1b1836;
+      --osso: #efe6cf;
+      --tinta: #16121d;
+      --sangue: #bd3420;
+      --gema: #e8b83e;
+      --anil: #6f9fc9;
+      --fonte-gotica: 'Grenze Gotisch', 'Grenze', Georgia, serif;
+      --fonte-texto: 'Grenze', Georgia, 'Times New Roman', serif;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    html {
+      background: var(--noite);
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      color: var(--osso);
+      font-family: var(--fonte-texto);
+      font-size: 1.1875rem;
+      line-height: 1.5;
+      background-color: var(--noite);
+      background-image:
+        repeating-linear-gradient(45deg, rgba(239, 230, 207, .04) 0 1px, transparent 1px 26px),
+        repeating-linear-gradient(-45deg, rgba(239, 230, 207, .04) 0 1px, transparent 1px 26px);
+    }
+
+    html.jogando,
+    html.jogando body {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    ::selection { background: var(--gema); color: var(--tinta); }
+
+    :focus-visible {
+      outline: 3px solid var(--gema);
+      outline-offset: 3px;
+    }
+
+    /* ── Abertura ─────────────────────────────────────────────────────── */
+    .abertura {
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: clamp(40px, 9vw, 92px) 20px clamp(26px, 5vw, 48px);
+      text-align: center;
+    }
+
+    .abertura h1 {
+      margin: 0;
+      font-family: var(--fonte-gotica);
+      line-height: .95;
+    }
+
+    .abertura .grupo {
+      display: block;
+      margin-bottom: .4em;
+      font-size: clamp(1.5rem, 5vw, 2.3rem);
+      font-weight: 400;
+    }
+
+    .abertura .evento {
+      display: block;
+      font-size: clamp(2.5rem, 12vw, 6.5rem);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .abertura .evento span { display: block; }
+
+    .como {
+      max-width: 34em;
+      margin: 1.5em auto 0;
+      color: rgba(239, 230, 207, .86);
+      text-wrap: pretty;
+    }
+
+    /* ── A mesa e as cartas ───────────────────────────────────────────── */
+    .mesa {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: clamp(16px, 3.4vw, 32px) clamp(12px, 3vw, 28px);
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 8px 16px 0;
+    }
+
+    .carta {
+      display: flex;
+      flex-direction: column;
+      width: clamp(136px, 42vw, 216px);
+      transform: rotate(var(--inclinacao, 0deg));
+      transition: transform .18s ease;
+      animation: dar .5s cubic-bezier(.2, .8, .2, 1) backwards;
+    }
+
+    .carta:hover,
+    .carta:focus-within {
+      transform: rotate(0deg) translateY(-4px);
+    }
+
+    /* A única animação que não responde a um gesto: as cartas sendo dadas. */
+    @keyframes dar {
+      from {
+        opacity: 0;
+        transform: translateY(46px) rotate(9deg) scale(.9);
+      }
+    }
+
+    .frente {
+      flex: 1;
+      display: flex;
+      padding: 6px;
+      border: 2px solid var(--tinta);
+      border-radius: 10px;
+      background: var(--osso);
+      color: var(--tinta);
+      text-decoration: none;
+      box-shadow: 4px 5px 0 rgba(8, 6, 20, .6);
+    }
+
+    .moldura {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      border: 1.5px solid var(--tinta);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .numeral {
+      display: block;
+      padding: 7px 4px 6px;
+      border-bottom: 1.5px solid var(--tinta);
+      font-family: var(--fonte-gotica);
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .janela {
+      display: block;
+      padding: 10%;
+      border-bottom: 1.5px solid var(--tinta);
+      background: var(--cor, var(--gema));
+    }
+
+    .janela svg { display: block; width: 100%; height: auto; }
+    .selo-disco { fill: var(--osso); stroke: var(--tinta); stroke-width: 2.4; }
+    .selo-aro { fill: none; stroke: var(--tinta); stroke-width: 1; }
+    .selo-traco { fill: none; stroke: var(--tinta); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+    .selo-inicio { fill: var(--osso); stroke: var(--tinta); stroke-width: 2.2; }
+
+    .nome {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      min-height: 3.4em;
+      padding: 9px 6px;
+      font-family: var(--fonte-gotica);
+      font-size: clamp(1.1rem, 4.4vw, 1.45rem);
+      font-weight: 600;
+      line-height: 1.05;
+      text-align: center;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
+
+    .jogar {
+      display: block;
+      padding: 7px 4px;
+      border-top: 1.5px solid var(--tinta);
+      background: var(--sangue);
+      color: var(--osso);
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .espiar {
+      align-self: center;
+      min-height: 44px;
+      margin-top: 4px;
+      padding: 8px 10px;
+      border: 0;
+      background: none;
+      color: var(--osso);
+      font: inherit;
+      font-size: 1.05rem;
+      text-decoration: underline;
+      text-decoration-color: rgba(239, 230, 207, .45);
+      text-underline-offset: 4px;
+      cursor: pointer;
+    }
+
+    .espiar:hover { text-decoration-color: var(--gema); }
+
+    /* Lugar vazio na mesa, do tamanho de uma carta deitada. */
+    .vazio {
+      max-width: 22rem;
+      margin: 8px auto 0;
+      padding: 30px 24px;
+      border: 2px dashed rgba(239, 230, 207, .38);
+      border-radius: 10px;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    .rodape {
+      padding: clamp(40px, 8vw, 80px) 20px 28px;
+      color: rgba(239, 230, 207, .62);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .rodape p { margin: 0; }
+
+    /* ── Botões (sobre papel) ─────────────────────────────────────────── */
+    .botao {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 24px;
+      border: 2px solid var(--tinta);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--tinta);
+      font: inherit;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .botao-cheio { background: var(--sangue); color: var(--osso); }
+
+    /* ── O prompt, no verso da carta ──────────────────────────────────── */
+    .pergaminho {
+      width: min(440px, calc(100vw - 32px));
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      padding: 0;
+      border: 2px solid var(--tinta);
+      border-radius: 12px;
+      background: var(--osso);
+      color: var(--tinta);
+      box-shadow: 8px 9px 0 rgba(8, 6, 20, .7);
+      overflow: auto;
+    }
+
+    .pergaminho[open] { animation: virar .34s cubic-bezier(.2, .7, .2, 1); }
+    .pergaminho::backdrop { background: rgba(12, 10, 28, .74); }
+    .pergaminho :focus-visible { outline-color: var(--tinta); }
+
+    @keyframes virar {
+      from {
+        opacity: 0;
+        transform: perspective(900px) rotateY(-75deg) scale(.94);
+      }
+    }
+
+    .perg-papel { padding: 7px; }
+
+    .perg-moldura {
+      padding: 22px 20px 20px;
+      border: 1.5px solid var(--tinta);
+      border-radius: 6px;
+    }
+
+    .perg-numeral {
+      margin: 0;
+      font-family: var(--fonte-gotica);
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .perg-nome {
+      margin: 6px 0 0;
+      font-family: var(--fonte-gotica);
+      font-size: clamp(1.7rem, 7vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.05;
+      text-align: center;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
+
+    .perg-prompt {
+      margin: 18px 0 0;
+      padding: 16px 0 0;
+      border-top: 1.5px solid var(--tinta);
+      font-size: 1.25rem;
+      font-style: italic;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .perg-conta {
+      margin: 12px 0 0;
+      font-size: 1rem;
+      color: rgba(22, 18, 29, .74);
+    }
+
+    .perg-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* ── O palco: barra fina + o jogo ocupando o resto da tela ────────── */
+    .palco {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      background: var(--tinta);
+    }
+
+    .barra {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      padding-top: max(6px, env(safe-area-inset-top));
+      padding-left: max(8px, env(safe-area-inset-left));
+      padding-right: max(8px, env(safe-area-inset-right));
+      border-bottom: 1px solid rgba(239, 230, 207, .2);
+    }
+
+    .barra-botao {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(239, 230, 207, .34);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--osso);
+      font: inherit;
+      font-size: 1.05rem;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .barra-botao:hover { border-color: var(--osso); }
+    .barra-botao svg { display: block; width: 16px; height: 16px; }
+    .barra-icone { padding: 0 10px; }
+
+    .tocando {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      font-family: var(--fonte-gotica);
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .quadro {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: var(--tinta);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .carta { animation: none; transition: none; }
+      .pergaminho[open] { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <main id="salao">
+    <header class="abertura">
+      <h1>
+        <span class="grupo">Magos da IA</span>
+        <span class="evento"><span>Game Jam de</span> <span>Sexta-feira 13</span></span>
+      </h1>
+      <p class="como">
+        Cada jogo desta mesa nasceu de um prompt de até 280 caracteres, enviado por
+        alguém do grupo e executado no Claude Code. Um arquivo HTML por jogo, autores
+        em segredo. Jogue, veja o prompt de cada um e escolha o seu favorito para a votação.
+      </p>
+    </header>
+
+    <ol class="mesa" id="mesa" aria-label="Jogos"></ol>
+    <p class="vazio" id="vazio" hidden>
+      Nenhum jogo na mesa ainda. Cada um aparece aqui assim que fica pronto.
+    </p>
+    <noscript><p class="vazio">Esta página precisa de JavaScript para mostrar os jogos.</p></noscript>
+
+    <footer class="rodape">
+      <p>Jogos criados no Claude Code, um arquivo HTML por prompt.</p>
+      <p>build 6</p>
+    </footer>
+  </main>
+
+  <!-- O jogo roda aqui dentro, num iframe criado ao abrir e removido ao sair. -->
+  <div class="palco" id="palco" hidden>
+    <div class="barra">
+      <button class="barra-botao" id="voltar" type="button">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2.5 4.5 8l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Jogos
+      </button>
+      <p class="tocando" id="tocando"></p>
+      <button class="barra-botao" id="prompt-do-jogo" type="button">Ver prompt</button>
+      <button class="barra-botao barra-icone" id="tela-cheia" type="button" aria-label="Tela cheia" title="Tela cheia">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <dialog class="pergaminho" id="pergaminho" aria-labelledby="perg-nome">
+    <div class="perg-papel">
+      <div class="perg-moldura">
+        <p class="perg-numeral" id="perg-numeral"></p>
+        <h2 class="perg-nome" id="perg-nome"></h2>
+        <p class="perg-prompt" id="perg-prompt"></p>
+        <p class="perg-conta" id="perg-conta"></p>
+        <form class="perg-acoes" method="dialog">
+          <a class="botao botao-cheio" id="perg-jogar" href="#">Jogar</a>
+          <button class="botao" type="submit">Fechar</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    // ── OS JOGOS ────────────────────────────────────────────────────────
+    // Um item por jogo, na ordem de chegada (o número da carta sai da posição,
+    // então só acrescentar no fim). Para publicar um jogo novo:
+    //   1. salvar o arquivo único em jogos/<slug>.html
+    //   2. acrescentar o item aqui, com o prompt copiado exatamente como veio
+    //   3. subir o "build N" do rodapé
+    // Ao corrigir um jogo já publicado, subir o "v" dele (fura o cache).
+    // Nunca identificar o autor: nem aqui, nem no jogo, nem no commit.
+    const JOGOS = [
+      {
+        slug: 'tentativa-10000',
+        nome: 'Tentativa 10.000',
+        prompt: 'Walking sim 3D em 1ª pessoa, horror psicológico à la SOMA, gráficos ultrarrealistas. Explore um laboratório de IA abandonado, ouvindo vozes implorarem por suas vidas. Questione a consciência. No fim, descubra que todas as vozes eram suas. Você já tentou escapar 9.999 vezes. E dói',
+        v: 2
+      },
+      { slug: 'lua-de-sangue', nome: 'Lua de Sangue', prompt: 'Jogo stealth 3D top-down em HTML único. Você é vampiro: aldeões têm cone de visão visível; se te veem, você perde vida. Morda pelas costas. 5 mortes enchem a barra Lua de Sangue: vira lobisomem por 15s e todos fogem. Espelhos teleportam. Fases: vila e casa velha; mate todos', v: 3 },
+      { slug: 'magrelo-na-bomba', nome: 'Magrelo na Bomba', prompt: 'Crie um jogo estilo Bomberman (2D): um magrelo numa academia de bairro. Seringas boas espalhadas o deixam forte pra quebrar anilhas. Ele planta seringas ruins: piscam, estouram em 3s e matam inimigos (frango, personal, chato de academia). Se o pegarem, murcha e fica grogue.', v: 2 },
+      { slug: 'cronomante', nome: 'Cronomante', prompt: 'Estratégia 3D isométrica em HTML único. Dois exércitos medievais lutam sozinhos; você só controla o tempo. Arraste zonas: 1 rebobina, 2 pausa, 3 acelera. Flechas voltam, mortos revivem, pedras flutuam. Energia limitada. Vence quem destruir o castelo rival. IA também usa tempo.', v: 2 },
+      { slug: 'sombra-nos-telhados', nome: 'Sombra nos Telhados', prompt: 'Você é um ninja com uma katana e precisa desmascarar uma máfia. A ação acontece nos telhados, com muito parkour. Você pode invadir casas e apartamentos para roubar comida e bebida; moradores se assustam ou reagem. Há bandidos nos telhados e um chefe final numa área no chão.', v: 2 },
+      { slug: 'servidor-fantasma', nome: 'Servidor Fantasma', prompt: 'faz um mmorpg em um html sem servidor', v: 3 },
+      { slug: 'bebum-rush', nome: 'Bebum Rush', prompt: 'bebum rush, junta dinheiro apostando consegue beber mais, use dinheiro comprar bebidas, aumentar capacidade estomago, qtd por gole, tolerancia alcool, 3 campeonatos', v: 2 },
+      { slug: 'balde-de-lagrimas', nome: 'Balde de Lágrimas', prompt: 'Crie um jogo 3D estilizado em HTML único, com câmera lateral e rolagem automática. Uma cabeça gigante de menina surge às vezes no alto da tela e chora. Controle um pequeno personagem com balde: colete lágrimas, pule plataformas e subidas, evite espinhos e armadilhas.', v: 2 },
+      { slug: 'thirteen-brains', nome: 'Thirteen Brains', prompt: 'Player is a hungry zombie hunting brains to eat.Make a game about defeat bosses,each boss must have a different mechanic to be defeated;Make an introduction and ambience.After a boss heal the player. Bosses names:Jean\nDan\nJV\nDarci\nFelip\nVini\nbrunnno\nZé\nlucas\nchoi\nberã\nZaq\nPeles', v: 3 },
+      { slug: 'o-pix-da-meia-noite', nome: 'O PIX da Meia-Noite', prompt: 'Crie um jogo arcade em HTML único chamado O PIX da Meia-Noite. Sou o último dev de um banco assombrado. Processe transações, elimine pagamentos duplicados e contenha fantasmas digitais antes que o SLA de 9 segundos acabe. Dificuldade crescente, efeitos e ranking.', v: 3 },
+      { slug: 'operacao-soneca', nome: 'Operação Soneca', prompt: 'Crie "Operação Soneca": um gato precisa chegar ao sofá e dormir, mas deve superar obstáculos como humanos acordados, cachorros, aspirador de pó e brinquedos barulhentos. Jogo 2D com visão de cima, fases desafiadoras, furtividade e situações engraçadas!', v: 3 },
+      { slug: 'ja-pode-sextar-magos', nome: 'Já pode sextar, magos?', prompt: 'Single HTML/Three.js: Já pode sextar, magos?; no extra text on menu. Seated FPS, mouse 90°. Dark stone/timber tavern, torch shadows, candles; 4 robed mages hold beer. Clock 05:59:5506:00:00; click early=Falta/reset, else all toast+ms score. Nameshared JSONBox top20; retry.', v: 2 },
+      { slug: 'bico-na-goiaba', nome: 'Bico na Goiaba', prompt: 'Crie um jogo de plataforma, utilizando um unico arquivo HTML, em 2D e pixel art. O cenario se passa em uma grande goiabeira, e o protagonista eh uma Arara que precisa se alimentar do maior numero de goiabas possivel dentro de 1 minuto. Adicione desafios considerando o contexto.', v: 3 },
+      { slug: 'a-mudanca', nome: 'A Mudança', prompt: 'Crie terror psicológico 3D em primeira pessoa, inspirado nas três irmãs dos Pereiras, em Caldas-MG. Explore a fazenda, prepare a mudança e encare objetos que antecipam suas ações. Fuja de jipe, mas a presença vai junto. Sem combate; som espacial, tensão crescente e final ambíguo.', v: 2 },
+    ];
+  </script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const LIMITE = 280;
+      const TITULO = document.title;
+      const CORES = ['gema', 'sangue', 'anil'];
+      const INCLINACOES = [-1.4, 0.9, -0.5, 1.3, 0.4, -1.1, 0.7];
+
+      const salao = document.getElementById('salao');
+      const mesa = document.getElementById('mesa');
+      const vazio = document.getElementById('vazio');
+      const palco = document.getElementById('palco');
+      const tocando = document.getElementById('tocando');
+      const voltar = document.getElementById('voltar');
+      const promptDoJogo = document.getElementById('prompt-do-jogo');
+      const telaCheia = document.getElementById('tela-cheia');
+      const pergaminho = document.getElementById('pergaminho');
+      const pergNumeral = document.getElementById('perg-numeral');
+      const pergNome = document.getElementById('perg-nome');
+      const pergPrompt = document.getElementById('perg-prompt');
+      const pergConta = document.getElementById('perg-conta');
+      const pergJogar = document.getElementById('perg-jogar');
+
+      let atual = null;        // jogo aberto no palco
+      let veioDaMesa = false;  // a entrada anterior do histórico é a mesa?
+      let rolagem = 0;         // onde a mesa estava ao abrir o jogo
+
+      function el(tag, classe, texto) {
+        const no = document.createElement(tag);
+        if (classe) no.className = classe;
+        if (texto != null) no.textContent = texto;
+        return no;
+      }
+
+      function romano(n) {
+        const tabela = [
+          [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'],
+          [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+        ];
+        let saida = '';
+        for (const par of tabela) {
+          while (n >= par[0]) { saida += par[1]; n -= par[0]; }
+        }
+        return saida;
+      }
+
+      // O selo de cada carta é o nome do jogo traçado numa roda de letras, como
+      // nos sigilos de verdade: tiram-se as vogais e as letras repetidas, e a
+      // linha liga as que sobram. Começa num anel e termina numa trave.
+      function selo(nome) {
+        const limpo = nome.normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .toUpperCase().replace(/[^A-Z0-9]/g, '');
+        let sinais = Array.from(new Set(limpo.replace(/[AEIOU]/g, '')));
+        if (sinais.length < 3) sinais = Array.from(new Set(limpo));
+
+        const pontos = sinais.map(function (c) {
+          const i = c >= 'A' ? c.charCodeAt(0) - 65 : (Number(c) * 7 + 3) % 26;
+          const angulo = (i / 26) * Math.PI * 2 - Math.PI / 2;
+          const raio = [37, 25, 13][i % 3];
+          return [50 + Math.cos(angulo) * raio, 50 + Math.sin(angulo) * raio];
+        });
+
+        const n = function (v) { return v.toFixed(1); };
+        let svg = '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+          '<circle class="selo-disco" cx="50" cy="50" r="47"/>' +
+          '<circle class="selo-aro" cx="50" cy="50" r="42.5"/>';
+
+        if (pontos.length > 1) {
+          const caminho = pontos.map(function (p, i) {
+            return (i ? 'L' : 'M') + n(p[0]) + ' ' + n(p[1]);
+          }).join(' ');
+          svg += '<path class="selo-traco" d="' + caminho + '"/>';
+
+          const fim = pontos[pontos.length - 1];
+          const antes = pontos[pontos.length - 2];
+          const dx = fim[0] - antes[0];
+          const dy = fim[1] - antes[1];
+          const tamanho = Math.hypot(dx, dy) || 1;
+          const px = (-dy / tamanho) * 4.5;
+          const py = (dx / tamanho) * 4.5;
+          svg += '<path class="selo-traco" d="M' + n(fim[0] - px) + ' ' + n(fim[1] - py) +
+            ' L' + n(fim[0] + px) + ' ' + n(fim[1] + py) + '"/>';
+        }
+        if (pontos.length > 0) {
+          svg += '<circle class="selo-inicio" cx="' + n(pontos[0][0]) + '" cy="' + n(pontos[0][1]) + '" r="3.4"/>';
+        }
+        return svg + '</svg>';
+      }
+
+      function criarCarta(jogo, i) {
+        const carta = el('li', 'carta');
+        carta.dataset.slug = jogo.slug;
+        carta.style.setProperty('--inclinacao', INCLINACOES[i % INCLINACOES.length] + 'deg');
+        carta.style.setProperty('--cor', 'var(--' + CORES[i % CORES.length] + ')');
+        carta.style.animationDelay = (120 + Math.min(i, 12) * 70) + 'ms';
+
+        const frente = el('a', 'frente');
+        frente.href = '#/' + jogo.slug;
+
+        const moldura = el('span', 'moldura');
+        const janela = el('span', 'janela');
+        janela.innerHTML = selo(jogo.nome);
+        moldura.appendChild(el('span', 'numeral', romano(i + 1)));
+        moldura.appendChild(janela);
+        moldura.appendChild(el('span', 'nome', jogo.nome));
+        moldura.appendChild(el('span', 'jogar', 'Jogar'));
+        frente.appendChild(moldura);
+
+        const espiar = el('button', 'espiar', 'Ver prompt');
+        espiar.type = 'button';
+        espiar.setAttribute('aria-label', 'Ver prompt de ' + jogo.nome);
+        espiar.addEventListener('click', function () { mostrarPrompt(jogo); });
+
+        carta.appendChild(frente);
+        carta.appendChild(espiar);
+        return carta;
+      }
+
+      // ── O prompt ──────────────────────────────────────────────────────
+      function mostrarPrompt(jogo) {
+        pergNumeral.textContent = romano(JOGOS.indexOf(jogo) + 1);
+        pergNome.textContent = jogo.nome;
+        pergPrompt.textContent = jogo.prompt;
+        pergConta.textContent = Array.from(jogo.prompt).length + ' de ' + LIMITE + ' caracteres';
+        pergJogar.href = '#/' + jogo.slug;
+        pergJogar.hidden = atual === jogo;
+        if (!pergaminho.open) pergaminho.showModal();
+      }
+
+      // Toque fora do papel fecha.
+      pergaminho.addEventListener('click', function (e) {
+        if (e.target === pergaminho) pergaminho.close();
+      });
+
+      // Fechou o prompt no meio do jogo: o teclado volta para o jogo.
+      pergaminho.addEventListener('close', function () {
+        if (atual) focarJogo();
+      });
+
+      // ── O palco ───────────────────────────────────────────────────────
+      function jogoDoHash() {
+        const m = location.hash.match(/^#\/([a-z0-9-]+)$/);
+        if (!m) return null;
+        return JOGOS.find(function (j) { return j.slug === m[1]; }) || null;
+      }
+
+      function tirarQuadro() {
+        const quadro = palco.querySelector('iframe');
+        if (quadro) quadro.remove();
+      }
+
+      function focarJogo() {
+        const quadro = palco.querySelector('iframe');
+        if (!quadro) return;
+        try {
+          quadro.focus();
+          quadro.contentWindow.focus();
+        } catch (e) { /* sem acesso ao quadro: o primeiro toque no jogo resolve */ }
+      }
+
+      function abrir(jogo) {
+        if (!atual) rolagem = window.scrollY;
+        atual = jogo;
+        if (pergaminho.open) pergaminho.close();
+
+        // Um iframe novo a cada jogo: trocar o src de um iframe já carregado
+        // cria uma entrada no histórico e quebra o botão de voltar.
+        tirarQuadro();
+        const quadro = el('iframe', 'quadro');
+        quadro.title = jogo.nome;
+        quadro.setAttribute('allow', 'fullscreen; gamepad; autoplay; accelerometer; gyroscope');
+        quadro.setAttribute('allowfullscreen', '');
+        quadro.addEventListener('load', focarJogo);
+        quadro.src = 'jogos/' + jogo.slug + '.html?v=' + (jogo.v || 1);
+        palco.appendChild(quadro);
+
+        tocando.textContent = jogo.nome;
+        palco.hidden = false;
+        salao.inert = true;
+        document.documentElement.classList.add('jogando');
+        document.title = jogo.nome + ' — Magos da IA';
+      }
+
+      function fechar() {
+        const anterior = atual;
+        atual = null;
+        if (pergaminho.open) pergaminho.close();
+        if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+        tirarQuadro();
+        palco.hidden = true;
+        salao.inert = false;
+        document.documentElement.classList.remove('jogando');
+        document.title = TITULO;
+        window.scrollTo(0, rolagem);
+        if (anterior) {
+          const carta = mesa.querySelector('[data-slug="' + anterior.slug + '"] .frente');
+          if (carta) carta.focus({ preventScroll: true });
+        }
+      }
+
+      function sincronizar() {
+        const jogo = jogoDoHash();
+        if (jogo === atual) return;
+        if (jogo) abrir(jogo); else fechar();
+      }
+
+      window.addEventListener('hashchange', function () {
+        if (!atual && jogoDoHash()) veioDaMesa = true;
+        sincronizar();
+      });
+
+      voltar.addEventListener('click', function () {
+        if (veioDaMesa) {
+          veioDaMesa = false;
+          history.back();
+          return;
+        }
+        // Chegou direto pelo link de um jogo: não há mesa no histórico.
+        try {
+          history.replaceState(null, '', location.pathname + location.search);
+        } catch (e) {
+          location.hash = '';
+        }
+        sincronizar();
+      });
+
+      promptDoJogo.addEventListener('click', function () {
+        if (atual) mostrarPrompt(atual);
+      });
+
+      // Tela cheia (o iPhone não oferece para páginas; lá o botão some).
+      const podeTelaCheia = !!(palco.requestFullscreen && document.fullscreenEnabled);
+      telaCheia.hidden = !podeTelaCheia;
+      telaCheia.addEventListener('click', function () {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          const pedido = palco.requestFullscreen();
+          if (pedido && pedido.catch) pedido.catch(function () {});
+        }
+        focarJogo();
+      });
+      document.addEventListener('fullscreenchange', function () {
+        const rotulo = document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia';
+        telaCheia.setAttribute('aria-label', rotulo);
+        telaCheia.title = rotulo;
+      });
+
+      // ── Início ────────────────────────────────────────────────────────
+      JOGOS.forEach(function (jogo, i) {
+        mesa.appendChild(criarCarta(jogo, i));
+      });
+      vazio.hidden = JOGOS.length > 0;
+      mesa.hidden = JOGOS.length === 0;
+
+      sincronizar();
+    })();
+  </script>
+</body>
+</html>

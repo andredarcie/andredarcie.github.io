@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>O PIX da Meia-Noite</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#030807;color:#b9ffdc;
+  font-family:'Courier New',Consolas,Menlo,monospace;-webkit-user-select:none;user-select:none;
+  touch-action:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+#tela{position:fixed;left:0;top:0;width:100%;height:100%;display:block;touch-action:none}
+#sonda{position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;
+  padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right);
+  padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left)}
+.ov{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;display:flex;overflow-y:auto;overflow-x:hidden;
+  touch-action:pan-y;background:rgba(2,7,5,.8);padding:10px;
+  padding:calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
+.oculto{display:none!important}
+.painel{margin:auto;width:100%;max-width:600px;text-align:center;border:1px solid rgba(61,255,162,.5);
+  background:rgba(4,17,12,.94);padding:16px 16px 12px;
+  box-shadow:0 0 0 1px #020a07,0 0 40px rgba(61,255,162,.18),inset 0 0 70px rgba(0,0,0,.55)}
+.banco{font-size:11px;letter-spacing:2px;color:#2fbf85}
+h1{font-size:34px;font-size:clamp(30px,9.5vw,60px);line-height:1;margin:10px 0 8px;color:#eafff4;letter-spacing:2px;
+  text-shadow:2px 0 #ff3d6e,-2px 0 #37f6ff,0 0 24px rgba(61,255,162,.55);animation:tit 3.4s infinite steps(1)}
+@keyframes tit{0%,100%{transform:none}90%{transform:translate(3px,-1px) skewX(-7deg)}92%{transform:translate(-4px,1px) skewX(9deg)}94%{transform:none}}
+h2{font-size:22px;font-size:clamp(19px,5.6vw,32px);line-height:1.1;margin:10px 0 6px;letter-spacing:1px}
+h2.perdeu{color:#ff4d63;text-shadow:0 0 18px rgba(255,77,99,.6)}
+h2.venceu{color:#ffc857;text-shadow:0 0 18px rgba(255,200,87,.6)}
+.sub{font-size:14px;line-height:1.4;margin:6px 0 10px;color:#b9ffdc}
+.sub b{color:#ffc857}
+ul.regras{list-style:none;margin:0 0 8px;padding:0;text-align:left;font-size:13px;line-height:1.35}
+ul.regras li{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-top:1px dashed rgba(61,255,162,.16)}
+.tag{flex:0 0 96px;text-align:center;font-weight:bold;font-size:12px;padding:3px 0;border:1px solid currentColor}
+.tag.p{color:#3dffa2}.tag.e{color:#ff4d63}.tag.c{color:#b892ff}
+.ctrl{font-size:12px;line-height:1.5;color:#7fd9b0;margin:6px 0;text-align:left}
+kbd{font-family:inherit;border:1px solid #2fbf85;padding:0 4px;color:#eafff4;font-size:11px}
+.botoes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;letter-spacing:1px;color:#3dffa2;background:rgba(61,255,162,.07);
+  border:2px solid #3dffa2;padding:0 18px;min-height:60px;min-width:150px;cursor:pointer;touch-action:manipulation;flex:1 1 150px}
+.btn.pri{background:#3dffa2;color:#03130c;box-shadow:0 0 22px rgba(61,255,162,.45)}
+.btn:active{transform:translateY(2px);filter:brightness(1.25)}
+.btn:focus-visible,#nome:focus-visible{outline:3px solid #ffc857;outline-offset:3px}
+body.toque .btn{min-height:66px}
+body.toque .so-pc{display:none}
+body:not(.toque) .so-toque{display:none}
+.rodape{font-size:11px;color:#59c79a;margin:10px 0 0}
+.pontos{font-size:40px;font-size:clamp(32px,10vw,54px);font-weight:bold;color:#eafff4;text-shadow:0 0 20px rgba(61,255,162,.6);margin:2px 0}
+.stats{font-size:12px;line-height:1.5;color:#7fd9b0;margin:4px 0 8px}
+.form{border:1px dashed #ffc857;padding:10px;margin:8px 0;color:#ffc857;font-size:13px}
+.form .linha{display:flex;gap:8px;margin-top:8px}
+#nome{flex:1 1 auto;min-width:0;font-family:inherit;font-size:20px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;
+  color:#eafff4;background:#020a07;border:2px solid #ffc857;padding:0 10px;min-height:56px;outline:none;
+  -webkit-user-select:text;user-select:text;touch-action:manipulation;border-radius:0}
+.form .btn{flex:0 0 auto;min-width:110px;min-height:56px}
+ol.rank{list-style:none;margin:8px 0 0;padding:0;text-align:left;font-size:14px}
+ol.rank li{display:flex;gap:8px;padding:5px 8px;border-bottom:1px dashed rgba(61,255,162,.18)}
+ol.rank li.eu{background:rgba(255,200,87,.16);color:#ffc857}
+ol.rank .pos{flex:0 0 28px;color:#2fbf85}
+ol.rank .nm{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ol.rank .bd{flex:0 0 70px;text-align:right;color:#59c79a;font-size:12px}
+ol.rank .pt{flex:0 0 84px;text-align:right;font-weight:bold}
+.vazio{font-size:13px;color:#59c79a;margin:14px 0}
+#erro{display:none;position:fixed;left:0;right:0;bottom:0;z-index:99;margin:0;padding:10px;background:#3a0010;color:#fff;
+  font-size:12px;white-space:pre-wrap;-webkit-user-select:text;user-select:text;max-height:40%;overflow:auto}
+</style>
+</head>
+<body>
+<canvas id="tela"></canvas>
+<div id="sonda"></div>
+
+<div id="ov-titulo" class="ov">
+  <div class="painel">
+    <div class="banco">BANCO SEPULCRAL S.A. · TERMINAL DE PLANTÃO Nº 13</div>
+    <h1>O PIX DA<br>MEIA-NOITE</h1>
+    <p class="sub">Você é o último dev do prédio. O relógio travou em 00:00, o banco está assombrado e cada transação tem <b>9 segundos de SLA</b>.</p>
+    <ul class="regras">
+      <li><span class="tag p">PROCESSAR</span><span>transação válida.</span></li>
+      <li><span class="tag e">ELIMINAR</span><span>duplicada: duas com a mesma chave, valor e hora? Pague uma e elimine a outra.</span></li>
+      <li><span class="tag c">CONTER</span><span>fantasma digital: cartão possuído, que treme, foge ou traz um dado impossível.</span></li>
+    </ul>
+    <p class="ctrl so-pc"><b>Mouse:</b> clique na transação e depois na ação, ou arraste o cartão (direita processa, esquerda elimina, para cima ou para baixo contém).<br><b>Teclado:</b> setas ou <kbd>1</kbd>–<kbd>6</kbd> escolhem · <kbd>J</kbd> processar · <kbd>K</kbd> eliminar · <kbd>L</kbd> conter (ou <kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd>) · <kbd>Espaço</kbd> pula para a mais urgente · <kbd>P</kbd> pausa · <kbd>M</kbd> som.</p>
+    <p class="ctrl so-toque"><b>Toque</b> na transação e depois na ação. Ou <b>deslize o cartão</b>: para a direita processa, para a esquerda elimina, para cima ou para baixo contém.</p>
+    <div class="botoes">
+      <button id="bt-jogar" class="btn pri" type="button">ASSUMIR O PLANTÃO</button>
+      <button id="bt-rank" class="btn" type="button">RANKING</button>
+    </div>
+    <p class="rodape">Cinco incidentes e você vai para a retrospectiva. Sobreviva às 12 badaladas.</p>
+  </div>
+</div>
+
+<div id="ov-pausa" class="ov oculto">
+  <div class="painel">
+    <div class="banco">BANCO SEPULCRAL S.A.</div>
+    <h2 class="venceu">PLANTÃO PAUSADO</h2>
+    <p class="sub">O SLA está congelado. O café, não.</p>
+    <div class="botoes">
+      <button id="bt-continuar" class="btn pri" type="button">CONTINUAR</button>
+      <button id="bt-sair" class="btn" type="button">SAIR PARA O MENU</button>
+    </div>
+  </div>
+</div>
+
+<div id="ov-fim" class="ov oculto">
+  <div class="painel">
+    <div class="banco">BANCO SEPULCRAL S.A. · RELATÓRIO DO PLANTÃO</div>
+    <h2 id="fim-titulo" class="perdeu">PLANTÃO ENCERRADO</h2>
+    <p id="fim-texto" class="sub"></p>
+    <div id="fim-pontos" class="pontos">0</div>
+    <p id="fim-stats" class="stats"></p>
+    <div id="fim-form" class="form">
+      <label for="nome">Você entrou no ranking. Assine o relatório:</label>
+      <div class="linha">
+        <input id="nome" type="text" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SEU NOME">
+        <button id="bt-salvar" class="btn pri" type="button">SALVAR</button>
+      </div>
+    </div>
+    <p id="fim-nota" class="rodape"></p>
+    <div id="fim-rank"></div>
+    <div class="botoes">
+      <button id="bt-denovo" class="btn pri" type="button">JOGAR DE NOVO</button>
+      <button id="bt-menu" class="btn" type="button">MENU</button>
+    </div>
+  </div>
+</div>
+
+<div id="ov-rank" class="ov oculto">
+  <div class="painel">
+    <div class="banco">BANCO SEPULCRAL S.A. · QUADRO DE PLANTONISTAS</div>
+    <h2 class="venceu">RANKING — OS 10 MELHORES</h2>
+    <div id="rank-lista"></div>
+    <p id="rank-nota" class="rodape"></p>
+    <div class="botoes">
+      <button id="bt-voltar" class="btn pri" type="button">VOLTAR</button>
+    </div>
+  </div>
+</div>
+
+<pre id="erro"></pre>
+<script>
+(function () {
+'use strict';
+
+// ===================== aviso de erro na tela =====================
+var elErro = document.getElementById('erro');
+var erroMostrado = false;
+function mostrarErro(msg) {
+  if (erroMostrado) return;
+  erroMostrado = true;
+  try {
+    elErro.textContent = 'Algo quebrou no jogo (mande esta mensagem para quem publicou):\n' + String(msg);
+    elErro.style.display = 'block';
+  } catch (e) {}
+}
+window.addEventListener('error', function (ev) {
+  var m = ev && ev.message ? ev.message : 'erro desconhecido';
+  if (ev && ev.lineno) m += ' (linha ' + ev.lineno + ')';
+  mostrarErro(m);
+});
+window.addEventListener('unhandledrejection', function (ev) {
+  var r = ev ? ev.reason : null;
+  mostrarErro(r && r.message ? r.message : String(r));
+});
+
+// ===================== utilidades =====================
+function $(id) { return document.getElementById(id); }
+function rand(a, b) { return a + Math.random() * (b - a); }
+function randi(a, b) { return Math.floor(a + Math.random() * (b - a + 1)); }
+function escolher(v) { return v[Math.floor(Math.random() * v.length)]; }
+function embaralhar(v) {
+  for (var i = v.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1)), t = v[i];
+    v[i] = v[j]; v[j] = t;
+  }
+  return v;
+}
+function limitar(v, a, b) { return v < a ? a : (v > b ? b : v); }
+function suave(t) { t = limitar(t, 0, 1); return t * t * (3 - 2 * t); }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function hash(n) { var s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+function fmtNum(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+function fmtBRL(cent) {
+  var r = Math.floor(cent / 100), c = cent % 100;
+  return 'R$ ' + fmtNum(r) + ',' + pad2(c);
+}
+function ca(hex, a) {
+  var n = parseInt(hex.slice(1), 16);
+  return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+}
+function dentro(r, x, y) { return !!r && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h; }
+
+// ===================== constantes =====================
+var VERDE = '#3dffa2', VERDE_ESC = '#2fbf85', CLARO = '#b9ffdc', BRANCO = '#eafff4';
+var AMBAR = '#ffc857', VERMELHO = '#ff4d63', VIOLETA = '#b892ff', CIANO = '#7df9ff', MAGENTA = '#ff5ad9';
+var FAM = "'Courier New', Consolas, Menlo, monospace";
+var SLA = 9, MAX_INC = 5, N_SLOTS = 6;
+var GLIFOS = '#%&@$?!*+=/<>~^';
+
+// ===================== estado =====================
+var T = 0;
+var estado = 'titulo', estadoAnt = 'jogo';
+var nivelIdx = 0, nivel = null;
+var pontos = 0, combo = 0, maiorCombo = 0, incidentes = 0, incNivel = 0;
+var est = { P: 0, E: 0, C: 0, erros: 0, sla: 0 };
+var cartas = [], slots = [null, null, null, null, null, null], fila = [], pendentes = [], baralho = [], tamBaralho = 1;
+var sel = 0, seqId = 0;
+var tChegada = 0, tNivel = 0, apagoes = [], escuro = 0, escuroTotal = 1;
+var particulas = [], flutuantes = [], raios = [], efeitos = [];
+var aviso = null, logTxt = 'terminal pronto.', logCor = VERDE, logT = 0;
+var tremor = 0, falha = 0, clarao = 0, claraoCor = VERMELHO, susto = 0, popPontos = 0, popCombo = 0;
+var piscaBotao = [0, 0, 0];
+var arrasto = null, mouse = { x: 0, y: 0 }, usarMouse = false, luz = { x: 160, y: 240 };
+var toque = false, rankAberto = false, salvo = false;
+var tIntro = 0, durIntro = 3, bonusTxt = '', tFinal = 0, fimVenceu = false, vitoriaRelogio = false;
+
+// ===================== tela e layout =====================
+var cv = $('tela');
+var cx = cv.getContext('2d');
+var W = 320, H = 480, DPR = 1;
+var L = { slots: [], cols: 2, lin: 3, fs: 12, botoes: [], hud: null, esteira: null, log: null, tab: null, btPausa: null, btSom: null, deitado: false };
+var vinheta = null, padraoScan = null;
+
+function lerMargens() {
+  var m = { t: 0, r: 0, b: 0, l: 0 };
+  try {
+    var cs = window.getComputedStyle($('sonda'));
+    m.t = parseFloat(cs.paddingTop) || 0; m.r = parseFloat(cs.paddingRight) || 0;
+    m.b = parseFloat(cs.paddingBottom) || 0; m.l = parseFloat(cs.paddingLeft) || 0;
+  } catch (e) {}
+  return m;
+}
+
+function calcularLayout() {
+  var m = lerMargens(), i;
+  var x0 = m.l + 8, y0 = m.t + 6;
+  var larg = Math.max(180, W - m.l - m.r - 16), alt = Math.max(200, H - m.t - m.b - 12);
+  var deitado = H < 500 && W > H * 1.2;
+  L.deitado = deitado;
+  var hudH = deitado ? 40 : (H < 640 ? 52 : 60);
+  var estH = deitado ? 20 : 26;
+  L.hud = { x: x0, y: y0, w: larg, h: hudH };
+  var bt = Math.min(hudH, 44);
+  L.btPausa = { x: x0 + larg - bt, y: y0 + (hudH - bt) / 2, w: bt, h: bt };
+  L.btSom = { x: x0 + larg - bt * 2 - 6, y: y0 + (hudH - bt) / 2, w: bt, h: bt };
+  var yEst = y0 + hudH + 4;
+  var topo = yEst + estH + 6;
+  var fundo = y0 + alt;
+  var bx = x0, by = topo, bw, bh;
+  L.botoes = [];
+  if (deitado) {
+    var cb = limitar(larg * 0.23, 118, 190), gapB = 6;
+    var hb = (fundo - yEst - gapB * 2) / 3;
+    for (i = 0; i < 3; i++) L.botoes.push({ x: x0 + larg - cb, y: yEst + i * (hb + gapB), w: cb, h: hb });
+    L.esteira = { x: x0, y: yEst, w: larg - cb - 8, h: estH };
+    L.log = null;
+    bw = larg - cb - 8; bh = fundo - topo;
+    L.cols = 3;
+  } else {
+    var hb2 = limitar(alt * 0.125, 64, 96);
+    var lb = Math.min(larg, 780), gap2 = larg < 420 ? 6 : 10;
+    var wb = (lb - gap2 * 2) / 3, xb = x0 + (larg - lb) / 2;
+    for (i = 0; i < 3; i++) L.botoes.push({ x: xb + i * (wb + gap2), y: fundo - hb2, w: wb, h: hb2 });
+    L.esteira = { x: x0, y: yEst, w: larg, h: estH };
+    L.log = { x: x0, y: fundo - hb2 - 26, w: larg, h: 22 };
+    bw = larg; bh = L.log.y - 4 - topo;
+    L.cols = (bw >= 700 && bw > bh * 1.2) ? 3 : 2;
+  }
+  L.lin = N_SLOTS / L.cols;
+  var gap = deitado ? 6 : (larg < 420 ? 8 : 12);
+  var cw = Math.min((bw - gap * (L.cols - 1)) / L.cols, 360);
+  var ch = Math.min((bh - gap * (L.lin - 1)) / L.lin, 220);
+  cw = Math.max(cw, 60); ch = Math.max(ch, 46);
+  var tw = cw * L.cols + gap * (L.cols - 1), th = ch * L.lin + gap * (L.lin - 1);
+  var ox = bx + (bw - tw) / 2, oy = by + Math.max(0, (bh - th) / 2);
+  L.tab = { x: ox, y: oy, w: tw, h: th };
+  L.slots = [];
+  for (i = 0; i < N_SLOTS; i++) {
+    var c = i % L.cols, r = Math.floor(i / L.cols);
+    L.slots.push({ x: ox + c * (cw + gap), y: oy + r * (ch + gap), w: cw, h: ch });
+  }
+  L.fs = limitar(Math.min(cw / 13.2, ch / 7.4), 9, 21);
+  try {
+    vinheta = cx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.78);
+    vinheta.addColorStop(0, 'rgba(0,0,0,0)');
+    vinheta.addColorStop(1, 'rgba(0,0,0,0.6)');
+  } catch (e) { vinheta = null; }
+}
+
+function redimensionar() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = Math.max(200, window.innerWidth || 320);
+  H = Math.max(220, window.innerHeight || 480);
+  cv.width = Math.round(W * DPR);
+  cv.height = Math.round(H * DPR);
+  calcularLayout();
+  luz.x = limitar(luz.x, 0, W); luz.y = limitar(luz.y, 0, H);
+}
+
+function criarPadrao() {
+  try {
+    var c = document.createElement('canvas');
+    c.width = 2; c.height = 3;
+    var g = c.getContext('2d');
+    g.fillStyle = 'rgba(0,0,0,0.22)';
+    g.fillRect(0, 2, 2, 1);
+    padraoScan = cx.createPattern(c, 'repeat');
+  } catch (e) { padraoScan = null; }
+}
+
+function marcarToque(v) {
+  if (toque === v) return;
+  toque = v;
+  try { document.body.classList.toggle('toque', v); } catch (e) {}
+}
+
+// ===================== som (WebAudio sintetizado) =====================
+var AC = null, mestre = null, musG = null, bufRuido = null, mudo = false, ultTique = 0;
+var seq = { prox: 0, passo: 0 };
+
+function iniciarAudio() {
+  if (AC) { retomarAudio(); return; }
+  try {
+    var K = window.AudioContext || window.webkitAudioContext;
+    if (!K) return;
+    AC = new K();
+    var comp = AC.createDynamicsCompressor();
+    mestre = AC.createGain();
+    mestre.gain.value = mudo ? 0 : 0.85;
+    mestre.connect(comp); comp.connect(AC.destination);
+    musG = AC.createGain();
+    musG.gain.value = 0.55;
+    musG.connect(mestre);
+    var n = Math.floor(AC.sampleRate * 1.2);
+    bufRuido = AC.createBuffer(1, n, AC.sampleRate);
+    var d = bufRuido.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    iniciarZumbido();
+    retomarAudio();
+  } catch (e) { AC = null; }
+}
+function retomarAudio() {
+  try {
+    if (AC && AC.state === 'suspended') { var p = AC.resume(); if (p && p.catch) p.catch(function () {}); }
+  } catch (e) {}
+}
+function suspenderAudio() {
+  try {
+    if (AC && AC.state === 'running') { var p = AC.suspend(); if (p && p.catch) p.catch(function () {}); }
+  } catch (e) {}
+}
+function alternarSom() {
+  mudo = !mudo;
+  try { if (mestre) mestre.gain.value = mudo ? 0 : 0.85; } catch (e) {}
+}
+function iniciarZumbido() {
+  try {
+    var g = AC.createGain(); g.gain.value = 0.05;
+    var f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 180; f.Q.value = 4;
+    var a = AC.createOscillator(); a.type = 'sawtooth'; a.frequency.value = 55;
+    var b = AC.createOscillator(); b.type = 'sawtooth'; b.frequency.value = 55.6;
+    var lfo = AC.createOscillator(); lfo.frequency.value = 0.13;
+    var lg = AC.createGain(); lg.gain.value = 70;
+    lfo.connect(lg); lg.connect(f.frequency);
+    a.connect(f); b.connect(f); f.connect(g); g.connect(mestre);
+    a.start(); b.start(); lfo.start();
+  } catch (e) {}
+}
+// o: { f, f2, dur, tipo, vol, atq, at (atraso), t0 (instante absoluto), dest }
+function tom(o) {
+  if (!AC || mudo) return;
+  try {
+    var t0 = (o.t0 != null ? o.t0 : AC.currentTime) + (o.at || 0);
+    var dur = o.dur || 0.1, vol = o.vol == null ? 0.18 : o.vol;
+    var osc = AC.createOscillator(), g = AC.createGain();
+    osc.type = o.tipo || 'square';
+    osc.frequency.setValueAtTime(Math.max(20, o.f), t0);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(Math.max(20, o.f2), t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t0 + Math.min(o.atq || 0.008, dur * 0.5));
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(g); g.connect(o.dest || mestre);
+    osc.start(t0); osc.stop(t0 + dur + 0.05);
+  } catch (e) {}
+}
+// o: { f, f2, q, tipo (filtro), dur, vol, at, t0, dest }
+function ruido(o) {
+  if (!AC || mudo || !bufRuido) return;
+  try {
+    var t0 = (o.t0 != null ? o.t0 : AC.currentTime) + (o.at || 0);
+    var dur = o.dur || 0.1, vol = o.vol == null ? 0.15 : o.vol;
+    var src = AC.createBufferSource(); src.buffer = bufRuido; src.loop = true;
+    var f = AC.createBiquadFilter(); f.type = o.tipo || 'bandpass';
+    f.frequency.setValueAtTime(o.f || 1200, t0);
+    if (o.f2) f.frequency.exponentialRampToValueAtTime(Math.max(30, o.f2), t0 + dur);
+    f.Q.value = o.q || 1;
+    var g = AC.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t0 + Math.min(0.006, dur * 0.5));
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(f); f.connect(g); g.connect(o.dest || mestre);
+    src.start(t0, Math.random()); src.stop(t0 + dur + 0.05);
+  } catch (e) {}
+}
+
+var BAIXO = [110, 0, 110, 130.81, 0, 110, 82.41, 98];
+var ARP = [440, 523.25, 659.25, 523.25, 415.3, 523.25, 622.25, 523.25];
+function tocarMusica() {
+  if (!AC || mudo || AC.state !== 'running') return;
+  var bpm = 92 + nivelIdx * 6, dp = 60 / bpm / 2, guarda = 0;
+  if (seq.prox < AC.currentTime - 0.2) seq.prox = AC.currentTime + 0.05;
+  while (seq.prox < AC.currentTime + 0.14 && guarda++ < 8) {
+    var p = seq.passo % 8, t0 = seq.prox;
+    if (BAIXO[p]) tom({ f: BAIXO[p], dur: dp * 0.95, tipo: 'triangle', vol: 0.16, t0: t0, dest: musG });
+    if (p % 2 === 1) ruido({ f: 7000, tipo: 'highpass', dur: 0.03, vol: 0.035, t0: t0, dest: musG });
+    if (p === 0 || p === 4) tom({ f: 150, f2: 45, dur: 0.12, tipo: 'sine', vol: 0.22, t0: t0, dest: musG });
+    if (nivelIdx >= 5 && (seq.passo % 16) >= 8) tom({ f: ARP[p], dur: dp * 0.5, tipo: 'square', vol: 0.025 + 0.004 * Math.min(nivelIdx, 11), t0: t0, dest: musG });
+    seq.prox += dp; seq.passo++;
+  }
+}
+
+function somProcessar() {
+  var k = Math.pow(2, Math.min(combo, 16) / 24);
+  tom({ f: 880 * k, dur: 0.07, vol: 0.14 });
+  tom({ f: 1320 * k, dur: 0.13, vol: 0.14, at: 0.06 });
+  ruido({ f: 6000, tipo: 'highpass', dur: 0.04, vol: 0.05 });
+}
+function somEliminar() {
+  tom({ f: 620, f2: 90, dur: 0.17, tipo: 'sawtooth', vol: 0.16 });
+  ruido({ f: 2500, f2: 600, dur: 0.16, vol: 0.14, q: 0.7 });
+}
+function somConter() {
+  tom({ f: 170, f2: 1500, dur: 0.26, tipo: 'sine', vol: 0.2 });
+  ruido({ f: 400, f2: 3800, dur: 0.28, vol: 0.12, q: 3 });
+  tom({ f: 1500, f2: 750, dur: 0.14, tipo: 'triangle', vol: 0.14, at: 0.25 });
+}
+function somErro() {
+  tom({ f: 130, f2: 62, dur: 0.5, tipo: 'sawtooth', vol: 0.3 });
+  tom({ f: 97, f2: 58, dur: 0.5, tipo: 'square', vol: 0.18 });
+  ruido({ f: 500, tipo: 'lowpass', dur: 0.35, vol: 0.25 });
+}
+function somAlarme() {
+  for (var i = 0; i < 3; i++) {
+    tom({ f: 932, dur: 0.09, vol: 0.13, at: i * 0.2 });
+    tom({ f: 698, dur: 0.09, vol: 0.13, at: i * 0.2 + 0.1 });
+  }
+}
+function somTique(seg) {
+  if (!AC) return;
+  var t = AC.currentTime;
+  if (t - ultTique < 0.08) return;
+  ultTique = t;
+  tom({ f: seg <= 1 ? 1900 : 1500, dur: 0.035, vol: 0.07 });
+}
+function somChegada() { tom({ f: 392, f2: 523, dur: 0.06, tipo: 'sine', vol: 0.06 }); }
+function somFantasma() {
+  tom({ f: 740, f2: 330, dur: 0.6, tipo: 'sine', vol: 0.07, atq: 0.1 });
+  tom({ f: 748, f2: 322, dur: 0.6, tipo: 'sine', vol: 0.07, atq: 0.1 });
+}
+function somSussurro() { ruido({ f: 1800, f2: 900, dur: 0.22, vol: 0.05, q: 8 }); }
+function somPulo() { tom({ f: 300, f2: 950, dur: 0.1, tipo: 'triangle', vol: 0.12 }); }
+function somCorromper() {
+  tom({ f: 240, f2: 48, dur: 0.32, tipo: 'sawtooth', vol: 0.16 });
+  ruido({ f: 900, f2: 200, dur: 0.3, vol: 0.14, q: 6 });
+}
+function somSino(forte) {
+  var f = 196, P = [[0.5, 0.10, 3.2], [1, 0.16, 2.8], [1.19, 0.10, 2.2], [1.5, 0.07, 1.8], [2, 0.12, 1.6], [2.51, 0.05, 1.1], [3.01, 0.04, 0.8]];
+  for (var i = 0; i < P.length; i++) tom({ f: f * P[i][0], dur: P[i][2], tipo: 'sine', vol: P[i][1] * (forte ? 1.25 : 1), atq: 0.004 });
+  ruido({ f: 3000, dur: 0.05, vol: 0.06 });
+}
+function somApagao() {
+  tom({ f: 320, f2: 28, dur: 0.9, tipo: 'sawtooth', vol: 0.2 });
+  ruido({ f: 2000, f2: 80, tipo: 'lowpass', dur: 0.8, vol: 0.12 });
+}
+function somLuz() {
+  tom({ f: 60, f2: 240, dur: 0.18, tipo: 'square', vol: 0.1 });
+  tom({ f: 1200, dur: 0.04, vol: 0.08, at: 0.18 });
+}
+function somCombo() {
+  tom({ f: 660, dur: 0.07, tipo: 'triangle', vol: 0.14 });
+  tom({ f: 880, dur: 0.07, tipo: 'triangle', vol: 0.14, at: 0.07 });
+  tom({ f: 1320, dur: 0.14, tipo: 'triangle', vol: 0.14, at: 0.14 });
+}
+function somVazio() { tom({ f: 180, dur: 0.05, vol: 0.06 }); }
+function somVitoria() {
+  var n = [523.25, 659.25, 783.99, 1046.5, 1318.5];
+  for (var i = 0; i < n.length; i++) tom({ f: n[i], dur: 0.35, tipo: 'triangle', vol: 0.16, at: i * 0.12 });
+}
+function somDerrota() {
+  var n = [392, 370, 311, 262, 196];
+  for (var i = 0; i < n.length; i++) tom({ f: n[i], dur: 0.4, tipo: 'sawtooth', vol: 0.12, at: 0.25 + i * 0.2 });
+}
+
+// ===================== dados do banco assombrado =====================
+var CHAVES = [
+  'zulmira@alem.br', 'coveiro@cripta.net', 'vovo.elza@tumba.br', 'padaria@lapide.com', 'osorio@jazigo.br',
+  'mercadinho@breu.com', 'motoboy@vulto.br', 'pizzaria13@forno.br', 'sindico@bloco13.br', 'estagiario@log.dev',
+  'saci@redemoinho.br', 'cuca@pesadelo.br', 'boitata@brejo.br', 'curupira@mata.br', 'lobisomem@lua.br',
+  'vampiro.mei@veia.br', 'bruxa@caldeirao.br', 'gato.preto@azar.br', 'florista@velorio.br', 'porteiro@turno3.br',
+  '+55 13 91313-1313', '+55 13 90000-0013', '+55 66 98765-4321', '013.***.***-13', '131.***.***-31', '777.***.***-07'
+];
+var CHAVES_FANT = ['alma.penada@limbo', 'ninguem@lugar.nenhum', 'eco@eco.eco.eco', 'falecido@1899.br', 'buuu@buuu.buuu', 'socorro@porao.br'];
+var VAL_FANT = ['R$ 666,66', 'R$ -13,00', 'R$ NaN', 'R$ 0,00', 'R$ ?!?,??'];
+var HORA_FANT = ['25:61:00', '00:00:99', '13:13:13', '99:99:99', '--:--:--'];
+var CHAVES_IMP = ['null@undefined', '[object Object]', 'undefined', 'falecido@1899.br', 'ninguem@nada.nulo'];
+var VAL_IMP = ['R$ -13,00', 'R$ NaN', 'R$ undefined', 'R$ -666,00', 'R$ null'];
+var HORA_IMP = ['25:61:00', '00:00:99', '00:77:13', '99:99:99', '31:02:66'];
+var ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+
+var MSG_SLA = [
+  'SLA estourado. Abriram um chamado P1 e marcaram você.',
+  'Nove segundos se passaram. O cliente já ligou para a ouvidoria.',
+  'SLA estourado. O alerta tocou no celular da diretoria inteira.',
+  'Passou do SLA. O gráfico do painel ficou vermelho-sangue.'
+];
+var MSG_DOBRO = [
+  'Pagou em dobro. O financeiro mandou lembranças.',
+  'Mesma chave, mesmo valor, mesma hora... e você pagou de novo.',
+  'Duplicata paga. Alguém vai receber duas vezes e não vai devolver.'
+];
+var MSG_APAGOU = [
+  'Você eliminou um pagamento legítimo. A dona Zulmira ficou sem o dela.',
+  'Não era duplicada. Era só o aluguel de alguém.',
+  'Eliminou a transação errada. O suporte já está digitando...'
+];
+var MSG_PRENDEU = [
+  'Você prendeu uma transação inocente no cofre de contenção.',
+  'Aquilo não era fantasma. Era só um cliente com pressa.',
+  'Contenção indevida. O jurídico quer falar com você.'
+];
+var MSG_PAGOU_FANT = [
+  'Você pagou um fantasma. Agora ele tem conta-salário.',
+  'Transação possuída aprovada. O saldo do banco gelou.',
+  'O fantasma agradece a transferência. Buuu.'
+];
+var MSG_APAGOU_FANT = [
+  'Fantasma não se apaga com DELETE. Ele voltou pior.',
+  'Você apagou o registro, mas a assombração ficou no banco de dados.',
+  'Apagar não adianta: fantasma se CONTÉM.'
+];
+var MSG_LUZ = ['O gerador é uma lenda urbana.', 'Só a lanterna ilumina.', 'A conta de luz foi a única transação que ninguém processou.'];
+var LOG_OK = {
+  P: ['pago. Próxima.', 'liquidada dentro do SLA.', 'comprovante emitido.', 'aprovada. O cliente nem percebeu o susto.'],
+  E: ['duplicata no triturador.', 'retry eliminado. A idempotência manda lembranças.', 'pagamento em dobro evitado.'],
+  C: ['fantasma no cofre.', 'assombração contida. Abrir chamado? Não.', 'entidade isolada em quarentena.']
+};
+
+var BOTOES = [
+  { a: 'P', nome: 'PROCESSAR', cor: VERDE, tecla: 'J', alvo: 'válida', gesto: 'deslize →' },
+  { a: 'E', nome: 'ELIMINAR', cor: VERMELHO, tecla: 'K', alvo: 'duplicada', gesto: '← deslize' },
+  { a: 'C', nome: 'CONTER', cor: VIOLETA, tecla: 'L', alvo: 'fantasma', gesto: 'deslize ↑↓' }
+];
+
+function N(ok, dup, trio, isca, vulto, fujao, mimico, corr, luzes, intv, novo, tit, txt) {
+  return { ok: ok, dup: dup, trio: trio, isca: isca, vulto: vulto, fujao: fujao, mimico: mimico, corr: corr, luz: luzes, intv: intv, novo: novo, tit: tit, txt: txt };
+}
+var NIVEIS = [
+  N(6, 0, 0, 0, 0, 0, 0, 0, 0, 2.0, null, 'O PLANTÃO COMEÇA', 'Selecione a transação e PROCESSE as válidas. Cada uma tem 9 segundos de SLA, e o relógio corre desde a fila.'),
+  N(5, 3, 0, 0, 0, 0, 0, 0, 0, 1.9, 'dup', 'NOVO: DUPLICADAS', 'Duas transações com a MESMA chave, valor e hora? É retry. Pague UMA e ELIMINE a outra.'),
+  N(5, 2, 0, 0, 3, 0, 0, 0, 0, 1.85, 'vulto', 'NOVO: VULTOS', 'Transações possuídas brilham, tremem e trazem dados do além. Não pague nem apague: CONTENHA.'),
+  N(5, 2, 0, 0, 1, 3, 0, 0, 0, 1.8, 'fujao', 'NOVO: FUJÕES', 'Fantasmas que trocam de lugar. Quando o cartão sacudir, ele vai pular: confira o cursor antes de agir.'),
+  N(5, 2, 0, 2, 2, 1, 0, 0, 1, 1.7, 'isca', 'NOVO: QUEDA DE LUZ', 'A luz vai cair e só a lanterna ilumina. E cuidado com as QUASE iguais: se um dígito muda, as duas são válidas.'),
+  N(5, 2, 0, 1, 1, 1, 3, 0, 0, 1.65, 'mimico', 'NOVO: MÍMICOS', 'Fantasmas disfarçados de transação comum. Leia tudo: hora impossível, valor NaN ou chave nula entregam o disfarce.'),
+  N(5, 1, 2, 1, 1, 1, 2, 0, 1, 1.6, 'trio', 'NOVO: TEMPESTADE DE RETRY', 'A mesma transação pode chegar três vezes. Pague só UMA e elimine as outras duas.'),
+  N(5, 2, 1, 1, 0, 1, 2, 2, 0, 1.55, 'corruptor', 'NOVO: CORRUPTORES', 'Eles estragam as vizinhas: primeiro embaralham e roubam SLA, depois possuem. Contenha-os primeiro.'),
+  N(6, 2, 1, 2, 1, 2, 2, 1, 1, 1.5, null, 'O MONITORAMENTO CAIU', 'Agora o monitoramento é você. Tudo ao mesmo tempo, e mais rápido.'),
+  N(6, 3, 1, 2, 1, 2, 3, 1, 1, 1.42, null, 'DEPLOY DE SEXTA-FEIRA 13', 'Alguém subiu código em produção agora há pouco. Ninguém assume. Aguente.'),
+  N(6, 3, 2, 2, 1, 2, 3, 2, 2, 1.35, null, 'O ESTAGIÁRIO ACORDOU', 'Ele também é um fantasma. E vêm duas quedas de luz pelo caminho.'),
+  N(7, 3, 2, 3, 2, 3, 3, 2, 2, 1.25, null, 'A ÚLTIMA BADALADA', 'Sobreviva a este lote e o relógio finalmente anda para 00:01.')
+];
+nivel = NIVEIS[0];
+
+var FUNDO = [];
+(function () {
+  for (var i = 0; i < 8; i++) {
+    FUNDO.push({ x: Math.random() * 1.3, y: rand(0.15, 0.85), v: rand(0.008, 0.028) * (i % 2 ? 1 : -1), w: rand(0.4, 1.1), f: rand(0, 6), r: rand(0.035, 0.085) });
+  }
+})();
+
+// ===================== geração de transações =====================
+function chaveLivre() {
+  for (var k = 0; k < 14; k++) {
+    var ch = escolher(CHAVES), usada = false, i;
+    for (i = 0; i < cartas.length; i++) if (cartas[i].chave === ch) usada = true;
+    for (i = 0; i < fila.length; i++) if (fila[i].chave === ch) usada = true;
+    if (!usada) return ch;
+  }
+  return escolher(CHAVES);
+}
+function centavosAleatorios() {
+  for (var k = 0; k < 8; k++) {
+    var r = Math.random(), c;
+    if (r < 0.35) c = randi(2, 99) * 100;
+    else if (r < 0.7) c = randi(150, 9999);
+    else if (r < 0.9) c = randi(10, 99) * 1000;
+    else c = randi(100000, 999999);
+    if (fmtBRL(c).indexOf('666') < 0) return c;
+  }
+  return 1300;
+}
+// tipos: 'ok' (válida) | 'vulto' | 'fujao' | 'mimico' | 'corruptor'
+function novaCarta(tipo, dados) {
+  var c = {
+    id: ++seqId, tipo: tipo, fantasma: tipo !== 'ok', grupo: null, quase: false, possuida: false,
+    sla: SLA, idade: 0, slot: -1, entra: 0, mov: 1, px: 0, py: 0, corrup: 0, bip: 0,
+    sem: Math.random() * 1000, chave: '', valor: '', hora: '', cent: 0, seg: 0, pista: '',
+    tPulo: rand(1.6, 2.4), tMasc: rand(1.0, 2.0), mascOn: 0, tPulso: rand(1.6, 2.2)
+  };
+  if (tipo === 'ok' || tipo === 'mimico') {
+    var d = dados || { chave: chaveLivre(), cent: centavosAleatorios(), seg: randi(0, 59) };
+    c.chave = d.chave; c.cent = d.cent; c.seg = d.seg;
+    c.valor = fmtBRL(d.cent);
+    c.hora = '00:00:' + pad2(d.seg);
+    if (tipo === 'mimico') {
+      var k = randi(0, 2);
+      if (k === 0) { c.chave = escolher(CHAVES_IMP); c.pista = 'a chave não existia'; }
+      else if (k === 1) { c.valor = escolher(VAL_IMP); c.pista = 'o valor era impossível'; }
+      else { c.hora = escolher(HORA_IMP); c.pista = 'a hora era impossível'; }
+    }
+  } else {
+    c.chave = escolher(CHAVES_FANT); c.valor = escolher(VAL_FANT); c.hora = escolher(HORA_FANT);
+  }
+  return c;
+}
+// quase igual: mesma chave, mas um dígito do valor ou da hora muda (as duas são válidas)
+function dadosQuase(d) {
+  var n = { chave: d.chave, cent: d.cent, seg: d.seg };
+  if (Math.random() < 0.5) {
+    var s = d.seg + escolher([-3, -2, -1, 1, 2, 3]);
+    if (s < 0 || s > 59) s = d.seg >= 30 ? d.seg - 2 : d.seg + 2;
+    n.seg = s;
+  } else {
+    var deltas = [100, 1000, 10, 900, -100, 1, 10000];
+    for (var k = 0; k < 10; k++) {
+      var c = d.cent + escolher(deltas);
+      if (c > 0 && c !== d.cent && fmtBRL(c).indexOf('666') < 0) { n.cent = c; break; }
+    }
+    if (n.cent === d.cent) n.seg = d.seg >= 30 ? d.seg - 1 : d.seg + 1;
+  }
+  return n;
+}
+function montarBaralho(n) {
+  var b = [], i;
+  function rep(t, q) { for (var k = 0; k < q; k++) b.push(t); }
+  rep('ok', n.ok); rep('dup', n.dup); rep('trio', n.trio); rep('isca', n.isca);
+  rep('vulto', n.vulto); rep('fujao', n.fujao); rep('mimico', n.mimico); rep('corruptor', n.corr);
+  embaralhar(b);
+  if (b.length > 1 && b[0] !== 'ok') {
+    i = b.indexOf('ok');
+    if (i > 0) { b[i] = b[0]; b[0] = 'ok'; }
+  }
+  if (n.novo) {
+    i = b.indexOf(n.novo);
+    if (i > 2) { b.splice(i, 1); b.splice(randi(1, 2), 0, n.novo); }
+  }
+  return b;
+}
+
+// ===================== fila, vagas e grupos de duplicadas =====================
+function registrar(txt, cor) { logTxt = txt; logCor = cor || VERDE; logT = 1; }
+function flutuar(x, y, txt, cor, tam) {
+  if (flutuantes.length > 24) flutuantes.shift();
+  flutuantes.push({ x: x, y: y, txt: txt, cor: cor || BRANCO, t: 0, dur: 1.1, tam: tam || 1 });
+}
+function multCombo() { return 1 + Math.min(8, Math.floor(combo / 4)) * 0.25; }
+function slotLivre() {
+  var livres = [], i;
+  for (i = 0; i < N_SLOTS; i++) if (!slots[i]) livres.push(i);
+  return livres.length ? escolher(livres) : -1;
+}
+function acharCarta(id) {
+  var i;
+  for (i = 0; i < cartas.length; i++) if (cartas[i].id === id) return cartas[i];
+  for (i = 0; i < fila.length; i++) if (fila[i].id === id) return fila[i];
+  return null;
+}
+function colocar(c, s) {
+  c.slot = s; slots[s] = c; cartas.push(c);
+  c.entra = 0; c.mov = 1;
+  if (!slots[sel]) sel = s;
+  if (c.fantasma && c.tipo !== 'mimico') somFantasma(); else somChegada();
+}
+// a transação chega ao banco: vai para uma vaga ou espera na fila (o SLA já está correndo)
+function chegar(c) {
+  var s = fila.length ? -1 : slotLivre();
+  if (s >= 0) colocar(c, s); else fila.push(c);
+}
+function retirar(c) {
+  var i = cartas.indexOf(c);
+  if (i >= 0) cartas.splice(i, 1);
+  if (c.slot >= 0 && slots[c.slot] === c) slots[c.slot] = null;
+  c.slot = -1;
+  if (c.grupo) c.grupo.vivos--;
+  if (arrasto && arrasto.c === c) arrasto = null;
+}
+function gerarEntrada(tipo) {
+  var c;
+  if (tipo === 'dup' || tipo === 'trio' || tipo === 'isca') {
+    c = novaCarta('ok');
+    chegar(c);
+    if (tipo === 'isca') {
+      pendentes.push({ de: c.id, t: rand(0.5, 1.4), isca: true, dados: { chave: c.chave, cent: c.cent, seg: c.seg } });
+    } else {
+      pendentes.push({ de: c.id, t: (nivelIdx <= 1 || Math.random() < 0.5) ? 0 : rand(0.3, 0.9), isca: false, dados: null });
+      if (tipo === 'trio') pendentes.push({ de: c.id, t: rand(0.5, 1.2), isca: false, dados: null });
+    }
+    return;
+  }
+  chegar(novaCarta(tipo));
+}
+// devolve true quando o pendente foi resolvido (cópia criada ou cancelada)
+function tentarPendente(p) {
+  var o = acharCarta(p.de), c;
+  if (p.isca) {
+    c = novaCarta('ok', dadosQuase(p.dados));
+    c.quase = true;
+    if (o && !o.fantasma) o.quase = true;
+    chegar(c);
+    return true;
+  }
+  if (!o || o.fantasma) return true;      // a original já saiu: o retry morre
+  if (p.t < -3.5) return true;            // esperou demais por uma vaga
+  if (o.slot < 0) return false;           // a original ainda está na fila
+  var s = slotLivre();
+  if (s < 0) return false;
+  c = novaCarta('ok', { chave: o.chave, cent: o.cent, seg: o.seg });
+  var g = o.grupo;
+  if (!g) { g = { pago: false, vivos: 1 }; o.grupo = g; }
+  c.grupo = g; g.vivos++;
+  colocar(c, s);
+  return true;
+}
+function selecionarUrgente() {
+  var m = null, i;
+  for (i = 0; i < cartas.length; i++) if (!m || cartas[i].sla < m.sla) m = cartas[i];
+  if (m) sel = m.slot;
+}
+function retCarta(c) {
+  var s = L.slots[c.slot];
+  if (!s) return { x: 0, y: 0, w: 10, h: 10 };
+  var x = s.x, y = s.y;
+  if (c.mov < 1) { var k = suave(c.mov); x = c.px + (s.x - c.px) * k; y = c.py + (s.y - c.py) * k; }
+  if (c.entra < 1) x += (1 - suave(c.entra)) * Math.min(60, s.w * 0.4);
+  return { x: x, y: y, w: s.w, h: s.h };
+}
+function cartaEm(x, y) {
+  for (var i = cartas.length - 1; i >= 0; i--) if (dentro(retCarta(cartas[i]), x, y)) return cartas[i];
+  return null;
+}
+function vizinhos(s) {
+  var v = [], col = s % L.cols, lin = Math.floor(s / L.cols);
+  if (col > 0) v.push(s - 1);
+  if (col < L.cols - 1) v.push(s + 1);
+  if (lin > 0) v.push(s - L.cols);
+  if (lin < L.lin - 1) v.push(s + L.cols);
+  return v;
+}
+
+// ===================== fantasmas digitais =====================
+function pular(c) {
+  var opcoes = [], i, de = c.slot;
+  for (i = 0; i < N_SLOTS; i++) if (i !== de) opcoes.push(i);
+  var alvo = escolher(opcoes), o = slots[alvo], rc = retCarta(c);
+  if (arrasto && (arrasto.c === c || arrasto.c === o)) arrasto = null;
+  if (o) {
+    var ro = retCarta(o);
+    o.px = ro.x; o.py = ro.y; o.mov = 0; o.slot = de; slots[de] = o;
+  } else slots[de] = null;
+  c.px = rc.x; c.py = rc.y; c.mov = 0; c.slot = alvo; slots[alvo] = c;
+  somPulo();
+  explodir(rc.x + rc.w / 2, rc.y + rc.h / 2, CIANO, 8, 90);
+}
+function possuir(a, r) {
+  a.fantasma = true; a.tipo = 'vulto'; a.possuida = true; a.corrup = 0;
+  if (a.grupo) { a.grupo.vivos--; a.grupo = null; }
+  a.sla = Math.max(a.sla, 4);
+  a.chave = escolher(CHAVES_FANT); a.valor = escolher(VAL_FANT); a.hora = escolher(HORA_FANT);
+  somFantasma();
+  explodir(r.x + r.w / 2, r.y + r.h / 2, VIOLETA, 16, 150);
+  flutuar(r.x + r.w / 2, r.y + 12, 'POSSUÍDA!', VIOLETA, 1.1);
+  registrar('uma transação foi possuída. Agora é CONTER.', VIOLETA);
+}
+function corromperVizinha(c) {
+  var v = vizinhos(c.slot), alvos = [], i;
+  for (i = 0; i < v.length; i++) { var o = slots[v[i]]; if (o && !o.fantasma) alvos.push(o); }
+  if (!alvos.length) return;
+  var a = escolher(alvos), r1 = retCarta(c), r2 = retCarta(a);
+  raios.push({ x1: r1.x + r1.w / 2, y1: r1.y + r1.h / 2, x2: r2.x + r2.w / 2, y2: r2.y + r2.h / 2, t: 0.45 });
+  somCorromper();
+  if (a.corrup === 0) {
+    a.corrup = 1;
+    a.sla = Math.max(1.5, a.sla - 1.5);
+    flutuar(r2.x + r2.w / 2, r2.y + 12, 'CORROMPIDA -1,5s', MAGENTA, 0.9);
+  } else possuir(a, r2);
+}
+
+// ===================== julgamento das ações =====================
+// a: 'P' processar | 'E' eliminar | 'C' conter
+function julgar(c, a) {
+  if (c.fantasma) {
+    if (a === 'C') return { ok: true, base: c.tipo === 'vulto' ? 200 : (c.tipo === 'fujao' ? 250 : 300), msg: '' };
+    if (a === 'P') return { ok: false, base: 0, msg: c.tipo === 'mimico' ? 'Você pagou um mímico: ' + c.pista + '. Leia antes de aprovar.' : escolher(MSG_PAGOU_FANT) };
+    return { ok: false, base: 0, msg: c.tipo === 'mimico' ? 'Era um mímico (' + c.pista + '). Fantasma se CONTÉM, não se apaga.' : escolher(MSG_APAGOU_FANT) };
+  }
+  if (a === 'C') return { ok: false, base: 0, msg: escolher(MSG_PRENDEU) };
+  var g = c.grupo;
+  if (a === 'P') {
+    if (g && g.pago) return { ok: false, base: 0, msg: escolher(MSG_DOBRO) };
+    if (g) g.pago = true;
+    return { ok: true, base: 100, msg: '' };
+  }
+  if (g && (g.pago || g.vivos >= 2)) return { ok: true, base: 150, msg: '' };
+  if (g) return { ok: false, base: 0, msg: 'Você apagou todas as vias. Agora ninguém recebeu.' };
+  return { ok: false, base: 0, msg: c.quase ? 'Eram QUASE iguais: um dígito mudava. As duas eram legítimas.' : escolher(MSG_APAGOU) };
+}
+function cafe() {
+  var i;
+  somCombo();
+  for (i = 0; i < cartas.length; i++) cartas[i].sla = Math.min(SLA, cartas[i].sla + 2);
+  for (i = 0; i < fila.length; i++) fila[i].sla = Math.min(SLA, fila[i].sla + 2);
+  flutuar(W / 2, L.tab.y + L.tab.h * 0.5, 'COMBO ×' + combo + ' · CAFÉ! +2s de SLA', AMBAR, 1.4);
+  registrar('café passado. Todo mundo ganhou 2 segundos.', AMBAR);
+  clarao = 0.5; claraoCor = AMBAR;
+}
+function acerto(c, a, res, mx, my, r) {
+  combo++; popCombo = 1;
+  if (combo > maiorCombo) maiorCombo = combo;
+  var ganho = Math.round((res.base + Math.round(limitar(c.sla / SLA, 0, 1) * 100)) * multCombo());
+  pontos += ganho; popPontos = 1; est[a]++;
+  var cor = a === 'P' ? VERDE : (a === 'E' ? AMBAR : VIOLETA);
+  if (a === 'P') { somProcessar(); carimbo(mx, my, 'PAGO', VERDE); explodir(mx, my, VERDE, 14, 170, '$'); }
+  else if (a === 'E') { somEliminar(); carimbo(mx, my, 'DUPLICADA', VERMELHO); tiras(r, AMBAR); }
+  else { somConter(); carimbo(mx, my, 'CONTIDO', VIOLETA); jaula(r); sugar(mx, my, VIOLETA); }
+  flutuar(mx, r.y + 8, '+' + ganho, cor, 1.1);
+  registrar(escolher(LOG_OK[a]), cor);
+  if (combo % 10 === 0) cafe();
+  else if (combo % 5 === 0) { somCombo(); flutuar(W / 2, L.tab.y + L.tab.h * 0.5, 'COMBO ×' + combo, AMBAR, 1.7); }
+}
+function incidente(msg, x, y) {
+  incidentes++; incNivel++; combo = 0; est.erros++;
+  tremor = 1; falha = 0.5; clarao = 1; claraoCor = VERMELHO; susto = 0.4;
+  somErro();
+  aviso = { txt: 'INCIDENTE ' + incidentes + '/' + MAX_INC + ' — ' + msg, t: 3, cor: VERMELHO };
+  registrar(msg, VERMELHO);
+  explodir(x, y, VERMELHO, 22, 240);
+  onda(x, y, VERMELHO, 140);
+  if (incidentes >= MAX_INC) {
+    estado = 'final'; fimVenceu = false; tFinal = 1.6; arrasto = null; falha = 1.2;
+    somDerrota();
+  }
+}
+function agir(c, a) {
+  if (estado !== 'jogo' || !c || c.slot < 0) return;
+  var r = retCarta(c), mx = r.x + r.w / 2, my = r.y + r.h / 2;
+  piscaBotao[a === 'P' ? 0 : (a === 'E' ? 1 : 2)] = 1;
+  var res = julgar(c, a);
+  retirar(c);
+  if (res.ok) acerto(c, a, res, mx, my, r);
+  else { carimbo(mx, my, 'INCIDENTE', VERMELHO); incidente(res.msg, mx, my); }
+  selecionarUrgente();
+}
+function apertar(a) {
+  piscaBotao[a === 'P' ? 0 : (a === 'E' ? 1 : 2)] = 1;
+  if (estado !== 'jogo') return;
+  var c = slots[sel];
+  if (c) agir(c, a); else somVazio();
+}
+function estourar(c) {
+  var r = retCarta(c), mx = r.x + r.w / 2, my = r.y + r.h / 2, fant = c.fantasma;
+  retirar(c); est.sla++;
+  somAlarme();
+  carimbo(mx, my, 'SLA ESTOURADO', VERMELHO);
+  incidente(fant ? 'SLA estourado: o fantasma escapou para produção.' : escolher(MSG_SLA), mx, my);
+  if (!slots[sel]) selecionarUrgente();
+}
+function iniciarApagao() {
+  escuro = Math.min(6.5, 4.2 + nivelIdx * 0.2); escuroTotal = escuro;
+  somApagao();
+  tremor = Math.max(tremor, 0.5);
+  aviso = { txt: 'QUEDA DE LUZ! ' + escolher(MSG_LUZ), t: 2.4, cor: AMBAR };
+  registrar('queda de luz. Siga a lanterna.', AMBAR);
+}
+
+// ===================== atualização do plantão =====================
+function atualizarCarta(c, dt) {
+  c.idade += dt;
+  if (c.entra < 1) c.entra = Math.min(1, c.entra + dt * 4.5);
+  if (c.mov < 1) c.mov = Math.min(1, c.mov + dt * 5);
+  c.sla -= dt;
+  if (c.sla <= 0) { estourar(c); return; }
+  var seg = Math.ceil(c.sla);
+  if (seg <= 3 && seg !== c.bip) { c.bip = seg; somTique(seg); }
+  if (c.tipo === 'fujao') {
+    c.tPulo -= dt;
+    if (c.tPulo <= 0) { pular(c); c.tPulo = rand(1.5, 2.3) - Math.min(0.5, nivelIdx * 0.03); }
+  } else if (c.tipo === 'mimico') {
+    if (c.mascOn > 0) c.mascOn -= dt;
+    else {
+      c.tMasc -= dt;
+      if (c.tMasc <= 0) { c.mascOn = 0.22; c.tMasc = rand(1.7, 2.9); somSussurro(); }
+    }
+  } else if (c.tipo === 'corruptor') {
+    c.tPulso -= dt;
+    if (c.tPulso <= 0) { corromperVizinha(c); c.tPulso = Math.max(1.7, 2.7 - nivelIdx * 0.05); }
+  }
+}
+function atualizarJogo(dt) {
+  var i, c, s;
+  tNivel += dt;
+  if (escuro > 0) {
+    escuro -= dt;
+    if (escuro <= 0) { escuro = 0; somLuz(); registrar('a luz voltou. Por enquanto.', AMBAR); }
+  } else if (apagoes.length && tNivel >= apagoes[0]) {
+    apagoes.shift();
+    if (baralho.length > 1) iniciarApagao();
+  }
+  // chegada das transações (a esteira não espera você)
+  tChegada -= dt;
+  if (baralho.length && cartas.length === 0 && fila.length === 0 && tChegada > 0.35) tChegada = 0.35;
+  if (baralho.length && tChegada <= 0) {
+    gerarEntrada(baralho.shift());
+    tChegada = nivel.intv * rand(0.85, 1.15);
+  }
+  // retries e quase iguais pendentes
+  for (i = pendentes.length - 1; i >= 0; i--) {
+    var p = pendentes[i];
+    p.t -= dt;
+    if (p.t <= 0 && tentarPendente(p)) pendentes.splice(i, 1);
+  }
+  // fila -> vagas livres
+  while (fila.length) {
+    s = slotLivre();
+    if (s < 0) break;
+    colocar(fila.shift(), s);
+  }
+  // SLA de quem espera na fila
+  for (i = fila.length - 1; i >= 0; i--) {
+    c = fila[i];
+    c.sla -= dt;
+    if (c.sla <= 0) {
+      fila.splice(i, 1); est.sla++;
+      somAlarme();
+      incidente('SLA estourado na fila: a transação morreu esperando vaga.', L.esteira.x + 70, L.esteira.y + L.esteira.h / 2);
+      if (estado !== 'jogo') return;
+    }
+  }
+  var copia = cartas.slice();
+  for (i = 0; i < copia.length; i++) {
+    c = copia[i];
+    if (c.slot < 0) continue;
+    atualizarCarta(c, dt);
+    if (estado !== 'jogo') return;
+  }
+  if (!baralho.length && !fila.length && !pendentes.length && !cartas.length) concluirNivel();
+}
+
+function prepararNivel() {
+  nivel = NIVEIS[nivelIdx];
+  baralho = montarBaralho(nivel);
+  tamBaralho = Math.max(1, baralho.length);
+  cartas = []; fila = []; pendentes = [];
+  slots = [null, null, null, null, null, null];
+  arrasto = null; sel = 0;
+  tChegada = 0.4; tNivel = 0; incNivel = 0; escuro = 0;
+  apagoes = [];
+  for (var i = 0; i < nivel.luz; i++) apagoes.push(5 + i * 10 + rand(0, 2));
+  estado = 'intro'; tIntro = 0;
+  durIntro = (nivel.novo || nivelIdx === 0) ? 7 : 4.5;
+  somSino(nivelIdx === NIVEIS.length - 1);
+  onda(W / 2, H / 2, AMBAR, Math.max(W, H) * 0.6);
+}
+function comecarNivel() {
+  if (estado !== 'intro') return;
+  estado = 'jogo';
+  tChegada = 0.4;
+}
+function vencer() {
+  pontos += 3000 + 1000 * Math.max(0, MAX_INC - incidentes);
+  popPontos = 1;
+  estado = 'final'; fimVenceu = true; tFinal = 2.6; vitoriaRelogio = true; arrasto = null;
+  somVitoria(); somSino(true);
+  clarao = 1; claraoCor = AMBAR;
+  registrar('00:01. O relógio andou. Você sobreviveu ao plantão.', AMBAR);
+}
+function concluirNivel() {
+  var bonus = 250 * (nivelIdx + 1), limpo = incNivel === 0;
+  if (limpo) bonus += 500;
+  pontos += bonus; popPontos = 1;
+  bonusTxt = 'Badalada ' + (nivelIdx + 1) + ' fechada: +' + bonus + (limpo ? ' (plantão limpo)' : '');
+  if (limpo && incidentes > 0) { incidentes--; bonusTxt += ' · 1 incidente arquivado'; }
+  escuro = 0;
+  if (nivelIdx >= NIVEIS.length - 1) { vencer(); return; }
+  nivelIdx++;
+  prepararNivel();
+}
+function iniciarJogo() {
+  iniciarAudio();
+  esconder(ovTitulo); esconder(ovFim); esconder(ovRank); esconder(ovPausa);
+  rankAberto = false;
+  try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
+  pontos = 0; combo = 0; maiorCombo = 0; incidentes = 0;
+  est = { P: 0, E: 0, C: 0, erros: 0, sla: 0 };
+  nivelIdx = 0; bonusTxt = ''; vitoriaRelogio = false; salvo = false;
+  particulas = []; flutuantes = []; raios = []; efeitos = []; aviso = null;
+  tremor = 0; falha = 0; clarao = 0; susto = 0;
+  registrar('plantão assumido. Boa sorte: você vai precisar.', VERDE);
+  prepararNivel();
+}
+
+var ovTitulo = $('ov-titulo'), ovFim = $('ov-fim'), ovRank = $('ov-rank'), ovPausa = $('ov-pausa');
+function esconder(el) { el.classList.add('oculto'); } function mostrar(el) { el.classList.remove('oculto'); }
+function explodir(x, y, cor) { efeitos.push({ x: x, y: y, cor: cor, t: .5 }); }
+function onda(x, y, cor) { explodir(x, y, cor); } function carimbo(x, y, txt, cor) { flutuar(x, y, txt, cor, 1); }
+function tiras(r, cor) { explodir(r.x + r.w / 2, r.y + r.h / 2, cor); } function jaula(r) { tiras(r, VIOLETA); } function sugar(x, y, cor) { explodir(x, y, cor); }
+function ranking() { try { var a = JSON.parse(localStorage.getItem('pix-meia-noite-ranking') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function exibirRanking(id) { var el = $(id); el.textContent = ''; var lista = document.createElement('ol'); lista.className = 'rank'; ranking().slice(0, 10).forEach(function (r, i) { var li = document.createElement('li'); li.textContent = (i + 1) + '. ' + r.nome + ' — ' + fmtNum(r.pontos); lista.appendChild(li); }); if (!lista.children.length) lista.textContent = 'Nenhum plantão registrado.'; el.appendChild(lista); }
+function telaFinal() { estado = 'resultado'; $('fim-titulo').textContent = fimVenceu ? 'PLANTÃO CONCLUÍDO' : 'PLANTÃO ENCERRADO'; $('fim-texto').textContent = fimVenceu ? 'O relógio voltou a andar.' : 'O SLA ficou para a retrospectiva.'; $('fim-pontos').textContent = fmtNum(pontos); $('fim-stats').textContent = 'Processadas: ' + est.P + ' · Duplicadas: ' + est.E + ' · Fantasmas: ' + est.C + ' · Incidentes: ' + incidentes; $('fim-nota').textContent = 'Ranking salvo neste aparelho.'; mostrar($('fim-form')); exibirRanking('fim-rank'); mostrar(ovFim); }
+function botao(id, fn) { $(id).addEventListener('click', fn); }
+botao('bt-jogar', iniciarJogo); botao('bt-denovo', iniciarJogo);
+botao('bt-rank', function () { exibirRanking('rank-lista'); $('rank-nota').textContent = 'Ranking salvo neste aparelho.'; esconder(ovTitulo); mostrar(ovRank); });
+botao('bt-voltar', function () { esconder(ovRank); mostrar(ovTitulo); });
+botao('bt-menu', function () { esconder(ovFim); estado = 'titulo'; mostrar(ovTitulo); });
+botao('bt-continuar', function () { esconder(ovPausa); estado = estadoAnt; });
+botao('bt-sair', function () { esconder(ovPausa); estado = 'titulo'; mostrar(ovTitulo); });
+botao('bt-salvar', function () { if (salvo) return; var nome = $('nome').value.trim().slice(0, 12) || 'DEV'; var a = ranking(); a.push({ nome: nome, pontos: pontos }); a.sort(function (a, b) { return b.pontos - a.pontos; }); try { localStorage.setItem('pix-meia-noite-ranking', JSON.stringify(a.slice(0, 10))); } catch (e) {} salvo = true; esconder($('fim-form')); exibirRanking('fim-rank'); });
+function pausarPix() { if (estado === 'jogo' || estado === 'intro') { estadoAnt = estado; estado = 'pausa'; mostrar(ovPausa); } }
+function textoPix(s, x, y, tamanho, cor, max) { cx.fillStyle = cor || CLARO; cx.font = 'bold ' + tamanho + 'px ' + FAM; cx.fillText(s, x, y, max); }
+function desenharPix() {
+  cx.setTransform(DPR, 0, 0, DPR, 0, 0); var fundo = cx.createLinearGradient(0, 0, W, H); fundo.addColorStop(0, '#091c17'); fundo.addColorStop(.55, '#07120f'); fundo.addColorStop(1, '#13101a'); cx.fillStyle = fundo; cx.fillRect(0, 0, W, H); cx.strokeStyle = 'rgba(105,205,159,.035)'; cx.lineWidth = 1; for (var gx = 0; gx < W; gx += 32) { cx.beginPath(); cx.moveTo(gx, 0); cx.lineTo(gx, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 32) { cx.beginPath(); cx.moveTo(0, gy); cx.lineTo(W, gy); cx.stroke(); } cx.fillStyle = 'rgba(25,64,45,.38)'; cx.fillRect(L.hud.x, L.hud.y, L.hud.w, L.hud.h); cx.textAlign = 'left'; cx.textBaseline = 'middle';
+  textoPix('00:00 · BADALADA ' + (nivelIdx + 1) + '/12', L.hud.x, L.hud.y + 14, 14, VERDE, L.hud.w * .62);
+  textoPix('PONTOS ' + fmtNum(pontos) + '  INCIDENTES ' + incidentes + '/5', L.hud.x, L.hud.y + 34, 12, CLARO, L.hud.w * .75);
+  textoPix('II', L.btPausa.x + 8, L.btPausa.y + L.btPausa.h / 2, 18, AMBAR); textoPix('♪', L.btSom.x + 8, L.btSom.y + L.btSom.h / 2, 18, AMBAR);
+  for (var i = 0; i < slots.length; i++) { var r = L.slots[i], c = slots[i]; cx.fillStyle = c ? '#102c20' : 'rgba(6,20,15,.48)'; cx.fillRect(r.x, r.y, r.w, r.h); cx.strokeStyle = i === sel ? AMBAR : '#267f59'; cx.lineWidth = i === sel ? 2 : 1; cx.strokeRect(r.x, r.y, r.w, r.h); cx.lineWidth = 1; if (!c) { textoPix('0' + (i + 1), r.x + 10, r.y + 14, 10, '#37604b'); continue; } cx.fillStyle='rgba(58,136,92,.14)';cx.fillRect(r.x+1,r.y+1,r.w-2,Math.min(24,r.h*.18)); textoPix('PIX  ·  ' + String(i+1).padStart(2,'0'), r.x+8, r.y+Math.min(13,r.h*.1), 10, '#77c99e', r.w-16); var fs = Math.max(10, Math.min(L.fs, 16)); textoPix(c.chave, r.x + 10, r.y + r.h * .30, fs, c.fantasma && c.tipo !== 'mimico' ? VIOLETA : CLARO, r.w - 20); textoPix(c.valor, r.x + 10, r.y + r.h * .52, fs, BRANCO, r.w - 20); textoPix(c.hora, r.x + 10, r.y + r.h * .72, fs, CLARO, r.w - 20); cx.fillStyle = '#203d2e';cx.fillRect(r.x+8,r.y+r.h-11,r.w-16,5);cx.fillStyle = c.sla < 3 ? VERMELHO : VERDE; cx.fillRect(r.x + 8, r.y + r.h - 11, (r.w - 16) * Math.max(0, c.sla / SLA), 5); }
+  ['PROCESSAR [J]', 'ELIMINAR [K]', 'CONTER [L]'].forEach(function (s, i) { var b = L.botoes[i]; cx.fillStyle = ['#10452d', '#4a1824', '#372450'][i]; cx.fillRect(b.x, b.y, b.w, b.h); cx.strokeStyle = [VERDE, VERMELHO, VIOLETA][i]; cx.strokeRect(b.x, b.y, b.w, b.h); textoPix(s, b.x + 6, b.y + b.h / 2, 13, BRANCO, b.w - 12); });
+  if (L.log) textoPix(logTxt, L.log.x, L.log.y + 10, 11, logCor, L.log.w);
+  if (estado === 'intro') { cx.fillStyle = 'rgba(0,0,0,.8)'; cx.fillRect(0, H * .3, W, H * .3); cx.textAlign = 'center'; textoPix('BADALADA ' + (nivelIdx + 1), W / 2, H * .4, 24, AMBAR); textoPix('Toque ou pressione Enter', W / 2, H * .5, 14, CLARO); cx.textAlign = 'left'; }
+  efeitos.forEach(function(e) { cx.globalAlpha = Math.max(0, e.t * 2); cx.strokeStyle = e.cor; cx.beginPath(); cx.arc(e.x, e.y, (1 - e.t * 2) * 40 + 5, 0, Math.PI * 2); cx.stroke(); cx.globalAlpha = 1; });
+}
+var ultimoPix = 0;
+function quadroPix(t) { var dt = Math.min(.05, (t - ultimoPix) / 1000 || 0); ultimoPix = t; T += dt; if (estado === 'intro') { tIntro += dt; if (tIntro >= durIntro) comecarNivel(); } else if (estado === 'jogo') { atualizarJogo(dt); tocarMusica(); } else if (estado === 'final') { tFinal -= dt; if (tFinal <= 0) telaFinal(); } efeitos = efeitos.filter(function(e) { e.t -= dt; return e.t > 0; }); desenharPix(); requestAnimationFrame(quadroPix); }
+window.addEventListener('resize', redimensionar); window.addEventListener('keydown', function(e) { if (estado === 'intro' && e.code === 'Enter') { comecarNivel(); return; } if (e.code === 'KeyP' || e.code === 'Escape') { pausarPix(); return; } if (e.code === 'KeyM') { alternarSom(); return; } if (estado !== 'jogo') return; if (e.code === 'Space') { e.preventDefault(); selecionarUrgente(); } else if (e.code === 'KeyJ' || e.code === 'KeyZ') apertar('P'); else if (e.code === 'KeyK' || e.code === 'KeyX') apertar('E'); else if (e.code === 'KeyL' || e.code === 'KeyC') apertar('C'); else if (/^Digit[1-6]$/.test(e.code)) sel = Number(e.code.slice(-1)) - 1; else if (e.code === 'ArrowRight' || e.code === 'ArrowDown') sel = (sel + 1) % 6; else if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') sel = (sel + 5) % 6; });
+cv.addEventListener('pointerdown', function(e) { if (estado === 'intro') { comecarNivel(); return; } if (estado !== 'jogo') return; var x = e.clientX, y = e.clientY, c = cartaEm(x, y); if (c) { sel = c.slot; return; } if (dentro(L.btPausa, x, y)) { pausarPix(); return; } if (dentro(L.btSom, x, y)) { alternarSom(); return; } for (var i = 0; i < L.botoes.length; i++) if (dentro(L.botoes[i], x, y)) { apertar(['P', 'E', 'C'][i]); return; } });
+redimensionar(); requestAnimationFrame(quadroPix);
+})();
+</script>
+</body>
+</html>
