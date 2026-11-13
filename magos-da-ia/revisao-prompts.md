@@ -8,11 +8,11 @@ Revisão do código e das passagens curtas feitas no navegador. Não equivale a 
 | Lua de Sangue | Implementa vampiro, cones, mordida pelas costas, transformação, espelhos e duas fases. |
 | Magrelo na Bomba | Implementa a academia em grade, seringas, anilhas, inimigos e estado grogue. |
 | Cronomante | Implementa exércitos automáticos, castelos, três zonas de tempo, energia e uso de zonas pela IA. |
-| Sombra nos Telhados | Contém telhados, katana, entradas e chefe; o parkour, as casas e as reações dos moradores são simplificados. |
-| Servidor Fantasma | É um RPG sem servidor com jogadores simulados e comunicação entre abas. A escala e os sistemas são simplificados em relação a um MMORPG convencional. |
-| Bebum Rush | Possui apostas, bebidas, melhorias e três campeonatos. As disputas e os adversários são simplificados. |
-| Balde de Lágrimas | Tem rolagem lateral 3D, cabeça, lágrimas, balde, plataformas e perigos. A variedade de armadilhas é limitada. |
-| Thirteen Brains | Contém introdução, 13 chefes e cura entre lutas; algumas diferenças entre chefes são variações de regras e ataques, não encontros inteiramente distintos. |
+| Sombra nos Telhados | Contém telhados, katana, pulo duplo e de parede, casas com comida e bebida, reações de moradores e chefe. Casa e chefe foram percorridos no navegador; o mundo continua compacto. |
+| Servidor Fantasma | É um RPG sem servidor com jogadores simulados e comunicação entre abas, classes, habilidades, missões e poções. A escala e os sistemas são simplificados em relação a um MMORPG convencional. |
+| Bebum Rush | Possui apostas, bebidas, melhorias e três campeonatos com adversários simulados. |
+| Balde de Lágrimas | Tem rolagem lateral 3D, cabeça, lágrimas, balde, plataformas, espinhos e serras. |
+| Thirteen Brains | Contém introdução, 13 chefes, condições de ataque diferentes e cura entre lutas. Cinco encontros foram vencidos durante a verificação; os demais não foram concluídos na passagem. |
 | O PIX da Meia-Noite | Possui transações, duplicadas, fantasmas, SLA, progressão e ranking local. |
 | Operação Soneca | Contém gato, sofá, fases, furtividade e os obstáculos pedidos, de forma simplificada. |
 | Já pode sextar, magos? | Possui taverna 3D, quatro magos, relógio e brinde cronometrado. O ranking é local porque a instância original do JSONBox foi encerrada; o movimento e a cena são simplificados. |

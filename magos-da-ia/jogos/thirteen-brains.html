@@ -203,21 +203,24 @@ var bosses = [
   ['choi', 'Strike from above'], ['berã', 'Attack while the boss is slow'],
   ['Zaq', 'Strike between storms'], ['Peles', 'Dodge the charge, then bite']
 ];
-var mode = 'intro', index = 0, player = null, boss = null, shots = [], pools = [], last = 0, clock = 0, attackCooldown = 0, invincible = 0, eaten = 0, winDelay = 0;
+var mode = 'intro', index = 0, player = null, boss = null, shots = [], pools = [], last = 0, clock = 0, attackCooldown = 0, invincible = 0, eaten = 0, winDelay = 0, slamCycle = -1;
 function startBoss() {
   player = { x: 0, y: 230, hp: 100, angle: -Math.PI / 2 };
   boss = { x: 0, y: -130, hp: 100, angle: Math.PI / 2, timer: 0, shield: 3, phase: 0 };
-  shots = []; pools = []; attackCooldown = 0; invincible = 0; clock = 0; mode = 'fight'; setMusic('fight', index, 0.17);
+  shots = []; pools = []; attackCooldown = 0; invincible = 0; clock = 0; slamCycle = -1; mode = 'fight'; setMusic('fight', index, 0.17);
 }
 function hurt(amount) { if (invincible > 0 || mode !== 'fight') return; player.hp -= amount; invincible = 0.8; sfx.hurt(); if (player.hp <= 0) { mode = 'dead'; setMusic('drone', -5, 0.3); sfx.die(); } }
 function bite() {
   if (mode === 'intro') { initAudio(); index = 0; eaten = 0; startBoss(); return; }
-  if (mode === 'dead' || mode === 'victory') { mode = 'intro'; return; }
+  if (mode === 'dead') { initAudio(); startBoss(); return; }
+  if (mode === 'victory') { mode = 'intro'; return; }
   if (mode !== 'fight' || attackCooldown > 0) return;
   initAudio(); attackCooldown = 0.35; sfx.claw();
   if (dist(player.x, player.y, boss.x, boss.y) > 70) return;
   var vulnerable = true, phase = boss.timer % 4;
-  if (index === 0 || index === 3 || index === 12) vulnerable = phase > 2.1;
+  if (index === 0) vulnerable = phase > 2.1;
+  if (index === 3) vulnerable = phase > 2.4 && phase < 3.5;
+  if (index === 12) vulnerable = phase > 1.6 && phase < 2.7;
   if (index === 1) vulnerable = Math.abs(angDiff(Math.atan2(player.y - boss.y, player.x - boss.x), boss.angle)) > 1.5;
   if (index === 2) vulnerable = boss.phase > .7;
   if (index === 4) vulnerable = boss.phase > .45;
@@ -245,6 +248,8 @@ function update(dt) {
   var aim = Math.atan2(player.y - boss.y, player.x - boss.x); boss.angle = turnTo(boss.angle, aim, dt * (index === 1 ? 0.6 : 2));
   var phase = boss.timer % 4, speed = (index === 0 || index === 12) && phase < 1.5 ? 165 : 40 + index * 3;
   if (index === 3 && phase < 2) speed = 0; if (index === 10 && phase > 1.8) speed = 12;
+  if (index === 3 && phase >= 2 && slamCycle !== Math.floor(boss.timer / 4)) { slamCycle = Math.floor(boss.timer / 4); if (dist(player.x, player.y, boss.x, boss.y) < 115) hurt(22); sfx.boom(); }
+  if (index === 12) speed = phase < 1.5 ? 245 : phase < 2.7 ? 0 : 55;
   boss.x += Math.cos(boss.angle) * speed * dt; boss.y += Math.sin(boss.angle) * speed * dt;
   var bd = Math.hypot(boss.x, boss.y); if (bd > R - 32) { boss.x *= (R - 32) / bd; boss.y *= (R - 32) / bd; }
   if (dist(player.x, player.y, boss.x, boss.y) < 38) hurt(12);
@@ -265,13 +270,14 @@ function draw() {
     ctx.fillText(mode === 'intro' ? 'THIRTEEN BRAINS' : mode === 'dead' ? 'THE HUNGER ENDS' : 'A FEAST TO REMEMBER', W / 2, H * 0.35);
     ctx.font = Math.round(16 * U) + 'px ' + SANS;
     ctx.fillText(mode === 'intro' ? 'A hungry zombie hunts thirteen dangerous brains.' : mode === 'dead' ? 'The living fought back.' : 'Thirteen bosses. Thirteen brains.', W / 2, H * 0.43);
-    ctx.fillText('Move: WASD / arrows · Bite: SPACE · Tap to begin', W / 2, H * 0.53); return;
+    ctx.fillText(mode === 'dead' ? 'SPACE or tap: retry this boss' : 'Move: WASD / arrows · Bite: SPACE · Tap to begin', W / 2, H * 0.53, W - 20); return;
   }
   ctx.fillStyle = '#101a16'; ctx.fillRect(Math.max(0, W / 2 - 340 * U), safe.t, Math.min(W, 680 * U), 57 * U); ctx.fillStyle = '#e9e4d4'; ctx.font = 'bold ' + Math.round(18 * U) + 'px ' + SANS; ctx.fillText((index + 1) + '/13  ' + bosses[index][0] + ' — ' + bosses[index][1], W / 2, safe.t + 25, W - 16);
   ctx.font = Math.round(15 * U) + 'px ' + SANS; ctx.fillText('HEALTH ' + Math.max(0, Math.ceil(player.hp)) + '   BOSS ' + Math.max(0, Math.ceil(boss.hp)) + '   BRAINS ' + eaten, W / 2, safe.t + 49);
   ctx.save(); ctx.translate(CX, CY); ctx.scale(SC, SC); ctx.fillStyle = '#29352d'; ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.fill(); ctx.save(); ctx.clip();
   for (var row = -7; row < 8; row++) for (var col = -7; col < 8; col++) { var tx = col * 62 + (row % 2) * 31, ty = row * 48; ctx.fillStyle = (row + col) % 3 === 0 ? '#344238' : '#303d34'; ctx.fillRect(tx + 2, ty + 2, 57, 43); ctx.strokeStyle = '#263029'; ctx.lineWidth = 2; ctx.strokeRect(tx + 2, ty + 2, 57, 43); if ((row * 17 + col * 11) % 5 === 0) { ctx.strokeStyle = '#465347'; ctx.beginPath(); ctx.moveTo(tx + 9, ty + 7); ctx.lineTo(tx + 19, ty + 13); ctx.lineTo(tx + 14, ty + 19); ctx.stroke(); } }
   ctx.restore(); ctx.strokeStyle = '#101813'; ctx.lineWidth = 22; ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.stroke(); ctx.strokeStyle = '#687b60'; ctx.lineWidth = 5; ctx.stroke();
+  if (index === 3 && boss.timer % 4 < 2) { ctx.strokeStyle = '#e1b16b'; ctx.lineWidth = 3; ctx.setLineDash([10, 8]); ctx.beginPath(); ctx.arc(boss.x, boss.y, 115, 0, TAU); ctx.stroke(); ctx.setLineDash([]); }
   for (var i = 0; i < pools.length; i++) { ctx.fillStyle = '#76973c'; ctx.beginPath(); ctx.arc(pools[i].x, pools[i].y, 25, 0, TAU); ctx.fill(); }
   ctx.fillStyle = '#f6ac56'; for (var j = 0; j < shots.length; j++) { ctx.beginPath(); ctx.arc(shots[j].x, shots[j].y, shots[j].r, 0, TAU); ctx.fill(); }
   ctx.save(); ctx.translate(boss.x, boss.y); ctx.rotate(boss.angle); ctx.fillStyle = '#11191488'; ctx.beginPath(); ctx.ellipse(3, 8, 30, 23, 0, 0, TAU); ctx.fill(); ctx.fillStyle = index === 6 && boss.shield ? '#739ba9' : ['#a45051','#835079','#ad824e','#6a7189'][index%4]; ctx.beginPath(); ctx.arc(0, 0, 25, 0, TAU); ctx.fill(); ctx.strokeStyle = '#241c1b'; ctx.lineWidth = 4; ctx.stroke(); ctx.fillStyle = '#e5bb93'; ctx.beginPath(); ctx.arc(4, 0, 15, 0, TAU); ctx.fill(); ctx.fillStyle = '#312725'; ctx.fillRect(8, -10, 4, 5); ctx.fillRect(8, 5, 4, 5); ctx.fillStyle = '#ddd5b9'; ctx.fillRect(15, -3, 22, 6); ctx.restore();
@@ -279,7 +285,8 @@ function draw() {
   if (mode === 'transition') { ctx.fillStyle = '#fff'; ctx.font = 'bold 24px ' + SERIF; ctx.fillText('Brain eaten! Health restored.', W / 2, H / 2); }
   if (isTouch) { ctx.globalAlpha = 0.55; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(joy.hx, joy.hy, 46, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(bA.x, bA.y, 38, 0, TAU); ctx.fill(); ctx.globalAlpha = 1; ctx.fillStyle = '#101820'; ctx.font = 'bold 16px ' + SANS; ctx.fillText('BITE', bA.x, bA.y + 5); }
 }
-function frame(t) { var dt = Math.min(0.04, (t - last) / 1000 || 0); last = t; update(dt); draw(); requestAnimationFrame(frame); }
+function frame(t) { var dt = Math.min(0.04, (t - last) / 1000 || 0); last = t; if (!document.hidden) update(dt); draw(); requestAnimationFrame(frame); }
+window.render_game_to_text = function () { return JSON.stringify({ mode: mode, boss: mode === 'fight' ? { name: bosses[index][0], health: boss.hp, x: boss.x, y: boss.y, angle: boss.angle, phase: boss.timer % 4, shield: boss.shield } : null, player: player && { x: player.x, y: player.y, health: player.hp }, brains: eaten, controls: 'WASD or arrows to move; Space to bite' }); };
 window.addEventListener('resize', layout); window.addEventListener('keydown', function(e) { keys[e.code] = true; if (e.code === 'Space') { e.preventDefault(); if (!e.repeat) bite(); } if (e.code.indexOf('Arrow') === 0) e.preventDefault(); });
 window.addEventListener('keyup', function(e) { keys[e.code] = false; }); window.addEventListener('blur', function() { keys = {}; joy.dx = joy.dy = 0; });
 cv.addEventListener('pointerdown', function(e) { if (mode !== 'fight') { bite(); return; } if (e.clientX > W / 2) { bite(); return; } joy.id = e.pointerId; joy.bx = e.clientX; joy.by = e.clientY; cv.setPointerCapture(e.pointerId); });

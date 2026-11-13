@@ -784,6 +784,7 @@ window.addEventListener('error', function (e) {
   function centro() {
     modo = 'hub'; salvar(); tela('Bebum Rush', 'Grana: R$ ' + S.grana + ' · Campeonatos vencidos: ' + S.camp + '/3');
     botao('Apostar nos dados', apostas); botao('Comprar bebidas', loja); botao('Melhorar atributos', melhorias); botao('Campeonatos', campeonatos);
+    if (S.grana < 10) botao('Fazer um bico no bar · +R$ 10', function () { S.grana += 10; salvar(); centro(); });
   }
   function apostas() {
     modo = 'apostas'; tela('Dados do boteco', 'Aposte R$ 10: 4, 5 ou 6 dobra sua aposta.');
@@ -809,11 +810,12 @@ window.addEventListener('error', function (e) {
   }
   function iniciarDisputa(i) {
     var camp = CAMP[i]; S.grana -= camp.entrada; if (bebidaEscolhida !== 'chope') S.inv[bebidaEscolhida]--;
-    rodada = { camp: i, restante: camp.dur, pontos: 0, estomago: 0, alcool: 0, copo: 0, aviso: '' }; modo = 'disputa'; salvar(); disputaUI();
+    rodada = { camp: i, restante: camp.dur, pontos: 0, estomago: 0, alcool: 0, copo: 0, aviso: '', rivais: camp.riv.map(function (r) { return { id: r[0], alvo: r[1], pontos: 0 }; }) }; modo = 'disputa'; salvar(); disputaUI();
   }
   function disputaUI() {
     var c = rodada, b = BEB[bebidaEscolhida]; tela(CAMP[c.camp].nome, 'Tempo: ' + Math.ceil(c.restante) + 's · Pontos: ' + Math.floor(c.pontos) + ' · Estômago: ' + Math.round(c.estomago / capEst() * 100) + '% · Álcool: ' + Math.round(c.alcool) + '%');
     var p = document.createElement('p'); p.className = 'sub'; p.textContent = 'Copo: ' + Math.floor(c.copo) + '/' + b.vol + ' ml. ' + c.aviso; painel.appendChild(p);
+    var lista = document.createElement('ol'); lista.className = 'rank'; var classif = c.rivais.map(function (r) { return { nome: RIV[r.id].nome, pontos: r.pontos }; }); classif.push({ nome: 'Você', pontos: c.pontos, eu: true }); classif.sort(function (a,b) { return b.pontos-a.pontos; }); classif.forEach(function(r){ var linha=document.createElement('li'); if(r.eu)linha.className='eu'; var nome=document.createElement('span'), valor=document.createElement('span'); nome.textContent=r.nome; valor.textContent=Math.floor(r.pontos)+' pts'; linha.appendChild(nome);linha.appendChild(valor);lista.appendChild(linha); }); painel.appendChild(lista);
     botao('BEBER!', gole); botao('Descansar', function () { c.aviso = 'Respire e espere o estômago esvaziar.'; disputaUI(); });
   }
   function gole() {
@@ -822,14 +824,14 @@ window.addEventListener('error', function (e) {
     if (c.estomago >= capEst() || c.alcool >= 100) terminarDisputa(false); else disputaUI();
   }
   function terminarDisputa(forcado) {
-    if (modo !== 'disputa') return; var camp = CAMP[rodada.camp], alvo = camp.riv[0][1], ganhou = forcado && rodada.pontos >= alvo; modo = 'resultado';
+    if (modo !== 'disputa') return; var camp = CAMP[rodada.camp], alvo = Math.max.apply(null, rodada.rivais.map(function(r){return r.pontos})), ganhou = forcado && rodada.pontos >= alvo; modo = 'resultado';
     if (ganhou) { S.grana += camp.premio; S.camp = Math.max(S.camp, rodada.camp + 1); S.vit++; sfx.vitoria(); } else { S.der++; sfx.derrota(); }
-    salvar(); tela(ganhou ? 'Campeão!' : 'Fim da disputa', 'Você marcou ' + Math.floor(rodada.pontos) + ' pontos. Meta: ' + alvo + '. ' + (ganhou ? 'Prêmio: R$ ' + camp.premio : 'Tente melhorar seus atributos e sua bebida.')); botao('Voltar ao bar', centro);
+    salvar(); tela(ganhou ? 'Campeão!' : 'Fim da disputa', 'Você marcou ' + Math.floor(rodada.pontos) + ' pontos. Melhor rival: ' + Math.floor(alvo) + '. ' + (ganhou ? 'Prêmio: R$ ' + camp.premio : 'Tente melhorar seus atributos e sua bebida.')); botao('Voltar ao bar', centro);
   }
   var ultimoQuadro = 0, atualizaPainel = 0;
   function quadro(t) {
     var dt = Math.min(.05, (t - ultimoQuadro) / 1000 || 0); ultimoQuadro = t;
-    if (modo === 'disputa') { rodada.restante -= dt; rodada.estomago = Math.max(0, rodada.estomago - digest() * dt); rodada.alcool = Math.max(0, rodada.alcool - sobrio() * dt); atualizaPainel += dt; if (rodada.restante <= 0) terminarDisputa(true); else if (atualizaPainel >= .5) { atualizaPainel = 0; disputaUI(); } }
+    if (modo === 'disputa') { rodada.restante -= dt; var camp = CAMP[rodada.camp], progresso = clamp(1 - rodada.restante / camp.dur, 0, 1); rodada.rivais.forEach(function(r){ r.pontos += r.alvo / camp.dur * Math.max(0, RIV[r.id].ritmo(progresso)) * dt; }); rodada.estomago = Math.max(0, rodada.estomago - digest() * dt); rodada.alcool = Math.max(0, rodada.alcool - sobrio() * dt); atualizaPainel += dt; if (rodada.restante <= 0) terminarDisputa(true); else if (atualizaPainel >= .5) { atualizaPainel = 0; disputaUI(); } }
     var g = $('cv').getContext('2d'), R = {x:0,y:0,w:W,h:H}, local = rodada ? CAMP[rodada.camp].venue : 0; g.setTransform(DPR, 0, 0, DPR, 0, 0); cenaFundo(g, R, local); luminarias(g, R, t / 1000); balcao(g, R, H * .74, local); musica(); requestAnimationFrame(quadro);
   }
   carregar(); resize(); window.addEventListener('resize', resize); centro(); requestAnimationFrame(quadro);
