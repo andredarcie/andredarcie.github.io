@@ -1,6 +1,6 @@
 window.__VAGAS__ = {
-  "atualizadoEm": "2026-11-14T16:36:31.594Z",
-  "totalAnalisado": 4566,
+  "atualizadoEm": "2026-11-15T17:08:13.998Z",
+  "totalAnalisado": 4579,
   "vagas": [
     {
       "id": "remotar:171485",
@@ -6321,32 +6321,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:162974",
-      "titulo": "Analista de Recrutamento e Seleção",
-      "empresa": "Skill Consultoria Empresarial",
-      "area": "Recursos humanos",
-      "local": "Brasil",
-      "publicadoEm": "2026-09-16",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de recursos humanos. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://skillconsultoria.gupy.io/job/eyJqb2JJZCI6MTI0OTg3MDMsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/162974",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:162968",
-      "titulo": "Analista Financeiro - Contas a Receber",
-      "empresa": "The Great Schools Platform",
-      "area": "Vendas e comercial",
-      "local": "Brasil",
-      "publicadoEm": "2026-09-15",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://sejagreat.gupy.io/job/eyJqb2JJZCI6MTI0OTU0NjUsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/162968",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:162947",
       "titulo": "Profissional Gerente de Projetos e Implantação de Soluções Digitais",
       "empresa": "Radix",
@@ -6890,19 +6864,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://vempralibbs.gupy.io/job/eyJqb2JJZCI6MTIxNjAwMTksInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/159347",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:159274",
-      "titulo": "Analista de Tecnologia I",
-      "empresa": "Algar",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-08-18",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://algar.gupy.io/job/eyJqb2JJZCI6MTIxNDkxNTUsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/159274",
       "fonte": "Remotar"
     },
     {
