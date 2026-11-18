@@ -1,7 +1,397 @@
 window.__VAGAS__ = {
-  "atualizadoEm": "2026-11-17T19:11:20.368Z",
-  "totalAnalisado": 4587,
+  "atualizadoEm": "2026-11-18T18:51:11.096Z",
+  "totalAnalisado": 4607,
   "vagas": [
+    {
+      "id": "remotar:172030",
+      "titulo": "Analista de Monitoramento II",
+      "empresa": "Teltec Solutions",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://teltecsolutions.gupy.io/job/eyJqb2JJZCI6MTI4ODgwNTcsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/172030",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:172026",
+      "titulo": "Gerente de Managed Services",
+      "empresa": "Nexa Vagas",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://nexatecnologia.gupy.io/job/eyJqb2JJZCI6MTI5MTI5ODksInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/172026",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:172022",
+      "titulo": "Especialista de Parcerias",
+      "empresa": "Omie",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://carreirasomie.gupy.io/job/eyJqb2JJZCI6MTI4NjYwMjMsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/172022",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:172019",
+      "titulo": "Especialista de Obras",
+      "empresa": "Método Grupo",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://metodo.gupy.io/job/eyJqb2JJZCI6MTI5MDQ3MDksInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/172019",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:172018",
+      "titulo": "Jovem Aprendiz (100% Remoto) - Rha4625",
+      "empresa": "Spread Tecnologia",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://spread.gupy.io/job/eyJqb2JJZCI6MTI5MTIzNTgsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/172018",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:172001",
+      "titulo": "Pessoa Especialista de Negócios em Crédito Agronegócio",
+      "empresa": "AMcom",
+      "area": "Vendas e comercial",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://amcom.inhire.app/vagas/8d6096ca-2fdc-49d0-9794-abe97451c769/pessoa-especialista-de-negocios-em-credito-agronegocio",
+      "fonteUrl": "https://remotar.com.br/job/172001",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:172000",
+      "titulo": "Analista de Growth e Performance",
+      "empresa": "MBC",
+      "area": "Marketing e criação",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de marketing e criação. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://bibliotecacatolica.inhire.app/vagas/837dd52e-6dbd-4d7f-a6e1-9d540fdc2411/analista-de-growth-e-performance",
+      "fonteUrl": "https://remotar.com.br/job/172000",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171996",
+      "titulo": "Pessoa Especialista em Growth e Transformação Digital Agronegócio",
+      "empresa": "AMcom",
+      "area": "Marketing e criação",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de marketing e criação. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://amcom.inhire.app/vagas/6b924820-2496-447e-b6e9-0b6fd3c4681d/pessoa-especialista-em-growth-e-transformacao-digital-agronegocio",
+      "fonteUrl": "https://remotar.com.br/job/171996",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171990",
+      "titulo": "[Cross-Sell] Analista de Serviços Financeiros Pleno",
+      "empresa": "Contabilizei",
+      "area": "Financeiro e contábil",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://contabilizei.inhire.app/vagas/1d5ed81b-503b-496d-95d0-2fdf3fda630d/cross-sell-analista-de-servicos-financeiros-pleno",
+      "fonteUrl": "https://remotar.com.br/job/171990",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171973",
+      "titulo": "Gerente de Projetos/PMO Pleno",
+      "empresa": "ASC Solutions",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://ascsolutions.inhire.app/vagas/515e0d14-9e1c-4bd9-bcd8-39f58d2083e6/gerente-de-projetospmo-pleno",
+      "fonteUrl": "https://remotar.com.br/job/171973",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171959",
+      "titulo": "Analista Pleno BI- Devlog",
+      "empresa": "iFood",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://job-boards.greenhouse.io/ifoodcarreiras/jobs/8944845002?utm_source=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171959",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171955",
+      "titulo": "Especialista em Arquitetura de Soluções TI",
+      "empresa": "Grupo Mooven Fornax",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://grupomoovenfornax.inhire.app/vagas/d20aff3b-bfc2-4d16-98d7-8fc7cbefb99b/especialista-em-arquitetura-de-solucoes-ti",
+      "fonteUrl": "https://remotar.com.br/job/171955",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171948",
+      "titulo": "[Expert] Consultor(a) Fiscal Pleno - Relacionamento com Cliente",
+      "empresa": "Contabilizei",
+      "area": "Atendimento e suporte",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://contabilizei.inhire.app/vagas/5872dfb4-68aa-4405-893d-6d3abb04fa74/expert-consultora-fiscal-pleno-relacionamento-com-cliente",
+      "fonteUrl": "https://remotar.com.br/job/171948",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171945",
+      "titulo": "[Atendimento] Analista Contábil Pleno (foco em atendimento ao cliente)",
+      "empresa": "Contabilizei",
+      "area": "Atendimento e suporte",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://contabilizei.inhire.app/vagas/1c596c3e-852b-470e-8050-bc21e2a6e988/atendimento-analista-contabil-pleno-foco-em-atendimento-ao-cliente",
+      "fonteUrl": "https://remotar.com.br/job/171945",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171934",
+      "titulo": "Analista de Infraestrutura Pleno",
+      "empresa": "Gera Sales Ecosystem",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://gera.gupy.io/job/eyJqb2JJZCI6MTI5MDU4NTQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171934",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171929",
+      "titulo": "Analista de Engenharia Jr.",
+      "empresa": "Método Grupo",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://metodo.gupy.io/job/eyJqb2JJZCI6MTI5MDc0NDksInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171929",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171928",
+      "titulo": "Analista de Soluções Tributárias Sênior",
+      "empresa": "Libbs Farmacêutica",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://vempralibbs.gupy.io/job/eyJqb2JJZCI6MTI5MDgzMDQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171928",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171927",
+      "titulo": "Analista Atendimento Financeiro Pleno",
+      "empresa": "Stefanini Group",
+      "area": "Atendimento e suporte",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://stefanini.gupy.io/job/eyJqb2JJZCI6MTI5MDc3NTgsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171927",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171924",
+      "titulo": "Analista de Governança de Dados SR",
+      "empresa": "Grupo SysMap",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://gruposysmap.gupy.io/job/eyJqb2JJZCI6MTI5MDQ4NjIsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171924",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "solides:955217",
+      "titulo": "Analista Administrativo Pleno",
+      "empresa": "CAMELO COMUNICACAO LTDA",
+      "area": "Administrativo",
+      "local": "São Paulo - SP",
+      "publicadoEm": "2026-11-18",
+      "expiraEm": "2027-01-31",
+      "resumo": "Vaga remota em português na área de administrativo. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://vagas.solides.com.br/vaga/955217",
+      "fonteUrl": "https://vagas.solides.com.br/",
+      "fonte": "Sólides Vagas"
+    },
+    {
+      "id": "remotar:171917",
+      "titulo": "Analista Fiscal",
+      "empresa": "DOME CONSULTORIA EMPRESARIAL SS LTDA",
+      "area": "Financeiro e contábil",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://domecontabilidade.vagas.solides.com.br/vaga/944335?origem=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171917",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171911",
+      "titulo": "Assistente de Criação",
+      "empresa": "Plyn",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://remotar.com.br/job/171911",
+      "fonteUrl": "https://remotar.com.br/job/171911",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171909",
+      "titulo": "Líder Técnico – Catálogo Salesforce",
+      "empresa": "3AM IT Services",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://jobs.recrutei.com.br/3am-it-services-2/vacancy/166170-lider-tecnico-catalogo-salesforce?utm_source=remotar",
+      "fonteUrl": "https://remotar.com.br/job/171909",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171886",
+      "titulo": "Líder de Entregas Técnicas – Plataformas, Automação e Inteligência Artificial",
+      "empresa": "Solutis",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://solutis.inhire.app/vagas/7f5c0872-d233-4638-b49e-84c641999671/lider-de-entregas-tecnicas-plataformas-automacao-e-inteligencia-artificialor-remoto",
+      "fonteUrl": "https://remotar.com.br/job/171886",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171869",
+      "titulo": "[Fiscal] Analista de Atendimento Fiscal Pleno (foco em suporte fiscal)",
+      "empresa": "Contabilizei",
+      "area": "Atendimento e suporte",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://contabilizei.inhire.app/vagas/33f81632-bc39-4135-a4d9-8547c8fc85e9/fiscal-analista-de-atendimento-fiscal-pleno-foco-em-suporte-fiscal",
+      "fonteUrl": "https://remotar.com.br/job/171869",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171862",
+      "titulo": "Pessoa Analista de Finanças Pleno (Generalista)",
+      "empresa": "All Set",
+      "area": "Outras áreas",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://allset.inhire.app/vagas/106db7c0-7b0c-4736-a8d7-0518209b9851/pessoa-analista-de-financas-pleno-generalista",
+      "fonteUrl": "https://remotar.com.br/job/171862",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171859",
+      "titulo": "Analista de CS 100% Remoto - Chat Jurídico",
+      "empresa": "Gestão Talentos",
+      "area": "Jurídico",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "2026-11-22",
+      "resumo": "Vaga remota em português na área de jurídico. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://app.gestaotalentos.com.br/processo-seletivo/nov-2026-analista-de-cs-100-remoto-chat-juridico",
+      "fonteUrl": "https://remotar.com.br/job/171859",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171854",
+      "titulo": "Analista Fiscal",
+      "empresa": "Dexian Brasil",
+      "area": "Financeiro e contábil",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "2026-12-07",
+      "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://www.linkedin.com/jobs/view/4487307950/?",
+      "fonteUrl": "https://remotar.com.br/job/171854",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171852",
+      "titulo": "Consultor de Vendas",
+      "empresa": "HostGator",
+      "area": "Vendas e comercial",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "2026-12-07",
+      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://web.wd1.myworkdayjobs.com/ExternalCareerSite/job/Brazil---Remote/Consultor-de-Vendas--SaaS-_R15437-1?utm_source=remontar",
+      "fonteUrl": "https://remotar.com.br/job/171852",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:171850",
+      "titulo": "Assistente de Suporte N1",
+      "empresa": "HostGator",
+      "area": "Atendimento e suporte",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "2026-12-07",
+      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://web.wd1.myworkdayjobs.com/ExternalCareerSite/job/Brazil---Remote/Assistente-de-Suporte-N1_R15473-1?utm_source=remontar",
+      "fonteUrl": "https://remotar.com.br/job/171850",
+      "fonte": "Remotar"
+    },
     {
       "id": "remotar:171843",
       "titulo": "Líder de Vendas – Norte",
@@ -78,19 +468,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://unicredbr.gupy.io/job/eyJqb2JJZCI6MTI4OTg4NDMsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/171835",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:171826",
-      "titulo": "Gerente de Contas Pleno",
-      "empresa": "2biz Company",
-      "area": "Vendas e comercial",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-17",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://2bizcompany.inhire.app/vagas/bde00f19-fbde-4800-8845-76a9349e2628/gerente-de-contas-pleno",
-      "fonteUrl": "https://remotar.com.br/job/171826",
       "fonte": "Remotar"
     },
     {
@@ -185,6 +562,32 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
+      "id": "solides:955147",
+      "titulo": "Analista de CX Jr",
+      "empresa": "NEXTRON ENERGIA",
+      "area": "Outras áreas",
+      "local": "São Paulo - SP",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "2026-12-22",
+      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://vagas.solides.com.br/vaga/955147",
+      "fonteUrl": "https://vagas.solides.com.br/",
+      "fonte": "Sólides Vagas"
+    },
+    {
+      "id": "solides:955298",
+      "titulo": "Redator(a) Freelancer | SEO e GEO",
+      "empresa": "NP Digital Brasil",
+      "area": "Marketing",
+      "local": "Belo Horizonte - MG",
+      "publicadoEm": "2026-11-17",
+      "expiraEm": "2027-01-29",
+      "resumo": "Vaga remota em português na área de marketing. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://vagas.solides.com.br/vaga/955298",
+      "fonteUrl": "https://vagas.solides.com.br/",
+      "fonte": "Sólides Vagas"
+    },
+    {
       "id": "remotar:171656",
       "titulo": "Especialista de CX Intelligence",
       "empresa": "Grupo OLX",
@@ -208,32 +611,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://mazzatech.inhire.app/vagas/f0afd183-dab6-4dee-8182-5652ec790db8/3736-especialista-em-arquitetura-organizacional-cargos-e-carreiras-rh-tech",
       "fonteUrl": "https://remotar.com.br/job/171655",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:171648",
-      "titulo": "Analista de Command Center Júnior",
-      "empresa": "Riachuelo",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-16",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://riachuelo.inhire.app/vagas/ac3359f1-5519-44e2-8839-b19c64fa4299/analista-de-command-center-junior",
-      "fonteUrl": "https://remotar.com.br/job/171648",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:171640",
-      "titulo": "Gerente de Operações",
-      "empresa": "Geração C3",
-      "area": "Administrativo e operações",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-16",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de administrativo e operações. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://geracaoc3.inhire.app/vagas/71862cd2-e9cd-4364-be38-8103bda22120/gerente-de-operacoes",
-      "fonteUrl": "https://remotar.com.br/job/171640",
       "fonte": "Remotar"
     },
     {
@@ -354,19 +731,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:171554",
-      "titulo": "Analista de Comunicação e Marketing Pleno (Restaurantes)",
-      "empresa": "iFood",
-      "area": "Marketing e criação",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-16",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de marketing e criação. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://job-boards.greenhouse.io/ifoodcarreiras/jobs/8934825002?utm_source=remotar",
-      "fonteUrl": "https://remotar.com.br/job/171554",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:171538",
       "titulo": "Analista de Infraestrutura Pleno | Cloud AWS",
       "empresa": "BHS",
@@ -377,19 +741,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://bhs.gupy.io/job/eyJqb2JJZCI6MTI4OTUwNTIsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/171538",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:171529",
-      "titulo": "Analista de Retenção de Clientes",
-      "empresa": "CRM Datacrazy",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-16",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://datacrazy.inhire.app/vagas/88ad7fab-7054-4f0a-8ae1-31375dce2dfa/analista-de-retencao-de-clientes",
-      "fonteUrl": "https://remotar.com.br/job/171529",
       "fonte": "Remotar"
     },
     {
@@ -601,19 +952,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:171391",
-      "titulo": "REDATOR(A) PUBLICITÁRIO(A)",
-      "empresa": "Red Prog Agência de Publicidade",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-13",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://remotar.com.br/job/171391",
-      "fonteUrl": "https://remotar.com.br/job/171391",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:171383",
       "titulo": "Analista de Growth",
       "empresa": "BRADA",
@@ -679,19 +1017,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:171332",
-      "titulo": "Analista Mídia Sênior- Ads",
-      "empresa": "iFood",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-13",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://job-boards.greenhouse.io/ifoodcarreiras/jobs/8929448002?utm_source=remotar",
-      "fonteUrl": "https://remotar.com.br/job/171332",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:171306",
       "titulo": "Agente de Consórcio",
       "empresa": "GuiaInvest",
@@ -702,19 +1027,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://grupoguiainvest.inhire.app/vagas/fb814b65-419c-4fd9-a35b-eca59bdcaf77/agente-de-consorcio",
       "fonteUrl": "https://remotar.com.br/job/171306",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:171264",
-      "titulo": "Closer Digital | Vendedor(a) Digital",
-      "empresa": "NB Consultoria de RH",
-      "area": "Vendas e comercial",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-13",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://gentia.tech/vagas/4390d0c1-f49e-46d8-aaa5-8cec013c28ce?utm_source=remotar&utm_medium=job_aggregator&utm_campaign=job_distribution",
-      "fonteUrl": "https://remotar.com.br/job/171264",
       "fonte": "Remotar"
     },
     {
@@ -767,19 +1079,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://stefanini.gupy.io/job/eyJqb2JJZCI6MTI4NzE3NTYsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/171233",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:171232",
-      "titulo": "Analista de Governança de Dados JR",
-      "empresa": "Grupo SysMap",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-13",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://gruposysmap.gupy.io/job/eyJqb2JJZCI6MTI4NzkzNTMsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/171232",
       "fonte": "Remotar"
     },
     {
@@ -1433,19 +1732,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:170717",
-      "titulo": "Analista de Segurança da Informação Júnior",
-      "empresa": "LWSA",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-10",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://lwsa.inhire.app/vagas/bf53a8de-cc82-4d7f-9239-5f98f08ba5ab/lwsa-or-analista-de-seguranca-da-informacao-junior-soc-or-remoto",
-      "fonteUrl": "https://remotar.com.br/job/170717",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:170714",
       "titulo": "Analista Fiscal Pleno",
       "empresa": "Contabilizei",
@@ -1613,19 +1899,6 @@ window.__VAGAS__ = {
       "candidatura": "https://softplan.gupy.io/job/eyJqb2JJZCI6MTI4NDEwODQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/170543",
       "fonte": "Remotar"
-    },
-    {
-      "id": "solides:951897",
-      "titulo": "Auxiliar de Atendimento ao Cliente 12x35 Diurno",
-      "empresa": "PORTAL TELEMEDICINA LTDA",
-      "area": "Comercial",
-      "local": "Barueri - SP",
-      "publicadoEm": "2026-11-10",
-      "expiraEm": "2026-12-11",
-      "resumo": "Vaga remota em português na área de comercial. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://vagas.solides.com.br/vaga/951897",
-      "fonteUrl": "https://vagas.solides.com.br/",
-      "fonte": "Sólides Vagas"
     },
     {
       "id": "remotar:170491",
@@ -1823,19 +2096,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:170281",
-      "titulo": "Recrutador(a) Parceiro(a) – Hub de Recrutamento e Seleção",
-      "empresa": "Devgo",
-      "area": "Recursos humanos",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-07",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de recursos humanos. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://nexco.inhire.app/nexco/vagas/da423bc2-e511-4cac-9495-2e90065e64a9/recrutadora-parceiroa-hub-de-recrutamento-e-selecao",
-      "fonteUrl": "https://remotar.com.br/job/170281",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:170275",
       "titulo": "Analista Blue Team - SOC",
       "empresa": "It4us",
@@ -1859,19 +2119,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://hwpublishing.vagas.solides.com.br/vaga/949497?origem=remotar",
       "fonteUrl": "https://remotar.com.br/job/170257",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:170250",
-      "titulo": "Assistente de TI I - Foco em Suporte de Caixas Eletrônicos",
-      "empresa": "Central Ailos",
-      "area": "Atendimento e suporte",
-      "local": "Blumenau",
-      "publicadoEm": "2026-11-06",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://centralailos.gupy.io/job/eyJqb2JJZCI6MTI4MjcwNDQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/170250",
       "fonte": "Remotar"
     },
     {
@@ -1924,6 +2171,19 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://mellro.vagas.solides.com.br/vaga/949315?origem=remotar",
       "fonteUrl": "https://remotar.com.br/job/170145",
+      "fonte": "Remotar"
+    },
+    {
+      "id": "remotar:170138",
+      "titulo": "Assistente Administrativo",
+      "empresa": "GEX Corporation",
+      "area": "Administrativo e operações",
+      "local": "Brasil",
+      "publicadoEm": "2026-11-06",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de administrativo e operações. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://jobs.recrutei.com.br/gex-corporation/vacancy/164607-teste-interno-gex-recruiter?utm_source=remotar",
+      "fonteUrl": "https://remotar.com.br/job/170138",
       "fonte": "Remotar"
     },
     {
@@ -2395,19 +2655,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:169696",
-      "titulo": "Analista Jurídico (Distribuição/Agendamento de Prazos) - SEM OAB",
-      "empresa": "LBCA - Lee, Brock, Camargo Advogados",
-      "area": "Jurídico",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-04",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de jurídico. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://lbca.gupy.io/job/eyJqb2JJZCI6MTI4MzA4MzEsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/169696",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:169693",
       "titulo": "Analista Processos Jr",
       "empresa": "Stefanini Group",
@@ -2574,19 +2821,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de marketing e criação. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://v4company.inhire.app/vagas/2b4f4f38-2dd7-4736-a953-0bddce3f2e12/designer-pleno-or-v4-venturini-and-co",
       "fonteUrl": "https://remotar.com.br/job/169621",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:169549",
-      "titulo": "Consultor(a) de Importação OSGT",
-      "empresa": "Brivia",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-11-03",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://brivia.inhire.app/vagas/dbf2d039-cb85-47ef-922d-c701cace970f/consultora-de-importacao-osgt",
-      "fonteUrl": "https://remotar.com.br/job/169549",
       "fonte": "Remotar"
     },
     {
@@ -3357,19 +3591,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:168418",
-      "titulo": "Supervisor de Contábil",
-      "empresa": "Brivia",
-      "area": "Financeiro e contábil",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-27",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://brivia.inhire.app/vagas/0cbc7d28-003c-4c1b-bba3-1b894e8a0695/supervisor-de-contabil",
-      "fonteUrl": "https://remotar.com.br/job/168418",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:168414",
       "titulo": "Gerente de Projetos/Operações",
       "empresa": "CARV Group",
@@ -3708,19 +3929,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:168147",
-      "titulo": "Analista de Banco de Dados",
-      "empresa": "CTC",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-23",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://ctctech.inhire.app/vagas/5db0eb48-082d-45d3-b4c6-20fbab853f8d/analista-de-banco-de-dados-remoto",
-      "fonteUrl": "https://remotar.com.br/job/168147",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:168140",
       "titulo": "Liderança Técnica Operacional Jr.",
       "empresa": "CLI",
@@ -3877,19 +4085,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:168056",
-      "titulo": "Assistente/Analista Jr. – FP&A",
-      "empresa": "EcomIT",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-23",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://ecommit.inhire.app/vagas/5c049afc-d486-476f-9f7f-9e0ce1cad6df/assistenteanalista-jr-fpanda",
-      "fonteUrl": "https://remotar.com.br/job/168056",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:168053",
       "titulo": "Supervisor Fiscal (TAX)",
       "empresa": "EcomIT",
@@ -3981,19 +4176,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:168016",
-      "titulo": "Analista de Engenharia Jr.",
-      "empresa": "Método Grupo",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-23",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://metodo.gupy.io/job/eyJqb2JJZCI6MTI3NjA2NDUsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/168016",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:167985",
       "titulo": "Assistente de Operações Contábeis Júnior",
       "empresa": "CT Contabilidade Digital",
@@ -4043,19 +4225,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://dotgroup.inhire.app/vagas/5d5ba2a7-7e32-44ef-b7ed-98d1f4310d73/gerente-de-consultoria-educacional",
       "fonteUrl": "https://remotar.com.br/job/167972",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:167966",
-      "titulo": "Consultor TOTVS RM",
-      "empresa": "Projectiva Holding",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-23",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://projectivaholding.inhire.app/vagas/1406f054-225a-410d-aebf-5ac71f233c9e/consultor-totvs-rm-part-time",
-      "fonteUrl": "https://remotar.com.br/job/167966",
       "fonte": "Remotar"
     },
     {
@@ -4148,19 +4317,6 @@ window.__VAGAS__ = {
       "candidatura": "https://visioncybersecurity.gupy.io/job/eyJqb2JJZCI6MTIwNjE4ODQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/167725",
       "fonte": "Remotar"
-    },
-    {
-      "id": "solides:942882",
-      "titulo": "Assistente Operacional (Execução de Rotinas) | PJ | Remoto",
-      "empresa": "The Growth Hub",
-      "area": "Administrativo",
-      "local": "São Paulo - SP",
-      "publicadoEm": "2026-10-23",
-      "expiraEm": "2026-11-20",
-      "resumo": "Vaga remota em português na área de administrativo. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://vagas.solides.com.br/vaga/942882",
-      "fonteUrl": "https://vagas.solides.com.br/",
-      "fonte": "Sólides Vagas"
     },
     {
       "id": "remotar:167701",
@@ -4290,19 +4446,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://vemprabip.gupy.io/job/eyJqb2JJZCI6MTI3MjkxMDgsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/167614",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:167506",
-      "titulo": "Analista de Faturamento Pleno/Sênior",
-      "empresa": "EcomIT",
-      "area": "Financeiro e contábil",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-22",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://ecommit.inhire.app/vagas/8ebd81bb-276c-4ac1-85aa-5c8429584db5/analista-de-faturamento-plenosenior",
-      "fonteUrl": "https://remotar.com.br/job/167506",
       "fonte": "Remotar"
     },
     {
@@ -4605,19 +4748,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:167213",
-      "titulo": "Analista de Conciliação",
-      "empresa": "ASAAS",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-20",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://asaas-poc.inhire.app/vagas/27301f7c-2f51-421c-abbc-a557b1810f77/analista-de-conciliacao",
-      "fonteUrl": "https://remotar.com.br/job/167213",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:167187",
       "titulo": "Analista Fiscal Pleno (Atendimento ao Cliente)",
       "empresa": "Contabilizei",
@@ -4748,19 +4878,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:166894",
-      "titulo": "Analista de Inteligência Artificial N5",
-      "empresa": "Digisystem",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-19",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://jobs.recrutei.com.br/digisystem/vacancy/162203-analista-de-inteligencia-artificial-n5?utm_source=remotar",
-      "fonteUrl": "https://remotar.com.br/job/166894",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:166882",
       "titulo": "Analista Infraestrutura de Redes Sênior",
       "empresa": "Magalu Cloud",
@@ -4810,32 +4927,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de administrativo e operações. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://gabrielmalheirosadvogados.gupy.io/job/eyJqb2JJZCI6MTI3Mzk5MTIsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/166787",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:166773",
-      "titulo": "Analista Automação Pleno",
-      "empresa": "Stefanini Group",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-17",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://stefanini.gupy.io/job/eyJqb2JJZCI6MTI3NDAyMzcsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/166773",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:166752",
-      "titulo": "Assistente Pedagógico",
-      "empresa": "Gran",
-      "area": "Educação",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-16",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de educação. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://vemsergran.gupy.io/job/eyJqb2JJZCI6MTI2OTMwMjYsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/166752",
       "fonte": "Remotar"
     },
     {
@@ -5255,19 +5346,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "solides:937529",
-      "titulo": "Analista de CX Jr",
-      "empresa": "NEXTRON ENERGIA",
-      "area": "Outras áreas",
-      "local": "São Paulo - SP",
-      "publicadoEm": "2026-10-13",
-      "expiraEm": "2026-11-30",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://vagas.solides.com.br/vaga/937529",
-      "fonteUrl": "https://vagas.solides.com.br/",
-      "fonte": "Sólides Vagas"
-    },
-    {
       "id": "remotar:166015",
       "titulo": "Pessoa Analista de Negócios Sênior | Previdência e Seguros",
       "empresa": "Viaflow",
@@ -5304,19 +5382,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://vagasfarmax.gupy.io/job/eyJqb2JJZCI6MTI2OTc3NzgsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/166004",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:165975",
-      "titulo": "Analista de Salesforce Sênior",
-      "empresa": "Grupo Mooven Fornax",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-10",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://grupomoovenfornax.inhire.app/vagas/5c0df690-2725-4a1d-aa39-ada424f3ef5f/analista-de-salesforce-senior",
-      "fonteUrl": "https://remotar.com.br/job/165975",
       "fonte": "Remotar"
     },
     {
@@ -5395,19 +5460,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://atlantico.inhire.app/vagas/168d44b2-c6d2-4130-832e-989178f81826/pessoa-coordenadora-de-governanca-de-ai-e-dados-especialista-remoto",
       "fonteUrl": "https://remotar.com.br/job/165825",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:165817",
-      "titulo": "Analista Jurídico - Vaga Exclusiva PCD",
-      "empresa": "LBCA - Lee, Brock, Camargo Advogados",
-      "area": "Jurídico",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-08",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de jurídico. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://lbca.gupy.io/job/eyJqb2JJZCI6MTI2OTczNjUsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/165817",
       "fonte": "Remotar"
     },
     {
@@ -5551,19 +5603,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://carreirasomie.gupy.io/job/eyJqb2JJZCI6MTI2NzE3MTQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/165443",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:165395",
-      "titulo": "Especialista de Produtos I",
-      "empresa": "LWSA",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-10-05",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://lwsa.inhire.app/octadesk/vagas/56049cda-8d54-4aa7-8f1d-e760113864ec/octadesk-or-especialista-de-produtos-i-or-remoto",
-      "fonteUrl": "https://remotar.com.br/job/165395",
       "fonte": "Remotar"
     },
     {
@@ -6022,19 +6061,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:163731",
-      "titulo": "Executivo Comercial Jurídico (Closer júnior) - REMOTO",
-      "empresa": "Skill Consultoria Empresarial",
-      "area": "Vendas e comercial",
-      "local": "Brasil",
-      "publicadoEm": "2026-09-22",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://skillconsultoria.gupy.io/job/eyJqb2JJZCI6MTI1MzA3ODksInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/163731",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:163660",
       "titulo": "[Fiscal] Analista Fiscal Pleno",
       "empresa": "Contabilizei",
@@ -6045,32 +6071,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de financeiro e contábil. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://contabilizei.inhire.app/vagas/94f285a8-1fb0-4ae6-b057-6ed288559e3f/fiscal-analista-fiscal-pleno",
       "fonteUrl": "https://remotar.com.br/job/163660",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:163536",
-      "titulo": "Analista RevOps Sr",
-      "empresa": "nstech",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-09-18",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://nstech.inhire.app/vagas/cc4df841-3b2d-4387-92d8-4a5d7c85b94a/analista-revops-sr-or-remota",
-      "fonteUrl": "https://remotar.com.br/job/163536",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:163500",
-      "titulo": "Gerente de Contas Estratégicas – Remoto",
-      "empresa": "Skill Consultoria Empresarial",
-      "area": "Vendas e comercial",
-      "local": "Brasil",
-      "publicadoEm": "2026-09-18",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://skillconsultoria.gupy.io/job/eyJqb2JJZCI6MTI1MjQ1MTQsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/163500",
       "fonte": "Remotar"
     },
     {
@@ -6240,19 +6240,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://vexpenses.gupy.io/job/eyJqb2JJZCI6MTI0NjQ0ODEsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
       "fonteUrl": "https://remotar.com.br/job/162485",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:162346",
-      "titulo": "Analista de Mídia Paga",
-      "empresa": "Beside Media",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-09-10",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://besidemedia.vagas.solides.com.br/vaga/919183?origem=remotar",
-      "fonteUrl": "https://remotar.com.br/job/162346",
       "fonte": "Remotar"
     },
     {
@@ -6555,6 +6542,19 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
+      "id": "remotar:160340",
+      "titulo": "Gerente de Contas Pleno",
+      "empresa": "2biz Company",
+      "area": "Vendas e comercial",
+      "local": "Brasil",
+      "publicadoEm": "2026-08-25",
+      "expiraEm": "",
+      "resumo": "Vaga remota em português na área de vendas e comercial. Confira as atividades e os requisitos no anúncio original.",
+      "candidatura": "https://2bizcompany.inhire.app/vagas/70882808-f214-49ea-97b3-de39e9605b04/gerente-de-contas-pleno-home-office-or-banco-de-talentos",
+      "fonteUrl": "https://remotar.com.br/job/160340",
+      "fonte": "Remotar"
+    },
+    {
       "id": "remotar:160291",
       "titulo": "Líder Service Designer",
       "empresa": "Brivia",
@@ -6591,19 +6591,6 @@ window.__VAGAS__ = {
       "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
       "candidatura": "https://sevenred.inhire.app/vagas/ae90f2ff-c444-40fd-bcf4-920bc03122ea/analista-de-riscos-e-controles-internos",
       "fonteUrl": "https://remotar.com.br/job/160134",
-      "fonte": "Remotar"
-    },
-    {
-      "id": "remotar:160072",
-      "titulo": "DBA Oracle Especialista",
-      "empresa": "Vetta",
-      "area": "Outras áreas",
-      "local": "Brasil",
-      "publicadoEm": "2026-08-22",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de outras áreas. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://vetta.gupy.io/job/eyJqb2JJZCI6MTIyMTgxNTEsInNvdXJjZSI6InJlbW90YXIifQ==?jobBoardSource=remotar",
-      "fonteUrl": "https://remotar.com.br/job/160072",
       "fonte": "Remotar"
     },
     {
@@ -6763,19 +6750,6 @@ window.__VAGAS__ = {
       "fonte": "Remotar"
     },
     {
-      "id": "remotar:158681",
-      "titulo": "Consultor Fiscal Pleno de Relacionamento / Atendimento",
-      "empresa": "Contabilizei",
-      "area": "Atendimento e suporte",
-      "local": "Brasil",
-      "publicadoEm": "2026-08-12",
-      "expiraEm": "",
-      "resumo": "Vaga remota em português na área de atendimento e suporte. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://contabilizei.inhire.app/vagas/436e0fcf-0107-4c68-bedd-0fd9f86ff756/expert-consultor-fiscal-pleno-de-relacionamento-atendimento",
-      "fonteUrl": "https://remotar.com.br/job/158681",
-      "fonte": "Remotar"
-    },
-    {
       "id": "remotar:158680",
       "titulo": "Consultor Fiscal Sênior de Relacionamento / Atendimento",
       "empresa": "Contabilizei",
@@ -6813,19 +6787,6 @@ window.__VAGAS__ = {
       "candidatura": "https://ubots.inhire.app/vagas/7b4f0f1e-92d9-45a3-b2ee-9d993b139b33/analista-de-operacoes",
       "fonteUrl": "https://remotar.com.br/job/158416",
       "fonte": "Remotar"
-    },
-    {
-      "id": "solides:900610",
-      "titulo": "Analista de Marketing (Foco em eventos e Experiência de Marca)",
-      "empresa": "NP Digital Brasil",
-      "area": "Marketing",
-      "local": "Belo Horizonte - MG",
-      "publicadoEm": "2026-08-09",
-      "expiraEm": "2026-11-28",
-      "resumo": "Vaga remota em português na área de marketing. Confira as atividades e os requisitos no anúncio original.",
-      "candidatura": "https://vagas.solides.com.br/vaga/900610",
-      "fonteUrl": "https://vagas.solides.com.br/",
-      "fonte": "Sólides Vagas"
     },
     {
       "id": "solides:899709",
